@@ -8,6 +8,7 @@ import { useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, calculateAge } from "@/lib/utils";
+import Image from "next/image";
 
 interface IDCardModalProps {
     isOpen: boolean;
@@ -65,8 +66,8 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 <div className="px-6 py-4 bg-gradient-to-r from-eduGreen-950/30 to-transparent flex items-center justify-between border-b border-zinc-900/50">
                                     <div className="flex items-center gap-2">
                                         {schoolLogo ? (
-                                            <div className="w-6 h-6 rounded-lg overflow-hidden bg-zinc-950 border border-zinc-900 shadow-[0_0_10px_rgba(59,214,141,0.3)]">
-                                                <img src={schoolLogo} className="w-full h-full object-contain p-0.5" alt="Logo" />
+                                            <div className="w-6 h-6 rounded-lg overflow-hidden bg-zinc-950 border border-zinc-900 shadow-[0_0_10px_rgba(59,214,141,0.3)] relative">
+                                                <Image src={schoolLogo} className="object-contain p-0.5" alt="Logo" fill sizes="24px" />
                                             </div>
                                         ) : (
                                             <div className="w-6 h-6 rounded-lg bg-eduGreen-600 flex items-center justify-center shadow-[0_0_10px_rgba(59,214,141,0.3)]">
@@ -86,7 +87,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="w-32 h-32 rounded-[2rem] p-1 bg-gradient-to-tr from-eduGreen-600 to-zinc-800 shadow-2xl shrink-0">
                                         <div className="w-full h-full rounded-[1.8rem] overflow-hidden bg-zinc-950 relative border border-zinc-900">
                                             {user.photoUrl ? (
-                                                <img src={user.photoUrl} alt="ID" className="w-full h-full object-cover" />
+                                                <Image src={user.photoUrl} alt="ID" className="object-cover" fill sizes="128px" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-zinc-950 text-4xl font-medium text-zinc-800">
                                                     {initial}
@@ -220,8 +221,8 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 <div className="relative z-10 h-[10mm] bg-black/40 flex items-center justify-between px-[5mm] border-b border-white/5">
                                     <div className="flex items-center gap-1.5">
                                         {schoolLogo ? (
-                                            <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-black overflow-hidden flex items-center justify-center">
-                                                <img src={schoolLogo} className="w-full h-full object-contain" />
+                                            <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-black overflow-hidden flex items-center justify-center relative">
+                                                <Image src={schoolLogo} alt="Logo" className="object-contain" fill sizes="20px" />
                                             </div>
                                         ) : (
                                             <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-eduGreen-600 flex items-center justify-center">
@@ -239,7 +240,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="w-[22mm] h-[22mm] rounded-[4mm] p-[0.3mm] bg-gradient-to-tr from-eduGreen-600 to-zinc-700 shadow-xl shrink-0">
                                         <div className="w-full h-full rounded-[3.8mm] overflow-hidden bg-black relative border border-white/5">
                                             {user.photoUrl ? (
-                                                <img src={user.photoUrl} className="w-full h-full object-cover" />
+                                                <Image src={user.photoUrl} alt="Photo" className="object-cover" fill sizes="100px" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-[22pt] font-medium text-zinc-800">{initial}</div>
                                             )}

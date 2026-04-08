@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 86400,                   // cache optimised images for 24h
     deviceSizes: [640, 750, 828, 1080, 1200], // reasonable breakpoints, skip 4K
     imageSizes: [16, 32, 48, 64, 96],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+    ],
   },
 
   // ── HTTP response headers ───────────────────────────────────────────────────

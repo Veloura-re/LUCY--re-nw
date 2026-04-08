@@ -12,6 +12,7 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { AlertModal } from "@/components/ui/confirmation-modal";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 export default function SettingsPage() {
     const router = useRouter();
@@ -966,8 +967,8 @@ export default function SettingsPage() {
                                 <div className="flex flex-col items-center justify-center py-10 text-center">
                                     {schoolForm.logoUrl ? (
                                         <div className="relative mb-6 group">
-                                            <div className="w-32 h-32 rounded-3xl bg-zinc-900 overflow-hidden border-2 border-eduGreen-600/50 flex items-center justify-center">
-                                                <img src={schoolForm.logoUrl} alt="School Logo" className="w-full h-full object-contain" />
+                                            <div className="w-32 h-32 rounded-3xl bg-zinc-900 overflow-hidden border-2 border-eduGreen-600/50 flex items-center justify-center relative">
+                                                <Image src={schoolForm.logoUrl} alt="School Logo" className="object-contain" fill sizes="128px" />
                                             </div>
                                             {isPrincipal && (
                                                 <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-zinc-950 border border-zinc-800 rounded-full flex items-center justify-center cursor-pointer hover:border-eduGreen-500 transition-all shadow-xl">
