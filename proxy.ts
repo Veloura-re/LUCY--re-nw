@@ -1,9 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-export const runtime = 'experimental-edge'
-
-export async function middleware(request: NextRequest) {
+/**
+ * Next.js 16 Proxy Boundary.
+ * This replaces the deprecated middleware.ts convention.
+ * It handles authentication redirection and security headers.
+ */
+export async function proxy(request: NextRequest) {
     let response = NextResponse.next({
         request: {
             headers: request.headers,
@@ -52,7 +55,6 @@ export async function middleware(request: NextRequest) {
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-        // Proceed for non-protected pages, but apply security layers below
     } else {
         // 4. Handle Authenticated Users
         const metadataRole = user.user_metadata?.role
@@ -70,7 +72,6 @@ export async function middleware(request: NextRequest) {
             }
         } else if (isAuthPage && !url.search) {
             url.pathname = '/dashboard'
-            return NextResponse.redirect(url)
         }
     }
 
@@ -99,7 +100,6 @@ export async function middleware(request: NextRequest) {
         const proto = request.headers.get('x-forwarded-proto') || 'https'
         const expectedOrigin = `${proto}://${host}`
 
-        // In production, enforce origin match.
         if (origin && origin !== expectedOrigin && process.env.NODE_ENV === 'production') {
             return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch" }), {
                 status: 403,
@@ -118,7 +118,6 @@ export async function middleware(request: NextRequest) {
         'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://* wss://*; frame-src 'self' https://*; worker-src 'self' blob:;",
     }
 
-    // Apply headers to the response
     Object.entries(securityHeaders).forEach(([key, value]) => {
         response.headers.set(key, value)
     })
@@ -128,13 +127,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - api (API routes - generally we want these protected by code, but middleware can run too)
-         */
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }

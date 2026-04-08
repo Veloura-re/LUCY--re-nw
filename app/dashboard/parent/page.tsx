@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
 
 export default function ParentDashboard() {
@@ -88,7 +89,9 @@ export default function ParentDashboard() {
                                             <div className="flex items-center gap-6">
                                                 <div className="relative shrink-0">
                                                     {student.photoUrl ? (
-                                                        <img src={student.photoUrl} alt="" className="w-20 h-20 rounded-[1.5rem] object-cover border-2 border-zinc-800" />
+                                                        <div className="relative w-20 h-20 overflow-hidden rounded-[1.5rem] border-2 border-zinc-800">
+                                                            <Image src={student.photoUrl} alt="" fill sizes="80px" className="object-cover" />
+                                                        </div>
                                                     ) : (
                                                         <div className="w-20 h-20 rounded-[1.5rem] bg-eduGreen-950/30 border-2 border-eduGreen-900/30 flex items-center justify-center text-2xl font-black text-eduGreen-500">
                                                             {student.firstName[0]}

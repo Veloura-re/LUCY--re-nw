@@ -18,6 +18,7 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function StudentDashboard() {
     const [data, setData] = useState<any>(null);
@@ -124,7 +125,7 @@ export default function StudentDashboard() {
                         title="Update your ID photo"
                     >
                         {photoUrl ? (
-                            <img src={photoUrl} alt="" className="w-full h-full object-cover" />
+                            <Image src={photoUrl} alt="" fill sizes="48px" className="object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-lg font-black text-zinc-700 group-hover:text-zinc-500">
                                 {data?.student?.firstName?.[0] || '?'}

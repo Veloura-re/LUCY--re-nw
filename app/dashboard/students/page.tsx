@@ -17,8 +17,9 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 import { ImageUpload } from "@/components/ui/image-upload";
-import { GradeStudentModal } from "@/components/dashboard/grade-student-modal";
 import { format } from "date-fns";
+import Image from "next/image";
+import { GradeStudentModal } from "@/components/dashboard/grade-student-modal";
 
 export default function StudentsPage() {
     const [isAdding, setIsAdding] = useState(false);
@@ -423,7 +424,7 @@ export default function StudentsPage() {
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-16 rounded-lg bg-zinc-900/50 border border-zinc-900/50 flex items-center justify-center text-xl font-medium text-zinc-900 shadow-inner overflow-hidden">
                                             {student.photoUrl ? (
-                                                <img src={student.photoUrl} alt="" className="w-full h-full object-cover" />
+                                                <Image src={student.photoUrl} alt="" fill sizes="48px" className="object-cover" />
                                             ) : (
                                                 `${student.firstName?.[0] || ""}${student.lastName?.[0] || ""}`
                                             )}
