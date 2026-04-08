@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, User, Calendar, MapPin, Phone, Clock, AlertTriangle, Sparkles } from "lucide-react";
 import SpringingLoader from "@/components/dashboard/springing-loader";
+import Image from "next/image";
 
 export default function StudentVerificationPage() {
     const { studentId } = useParams();
@@ -81,7 +82,7 @@ export default function StudentVerificationPage() {
                         {/* Photo */}
                         <div className="w-32 h-32 rounded-[2.5rem] bg-zinc-900 border-2 border-eduGreen-900/30 mb-6 overflow-hidden shadow-2xl">
                             {student.photoUrl ? (
-                                <img src={student.photoUrl} className="w-full h-full object-cover" />
+                                <Image src={student.photoUrl} fill sizes="128px" className="object-cover" alt="Verification Photo" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-800">
                                     {student.firstName[0]}{student.lastName[0]}

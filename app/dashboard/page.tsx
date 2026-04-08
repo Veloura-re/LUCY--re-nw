@@ -1,11 +1,13 @@
 import { createClient } from "@/utils/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getCachedUser } from "@/lib/users";
 import { DirectorView } from "@/components/dashboard/director-view";
 import { ParentView } from "@/components/dashboard/parent-view";
 import { TeacherView } from "@/components/dashboard/teacher-view";
 import { StudentView } from "@/components/dashboard/student-view";
 import { redirect } from "next/navigation";
 import { getFamilyChildren, getSchoolAnalytics, getTeacherDashboardData } from "@/lib/dashboard-data";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function DashboardPage() {
     const supabase = await createClient();
@@ -13,52 +15,23 @@ export default async function DashboardPage() {
 
     if (!user) return null;
 
-    let dbUser: any = null;
-    try {
-        dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            include: {
-                school: {
-                    include: {
-                        _count: {
-                            select: { students: true, users: true }
-                        }
-                    }
-                }
-            }
-        });
+    const dbUser = await getCachedUser(user.id);
 
-        if (!dbUser && user.email) {
-            dbUser = await prisma.user.findUnique({
-                where: { email: user.email },
-                include: {
-                    school: {
-                        include: {
-                            _count: {
-                                select: { students: true, users: true }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (dbError) {
-        console.error("[Dashboard Page] Prisma Connection Error:", dbError);
-        return (
-            <div className="p-20 text-center">
-                <p className="text-zinc-600 font-medium uppercase tracking-[0.3em] text-[10px]">Neural Uplink Interrupted</p>
-                <p className="text-zinc-800 text-[10px] font-medium uppercase tracking-widest mt-3">The institutional grid is currently unreachable. Retrying synchronization...</p>
-            </div>
-        );
-    }
-
-    if (!dbUser) return <div>User not found</div>;
+    if (!dbUser) return <div>User profile synchronization in progress...</div>;
 
     if (dbUser.role === 'SUPERADMIN') {
         redirect('/admin/dashboard');
     }
 
-    // Role-specific data pre-fetching
+    // Wrap views in Suspense to allow layout to stream
+    return (
+        <Suspense fallback={<Loading />}>
+            <DashboardContent dbUser={dbUser} />
+        </Suspense>
+    );
+}
+
+async function DashboardContent({ dbUser }: { dbUser: any }) {
     let dashboardData: any = null;
 
     switch (dbUser.role) {
@@ -84,4 +57,5 @@ export default async function DashboardPage() {
             return <div className="p-20 text-center font-medium uppercase tracking-widest text-zinc-800">Operational Role Not Discovered</div>;
     }
 }
+
 

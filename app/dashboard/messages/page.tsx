@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { format } from "date-fns";
+import Image from "next/image";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { AlertModal } from "@/components/ui/confirmation-modal";
 
@@ -877,7 +878,9 @@ function MessagesContent() {
                                                                             {msg.attachments && (
                                                                                 <div className="mb-4 p-4 bg-black/40 rounded-3xl border border-white/5 backdrop-blur-xl overflow-hidden">
                                                                                     {msg.attachments.type === 'image' ? (
-                                                                                        <img src={msg.attachments.url} alt="Attachment" className="max-w-full rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/10" />
+                                                                                        <div className="relative aspect-video w-full">
+                                                                                            <Image src={msg.attachments.url} alt="Attachment" fill className="rounded-2xl object-contain shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/10" />
+                                                                                        </div>
                                                                                     ) : (
                                                                                         <div className="flex items-center gap-4">
                                                                                             <div className="w-12 h-12 bg-zinc-950 rounded-2xl flex items-center justify-center border border-zinc-900 shadow-inner">

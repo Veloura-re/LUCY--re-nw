@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useReactToPrint } from "react-to-print";
+import Image from "next/image";
 import { StudentDossierPrint } from "@/components/dashboard/student-dossier-print";
 
 function StudentProfileContent() {
@@ -376,7 +377,7 @@ function StudentProfileContent() {
                     <div className="relative">
                         <div className="w-32 h-32 rounded-[2.5rem] bg-zinc-950 border-2 border-eduGreen-900/30 flex items-center justify-center text-4xl font-black text-eduGreen-500 shadow-2xl relative overflow-hidden">
                             {student.photoUrl ? (
-                                <img src={student.photoUrl} alt="" className="w-full h-full object-cover" />
+                                <Image src={student.photoUrl} alt="" fill sizes="128px" className="object-cover" />
                             ) : (
                                 <>{student.firstName[0]}{student.lastName[0]}</>
                             )}

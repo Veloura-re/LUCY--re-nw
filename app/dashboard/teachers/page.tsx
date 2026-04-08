@@ -20,6 +20,7 @@ import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-moda
 import { IDCardModal } from "@/components/dashboard/id-card-modal";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { EditTeacherModal } from "@/components/dashboard/edit-teacher-modal";
+import Image from "next/image";
 
 export default function TeachersPage() {
     const router = useRouter();
@@ -449,7 +450,7 @@ export default function TeachersPage() {
                                     <div className="flex items-center gap-6">
                                         <div className="w-12 h-16 rounded-lg bg-zinc-950 border border-zinc-900/50 flex items-center justify-center font-medium text-zinc-800 uppercase group-hover:border-eduGreen-900/30 transition-colors shadow-none relative overflow-hidden text-lg">
                                             {teacher.photoUrl ? (
-                                                <img src={teacher.photoUrl} alt="" className="w-full h-full object-cover" />
+                                                <Image src={teacher.photoUrl} alt="" fill sizes="48px" className="object-cover" />
                                             ) : (
                                                 teacher.name?.[0] || teacher.email?.[0] || "?"
                                             )}
