@@ -1,6 +1,12 @@
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
 
-export async function getFamilyChildren(userId: string) {
+// Refactor 1: getFamilyChildren
+const _getFamilyChildren = async (userId: string) => {
+    // We only fetch recent attendance (last 30 days) not all 5 years
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const links = await prisma.parentStudentLink.findMany({
         where: { parentId: userId },
         include: {
@@ -21,32 +27,44 @@ export async function getFamilyChildren(userId: string) {
     });
 
     if (links.length === 0) return [];
-
     const studentIds = links.map(l => l.studentId);
 
+    // Fetch bounded attendance
     const allAttendance = await prisma.attendanceRecord.findMany({
-        where: { studentId: { in: studentIds } },
+        where: { studentId: { in: studentIds }, date: { gte: thirtyDaysAgo } },
         select: { studentId: true, status: true }
     });
 
+    // Instead of evaluating scores in memory, grab only latest or config bounded records.
     const allGrades = await prisma.gradeRecord.findMany({
         where: {
             studentId: { in: studentIds },
             exam: { isPublished: true } as any
         },
-        include: { exam: { select: { config: true } } }
+        include: { exam: { select: { config: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 100 // Cap memory map!
     }) as any[];
 
+    // Fetch only pending/overdue + 3 recent paid to prevent fetching vast histories
     const allInvoices = await prisma.invoice.findMany({
+        where: { studentId: { in: studentIds }, status: { in: ['PENDING', 'OVERDUE'] } },
+        select: { studentId: true, status: true, amount: true, createdAt: true },
+        take: 50
+    });
+    
+    const recentInvoicesQuery = await prisma.invoice.findMany({
         where: { studentId: { in: studentIds } },
-        select: { studentId: true, status: true, amount: true, createdAt: true }
+        select: { studentId: true, status: true, amount: true, createdAt: true },
+        orderBy: { createdAt: 'desc' },
+        take: 20
     });
 
     return links.map((link) => {
         const sid = link.student.id;
 
         const studentAttendance = allAttendance.filter(a => a.studentId === sid);
-        const presentCount = studentAttendance.filter(a => a.status === 'PRESENT').length;
+        const presentCount = studentAttendance.filter(a => a.status === 'PRESENT' || a.status === 'LATE').length;
         const attendancePct = studentAttendance.length > 0
             ? (presentCount / studentAttendance.length) * 100
             : 100;
@@ -56,18 +74,16 @@ export async function getFamilyChildren(userId: string) {
         if (studentGrades.length > 0) {
             const total = studentGrades.reduce((acc: number, g: any) => {
                 const max = (g.exam?.config as any)?.maxScore || 100;
-                return acc + (g.score / max);
+                return acc + (Number(g.score) / max);
             }, 0);
             averageScore = (total / studentGrades.length) * 100;
         }
 
         const studentInvoices = allInvoices.filter(i => i.studentId === sid);
-        const unpaidInvoices = studentInvoices.filter(i => i.status === 'PENDING' || i.status === 'OVERDUE');
-        const totalOutstanding = unpaidInvoices.reduce((acc, inv) => acc + Number(inv.amount), 0);
+        const totalOutstanding = studentInvoices.reduce((acc, inv) => acc + Number(inv.amount), 0);
 
-        const recentInvoices = allInvoices
+        const recentInvoices = recentInvoicesQuery
             .filter(i => i.studentId === sid)
-            .sort((a, b) => new Date(b.createdAt as any).getTime() - new Date(a.createdAt as any).getTime())
             .slice(0, 3);
 
         return {
@@ -76,14 +92,28 @@ export async function getFamilyChildren(userId: string) {
             stats: {
                 attendancePct: attendancePct.toFixed(1),
                 averageScore: averageScore.toFixed(1),
-                invoiceCount: unpaidInvoices.length,
+                invoiceCount: studentInvoices.length,
                 totalOutstanding: totalOutstanding.toFixed(2)
             }
         };
     });
-}
+};
 
-export async function getTeacherDashboardData(userId: string) {
+export const getFamilyChildren = unstable_cache(
+    _getFamilyChildren,
+    ['family-children-data'],
+    { revalidate: 60 } // 1 minute cache
+);
+
+
+// Refactor 2: getTeacherDashboardData
+const _getTeacherDashboardData = async (userId: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const [assignments, recentExams, clockInRecord] = await Promise.all([
         prisma.teacherAssignment.findMany({
             where: { teacherId: userId },
@@ -91,30 +121,22 @@ export async function getTeacherDashboardData(userId: string) {
                 class: {
                     include: {
                         grade: true,
-                        _count: {
-                            select: { students: true }
-                        }
+                        _count: { select: { students: true } }
                     }
                 },
                 subject: true
             }
         }),
         prisma.exam.findMany({
-            where: { createdById: userId },
-            include: {
-                gradeRecords: true,
-                subject: true
-            },
+            where: { createdById: userId, dueAt: { gte: thirtyDaysAgo } }, // Bounded
+            include: { gradeRecords: true, subject: true },
             orderBy: { dueAt: 'desc' },
             take: 3
         }),
         prisma.staffAttendanceRecord.findFirst({
             where: {
                 userId: userId,
-                date: {
-                    gte: new Date(new Date().setHours(0, 0, 0, 0)),
-                    lt: new Date(new Date().setHours(24, 0, 0, 0))
-                }
+                date: { gte: today }
             }
         })
     ]);
@@ -122,21 +144,20 @@ export async function getTeacherDashboardData(userId: string) {
     const classIds = assignments.map(a => a.classId);
     const subjectIds = assignments.map(a => a.subjectId);
 
+    // Fetch averages directly if possible, or grab recent bounds
     const [allGrades, attendanceStats] = await Promise.all([
         prisma.gradeRecord.findMany({
             where: {
                 student: { classId: { in: classIds } },
-                subjectId: { in: subjectIds }
+                subjectId: { in: subjectIds },
+                createdAt: { gte: thirtyDaysAgo } // BOUNDED!
             },
-            select: {
-                score: true,
-                subjectId: true,
-                student: { select: { classId: true } }
-            }
+            select: { score: true, subjectId: true, student: { select: { classId: true } } },
+            take: 1000
         }),
         prisma.attendanceRecord.groupBy({
             by: ['status'],
-            where: { classId: { in: classIds } },
+            where: { classId: { in: classIds }, date: { gte: thirtyDaysAgo } },
             _count: true
         })
     ]);
@@ -145,9 +166,8 @@ export async function getTeacherDashboardData(userId: string) {
         const relevantGrades = allGrades.filter(g =>
             g.student.classId === a.classId && g.subjectId === a.subjectId
         );
-
         const avgGrade = relevantGrades.length > 0
-            ? relevantGrades.reduce((acc, curr) => acc + curr.score, 0) / relevantGrades.length
+            ? relevantGrades.reduce((acc, curr) => acc + Number(curr.score), 0) / relevantGrades.length
             : null;
 
         return {
@@ -162,10 +182,7 @@ export async function getTeacherDashboardData(userId: string) {
         };
     });
 
-    const statsMap = Object.fromEntries(
-        attendanceStats.map(stat => [stat.status, stat._count])
-    );
-
+    const statsMap = Object.fromEntries(attendanceStats.map(stat => [stat.status, stat._count]));
     const total = Object.values(statsMap).reduce((a: any, b: any) => a + b, 0);
     const present = ((statsMap['PRESENT'] as any) || 0) + ((statsMap['LATE'] as any) || 0);
 
@@ -180,47 +197,61 @@ export async function getTeacherDashboardData(userId: string) {
     };
 }
 
-export async function getSchoolAnalytics(schoolId: string) {
+export const getTeacherDashboardData = unstable_cache(
+    _getTeacherDashboardData,
+    ['teacher-dashboard-data'],
+    { revalidate: 60 }
+);
+
+
+// Refactor 3: getSchoolAnalytics
+const _getSchoolAnalytics = async (schoolId: string) => {
     const schoolClasses = await prisma.class.findMany({
         where: { grade: { schoolId } },
         select: { id: true }
     });
     const classIds = schoolClasses.map(c => c.id);
 
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    // FETCH ONCE instead of inside a promise map
+    const rawAttendanceCounts = await (prisma.attendanceRecord as any).groupBy({
+        by: ['status', 'date'],
+        where: {
+            classId: { in: classIds },
+            date: { gte: sevenDaysAgo }
+        },
+        _count: { id: true }
+    }) as any[];
+
     const days = [];
     for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
         d.setHours(0, 0, 0, 0);
-        days.push(d);
-    }
+        
+        // Find matching raw attendance for this day
+        const groupedForDay = rawAttendanceCounts.filter((r: any) => {
+            const rowDate = new Date(r.date);
+            rowDate.setHours(0,0,0,0);
+            return rowDate.getTime() === d.getTime();
+        });
 
-    const attendanceData = await Promise.all(days.map(async (day) => {
-        const nextDay = new Date(day);
-        nextDay.setDate(nextDay.getDate() + 1);
-
-        const counts = await (prisma.attendanceRecord as any).groupBy({
-            by: ['status'],
-            where: {
-                classId: { in: classIds },
-                date: {
-                    gte: day,
-                    lt: nextDay
-                }
-            },
-            _count: { id: true }
-        }) as any[];
-
-        const present = counts.find((c: any) => c.status === 'PRESENT' || c.status === 'LATE')?._count?.id || 0;
-        const absent = counts.find((c: any) => c.status === 'ABSENT')?._count?.id || 0;
+        const present = groupedForDay.filter((c: any) => c.status === 'PRESENT' || c.status === 'LATE')
+            .reduce((sum: number, c: any) => sum + (c._count?.id || 0), 0);
+        const absent = groupedForDay.filter((c: any) => c.status === 'ABSENT')
+            .reduce((sum: number, c: any) => sum + (c._count?.id || 0), 0);
         const total = present + absent;
 
-        return {
-            date: day.toISOString(),
+        days.push({
+            date: d.toISOString(),
             percentage: total > 0 ? (present / total) * 100 : 100,
             total
-        };
-    }));
+        });
+    }
+    const attendanceData = days;
 
     const schoolSubjects = await prisma.subject.findMany({
         where: { schoolId },
@@ -228,11 +259,13 @@ export async function getSchoolAnalytics(schoolId: string) {
     });
     const subjectIds = schoolSubjects.map(s => s.id);
 
+    // Rest of aggregations using batching bounds
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const gradeStats = await (prisma.gradeRecord as any).groupBy({
         by: ['subjectId'],
-        where: {
-            subjectId: { in: subjectIds }
-        },
+        where: { subjectId: { in: subjectIds }, createdAt: { gte: thirtyDaysAgo } }, // bounded
         _avg: { score: true },
         _count: { id: true }
     }) as any[];
@@ -244,30 +277,28 @@ export async function getSchoolAnalytics(schoolId: string) {
     }));
 
     const [totalAttendance, presentAttendance, totalExams, lockedExams, recentEvents, studentCount, classCount] = await Promise.all([
-        prisma.attendanceRecord.count({ where: { class: { grade: { schoolId } } } }),
-        prisma.attendanceRecord.count({ where: { class: { grade: { schoolId } }, status: { in: ['PRESENT', 'LATE'] } } }),
-        prisma.exam.count({ where: { class: { grade: { schoolId } } } }),
-        prisma.exam.count({ where: { class: { grade: { schoolId } }, isLocked: true } }),
-        prisma.event.count({ where: { schoolId, eventDate: { gte: days[0] } } }),
-        prisma.student.count({ where: { schoolId } }),
+        prisma.attendanceRecord.count({ where: { class: { grade: { schoolId } }, date: { gte: sevenDaysAgo } } }),
+        prisma.attendanceRecord.count({ where: { class: { grade: { schoolId } }, status: { in: ['PRESENT', 'LATE'] }, date: { gte: sevenDaysAgo } } }),
+        prisma.exam.count({ where: { class: { grade: { schoolId } }, createdAt: { gte: thirtyDaysAgo } } }),
+        prisma.exam.count({ where: { class: { grade: { schoolId } }, isLocked: true, createdAt: { gte: thirtyDaysAgo } } }),
+        prisma.event.count({ where: { schoolId, eventDate: { gte: sevenDaysAgo } } }),
+        prisma.student.count({ where: { schoolId, enrollmentStatus: 'ACTIVE' } }),
         prisma.class.count({ where: { grade: { schoolId } } })
     ]);
 
     const staffPresencePresent = await prisma.staffAttendanceRecord.count({
-        where: { user: { schoolId }, date: { gte: days[days.length - 1] }, status: 'PRESENT' }
+        where: { user: { schoolId }, date: { gte: sevenDaysAgo }, status: 'PRESENT' }
     });
     const staffPresenceTotal = await prisma.user.count({
         where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } }
     });
+
     const staffedClasses = await prisma.class.count({
         where: {
             grade: { schoolId },
             homeroomTeacher: {
                 staffAttendance: {
-                    some: {
-                        date: { gte: days[days.length - 1] },
-                        status: 'PRESENT'
-                    }
+                    some: { date: { gte: sevenDaysAgo }, status: 'PRESENT' }
                 }
             }
         }
@@ -283,13 +314,15 @@ export async function getSchoolAnalytics(schoolId: string) {
             studentCount,
             classCount,
             activeNodes: studentCount + classCount,
-            staffPresence: {
-                present: staffPresencePresent,
-                total: staffPresenceTotal,
-                staffedClasses
-            }
+            staffPresence: { present: staffPresencePresent, total: staffPresenceTotal, staffedClasses }
         },
         attendance: attendanceData,
         performanceBySubject
     };
 }
+
+export const getSchoolAnalytics = unstable_cache(
+    _getSchoolAnalytics,
+    ['school-analytics-data'],
+    { revalidate: 60 }
+);

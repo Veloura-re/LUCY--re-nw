@@ -13,6 +13,7 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { UpcomingEventsWidget } from "./upcoming-events";
 import { DashboardGreeting } from "./dashboard-greeting";
 import { AIParentChatbot } from "./ai-parent-chatbot";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface VerifiedStudent {
     id: string;
@@ -69,6 +70,41 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
             setActiveChildId(students[0].id);
         }
     }, [students, activeChildId]);
+
+    // SUPABASE REALTIME SUBSCRIPTION
+    useEffect(() => {
+        if (!mounted || students.length === 0) return;
+        
+        try {
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+            
+            if (!supabaseUrl || !supabaseKey) return;
+            const supabase = createBrowserClient(supabaseUrl, supabaseKey);
+
+            console.log("[Realtime] Subscribing to postgres channels for active live-sync...");
+            const channel = supabase.channel('parent-live-updates')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'AttendanceRecord' }, (payload) => {
+                    console.log("[Realtime] Attendance trigger fired. Syncing...", payload);
+                    router.refresh(); 
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'Invoice' }, (payload) => {
+                    console.log("[Realtime] Invoice trigger fired. Syncing...", payload);
+                    router.refresh();
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'GradeRecord' }, (payload) => {
+                    console.log("[Realtime] Grades updated! Syncing...", payload);
+                    router.refresh();
+                })
+                .subscribe();
+
+            return () => {
+                supabase.removeChannel(channel);
+            };
+        } catch (e) {
+            console.error("[Realtime] Websocket initialization failed:", e);
+        }
+    }, [mounted, router, students.length]);
 
     const verifyCode = async (e: React.FormEvent) => {
         e.preventDefault();

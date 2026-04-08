@@ -7,37 +7,52 @@ import { FileSpreadsheet, Plus, Settings2, GripVertical, Search, Loader2, Downlo
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import dynamic from "next/dynamic";
+
+const DynamicPrintRegistry = dynamic(
+    () => import("@/components/dashboard/director/print-registry").then((mod) => mod.PrintRegistryButton),
+    { ssr: false, loading: () => <Button disabled className="bg-zinc-900 border border-zinc-800 text-zinc-500 h-14 px-8 rounded-2xl"><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Fetching Module...</Button> }
+);
 
 export default function MarklistManagerPage() {
     const [configs, setConfigs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
     const router = useRouter();
-    const printRef = useRef<HTMLDivElement>(null);
-
-    const handlePrint = useReactToPrint({
-        contentRef: printRef,
-        documentTitle: `marklist_registry_${new Date().toISOString().slice(0, 10)}`,
-    });
-
 
     useEffect(() => {
         fetchConfigs();
     }, []);
 
-    const fetchConfigs = async () => {
+    const fetchConfigs = async (pageNum = 1) => {
+        if (pageNum === 1) setLoading(true);
+        else setLoadingMore(true);
+
         try {
-            const res = await fetch('/api/director/marklists');
+            const res = await fetch(`/api/director/marklists?page=${pageNum}&limit=12`);
             const data = await res.json();
             if (data.configs) {
-                setConfigs(data.configs);
+                if (pageNum === 1) {
+                    setConfigs(data.configs);
+                } else {
+                    setConfigs(prev => [...prev, ...data.configs]);
+                }
+                setHasMore(data.hasMore);
             }
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
+    };
+
+    const loadMore = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchConfigs(nextPage);
     };
 
     return (
@@ -54,13 +69,8 @@ export default function MarklistManagerPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Button
-                        onClick={() => handlePrint()}
-                        className="bg-eduGreen-600 border-eduGreen-500 text-white hover:bg-eduGreen-500 h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-xl shadow-eduGreen-900/20 transition-all active:scale-95"
-                    >
-                        <Printer className="w-4 h-4 mr-2" /> Export PDF Registry
-                    </Button>
-                    <Link href="/dashboard/director/marklist/create">
+                    <DynamicPrintRegistry configs={configs} />
+                    <Link href="/dashboard/director/marklist/create" prefetch={false}>
                         <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-2xl h-14 px-8 font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 border border-eduGreen-500/50">
                             <Plus className="w-5 h-5 mr-3" /> Initialize Config
                         </Button>
@@ -136,34 +146,18 @@ export default function MarklistManagerPage() {
                 )}
             </div>
 
-            {/* Hidden Print Template */}
-            <div className="sr-only" aria-hidden="true">
-                <div ref={printRef} className="p-12 bg-white text-black min-h-screen">
-                    <h1 className="text-3xl font-bold mb-8 uppercase tracking-tighter italic">LUCY Marklist Registry Registry</h1>
-                    <table className="w-full border-collapse">
-                        <thead>
-                            <tr className="border-b-2 border-black text-[10px] font-bold uppercase text-left">
-                                <th className="p-2">Subject</th>
-                                <th className="p-2">Class</th>
-                                <th className="p-2 text-center">Cols</th>
-                                <th className="p-2 text-center">Entries</th>
-                                <th className="p-2">Last Sync</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {configs.map((c) => (
-                                <tr key={c.id} className="border-b border-zinc-100 text-xs">
-                                    <td className="p-2 font-bold uppercase">{c.subject.name}</td>
-                                    <td className="p-2 uppercase">{c.class.name}</td>
-                                    <td className="p-2 text-center">{c._count.columns}</td>
-                                    <td className="p-2 text-center">{c._count.entries}</td>
-                                    <td className="p-2">{format(new Date(c.updatedAt), 'MMM do, yyyy')}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            {hasMore && (
+                <div className="flex justify-center mt-12 animate-in fade-in duration-500">
+                    <Button
+                        onClick={loadMore}
+                        disabled={loadingMore}
+                        className="bg-zinc-900 border border-zinc-800 hover:border-eduGreen-500 text-zinc-300 hover:text-white rounded-full h-16 px-12 font-medium text-xs uppercase tracking-[0.2em] shadow-2xl transition-all disabled:opacity-50"
+                    >
+                        {loadingMore ? <Loader2 className="w-5 h-5 animate-spin mr-3 text-eduGreen-500" /> : <Plus className="w-5 h-5 mr-3 text-eduGreen-500" />}
+                        {loadingMore ? "Transmitting..." : "Load Additional Records"}
+                    </Button>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
