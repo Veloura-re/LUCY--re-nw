@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-space-grotesk antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`font-space-grotesk antialiased`} suppressHydrationWarning>
         <NextTopLoader
           color="#10b981"
           initialPosition={0.08}
