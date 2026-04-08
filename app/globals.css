@@ -1,13 +1,12 @@
 /* Using Tailwind CSS v4 syntax - ignore warnings about @plugin and @theme */
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cinzel:wght@400;700&display=swap');
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
 @theme {
   --font-sans: var(--font-body);
-  --font-heading: var(--font-inter), var(--font-outfit), var(--font-poppins), sans-serif;
+  --font-heading: var(--font-inter), var(--font-orbitron), var(--font-poppins), sans-serif;
   --font-body: var(--font-inter), var(--font-poppins), sans-serif;
-  --font-vintage: "Cinzel", "Permanent Marker", cursive, sans-serif;
+  --font-vintage: var(--font-cinzel), var(--font-permanent-marker), cursive, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
