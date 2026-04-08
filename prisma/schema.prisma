@@ -264,6 +264,7 @@ model GradeRecord {
   @@index([studentId])
   @@index([examId])
   @@index([subjectId])
+  @@index([subjectId, createdAt])
 }
 
 model AttendanceRecord {
@@ -519,6 +520,7 @@ model Invoice {
   @@index([createdAt])
   @@index([studentId])
   @@index([schoolId])
+  @@index([studentId, createdAt])
 }
 
 model InvoiceItem {

@@ -10,23 +10,29 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Missing school identity" }, { status: 400 });
         }
 
-        const configs = await prisma.marklistConfig.findMany({
-            where: {
-                schoolId: user.schoolId
-            },
-            include: {
-                class: { select: { name: true } },
-                subject: { select: { name: true } },
-                _count: {
-                    select: { columns: true, entries: true }
-                }
-            },
-            orderBy: {
-                updatedAt: 'desc'
-            }
-        });
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '12');
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json({ configs });
+        const [configs, total] = await Promise.all([
+            prisma.marklistConfig.findMany({
+                where: { schoolId: user.schoolId },
+                include: {
+                    class: { select: { name: true } },
+                    subject: { select: { name: true } },
+                    _count: { select: { columns: true, entries: true } }
+                },
+                orderBy: { updatedAt: 'desc' },
+                skip,
+                take: limit
+            }),
+            prisma.marklistConfig.count({ where: { schoolId: user.schoolId } })
+        ]);
+
+        const hasMore = (skip + configs.length) < total;
+
+        return NextResponse.json({ configs, hasMore });
     } catch (error) {
         console.error("Fetch Marklists Error:", error);
         return NextResponse.json({ error: "Failed to fetch marklist configurations" }, { status: 500 });
