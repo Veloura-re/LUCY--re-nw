@@ -1,0 +1,196 @@
+/* Using Tailwind CSS v4 syntax - ignore warnings about @plugin and @theme */
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Cinzel:wght@400;700&display=swap');
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-inter), var(--font-outfit), var(--font-poppins), sans-serif;
+  --font-body: var(--font-inter), var(--font-poppins), sans-serif;
+  --font-vintage: "Cinzel", "Permanent Marker", cursive, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Primary Palette - EduGreen */
+  --color-eduGreen-100: #D8F7E8;
+  --color-eduGreen-300: #3BD68D;
+  --color-eduGreen-400: #1AA768;
+  --color-eduGreen-500: #147A52;
+  --color-eduGreen-600: #0F5E3F;
+
+  /* Neutral Palette - Gray */
+  --color-gray-100: #F1F3F4;
+  --color-gray-300: #D0D3D6;
+  --color-gray-500: #6E7377;
+  --color-gray-700: #2A2F32;
+  --color-gray-900: #101314;
+
+  /* Semantic Colors */
+  --color-success: #2ECC71;
+  --color-warning: #F1C40F;
+  --color-error: #E74C3C;
+  --color-info: #3498DB;
+
+  /* Dark Mode */
+  --color-dm-background: #0A0C0C;
+  --color-dm-surface: #121616;
+  --color-dm-card: #1B2020;
+  --color-dm-border: #2C3333;
+  --color-dm-textMain: #3BD68D;
+  --color-dm-textSoft: #1AA768;
+  --color-dm-primary: #3BD68D;
+  /* Standardized to EduGreen-500 */
+
+  /* Border Radius */
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-input: 10px;
+  --radius-chip: 20px;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 4px 22px rgba(0, 0, 0, 0.12);
+  --shadow-elevation: 0 0 35px rgba(0, 0, 0, 0.15);
+  --shadow-inputFocus: 0 0 0 2px #1AA76840;
+}
+
+:root {
+  --background: #09090b;
+  --foreground: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Use the dm colors for root variables in dark mode if desired, or keep specific dark classes */
+    --background: #0A0C0C;
+    --foreground: #3BD68D;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+@keyframes spring {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes neural-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+    filter: blur(40px);
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 0.6;
+    filter: blur(60px);
+  }
+}
+
+@theme {
+  --animate-scan: scan 3s linear infinite;
+  --animate-spin-slow: spin-slow 8s linear infinite;
+  --animate-spring: spring 3s ease-in-out infinite;
+  --animate-neural-pulse: neural-pulse 4s ease-in-out infinite;
+}
+
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Hide number input spinners */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Global Theme Preferences */
+.hide-immersive-visuals [class*="bg-eduGreen-500/20"],
+.hide-immersive-visuals [class*="bg-emerald-500/10"],
+.hide-immersive-visuals [class*="blur-"],
+.hide-immersive-visuals .shadow-2xl,
+.hide-immersive-visuals .shadow-eduGreen-900\/20 {
+  filter: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
