@@ -588,9 +588,12 @@ export default function Home() {
               transition={{ duration: 14.8 + i * 5, repeat: Infinity, ease: "linear" }}
               className="whitespace-nowrap flex gap-12 text-[9px] uppercase tracking-[0.3em] text-zinc-800 mb-1"
             >
-              {Array(20).fill(null).map((_, j) => (
-                <span key={j}>0×{(Math.random() * 0xFFFF | 0).toString(16).toUpperCase().padStart(4, "0")} // LUCY_SYS //</span>
-              ))}
+              {Array(20).fill(null).map((_, j) => {
+                const pseudoRandomDec = (((i + 1) * 11) + ((j + 1) * 17)) % 0xFFFF;
+                return (
+                  <span key={j}>0×{(pseudoRandomDec | 0).toString(16).toUpperCase().padStart(4, "0")} // LUCY_SYS //</span>
+                )
+              })}
             </motion.div>
           ))}
         </div>
