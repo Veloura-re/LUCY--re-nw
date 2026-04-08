@@ -15,8 +15,10 @@ const prismaClientSingleton = () => {
         return new PrismaClient();
     }
 
-    // Only use the pg adapter if we are specifically running on Cloudflare Workers
-    if (process.env.IS_CLOUDFLARE === 'true') {
+    // Detect Cloudflare/Edge natively without relying on manual user ENV vars
+    const isEdge = process.env.NEXT_RUNTIME === 'edge' || process.env.IS_CLOUDFLARE === 'true' || typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers';
+
+    if (isEdge) {
         let connectionUrl = url;
         if (
             (connectionUrl.includes('pooler.supabase.com') || connectionUrl.includes(':6543')) &&
@@ -34,13 +36,11 @@ const prismaClientSingleton = () => {
         try {
             return new WasmPrismaClient({ adapter }) as unknown as PrismaClient;
         } catch (e: any) {
-            console.error('[Prisma] Error initializing adapter:', e.message);
-            // Fallback
-            return new PrismaClient();
+            console.error('[Prisma] Error initializing Cloudflare Wasm adapter:', e.message);
         }
     }
 
-    // Standard Node.js environment
+    // Standard Node.js environment fallback
     return new PrismaClient();
 };
 
