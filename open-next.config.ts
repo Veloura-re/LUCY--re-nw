@@ -11,7 +11,7 @@ const config: OpenNextConfig = {
             queue: "dummy",
         },
     },
-    edgeExternals: ["node:crypto", "@prisma/pg-worker", "@prisma/adapter-pg-worker", "pg-worker"],
+    edgeExternals: ["node:crypto"],
     middleware: {
         external: true,
         override: {

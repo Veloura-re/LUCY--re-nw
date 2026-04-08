@@ -1,4 +1,7 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaClient as WasmPrismaClient } from '@prisma/client/wasm'
+import { Pool } from '@prisma/pg-worker'
+import { PrismaPg } from '@prisma/adapter-pg-worker'
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined
@@ -14,38 +17,22 @@ const prismaClientSingleton = () => {
 
     // Only use the pg adapter if we are specifically running on Cloudflare Workers
     if (process.env.IS_CLOUDFLARE === 'true') {
-        const prismaAdapter = (url: string) => {
-            const pgWorker = require('@prisma/pg-worker');
-            const adapterPgWorker = require('@prisma/adapter-pg-worker');
+        let connectionUrl = url;
+        if (
+            (connectionUrl.includes('pooler.supabase.com') || connectionUrl.includes(':6543')) &&
+            !connectionUrl.includes('pgbouncer=true')
+        ) {
+            connectionUrl += (connectionUrl.includes('?') ? '&' : '?') + 'pgbouncer=true';
+        }
 
-            const Pool = pgWorker.Pool || pgWorker.default?.Pool || pgWorker.default;
-            const PrismaPg = adapterPgWorker.PrismaPg || adapterPgWorker.default?.PrismaPg || adapterPgWorker.default;
+        const pool = new Pool({
+            connectionString: connectionUrl,
+        });
 
-            if (!Pool || !PrismaPg) {
-                throw new Error(`[Prisma] Failed to load native drivers. Pool: ${typeof Pool}, PrismaPg: ${typeof PrismaPg}`);
-            }
-
-            let connectionUrl = url;
-            if (
-                (connectionUrl.includes('pooler.supabase.com') || connectionUrl.includes(':6543')) &&
-                !connectionUrl.includes('pgbouncer=true')
-            ) {
-                connectionUrl += (connectionUrl.includes('?') ? '&' : '?') + 'pgbouncer=true';
-            }
-
-            const pool = new Pool({
-                connectionString: connectionUrl,
-            });
-
-            return new PrismaPg(pool);
-        };
+        const adapter = new PrismaPg(pool);
 
         try {
-            const adapter = prismaAdapter(url);
-            // CRITICAL: Use the WASM client (NOT edge) when using driver adapters in Prisma 5.x
-            const { PrismaClient: WasmClient } = require('@prisma/client/wasm');
-
-            return new WasmClient({ adapter });
+            return new WasmPrismaClient({ adapter }) as unknown as PrismaClient;
         } catch (e: any) {
             console.error('[Prisma] Error initializing adapter:', e.message);
             // Fallback
