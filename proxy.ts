@@ -108,7 +108,7 @@ export async function proxy(request: NextRequest) {
         }
     }
 
-    // C. Global Security Headers
+    // C. Global Security Headers & Performance Hints
     const securityHeaders = {
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'DENY',
@@ -116,11 +116,24 @@ export async function proxy(request: NextRequest) {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
         'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://* wss://*; frame-src 'self' https://*; worker-src 'self' blob:;",
+        'Link': '<https://fpxmwnlgsasydpbephce.supabase.co>; rel=preconnect',
     }
 
     Object.entries(securityHeaders).forEach(([key, value]) => {
         response.headers.set(key, value)
     })
+
+    // D. Performance Layers: Global Cache Control
+    const isStaticAsset = path.match(/\.(css|js|woff2|png|jpg|jpeg|svg|webp|gif|ico)$/)
+    
+    if (isStaticAsset) {
+        response.headers.set('Cache-Control', 'public, max-age=2592000, immutable') // 30 Days
+    } else if (isApiPage) {
+        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    } else {
+        // Dashboard pages: SWR for perceived speed
+        response.headers.set('Cache-Control', 'public, s-maxage=1, stale-while-revalidate=59')
+    }
 
     return response
 }

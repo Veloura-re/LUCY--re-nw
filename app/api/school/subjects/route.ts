@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function GET(request: Request) {
     try {
@@ -28,6 +30,10 @@ export async function POST(request: Request) {
                 name
             }
         });
+
+        // Trigger Cache Invalidation
+        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+
         return NextResponse.json({ subject });
     } catch (e) {
         return handleApiError(e);
@@ -47,6 +53,10 @@ export async function DELETE(request: Request) {
         }
 
         await prisma.subject.delete({ where: { id } });
+
+        // Trigger Cache Invalidation
+        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+
         return NextResponse.json({ success: true });
     } catch (e) {
         return handleApiError(e);

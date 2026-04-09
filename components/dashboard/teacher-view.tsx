@@ -78,9 +78,11 @@ export function TeacherView({ user, initialData }: {
 
                     if (analyticsRes.ok) {
                         const data = await analyticsRes.json();
+                        const attendanceRate = data.attendanceRate || "100%";
+                        const missingCount = data.missingCount || 0;
                         setAttendanceSummary([
-                            { label: "Attendance Rate", value: data.attendanceRate, trend: "Institutional Avg", color: "text-eduGreen-500" },
-                            { label: "Missing Records", value: data.missingCount.toString(), trend: "Today", color: data.missingCount > 0 ? "text-red-500" : "text-zinc-500" }
+                            { label: "Attendance Rate", value: attendanceRate, trend: "Institutional Avg", color: "text-eduGreen-500" },
+                            { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-500" : "text-zinc-500" }
                         ]);
                     }
 
@@ -161,7 +163,7 @@ export function TeacherView({ user, initialData }: {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-8 space-y-10">
-                    {/* Maker Hub - Enhanced Section */}
+                    {/* Maker Hub - Enhanced Section (Always visible) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                         <motion.div
                             whileHover={{ y: -8, transition: { duration: 0.1 } }}
@@ -244,6 +246,7 @@ export function TeacherView({ user, initialData }: {
                             ))}
                         </div>
                     ) : classes.length === 0 ? (
+
                         <div className="flex flex-col items-center justify-center py-32 rounded-[3rem] bg-zinc-950/30 border-2 border-dashed border-zinc-900">
                             <div className="w-20 h-20 rounded-full bg-zinc-900 flex items-center justify-center opacity-20 mb-8">
                                 <BookOpen className="w-10 h-10 text-dm-textMain" />

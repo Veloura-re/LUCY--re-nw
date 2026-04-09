@@ -44,19 +44,21 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     router.refresh();
                 }
             )
-            // 3. Listen for new Messages (to update counter icons, if any)
+            // 3. Listen for new Messages (filtered by schoolId)
             .on(
                 'postgres_changes',
                 {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'Message',
+                    filter: `schoolId=eq.${schoolId}`
                 },
                 () => {
-                    console.log('[Realtime] New message detected, refreshing...');
+                    console.log('[Realtime] New message in school detected, refreshing...');
                     router.refresh();
                 }
             )
+
             .subscribe();
 
         return () => {

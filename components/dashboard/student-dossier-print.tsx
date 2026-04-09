@@ -4,11 +4,44 @@ import { forwardRef } from "react";
 import { format } from "date-fns";
 import { calculateAge } from "@/lib/utils";
 
+interface StudentData {
+    id: string;
+    firstName: string;
+    lastName: string;
+    studentCode: string;
+    email?: string;
+    dob?: string;
+    photoUrl?: string;
+    address?: string;
+    guardianName?: string;
+    guardianPhone?: string;
+    guardianRelation?: string;
+    secondaryPhone?: string;
+    createdAt?: string;
+    school?: { name: string; logoUrl?: string };
+    class?: { name: string; grade?: { name: string } };
+}
+
+interface GradeRecord {
+    score: string;
+    exam?: { title: string; totalMarks: number };
+    subject?: { name: string };
+    createdAt?: string;
+}
+
+interface AttendanceData {
+    total: number;
+    present: number;
+    late: number;
+    absent: number;
+    history: { date: string; status: string }[];
+}
+
 interface StudentDossierPrintProps {
-    student: any;
-    grades: any[];
-    attendance: { total: number; present: number; late: number; absent: number; history: any[] };
-    remarks: any[];
+    student: StudentData;
+    grades: GradeRecord[];
+    attendance: AttendanceData;
+    remarks: { content: string; teacher?: { name: string }; createdAt?: string }[];
 }
 
 export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrintProps>(
@@ -19,7 +52,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
         const schoolLogo = student.school?.logoUrl;
         const now = new Date();
 
-        const bySubject = grades.reduce((acc: Record<string, any[]>, g: any) => {
+        const bySubject = grades.reduce((acc: Record<string, GradeRecord[]>, g: GradeRecord) => {
             const key = g.subject?.name || "General";
             if (!acc[key]) acc[key] = [];
             acc[key].push(g);
@@ -36,13 +69,15 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
         };
 
         const overallPct = grades.length > 0
-            ? Math.round(grades.reduce((acc, g) => {
-                const p = g.exam?.totalMarks ? (parseFloat(g.score) / g.exam.totalMarks) * 100 : parseFloat(g.score);
+            ? Math.round(grades.reduce((acc: number, g: GradeRecord) => {
+                const scoreNum = parseFloat(g.score) || 0;
+                const p = g.exam?.totalMarks ? (scoreNum / g.exam.totalMarks) * 100 : scoreNum;
                 return acc + p;
             }, 0) / grades.length)
             : null;
 
         const overall = overallPct !== null ? getGrade(overallPct) : null;
+
 
         const TH: React.CSSProperties = {
             padding: "4px 8px",
@@ -195,8 +230,9 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                         </thead>
                                         <tbody>
                                             {Object.entries(bySubject).map(([subj, gs], i) => {
-                                                const avg = Math.round(gs.reduce((acc, g) => {
-                                                    const p = g.exam?.totalMarks ? (parseFloat(g.score) / g.exam.totalMarks) * 100 : parseFloat(g.score);
+                                                const avg = Math.round(gs.reduce((acc: number, g: GradeRecord) => {
+                                                    const scoreNum = parseFloat(g.score) || 0;
+                                                    const p = g.exam?.totalMarks ? (scoreNum / g.exam.totalMarks) * 100 : scoreNum;
                                                     return acc + p;
                                                 }, 0) / gs.length);
                                                 const g = getGrade(avg);

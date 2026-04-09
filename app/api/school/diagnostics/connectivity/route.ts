@@ -19,42 +19,29 @@ export async function GET() {
 
         const schoolId = dbUser.schoolId;
 
-        // 1. Orphaned Teachers (Teachers with no schoolId)
-        const orphanedTeachers = await prisma.user.findMany({
-            where: {
-                role: 'TEACHER',
-                schoolId: null
-            },
-            select: { id: true, name: true, email: true }
-        });
-
-        // 2. Unmapped Students (No parent link in ParentStudentLink)
-        const unmappedStudents = await prisma.student.findMany({
-            where: {
-                schoolId: schoolId || undefined,
-                parentLinks: { none: {} }
-            },
-            select: { id: true, firstName: true, lastName: true, studentCode: true }
-        });
-
-        // 3. Disconnected Parents (No children link in ParentStudentLink)
-        const disconnectedParents = await prisma.user.findMany({
-            where: {
-                role: 'PARENT',
-                schoolId: schoolId || undefined,
-                parentLinks: { none: {} }
-            },
-            select: { id: true, name: true, email: true }
-        });
-
-        // 4. Idle Principals (Principals with no school)
-        const idlePrincipals = await prisma.user.findMany({
-            where: {
-                role: 'PRINCIPAL',
-                schoolId: null
-            },
-            select: { id: true, name: true, email: true }
-        });
+        // parallelize lookups for maximum Edge performance
+        const [orphanedTeachers, unmappedStudents, disconnectedParents, idlePrincipals] = await Promise.all([
+            // 1. Orphaned Teachers (Teachers with no schoolId)
+            prisma.user.findMany({
+                where: { role: 'TEACHER', schoolId: null },
+                select: { id: true, name: true, email: true }
+            }),
+            // 2. Unmapped Students (No parent link in ParentStudentLink)
+            prisma.student.findMany({
+                where: { schoolId: schoolId || undefined, parentLinks: { none: {} } },
+                select: { id: true, firstName: true, lastName: true, studentCode: true }
+            }),
+            // 3. Disconnected Parents (No children link in ParentStudentLink)
+            prisma.user.findMany({
+                where: { role: 'PARENT', schoolId: schoolId || undefined, parentLinks: { none: {} } },
+                select: { id: true, name: true, email: true }
+            }),
+            // 4. Idle Principals (Principals with no school)
+            prisma.user.findMany({
+                where: { role: 'PRINCIPAL', schoolId: null },
+                select: { id: true, name: true, email: true }
+            })
+        ]);
 
         return NextResponse.json({
             orphanedTeachers,
@@ -63,6 +50,7 @@ export async function GET() {
             idlePrincipals,
             timestamp: new Date().toISOString()
         });
+
 
     } catch (e: any) {
         console.error("[Connectivity Diagnostic] Error:", e);

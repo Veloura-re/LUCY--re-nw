@@ -32,10 +32,13 @@ export async function GET(request: Request) {
                     select: { id: true, name: true, role: true }
                 }
             },
-            orderBy: { createdAt: 'asc' }
+            orderBy: { createdAt: 'desc' },
+            take: 50
         });
 
-        return NextResponse.json({ messages });
+        // Flip messages back to chronological order for the frontend
+        return NextResponse.json({ messages: messages.reverse() });
+
     } catch (e) {
         console.error(e);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
