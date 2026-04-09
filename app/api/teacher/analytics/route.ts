@@ -6,35 +6,18 @@ export async function GET(request: Request) {
     try {
         const dbUser = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
 
-        // Fetch teacher's classes
-        const assignments = await prisma.teacherAssignment.findMany({
-            where: { teacherId: dbUser.id },
-            select: { classId: true }
-        });
+        // Use the centralized, cached utility to ensure logic parity with SSR
+        const data = await getTeacherDashboardData(dbUser.id);
 
-        const classIds = assignments.map(a => a.classId);
-
-        // Consolidate attendance counting into a single groupBy query
-        const attendanceStats = await prisma.attendanceRecord.groupBy({
-            by: ['status'],
-            where: { classId: { in: classIds } },
-            _count: true
-        });
-
-        const statsMap = Object.fromEntries(
-            attendanceStats.map(stat => [stat.status, stat._count])
-        );
-
-        const total = Object.values(statsMap).reduce((a, b) => a + b, 0);
-        const present = (statsMap['PRESENT'] || 0) + (statsMap['LATE'] || 0);
-
-        // "Missing records" logic: can be further refined here if needed
-        const missingCount = 0;
+        // Map the structured summary back to the flat format expected by this specific legacy endpoint
+        const attendanceRate = data.attendanceSummary.find(s => s.label === "Attendance Rate")?.value || "100%";
+        const missingCount = parseInt(data.attendanceSummary.find(s => s.label === "Missing Records")?.value || "0");
 
         return NextResponse.json({
-            attendanceRate: total > 0 ? `${((present / total) * 100).toFixed(0)}%` : "100%",
+            attendanceRate,
             missingCount
         });
+
 
     } catch (e) {
         return handleApiError(e);

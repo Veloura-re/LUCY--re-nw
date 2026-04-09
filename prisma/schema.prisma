@@ -292,11 +292,8 @@ model AttendanceRecord {
 
   @@unique([studentId, examId])
   @@index([classId, date])
-  @@index([studentId, date])
-  @@index([studentId])
-  @@index([classId])
-  @@index([examId])
   @@index([date])
+  @@index([studentId, classId, date])
 }
 
 model Message {
@@ -374,6 +371,7 @@ model Event {
 
   @@index([schoolId])
   @@index([eventDate])
+  @@index([schoolId, eventDate])
 }
 
 model AbsenceAuthorization {

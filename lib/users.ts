@@ -8,11 +8,17 @@ import { prisma } from '@/lib/prisma';
  */
 export const getCachedUser = cache(async (userId: string) => {
     try {
+        console.log(`[lib/users] Cache miss for user: ${userId}`);
         return await prisma.user.findUnique({
             where: { id: userId },
             include: { 
                 school: {
-                    include: {
+                    select: { 
+                        id: true, 
+                        name: true, 
+                        status: true, 
+                        logoUrl: true,
+                        address: true,
                         _count: {
                             select: { students: true, users: true }
                         }
@@ -31,11 +37,17 @@ export const getCachedUser = cache(async (userId: string) => {
  */
 export const getCachedUserByEmail = cache(async (email: string) => {
     try {
+        console.log(`[lib/users] Cache miss for email: ${email}`);
         return await prisma.user.findUnique({
             where: { email },
             include: { 
                 school: {
-                    include: {
+                    select: { 
+                        id: true, 
+                        name: true, 
+                        status: true, 
+                        logoUrl: true,
+                        address: true,
                         _count: {
                             select: { students: true, users: true }
                         }
