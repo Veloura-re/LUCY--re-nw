@@ -1,6 +1,10 @@
 import { getCachedUserRooms } from '@/lib/services/messages';
 import { revalidateTag } from 'next/cache';
 import { getUserTag } from '@/lib/cache-keys';
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { requireSchoolLinked, handleApiError } from '@/lib/security';
+import { syncGroupMemberships, getOrCreatePrivateRoom } from '@/lib/messaging';
 
 export async function GET(request: Request) {
     try {
@@ -49,7 +53,7 @@ export async function POST(request: Request) {
             const room = await getOrCreatePrivateRoom(dbUser.schoolId, dbUser.id, targetUserId);
             
             // Invalidate Inbox Cache
-            revalidateTag(getUserTag(dbUser.id));
+            revalidateTag(getUserTag(dbUser.id), 'max');
 
             return NextResponse.json({ room });
         }

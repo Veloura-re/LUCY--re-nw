@@ -98,7 +98,7 @@ export async function PATCH(request: Request) {
         }
 
         // Invalidate Structure Caches
-        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
 
         return NextResponse.json({ success: true, class: updatedClass });
     } catch (e) {
@@ -121,7 +121,7 @@ export async function POST(request: Request) {
                     level: parseInt(level),
                 }
             });
-            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!));
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!), 'max');
             return NextResponse.json({ grade });
         } else if (type === 'CLASS') {
             const parentGrade = await prisma.grade.findUnique({ where: { id: gradeId } });
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
                     name,
                 }
             });
-            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
             return NextResponse.json({ cls });
         }
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
@@ -164,7 +164,7 @@ export async function DELETE(request: Request) {
                 await tx.student.updateMany({ where: { classId: id }, data: { classId: null } });
                 await tx.class.delete({ where: { id } });
             });
-            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
         } else if (type === 'GRADE') {
             const targetGrade = await prisma.grade.findUnique({ where: { id } });
             if (!targetGrade || targetGrade.schoolId !== dbUser.schoolId) {
@@ -181,8 +181,8 @@ export async function DELETE(request: Request) {
                 await tx.class.deleteMany({ where: { gradeId: id } });
                 await tx.grade.delete({ where: { id } });
             });
-            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!));
-            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
         } else {
             return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
         }

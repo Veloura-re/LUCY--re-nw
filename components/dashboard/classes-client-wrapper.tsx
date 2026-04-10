@@ -8,6 +8,7 @@ import { Plus, BookOpen, Layers, ChevronRight, ChevronDown, Trash2, Check } from
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
+import { cn } from "@/lib/utils";
 
 interface ClassesClientWrapperProps {
     initialGrades: any[];
