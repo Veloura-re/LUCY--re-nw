@@ -15,7 +15,12 @@ export const getCachedSchoolStructure = (schoolId: string) => {
                 include: {
                     classes: {
                         include: {
-                            _count: { select: { students: true } }
+                            _count: { 
+                                select: { 
+                                    students: true,
+                                    assignments: true
+                                } 
+                            },
                         }
                     }
                 },
@@ -44,9 +49,7 @@ export const getCachedSchoolConfig = (schoolId: string) => {
                     name: true,
                     status: true,
                     logoUrl: true,
-                    address: true,
-                    contactEmail: true,
-                    contactPhone: true
+                    address: true
                 }
             });
         },

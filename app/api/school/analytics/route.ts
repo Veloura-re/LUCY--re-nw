@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
+import { getSchoolAnalytics } from '@/lib/dashboard-data';
 
 export async function GET(request: Request) {
     try {

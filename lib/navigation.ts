@@ -85,6 +85,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'FileKey', label: "Authorizations", href: "/dashboard/authorizations" },
         { icon: 'Hourglass', label: "Events", href: "/dashboard/events" },
         { icon: 'Notebook', label: "Reports", href: "/dashboard/reports" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
@@ -105,6 +106,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
     ],
     HOMEROOM: [
@@ -120,6 +122,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
     ],
     PARENT: [
@@ -131,6 +134,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
     ],
     STUDENT: [
@@ -144,6 +148,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
     ],
 };

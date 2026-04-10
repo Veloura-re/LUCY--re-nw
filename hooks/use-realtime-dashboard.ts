@@ -54,7 +54,49 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     filter: `schoolId=eq.${schoolId}`
                 },
                 () => {
-                    console.log('[Realtime] New message in school detected, refreshing...');
+                    console.log('[Realtime] New message detected, refreshing...');
+                    router.refresh();
+                }
+            )
+            // 4. Listen for new Assignment Dispatches
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'Assignment',
+                    filter: `schoolId=eq.${schoolId}`
+                },
+                () => {
+                    console.log('[Realtime] New assignment dispatched, refreshing...');
+                    router.refresh();
+                }
+            )
+            // 5. Listen for Assignment Submissions & Grading
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'AssignmentSubmission',
+                    filter: `schoolId=eq.${schoolId}`
+                },
+                () => {
+                    console.log('[Realtime] Assignment activity detected, refreshing...');
+                    router.refresh();
+                }
+            )
+            // 6. Listen for Financial Events (Invoices)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'Invoice',
+                    filter: `schoolId=eq.${schoolId}`
+                },
+                () => {
+                    console.log('[Realtime] Financial activity detected, refreshing...');
                     router.refresh();
                 }
             )

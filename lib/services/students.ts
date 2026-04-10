@@ -72,14 +72,14 @@ export const getCachedStudentDossier = (studentId: string, schoolId: string) => 
                             }
                         }
                     },
-                    attendance: {
+                    attendanceRecords: {
                         take: 10,
                         orderBy: { date: 'desc' }
                     },
                     gradeRecords: {
                         where: { exam: { isPublished: true } as any },
                         include: {
-                            exam: { select: { title: true, type: true } },
+                            exam: { select: { title: true, category: true } },
                             subject: { select: { name: true } }
                         },
                         orderBy: { createdAt: 'desc' },

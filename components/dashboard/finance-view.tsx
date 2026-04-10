@@ -838,7 +838,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     />
 
                     {/* Hidden Print Template */}
-                    <div className="sr-only" aria-hidden="true">
+                    <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
                         <InvoicePrint
                             ref={printRef}
                             invoice={printInvoice}

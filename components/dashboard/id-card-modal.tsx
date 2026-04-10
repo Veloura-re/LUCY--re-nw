@@ -209,7 +209,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                     </div>
                 </div>
 
-                <div className="sr-only" aria-hidden="true">
+                <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
                     <div ref={componentRef} className="print:block bg-white text-black p-[10mm] m-0 overflow-hidden">
                         <div className="flex flex-col gap-[10mm]">
                             {/* Front Side Print Landscape */}

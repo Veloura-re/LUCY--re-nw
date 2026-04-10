@@ -62,7 +62,7 @@ export function StudentView({ user }: StudentProps) {
     const stats = [
         { label: "Academic GPA", value: studentData?.gpa || "0.0", icon: Trophy, color: "text-amber-500", trend: "Active" },
         { label: "Attendance", value: `${Math.round(studentData?.attendanceRate || 100)}%`, icon: Target, color: "text-eduGreen-500", trend: "Live" },
-        { label: "Assigned Units", value: studentData?.subjectStats?.length || "0", icon: BookOpen, color: "text-blue-500", trend: "Sync" },
+        { label: "Pending Tasks", value: studentData?.assignments?.pendingCount || "0", icon: BookOpen, color: "text-blue-500", trend: "Sync" },
     ];
 
     return (

@@ -11,6 +11,7 @@ interface StudentData {
     studentCode: string;
     email?: string;
     dob?: string;
+    gender?: string;
     photoUrl?: string;
     address?: string;
     guardianName?: string;
@@ -40,12 +41,13 @@ interface AttendanceData {
 interface StudentDossierPrintProps {
     student: StudentData;
     grades: GradeRecord[];
+    assignments: any[];
     attendance: AttendanceData;
     remarks: { content: string; teacher?: { name: string }; createdAt?: string }[];
 }
 
 export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrintProps>(
-    ({ student, grades, attendance, remarks }, ref) => {
+    ({ student, grades, assignments = [], attendance, remarks }, ref) => {
         const fullName = `${student.firstName} ${student.lastName}`;
         const attendancePct = attendance.total > 0 ? Math.round((attendance.present / attendance.total) * 100) : 100;
         const schoolName = student.school?.name || "LUCY ACADEMY";
@@ -185,7 +187,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     <div className="no-break" style={{ display: "flex", background: "#f5f5f5", border: "1px solid #e5e5e5", borderRadius: 6, marginBottom: "5mm" }}>
                         {[
                             ["Attendance", `${attendancePct}%`, `${attendance.present}/${attendance.total} days`],
-                            ["Total Assessments", String(grades.length), "Grade records"],
+                            ["Completeness", assignments.length > 0 ? `${Math.round((assignments.filter((a: any) => ['SUBMITTED', 'GRADED', 'LATE'].includes(a.status)).length / assignments.length) * 100)}%` : "100%", "Homework completion"],
                             ["Faculty Remarks", String(remarks.length), "Written observations"],
                             ["Guardian", student.guardianName || "—", student.guardianPhone || ""],
                         ].map(([label, value, sub], i) => (
@@ -289,6 +291,52 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                     </tbody>
                                 </table>
                             </>
+                        )}
+                    </div>
+
+                    {/* ── HOMEWORK & PROJECTS ── */}
+                    <div style={{ marginBottom: "5mm" }}>
+                        <SectionHeader title="Formative Progress & Homework" color="#10b981" />
+                        {assignments.length === 0 ? (
+                            <p style={{ fontSize: "7.5pt", color: "#aaa", fontStyle: "italic" }}>No continuous assessment records available.</p>
+                        ) : (
+                            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                                <thead>
+                                    <tr>
+                                        <th style={TH}>Task/Assignment</th>
+                                        <th style={TH}>Subject</th>
+                                        <th style={TH}>Score</th>
+                                        <th style={TH}>Status</th>
+                                        <th style={TH}>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {assignments.map((a, i) => (
+                                        <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
+                                            <td style={{ ...TD, fontWeight: 600 }}>{a.assignment?.title || "Assignment"}</td>
+                                            <td style={TD}>{a.assignment?.subject?.name}</td>
+                                            <td style={{ ...TD, fontWeight: 700 }}>
+                                                {a.score !== null ? `${a.score}${a.assignment?.maxPoints ? ` / ${a.assignment.maxPoints}` : ''}` : '—'}
+                                            </td>
+                                            <td style={TD}>
+                                                <span style={{ 
+                                                    fontSize: "6pt", 
+                                                    fontWeight: 900, 
+                                                    padding: "1px 5px", 
+                                                    borderRadius: 4,
+                                                    background: a.status === 'GRADED' ? '#10b98115' : a.status === 'LATE' ? '#f59e0b15' : '#f4f4f5',
+                                                    color: a.status === 'GRADED' ? '#10b981' : a.status === 'LATE' ? '#f59e0b' : '#71717a',
+                                                    border: `1px solid ${a.status === 'GRADED' ? '#10b98130' : a.status === 'LATE' ? '#f59e0b30' : '#e4e4e7'}`,
+                                                    textTransform: "uppercase"
+                                                }}>
+                                                    {a.status}
+                                                </span>
+                                            </td>
+                                            <td style={{ ...TD, color: "#888" }}>{a.submittedAt ? format(new Date(a.submittedAt), "dd MMM yy") : "Pending"}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
                     </div>
 

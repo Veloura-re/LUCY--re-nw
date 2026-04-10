@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
 import { requireRole } from '@/lib/security';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { getCachedTeacherRegistry, getCachedSchoolInfoForRegistry } from '@/lib/services/teachers';
 
 export async function GET(request: Request) {
     const supabase = await createClient();
@@ -14,65 +17,9 @@ export async function GET(request: Request) {
     if (!dbUser?.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
     try {
-        // 1. Get All Teachers associated with this school
-        const users = await prisma.user.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                role: { in: ['TEACHER', 'HOMEROOM'] }
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                phone: true,
-                teacherCode: true,
-                qualification: true,
-                gender: true,
-                photoUrl: true,
-                createdAt: true,
-                verified: true
-            }
-        });
-
-        // 2. Get All Pending Tokens to link back for unverified users
-        const invites = await prisma.inviteToken.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                role: 'TEACHER',
-                usedAt: null
-            }
-        });
-
-        // 3. Format Teachers - those with User record and verified=true are ACTIVE, else PENDING
-        const formattedTeachers = users.map(u => {
-            const invite = invites.find(i => i.email === u.email);
-            return {
-                ...u,
-                token: invite?.token || null, // Allow "Copy Code" for unverified users if token exists
-                status: u.verified ? 'ACTIVE' : 'PENDING'
-            };
-        });
-
-        // 4. Also include Invites that don't have a User record yet at all
-        const orphanedInvites = invites
-            .filter(i => !users.find(u => u.email === i.email))
-            .map(i => ({
-                id: i.id,
-                name: null,
-                email: i.email,
-                token: i.token,
-                createdAt: i.createdAt,
-                status: 'PENDING'
-            }));
-
-        const all = [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-
-        const school = await prisma.school.findUnique({
-            where: { id: dbUser.schoolId! },
-            select: { name: true, address: true, logoUrl: true }
-        });
+        // Fetch from the optimized, cached service
+        const all = await getCachedTeacherRegistry(dbUser.schoolId);
+        const school = await getCachedSchoolInfoForRegistry(dbUser.schoolId);
 
         return NextResponse.json({ teachers: all, school });
     } catch (e) {
@@ -85,7 +32,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const { name, email, phone, gender, teacherCode, qualification, photoUrl, subjects } = await request.json(); // subjects is string[] or ID[]
+        const { name, email, phone, gender, teacherCode, qualification, photoUrl } = await request.json();
 
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
@@ -108,10 +55,6 @@ export async function POST(request: Request) {
                 phone: phone || null,
                 qualification: qualification || null,
                 photoUrl: photoUrl || null,
-
-                // If subjects were passed, we might need to link them, but TeacherAssignment links User to Class+Subject.
-                // Linking User to a Subject globally isn't in Schema explicitly other than assignments.
-                // We'll skip subject linking here for now or assume it's done via Staffing page.
             }
         });
 
@@ -126,6 +69,9 @@ export async function POST(request: Request) {
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             }
         });
+
+        // Trigger Cache Invalidation for the personnel registry
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId));
 
         const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
         const inviteUrl = `${origin}/invite/${token}`;
@@ -169,6 +115,9 @@ export async function PUT(request: Request) {
                 photoUrl
             }
         });
+
+        // Trigger Cache Invalidation for the personnel registry
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId));
 
         return NextResponse.json({ success: true, teacher: updated });
 

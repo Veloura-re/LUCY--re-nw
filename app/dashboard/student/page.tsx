@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
     PlayCircle, Clock, Calendar, CheckCircle2, ChevronRight,
-    BookOpen, BrainCircuit, Sparkles, ArrowRight, CreditCard, Camera
+    BookOpen, BrainCircuit, Sparkles, ArrowRight, CreditCard, Camera,
+    Zap, ClipboardCheck
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -19,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 
 export default function StudentDashboard() {
     const [data, setData] = useState<any>(null);
@@ -28,6 +30,8 @@ export default function StudentDashboard() {
     const [showPhotoUpload, setShowPhotoUpload] = useState(false);
     const [photoUrl, setPhotoUrl] = useState("");
     const [savingPhoto, setSavingPhoto] = useState(false);
+
+    useRealtimeDashboard(data?.student?.schoolId);
 
     useEffect(() => {
         const fetchDashboard = async () => {
@@ -194,6 +198,26 @@ export default function StudentDashboard() {
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Link href="/dashboard/student/assignments" className="block">
+                    <Card className="bg-gradient-to-br from-eduGreen-600 to-emerald-800 border-white/10 hover:border-white/20 transition-all group relative h-full overflow-hidden shadow-2xl border-t-white/20">
+                        <div className="absolute top-0 right-0 p-4 opacity-30 group-hover:opacity-100 transition-opacity">
+                            <Zap className="w-5 h-5 text-white animate-pulse" />
+                        </div>
+                        <CardContent className="p-8 flex items-center gap-6 relative z-10">
+                            <div className="p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 group-hover:scale-110 transition-transform">
+                                <ClipboardCheck className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em] italic">Task Matrix</p>
+                                <h4 className="text-white font-black text-2xl italic uppercase tracking-tight">Academic Planner</h4>
+                                <p className="text-eduGreen-100/70 text-[10px] font-medium mt-1 uppercase tracking-widest flex items-center gap-2">
+                                    Execute Coursework <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Link>
+
                 <Link href="/dashboard/student/exams" className="block">
                     <Card className="bg-zinc-950/40 border-zinc-900 hover:border-eduGreen-500/30 transition-all group  relative h-full">
                         <div className="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-100 transition-opacity">
