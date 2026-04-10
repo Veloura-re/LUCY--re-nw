@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
         // Purge caches
         const assignmentsTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(assignmentsTag);
+        revalidateTag(assignmentsTag, 'max');
 
         return NextResponse.json({ assignment });
 
@@ -94,8 +94,8 @@ export async function PUT(request: Request) {
         });
 
         const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(tag);
-        revalidateTag(`assignment-${id}`);
+        revalidateTag(tag, 'max');
+        revalidateTag(`assignment-${id}`, 'max');
 
         return NextResponse.json({ assignment });
 
@@ -117,7 +117,7 @@ export async function DELETE(request: Request) {
         });
 
         const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(tag);
+        revalidateTag(tag, 'max');
 
         return NextResponse.json({ success: true });
 

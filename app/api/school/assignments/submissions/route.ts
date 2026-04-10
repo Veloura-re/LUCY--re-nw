@@ -43,8 +43,8 @@ export async function PUT(request: Request) {
 
         // Purge caches
         const scTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, user.schoolId!);
-        revalidateTag(scTag);
-        revalidateTag(`assignment-${submission.assignmentId}`);
+        revalidateTag(scTag, 'max');
+        revalidateTag(`assignment-${submission.assignmentId}`, 'max');
 
         return NextResponse.json({ submission: updatedSubmission });
 

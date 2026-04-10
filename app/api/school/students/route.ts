@@ -89,7 +89,7 @@ export async function POST(request: Request) {
         });
 
         // Trigger Cache Invalidation for the school's students
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId!));
+        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId!), 'max');
 
         if (email) {
             const token = Math.random().toString(36).substring(2, 15);
@@ -147,8 +147,8 @@ export async function PUT(request: Request) {
         });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!));
-        revalidateTag(`student-${id}`);
+        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
+        revalidateTag(`student-${id}`, 'max');
 
         return NextResponse.json({ student });
 
@@ -179,7 +179,7 @@ export async function DELETE(request: Request) {
         });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!));
+        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
 
         return NextResponse.json({ success: true });
 

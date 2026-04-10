@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
 
         return NextResponse.json({ subject });
     } catch (e) {
@@ -55,7 +55,7 @@ export async function DELETE(request: Request) {
         await prisma.subject.delete({ where: { id } });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!));
+        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
 
         return NextResponse.json({ success: true });
     } catch (e) {

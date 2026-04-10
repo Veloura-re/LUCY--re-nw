@@ -71,7 +71,7 @@ export async function POST(request: Request) {
         });
 
         // Trigger Cache Invalidation for the personnel registry
-        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId));
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId), 'max');
 
         const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
         const inviteUrl = `${origin}/invite/${token}`;
@@ -117,7 +117,7 @@ export async function PUT(request: Request) {
         });
 
         // Trigger Cache Invalidation for the personnel registry
-        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId));
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId), 'max');
 
         return NextResponse.json({ success: true, teacher: updated });
 

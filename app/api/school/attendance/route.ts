@@ -129,7 +129,7 @@ export async function POST(request: Request) {
         });
 
         // Trigger Cache Invalidation for the attendance matrix
-        revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId));
+        revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId), 'max');
 
         // 5. Asynchronous Notification Dispatch
         const lateRecords = records.filter((r: any) => r.status === 'LATE');

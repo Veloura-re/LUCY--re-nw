@@ -38,7 +38,7 @@ export async function DELETE(request: Request) {
         }
 
         // Trigger Cache Invalidation for the personnel registry
-        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, dbUser.schoolId));
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, dbUser.schoolId), 'max');
 
         // Log Activity
         await logActivity({

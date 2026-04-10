@@ -87,9 +87,9 @@ export async function POST(request: Request) {
         });
 
         // Invalidate student-specific caches
-        revalidateTag(getSchoolTag(CACHE_TAGS.ASSIGNMENTS, student.schoolId));
-        revalidateTag(`student-${student.id}-assignments`);
-        revalidateTag(`assignment-${assignmentId}`);
+        revalidateTag(getSchoolTag(CACHE_TAGS.ASSIGNMENTS, student.schoolId), 'max');
+        revalidateTag(`student-${student.id}-assignments`, 'max');
+        revalidateTag(`assignment-${assignmentId}`, 'max');
 
         return NextResponse.json({ submission });
 
