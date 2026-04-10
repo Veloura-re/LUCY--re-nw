@@ -186,11 +186,12 @@ export default function ParentDashboard() {
             )}
 
             {/* Quick links */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {[
                     { label: "Messages", href: "/dashboard/messages", icon: "💬" },
                     { label: "Events", href: "/dashboard/events", icon: "📅" },
                     { label: "Billing", href: "/dashboard/finance", icon: "💳" },
+                    { label: "Homework", href: "/dashboard/student/assignments", icon: "📝" },
                     { label: "Absence Permits", href: "/dashboard/parent/authorizations", icon: "📋" },
                 ].map(({ label, href, icon }) => (
                     <Link key={href} href={href}>

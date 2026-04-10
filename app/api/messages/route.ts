@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 
+import { getCachedRoomMessages } from '@/lib/services/messages';
+
 export async function GET(request: Request) {
     const supabase = await createClient();
     const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -10,6 +12,8 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const chatRoomId = searchParams.get('chatRoomId');
+    const cursor = searchParams.get('cursor') || undefined;
+    const limit = parseInt(searchParams.get('limit') || '50');
 
     if (!chatRoomId) {
         return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });
@@ -25,19 +29,10 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Forbidden: You are not a member of this room' }, { status: 403 });
         }
 
-        const messages = await prisma.message.findMany({
-            where: { chatRoomId },
-            include: {
-                fromUser: {
-                    select: { id: true, name: true, role: true }
-                }
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 50
-        });
+        // Fetch using the optimized cached service
+        const data = await getCachedRoomMessages(chatRoomId, cursor, limit);
 
-        // Flip messages back to chronological order for the frontend
-        return NextResponse.json({ messages: messages.reverse() });
+        return NextResponse.json(data);
 
     } catch (e) {
         console.error(e);

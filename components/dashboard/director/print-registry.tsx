@@ -28,7 +28,7 @@ export function PrintRegistryButton({ configs }: { configs: any[] }) {
             </Button>
 
             {/* Hidden Print Template */}
-            <div className="sr-only" aria-hidden="true">
+            <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
                 <div ref={printRef} className="p-12 bg-white text-black min-h-screen">
                     <h1 className="text-3xl font-bold mb-8 uppercase tracking-tighter italic">LUCY Marklist Registry</h1>
                     <table className="w-full border-collapse">

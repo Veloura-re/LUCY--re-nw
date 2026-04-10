@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
 import { getCachedSchoolStructure, getCachedSchoolConfig } from "@/lib/services/school";
-import { getCachedSchoolTeachers } from "@/lib/services/teachers";
+import { getCachedTeacherRegistry } from "@/lib/services/teachers";
 import { getCachedSchoolSubjects } from "@/lib/services/school-curriculum";
 import ClassesClientWrapper from "@/components/dashboard/classes-client-wrapper";
 import { Suspense } from "react";
@@ -24,7 +24,7 @@ export default async function ClassesPage() {
     // Parallelize all institutional lookups for sub-second delivery
     const [grades, teachers, subjects] = await Promise.all([
         getCachedSchoolStructure(dbUser.schoolId),
-        getCachedSchoolTeachers(dbUser.schoolId),
+        getCachedTeacherRegistry(dbUser.schoolId),
         getCachedSchoolSubjects(dbUser.schoolId)
     ]);
 

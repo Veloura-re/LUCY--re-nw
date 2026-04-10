@@ -274,17 +274,32 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/cls:opacity-100 transition-opacity" />
                                                             <div className="relative z-10 flex-1">
                                                                 <span className="font-medium text-zinc-100 group-hover/cls:text-white transition-colors tracking-tight block">{cls.name}</span>
-                                                                <div className="flex items-center gap-3 mt-1">
-                                                                    <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest block">{cls._count?.students || 0} Students</span>
-                                                                    {cls.homeroomTeacher && (
-                                                                        <>
-                                                                            <div className="w-1 h-1 rounded-full bg-zinc-800" />
-                                                                            <span className="text-[9px] font-medium text-eduGreen-700 uppercase tracking-widest block">
-                                                                                {cls.homeroomTeacher.name}
-                                                                            </span>
-                                                                        </>
-                                                                    )}
-                                                                </div>
+                                                                  <div className="flex items-center gap-3 mt-1.5">
+                                                                      <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest block">{cls._count?.students || 0} Students</span>
+                                                                      <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                                      <div className="flex items-center gap-1.5">
+                                                                          <span className={cn(
+                                                                              "text-[9px] font-bold uppercase tracking-widest",
+                                                                              cls._count?.assignments > 0 ? "text-eduGreen-500" : "text-zinc-700"
+                                                                          )}>
+                                                                              {cls._count?.assignments || 0} Tasks
+                                                                          </span>
+                                                                          {cls._count?.assignments > 0 && (
+                                                                              <div className="flex gap-0.5">
+                                                                                  <div className="w-1 h-1 rounded-full bg-eduGreen-500 animate-pulse" />
+                                                                                  <div className="w-1 h-1 rounded-full bg-eduGreen-500/50" />
+                                                                              </div>
+                                                                          )}
+                                                                      </div>
+                                                                      {cls.homeroomTeacher && (
+                                                                          <>
+                                                                              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                                              <span className="text-[9px] font-medium text-sky-500 uppercase tracking-widest block">
+                                                                                  {cls.homeroomTeacher.name}
+                                                                              </span>
+                                                                          </>
+                                                                      )}
+                                                                  </div>
                                                             </div>
                                                             <div className="flex items-center gap-2 relative z-10">
                                                                 <Select

@@ -53,6 +53,8 @@ model User {
   teacherAssignments     TeacherAssignment[]
   timetable              Timetable[]
   payrolls               StaffPayroll[]
+  createdAssignments    Assignment[]
+  gradedSubmissions     AssignmentSubmission[]
   school                 School?                 @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId, role])
@@ -84,6 +86,8 @@ model School {
   subjects             Subject[]
   unitPacks            UnitPack[]
   users                User[]
+  assignments          Assignment[]
+  assignmentSubmissions AssignmentSubmission[]
 }
 
 model Grade {
@@ -115,6 +119,7 @@ model Class {
   students           Student[]
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
+  assignments        Assignment[]
 }
 
 model Subject {
@@ -130,6 +135,7 @@ model Subject {
   school             School              @relation(fields: [schoolId], references: [id])
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
+  assignments        Assignment[]
 }
 
 model TeacherAssignment {
@@ -172,6 +178,7 @@ model Student {
   invoices              Invoice[]
   marklistEntries       MarklistEntry[]
   parentLinks           ParentStudentLink[]
+  assignmentSubmissions AssignmentSubmission[]
   class                 Class?                 @relation(fields: [classId], references: [id])
   grade                 Grade                  @relation(fields: [gradeId], references: [id])
   school                School                 @relation(fields: [schoolId], references: [id])
@@ -519,6 +526,75 @@ model Invoice {
   @@index([studentId])
   @@index([schoolId])
   @@index([studentId, createdAt])
+}
+
+model Assignment {
+  id                String                 @id @default(uuid())
+  schoolId          String
+  classId           String
+  subjectId         String
+  teacherId         String
+  title             String
+  description       String?                @db.Text
+  dueDate           DateTime
+  type              AssignmentType         @default(HOMEWORK)
+  materials         Json?                  @default("[]")
+  isPublished       Boolean                @default(true)
+  maxScore          Float?                 @default(100)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  
+  school            School                 @relation(fields: [schoolId], references: [id])
+  class             Class                  @relation(fields: [classId], references: [id])
+  subject           Subject                @relation(fields: [subjectId], references: [id])
+  teacher           User                   @relation(fields: [teacherId], references: [id])
+  submissions       AssignmentSubmission[]
+
+  @@index([schoolId])
+  @@index([classId])
+  @@index([teacherId])
+  @@index([dueDate])
+}
+
+model AssignmentSubmission {
+  id           String           @id @default(uuid())
+  assignmentId String
+  studentId    String
+  schoolId     String
+  content      String?          @db.Text
+  attachments  Json?            @default("[]")
+  submittedAt  DateTime         @default(now())
+  status       SubmissionStatus @default(SUBMITTED)
+  grade        Float?
+  feedback     String?
+  gradedAt     DateTime?
+  gradedById   String?
+  
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  school       School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  gradedBy     User?            @relation(fields: [gradedById], references: [id])
+
+  @@unique([assignmentId, studentId])
+  @@index([assignmentId])
+  @@index([studentId])
+  @@index([schoolId])
+}
+
+enum AssignmentType {
+  HOMEWORK
+  PROJECT
+  ESSAY
+  LAB
+  QUIZ
+  OTHER
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  LATE
+  GRADED
+  REVISION_REQUIRED
 }
 
 model InvoiceItem {

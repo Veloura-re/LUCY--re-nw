@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError, requireRole } from '@/lib/security';
+import { getStudentAssignmentSummary } from '@/lib/services/assignments';
 
 export async function GET(request: Request) {
     try {
@@ -48,6 +49,11 @@ export async function GET(request: Request) {
         const presentCount = attendance.filter(a => a.status === 'PRESENT' || a.status === 'LATE').length;
         const totalAttendance = attendance.length;
         const attendanceRate = totalAttendance > 0 ? (presentCount / totalAttendance) * 100 : 100;
+        
+        // 2b. Fetch Assignments
+        const assignmentSummary = student.classId 
+            ? await getStudentAssignmentSummary(student.schoolId, student.classId, studentId)
+            : { recent: [], pendingCount: 0 };
 
         // 3. Aggregate by Subject
         const subjectStats = student.class?.teacherAssignments.map(a => {
@@ -102,7 +108,8 @@ export async function GET(request: Request) {
                 startTime: nextSession.period.startTime,
                 room: "Sector B-04", // Placeholder room for now
                 startsIn: nextSession ? Math.max(0, (parseInt(nextSession.period.startTime.split(':')[0]) * 60 + parseInt(nextSession.period.startTime.split(':')[1])) - (now.getHours() * 60 + now.getMinutes())) : null
-            } : null
+            } : null,
+            assignments: assignmentSummary
         });
 
     } catch (e) {

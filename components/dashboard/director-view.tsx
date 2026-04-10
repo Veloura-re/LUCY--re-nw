@@ -314,16 +314,17 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                                                     icon={<BookOpen className="w-5 h-5" />}
                                                 />
                                             </div>
-                                            <div className="lg:col-span-1">
+                                             <div className="lg:col-span-1">
                                                 <MetricNode
-                                                    label="Events"
-                                                    value={analytics?.summary?.recentEvents || 0}
-                                                    icon={<Calendar className="w-5 h-5" />}
+                                                    label="Assignments"
+                                                    value={analytics?.summary?.assignments?.total || 0}
+                                                    icon={<PenTool className="w-5 h-5" />}
+                                                    percentage={analytics?.summary?.assignments?.total > 0 ? (analytics.summary.assignments.submissions / analytics.summary.assignments.total) * 100 : 0}
                                                 />
                                             </div>
                                             <div className="lg:col-span-1">
                                                 <MetricNode
-                                                    label="Nodes"
+                                                    label="Active Nodes"
                                                     value={analytics?.summary?.activeNodes || 0}
                                                     icon={<Users className="w-5 h-5" />}
                                                     trend="Online"

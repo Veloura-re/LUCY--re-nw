@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { GraduationCap, Sparkles, Plus, Loader2, CheckCircle2, User, School as SchoolIcon, AlertCircle, MessageSquare, ArrowLeft, Shield, Search, FileText, CreditCard } from "lucide-react";
+import { GraduationCap, Sparkles, Plus, Loader2, CheckCircle2, User, School as SchoolIcon, AlertCircle, MessageSquare, ArrowLeft, Shield, Search, FileText, CreditCard, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { UpcomingEventsWidget } from "./upcoming-events";
 import { DashboardGreeting } from "./dashboard-greeting";
 import { AIParentChatbot } from "./ai-parent-chatbot";
+import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 import { createBrowserClient } from "@supabase/ssr";
 
 interface VerifiedStudent {
@@ -32,11 +33,16 @@ interface Student {
     studentCode?: string;
     grade?: { level: number };
     school?: { name: string };
+    schoolId: string;
     stats?: {
         attendancePct: string;
         averageScore: string;
         invoiceCount: string | number;
         totalOutstanding: string;
+        assignmentStats?: {
+            total: number;
+            completed: number;
+        };
     };
     recentInvoices?: any[];
     userId?: string;
@@ -46,6 +52,10 @@ interface Student {
 export function ParentView({ user, childrenData }: { user: any, childrenData: any[] }) {
     const [students, setStudents] = useState<Student[]>(childrenData || []);
     const [activeChildId, setActiveChildId] = useState<string | null>(childrenData?.[0]?.id || null);
+    
+    const activeChild = students.find(s => s.id === activeChildId);
+    useRealtimeDashboard(activeChild?.schoolId);
+
     const [loadingStudents] = useState(false);
     const [isAdding, setIsAdding] = useState(childrenData?.length === 0);
     const [code, setCode] = useState("");
@@ -63,48 +73,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
         setMounted(true);
     }, []);
 
-    const activeChild = students.find(c => c.id === activeChildId);
-
     useEffect(() => {
         if (!activeChildId && students.length > 0) {
             setActiveChildId(students[0].id);
         }
     }, [students, activeChildId]);
 
-    // SUPABASE REALTIME SUBSCRIPTION
-    useEffect(() => {
-        if (!mounted || students.length === 0) return;
-        
-        try {
-            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-            
-            if (!supabaseUrl || !supabaseKey) return;
-            const supabase = createBrowserClient(supabaseUrl, supabaseKey);
-
-            console.log("[Realtime] Subscribing to postgres channels for active live-sync...");
-            const channel = supabase.channel('parent-live-updates')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'AttendanceRecord' }, (payload) => {
-                    console.log("[Realtime] Attendance trigger fired. Syncing...", payload);
-                    router.refresh(); 
-                })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'Invoice' }, (payload) => {
-                    console.log("[Realtime] Invoice trigger fired. Syncing...", payload);
-                    router.refresh();
-                })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'GradeRecord' }, (payload) => {
-                    console.log("[Realtime] Grades updated! Syncing...", payload);
-                    router.refresh();
-                })
-                .subscribe();
-
-            return () => {
-                supabase.removeChannel(channel);
-            };
-        } catch (e) {
-            console.error("[Realtime] Websocket initialization failed:", e);
-        }
-    }, [mounted, router, students.length]);
 
     const verifyCode = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -446,13 +420,18 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                 <span className="text-lg font-medium text-white">{child.stats?.invoiceCount || "0"}</span>
                                             </div>
                                         </div>
-                                        <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900">
-                                            <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Outstanding</p>
+                                        <Link 
+                                            href={`/dashboard/parent/homework?studentId=${child.id}`}
+                                            className="block p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900 hover:border-eduGreen-500/30 hover:bg-eduGreen-500/5 transition-all group/hw"
+                                        >
+                                            <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2 group-hover/hw:text-eduGreen-500 transition-colors">Homework</p>
                                             <div className="flex items-center gap-2">
-                                                <CreditCard className="w-4 h-4 text-eduGreen-500/50" />
-                                                <span className="text-lg font-medium text-white">${child.stats?.totalOutstanding || "0.00"}</span>
+                                                <ClipboardCheck className="w-4 h-4 text-eduGreen-500" />
+                                                <span className="text-lg font-medium text-white">
+                                                    {child.stats?.assignmentStats?.completed || 0}/{child.stats?.assignmentStats?.total || 0}
+                                                </span>
                                             </div>
-                                        </div>
+                                        </Link>
                                     </div>
 
                                     {(child.recentInvoices?.length ?? 0) > 0 && (
@@ -492,9 +471,14 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                 Bookshelf
                                             </Button>
                                         </Link>
-                                        <Link href={`/dashboard/finance`}>
+                                        <Link href={`/dashboard/bookshelf?studentId=${child.id}`}>
+                                            <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                Bookshelf
+                                            </Button>
+                                        </Link>
+                                        <Link href={`/dashboard/student/assignments?studentId=${child.id}`}>
                                             <Button className="w-full h-12 bg-eduGreen-900/10 hover:bg-eduGreen-900/20 text-eduGreen-500 hover:text-eduGreen-400 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-eduGreen-900/20 hover:border-eduGreen-800/30 transition-all">
-                                                View Billing
+                                                Homework
                                             </Button>
                                         </Link>
                                     </div>

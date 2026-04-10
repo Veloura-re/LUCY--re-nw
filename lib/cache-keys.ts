@@ -9,6 +9,9 @@ export const CACHE_TAGS = {
     SCHOOL_CONFIG: 'school-config',
     DASHBOARD_ANALYTICS: 'dashboard-analytics',
     USER_PROFILE: 'user-profile',
+    MESSAGES: 'school-messages',
+    SCHOOL_ATTENDANCE: 'school-attendance',
+    ASSIGNMENTS: 'school-assignments',
 } as const;
 
 export type CacheTag = typeof CACHE_TAGS[keyof typeof CACHE_TAGS];

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { BookOpen, Users, GraduationCap, ArrowRight, Sparkles, Plus, Calendar, Loader2, Brain, Zap } from "lucide-react";
+import { BookOpen, Users, GraduationCap, ArrowRight, Sparkles, Plus, Calendar, Loader2, Brain, Zap, ClipboardCheck, AlertCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import { DashboardGreeting } from "./dashboard-greeting";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 
 interface TeacherClass {
     id: string; // Assignment ID
@@ -40,12 +41,15 @@ interface AttendanceStat {
 import { Gender } from "@prisma/client";
 
 export function TeacherView({ user, initialData }: {
-    user: { role: string; name: string; gender?: Gender | null };
+    user: { role: string; name: string; gender?: Gender | null; schoolId?: string | null };
     initialData?: any;
 }) {
+    useRealtimeDashboard(user.schoolId);
     const [classes, setClasses] = useState<TeacherClass[]>(initialData?.classes || []);
     const [exams, setExams] = useState<TeacherExam[]>(initialData?.exams || []);
     const [attendanceSummary, setAttendanceSummary] = useState<AttendanceStat[]>(initialData?.attendanceSummary || []);
+    const [pendingEvaluations, setPendingEvaluations] = useState<number>(initialData?.pendingEvaluations || 0);
+    const [recentSubmissions, setRecentSubmissions] = useState<any[]>(initialData?.recentSubmissions || []);
     const [isLoading, setIsLoading] = useState(!initialData);
     const [isClockedIn, setIsClockedIn] = useState(initialData?.isClockedIn || false);
     const [clockingIn, setClockingIn] = useState(false);
@@ -84,6 +88,8 @@ export function TeacherView({ user, initialData }: {
                             { label: "Attendance Rate", value: attendanceRate, trend: "Institutional Avg", color: "text-eduGreen-500" },
                             { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-500" : "text-zinc-500" }
                         ]);
+                        setPendingEvaluations(data.pendingEvaluations || 0);
+                        setRecentSubmissions(data.recentSubmissions || []);
                     }
 
                 } catch (error) {
@@ -152,9 +158,14 @@ export function TeacherView({ user, initialData }: {
                                 <Calendar className="mr-3 h-4 w-4 text-eduGreen-500" /> Attendance
                             </Button>
                         </Link>
+                        <Link href="/dashboard/teacher/assignments" className="w-full sm:w-auto">
+                            <Button className="w-full sm:w-auto bg-white hover:bg-zinc-200 text-black h-12 px-10 rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 border-none">
+                                <Zap className="mr-3 h-5 w-5" /> Task Command
+                            </Button>
+                        </Link>
                         <Link href="/dashboard/teacher/exams" className="w-full sm:w-auto">
                             <Button className="w-full sm:w-auto bg-gradient-to-r from-eduGreen-600 to-emerald-700 hover:from-eduGreen-500 hover:to-emerald-600 text-white h-12 px-10 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-950/40 transition-all hover:scale-105 active:scale-95 border border-white/10">
-                                <Plus className="mr-3 h-5 w-5" /> New Assignment
+                                <Plus className="mr-3 h-5 w-5" /> Exam Registry
                             </Button>
                         </Link>
                     </div>
@@ -399,7 +410,78 @@ export function TeacherView({ user, initialData }: {
                         </CardContent>
                     </Card>
 
-                    {/* Recent Exams - Enhanced */}
+                    {/* Homework Monitor - NEW Hub */}
+                    <Card className="bg-zinc-950/40 backdrop-blur-3xl border-white/5 shadow-2xl rounded-3xl overflow-hidden border-t-white/10">
+                        <CardHeader className="border-b border-white/5 pb-8 p-10">
+                            <CardTitle className="text-[10px] font-medium text-white uppercase tracking-[0.3em] flex items-center justify-between group">
+                                <div className="flex items-center gap-3">
+                                    <ClipboardCheck className="w-4 h-4 text-emerald-500" /> Homework Monitor
+                                </div>
+                                {pendingEvaluations > 10 && (
+                                    <div className="flex items-center gap-2 text-rose-500 animate-pulse">
+                                        <AlertCircle className="w-3 h-3" /> <span className="text-[8px] font-black italic">HIGH LOAD</span>
+                                    </div>
+                                )}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-10 space-y-8">
+                            <div className="flex items-center justify-between p-8 bg-white/[0.03] rounded-[2rem] border border-white/5 relative overflow-hidden">
+                                {pendingEvaluations > 0 && (
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-3xl -mr-12 -mt-12" />
+                                )}
+                                <div>
+                                    <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">Pending Evaluation</span>
+                                    <div className={cn(
+                                        "text-4xl font-black italic mt-1",
+                                        pendingEvaluations > 0 ? "text-white" : "text-zinc-800"
+                                    )}>{pendingEvaluations}</div>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[9px] font-bold text-zinc-700 uppercase tracking-wider block mb-2">Backlog Priority</span>
+                                    <div className={cn(
+                                        "w-3 h-3 rounded-full ml-auto",
+                                        pendingEvaluations > 10 ? "bg-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.5)]" : 
+                                        pendingEvaluations > 0 ? "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]" : "bg-zinc-900"
+                                    )} />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-2">Recent Submissions</label>
+                                {recentSubmissions.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {recentSubmissions.map((sub: any) => (
+                                            <Link 
+                                                key={sub.id} 
+                                                href={`/dashboard/teacher/assignments?id=${sub.assignmentId}`}
+                                                className="block p-5 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] hover:border-emerald-500/20 transition-all group"
+                                            >
+                                                <div className="flex justify-between items-start gap-4">
+                                                    <div>
+                                                        <h5 className="text-[11px] font-bold text-white uppercase italic group-hover:text-emerald-500 transition-colors">{sub.student?.firstName} {sub.student?.lastName}</h5>
+                                                        <p className="text-[9px] font-medium text-zinc-600 uppercase truncate max-w-[150px]">{sub.assignment?.title}</p>
+                                                    </div>
+                                                    <ChevronRight className="w-4 h-4 text-zinc-800 group-hover:text-emerald-500 transition-colors" />
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-12 bg-white/5 border border-dashed border-white/10 rounded-[2rem] text-center">
+                                        <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest italic">Neural Registry Clear</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <Link href="/dashboard/teacher/assignments">
+                                <Button className="w-full h-16 bg-white hover:bg-zinc-200 text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-[1.02] active:scale-95">
+                                    Full Dispatch Hub <ArrowRight className="w-4 h-4 ml-3" />
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+
+                    {/* Recent Exams - Restored */}
                     <Card className="bg-zinc-950/40 backdrop-blur-3xl border-white/5 shadow-2xl rounded-3xl overflow-hidden border-t-white/10">
                         <CardHeader className="border-b border-white/5 pb-8 p-10">
                             <CardTitle className="text-[10px] font-medium text-white uppercase tracking-[0.3em] flex items-center gap-3">

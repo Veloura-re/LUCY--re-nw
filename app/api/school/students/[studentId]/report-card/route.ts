@@ -71,19 +71,26 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             orderBy: { createdAt: 'desc' }
         });
 
-        // Fetch Internal Notes (Confidential - Staff Only)
-        let internalNotes: any[] = [];
-        if (['SUPERADMIN', 'PRINCIPAL', 'TEACHER'].includes(user.role)) {
-            internalNotes = await prisma.internalNote.findMany({
-                where: { studentId },
-                include: { author: true },
-                orderBy: { createdAt: 'desc' }
-            });
-        }
+        // Fetch Homework / Assignments
+        const assignments = await prisma.assignmentSubmission.findMany({
+            where: { studentId },
+            include: {
+                assignment: {
+                    select: {
+                        id: true,
+                        title: true,
+                        maxPoints: true,
+                        subject: { select: { name: true } }
+                    }
+                }
+            },
+            orderBy: { submittedAt: 'desc' }
+        });
 
         return NextResponse.json({
             student,
             grades,
+            assignments,
             attendance: {
                 total: allAttendance.length,
                 present: allAttendance.filter(a => a.status === 'PRESENT').length,

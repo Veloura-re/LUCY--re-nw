@@ -25,6 +25,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useReactToPrint } from "react-to-print";
 import Image from "next/image";
 import { StudentDossierPrint } from "@/components/dashboard/student-dossier-print";
+import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 
 function StudentProfileContent() {
     const formatDate = (dateString: any, fmt: string) => {
@@ -58,6 +59,8 @@ function StudentProfileContent() {
     const [aiAnalysis, setAiAnalysis] = useState<any>(null);
     const [analyzing, setAnalyzing] = useState(false);
     const searchParams = useSearchParams();
+
+    useRealtimeDashboard(data?.student?.schoolId);
     const dossierRef = useRef<HTMLDivElement>(null);
 
     const handleExportDossier = useReactToPrint({
@@ -209,7 +212,7 @@ function StudentProfileContent() {
     if (loading) return <div className="min-h-screen flex items-center justify-center"><SpringingLoader message="Synthesizing Student Dossier" /></div>;
     if (!data?.student) return <div className="p-20 text-center text-zinc-500 font-bold uppercase tracking-widest">Neural Link Severed: Entity Not Found</div>;
 
-    const { student, grades, attendance } = data;
+    const { student, grades, assignments, attendance } = data;
 
     const getPerformanceColor = (pct: number) => {
         if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10" };
@@ -221,15 +224,18 @@ function StudentProfileContent() {
     return (
         <div className="space-y-10 animate-in fade-in duration-300 pb-20">
             {/* Hidden Print Target */}
-            <div className="sr-only" aria-hidden="true">
-                <StudentDossierPrint
-                    ref={dossierRef}
-                    student={student}
-                    grades={grades}
-                    attendance={attendance}
-                    remarks={remarks}
-                />
-            </div>
+            {data && (
+                <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
+                    <StudentDossierPrint
+                        ref={dossierRef}
+                        student={data.student}
+                        grades={data.grades}
+                        assignments={data.assignments}
+                        attendance={data.attendance}
+                        remarks={data.remarks}
+                    />
+                </div>
+            )}
             {/* Header / Navigation */}
             <div className="flex items-center justify-between">
                 <Button

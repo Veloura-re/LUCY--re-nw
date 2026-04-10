@@ -30,7 +30,7 @@ const _getFamilyChildren = async (userId: string) => {
     const studentIds = links.map(l => l.studentId);
 
     // Parallelize sub-queries for children stats
-    const [allAttendance, allGrades, allInvoices, recentInvoicesQuery] = await Promise.all([
+    const [allAttendance, allGrades, allInvoices, recentInvoicesQuery, allAssignments, allSubmissions] = await Promise.all([
         // Fetch bounded attendance
         prisma.attendanceRecord.findMany({
             where: { studentId: { in: studentIds }, date: { gte: thirtyDaysAgo } },
@@ -58,8 +58,21 @@ const _getFamilyChildren = async (userId: string) => {
             select: { studentId: true, status: true, amount: true, createdAt: true },
             orderBy: { createdAt: 'desc' },
             take: 20
+        }),
+        // Fetch published assignments for the relevant classes
+        prisma.assignment.findMany({
+            where: { 
+                classId: { in: links.map(l => l.student.classId).filter(Boolean) as string[] },
+                isPublished: true 
+            },
+            select: { id: true, classId: true }
+        }),
+        // Fetch submissions for these students
+        prisma.assignmentSubmission.findMany({
+            where: { studentId: { in: studentIds } },
+            select: { assignmentId: true, studentId: true, status: true }
         })
-    ]);
+    ]) as [any[], any[], any[], any[], any[], any[]];
 
 
     return links.map((link) => {
@@ -95,7 +108,11 @@ const _getFamilyChildren = async (userId: string) => {
                 attendancePct: attendancePct.toFixed(1),
                 averageScore: averageScore.toFixed(1),
                 invoiceCount: studentInvoices.length,
-                totalOutstanding: totalOutstanding.toFixed(2)
+                totalOutstanding: totalOutstanding.toFixed(2),
+                assignmentStats: {
+                    total: allAssignments.filter(a => a.classId === link.student.classId).length,
+                    completed: allSubmissions.filter(s => s.studentId === sid).length
+                }
             }
         };
     });
@@ -116,7 +133,7 @@ const _getTeacherDashboardData = async (userId: string) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const [assignments, recentExams, clockInRecord] = await Promise.all([
+    const [assignments, recentExams, clockInRecord, pendingGradingCount, recentSubmissions] = await Promise.all([
         prisma.teacherAssignment.findMany({
             where: { teacherId: userId },
             include: {
@@ -140,6 +157,24 @@ const _getTeacherDashboardData = async (userId: string) => {
                 userId: userId,
                 date: { gte: today }
             }
+        }),
+        prisma.assignmentSubmission.count({
+            where: {
+                assignment: { teacherId: userId },
+                status: 'SUBMITTED'
+            }
+        }),
+        prisma.assignmentSubmission.findMany({
+            where: {
+                assignment: { teacherId: userId },
+                status: 'SUBMITTED'
+            },
+            include: {
+                student: { select: { firstName: true, lastName: true, studentCode: true } },
+                assignment: { select: { title: true, subject: { select: { name: true } } } }
+            },
+            orderBy: { submittedAt: 'desc' },
+            take: 3
         })
     ]);
 
@@ -201,6 +236,8 @@ const _getTeacherDashboardData = async (userId: string) => {
         classes,
         exams: recentExams,
         isClockedIn: !!clockInRecord,
+        pendingEvaluations: pendingGradingCount,
+        recentSubmissions,
         attendanceSummary: [
             { label: "Attendance Rate", value: total > 0 ? `${((present / total) * 100).toFixed(0)}%` : "100%", trend: "Institutional Avg", color: "text-eduGreen-500" },
             { label: "Missing Records", value: "0", trend: "Today", color: "text-zinc-500" }
@@ -247,7 +284,9 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         classCount,
         staffPresencePresent,
         staffPresenceTotal,
-        staffedClasses
+        staffedClasses,
+        assignmentCount,
+        submissionCount
     ] = await Promise.all([
         (prisma.attendanceRecord as any).groupBy({
             by: ['status', 'date'],
@@ -274,7 +313,9 @@ const _getSchoolAnalytics = async (schoolId: string) => {
                 grade: { schoolId },
                 homeroomTeacher: { staffAttendance: { some: { date: { gte: sevenDaysAgo }, status: 'PRESENT' } } }
             }
-        })
+        }),
+        prisma.assignment.count({ where: { schoolId, isPublished: true, createdAt: { gte: thirtyDaysAgo } } }),
+        prisma.assignmentSubmission.count({ where: { schoolId, submittedAt: { gte: thirtyDaysAgo } } })
     ]);
     const days = [];
     for (let i = 6; i >= 0; i--) {
@@ -318,7 +359,8 @@ const _getSchoolAnalytics = async (schoolId: string) => {
             studentCount,
             classCount,
             activeNodes: studentCount + classCount,
-            staffPresence: { present: staffPresencePresent, total: staffPresenceTotal, staffedClasses }
+            staffPresence: { present: staffPresencePresent, total: staffPresenceTotal, staffedClasses },
+            assignments: { total: assignmentCount, submissions: submissionCount }
         },
         attendance: days,
         performanceBySubject

@@ -1,0 +1,127 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { requireRole, handleApiError } from '@/lib/security';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+
+export async function GET(request: Request) {
+    try {
+        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
+        const { searchParams } = new URL(request.url);
+        
+        const classId = searchParams.get('classId');
+        const assignmentId = searchParams.get('id');
+
+        if (assignmentId) {
+            const assignment = await prisma.assignment.findUnique({
+                where: { id: assignmentId, schoolId: user.schoolId! },
+                include: {
+                    class: { select: { name: true } },
+                    subject: { select: { name: true } },
+                    submissions: {
+                        include: {
+                            student: { select: { firstName: true, lastName: true, studentCode: true } }
+                        }
+                    }
+                }
+            });
+            return NextResponse.json({ assignment });
+        }
+
+        if (classId) {
+            const assignments = await prisma.assignment.findMany({
+                where: { classId, schoolId: user.schoolId! },
+                include: {
+                    subject: { select: { name: true } },
+                    _count: { select: { submissions: true } }
+                },
+                orderBy: { dueDate: 'desc' }
+            });
+            return NextResponse.json({ assignments });
+        }
+
+        return NextResponse.json({ error: "Context required" }, { status: 400 });
+
+    } catch (e) {
+        return handleApiError(e);
+    }
+}
+
+export async function POST(request: Request) {
+    try {
+        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
+        const body = await request.json();
+        
+        const { title, description, classId, subjectId, dueDate, type, materials } = body;
+
+        const assignment = await prisma.assignment.create({
+            data: {
+                schoolId: user.schoolId!,
+                teacherId: user.id,
+                classId,
+                subjectId,
+                title,
+                description,
+                dueDate: new Date(dueDate),
+                type: type || 'HOMEWORK',
+                materials: materials || []
+            }
+        });
+
+        // Purge caches
+        const assignmentsTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+        revalidateTag(assignmentsTag);
+
+        return NextResponse.json({ assignment });
+
+    } catch (e) {
+        return handleApiError(e);
+    }
+}
+
+export async function PUT(request: Request) {
+    try {
+        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
+        const body = await request.json();
+        const { id, ...data } = body;
+
+        const assignment = await prisma.assignment.update({
+            where: { id, schoolId: user.schoolId!, teacherId: user.role !== 'PRINCIPAL' ? user.id : undefined },
+            data: {
+                ...data,
+                dueDate: data.dueDate ? new Date(data.dueDate) : undefined
+            }
+        });
+
+        const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+        revalidateTag(tag);
+        revalidateTag(`assignment-${id}`);
+
+        return NextResponse.json({ assignment });
+
+    } catch (e) {
+        return handleApiError(e);
+    }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+
+        await prisma.assignment.delete({
+            where: { id, schoolId: user.schoolId!, teacherId: user.role !== 'PRINCIPAL' ? user.id : undefined }
+        });
+
+        const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+        revalidateTag(tag);
+
+        return NextResponse.json({ success: true });
+
+    } catch (e) {
+        return handleApiError(e);
+    }
+}

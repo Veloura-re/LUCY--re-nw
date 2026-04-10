@@ -18,28 +18,28 @@ export function EdgeHealthIndicator() {
             bg: "bg-eduGreen-500/10",
             border: "border-eduGreen-500/20",
             icon: ShieldCheck,
-            label: "Secure Link Stable",
+            label: "Institutional Vitality",
         },
         optimizing: {
             color: "text-blue-500",
             bg: "bg-blue-500/10",
             border: "border-blue-500/20",
             icon: Activity,
-            label: "Link Optimizing",
+            label: "Neural Pulse Optimizing",
         },
         degraded: {
             color: "text-amber-500",
             bg: "bg-amber-500/10",
             border: "border-amber-500/20",
             icon: ShieldAlert,
-            label: "Link Latency Detected",
+            label: "Neural Synchronization Lag",
         },
         offline: {
             color: "text-red-500",
             bg: "bg-red-500/10",
             border: "border-red-500/20",
             icon: ShieldX,
-            label: "Neural Uplink Interrupted",
+            label: "Neural Link Disrupted",
         }
     };
 

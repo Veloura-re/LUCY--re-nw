@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { AttendanceStatus } from '@prisma/client';
 import { requireSchoolLinked, handleApiError } from '@/lib/security';
 import { sendLatenessNotificationEmail } from '@/lib/email';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { getAttendanceMatrix } from '@/lib/services/attendance';
 
 export async function GET(request: Request) {
     try {
@@ -11,41 +13,17 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const classId = searchParams.get('classId');
         const date = searchParams.get('date');
-        const subjectId = searchParams.get('subjectId');
-        const periodId = searchParams.get('periodId');
+        const subjectId = searchParams.get('subjectId') || undefined;
+        const periodId = searchParams.get('periodId') || undefined;
 
         if (!classId || !date) {
             return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
         }
 
-        const attendanceDate = new Date(date);
-        attendanceDate.setHours(0, 0, 0, 0);
+        // Fetch from the optimized, cached service
+        const data = await getAttendanceMatrix(user.schoolId!, classId, date, subjectId, periodId);
 
-        const attendance = await prisma.attendanceRecord.findMany({
-            where: {
-                classId,
-                class: { grade: { schoolId: user.schoolId! } },
-                date: attendanceDate,
-                ...(subjectId ? { subjectId } : { subjectId: null }),
-                ...(periodId ? { periodId } : { periodId: null }),
-            }
-        });
-
-        // Also fetch any approved authorizations for this date
-        const authorizations = await (prisma as any).absenceAuthorization.findMany({
-            where: {
-                student: { classId, schoolId: user.schoolId! },
-                status: 'APPROVED',
-                startDate: { lte: attendanceDate },
-                endDate: { gte: attendanceDate }
-            },
-            select: {
-                studentId: true,
-                reason: true
-            }
-        });
-
-        return NextResponse.json({ attendance, authorizations });
+        return NextResponse.json(data);
     } catch (e) {
         return handleApiError(e);
     }
@@ -150,10 +128,12 @@ export async function POST(request: Request) {
             }
         });
 
+        // Trigger Cache Invalidation for the attendance matrix
+        revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId));
+
         // 5. Asynchronous Notification Dispatch
         const lateRecords = records.filter((r: any) => r.status === 'LATE');
         if (lateRecords.length > 0) {
-            // FIRE AND FORGET: Do not await to avoid blocking the API response
             (async () => {
                 try {
                     for (const record of lateRecords) {

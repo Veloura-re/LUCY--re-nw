@@ -1,8 +1,6 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { syncGroupMemberships, getOrCreatePrivateRoom } from '@/lib/messaging';
-import { ChatRoomType } from '@prisma/client';
-import { requireSchoolLinked, handleApiError } from '@/lib/security';
+import { getCachedUserRooms } from '@/lib/services/messages';
+import { revalidateTag } from 'next/cache';
+import { getUserTag } from '@/lib/cache-keys';
 
 export async function GET(request: Request) {
     try {
@@ -11,95 +9,10 @@ export async function GET(request: Request) {
         // Auto-sync memberships on login/access
         await syncGroupMemberships(dbUser.id, dbUser.schoolId, dbUser.role);
 
-        // Fetch all rooms the user is a member of
-        const rooms = await prisma.chatRoom.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                members: { some: { userId: dbUser.id } }
-            },
-            include: {
-                members: {
-                    include: {
-                        user: {
-                            select: { id: true, name: true, role: true, bio: true }
-                        }
-                    }
-                },
-                messages: {
-                    orderBy: { createdAt: 'desc' },
-                    take: 1,
-                    include: {
-                        fromUser: { select: { name: true } }
-                    }
-                }
-            },
-            orderBy: { updatedAt: 'desc' }
-        });
+        // Fetch using the optimized cached service
+        const rooms = await getCachedUserRooms(dbUser.id, dbUser.schoolId!, dbUser.role);
 
-        // Consolidate unread counts for all rooms in a single query
-        const membershipMap = new Map<string, Date>();
-        rooms.forEach((room: any) => {
-            const myMembership = room.members.find((m: any) => m.userId === dbUser.id);
-            if (myMembership?.lastReadAt) {
-                membershipMap.set(room.id, myMembership.lastReadAt);
-            }
-        });
-
-        // Get all unread message counts in a single grouped query
-        const unreadGroups = await prisma.message.groupBy({
-            by: ['chatRoomId'],
-            where: {
-                chatRoomId: { in: rooms.map((r: any) => r.id) }
-            },
-            _count: { id: true }
-        });
-
-        // Build a map of per-room total message counts
-        const totalCountMap = new Map(unreadGroups.map(g => [g.chatRoomId, g._count.id]));
-
-        // For "since lastReadAt" we need per-room filtering. Use a targeted multi-filter approach.
-        const unreadCountPerRoom = new Map<string, number>();
-        for (const [roomId, lastReadAt] of membershipMap.entries()) {
-            const count = await prisma.message.count({
-                where: { chatRoomId: roomId, createdAt: { gt: lastReadAt } }
-            });
-            unreadCountPerRoom.set(roomId, count);
-        }
-
-        // Format rooms with metadata
-        const roomsWithMeta = await Promise.all(rooms.map(async (room: any) => {
-            const unreadCount = unreadCountPerRoom.get(room.id) ?? 0;
-
-            // For private chats, identify the 'partner'
-            let partner = null;
-            if (room.type === ChatRoomType.PRIVATE) {
-                const partnerMember = room.members.find((m: any) => m.userId !== dbUser.id);
-                partner = partnerMember?.user || null;
-
-                // SPECIAL LOGIC: Rename PARENT if viewed by STAFF
-                if (partner && partner.role === 'PARENT' && dbUser.role !== 'PARENT' && dbUser.role !== 'STUDENT') {
-                    const children = await prisma.parentStudentLink.findMany({
-                        where: { parentId: partner.id },
-                        include: { student: true }
-                    });
-                    if (children.length > 0) {
-                        const childNames = children.map(c => c.student.firstName).join(', ');
-                        partner = {
-                            ...partner,
-                            name: `${childNames}'s Parent (${partner.name})`
-                        };
-                    }
-                }
-            }
-
-            return {
-                ...room,
-                unreadCount,
-                partner
-            };
-        }));
-
-        return NextResponse.json({ rooms: roomsWithMeta });
+        return NextResponse.json({ rooms });
     } catch (e) {
         return handleApiError(e);
     }
@@ -134,6 +47,10 @@ export async function POST(request: Request) {
             }
 
             const room = await getOrCreatePrivateRoom(dbUser.schoolId, dbUser.id, targetUserId);
+            
+            // Invalidate Inbox Cache
+            revalidateTag(getUserTag(dbUser.id));
+
             return NextResponse.json({ room });
         }
 
