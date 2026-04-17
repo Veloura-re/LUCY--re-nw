@@ -76,5 +76,8 @@
   },
   "overrides": {
     "next": "$next"
+  },
+  "optionalDependencies": {
+    "@cloudflare/workerd-linux-64": "^1.20260417.1"
   }
 }
