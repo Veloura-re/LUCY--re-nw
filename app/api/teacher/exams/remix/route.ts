@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
 import { requireRole, handleApiError, secureJson, rateLimit, TEACHER_ROLES } from "@/lib/security";
 import { AiQuestionsArraySchema } from "@/lib/schemas";
 
@@ -11,7 +12,6 @@ export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(TEACHER_ROLES);
 
-    try {
         const { questions } = await req.json();
 
         if (!questions || !Array.isArray(questions)) {
@@ -46,9 +46,8 @@ export async function POST(req: Request) {
             text = text.replace(/```\n?/, "").replace(/\n?```/, "");
         }
 
-        try {
-            const rawQuestions = JSON.parse(text);
-            const remixedQuestions = AiQuestionsArraySchema.parse(rawQuestions);
+        const rawQuestions = JSON.parse(text);
+        const remixedQuestions = AiQuestionsArraySchema.parse(rawQuestions);
         return secureJson({ questions: remixedQuestions });
     } catch (e) {
         return handleApiError(e);
