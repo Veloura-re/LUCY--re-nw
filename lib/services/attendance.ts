@@ -59,7 +59,7 @@ export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => 
         },
         [getUserTag(teacherId), 'teacher-classes'],
         {
-            tags: [getSchoolTag(CACHE_TAGS.SCHOOL_CLASSES, schoolId), getUserTag(teacherId)],
+            tags: [getSchoolTag(CACHE_TAGS.CLASSES, schoolId), getUserTag(teacherId)],
             revalidate: 3600
         }
     )();

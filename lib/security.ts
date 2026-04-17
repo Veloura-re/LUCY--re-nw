@@ -3,6 +3,11 @@ import { prisma } from '@/lib/prisma';
 import { Role } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
+export const ADMIN_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN'];
+export const TEACHER_ROLES: Role[] = ['TEACHER', 'HOMEROOM'];
+export const STAFF_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'];
+export const ALL_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT'];
+
 /**
  * Ensures a user is authenticated.
  * Returns the Supabase User object or throws an error.
@@ -100,9 +105,10 @@ export function handleApiError(error: unknown) {
     console.error("API Security Error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
 
-    if (message.startsWith("Unauthorized")) return secureJson({ error: message }, 401);
-    if (message.startsWith("Forbidden")) return secureJson({ error: message }, 403);
+    if (message.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
+    if (message.startsWith("Forbidden")) return secureJson({ error: "Forbidden" }, 403);
 
+    // Mask all other errors (Prisma, etc) with a generic message
     return secureJson({ error: "Internal Server Error" }, 500);
 }
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireRole, requireSchoolLinked } from '@/lib/security';
+import { handleApiError, requireRole, requireSchoolLinked, secureJson } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { sendInviteEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
@@ -61,51 +62,66 @@ export async function POST(request: Request) {
             });
         }
 
-        const student = await prisma.student.create({
-            data: {
-                firstName,
-                lastName,
-                schoolId: targetSchoolId!,
-                gradeId: gradeRecord?.id,
-                classId: classId || null,
-                email: email || null,
-                dob: dob ? new Date(dob) : null,
-                gender: gender || null,
-                address: address || null,
-                guardianName: guardianName || null,
-                guardianPhone: guardianPhone || null,
-                secondaryPhone: secondaryPhone || null,
-                photoUrl: photoUrl || null,
-                studentCode: `ST-${Math.random().toString(36).substring(2, 8).toUpperCase()}-${new Date().getFullYear()}`
-            }
-        });
-
-        await logActivity({
-            userId: user.id,
-            action: 'CREATE_STUDENT',
-            resourceType: 'STUDENT',
-            resourceId: student.id,
-            after: student
-        });
-
-        // Trigger Cache Invalidation for the school's students
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId!), 'max');
-
-        if (email) {
-            const token = Math.random().toString(36).substring(2, 15);
-            await prisma.inviteToken.create({
+        const result = await prisma.$transaction(async (tx) => {
+            const student = await tx.student.create({
                 data: {
-                    token,
-                    email,
-                    role: 'STUDENT',
+                    firstName,
+                    lastName,
                     schoolId: targetSchoolId!,
-                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    gradeId: gradeRecord?.id,
+                    classId: classId || null,
+                    email: email || null,
+                    dob: dob ? new Date(dob) : null,
+                    gender: gender || null,
+                    address: address || null,
+                    guardianName: guardianName || null,
+                    guardianPhone: guardianPhone || null,
+                    secondaryPhone: secondaryPhone || null,
+                    photoUrl: photoUrl || null,
+                    studentCode: `ST-${crypto.randomBytes(3).toString('hex').toUpperCase()}-${new Date().getFullYear()}`
                 }
             });
-            // Email sending logic truncated for brevity
+
+            await logActivity({
+                userId: user.id,
+                action: 'CREATE_STUDENT',
+                resourceType: 'STUDENT',
+                resourceId: student.id,
+                after: student
+            });
+
+            if (email) {
+                const token = crypto.randomUUID().replace(/-/g, '');
+                await tx.inviteToken.create({
+                    data: {
+                        token,
+                        email,
+                        role: 'STUDENT',
+                        schoolId: targetSchoolId!,
+                        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    }
+                });
+                
+                // Return student and token for the response
+                return { student, token };
+            }
+
+            return { student };
+        });
+
+        // Trigger Cache Invalidation (outside transaction is fine)
+        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId!), 'max');
+
+        if (email && result.token) {
+            const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+            const inviteUrl = `${origin}/invite/${result.token}`;
+            // We use the school name for the email
+            const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
+            
+            await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
         }
 
-        return NextResponse.json({ student });
+        return secureJson({ student: result.student });
 
     } catch (e: any) {
         return handleApiError(e);

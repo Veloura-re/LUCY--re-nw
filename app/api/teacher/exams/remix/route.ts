@@ -1,16 +1,15 @@
-import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createClient } from "@/utils/supabase/server";
+import { requireRole, handleApiError, secureJson, rateLimit, TEACHER_ROLES } from "@/lib/security";
+import { AiQuestionsArraySchema } from "@/lib/schemas";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "");
 
 export async function POST(req: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const limit = rateLimit(req, "teacher/exams/remix", 10);
+    if (limit) return limit;
 
-    if (!user || user.user_metadata.role !== 'TEACHER') {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    try {
+        const dbUser = await requireRole(TEACHER_ROLES);
 
     try {
         const { questions } = await req.json();
@@ -48,14 +47,10 @@ export async function POST(req: Request) {
         }
 
         try {
-            const remixedQuestions = JSON.parse(text);
-            return NextResponse.json({ questions: remixedQuestions });
-        } catch (parseError) {
-            return NextResponse.json({ error: "AI returned invalid format", raw: text }, { status: 500 });
-        }
-
+            const rawQuestions = JSON.parse(text);
+            const remixedQuestions = AiQuestionsArraySchema.parse(rawQuestions);
+        return secureJson({ questions: remixedQuestions });
     } catch (e) {
-        console.error(e);
-        return NextResponse.json({ error: "Remix generation failed" }, { status: 500 });
+        return handleApiError(e);
     }
 }

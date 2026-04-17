@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { requireAuth, handleApiError } from "@/lib/security";
+import { requireAuth, handleApiError, rateLimit, secureJson } from "@/lib/security";
 import { prisma } from "@/lib/prisma";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "");
@@ -173,6 +173,9 @@ If you don't know something about the user's specific data, help them navigate t
 };
 
 export async function POST(req: Request) {
+    const limit = rateLimit(req, "ai/chat", 10);
+    if (limit) return limit;
+
     try {
         console.log("[AI API] POST request received");
         const authUser = await requireAuth();
@@ -274,7 +277,7 @@ export async function POST(req: Request) {
         const text = response.text();
         console.log("[AI API] Gemini Response received, length:", text?.length);
 
-        return NextResponse.json({ content: text });
+        return secureJson({ content: text });
 
     } catch (e: any) {
         console.error("AI Chat Error:", e);
@@ -291,9 +294,9 @@ export async function POST(req: Request) {
                 DEFAULT: "The neural matrix is currently saturated. Please allow sixty seconds for cooldown before attempting another link."
             };
 
-            return NextResponse.json({
+            return secureJson({
                 content: `✦ **Neural Stall: Quota Reached.** ⚠️\n\n${errorMessages.DEFAULT}`
-            }, { status: 429 });
+            }, 429);
         }
 
         return NextResponse.json({ error: "Neural link failure. Please try again." }, { status: 500 });

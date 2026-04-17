@@ -1,25 +1,22 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
+import { requireAuth, handleApiError, secureJson } from '@/lib/security';
 
 import { getCachedRoomMessages } from '@/lib/services/messages';
 
 export async function GET(request: Request) {
-    const supabase = await createClient();
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-
-    if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const { searchParams } = new URL(request.url);
-    const chatRoomId = searchParams.get('chatRoomId');
-    const cursor = searchParams.get('cursor') || undefined;
-    const limit = parseInt(searchParams.get('limit') || '50');
-
-    if (!chatRoomId) {
-        return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });
-    }
-
     try {
+        const authUser = await requireAuth();
+
+        const { searchParams } = new URL(request.url);
+        const chatRoomId = searchParams.get('chatRoomId');
+        const cursor = searchParams.get('cursor') || undefined;
+        const limit = parseInt(searchParams.get('limit') || '50');
+
+        if (!chatRoomId) {
+            return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });
+        }
+
         // Verify membership
         const membership = await prisma.chatRoomMember.findUnique({
             where: { chatRoomId_userId: { chatRoomId, userId: authUser.id } }
@@ -32,21 +29,15 @@ export async function GET(request: Request) {
         // Fetch using the optimized cached service
         const data = await getCachedRoomMessages(chatRoomId, cursor, limit);
 
-        return NextResponse.json(data);
-
+        return secureJson(data);
     } catch (e) {
-        console.error(e);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return handleApiError(e);
     }
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-
-    if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
     try {
+        const authUser = await requireAuth();
         const { chatRoomId, content, attachments } = await request.json();
 
         if (!chatRoomId || (!content && !attachments)) {
@@ -101,9 +92,8 @@ export async function POST(request: Request) {
             data: { updatedAt: new Date() }
         });
 
-        return NextResponse.json({ message });
+        return secureJson({ message });
     } catch (e) {
-        console.error(e);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return handleApiError(e);
     }
 }
