@@ -58,7 +58,7 @@ export async function POST(request: Request) {
             });
             console.log(`[AdminAPI] School created in DB: ${school.id}`);
 
-            const token = `inv_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+            const token = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 

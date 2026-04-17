@@ -11,9 +11,6 @@ export async function GET(request: Request) {
         const students = await getFamilyChildren(dbUser.id);
 
         return NextResponse.json({ students });
-
-
-        return NextResponse.json({ students });
     } catch (e) {
         return handleApiError(e);
     }

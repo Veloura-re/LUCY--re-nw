@@ -1,30 +1,24 @@
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
-import { requireRole } from '@/lib/security';
+import { requireRole, handleApiError, secureJson, STAFF_ROLES } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getCachedTeacherRegistry, getCachedSchoolInfoForRegistry } from '@/lib/services/teachers';
 
 export async function GET(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-    if (!dbUser?.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
-
     try {
-        // Fetch from the optimized, cached service
-        const all = await getCachedTeacherRegistry(dbUser.schoolId);
-        const school = await getCachedSchoolInfoForRegistry(dbUser.schoolId);
+        const dbUser = await requireRole(STAFF_ROLES);
 
-        return NextResponse.json({ teachers: all, school });
+        // Fetch from the optimized, cached service
+        const all = await getCachedTeacherRegistry(dbUser.schoolId!);
+        const school = await getCachedSchoolInfoForRegistry(dbUser.schoolId!);
+
+        return secureJson({ teachers: all, school });
     } catch (e) {
-        console.error(e);
-        return NextResponse.json({ error: 'Failed to fetch teachers' }, { status: 500 });
+        return handleApiError(e);
     }
 }
 
@@ -50,7 +44,7 @@ export async function POST(request: Request) {
                 role: 'TEACHER', // Default role
                 schoolId: user.schoolId,
                 verified: false,
-                teacherCode: teacherCode || `TCH-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+                teacherCode: teacherCode || `TCH-${crypto.randomBytes(2).toString('hex').toUpperCase()}`,
                 gender: gender || null,
                 phone: phone || null,
                 qualification: qualification || null,
@@ -59,7 +53,7 @@ export async function POST(request: Request) {
         });
 
         // Create Invite Token
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const token = crypto.randomUUID().replace(/-/g, '');
         await prisma.inviteToken.create({
             data: {
                 token,
@@ -81,11 +75,10 @@ export async function POST(request: Request) {
 
         await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', token, 'TEACHER', user.schoolId);
 
-        return NextResponse.json({ user: newUser, token });
+        return secureJson({ user: newUser, token });
 
     } catch (e: any) {
-        console.error(e);
-        return NextResponse.json({ error: e.message || 'Failed to create teacher' }, { status: 500 });
+        return handleApiError(e);
     }
 }
 
@@ -119,10 +112,9 @@ export async function PUT(request: Request) {
         // Trigger Cache Invalidation for the personnel registry
         revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId), 'max');
 
-        return NextResponse.json({ success: true, teacher: updated });
+        return secureJson({ success: true, teacher: updated });
 
     } catch (e: any) {
-        console.error(e);
-        return NextResponse.json({ error: e.message || "Failed to update teacher" }, { status: 500 });
+        return handleApiError(e);
     }
 }

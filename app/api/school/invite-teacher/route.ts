@@ -11,7 +11,7 @@ export async function POST(request: Request) {
         if (!school) throw new Error("School not found");
 
         const { email } = await request.json();
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const token = crypto.randomUUID().replace(/-/g, '');
 
         await prisma.inviteToken.create({
             data: {

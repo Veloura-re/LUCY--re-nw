@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/security";
 import { sendAssessmentReportEmail } from "@/lib/email";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AiGradingSchema } from "@/lib/schemas";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
 
@@ -71,7 +72,6 @@ export async function POST(
                     }
                     break;
 
-                case "LONG":
                     // AI EVALUATION
                     try {
                         const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
@@ -84,12 +84,22 @@ export async function POST(
                             Score should be between 0 and ${weight}.
                         `;
                         const res = await model.generateContent(aiPrompt);
-                        const aiData = JSON.parse(res.response.text().replace(/```json|```/g, ""));
-                        qScore = aiData.score;
-                        feedback = aiData.feedback;
+                        const cleanedText = res.response.text().replace(/```json|```/g, "").trim();
+
+                        try {
+                            const rawData = JSON.parse(cleanedText);
+                            const aiData = AiGradingSchema.parse(rawData);
+                            qScore = Math.min(weight, Math.max(0, aiData.score));
+                            feedback = aiData.feedback;
+                        } catch (parseError) {
+                            console.error("AI Data Validation Failed:", parseError);
+                            qScore = 0;
+                            feedback = "AI evaluation format error. Manual review required.";
+                        }
                     } catch (err) {
                         console.error("AI Grading Failure:", err);
-                        qScore = 0; // Manual review fallback?
+                        qScore = 0; // Manual review fallback
+                        feedback = "AI evaluation unavailable.";
                     }
                     break;
             }

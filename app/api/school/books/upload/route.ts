@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         }
 
         const fileExtension = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExtension}`;
+        const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
         const filePath = `${dbUser.schoolId!}/${fileName}`;
 
         // Upload to Supabase Storage - 'books' bucket
