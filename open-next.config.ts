@@ -1,13 +1,17 @@
 import type { OpenNextConfig } from "@opennextjs/aws/types/open-next.js";
 
+const kvIncrementalCache = () => import("@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache").then(m => m.default);
+const kvTagCache = () => import("@opennextjs/cloudflare/overrides/tag-cache/kv-next-tag-cache").then(m => m.default);
+
+
 const config: OpenNextConfig = {
     default: {
         override: {
             wrapper: "cloudflare-node",
             converter: "edge",
             proxyExternalRequest: "fetch",
-            incrementalCache: "dummy",
-            tagCache: "dummy",
+            incrementalCache: kvIncrementalCache,
+            tagCache: kvTagCache,
             queue: "dummy",
         },
     },
@@ -18,8 +22,8 @@ const config: OpenNextConfig = {
             wrapper: "cloudflare-edge",
             converter: "edge",
             proxyExternalRequest: "fetch",
-            incrementalCache: "dummy",
-            tagCache: "dummy",
+            incrementalCache: kvIncrementalCache,
+            tagCache: kvTagCache,
             queue: "dummy",
         },
     },
