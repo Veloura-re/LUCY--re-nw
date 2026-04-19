@@ -24,17 +24,6 @@
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
 	},
-	"kv_namespaces": [
-		{
-			"binding": "NEXT_CACHE_WORKERS_KV",
-			"id": "2132df5a5c4746aaaf1e6dc9bb9ca4ef"
-		},
-		{
-			"binding": "NEXT_CACHE_WORKERS_KV",
-			"id": "2132df5a5c4746aaaf1e6dc9bb9ca4ef",
-			"remote": true
-		}
-	],
 	"vars": {
 		"IS_CLOUDFLARE": "true",
 		"NEXT_PUBLIC_SUPABASE_URL": "https://caeeusbhwrkelnffbbub.supabase.co",
