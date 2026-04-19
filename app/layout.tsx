@@ -1,32 +1,10 @@
 import type { Metadata } from "next";
-import { Orbitron, Space_Grotesk, Cinzel, Permanent_Marker } from "next/font/google";
-
+import "@fontsource/orbitron";
+import "@fontsource/space-grotesk";
+import "@fontsource/cinzel";
+import "@fontsource/permanent-marker";
 import "./globals.css";
 
-const orbitron = Orbitron({ 
-  subsets: ["latin"], 
-  display: 'swap',
-  variable: '--font-orbitron'
-});
-
-const spaceGrotesk = Space_Grotesk({ 
-  subsets: ["latin"],
-  display: 'swap', 
-  variable: '--font-body'
-});
-
-const cinzel = Cinzel({ 
-  subsets: ["latin"],
-  display: 'swap', 
-  variable: '--font-cinzel'
-});
-
-const permanentMarker = Permanent_Marker({ 
-  weight: "400",
-  subsets: ["latin"],
-  display: 'swap', 
-  variable: '--font-permanent-marker'
-});
 
 
 export const metadata: Metadata = {
@@ -44,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} ${orbitron.variable} ${cinzel.variable} ${permanentMarker.variable} font-space-grotesk antialiased`} suppressHydrationWarning>
+      <body className={`font-space-grotesk antialiased`} suppressHydrationWarning>
         <NextTopLoader
           color="#10b981"
           initialPosition={0.08}
