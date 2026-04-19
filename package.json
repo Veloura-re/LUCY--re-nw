@@ -13,6 +13,7 @@
   "dependencies": {
     "@fontsource/cinzel": "^5.2.8",
     "@fontsource/orbitron": "^5.2.8",
+    "@fontsource/permanent-marker": "^5.2.7",
     "@fontsource/pinyon-script": "^5.2.8",
     "@fontsource/space-grotesk": "^5.2.10",
     "@fontsource/unifrakturmaguntia": "^5.2.8",

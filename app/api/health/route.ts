@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
+
 
 /**
  * Ultra-lightweight health check endpoint to verify Edge Worker connectivity and latency.

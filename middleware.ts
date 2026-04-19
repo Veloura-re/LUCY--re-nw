@@ -6,9 +6,9 @@ import { createServerClient } from '@supabase/ssr'
  * This replaces the deprecated middleware.ts convention.
  * It handles authentication redirection and security headers.
  */
-export const runtime = 'edge'
+export const runtime = 'experimental-edge'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
             headers: request.headers,
