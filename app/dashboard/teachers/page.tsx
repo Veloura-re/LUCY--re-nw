@@ -12,14 +12,25 @@ export default async function TeachersPage() {
 
     if (!authUser) redirect("/login");
 
-    const dbUser = await getCachedUser(authUser.id);
+    let dbUser: any = null;
+    try {
+        dbUser = await getCachedUser(authUser.id);
+    } catch (e) {
+        console.error('[TeachersPage] Failed to fetch profile:', e);
+    }
+
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
-    // Parallel Fetching for sub-second performance
-    const [teachers, schoolInfo] = await Promise.all([
-        getCachedTeacherRegistry(dbUser.schoolId),
-        getCachedSchoolInfoForRegistry(dbUser.schoolId)
-    ]);
+    let teachers: any[] = [];
+    let schoolInfo: any = null;
+
+    try {
+        // Sequential fetch ensures we don't burst CPU limits during cold start DB initialization
+        teachers = await getCachedTeacherRegistry(dbUser.schoolId);
+        schoolInfo = await getCachedSchoolInfoForRegistry(dbUser.schoolId);
+    } catch (e) {
+        console.error('[TeachersPage] Sequence fetch error:', e);
+    }
 
     return (
         <Suspense fallback={
@@ -29,7 +40,7 @@ export default async function TeachersPage() {
             </div>
         }>
             <TeachersClientWrapper 
-                initialTeachers={teachers}
+                initialTeachers={teachers || []}
                 schoolInfo={schoolInfo}
                 me={authUser}
             />
