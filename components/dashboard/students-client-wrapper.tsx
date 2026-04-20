@@ -30,8 +30,8 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
         firstName: "", lastName: "", grade: "", classId: "", email: "",
         gender: "", dob: "", age: "", address: "", guardianName: "", guardianPhone: "", secondaryPhone: "", photoUrl: ""
     });
-    const [students, setStudents] = useState<any[]>(initialStudents);
-    const [grades] = useState<any[]>(initialGrades);
+    const [students, setStudents] = useState<any[]>(initialStudents || []);
+    const [grades] = useState<any[]>(initialGrades || []);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
@@ -107,7 +107,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
         }
     };
 
-    const filteredStudents = students
+    const filteredStudents = (students || [])
         .filter(s => {
             const matchesSearch = activeSearch === "" ||
                 (s.firstName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
@@ -200,10 +200,10 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
                             <SelectItem value="ALL">ALL CLASSES</SelectItem>
-                            {grades.map(grade => (
+                            {grades?.map(grade => (
                                 <div key={grade.id}>
                                     <div className="px-3 py-1.5 text-[7px] font-bold text-zinc-700 uppercase tracking-[0.2em] bg-zinc-900/30">{grade.name}</div>
-                                    {grade.classes.map((cls: any) => (
+                                    {grade.classes?.map((cls: any) => (
                                         <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
                                     ))}
                                 </div>
@@ -336,7 +336,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                                             <SelectValue placeholder="Select Grade" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-[300px]">
-                                            {grades.map(g => (
+                                            {grades?.map(g => (
                                                 <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                                             ))}
                                         </SelectContent>
@@ -347,7 +347,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                                             <SelectValue placeholder="Select Class" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-[300px]">
-                                            {grades.find(g => g.id === newStudent.grade)?.classes.map((c: any) => (
+                                            {grades?.find(g => g.id === newStudent.grade)?.classes?.map((c: any) => (
                                                 <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
