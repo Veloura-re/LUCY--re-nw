@@ -305,7 +305,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                             <div className="flex items-center gap-2 relative z-10">
                                                                 <Select
                                                                     onValueChange={(teacherId: string) => handleAssignHomeroom(cls.id, teacherId === "null" ? null : teacherId)}
-                                                                    defaultValue={cls.homeroomTeacherId}
+                                                                    defaultValue={cls.homeroomTeacherId || "null"}
                                                                 >
                                                                     <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-950/50 border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-all">
                                                                         <SelectValue placeholder="Staff" />
