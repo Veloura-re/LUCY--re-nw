@@ -17,33 +17,6 @@ export async function GET() {
         const now = new Date();
         const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
-<<<<<<< HEAD
-        const [allPayments, allInvoices, allPayrolls] = await Promise.all([
-            prisma.payment.findMany({
-                where: {
-                    status: 'SUCCESS',
-                    createdAt: { gte: twelveMonthsAgo },
-                    invoice: { schoolId: dbUser.schoolId! }
-                },
-                select: { amount: true, createdAt: true }
-            }),
-            prisma.invoice.findMany({
-                where: {
-                    status: { in: ['PENDING', 'OVERDUE'] },
-                    createdAt: { gte: twelveMonthsAgo },
-                    schoolId: dbUser.schoolId!
-                },
-                select: { amount: true, createdAt: true }
-            }),
-            (prisma as any).staffPayroll.findMany({
-                where: {
-                    createdAt: { gte: twelveMonthsAgo },
-                    user: { schoolId: dbUser.schoolId! }
-                },
-                select: { amount: true, createdAt: true }
-            })
-        ]);
-=======
         // Sequential fetching for stability on Cloudflare Edge
         const allPayments = await prisma.payment.findMany({
             where: {
@@ -70,7 +43,6 @@ export async function GET() {
             },
             select: { amount: true, createdAt: true }
         });
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
         for (let i = 11; i >= 0; i--) {
             const d = new Date(now.getFullYear(), now.getMonth() - i, 1);

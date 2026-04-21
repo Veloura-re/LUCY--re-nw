@@ -79,11 +79,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
                     select: {
                         id: true,
                         title: true,
-<<<<<<< HEAD
-                        maxPoints: true,
-=======
                         maxScore: true,
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                         subject: { select: { name: true } }
                     }
                 }
@@ -102,12 +98,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
                 absent: allAttendance.filter(a => a.status === 'ABSENT').length,
                 history: attendanceRecords
             },
-<<<<<<< HEAD
-            remarks,
-            internalNotes
-=======
             remarks
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
         });
 
     } catch (e) {

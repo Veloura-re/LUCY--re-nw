@@ -43,8 +43,6 @@ next-env.d.ts
 /app/generated/prisma
 /.open-next
 /cloud-out
-<<<<<<< HEAD
-=======
 
 # local debug files
 *.txt
@@ -58,4 +56,3 @@ lint_report.txt
 prisma_push_debug.txt
 prisma_output.txt
 prisma_error.txt
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533

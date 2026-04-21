@@ -9,19 +9,10 @@ export async function POST(request: Request) {
 
         const { classId, subjectId, teacherId } = await request.json();
 
-<<<<<<< HEAD
-        // Tenant Isolation: Ensure class and subject and teacher belong to this school
-        const [targetClass, targetSubject, targetTeacher] = await Promise.all([
-            prisma.class.findUnique({ where: { id: classId }, select: { grade: { select: { schoolId: true } } } }),
-            prisma.subject.findUnique({ where: { id: subjectId }, select: { schoolId: true } }),
-            prisma.user.findUnique({ where: { id: teacherId }, select: { schoolId: true, role: true } })
-        ]);
-=======
         // Sequential lookups for isolation and stability on Cloudflare Edge
         const targetClass = await prisma.class.findUnique({ where: { id: classId }, select: { grade: { select: { schoolId: true } } } });
         const targetSubject = await prisma.subject.findUnique({ where: { id: subjectId }, select: { schoolId: true } });
         const targetTeacher = await prisma.user.findUnique({ where: { id: teacherId }, select: { schoolId: true, role: true } });
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
         if (dbUser.role !== 'SUPERADMIN') {
             if (targetClass?.grade.schoolId !== dbUser.schoolId ||
