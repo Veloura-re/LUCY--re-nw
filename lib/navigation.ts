@@ -29,7 +29,7 @@ import {
     LayoutDashboard
 } from "lucide-react";
 
-export type Role = 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
+export type Role = 'SUPERADMIN' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
 
 export const ICON_MAP = {
     Compass,
@@ -71,6 +71,14 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: Record<Role, NavItem[]> = {
+    SUPERADMIN: [
+        { icon: 'Compass', label: "Control Center", href: "/admin/dashboard" },
+        { icon: 'Landmark', label: "Schools", href: "/admin/schools" },
+        { icon: 'Users', label: "Users", href: "/admin/users" },
+        { icon: 'Wrench', label: "System Status", href: "/admin/status" },
+        { icon: 'Sparkles', label: "AI Config", href: "/admin/ai" },
+        { icon: 'Cog', label: "Engine Settings", href: "/admin/settings" },
+    ],
     PRINCIPAL: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'UserRound', label: "Teachers", href: "/dashboard/teachers" },

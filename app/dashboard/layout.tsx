@@ -15,6 +15,7 @@ import { NetworkBanner } from "@/components/ui/network-banner";
 import { PreferencesProvider } from "@/components/dashboard/preferences-provider";
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";
+import { Logo } from "@/components/ui/logo";
 
 export default async function DashboardLayout({
     children,
@@ -78,7 +79,7 @@ export default async function DashboardLayout({
 
     const role = dbUser.role;
 
-    const menu = NAV_ITEMS[role as NavRole] || [{ icon: LayoutDashboard, label: "Overview", href: "/dashboard" }];
+    const menu = NAV_ITEMS[role as NavRole] || [{ icon: 'LayoutDashboard' as any, label: "Overview", href: "/dashboard" }];
 
     // Determine navigation preference (Default to DOCK if not set)
     const savedPref = (dbUser.preferences as any)?.nav_pref;
@@ -105,20 +106,23 @@ export default async function DashboardLayout({
             </div>
 
             {/* Navigation Overlay/Sidebar */}
-            {isSidebar && <DashboardSidebar dbUser={dbUser} menu={menu} />}
+            {isSidebar && <DashboardSidebar dbUser={JSON.parse(JSON.stringify(dbUser))} menu={menu} />}
 
             {/* Header (Appears in DOCK mode on desktop) */}
             {!isSidebar && (
                 <header className="w-full pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-6 md:px-12 relative z-20">
                     <div className="hidden md:block w-32" /> {/* Spacer */}
-                    <div className="relative flex items-center bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
-                        <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
-                        <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                        <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-white ml-2 md:ml-3">
-                            LUCY
-                            <span className="absolute -top-1 -right-2 text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
-                        </span>
-                        <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2 md:ml-3">]</span>
+                    <div className="flex items-center gap-4">
+                        <Logo className="w-12 h-12" />
+                        <div className="relative flex items-center bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
+                            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
+                            <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
+                            <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-white ml-2 md:ml-3">
+                                LUCY
+                                <span className="absolute -top-1 -right-2 text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
+                            </span>
+                            <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2 md:ml-3">]</span>
+                        </div>
                     </div>
                     <EdgeHealthIndicator />
                 </header>

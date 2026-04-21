@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { requireAuth, handleApiError, rateLimit, secureJson } from "@/lib/security";
 import { prisma } from "@/lib/prisma";
+import { getCachedUser } from "@/lib/users";
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "");
 
@@ -181,10 +182,8 @@ export async function POST(req: Request) {
         const authUser = await requireAuth();
         console.log("[AI API] Auth User ID:", authUser.id);
 
-        const dbUser = await prisma.user.findUnique({
-            where: { id: authUser.id },
-            select: { id: true, name: true, role: true, schoolId: true }
-        });
+        // Fetch full user profile with deduplication and HTTP fallback
+        const dbUser = await getCachedUser(authUser.id);
 
         if (!dbUser) {
             console.error("[AI API] User not found in DB:", authUser.id);

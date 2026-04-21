@@ -1,55 +1,67 @@
-import { PrismaClient } from '@prisma/client'
-import { PrismaClient as WasmPrismaClient } from '@prisma/client/wasm'
-import { Pool } from '@prisma/pg-worker'
-import { PrismaPg } from '@prisma/adapter-pg-worker'
+import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined
-}
-
+// We'll use a type-safe way to handle the Edge/Node split
 const prismaClientSingleton = () => {
-    const url = process.env.DATABASE_URL;
+    const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
-    if (!url) {
-        console.error('[Prisma] DATABASE_URL is not defined.');
-        return new PrismaClient();
+    if (!connectionString) {
+        throw new Error('DATABASE_URL or DIRECT_URL must be defined');
     }
 
-    // Detect environment
-    const isCloudflare = process.env.IS_CLOUDFLARE === 'true' || (typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers');
-    const isEdge = process.env.NEXT_RUNTIME === 'edge' || isCloudflare;
-    const isDev = process.env.NODE_ENV === 'development';
+    // Determine if we are running in the Edge runtime
+    // In Next.js, this is set during the build and at runtime.
+    const isEdge = process.env.NEXT_RUNTIME === 'edge';
 
     if (isEdge) {
-        let connectionUrl = url;
-        
-        // Ensure pooler compatibility
-        if (connectionUrl.includes('pooler.supabase.com') || connectionUrl.includes(':6543')) {
-            if (!connectionUrl.includes('pgbouncer=true')) {
-                connectionUrl += (connectionUrl.includes('?') ? '&' : '?') + 'pgbouncer=true';
-            }
-        }
-
+        // In the Edge runtime, we MUST use the worker adapter.
+        // We use the global objects that are expected to be present or 
+        // provided by the Cloudflare environment/OpenNext.
         try {
-            // In local development, the 'Edge' runtime might not support native TCP well
-            // We only use the Wasm adapter if we are reasonably sure we're in a worker-like environment
-            if (isCloudflare || !isDev) {
-                const pool = new Pool({ 
-                    connectionString: connectionUrl,
-                    ssl: connectionUrl.includes('sslmode=no-verify') ? { rejectUnauthorized: false } : undefined
-                });
-                const adapter = new PrismaPg(pool);
-                return new WasmPrismaClient({ adapter }) as unknown as PrismaClient;
-            }
-        } catch (e: any) {
-            console.warn('[Prisma] Could not initialize Edge adapter, falling back to standard client:', e.message);
-        }
-    }
+            // @ts-ignore - These are available in the Edge environment
+            const { PrismaPg } = require('@prisma/adapter-pg-worker');
+            // @ts-ignore
+            const { Pool } = require('@prisma/pg-worker');
 
-    // Standard Node.js environment fallback
-    return new PrismaClient();
+            console.log('[Prisma] Initializing client for Edge runtime...');
+            const pool = new Pool({ 
+                connectionString,
+                ssl: { rejectUnauthorized: false },
+                max: 10,
+                connectionTimeoutMillis: 15000,
+            });
+
+            const adapter = new PrismaPg(pool);
+            return new PrismaClient({ 
+                adapter,
+                log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+            });
+        } catch (e) {
+            console.error('[Prisma] Failed to initialize Edge adapter, falling back to standard client:', e);
+            return new PrismaClient({
+                log: ['error'],
+            });
+        }
+    } else {
+        // Node.js runtime (Local development, etc.)
+        console.log('[Prisma] Initializing client for Node.js runtime...');
+        return new PrismaClient({
+            datasources: {
+                db: {
+                    url: connectionString,
+                },
+            },
+            log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+        });
+    }
 };
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+declare global {
+    var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+const prisma = globalThis.prisma ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
+
+export { prisma };
+export default prisma;

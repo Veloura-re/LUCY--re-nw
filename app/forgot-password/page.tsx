@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Mail, ArrowLeft, KeyRound, CheckCircle2, Shield } from "lucide-react";
 import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
@@ -46,8 +47,8 @@ export default function ForgotPasswordPage() {
                 {!isSubmitted ? (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
                         <CardHeader className="space-y-2 items-center text-center pb-2 pt-8">
-                            <div className="mx-auto w-14 h-14 bg-zinc-950 rounded-2xl flex items-center justify-center mb-4 border border-zinc-800 shadow-inner">
-                                <KeyRound className="w-7 h-7 text-eduGreen-500" />
+                            <div className="mx-auto flex justify-center mb-4">
+                                <Logo className="w-14 h-14" />
                             </div>
                             <CardTitle className="text-2xl font-medium text-white tracking-tight">
                                 Recover Access
