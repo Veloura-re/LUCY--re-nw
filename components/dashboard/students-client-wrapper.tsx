@@ -63,7 +63,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
             });
 
             if (res.ok) {
-                const data = await res.json();
+                const data = await res.json() as any;
                 setIsAdding(false);
                 setNewStudent({
                     firstName: "", lastName: "", grade: "", classId: "", email: "",
