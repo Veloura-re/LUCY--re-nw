@@ -6,12 +6,12 @@ export const dynamic = "force-dynamic";
 
 const getPublicStats = unstable_cache(
     async () => {
-        const [schools, students, teachers, classes] = await Promise.all([
-            prisma.school.count(),
-            prisma.student.count(),
-            prisma.user.count({ where: { role: { in: ["TEACHER", "HOMEROOM"] } } }),
-            prisma.class.count(),
-        ]);
+        // Sequential count lookups to avoid CPU spikes on Cloudflare Edge
+        const schools = await prisma.school.count();
+        const students = await prisma.student.count();
+        const teachers = await prisma.user.count({ where: { role: { in: ["TEACHER", "HOMEROOM"] } } });
+        const classes = await prisma.class.count();
+
         return { schools, students, teachers, classes, totalNodes: schools + students + teachers + classes };
     },
     ["public-stats-cache"],
@@ -27,8 +27,9 @@ export async function GET(request: Request) {
     try {
         const stats = await getPublicStats();
         return secureJson(stats);
-    } catch {
-        // Return graceful zeros on any error (db not connected etc.)
+    } catch (e: any) {
+        console.error("[PublicStats/GET] Error:", e.message);
+        // Return zeros only on actual failure
         return secureJson({ schools: 0, students: 0, teachers: 0, classes: 0, totalNodes: 0 });
     }
 }
