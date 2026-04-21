@@ -192,7 +192,7 @@ export async function POST(req: Request) {
         }
         console.log("[AI API] DB User found:", dbUser.name, "Role:", dbUser.role);
 
-        const { messages, behavior } = await req.json();
+        const { messages, behavior } = await req.json() as any;
         console.log("[AI API] Behavior:", behavior, "Messages Count:", messages?.length);
 
         // Synchronize Role-Specific Data (Sequential for Cloudflare stability)
