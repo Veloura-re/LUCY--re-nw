@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+<<<<<<< HEAD
   reactCompiler: true,
+=======
+  reactCompiler: false,
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
   productionBrowserSourceMaps: false,
   typescript: {
     ignoreBuildErrors: true,
