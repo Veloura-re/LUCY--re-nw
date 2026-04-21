@@ -195,33 +195,31 @@ export async function POST(req: Request) {
         const { messages, behavior } = await req.json();
         console.log("[AI API] Behavior:", behavior, "Messages Count:", messages?.length);
 
-        // Synchronize Role-Specific Data
+        // Synchronize Role-Specific Data (Sequential for Cloudflare stability)
         let contextData: any = {};
         if (dbUser.role === "PRINCIPAL") {
-            const [school, teacherCount, studentCount, classCount] = await Promise.all([
-                prisma.school.findUnique({ where: { id: dbUser.schoolId || "" }, select: { name: true } }),
-                prisma.user.count({ where: { schoolId: dbUser.schoolId || "", role: "TEACHER" } }),
-                prisma.student.count({ where: { schoolId: dbUser.schoolId || "" } }),
-                prisma.class.count({ where: { grade: { schoolId: dbUser.schoolId || "" } } })
-            ]);
+            const school = await prisma.school.findUnique({ where: { id: dbUser.schoolId || "" }, select: { name: true } });
+            const teacherCount = await prisma.user.count({ where: { schoolId: dbUser.schoolId || "", role: "TEACHER" } });
+            const studentCount = await prisma.student.count({ where: { schoolId: dbUser.schoolId || "" } });
+            const classCount = await prisma.class.count({ where: { grade: { schoolId: dbUser.schoolId || "" } } });
+
             contextData = {
                 schoolName: school?.name,
                 stats: { teachers: teacherCount, students: studentCount, classes: classCount },
                 role: "Institutional Head (Principal)"
             };
         } else if (dbUser.role === "TEACHER" || dbUser.role === "HOMEROOM") {
-            const [assignments, exams] = await Promise.all([
-                prisma.teacherAssignment.findMany({
-                    where: { teacherId: dbUser.id },
-                    select: { class: { select: { name: true } }, subject: { select: { name: true } } }
-                }),
-                prisma.exam.findMany({
-                    where: { createdById: dbUser.id, isPublished: true },
-                    take: 5,
-                    orderBy: { createdAt: 'desc' },
-                    select: { title: true }
-                })
-            ]);
+            const assignments = await prisma.teacherAssignment.findMany({
+                where: { teacherId: dbUser.id },
+                select: { class: { select: { name: true } }, subject: { select: { name: true } } }
+            });
+            const exams = await prisma.exam.findMany({
+                where: { createdById: dbUser.id, isPublished: true },
+                take: 5,
+                orderBy: { createdAt: 'desc' },
+                select: { title: true }
+            });
+
             contextData = {
                 teaching: assignments.map(a => `${a.subject.name} in ${a.class.name}`),
                 activeExams: exams.map(e => e.title),
