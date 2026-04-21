@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", ".prisma/client", "@prisma/adapter-pg-worker", "@prisma/pg-worker"],
   experimental: {
     optimizePackageImports: ["lucide-react", "date-fns", "framer-motion"],
-    allowedDevOrigins: ["10.183.172.232", "localhost:3000"],
   },
 
   // ── Image optimisation ──────────────────────────────────────────────────────
