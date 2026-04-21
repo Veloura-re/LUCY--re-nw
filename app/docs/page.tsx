@@ -6,6 +6,7 @@ import { ArrowLeft, BookOpen, Terminal, Code, ChevronRight } from "lucide-react"
 import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, ScanBar } from "@/components/public/animations";
 import { useState } from "react";
+import { Logo } from "@/components/ui/logo";
 
 const sections = [
     { id: "01", title: "Getting Started", items: ["System Overview", "Provisioning Your Node", "Role Setup", "First Login"] },
@@ -39,10 +40,8 @@ export default function Docs() {
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
-                        </motion.div>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Logo className="w-8 h-8" />
                         <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
@@ -60,9 +59,13 @@ export default function Docs() {
                             <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-white rounded-full" />
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
+                            <motion.h1 
+                                style={{ transformStyle: "preserve-3d" }}
+                                whileHover={{ rotateX: 10, rotateY: -10 }}
+                                className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none perspective-[1000px] cursor-default"
+                            >
                                 docs<br /><GlitchText className="text-zinc-800">protocol.</GlitchText>
-                            </h1>
+                            </motion.h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-zinc-500 text-lg leading-relaxed">

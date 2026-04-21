@@ -10,6 +10,7 @@ import { Menu, X, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
+import { Logo } from "@/components/ui/logo";
 
 interface DashboardSidebarProps {
     dbUser: any;
@@ -103,15 +104,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 transition={{ duration: 0.1 }}
                                 className="flex flex-col gap-1"
                             >
-                                <div className="relative flex items-center bg-zinc-950 border-r-2 border-eduGreen-500 pr-4 py-1 overflow-hidden group w-max">
-                                    <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
-                                    <span className="text-eduGreen-500 font-orbitron font-black text-xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                                    <span className="relative text-xl font-black tracking-[0.15em] font-orbitron text-white ml-2">
-                                        LUCY
-                                        <span className="absolute -top-1 -right-2 text-[6px] text-eduGreen-500 tracking-tighter">OS</span>
-                                    </span>
-                                    <span className="text-eduGreen-500 font-orbitron font-black text-xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
-                                </div>
+                                <Logo className="w-10 h-10" />
                                 {dbUser.school && (
                                     <p className="text-[9px] uppercase tracking-widest text-zinc-600 font-medium truncate max-w-[140px]">{dbUser.school.name}</p>
                                 )}

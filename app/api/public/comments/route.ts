@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit, secureJson, validateStringInput } from "@/lib/security";
 import { unstable_cache } from "next/cache";
@@ -7,12 +6,14 @@ const EMOJIS = ["🔭", "⚡", "🛸", "🧠", "🌐", "⬡", "🔒", "🚀", "�
 
 const getApprovedComments = unstable_cache(
     async () => {
-        return prisma.publicComment.findMany({
+        const start = Date.now();
+        const comments = await prisma.publicComment.findMany({
             where: { approved: true },
             orderBy: { createdAt: "desc" },
             take: 50,
             select: { id: true, callsign: true, message: true, emoji: true, createdAt: true },
         });
+        return { comments, latency: `${Date.now() - start}ms`, runtime: process.env.NEXT_RUNTIME || 'unknown' };
     },
     ["public-comments-cache"],
     { revalidate: 60, tags: ["comments"] }
@@ -25,12 +26,19 @@ export async function GET(request: Request) {
     if (limited) return limited;
 
     try {
-        const comments = await getApprovedComments();
-        return secureJson({ comments });
-    } catch (e) {
+        const data = await getApprovedComments();
+        return secureJson(data);
+    } catch (e: any) {
         console.error("[Comments/GET] Error:", e);
-        return secureJson({ error: "failed to fetch" }, 500);
+        return secureJson({ error: "failed to fetch", details: e.message }, 500);
     }
+}
+
+interface CommentBody {
+    email_placeholder?: string;
+    callsign: string;
+    message: string;
+    emoji: string;
 }
 
 // POST /api/public/comments — submit a comment
@@ -40,7 +48,7 @@ export async function POST(request: Request) {
     if (limited) return limited;
 
     try {
-        const body = await request.json();
+        const body = (await request.json()) as CommentBody;
 
         // Honeypot check (Bot protection)
         if (body.email_placeholder) {

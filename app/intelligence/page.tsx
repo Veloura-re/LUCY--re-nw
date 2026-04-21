@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Brain, Zap, Target, Sparkles, Network } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, NeuralWeb, MatrixRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
+import { Logo } from "@/components/ui/logo";
 
 const behaviors = [
     { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query hits the right node within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
@@ -41,10 +42,8 @@ export default function Intelligence() {
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
-                        </motion.div>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Logo className="w-8 h-8" />
                         <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>

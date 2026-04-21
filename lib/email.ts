@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { prisma } from './prisma';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lucy.goodluck97248.workers.dev';
 
 let globalTransporter: nodemailer.Transporter | null = null;
 

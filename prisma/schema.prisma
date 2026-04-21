@@ -17,21 +17,21 @@ model User {
   role                   Role
   schoolId               String?
   verified               Boolean                 @default(false)
+  bio                    String?
+  preferences            Json?                   @default("{\"neuralSync\": true, \"analyticExport\": false, \"immersiveVisuals\": true}")
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
-  bio                    String?
   gender                 Gender?
   phone                  String?
   photoUrl               String?
-  preferences            Json?                   @default("{\"neuralSync\": true, \"analyticExport\": false, \"immersiveVisuals\": true}")
   qualification          String?
   teacherCode            String?                 @unique
-  absenceAuthorizations  AbsenceAuthorization[]  @relation("UserAbsence")
   authRequests           AbsenceAuthorization[]  @relation("AuthRequests")
+  absenceAuthorizations  AbsenceAuthorization[]  @relation("UserAbsence")
+  createdAssignments     Assignment[]
+  gradedSubmissions      AssignmentSubmission[]
   attendanceRecords      AttendanceRecord[]
   lockedAttendance       AttendanceRecord[]      @relation("AttendanceLockedBy")
-  staffAttendance        StaffAttendanceRecord[] @relation("StaffAttendance")
-  createdStaffAttendance StaffAttendanceRecord[] @relation("CreatedStaffAttendance")
   auditLogs              AuditLog[]
   bookRequests           BookRequest[]
   issuedCertificates     Certificate[]
@@ -48,46 +48,46 @@ model User {
   receivedMessages       Message[]               @relation("ReceivedMessages")
   parentLinks            ParentStudentLink[]
   resourceProgress       ResourceProgress[]
+  createdStaffAttendance StaffAttendanceRecord[] @relation("CreatedStaffAttendance")
+  staffAttendance        StaffAttendanceRecord[] @relation("StaffAttendance")
+  payrolls               StaffPayroll[]
   student                Student?
   authoredRemarks        StudentRemark[]         @relation("TeacherRemarks")
   teacherAssignments     TeacherAssignment[]
   timetable              Timetable[]
-  payrolls               StaffPayroll[]
-  createdAssignments    Assignment[]
-  gradedSubmissions     AssignmentSubmission[]
   school                 School?                 @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId, role])
 }
 
 model School {
-  id                   String           @id @default(uuid())
-  name                 String
-  schoolCode           String           @unique
-  domain               String?
-  status               SchoolStatus     @default(PENDING)
-  createdAt            DateTime         @default(now())
-  attendanceConfig     Json?            @default("{\"type\": \"PERIOD\", \"lockAfterMinutes\": 30, \"enableLateMarking\": true}")
-  logoUrl              String?
-  address              String?
-  locations            Json?            @default("[]")
-  communicationsConfig Json?            @default("{\"sendInvites\": true, \"sendReports\": true, \"sendInvoices\": true, \"replyTo\": \"\"}")
-  books                Book[]
-  bookRequests         BookRequest[]
-  chatRooms            ChatRoom[]
-  events               Event[]
-  feeStructures        FeeStructure[]
-  grades               Grade[]
-  invoices             Invoice[]
-  marklistConfigs      MarklistConfig[]
-  messages             Message[]
-  periods              Period[]
-  students             Student[]
-  subjects             Subject[]
-  unitPacks            UnitPack[]
-  users                User[]
-  assignments          Assignment[]
+  id                    String                 @id @default(uuid())
+  name                  String
+  schoolCode            String                 @unique
+  domain                String?
+  status                SchoolStatus           @default(PENDING)
+  createdAt             DateTime               @default(now())
+  attendanceConfig      Json?                  @default("{\"type\": \"PERIOD\", \"lockAfterMinutes\": 30, \"enableLateMarking\": true}")
+  logoUrl               String?
+  address               String?
+  communicationsConfig  Json?                  @default("{\"replyTo\": \"\", \"sendInvites\": true, \"sendReports\": true, \"sendInvoices\": true}")
+  locations             Json?                  @default("[]")
+  assignments           Assignment[]
   assignmentSubmissions AssignmentSubmission[]
+  books                 Book[]
+  bookRequests          BookRequest[]
+  chatRooms             ChatRoom[]
+  events                Event[]
+  feeStructures         FeeStructure[]
+  grades                Grade[]
+  invoices              Invoice[]
+  marklistConfigs       MarklistConfig[]
+  messages              Message[]
+  periods               Period[]
+  students              Student[]
+  subjects              Subject[]
+  unitPacks             UnitPack[]
+  users                 User[]
 }
 
 model Grade {
@@ -107,6 +107,7 @@ model Class {
   gradeId            String
   name               String
   homeroomTeacherId  String?
+  assignments        Assignment[]
   attendanceRecords  AttendanceRecord[]
   books              Book[]
   grade              Grade               @relation(fields: [gradeId], references: [id])
@@ -119,13 +120,13 @@ model Class {
   students           Student[]
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
-  assignments        Assignment[]
 }
 
 model Subject {
   id                 String              @id @default(uuid())
   schoolId           String
   name               String
+  assignments        Assignment[]
   attendanceRecords  AttendanceRecord[]
   books              Book[]
   exams              Exam[]
@@ -135,7 +136,6 @@ model Subject {
   school             School              @relation(fields: [schoolId], references: [id])
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
-  assignments        Assignment[]
 }
 
 model TeacherAssignment {
@@ -160,8 +160,8 @@ model Student {
   studentCode           String                 @unique
   dob                   DateTime?
   enrollmentStatus      EnrollmentStatus       @default(ACTIVE)
-  enrolledAt            DateTime               @default(now())
   address               String?
+  enrolledAt            DateTime               @default(now())
   gender                Gender?
   grandfatherName       String?
   guardianName          String?
@@ -170,6 +170,7 @@ model Student {
   photoUrl              String?
   secondaryPhone        String?
   absenceAuthorizations AbsenceAuthorization[]
+  assignmentSubmissions AssignmentSubmission[]
   attendanceRecords     AttendanceRecord[]
   certificates          Certificate[]
   examAttempts          ExamAttempt[]
@@ -178,7 +179,6 @@ model Student {
   invoices              Invoice[]
   marklistEntries       MarklistEntry[]
   parentLinks           ParentStudentLink[]
-  assignmentSubmissions AssignmentSubmission[]
   class                 Class?                 @relation(fields: [classId], references: [id])
   grade                 Grade                  @relation(fields: [gradeId], references: [id])
   school                School                 @relation(fields: [schoolId], references: [id])
@@ -203,23 +203,23 @@ model Exam {
   id                String             @id @default(uuid())
   classId           String
   subjectId         String
+  title             String
   createdById       String
   availableFrom     DateTime?          @default(now())
   dueAt             DateTime?
   duration          Int?
   config            Json?
-  category          ExamCategory       @default(TEST)
-  description       String?
   isLocked          Boolean            @default(false)
-  isPublished       Boolean            @default(false)
   lockedAt          DateTime?
   lockedById        String?
+  isPublished       Boolean            @default(false)
   questions         Json?
-  title             String
-  totalMarks        Float              @default(100)
+  category          ExamCategory       @default(TEST)
   createdAt         DateTime           @default(now())
+  description       String?
   expiresAt         DateTime?
   prerequisiteId    String?
+  totalMarks        Float              @default(100)
   updatedAt         DateTime           @updatedAt
   attendanceRecords AttendanceRecord[]
   class             Class              @relation(fields: [classId], references: [id])
@@ -305,15 +305,15 @@ model AttendanceRecord {
 
 model Message {
   id          String   @id @default(uuid())
+  chatRoomId  String
   fromUserId  String
   toUserId    String?
   classId     String?
   schoolId    String
   content     String
   attachments Json?
-  createdAt   DateTime @default(now())
-  chatRoomId  String
   isPinned    Boolean  @default(false)
+  createdAt   DateTime @default(now())
   chatRoom    ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
   class       Class?   @relation(fields: [classId], references: [id])
   fromUser    User     @relation("SentMessages", fields: [fromUserId], references: [id])
@@ -384,18 +384,17 @@ model Event {
 model AbsenceAuthorization {
   id          String              @id @default(uuid())
   studentId   String?
-  userId      String? // For staff/teachers requesting for self
-  requestorId String // Who created the request (Parent/Teacher/Student)
+  userId      String?
+  requestorId String
   startDate   DateTime
   endDate     DateTime
   reason      String?
   status      AuthorizationStatus @default(PENDING)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
-
-  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  user      User?    @relation("UserAbsence", fields: [userId], references: [id], onDelete: Cascade)
-  requestor User     @relation("AuthRequests", fields: [requestorId], references: [id])
+  requestor   User                @relation("AuthRequests", fields: [requestorId], references: [id])
+  student     Student?            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  user        User?               @relation("UserAbsence", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([studentId])
   @@index([userId])
@@ -529,26 +528,25 @@ model Invoice {
 }
 
 model Assignment {
-  id                String                 @id @default(uuid())
-  schoolId          String
-  classId           String
-  subjectId         String
-  teacherId         String
-  title             String
-  description       String?                @db.Text
-  dueDate           DateTime
-  type              AssignmentType         @default(HOMEWORK)
-  materials         Json?                  @default("[]")
-  isPublished       Boolean                @default(true)
-  maxScore          Float?                 @default(100)
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
-  
-  school            School                 @relation(fields: [schoolId], references: [id])
-  class             Class                  @relation(fields: [classId], references: [id])
-  subject           Subject                @relation(fields: [subjectId], references: [id])
-  teacher           User                   @relation(fields: [teacherId], references: [id])
-  submissions       AssignmentSubmission[]
+  id          String                 @id @default(uuid())
+  schoolId    String
+  classId     String
+  subjectId   String
+  teacherId   String
+  title       String
+  description String?
+  dueDate     DateTime
+  type        AssignmentType         @default(HOMEWORK)
+  materials   Json?                  @default("[]")
+  isPublished Boolean                @default(true)
+  maxScore    Float?                 @default(100)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  class       Class                  @relation(fields: [classId], references: [id])
+  school      School                 @relation(fields: [schoolId], references: [id])
+  subject     Subject                @relation(fields: [subjectId], references: [id])
+  teacher     User                   @relation(fields: [teacherId], references: [id])
+  submissions AssignmentSubmission[]
 
   @@index([schoolId])
   @@index([classId])
@@ -561,7 +559,7 @@ model AssignmentSubmission {
   assignmentId String
   studentId    String
   schoolId     String
-  content      String?          @db.Text
+  content      String?
   attachments  Json?            @default("[]")
   submittedAt  DateTime         @default(now())
   status       SubmissionStatus @default(SUBMITTED)
@@ -569,32 +567,15 @@ model AssignmentSubmission {
   feedback     String?
   gradedAt     DateTime?
   gradedById   String?
-  
   assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  school       School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   gradedBy     User?            @relation(fields: [gradedById], references: [id])
+  school       School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  student      Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@unique([assignmentId, studentId])
   @@index([assignmentId])
   @@index([studentId])
   @@index([schoolId])
-}
-
-enum AssignmentType {
-  HOMEWORK
-  PROJECT
-  ESSAY
-  LAB
-  QUIZ
-  OTHER
-}
-
-enum SubmissionStatus {
-  SUBMITTED
-  LATE
-  GRADED
-  REVISION_REQUIRED
 }
 
 model InvoiceItem {
@@ -795,9 +776,8 @@ model StaffAttendanceRecord {
   reason      String?
   createdById String
   createdAt   DateTime         @default(now())
-
-  user      User @relation("StaffAttendance", fields: [userId], references: [id], onDelete: Cascade)
-  createdBy User @relation("CreatedStaffAttendance", fields: [createdById], references: [id])
+  createdBy   User             @relation("CreatedStaffAttendance", fields: [createdById], references: [id])
+  user        User             @relation("StaffAttendance", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])
   @@index([userId])
@@ -830,6 +810,22 @@ model StaffPayroll {
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+enum AssignmentType {
+  HOMEWORK
+  PROJECT
+  ESSAY
+  LAB
+  QUIZ
+  OTHER
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  LATE
+  GRADED
+  REVISION_REQUIRED
 }
 
 enum PayrollStatus {

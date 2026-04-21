@@ -6,6 +6,7 @@ import {
   Cpu, Terminal as TerminalIcon, Shield, Command, Database, Search,
   Activity, Network
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
@@ -312,6 +313,17 @@ function SignalWallPreview() {
 export default function Home() {
 
   const [booting, setBooting] = useState(true);
+  useEffect(() => {
+    const hasBooted = sessionStorage.getItem("lucy_booted");
+    if (hasBooted) {
+      setBooting(false);
+    }
+  }, []);
+
+  const handleBootDone = () => {
+    setBooting(false);
+    sessionStorage.setItem("lucy_booted", "true");
+  };
   const [scrolled, setScrolled] = useState(false);
   const [time, setTime] = useState("");
   const [liveStats, setLiveStats] = useState({ schools: 0, students: 0, teachers: 0, totalNodes: 0 });
@@ -395,7 +407,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black overflow-x-hidden font-mono lowercase tracking-tight">
       {/* ── Boot Sequence ── */}
-      <BootSequence onDone={() => setBooting(false)} />
+      <BootSequence onDone={handleBootDone} />
 
       {/* ── Custom Cursor ── */}
       <motion.div style={{ left: cursorX, top: cursorY }} className="fixed z-[900] pointer-events-none -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full mix-blend-difference" />
@@ -434,9 +446,7 @@ export default function Home() {
       <nav className={cn("fixed left-0 right-0 z-50 transition-all duration-300 px-6", scrolled ? "top-7 bg-black/90 backdrop-blur-xl border-b border-white/10" : "top-8 bg-transparent")}>
         <div className="max-w-[1400px] mx-auto flex items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-2 group">
-            <motion.div whileHover={{ scale: 1.15, rotate: 6 }} className="w-6 h-6 bg-white flex items-center justify-center">
-              <span className="text-black font-black text-xs">L</span>
-            </motion.div>
+            <Logo className="w-8 h-8" />
             <span className="font-bold text-lg tracking-tighter">lucy_os</span>
           </Link>
           <div className="hidden lg:flex items-center gap-12 text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500">
@@ -486,10 +496,37 @@ export default function Home() {
               </motion.div>
 
               {/* Scramble hero title */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.2 }}>
-                <h1 className="text-[11vw] lg:text-[8.5rem] font-bold leading-[0.85] tracking-tighter uppercase">
-                  <div className="text-white">{heroLine1 || "INTELLIGENCE"}</div>
-                  <div className="text-zinc-800">{heroLine2 || "UNBOUND."}</div>
+              <motion.div 
+                initial={{ opacity: 0, rotateX: 45, y: 40 }} 
+                animate={{ opacity: 1, rotateX: 0, y: 0 }} 
+                transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <h1 className="text-[11vw] lg:text-[8.5rem] font-bold leading-[0.85] tracking-tighter uppercase perspective-[1000px]">
+                  <motion.div 
+                    whileHover={{ 
+                        rotateY: 15, 
+                        rotateX: -15, 
+                        translateZ: 100,
+                        textShadow: "0 20px 50px rgba(255,255,255,0.2)"
+                    }}
+                    transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                    className="text-white cursor-default transition-all duration-300 transform-gpu"
+                  >
+                    {heroLine1 || "INTELLIGENCE"}
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ 
+                        rotateY: -15, 
+                        rotateX: 15, 
+                        translateZ: 100,
+                        textShadow: "0 20px 50px rgba(255,255,255,0.1)"
+                    }}
+                    transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                    className="text-zinc-800 cursor-default transition-all duration-300 transform-gpu"
+                  >
+                    {heroLine2 || "UNBOUND."}
+                  </motion.div>
                 </h1>
               </motion.div>
 
