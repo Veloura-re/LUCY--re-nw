@@ -44,9 +44,10 @@ export async function POST(request: Request) {
                 }
             });
 
-            // Create new ones
-            const created = await Promise.all(periods.map(p =>
-                tx.period.create({
+            // Create new ones sequentially for stability
+            const created = [];
+            for (const p of periods) {
+                const newPeriod = await tx.period.create({
                     data: {
                         schoolId,
                         classId: classId || null,
@@ -56,8 +57,9 @@ export async function POST(request: Request) {
                         isBreak: p.isBreak || false,
                         order: p.order || 0
                     }
-                })
-            ));
+                });
+                created.push(newPeriod);
+            }
             return created;
         });
 
