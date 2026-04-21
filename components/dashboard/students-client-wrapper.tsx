@@ -30,13 +30,8 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
         firstName: "", lastName: "", grade: "", classId: "", email: "",
         gender: "", dob: "", age: "", address: "", guardianName: "", guardianPhone: "", secondaryPhone: "", photoUrl: ""
     });
-<<<<<<< HEAD
-    const [students, setStudents] = useState<any[]>(initialStudents);
-    const [grades] = useState<any[]>(initialGrades);
-=======
     const [students, setStudents] = useState<any[]>(initialStudents || []);
     const [grades] = useState<any[]>(initialGrades || []);
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
@@ -68,11 +63,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
             });
 
             if (res.ok) {
-<<<<<<< HEAD
-                const data = await res.json();
-=======
                 const data = await res.json() as any;
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                 setIsAdding(false);
                 setNewStudent({
                     firstName: "", lastName: "", grade: "", classId: "", email: "",
@@ -116,11 +107,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
         }
     };
 
-<<<<<<< HEAD
-    const filteredStudents = students
-=======
     const filteredStudents = (students || [])
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
         .filter(s => {
             const matchesSearch = activeSearch === "" ||
                 (s.firstName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
@@ -213,17 +200,10 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
                             <SelectItem value="ALL">ALL CLASSES</SelectItem>
-<<<<<<< HEAD
-                            {grades.map(grade => (
-                                <div key={grade.id}>
-                                    <div className="px-3 py-1.5 text-[7px] font-bold text-zinc-700 uppercase tracking-[0.2em] bg-zinc-900/30">{grade.name}</div>
-                                    {grade.classes.map((cls: any) => (
-=======
                             {grades?.map(grade => (
                                 <div key={grade.id}>
                                     <div className="px-3 py-1.5 text-[7px] font-bold text-zinc-700 uppercase tracking-[0.2em] bg-zinc-900/30">{grade.name}</div>
                                     {grade.classes?.map((cls: any) => (
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                                         <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
                                     ))}
                                 </div>
@@ -356,11 +336,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                                             <SelectValue placeholder="Select Grade" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-[300px]">
-<<<<<<< HEAD
-                                            {grades.map(g => (
-=======
                                             {grades?.map(g => (
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                                                 <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                                             ))}
                                         </SelectContent>
@@ -371,11 +347,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                                             <SelectValue placeholder="Select Class" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-[300px]">
-<<<<<<< HEAD
-                                            {grades.find(g => g.id === newStudent.grade)?.classes.map((c: any) => (
-=======
                                             {grades?.find(g => g.id === newStudent.grade)?.classes?.map((c: any) => (
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                                                 <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                                             ))}
                                         </SelectContent>
