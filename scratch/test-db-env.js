@@ -1,11 +1,13 @@
 const { Client } = require('pg');
 require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 async function testConnection() {
     console.log('--- Testing DATABASE_URL from .env ---');
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
         connectionTimeoutMillis: 5000,
+        ssl: { rejectUnauthorized: false }
     });
 
     try {
@@ -22,6 +24,7 @@ async function testConnection() {
     const directClient = new Client({
         connectionString: process.env.DIRECT_URL,
         connectionTimeoutMillis: 5000,
+        ssl: { rejectUnauthorized: false }
     });
 
     try {
