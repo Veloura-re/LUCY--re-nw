@@ -74,7 +74,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                 body: JSON.stringify({ type: 'GRADE', name: newGradeName, level: newGradeLevel })
             });
             if (res.ok) {
-                const data = await res.json();
+                const data = await res.json() as any;
                 setGrades(prev => [...prev, { ...data.grade, classes: [] }].sort((a, b) => a.level - b.level));
                 setIsAddingGrade(false);
                 setNewGradeName("");
@@ -95,7 +95,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                 body: JSON.stringify({ type: 'CLASS', gradeId, name: newClassName })
             });
             if (res.ok) {
-                const data = await res.json();
+                const data = await res.json() as any;
                 setGrades(prev => prev.map(g => 
                     g.id === gradeId 
                     ? { ...g, classes: [...g.classes, { ...data.cls, _count: { students: 0 } }].sort((a,b) => a.name.localeCompare(b.name)) } 
@@ -119,7 +119,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                 body: JSON.stringify({ name: newSubjectName })
             });
             if (res.ok) {
-                const data = await res.json();
+                const data = await res.json() as any;
                 setSubjects(prev => [...prev, data.subject].sort((a,b) => a.name.localeCompare(b.name)));
                 setIsAddingSubject(false);
                 setNewSubjectName("");
