@@ -12,7 +12,11 @@ export async function POST(request: Request) {
         const parentContext = await prisma.user.findUnique({
             where: { id: user.id },
             include: {
+<<<<<<< HEAD
                 parentStudents: {
+=======
+                parentLinks: {
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                     include: {
                         student: {
                             include: {
@@ -24,7 +28,11 @@ export async function POST(request: Request) {
                                 invoices: {
                                     where: { status: 'PENDING' }
                                 },
+<<<<<<< HEAD
                                 examScores: {
+=======
+                                gradeRecords: {
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                                     take: 5,
                                     orderBy: { createdAt: 'desc' },
                                     include: { subject: true, exam: true }

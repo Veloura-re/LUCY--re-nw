@@ -19,6 +19,7 @@ export async function GET() {
 
         const schoolId = dbUser.schoolId;
 
+<<<<<<< HEAD
         // parallelize lookups for maximum Edge performance
         const [orphanedTeachers, unmappedStudents, disconnectedParents, idlePrincipals] = await Promise.all([
             // 1. Orphaned Teachers (Teachers with no schoolId)
@@ -42,6 +43,28 @@ export async function GET() {
                 select: { id: true, name: true, email: true }
             })
         ]);
+=======
+        // Sequential lookups for stability on Cloudflare Edge
+        const orphanedTeachers = await prisma.user.findMany({
+            where: { role: 'TEACHER', schoolId: null },
+            select: { id: true, name: true, email: true }
+        });
+
+        const unmappedStudents = await prisma.student.findMany({
+            where: { schoolId: schoolId || undefined, parentLinks: { none: {} } },
+            select: { id: true, firstName: true, lastName: true, studentCode: true }
+        });
+
+        const disconnectedParents = await prisma.user.findMany({
+            where: { role: 'PARENT', schoolId: schoolId || undefined, parentLinks: { none: {} } },
+            select: { id: true, name: true, email: true }
+        });
+
+        const idlePrincipals = await prisma.user.findMany({
+            where: { role: 'PRINCIPAL', schoolId: null },
+            select: { id: true, name: true, email: true }
+        });
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
         return NextResponse.json({
             orphanedTeachers,

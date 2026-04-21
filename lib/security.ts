@@ -143,6 +143,7 @@ export function secureJson(data: any, status: number = 200) {
 type RateLimitEntry = { count: number; resetAt: number };
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
+<<<<<<< HEAD
 // Cleanup stale entries every 60s
 if (typeof setInterval !== 'undefined') {
     setInterval(() => {
@@ -151,6 +152,18 @@ if (typeof setInterval !== 'undefined') {
             if (now > entry.resetAt) rateLimitStore.delete(key);
         }
     }, 60_000);
+=======
+
+// Lazy cleanup: remove stale entries on access (no setInterval needed — Workers are stateless)
+let lastCleanup = 0;
+function cleanupRateLimits() {
+    const now = Date.now();
+    if (now - lastCleanup < 60_000) return;
+    lastCleanup = now;
+    for (const [key, entry] of rateLimitStore) {
+        if (now > entry.resetAt) rateLimitStore.delete(key);
+    }
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 }
 
 /**
@@ -167,6 +180,10 @@ export function rateLimit(
     maxRequests: number,
     windowMs: number = 60_000
 ): NextResponse | null {
+<<<<<<< HEAD
+=======
+    cleanupRateLimits();
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
         || request.headers.get('cf-connecting-ip')
         || request.headers.get('x-real-ip')
