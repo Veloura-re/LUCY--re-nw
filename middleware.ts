@@ -6,7 +6,7 @@ import { createServerClient } from '@supabase/ssr'
  * This handles authentication redirection and security headers.
  * Cloudflare OpenNext requires Edge runtime for global request interception.
  */
-export const runtime = 'edge'
+export const runtime = 'experimental-edge'
 
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
