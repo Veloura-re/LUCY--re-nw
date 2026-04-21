@@ -16,17 +16,33 @@ export default async function ClassesPage() {
         redirect("/login");
     }
 
-    const dbUser = await getCachedUser(user.id);
+    let dbUser: any = null;
+    try {
+        dbUser = await getCachedUser(user.id);
+    } catch (e) {
+        console.error('[ClassesPage] Failed to fetch user profile:', e);
+    }
     if (!dbUser || !dbUser.schoolId) {
         redirect("/dashboard");
     }
 
-    // Parallelize all institutional lookups for sub-second delivery
-    const [grades, teachers, subjects] = await Promise.all([
-        getCachedSchoolStructure(dbUser.schoolId),
-        getCachedTeacherRegistry(dbUser.schoolId),
-        getCachedSchoolSubjects(dbUser.schoolId)
-    ]);
+    // Optimization: Sequential fetching on Edge to prevent CPU spike triggers
+    let grades: any[] = [];
+    let teachers: any[] = [];
+    let subjects: any[] = [];
+
+    try {
+        // We fetch sequentially to stay under peak CPU limits during cold starts
+        console.time(`[ClassesPage] Sequence Fetch: ${user.id}`);
+        
+        grades = await getCachedSchoolStructure(dbUser.schoolId);
+        teachers = await getCachedTeacherRegistry(dbUser.schoolId);
+        subjects = await getCachedSchoolSubjects(dbUser.schoolId);
+        
+        console.timeEnd(`[ClassesPage] Sequence Fetch: ${user.id}`);
+    } catch (e) {
+        console.error('[ClassesPage] Data sequence interrupted:', e);
+    }
 
     return (
         <Suspense fallback={
@@ -35,9 +51,9 @@ export default async function ClassesPage() {
             </div>
         }>
             <ClassesClientWrapper 
-                initialGrades={grades}
-                initialTeachers={teachers}
-                initialSubjects={subjects}
+                initialGrades={grades || []}
+                initialTeachers={teachers || []}
+                initialSubjects={subjects || []}
             />
         </Suspense>
     );

@@ -1,0 +1,5 @@
+DATABASE_URL: postgresql://postgres.caeeusbhwrkelnffbbub:***@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+
+Total Users: 2
+Email: teacher@school.edu | ID: t1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6 | Role: TEACHER
+Email: admin@lucy.edu | ID: 1172f392-1e2a-4d47-8824-f06b1ca362fd | Role: SUPERADMIN
