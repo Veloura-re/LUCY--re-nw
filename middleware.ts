@@ -2,12 +2,13 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 /**
- * Next.js 16 Proxy Boundary.
- * This replaces the deprecated middleware.ts convention.
- * It handles authentication redirection and security headers.
+ * Next.js Edge Middleware.
+ * This handles authentication redirection and security headers.
+ * Cloudflare OpenNext requires Edge runtime for global request interception.
  */
+export const runtime = 'edge'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
             headers: request.headers,
