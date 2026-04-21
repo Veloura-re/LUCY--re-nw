@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import { NextResponse } from 'next/server';
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 import { prisma } from '@/lib/prisma';
 import { rateLimit, secureJson } from '@/lib/security';
 

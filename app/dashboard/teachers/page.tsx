@@ -12,6 +12,7 @@ export default async function TeachersPage() {
 
     if (!authUser) redirect("/login");
 
+<<<<<<< HEAD
     const dbUser = await getCachedUser(authUser.id);
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
@@ -20,6 +21,27 @@ export default async function TeachersPage() {
         getCachedTeacherRegistry(dbUser.schoolId),
         getCachedSchoolInfoForRegistry(dbUser.schoolId)
     ]);
+=======
+    let dbUser: any = null;
+    try {
+        dbUser = await getCachedUser(authUser.id);
+    } catch (e) {
+        console.error('[TeachersPage] Failed to fetch profile:', e);
+    }
+
+    if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
+
+    let teachers: any[] = [];
+    let schoolInfo: any = null;
+
+    try {
+        // Sequential fetch ensures we don't burst CPU limits during cold start DB initialization
+        teachers = await getCachedTeacherRegistry(dbUser.schoolId);
+        schoolInfo = await getCachedSchoolInfoForRegistry(dbUser.schoolId);
+    } catch (e) {
+        console.error('[TeachersPage] Sequence fetch error:', e);
+    }
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
     return (
         <Suspense fallback={
@@ -29,7 +51,11 @@ export default async function TeachersPage() {
             </div>
         }>
             <TeachersClientWrapper 
+<<<<<<< HEAD
                 initialTeachers={teachers}
+=======
+                initialTeachers={teachers || []}
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                 schoolInfo={schoolInfo}
                 me={authUser}
             />

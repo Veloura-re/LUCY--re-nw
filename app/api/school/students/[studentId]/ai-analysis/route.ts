@@ -4,11 +4,20 @@ import { analyzeStudentRisk } from '@/lib/ai';
 
 export async function GET(
     request: Request,
+<<<<<<< HEAD
     { params }: { params: { studentId: string } }
 ) {
     try {
         const student = await prisma.student.findUnique({
             where: { id: params.studentId },
+=======
+    { params }: { params: Promise<{ studentId: string }> }
+) {
+    try {
+        const { studentId } = await params;
+        const student = await prisma.student.findUnique({
+            where: { id: studentId },
+>>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
             include: {
                 attendanceRecords: {
                     orderBy: { date: 'desc' },
