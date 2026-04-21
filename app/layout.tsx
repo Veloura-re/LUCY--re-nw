@@ -8,8 +8,11 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "LUCY",
-  description: "Advanced School Management Platform",
+  title: "LUCY | Neural School OS",
+  description: "Advanced Learning Unified Cognitive Yield Architecture",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 import { Toaster } from "sonner";

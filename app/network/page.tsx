@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, ArrowLeft, Server, Activity, Shield, Wifi, Share2, Zap, Database } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { Logo } from "@/components/ui/logo";
 
 interface Stats {
     schools: number;
@@ -64,9 +65,7 @@ export default function Network() {
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-md px-6 py-4">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
-                        <motion.div whileHover={{ scale: 1.1 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
-                        </motion.div>
+                        <Logo className="w-8 h-8" />
                         <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/">

@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     // Wrap views in Suspense to allow layout to stream
     return (
         <Suspense fallback={<Loading />}>
-            <DashboardContent dbUser={dbUser} />
+            <DashboardContent dbUser={JSON.parse(JSON.stringify(dbUser))} />
         </Suspense>
     );
 }
@@ -39,16 +39,16 @@ async function DashboardContent({ dbUser }: { dbUser: any }) {
             if (dbUser.schoolId) {
                 dashboardData = await getSchoolAnalytics(dbUser.schoolId);
             }
-            return <DirectorView user={dbUser} school={dbUser.school} initialAnalytics={dashboardData} />;
+            return <DirectorView user={dbUser} school={dbUser.school} initialAnalytics={JSON.parse(JSON.stringify(dashboardData))} />;
 
         case 'HOMEROOM':
         case 'TEACHER':
             dashboardData = await getTeacherDashboardData(dbUser.id);
-            return <TeacherView user={dbUser} initialData={dashboardData} />;
+            return <TeacherView user={dbUser} initialData={JSON.parse(JSON.stringify(dashboardData))} />;
 
         case 'PARENT':
             dashboardData = await getFamilyChildren(dbUser.id);
-            return <ParentView user={dbUser} childrenData={dashboardData} />;
+            return <ParentView user={dbUser} childrenData={JSON.parse(JSON.stringify(dashboardData))} />;
 
         case 'STUDENT':
             redirect('/dashboard/student');

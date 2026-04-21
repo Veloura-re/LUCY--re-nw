@@ -6,6 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Logo } from "@/components/ui/logo";
 
 export default function RegisterPage() {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -58,9 +59,12 @@ export default function RegisterPage() {
             <div className="max-w-7xl w-full z-10 flex flex-col items-center gap-16">
                 {/* Header section with Premium typography */}
                 <div className="text-center space-y-6 animate-in fade-in slide-in-from-top-10 duration-300">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/40 border border-zinc-800 backdrop-blur-xl text-[10px] font-bold text-eduGreen-400 uppercase tracking-[0.3em] shadow-2xl">
-                        <Cpu className="w-3.5 h-3.5 animate-pulse" />
-                        <span>Initialize Protocol v2.6</span>
+                    <div className="flex flex-col items-center gap-6">
+                        <Logo className="w-16 h-16" />
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/40 border border-zinc-800 backdrop-blur-xl text-[10px] font-bold text-eduGreen-400 uppercase tracking-[0.3em] shadow-2xl">
+                            <Cpu className="w-3.5 h-3.5 animate-pulse" />
+                            <span>Initialize Protocol v2.6</span>
+                        </div>
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none text-white">

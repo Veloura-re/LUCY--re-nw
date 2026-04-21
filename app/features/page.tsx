@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Cpu, ArrowLeft, Users, Database, Calendar, Shield, Network, Command, Activity, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, ScanBar } from "@/components/public/animations";
+import { Logo } from "@/components/ui/logo";
 
 const specs = [
     { icon: Users, title: "Role Configuration", id: "0x01", desc: "Assign cryptographic access tokens separating Director, Admin, Faculty, Scholar, and Parent (Observer) domains — each scoped to their own data silo." },
@@ -35,10 +36,8 @@ export default function Features() {
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
-                        </motion.div>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Logo className="w-8 h-8" />
                         <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
