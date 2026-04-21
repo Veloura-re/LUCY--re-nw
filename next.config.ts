@@ -2,11 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-<<<<<<< HEAD
   reactCompiler: true,
-=======
-  reactCompiler: false,
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
   productionBrowserSourceMaps: false,
   typescript: {
     ignoreBuildErrors: true,
@@ -69,8 +65,6 @@ const nextConfig: NextConfig = {
   // ── Compiler-level optimisations ────────────────────────────────────────────
   compress: true,
   poweredByHeader: false,
-  // Strict mode helps catch bugs early without perf cost in production
-  // reactStrictMode: true, // already default in Next 14+
 };
 
 export default nextConfig;

@@ -12,16 +12,6 @@ export default async function TeachersPage() {
 
     if (!authUser) redirect("/login");
 
-<<<<<<< HEAD
-    const dbUser = await getCachedUser(authUser.id);
-    if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
-
-    // Parallel Fetching for sub-second performance
-    const [teachers, schoolInfo] = await Promise.all([
-        getCachedTeacherRegistry(dbUser.schoolId),
-        getCachedSchoolInfoForRegistry(dbUser.schoolId)
-    ]);
-=======
     let dbUser: any = null;
     try {
         dbUser = await getCachedUser(authUser.id);
@@ -41,7 +31,6 @@ export default async function TeachersPage() {
     } catch (e) {
         console.error('[TeachersPage] Sequence fetch error:', e);
     }
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
     return (
         <Suspense fallback={
@@ -51,11 +40,7 @@ export default async function TeachersPage() {
             </div>
         }>
             <TeachersClientWrapper 
-<<<<<<< HEAD
-                initialTeachers={teachers}
-=======
                 initialTeachers={teachers || []}
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
                 schoolInfo={schoolInfo}
                 me={authUser}
             />

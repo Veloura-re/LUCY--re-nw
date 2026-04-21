@@ -15,27 +15,16 @@ export default async function StudentsPage() {
         redirect("/login");
     }
 
-<<<<<<< HEAD
-    const dbUser = await getCachedUser(user.id);
-=======
     let dbUser: any = null;
     try {
         dbUser = await getCachedUser(user.id);
     } catch (e) {
         console.error('[StudentsPage] Profile fetch error:', e);
     }
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
     if (!dbUser || !dbUser.schoolId) {
         redirect("/dashboard");
     }
 
-<<<<<<< HEAD
-    // Parallelize data fetching for sub-second performance
-    const [students, grades] = await Promise.all([
-        getCachedSchoolStudents(dbUser.schoolId),
-        getCachedSchoolStructure(dbUser.schoolId)
-    ]);
-=======
     let students: any[] = [];
     let grades: any[] = [];
 
@@ -46,18 +35,12 @@ export default async function StudentsPage() {
     } catch (e) {
         console.error('[StudentsPage] Registry synthesis error:', e);
     }
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
     return (
         <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><SpringingLoader message="Synthesizing Registry..." /></div>}>
             <StudentsClientWrapper 
-<<<<<<< HEAD
-                initialStudents={students}
-                initialGrades={grades}
-=======
                 initialStudents={students || []}
                 initialGrades={grades || []}
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
             />
         </Suspense>
     );

@@ -2,15 +2,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 /**
-<<<<<<< HEAD
- * Next.js 16 Proxy Boundary.
- * This replaces the deprecated middleware.ts convention.
- * It handles authentication redirection and security headers.
-=======
  * Next.js Edge Middleware.
  * This handles authentication redirection and security headers.
  * Cloudflare OpenNext requires Edge runtime for global request interception.
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
  */
 export const runtime = 'experimental-edge'
 
@@ -124,11 +118,7 @@ export async function middleware(request: NextRequest) {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
         'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://* wss://*; frame-src 'self' https://*; worker-src 'self' blob:;",
-<<<<<<< HEAD
-        'Link': '<https://fpxmwnlgsasydpbephce.supabase.co>; rel=preconnect',
-=======
         'Link': `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect`,
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
     }
 
     Object.entries(securityHeaders).forEach(([key, value]) => {

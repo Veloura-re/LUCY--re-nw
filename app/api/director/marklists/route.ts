@@ -15,22 +15,6 @@ export async function GET(req: Request) {
         const limit = parseInt(searchParams.get('limit') || '12');
         const skip = (page - 1) * limit;
 
-<<<<<<< HEAD
-        const [configs, total] = await Promise.all([
-            prisma.marklistConfig.findMany({
-                where: { schoolId: user.schoolId },
-                include: {
-                    class: { select: { name: true } },
-                    subject: { select: { name: true } },
-                    _count: { select: { columns: true, entries: true } }
-                },
-                orderBy: { updatedAt: 'desc' },
-                skip,
-                take: limit
-            }),
-            prisma.marklistConfig.count({ where: { schoolId: user.schoolId } })
-        ]);
-=======
         // Sequential fetching for stability on Cloudflare Edge
         const configs = await prisma.marklistConfig.findMany({
             where: { schoolId: user.schoolId },
@@ -45,7 +29,6 @@ export async function GET(req: Request) {
         });
 
         const total = await prisma.marklistConfig.count({ where: { schoolId: user.schoolId } });
->>>>>>> dd98834c9a006342647ee3b70627d513ddc6e533
 
         const hasMore = (skip + configs.length) < total;
 
