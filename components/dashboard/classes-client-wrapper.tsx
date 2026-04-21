@@ -17,9 +17,9 @@ interface ClassesClientWrapperProps {
 }
 
 export default function ClassesClientWrapper({ initialGrades, initialSubjects, initialTeachers }: ClassesClientWrapperProps) {
-    const [grades, setGrades] = useState<any[]>(initialGrades);
-    const [subjects, setSubjects] = useState<any[]>(initialSubjects);
-    const [allTeachers] = useState<any[]>(initialTeachers);
+    const [grades, setGrades] = useState<any[]>(initialGrades || []);
+    const [subjects, setSubjects] = useState<any[]>(initialSubjects || []);
+    const [allTeachers] = useState<any[]>(initialTeachers || []);
 
     const [expandedGrade, setExpandedGrade] = useState<string | null>(null);
     const [isAddingGrade, setIsAddingGrade] = useState(false);
@@ -233,7 +233,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                             )}
 
                             <div className="divide-y divide-zinc-900">
-                                {grades.map((grade) => (
+                                {grades?.map((grade) => (
                                     <div key={grade.id} className="group transition-all">
                                         <div
                                             className={`p-10 flex items-center justify-between cursor-pointer hover:bg-eduGreen-900/5 transition-all ${expandedGrade === grade.id ? 'bg-eduGreen-900/5' : ''}`}
@@ -248,7 +248,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     <div className="flex items-center gap-3 mt-1">
                                                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Academic Tier</p>
                                                         <div className="w-1 h-1 rounded-full bg-zinc-800" />
-                                                        <span className="text-[9px] font-medium text-eduGreen-700 uppercase tracking-tighter">{grade.classes.length} Class Nodes</span>
+                                                        <span className="text-[9px] font-medium text-eduGreen-700 uppercase tracking-tighter">{grade.classes?.length || 0} Class Nodes</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -270,7 +270,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                         {expandedGrade === grade.id && (
                                             <div className="bg-zinc-950/80 p-10 pt-2 border-t border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                                                    {grade.classes.map((cls: any) => (
+                                                    {grade.classes?.map((cls: any) => (
                                                         <div key={cls.id} className="p-6 bg-zinc-900 rounded-[1.5rem] border border-zinc-800 flex items-center justify-between group/cls hover:border-eduGreen-500/30 hover:bg-eduGreen-900/5 transition-all relative overflow-hidden">
                                                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/cls:opacity-100 transition-opacity" />
                                                             <div className="relative z-10 flex-1">
@@ -305,13 +305,13 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                             <div className="flex items-center gap-2 relative z-10">
                                                                 <Select
                                                                     onValueChange={(teacherId: string) => handleAssignHomeroom(cls.id, teacherId === "null" ? null : teacherId)}
-                                                                    defaultValue={cls.homeroomTeacherId}
+                                                                    defaultValue={cls.homeroomTeacherId || "null"}
                                                                 >
                                                                     <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-950/50 border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-all">
                                                                         <SelectValue placeholder="Staff" />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
-                                                                        {allTeachers.map((t: any) => (
+                                                                        {allTeachers?.map((t: any) => (
                                                                             <SelectItem key={t.id} value={t.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
                                                                                 {t.name}
                                                                             </SelectItem>
@@ -359,7 +359,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                         )}
                                     </div>
                                 ))}
-                                {grades.length === 0 && !isAddingGrade && (
+                                {(!grades || grades.length === 0) && !isAddingGrade && (
                                     <div className="p-20 text-center flex flex-col items-center gap-4">
                                         <div className="w-16 h-16 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center opacity-20">
                                             <Layers className="w-8 h-8 text-white" />
@@ -417,7 +417,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                 </div>
                             )}
                             <div className="divide-y divide-zinc-900/80 max-h-[600px] overflow-y-auto custom-scrollbar">
-                                {subjects.map((sub) => (
+                                {subjects?.map((sub) => (
                                     <div key={sub.id} className="p-5 flex items-center justify-between hover:bg-sky-900/5 transition-all group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-800 group-hover:bg-sky-500 group-hover:shadow-[0_0_8px_rgba(14,165,233,0.5)] transition-all" />
@@ -433,7 +433,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                         </Button>
                                     </div>
                                 ))}
-                                {subjects.length === 0 && !isAddingSubject && (
+                                {(!subjects || subjects.length === 0) && !isAddingSubject && (
                                     <div className="p-16 text-center flex flex-col items-center gap-4 opacity-40">
                                         <BookOpen className="w-10 h-10 text-zinc-400" />
                                         <p className="text-zinc-600 font-medium uppercase tracking-widest text-[9px]">No subjects registered</p>
