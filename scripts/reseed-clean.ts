@@ -82,8 +82,9 @@ async function main() {
         console.log(`Processing ${acc.role}: ${acc.email}...`);
         
         // A. Supabase Auth
-        const { data: { users } } = await supabase.auth.admin.listUsers();
-        let authUser = users.find(u => u.email === acc.email);
+        const { data } = await supabase.auth.admin.listUsers();
+        const users = data?.users || [];
+        let authUser = users.find((u: any) => u.email === acc.email);
 
         if (authUser) {
             await supabase.auth.admin.deleteUser(authUser.id);

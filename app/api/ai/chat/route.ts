@@ -173,6 +173,10 @@ If you don't know something about the user's specific data, help them navigate t
 `;
 };
 
+export async function GET() {
+    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+}
+
 export async function POST(req: Request) {
     const limit = rateLimit(req, "ai/chat", 10);
     if (limit) return limit;
