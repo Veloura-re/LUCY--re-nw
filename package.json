@@ -70,7 +70,7 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "wrangler": "^4.70.0"
+    "wrangler": "^4.90.0"
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"

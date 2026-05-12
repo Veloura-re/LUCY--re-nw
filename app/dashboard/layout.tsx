@@ -83,8 +83,7 @@ export default async function DashboardLayout({
 
     // Determine navigation preference (Default to DOCK if not set)
     const savedPref = (dbUser.preferences as any)?.nav_pref;
-    const cookieStoreValue = await cookies();
-    const cookiePref = cookieStoreValue.get("nav_pref")?.value;
+    const cookiePref = cookieStore.get("nav_pref")?.value;
     const navPref = cookiePref || savedPref || "DOCK";
     const isSidebar = navPref === "SIDEBAR";
 

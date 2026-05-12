@@ -230,7 +230,7 @@ function SignalWallPreview() {
   useEffect(() => {
     fetch("/api/public/comments")
       .then(r => r.ok ? r.json() : { comments: [] })
-      .then(d => { setComments((d.comments ?? []).slice(0, 4)); setLoading(false); })
+      .then((d: any) => { setComments((d.comments ?? []).slice(0, 4)); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
