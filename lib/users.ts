@@ -45,12 +45,14 @@ export const getCachedUser = cache(async (userId: string) => {
             .from('User')
             .select('*, school:School(*)')
             .eq('id', userId)
-            .single();
+            .maybeSingle();
 
         if (error) {
             console.error(`[lib/users] Supabase Admin fallback error for ${userId}:`, error.message);
             return null;
         }
+
+        if (!data) return null;
 
         return {
             ...data,
@@ -89,12 +91,14 @@ export const getCachedUserByEmail = cache(async (email: string) => {
             .from('User')
             .select('*, school:School(*)')
             .eq('email', email)
-            .single();
+            .maybeSingle();
 
         if (sbError) {
             console.error(`[lib/users] Supabase Admin lookup by email failed for ${email}:`, sbError.message);
             return null;
         }
+
+        if (!data) return null;
         
         return {
             ...data,
