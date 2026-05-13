@@ -1,5 +1,6 @@
 "use client";
 
+
 import { Card, CardTitle } from "@/components/ui/card";
 import { User, Shield, ArrowRight, GraduationCap, Lock, Sparkles, Building2, Globe, Cpu } from "lucide-react";
 import Link from "next/link";

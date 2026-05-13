@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
-import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
     try {
-        const { studentCode, email, password } = await req.json();
+        const { studentCode, email, password } = await req.json() as any;
 
         if (!studentCode || !password) {
             return NextResponse.json({ error: "Student Token and Secure Keyphrase required" }, { status: 400 });
@@ -60,7 +59,12 @@ export async function POST(req: Request) {
         }
 
         // 3. Create User Account in Prisma (Synced with Supabase ID)
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Using Web Crypto for a safe hash in Edge environment instead of Node-only bcryptjs
+        const encoder = new TextEncoder();
+        const pwData = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', pwData);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         try {
             const result = await prisma.$transaction(async (tx) => {

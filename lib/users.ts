@@ -2,20 +2,25 @@ import { cache } from 'react';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize a privileged Service Role client for critical internal fallbacks.
-// This bypasses RLS and schema usage restrictions, ensuring profile lookups 
-// always succeed even if the standard 'anon' role is restricted.
 const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 /**
- * Cached function to retrieve the full database user profile by Supabase ID.
- * Falls back to Supabase HTTP Admin client if Prisma TCP connection fails at the Edge.
+ * Retrieves the full database user profile by Supabase ID.
+ * Prefers Supabase HTTP lookup on Edge for stability.
  */
 export const getCachedUser = cache(async (userId: string) => {
+    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+
+    // On Edge, we prefer Supabase SDK immediately to avoid Prisma bundling issues
+    if (isEdge) {
+        return fetchUserFromSupabase(userId, 'id');
+    }
+
     try {
+        if (!prisma) throw new Error("Prisma client not available");
         const user = await prisma.user.findUnique({
             where: { id: userId },
             include: { 
@@ -35,43 +40,21 @@ export const getCachedUser = cache(async (userId: string) => {
         });
         if (user) return user;
     } catch (error: any) {
-        console.error(`[lib/users] Prisma lookup by ID failed for ${userId}:`, error.message);
+        console.warn(`[lib/users] Prisma ID lookup skipped/failed: ${error.message}`);
     }
 
-    try {
-        console.log(`[lib/users] Falling back to Supabase Admin lookup by ID for ${userId}`);
-        // Privileged HTTP Fallback (Bypasses RLS/Permission Denied)
-        const { data, error } = await supabaseAdmin
-            .from('User')
-            .select('*, school:School(*)')
-            .eq('id', userId)
-            .maybeSingle();
-
-        if (error) {
-            console.error(`[lib/users] Supabase Admin fallback error for ${userId}:`, error.message);
-            return null;
-        }
-
-        if (!data) return null;
-
-        return {
-            ...data,
-            school: data.school ? {
-                ...data.school,
-                _count: { students: 0, users: 0 }
-            } : null
-        };
-    } catch (fallbackError: any) {
-        console.error(`[lib/users] Critical fallback failure for ${userId}:`, fallbackError.message);
-        return null;
-    }
+    return fetchUserFromSupabase(userId, 'id');
 });
 
-/**
- * Fallback to email search if ID mismatch occurs
- */
 export const getCachedUserByEmail = cache(async (email: string) => {
+    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+
+    if (isEdge) {
+        return fetchUserFromSupabase(email, 'email');
+    }
+
     try {
+        if (!prisma) throw new Error("Prisma client not available");
         const user = await prisma.user.findUnique({
             where: { email },
             include: { 
@@ -82,30 +65,31 @@ export const getCachedUserByEmail = cache(async (email: string) => {
         });
         if (user) return user;
     } catch (error: any) {
-        console.error(`[lib/users] Prisma lookup by email failed for ${email}:`, error.message);
+        console.warn(`[lib/users] Prisma email lookup skipped/failed: ${error.message}`);
     }
 
+    return fetchUserFromSupabase(email, 'email');
+});
+
+async function fetchUserFromSupabase(value: string, field: 'id' | 'email') {
     try {
-        console.log(`[lib/users] Falling back to Supabase Admin lookup by email for ${email}`);
-        const { data, error: sbError } = await supabaseAdmin
+        const { data, error } = await supabaseAdmin
             .from('User')
             .select('*, school:School(*)')
-            .eq('email', email)
+            .eq(field, value)
             .maybeSingle();
 
-        if (sbError) {
-            console.error(`[lib/users] Supabase Admin lookup by email failed for ${email}:`, sbError.message);
-            return null;
-        }
+        if (error || !data) return null;
 
-        if (!data) return null;
-        
         return {
             ...data,
-            school: data.school ? { ...data.school, _count: { students: 0, users: 0 } } : null
+            school: data.school ? {
+                ...data.school,
+                _count: { students: 0, users: 0 }
+            } : null
         };
-    } catch (fallbackError: any) {
-        console.error(`[lib/users] Critical fallback failure for ${email}:`, fallbackError.message);
+    } catch (err: any) {
+        console.error(`[lib/users] Supabase fetch failed for ${field}=${value}:`, err.message);
         return null;
     }
-});
+}

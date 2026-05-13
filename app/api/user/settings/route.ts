@@ -6,39 +6,57 @@ export async function GET() {
     try {
         const dbUser = await requireAuth();
 
-        const user = await prisma.user.findUnique({
-            where: { id: dbUser.id },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-                bio: true,
-                preferences: true,
-                // Include linked students for Parents
-                parentLinks: {
-                    include: {
-                        student: {
-                            select: {
-                                id: true,
-                                firstName: true,
-                                lastName: true,
-                                studentCode: true,
-                                grade: { select: { name: true } },
-                                class: { select: { name: true } }
+        let user;
+        if (!prisma) {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+            const { data } = await supabaseAdmin.from('User').select('*').eq('id', dbUser.id).single();
+            // Simplify data for edge
+            user = {
+                id: data?.id,
+                email: data?.email,
+                name: data?.name,
+                role: data?.role,
+                bio: data?.bio,
+                preferences: data?.preferences,
+                parentLinks: [],
+                teacherAssignments: []
+            };
+        } else {
+            user = await prisma.user.findUnique({
+                where: { id: dbUser.id },
+                select: {
+                    id: true,
+                    email: true,
+                    name: true,
+                    role: true,
+                    bio: true,
+                    preferences: true,
+                    // Include linked students for Parents
+                    parentLinks: {
+                        include: {
+                            student: {
+                                select: {
+                                    id: true,
+                                    firstName: true,
+                                    lastName: true,
+                                    studentCode: true,
+                                    grade: { select: { name: true } },
+                                    class: { select: { name: true } }
+                                }
                             }
                         }
-                    }
-                },
-                // Include assignments for Teachers
-                teacherAssignments: {
-                    include: {
-                        class: { select: { name: true, grade: { select: { name: true } } } },
-                        subject: { select: { name: true } }
+                    },
+                    // Include assignments for Teachers
+                    teacherAssignments: {
+                        include: {
+                            class: { select: { name: true, grade: { select: { name: true } } } },
+                            subject: { select: { name: true } }
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         return NextResponse.json({ user });
     } catch (e) {

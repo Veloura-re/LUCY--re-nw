@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import fs from 'fs';
 import { requireAuth, handleApiError } from '@/lib/security';
 
 export async function GET(request: Request) {
@@ -20,11 +19,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ authorizations });
     } catch (e: any) {
         console.error(e);
-        try {
-            fs.appendFileSync('api-debug.log', `[${new Date().toISOString()}] GET /api/user/authorizations error: ${e.message}\n${e.stack}\n`);
-        } catch (err) {
-            console.error('Failed to write to log file', err);
-        }
+        console.error(`[GET /api/user/authorizations] Error: ${e.message}`, e.stack);
+
         return NextResponse.json({ error: 'Failed to fetch authorizations', message: e.message }, { status: 500 });
     }
 }
@@ -32,7 +28,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const dbUser = await requireAuth();
-        const body = await request.json();
+        const body = await request.json() as any;
         const { studentId, startDate, endDate, reason, isStaffLeave } = body;
 
         if (!startDate || !endDate) {
@@ -78,11 +74,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ authorization });
     } catch (e: any) {
         console.error(e);
-        try {
-            fs.appendFileSync('api-debug.log', `[${new Date().toISOString()}] POST /api/user/authorizations error: ${e.message}\n${e.stack}\n`);
-        } catch (err) {
-            console.error('Failed to write to log file', err);
-        }
+        console.error(`[POST /api/user/authorizations] Error: ${e.message}`, e.stack);
+
         return NextResponse.json({ error: 'Failed to create authorization', message: e.message }, { status: 500 });
     }
 }
