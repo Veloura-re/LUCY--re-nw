@@ -1,66 +1,49 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { prisma } from './prisma';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lucy.goodluck97248.workers.dev';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
 
-let globalTransporter: nodemailer.Transporter | null = null;
-
-function getTransporter() {
-    if (globalTransporter) return globalTransporter;
-
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-        return null;
-    }
-
-    globalTransporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        pool: true,
-        maxConnections: 5,
-        maxMessages: 100,
-        auth: { 
-            user: process.env.GMAIL_USER, 
-            pass: process.env.GMAIL_APP_PASSWORD 
-        },
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
-
-    return globalTransporter;
+function getResend() {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) return null;
+    return new Resend(apiKey);
 }
 
-// Generic email sender using Gmail SMTP
-async function sendEmail({ to, subject, html, replyTo }: { to: string; subject: string; html: string; replyTo?: string }) {
-    const user = process.env.GMAIL_USER;
-    const transporter = getTransporter();
+// Generic email sender using Resend (fetch-based, CF Workers compatible)
+export async function sendEmail({ to, subject, html, replyTo }: { to: string; subject: string; html: string; replyTo?: string }) {
+    const resend = getResend();
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'no-reply@5-cn.net';
 
-    if (!transporter || !user) {
-        console.warn('⚠️ GMAIL_USER or GMAIL_APP_PASSWORD is missing. Falling back to console log.');
+    if (!resend) {
+        console.warn('⚠️ RESEND_API_KEY is missing. Falling back to console log.');
         console.log('='.repeat(80));
         console.log(`📧 SIMULATED EMAIL TO: ${to}`);
         if (replyTo) console.log(`Reply-To: ${replyTo}`);
         console.log(`Subject: ${subject}`);
         console.log('-'.repeat(40));
-        console.log(html.replace(/<[^>]*>?/gm, '')); // Plain text fallback for log
+        console.log(html.replace(/<[^>]*>?/gm, ''));
         console.log('='.repeat(80));
-        return { success: false, error: 'Missing Gmail credentials', simulated: true };
+        return { success: false, error: 'Missing Resend API key', simulated: true };
     }
 
     try {
-        await transporter.sendMail({
-            from: `"LUCY Platform" <${user}>`,
+        const { error } = await resend.emails.send({
+            from: `LUCY Platform <${fromEmail}>`,
             to,
             subject,
             html,
             replyTo: replyTo || undefined,
         });
 
+        if (error) {
+            console.error('Resend Error:', error);
+            return { success: false, error: error.message };
+        }
+
         return { success: true };
     } catch (error: any) {
-        console.error('Nodemailer Error:', error);
-        return { success: false, error: error.message || 'Unknown SMTP Error' };
+        console.error('Resend send error:', error);
+        return { success: false, error: error.message || 'Unknown Email Error' };
     }
 }
 
@@ -155,7 +138,7 @@ export async function sendAssessmentReportEmail(
                 </div>
                 
                 <div style="margin-bottom: 24px;">
-                    <p style="margin: 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #6E7377;">Subject & Context</p>
+                    <p style="margin: 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #6E7377;">Subject &amp; Context</p>
                     <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700; color: #101314;">${subjectName} • ${examTitle}</p>
                 </div>
 
@@ -228,7 +211,7 @@ export async function sendAssessmentAssignedEmail(
                 </div>
                 
                 <div style="margin-bottom: 24px;">
-                    <p style="margin: 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #6E7377;">Subject & Context</p>
+                    <p style="margin: 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #6E7377;">Subject &amp; Context</p>
                     <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700; color: #101314;">${subjectName} • ${examTitle}</p>
                 </div>
 
@@ -364,9 +347,9 @@ export async function sendLatenessNotificationEmail(
                 <p style="margin: 0; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #9EA3A7;">Neural Incident Summary</p>
                 <p style="margin: 12px 0 0 0; font-size: 16px; font-weight: 700; line-height: 1.5;">
                     ${isThresholdAlert
-            ? `<span style="color: #FC8181;">CRITICAL:</span> ${studentName} has reached <strong>${totalLates}</strong> historical lateness records. A meeting with the administration may be required.`
-            : `This notice confirms that ${studentName} was marked late today. This is the ${totalLates}${totalLates === 1 ? 'st' : totalLates === 2 ? 'nd' : 'th'} recorded instance.`
-        }
+        ? `<span style="color: #FC8181;">CRITICAL:</span> ${studentName} has reached <strong>${totalLates}</strong> historical lateness records. A meeting with the administration may be required.`
+        : `This notice confirms that ${studentName} was marked late today. This is the ${totalLates}${totalLates === 1 ? 'st' : totalLates === 2 ? 'nd' : 'th'} recorded instance.`
+    }
                 </p>
             </div>
 

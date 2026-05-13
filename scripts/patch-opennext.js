@@ -25,26 +25,25 @@ function safePatch(relativeFilePath, target, replacement) {
     }
 }
 
-// 1. Patch bundle-server.js (Main server bundle)
-// We use a multi-line match for the external array to be very specific
+// 1. Patch bundle-server.js
 safePatch(
     'node_modules/@opennextjs/cloudflare/dist/cli/build/bundle-server.js',
     'external: ["cloudflare:sockets", "./middleware/handler.mjs",',
-    'external: [\n            "cloudflare:sockets", \n            "./middleware/handler.mjs", \n            "@prisma/pg-worker", \n            "@prisma/adapter-pg-worker", \n            "pg-worker",'
+    'external: ["cloudflare:sockets", "./middleware/handler.mjs"],'
 );
 
-// 2. Patch helper.js (Global helper for bundling)
+// 2. Patch helper.js
 safePatch(
     'node_modules/@opennextjs/aws/dist/build/helper.js',
     'external: ["cloudflare:sockets", ...(esbuildOptions.external ?? [])],',
-    'external: ["cloudflare:sockets", "@prisma/pg-worker", "@prisma/adapter-pg-worker", "pg-worker", "./open-next.config.mjs", ...(esbuildOptions.external ?? [])],'
+    'external: ["cloudflare:sockets", ...(esbuildOptions.external ?? [])],'
 );
 
-// 3. Patch bundleNextServer.js (Next server runtime)
+// 3. Patch bundleNextServer.js
 safePatch(
     'node_modules/@opennextjs/aws/dist/build/bundleNextServer.js',
     'external: [...externals, "cloudflare:sockets"],',
-    'external: [...externals, "cloudflare:sockets", "@prisma/pg-worker", "@prisma/adapter-pg-worker", "pg-worker"],'
+    'external: [...externals, "cloudflare:sockets"],'
 );
 
 console.log('🚀 OpenNext patches applied with Cloudflare Sockets Shim (v3)');
