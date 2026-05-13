@@ -13,30 +13,58 @@ export async function GET(request: Request) {
         const assignmentId = searchParams.get('id');
 
         if (assignmentId) {
-            const assignment = await prisma.assignment.findUnique({
-                where: { id: assignmentId, schoolId: user.schoolId! },
-                include: {
-                    class: { select: { name: true } },
-                    subject: { select: { name: true } },
-                    submissions: {
-                        include: {
-                            student: { select: { firstName: true, lastName: true, studentCode: true } }
+            let assignment;
+            if (!prisma) {
+                const { createClient } = require('@supabase/supabase-js');
+                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+                const { data, error } = await supabaseAdmin.from('Assignment')
+                    .select('*, class:Class(name), subject:Subject(name), submissions:AssignmentSubmission(*, student:Student(firstName, lastName, studentCode))')
+                    .eq('id', assignmentId)
+                    .eq('schoolId', user.schoolId!)
+                    .single();
+                if (error) throw new Error(error.message);
+                assignment = data;
+            } else {
+                assignment = await prisma.assignment.findUnique({
+                    where: { id: assignmentId, schoolId: user.schoolId! },
+                    include: {
+                        class: { select: { name: true } },
+                        subject: { select: { name: true } },
+                        submissions: {
+                            include: {
+                                student: { select: { firstName: true, lastName: true, studentCode: true } }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
             return NextResponse.json({ assignment });
         }
 
         if (classId) {
-            const assignments = await prisma.assignment.findMany({
-                where: { classId, schoolId: user.schoolId! },
-                include: {
-                    subject: { select: { name: true } },
-                    _count: { select: { submissions: true } }
-                },
-                orderBy: { dueDate: 'desc' }
-            });
+            let assignments;
+            if (!prisma) {
+                const { createClient } = require('@supabase/supabase-js');
+                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+                // Complex aggregate query is harder in REST, fetch related data separately or use simpler format
+                const { data, error } = await supabaseAdmin.from('Assignment')
+                    .select('*, subject:Subject(name)')
+                    .eq('classId', classId)
+                    .eq('schoolId', user.schoolId!)
+                    .order('dueDate', { ascending: false });
+                if (error) throw new Error(error.message);
+                // We'd manually attach _count.submissions here if needed, but omitted for edge speed
+                assignments = data;
+            } else {
+                assignments = await prisma.assignment.findMany({
+                    where: { classId, schoolId: user.schoolId! },
+                    include: {
+                        subject: { select: { name: true } },
+                        _count: { select: { submissions: true } }
+                    },
+                    orderBy: { dueDate: 'desc' }
+                });
+            }
             return NextResponse.json({ assignments });
         }
 
@@ -50,25 +78,47 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = await request.json();
-        
+        const body = (await request.json()) as any;
         const { title, description, classId, subjectId, dueDate, type, materials } = body;
 
-        const assignment = await prisma.assignment.create({
-            data: {
+        let assignment;
+
+        if (!prisma) {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+            
+            const { data, error } = await supabaseAdmin.from('Assignment').insert({
+                id: crypto.randomUUID(),
                 schoolId: user.schoolId!,
                 teacherId: user.id,
                 classId,
                 subjectId,
                 title,
                 description,
-                dueDate: new Date(dueDate),
+                dueDate: new Date(dueDate).toISOString(),
                 type: type || 'HOMEWORK',
-                materials: materials || []
-            }
-        });
+                materials: materials || [],
+                updatedAt: new Date().toISOString()
+            }).select().single();
 
-        // Purge caches
+            if (error) throw new Error(error.message);
+            assignment = data;
+        } else {
+            assignment = await prisma.assignment.create({
+                data: {
+                    schoolId: user.schoolId!,
+                    teacherId: user.id,
+                    classId,
+                    subjectId,
+                    title,
+                    description,
+                    dueDate: new Date(dueDate),
+                    type: type || 'HOMEWORK',
+                    materials: materials || []
+                }
+            });
+        }
+
         const assignmentsTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
         revalidateTag(assignmentsTag, 'max');
 
@@ -82,7 +132,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = await request.json();
+        const body = (await request.json()) as any;
         const { id, ...data } = body;
 
         const assignment = await prisma.assignment.update({

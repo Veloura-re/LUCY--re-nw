@@ -1,67 +1,45 @@
-import { PrismaClient } from '@prisma/client';
+/**
+ * Prisma Singleton for LUCY
+ * Dynamically switches between Edge (via @prisma/adapter-pg-worker)
+ * and Node.js (standard) based on the current runtime.
+ */
 
-// We'll use a type-safe way to handle the Edge/Node split
-const prismaClientSingleton = () => {
-    const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+let prismaInstance: any = null;
 
-    if (!connectionString) {
-        throw new Error('DATABASE_URL or DIRECT_URL must be defined');
-    }
+const isEdge = process.env.NEXT_RUNTIME === 'edge';
 
-    // Determine if we are running in the Edge runtime
-    // In Next.js, this is set during the build and at runtime.
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+if (isEdge) {
+    console.log('[Prisma] Initializing Edge-native client...');
+    try {
+        const { PrismaClient } = require('@prisma/client/edge');
+        const { PrismaPg } = require('@prisma/adapter-pg-worker');
+        const { Pool } = require('@prisma/pg-worker');
 
-    if (isEdge) {
-        // In the Edge runtime, we MUST use the worker adapter.
-        // We use the global objects that are expected to be present or 
-        // provided by the Cloudflare environment/OpenNext.
-        try {
-            // @ts-ignore - These are available in the Edge environment
-            const { PrismaPg } = require('@prisma/adapter-pg-worker');
-            // @ts-ignore
-            const { Pool } = require('@prisma/pg-worker');
-
-            console.log('[Prisma] Initializing client for Edge runtime...');
-            const pool = new Pool({ 
-                connectionString,
-                ssl: { rejectUnauthorized: false },
-                max: 10,
-                connectionTimeoutMillis: 15000,
-            });
-
-            const adapter = new PrismaPg(pool);
-            return new PrismaClient({ 
-                adapter,
-                log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-            });
-        } catch (e) {
-            console.error('[Prisma] Failed to initialize Edge adapter, falling back to standard client:', e);
-            return new PrismaClient({
-                log: ['error'],
-            });
-        }
-    } else {
-        // Node.js runtime (Local development, etc.)
-        console.log('[Prisma] Initializing client for Node.js runtime...');
-        return new PrismaClient({
-            datasources: {
-                db: {
-                    url: connectionString,
-                },
-            },
-            log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+        const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+        const adapter = new PrismaPg(pool);
+        
+        prismaInstance = new PrismaClient({ 
+            adapter,
+            log: ['error', 'warn']
         });
+        console.log('[Prisma] Edge-native client initialized successfully');
+    } catch (e: any) {
+        console.error('[Prisma] FAILED to initialize Edge client:', e.message);
+        prismaInstance = null;
     }
-};
-
-declare global {
-    var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+} else {
+    // Standard Node.js runtime (Build time or non-Edge routes)
+    try {
+        if (!(global as any).prisma) {
+            console.log('[Prisma] Initializing standard Node.js client...');
+            const { PrismaClient } = require('@prisma/client');
+            (global as any).prisma = new PrismaClient();
+        }
+        prismaInstance = (global as any).prisma;
+    } catch (e: any) {
+        console.error('[Prisma] FAILED to initialize Standard client:', e.message);
+        prismaInstance = null;
+    }
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
-
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma;
-
-export { prisma };
-export default prisma;
+export const prisma = prismaInstance;

@@ -1,29 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
     try {
-        const { callsign, email, message } = await req.json();
+        const { callsign, email, message } = await req.json() as any;
 
         // Recipient fixed as per user request
         const recipient = "goodluck97248@gmail.com";
-
-        const user = process.env.GMAIL_USER;
-        const pass = process.env.GMAIL_APP_PASSWORD;
-
-        if (!user || !pass) {
-            return NextResponse.json(
-                { error: "Neural Link configuration missing on server." },
-                { status: 500 }
-            );
-        }
-
-        const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
-            auth: { user, pass },
-        });
 
         const html = `
             <div style="font-family: sans-serif; background: #0a0a0a; color: #fff; padding: 40px; border: 1px solid #147A52; border-radius: 12px;">
@@ -47,11 +30,11 @@ export async function POST(req: NextRequest) {
             </div>
         `;
 
-        await transporter.sendMail({
-            from: `"LUCY Uplink" <${user}>`,
+        await sendEmail({
             to: recipient,
             subject: `UPLINK: connection request from ${callsign || 'Unknown'}`,
             html: html,
+            replyTo: email || undefined
         });
 
         return NextResponse.json({ success: true });

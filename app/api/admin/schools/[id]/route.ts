@@ -15,7 +15,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { status } = await request.json();
+    const { status } = await request.json() as any;
 
     if (!['ACTIVE', 'SUSPENDED', 'PENDING'].includes(status)) {
         return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
@@ -34,7 +34,6 @@ export async function PATCH(
     }
 }
 
-import * as fs from 'fs';
 
 // DELETE - Delete school and all related data
 export async function DELETE(

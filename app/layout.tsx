@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
+import { GlobalConnectionProbe } from "@/components/global-connection-probe";
 
 export default function RootLayout({
   children,
@@ -37,6 +38,7 @@ export default function RootLayout({
           speed={200}
           shadow="0 0 10px #10b981,0 0 5px #10b981"
         />
+        <GlobalConnectionProbe />
         {children}
         <Toaster position="top-right" theme="dark" closeButton richColors />
       </body>
