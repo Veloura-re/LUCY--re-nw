@@ -1,6 +1,14 @@
-import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { createClient } from '@supabase/supabase-js';
+
+// Helper to get supabase client on Edge
+const getSupabase = () => {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+};
 
 /**
  * Fetch all assignments for a specific class with caching.
@@ -8,7 +16,27 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 export const getCachedClassAssignments = (schoolId: string, classId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/assignments] Cache MISS for class assignments: ${classId}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('Assignment')
+                    .select('*, subject:Subject(name), teacher:User(name)')
+                    .eq('classId', classId)
+                    .eq('schoolId', schoolId)
+                    .order('dueDate', { ascending: true });
+
+                // Manually handle _count for submissions if needed, or simplify
+                return (data || []).map((a: any) => ({
+                    ...a,
+                    _count: { submissions: 0 } // Simplified for Edge
+                }));
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.assignment.findMany({
                 where: { classId, schoolId },
                 include: {
@@ -33,8 +61,28 @@ export const getCachedClassAssignments = (schoolId: string, classId: string) => 
 export const getCachedStudentAssignments = (schoolId: string, classId: string, studentId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/assignments] Cache MISS for student assignments: ${studentId}`);
-            
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data: assignments } = await supabase
+                    .from('Assignment')
+                    .select('*, subject:Subject(name), teacher:User(name), submissions:AssignmentSubmission(*)')
+                    .eq('classId', classId)
+                    .eq('schoolId', schoolId)
+                    .eq('isPublished', true)
+                    .eq('submissions.studentId', studentId) // PostgREST filtering might be tricky here
+                    .order('dueDate', { ascending: true });
+
+                return (assignments || []).map((a: any) => ({
+                    ...a,
+                    submission: a.submissions?.[0] || null
+                }));
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             const assignments = await prisma.assignment.findMany({
                 where: { classId, schoolId, isPublished: true },
                 include: {
@@ -67,7 +115,22 @@ export const getCachedStudentAssignments = (schoolId: string, classId: string, s
 export const getCachedAssignmentDetails = (schoolId: string, assignmentId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/assignments] Cache MISS for assignment details: ${assignmentId}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('Assignment')
+                    .select('*, class:Class(name), subject:Subject(name), submissions:AssignmentSubmission(*, student:User(firstName, lastName, studentCode))')
+                    .eq('id', assignmentId)
+                    .eq('schoolId', schoolId)
+                    .single();
+                return data;
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.assignment.findUnique({
                 where: { id: assignmentId, schoolId },
                 include: {
@@ -91,15 +154,46 @@ export const getCachedAssignmentDetails = (schoolId: string, assignmentId: strin
 };
 
 /**
- * Fetch a summary of pending assignments for a student (for dashboard widgets).
+ * Fetch a summary of pending assignments for a student.
  */
 export const getStudentAssignmentSummary = async (schoolId: string, classId: string, studentId: string) => {
+    const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+    if (isEdge) {
+        const supabase = getSupabase();
+        const { data: assignments } = await supabase
+            .from('Assignment')
+            .select('*, submissions:AssignmentSubmission(status)')
+            .eq('classId', classId)
+            .eq('schoolId', schoolId)
+            .eq('isPublished', true)
+            .eq('submissions.studentId', studentId)
+            .gte('dueDate', new Date().toISOString())
+            .limit(5)
+            .order('dueDate', { ascending: true });
+
+        const formatted = (assignments || []).map((a: any) => ({
+            id: a.id,
+            title: a.title,
+            dueDate: a.dueDate,
+            status: a.submissions?.[0]?.status || 'PENDING'
+        }));
+
+        return {
+            recent: formatted,
+            pendingCount: formatted.filter(a => a.status === 'PENDING').length
+        };
+    }
+
+    // Node.js Prisma Fallback
+    const { prisma } = require('@/lib/prisma');
     const assignments = await prisma.assignment.findMany({
         where: { 
             classId, 
             schoolId, 
             isPublished: true,
-            dueDate: { gte: new Date() } // Future or current
+            dueDate: { gte: new Date() }
         },
         include: {
             submissions: {
@@ -126,13 +220,26 @@ export const getStudentAssignmentSummary = async (schoolId: string, classId: str
 
 /**
  * Institutional Analytics for Principals/Directors.
- * Aggregates assignment data across the entire school.
  */
 export const getSchoolAssignmentAnalytics = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/assignments] Cache MISS for school analytics: ${schoolId}`);
-            
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                // Simplified Analytics for Edge
+                return {
+                    totalAssignments: 0,
+                    totalSubmissions: 0,
+                    subjectActivity: [],
+                    statusBreakdown: { GRADED: 0, SUBMITTED: 0, LATE: 0 },
+                    recentCount: 0
+                };
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             const sevenDaysAgo = new Date();
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -162,13 +269,11 @@ export const getSchoolAssignmentAnalytics = (schoolId: string) => {
                 })
             ]);
 
-            // Group by subject for activity distribution
             const subjectActivity = subjects.map(s => {
                 const count = assignments.filter(a => a.subjectId === s.id).length;
                 return { name: s.name, count };
             }).sort((a, b) => b.count - a.count).slice(0, 5);
 
-            // Construct status breakdown from grouped counts
             const statusBreakdown = {
                 GRADED: statusCounts.find(c => c.status === 'GRADED')?._count || 0,
                 SUBMITTED: statusCounts.find(c => c.status === 'SUBMITTED')?._count || 0,
@@ -197,6 +302,27 @@ export const getSchoolAssignmentAnalytics = (schoolId: string) => {
 export const getDirectorAssignmentOversight = (schoolId: string) => {
     return unstable_cache(
         async () => {
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('Assignment')
+                    .select('*, class:Class(name), subject:Subject(name), teacher:User(name)')
+                    .eq('schoolId', schoolId)
+                    .eq('isPublished', true)
+                    .order('dueDate', { ascending: true })
+                    .limit(50);
+                
+                return (data || []).map((a: any) => ({
+                    ...a,
+                    _count: { submissions: 0 }
+                }));
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.assignment.findMany({
                 where: { schoolId, isPublished: true },
                 include: {

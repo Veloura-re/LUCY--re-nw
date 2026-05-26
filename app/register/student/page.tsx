@@ -46,7 +46,7 @@ export default function StudentRegisterPage() {
                 }),
             });
 
-            const data = await res.json();
+            const data = await res.json() as { error?: string };
 
             if (!res.ok) {
                 throw new Error(data.error || "Registration failed");

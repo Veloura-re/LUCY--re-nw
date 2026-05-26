@@ -1,7 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
-import { prisma } from "@/lib/prisma";
 import { getCachedStudentAssignments } from "@/lib/services/assignments";
 import StudentTaskMatrix from "@/components/dashboard/student-task-matrix";
 import { Suspense } from "react";
@@ -16,11 +15,29 @@ export default async function StudentAssignmentsPage() {
     const dbUser = await getCachedUser(authUser.id);
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
-    // Get the student record using Prisma (server-side bypass of RLS)
-    const student = await prisma.student.findUnique({
-        where: { userId: dbUser.id },
-        select: { id: true, classId: true }
-    });
+    // Get the student record — Edge-safe (prisma may be null on Cloudflare Workers)
+    let student: { id: string; classId: string | null } | null = null;
+
+    const { prisma } = require('@/lib/prisma');
+    if (!prisma) {
+        // Edge runtime: use Supabase REST
+        const { createClient: createAdmin } = require('@supabase/supabase-js');
+        const supabaseAdmin = createAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+        const { data } = await supabaseAdmin
+            .from('Student')
+            .select('id, classId')
+            .eq('userId', dbUser.id)
+            .single();
+        student = data;
+    } else {
+        student = await prisma.student.findUnique({
+            where: { userId: dbUser.id },
+            select: { id: true, classId: true }
+        });
+    }
 
     if (!student || !student.classId) {
         return (

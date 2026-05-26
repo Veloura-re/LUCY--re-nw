@@ -69,14 +69,28 @@ export async function PATCH(request: Request) {
         const dbUser = await requireAuth();
         const { name, bio, preferences } = await request.json();
 
-        const user = await prisma.user.update({
-            where: { id: dbUser.id },
-            data: {
-                name,
-                bio,
-                preferences
-            }
-        });
+        let user;
+        if (!prisma) {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+            const { data, error } = await supabaseAdmin
+                .from('User')
+                .update({ name, bio, preferences })
+                .eq('id', dbUser.id)
+                .select()
+                .single();
+            if (error) throw error;
+            user = data;
+        } else {
+            user = await prisma.user.update({
+                where: { id: dbUser.id },
+                data: {
+                    name,
+                    bio,
+                    preferences
+                }
+            });
+        }
 
         return NextResponse.json({ user });
     } catch (e) {
