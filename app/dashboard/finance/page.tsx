@@ -1,8 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
-import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { getCachedUser } from "@/lib/users";
 import { FinanceView } from "@/components/dashboard/finance-view";
 import { ParentBillingView } from "@/components/dashboard/parent-billing-view";
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export default async function FinancePage() {
     const supabase = await createClient();
@@ -10,64 +11,47 @@ export default async function FinancePage() {
 
     if (!user) redirect("/login");
 
-    let dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        include: {
-            school: {
-                include: {
-                    grades: {
-                        orderBy: { level: 'asc' }
-                    }
-                }
-            }
-        }
-    }) as any;
-
-    if (!dbUser && user.email) {
-        dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            include: {
-                school: {
-                    include: {
-                        grades: {
-                            orderBy: { level: 'asc' }
-                        }
-                    }
-                }
-            }
-        }) as any;
-    }
-
+    const dbUser = await getCachedUser(user.id) as any;
     if (!dbUser) redirect("/login");
 
+    if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
+        dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
+    }
+
+    const supabaseAdmin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Fetch school with grades
+    const { data: school } = await supabaseAdmin
+        .from('School')
+        .select('*, grades:Grade(*, orderBy:level.asc)')
+        .eq('id', dbUser.schoolId)
+        .maybeSingle();
+
+    // Fetch grades separately for cleaner query
+    const { data: grades } = await supabaseAdmin
+        .from('Grade')
+        .select('*')
+        .eq('schoolId', dbUser.schoolId)
+        .order('level', { ascending: true });
+
+    const schoolWithGrades = school ? { ...(school as any), grades: grades || [] } : null;
+
     if (dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
-        return <FinanceView user={dbUser} school={dbUser.school} grades={dbUser.school?.grades || []} />;
+        return <FinanceView user={dbUser} school={schoolWithGrades} grades={grades || []} />;
     }
 
     if (dbUser.role === 'PARENT') {
-        // Robust user matching: if ID mismatch, use dbUser.id which is the Prisma ID
-        const studentLinks = await prisma.parentStudentLink.findMany({
-            where: { parentId: dbUser.id },
-            include: {
-                student: {
-                    include: {
-                        school: true,
-                        grade: true,
-                        invoices: {
-                            include: {
-                                items: true,
-                                payments: true
-                            },
-                            orderBy: { createdAt: 'desc' }
-                        }
-                    } as any
-                }
-            }
-        }) as any[];
+        const { data: studentLinks } = await supabaseAdmin
+            .from('ParentStudentLink')
+            .select('*, student:Student(*, school:School(*), grade:Grade(*), invoices:Invoice(*, items:InvoiceItem(*), payments:Payment(*)))')
+            .eq('parentId', dbUser.id);
 
-        const students = studentLinks.map(link => link.student);
+        const students = (studentLinks || []).map((link: any) => link.student);
         return (
-            <ParentBillingView user={dbUser} students={students} school={dbUser.school} />
+            <ParentBillingView user={dbUser} students={students} school={school} />
         );
     }
 
@@ -76,6 +60,5 @@ export default async function FinancePage() {
         return <StaffPaycheckView user={dbUser} />;
     }
 
-    // Default fallback
     redirect("/dashboard");
 }

@@ -4,7 +4,7 @@
  * Uses real Supabase JWT session tokens to authenticate API requests.
  */
 
-const BASE_URL = "https://5-cn.net";
+const BASE_URL = process.env.TEST_URL || "https://5-cn.net";
 
 const ACCOUNTS = {
     teacher: { email: "teacher@lucy.edu", password: "Password123!" },
@@ -109,12 +109,12 @@ async function testTeacherRole(token) {
         log("❌", "POST /api/school/attendance", attendance.status, JSON.stringify(attendance.data).slice(0, 180));
     }
 
-    // 5. Teacher stats
+    // 5. Teacher stats (should be Forbidden 403)
     const stats = await apiRequest("GET", "/api/user/stats", token);
-    if (stats.ok) {
-        log("✅", "GET /api/user/stats", stats.status, "- Stats fetched");
+    if (stats.status === 403) {
+        log("✅", "GET /api/user/stats (Forbidden for Teacher)", stats.status, "- Security working");
     } else {
-        log("❌", "GET /api/user/stats", stats.status, JSON.stringify(stats.data).slice(0, 120));
+        log("❌", "GET /api/user/stats (Forbidden for Teacher)", stats.status, JSON.stringify(stats.data).slice(0, 120));
     }
 
     return newAssignment.data?.assignment?.id;
@@ -141,7 +141,7 @@ async function testStudentRole(token, assignmentId) {
 
     // 3. Submit assignment (if we have an assignmentId from teacher test)
     if (assignmentId) {
-        const submission = await apiRequest("POST", "/api/school/assignments/submissions", token, {
+        const submission = await apiRequest("POST", "/api/student/assignments", token, {
             assignmentId,
             content: "Student HTTP submission: The edge architecture is working perfectly."
         });

@@ -1,11 +1,8 @@
-import { prisma } from '@/lib/prisma';
+// Removed top-level prisma to prevent Edge runtime initialization issues
 import { unstable_cache } from 'next/cache';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Moved supabaseAdmin inside functions to ensure runtime evaluation of Edge env vars
 
 /**
  * Optimized Dashboard Data Fetching for Edge Runtime.
@@ -14,9 +11,14 @@ const supabaseAdmin = createClient(
 
 // Refactor 1: getFamilyChildren
 const _getFamilyChildren = async (userId: string) => {
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const { prisma: _p1 } = require('@/lib/prisma');
+    const isEdge = !_p1;
     
     if (isEdge) {
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
         // Edge implementation using Supabase SDK
         const { data: links, error } = await supabaseAdmin
             .from('ParentStudentLink')
@@ -40,6 +42,7 @@ const _getFamilyChildren = async (userId: string) => {
     }
 
     // Fallback to Prisma for non-Edge (Node.js)
+    const { prisma } = require('@/lib/prisma');
     const links = await prisma.parentStudentLink.findMany({
         where: { parentId: userId },
         include: {
@@ -67,9 +70,14 @@ export const getFamilyChildren = unstable_cache(
 
 // Refactor 2: getTeacherDashboardData
 const _getTeacherDashboardData = async (userId: string) => {
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const { prisma: _p2 } = require('@/lib/prisma');
+    const isEdge = !_p2;
 
     if (isEdge) {
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
         const [assignmentsRes, examsRes, attendanceRes] = await Promise.all([
             supabaseAdmin.from('TeacherAssignment').select('*, class:Class(*, grade:Grade(*)), subject:Subject(*)').eq('teacherId', userId),
             supabaseAdmin.from('Exam').select('*, subject:Subject(*)').eq('createdById', userId).limit(3),
@@ -79,8 +87,10 @@ const _getTeacherDashboardData = async (userId: string) => {
         return {
             classes: (assignmentsRes.data || []).map(a => ({
                 id: a.id,
+                classId: a.classId,
                 className: a.class?.name,
                 subjectName: a.subject?.name,
+                gradeLevel: a.class?.grade?.level || 0,
                 studentCount: 0 // Simplification for Edge
             })),
             exams: examsRes.data || [],
@@ -92,6 +102,7 @@ const _getTeacherDashboardData = async (userId: string) => {
     }
 
     // Standard Prisma Logic for Node.js
+    const { prisma } = require('@/lib/prisma');
     const [assignments, recentExams, clockInRecord] = await Promise.all([
         prisma.teacherAssignment.findMany({
             where: { teacherId: userId },
@@ -110,8 +121,10 @@ const _getTeacherDashboardData = async (userId: string) => {
     return {
         classes: assignments.map(a => ({
             id: a.id,
+            classId: a.classId,
             className: a.class.name,
             subjectName: a.subject.name,
+            gradeLevel: a.class.grade.level,
             studentCount: 0
         })),
         exams: recentExams,
@@ -128,12 +141,19 @@ export const getTeacherDashboardData = unstable_cache(
 
 // Refactor 3: getSchoolAnalytics
 const _getSchoolAnalytics = async (schoolId: string) => {
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const { prisma: _p3 } = require('@/lib/prisma');
+    const isEdge = !_p3;
 
     if (isEdge) {
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        const { data: grades } = await supabaseAdmin.from('Grade').select('id').eq('schoolId', schoolId);
+        const gradeIds = (grades || []).map((g: any) => g.id);
         const [students, classes] = await Promise.all([
             supabaseAdmin.from('Student').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId),
-            supabaseAdmin.from('Class').select('id', { count: 'exact', head: true }).eq('grade.schoolId', schoolId)
+            supabaseAdmin.from('Class').select('id', { count: 'exact', head: true }).in('gradeId', gradeIds)
         ]);
 
         return {
@@ -148,6 +168,7 @@ const _getSchoolAnalytics = async (schoolId: string) => {
     }
 
     // Standard Prisma Logic for Node.js
+    const { prisma } = require('@/lib/prisma');
     const [studentCount, classCount] = await Promise.all([
         prisma.student.count({ where: { schoolId } }),
         prisma.class.count({ where: { grade: { schoolId } } })

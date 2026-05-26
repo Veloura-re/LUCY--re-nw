@@ -3,10 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Removed top-level supabaseAdmin to ensure runtime evaluation of Edge env vars
 
 export async function GET(request: Request) {
     try {
@@ -14,6 +11,10 @@ export async function GET(request: Request) {
 
         // Edge-safe: use Supabase SDK when Prisma is unavailable
         if (!prisma) {
+            const supabaseAdmin = createClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+            );
             const { data: assignments, error } = await supabaseAdmin
                 .from('TeacherAssignment')
                 .select(`

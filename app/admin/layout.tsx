@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Shield, LayoutDashboard, Activity, Zap } from "lucide-react";
 import { DynamicAIAssistant } from "@/components/dashboard/dynamic-ai-assistant";
@@ -15,22 +15,51 @@ export default async function AdminLayout({
 
     if (!user) redirect("/login");
 
-    let dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { id: true, role: true, email: true, name: true, gender: true }
-    });
+    // Edge-safe user lookup (prisma may be null on Cloudflare Workers)
+    const { prisma } = require('@/lib/prisma');
+    let dbUser: any = null;
 
-    if (!dbUser && user.email) {
+    if (!prisma) {
+        const supabaseAdmin = createSupabaseAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+        const { data: u1 } = await supabaseAdmin
+            .from('User')
+            .select('id, role, email, name, gender')
+            .eq('id', user.id)
+            .maybeSingle();
+        dbUser = u1;
+        if (!dbUser && user.email) {
+            const { data: u2 } = await supabaseAdmin
+                .from('User')
+                .select('id, role, email, name, gender')
+                .eq('email', user.email)
+                .maybeSingle();
+            dbUser = u2;
+            if (dbUser) {
+                // Heal ID mismatch
+                await supabaseAdmin.from('User').update({ id: user.id }).eq('email', user.email);
+                dbUser.id = user.id;
+            }
+        }
+    } else {
         dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
+            where: { id: user.id },
             select: { id: true, role: true, email: true, name: true, gender: true }
         });
-        if (dbUser) {
-            dbUser = await prisma.user.update({
+        if (!dbUser && user.email) {
+            dbUser = await prisma.user.findUnique({
                 where: { email: user.email },
-                data: { id: user.id },
                 select: { id: true, role: true, email: true, name: true, gender: true }
             });
+            if (dbUser) {
+                dbUser = await prisma.user.update({
+                    where: { email: user.email },
+                    data: { id: user.id },
+                    select: { id: true, role: true, email: true, name: true, gender: true }
+                });
+            }
         }
     }
 

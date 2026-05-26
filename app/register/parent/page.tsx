@@ -51,10 +51,10 @@ export default function ParentRegister() {
                 body: JSON.stringify({ code: studentCode })
             });
 
-            const data = await res.json();
+            const data = await res.json() as { error?: string; student?: StudentDetails };
             if (!res.ok) throw new Error(data.error || "Invalid Code");
 
-            setStudentDetails(data.student);
+            setStudentDetails(data.student || null);
             setStep('CONFIRM');
 
         } catch (err: any) {

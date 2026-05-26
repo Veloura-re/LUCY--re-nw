@@ -81,6 +81,10 @@ export async function requireRole(allowedRoles: Role[]) {
         throw new Error(`Forbidden: Access denied for role ${dbUser.role}`);
     }
 
+    if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
+        dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
+    }
+
     return dbUser;
 }
 
@@ -110,6 +114,9 @@ export async function requireSchoolLinked() {
     }
 
     if (!dbUser?.schoolId) {
+        if (dbUser?.role === 'SUPERADMIN') {
+            return { ...dbUser, schoolId: 'c4020909-c825-4490-9790-18e0632dbeaf' };
+        }
         throw new Error("Forbidden: No school linked to this account");
     }
 

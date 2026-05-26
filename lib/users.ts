@@ -2,17 +2,15 @@ import { cache } from 'react';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Removed top-level supabaseAdmin to ensure runtime evaluation of Edge env vars
 
 /**
  * Retrieves the full database user profile by Supabase ID.
  * Prefers Supabase HTTP lookup on Edge for stability.
  */
 export const getCachedUser = cache(async (userId: string) => {
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const { prisma: _p } = require('@/lib/prisma');
+    const isEdge = !_p;
 
     // On Edge, we prefer Supabase SDK immediately to avoid Prisma bundling issues
     if (isEdge) {
@@ -47,7 +45,8 @@ export const getCachedUser = cache(async (userId: string) => {
 });
 
 export const getCachedUserByEmail = cache(async (email: string) => {
-    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const { prisma: _p2 } = require('@/lib/prisma');
+    const isEdge = !_p2;
 
     if (isEdge) {
         return fetchUserFromSupabase(email, 'email');
@@ -73,6 +72,10 @@ export const getCachedUserByEmail = cache(async (email: string) => {
 
 async function fetchUserFromSupabase(value: string, field: 'id' | 'email') {
     try {
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
         const { data, error } = await supabaseAdmin
             .from('User')
             .select('*, school:School(*)')

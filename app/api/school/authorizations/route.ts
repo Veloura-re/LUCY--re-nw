@@ -10,6 +10,67 @@ export async function GET(request: Request) {
         const studentId = searchParams.get('studentId');
         const status = searchParams.get('status') as any;
 
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            let query = supabaseAdmin
+                .from('AbsenceAuthorization')
+                .select('*')
+                .order('createdAt', { ascending: false });
+
+            if (status) {
+                query = query.eq('status', status);
+            }
+            if (studentId) {
+                query = query.eq('studentId', studentId);
+            }
+
+            const { data: authData, error } = await query;
+            if (error) throw error;
+
+            // Fetch students and users in this school for mapping
+            const [studentsRes, usersRes] = await Promise.all([
+                supabaseAdmin
+                    .from('Student')
+                    .select('id, firstName, lastName, studentCode, schoolId')
+                    .eq('schoolId', dbUser.schoolId),
+                supabaseAdmin
+                    .from('User')
+                    .select('id, name, email, role, schoolId')
+                    .eq('schoolId', dbUser.schoolId)
+            ]);
+
+            const studentMap = new Map((studentsRes.data || []).map((s: any) => [s.id, s]));
+            const userMap = new Map((usersRes.data || []).map((u: any) => [u.id, u]));
+
+            const authorizations = (authData || []).map((auth: any) => {
+                const student = auth.studentId ? studentMap.get(auth.studentId) : null;
+                const user = auth.userId ? userMap.get(auth.userId) : null;
+                const requestor = auth.requestorId ? userMap.get(auth.requestorId) : null;
+
+                const belongsToSchool =
+                    (student && student.schoolId === dbUser.schoolId) ||
+                    (user && user.schoolId === dbUser.schoolId) ||
+                    (requestor && requestor.schoolId === dbUser.schoolId);
+
+                if (!belongsToSchool) return null;
+
+                return {
+                    ...auth,
+                    student,
+                    user,
+                    requestor
+                };
+            }).filter(Boolean);
+
+            return NextResponse.json({ authorizations });
+        }
+
         const authorizations = await (prisma as any).absenceAuthorization.findMany({
             where: {
                 OR: [
@@ -50,6 +111,23 @@ export async function PATCH(request: Request) {
 
         if (!id || !status) {
             return NextResponse.json({ error: 'ID and Status required' }, { status: 400 });
+        }
+
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const { data, error } = await supabaseAdmin
+                .from('AbsenceAuthorization')
+                .update({ status })
+                .eq('id', id)
+                .select()
+                .single();
+            if (error) throw error;
+            return NextResponse.json({ authorization: data });
         }
 
         const authorization = await (prisma as any).absenceAuthorization.update({

@@ -59,7 +59,7 @@ export default function AdminRegister() {
                 })
             });
 
-            const data = await res.json();
+            const data = await res.json() as { error?: string };
 
             if (res.ok) {
                 router.push('/admin/dashboard');

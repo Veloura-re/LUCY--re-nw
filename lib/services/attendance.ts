@@ -1,7 +1,14 @@
-import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag, getUserTag } from '@/lib/cache-keys';
-import { AttendanceStatus } from '@prisma/client';
+import { createClient } from '@supabase/supabase-js';
+
+// Helper to get supabase client on Edge
+const getSupabase = () => {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+};
 
 /**
  * Fetch assigned classes for a teacher with caching.
@@ -9,9 +16,55 @@ import { AttendanceStatus } from '@prisma/client';
 export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/attendance] Cache MISS for teacher classes: ${teacherId}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
             
-            // 1. Fetch assignments
+            if (isEdge) {
+                const supabase = getSupabase();
+                
+                // 1. Fetch assignments
+                const { data: assignments } = await supabase
+                    .from('TeacherAssignment')
+                    .select('*, class:Class(*, grade:Grade(*)), subject:Subject(*)')
+                    .eq('teacherId', teacherId);
+
+                // 2. Fetch homeroom assignments
+                const { data: homerooms } = await supabase
+                    .from('Class')
+                    .select('*, grade:Grade(*)')
+                    .eq('homeroomTeacherId', teacherId);
+
+                const classesMap = new Map<string, any>();
+
+                (assignments || []).forEach((a: any) => {
+                    if (!classesMap.has(a.classId)) {
+                        classesMap.set(a.classId, {
+                            classId: a.classId,
+                            className: `${a.class?.grade?.name || ''} ${a.class?.name || ''}`.trim(),
+                            subjects: []
+                        });
+                    }
+                    const cls = classesMap.get(a.classId);
+                    if (a.subject) {
+                        cls.subjects.push({ id: a.subject.id, name: a.subject.name });
+                    }
+                });
+
+                (homerooms || []).forEach((h: any) => {
+                    if (!classesMap.has(h.id)) {
+                        classesMap.set(h.id, {
+                            classId: h.id,
+                            className: `${h.grade?.name || ''} ${h.name || ''}`.trim(),
+                            subjects: []
+                        });
+                    }
+                });
+
+                return Array.from(classesMap.values());
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             const assignments = await prisma.teacherAssignment.findMany({
                 where: { teacherId },
                 include: {
@@ -24,15 +77,12 @@ export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => 
                 }
             });
 
-            // 2. Fetch homeroom assignments
             const homerooms = await prisma.class.findMany({
                 where: { homeroomTeacherId: teacherId },
                 select: { id: true, name: true, grade: { select: { name: true } } }
             });
 
-            // Format into unique structure
             const classesMap = new Map<string, any>();
-
             assignments.forEach(a => {
                 if (!classesMap.has(a.classId)) {
                     classesMap.set(a.classId, {
@@ -67,7 +117,6 @@ export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => 
 
 /**
  * Fetch the complete student/attendance matrix for a specific cohort and date.
- * Optimizes the multi-table lookup into a parallelized database hit.
  */
 export const getAttendanceMatrix = (
     schoolId: string,
@@ -78,9 +127,50 @@ export const getAttendanceMatrix = (
 ) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/attendance] Cache MISS for matrix: ${classId} on ${date}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+            const targetDate = new Date(date);
+            targetDate.setHours(0, 0, 0, 0);
 
-            // 1. Fetch Students in the class
+            if (isEdge) {
+                const supabase = getSupabase();
+                
+                const { data: students } = await supabase
+                    .from('Student')
+                    .select('id, firstName, lastName, studentCode, photoUrl')
+                    .eq('schoolId', schoolId)
+                    .eq('classId', classId)
+                    .order('lastName', { ascending: true })
+                    .order('firstName', { ascending: true });
+
+                if (!students || students.length === 0) return { students: [], records: [], authorizations: [] };
+
+                const studentIds = students.map(s => s.id);
+                
+                // Fetch attendance records and authorizations in parallel
+                let query = supabase.from('AttendanceRecord').select('*').eq('classId', classId).eq('date', targetDate.toISOString().split('T')[0]);
+                if (subjectId) query = query.eq('subjectId', subjectId);
+                if (periodId) query = query.eq('periodId', periodId);
+
+                const [recordsRes, authorizationsRes] = await Promise.all([
+                    query,
+                    supabase.from('AbsenceAuthorization')
+                        .select('*')
+                        .in('studentId', studentIds)
+                        .lte('startDate', targetDate.toISOString())
+                        .gte('endDate', targetDate.toISOString())
+                        .eq('status', 'APPROVED')
+                ]);
+
+                return {
+                    students,
+                    records: recordsRes.data || [],
+                    authorizations: authorizationsRes.data || []
+                };
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             const students = await prisma.student.findMany({
                 where: { schoolId, classId },
                 select: { id: true, firstName: true, lastName: true, studentCode: true, photoUrl: true },
@@ -90,10 +180,7 @@ export const getAttendanceMatrix = (
             if (students.length === 0) return { students: [], records: [], authorizations: [] };
 
             const studentIds = students.map(s => s.id);
-            const targetDate = new Date(date);
-            targetDate.setHours(0, 0, 0, 0);
 
-            // 2. Parallel Fetch: Attendance + Authorizations
             const [records, authorizations] = await Promise.all([
                 prisma.attendanceRecord.findMany({
                     where: {
@@ -122,7 +209,7 @@ export const getAttendanceMatrix = (
         [`attendance-matrix-${classId}-${date}-${subjectId || 'all'}-${periodId || 'all'}`],
         {
             tags: [getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, schoolId)],
-            revalidate: 60 // Short cache for active recording
+            revalidate: 60
         }
     )();
 };

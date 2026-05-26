@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
-import { prisma } from "@/lib/prisma";
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { getCachedStudentAssignments } from "@/lib/services/assignments";
 import ParentHomeworkRegistry from "@/components/dashboard/parent-homework-registry";
 import { Suspense } from "react";
@@ -25,18 +25,19 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ s
         return <ErrorState message="Request Context Undefined: Student ID required for registry synchronization." />;
     }
 
-    // Verify parent-student linkage
-    const link = await prisma.parentStudentLink.findFirst({
-        where: {
-            parentId: dbUser.id,
-            studentId: studentId
-        },
-        include: {
-            student: {
-                include: { school: true, class: true }
-            }
-        }
-    });
+    const supabaseAdmin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Verify parent-student linkage via Supabase REST
+    const { data: linkData } = await supabaseAdmin
+        .from('ParentStudentLink')
+        .select('*, student:Student(*, school:School(*), class:Class(*))')
+        .eq('parentId', dbUser.id)
+        .eq('studentId', studentId)
+        .maybeSingle();
+    const link = linkData;
 
     // Principals and Superadmins have global bypass access
     const hasAccess = link || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN';
@@ -45,11 +46,16 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ s
         return <ErrorState message="Security Fault: You do not have verified authorization to access this scholastic registry." />;
     }
 
-    // If we have access via principal/superadmin but no link, we need to fetch the student manually
-    const targetStudent = link ? link.student : await prisma.student.findUnique({
-        where: { id: studentId },
-        include: { school: true, class: true }
-    });
+    // If access via principal/superadmin but no link, fetch the student manually
+    let targetStudent = link ? link.student : null;
+    if (!targetStudent) {
+        const { data: s } = await supabaseAdmin
+            .from('Student')
+            .select('*, school:School(*), class:Class(*)')
+            .eq('id', studentId)
+            .maybeSingle();
+        targetStudent = s;
+    }
 
     if (!targetStudent || !targetStudent.classId) {
         return <ErrorState message="Registry Integrity Fault: Student record or cohort mapping not discovered." />;

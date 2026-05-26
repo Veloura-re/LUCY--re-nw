@@ -1,6 +1,14 @@
-import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { createClient } from '@supabase/supabase-js';
+
+// Helper to get supabase client on Edge
+const getSupabase = () => {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+};
 
 /**
  * Fetch all classes and grades in a school with caching.
@@ -8,8 +16,28 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 export const getCachedSchoolStructure = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/school] Cache MISS for structure: ${schoolId}`);
-            
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('Grade')
+                    .select('*, classes:Class(*)')
+                    .eq('schoolId', schoolId)
+                    .order('level', { ascending: true });
+                
+                return (data || []).map((g: any) => ({
+                    ...g,
+                    classes: (g.classes || []).map((c: any) => ({
+                        ...c,
+                        _count: { students: 0, assignments: 0 }
+                    }))
+                }));
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.grade.findMany({
                 where: { schoolId },
                 include: {
@@ -41,7 +69,21 @@ export const getCachedSchoolStructure = (schoolId: string) => {
 export const getCachedSchoolConfig = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/school] Cache MISS for config: ${schoolId}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('School')
+                    .select('id, name, status, logoUrl, address')
+                    .eq('id', schoolId)
+                    .single();
+                return data;
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.school.findUnique({
                 where: { id: schoolId },
                 select: {

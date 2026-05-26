@@ -1,7 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
-import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { getCachedUser } from "@/lib/users";
 import { BooksView } from "@/components/dashboard/books-view";
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export default async function BooksPage() {
     const supabase = await createClient();
@@ -9,31 +10,34 @@ export default async function BooksPage() {
 
     if (!user) redirect("/login");
 
-    let dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        include: { school: true }
-    });
+    const dbUser = await getCachedUser(user.id) as any;
+    if (!dbUser) redirect("/login");
 
-    if (!dbUser && user.email) {
-        dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            include: { school: true }
-        });
+    if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
+        dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
     }
 
-    if (!dbUser) redirect("/login");
+    // Fetch school separately (Edge-safe)
+    const supabaseAdmin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const { data: school } = await supabaseAdmin
+        .from('School')
+        .select('*')
+        .eq('id', dbUser.schoolId)
+        .maybeSingle();
 
     let children: any[] = [];
     if (dbUser.role === 'PARENT') {
-        const links = await prisma.parentStudentLink.findMany({
-            where: { parentId: user.id },
-            include: { student: true }
-        });
-        children = links.map(l => l.student);
+        const { data: links } = await supabaseAdmin
+            .from('ParentStudentLink')
+            .select('*, student:Student(*)')
+            .eq('parentId', dbUser.id);
+        children = (links || []).map((l: any) => l.student);
     }
 
     return (
-        <BooksView user={dbUser} school={dbUser.school} children={children} />
+        <BooksView user={dbUser} school={school} children={children} />
     );
 }
-
