@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { prisma } from "@/lib/prisma";
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { notFound } from "next/navigation";
 import { InviteForm } from "./invite-form"; // Client component
 import { ShieldCheck, AlertCircle } from "lucide-react";
@@ -9,10 +9,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export default async function InvitePage({ params }: { params: Promise<{ token: string }> }) {
     const { token } = await params;
 
-    // Verify token
-    const invite = await prisma.inviteToken.findUnique({
-        where: { token },
-    });
+    const supabaseAdmin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Verify token via Supabase REST
+    const { data: invite } = await supabaseAdmin
+        .from('InviteToken')
+        .select('*')
+        .eq('token', token)
+        .maybeSingle();
 
     if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
         return (
@@ -41,8 +48,16 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
         );
     }
 
-    // Fetch school name
-    const school = invite.schoolId ? await prisma.school.findUnique({ where: { id: invite.schoolId } }) : null;
+    // Fetch school name via Supabase REST
+    let school: any = null;
+    if (invite.schoolId) {
+        const { data: s } = await supabaseAdmin
+            .from('School')
+            .select('id, name')
+            .eq('id', invite.schoolId)
+            .maybeSingle();
+        school = s;
+    }
 
     // Format role for display (e.g. PRINCIPAL -> Principal, TEACHER -> Teacher)
     const formattedRole = invite.role.charAt(0) + invite.role.slice(1).toLowerCase();

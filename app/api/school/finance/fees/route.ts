@@ -6,6 +6,25 @@ export async function GET() {
     try {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const [feesRes, gradesRes] = await Promise.all([
+                supabaseAdmin.from('FeeStructure').select('*').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
+                supabaseAdmin.from('Grade').select('*').eq('schoolId', dbUser.schoolId!)
+            ]);
+            const gradeMap = new Map((gradesRes.data || []).map((g: any) => [g.id, g]));
+            const fees = (feesRes.data || []).map((fee: any) => ({
+                ...fee,
+                grade: fee.gradeId ? gradeMap.get(fee.gradeId) || null : null
+            }));
+            return NextResponse.json(fees);
+        }
+
         const fees = await prisma.feeStructure.findMany({
             where: { schoolId: dbUser.schoolId! },
             include: { grade: true },
@@ -27,6 +46,30 @@ export async function POST(req: Request) {
 
         if (!name || amount === undefined || !category || !frequency) {
             return new NextResponse("Missing required fields", { status: 400 });
+        }
+
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const { data: fee, error } = await supabaseAdmin
+                .from('FeeStructure')
+                .insert({
+                    schoolId: dbUser.schoolId!,
+                    gradeId: gradeId || null,
+                    name,
+                    amount: parseFloat(amount),
+                    category,
+                    frequency,
+                    description: description || null
+                })
+                .select()
+                .single();
+            if (error) throw error;
+            return NextResponse.json(fee);
         }
 
         const fee = await prisma.feeStructure.create({

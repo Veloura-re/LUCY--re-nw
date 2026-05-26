@@ -8,6 +8,22 @@ export async function GET(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const { data: subjects, error } = await supabaseAdmin
+                .from('Subject')
+                .select('*')
+                .eq('schoolId', dbUser.schoolId!)
+                .order('name', { ascending: true });
+            if (error) throw error;
+            return NextResponse.json({ subjects });
+        }
+
         const subjects = await prisma.subject.findMany({
             where: { schoolId: dbUser.schoolId! },
             orderBy: { name: 'asc' }
@@ -23,6 +39,25 @@ export async function POST(request: Request) {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
         const { name } = await request.json();
+
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const { data: subject, error } = await supabaseAdmin
+                .from('Subject')
+                .insert({
+                    schoolId: dbUser.schoolId!,
+                    name
+                })
+                .select()
+                .single();
+            if (error) throw error;
+            return NextResponse.json({ subject });
+        }
 
         const subject = await prisma.subject.create({
             data: {
@@ -45,6 +80,33 @@ export async function DELETE(request: Request) {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
         const { id } = await request.json();
+
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            const { data: subjectToDelete } = await supabaseAdmin
+                .from('Subject')
+                .select('schoolId')
+                .eq('id', id)
+                .maybeSingle();
+
+            if (subjectToDelete?.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN') {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
+
+            const { error } = await supabaseAdmin
+                .from('Subject')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+
+            return NextResponse.json({ success: true });
+        }
 
         // Tenant Isolation: Ensure the subject being deleted actually belongs to this school
         const subjectToDelete = await prisma.subject.findUnique({ where: { id } });

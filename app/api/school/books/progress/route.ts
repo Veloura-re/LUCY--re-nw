@@ -13,6 +13,74 @@ export async function POST(req: Request) {
 
         let targetUserId = dbUser.id;
 
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            if (studentId) {
+                if (dbUser.role === 'PARENT') {
+                    const { data: link } = await supabaseAdmin
+                        .from('ParentStudentLink')
+                        .select('*, student:Student(*)')
+                        .eq('parentId', dbUser.id)
+                        .eq('studentId', studentId)
+                        .maybeSingle();
+
+                    if (!link) return NextResponse.json({ error: "Forbidden - Not your child" }, { status: 403 });
+                    if (!link.student.userId) return NextResponse.json({ error: "Student account not active" }, { status: 400 });
+                    targetUserId = link.student.userId;
+                } else if (!['PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
+                    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+                } else {
+                    const { data: student } = await supabaseAdmin
+                        .from('Student')
+                        .select('userId')
+                        .eq('id', studentId)
+                        .eq('schoolId', dbUser.schoolId!)
+                        .maybeSingle();
+                    if (!student?.userId) return NextResponse.json({ error: "Target student user not found or not in your school" }, { status: 404 });
+                    targetUserId = student.userId;
+                }
+            }
+
+            const { data: existingProgress } = await supabaseAdmin
+                .from('ResourceProgress')
+                .select('*')
+                .eq('userId', targetUserId)
+                .eq('bookId', bookId)
+                .maybeSingle();
+
+            let progress;
+            if (existingProgress) {
+                const { data, error } = await supabaseAdmin
+                    .from('ResourceProgress')
+                    .update({ completed: !!completed })
+                    .eq('id', existingProgress.id)
+                    .select()
+                    .single();
+                if (error) throw error;
+                progress = data;
+            } else {
+                const { data, error } = await supabaseAdmin
+                    .from('ResourceProgress')
+                    .insert({
+                        userId: targetUserId,
+                        bookId: bookId,
+                        completed: !!completed
+                    })
+                    .select()
+                    .single();
+                if (error) throw error;
+                progress = data;
+            }
+
+            return NextResponse.json(progress);
+        }
+
         if (studentId) {
             if (dbUser.role === 'PARENT') {
                 const link = await prisma.parentStudentLink.findFirst({
@@ -64,6 +132,44 @@ export async function GET(req: Request) {
         const studentId = searchParams.get("studentId");
 
         let targetUserId = dbUser.id;
+
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            if (studentId) {
+                if (dbUser.role === 'PARENT') {
+                    const { data: link } = await supabaseAdmin
+                        .from('ParentStudentLink')
+                        .select('*, student:Student(*)')
+                        .eq('parentId', dbUser.id)
+                        .eq('studentId', studentId)
+                        .maybeSingle();
+                    if (!link) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+                    if (link.student.userId) targetUserId = link.student.userId;
+                } else if (['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
+                    const { data: student } = await supabaseAdmin
+                        .from('Student')
+                        .select('userId')
+                        .eq('id', studentId)
+                        .eq('schoolId', dbUser.schoolId!)
+                        .maybeSingle();
+                    if (student?.userId) targetUserId = student.userId;
+                }
+            }
+
+            const { data: progress, error } = await supabaseAdmin
+                .from('ResourceProgress')
+                .select('*')
+                .eq('userId', targetUserId);
+
+            if (error) throw error;
+            return NextResponse.json(progress);
+        }
 
         if (studentId) {
             if (dbUser.role === 'PARENT') {

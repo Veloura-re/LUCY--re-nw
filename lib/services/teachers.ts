@@ -1,17 +1,74 @@
-import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { createClient } from '@supabase/supabase-js';
+
+// Helper to get supabase client on Edge
+const getSupabase = () => {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+};
 
 /**
  * Fetch a unified teacher registry for a school with caching.
- * Merges active users and pending invitation tokens.
  */
 export const getCachedTeacherRegistry = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            console.log(`[lib/services/teachers] Cache MISS for teacher registry: ${schoolId}`);
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
 
-            // 1. Get All Teachers associated with this school
+            if (isEdge) {
+                const supabase = getSupabase();
+                
+                // 1. Get All Teachers associated with this school
+                const { data: users } = await supabase
+                    .from('User')
+                    .select('id, name, email, phone, teacherCode, qualification, gender, photoUrl, createdAt, verified')
+                    .eq('schoolId', schoolId)
+                    .in('role', ['TEACHER', 'HOMEROOM']);
+
+                // 2. Get All Pending Tokens
+                const { data: invites } = await supabase
+                    .from('InviteToken')
+                    .select('*')
+                    .eq('schoolId', schoolId)
+                    .eq('role', 'TEACHER')
+                    .is('usedAt', null);
+
+                const teacherList = users || [];
+                const inviteList = invites || [];
+
+                // 3. Format Teachers
+                const formattedTeachers = teacherList.map(u => {
+                    const invite = inviteList.find(i => i.email === u.email);
+                    return {
+                        ...u,
+                        token: invite?.token || null,
+                        status: u.verified ? 'ACTIVE' : 'PENDING'
+                    };
+                });
+
+                // 4. Also include Invites that don't have a User record yet
+                const orphanedInvites = inviteList
+                    .filter(i => !teacherList.find(u => u.email === i.email))
+                    .map(i => ({
+                        id: i.id,
+                        name: null,
+                        email: i.email,
+                        token: i.token,
+                        createdAt: i.createdAt,
+                        status: 'PENDING'
+                    }));
+
+                return [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             const users = await prisma.user.findMany({
                 where: {
                     schoolId,
@@ -31,7 +88,6 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                 }
             });
 
-            // 2. Get All Pending Tokens
             const invites = await prisma.inviteToken.findMany({
                 where: {
                     schoolId,
@@ -40,7 +96,6 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                 }
             });
 
-            // 3. Format Teachers - those with User record and verified=true are ACTIVE, else PENDING
             const formattedTeachers = users.map(u => {
                 const invite = invites.find(i => i.email === u.email);
                 return {
@@ -50,7 +105,6 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                 };
             });
 
-            // 4. Also include Invites that don't have a User record yet
             const orphanedInvites = invites
                 .filter(i => !users.find(u => u.email === i.email))
                 .map(i => ({
@@ -62,11 +116,9 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                     status: 'PENDING'
                 }));
 
-            const all = [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
+            return [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
                 new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
-
-            return all;
         },
         [`teacher-registry-${schoolId}`],
         {
@@ -82,6 +134,21 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
 export const getCachedSchoolInfoForRegistry = (schoolId: string) => {
     return unstable_cache(
         async () => {
+            const { prisma: _prismaCheck } = require('@/lib/prisma');
+            const isEdge = !_prismaCheck;
+
+            if (isEdge) {
+                const supabase = getSupabase();
+                const { data } = await supabase
+                    .from('School')
+                    .select('name, address, logoUrl')
+                    .eq('id', schoolId)
+                    .single();
+                return data;
+            }
+
+            // Node.js Prisma Fallback
+            const { prisma } = require('@/lib/prisma');
             return await prisma.school.findUnique({
                 where: { id: schoolId },
                 select: { name: true, address: true, logoUrl: true }

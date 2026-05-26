@@ -36,11 +36,11 @@ export default function DirectorRegister() {
                 body: JSON.stringify({ key })
             });
 
-            const data = await res.json();
+            const data = await res.json() as { schoolName?: string; email?: string; error?: string };
 
             if (res.ok) {
-                setSchoolName(data.schoolName);
-                setEmail(data.email);
+                setSchoolName(data.schoolName || "");
+                setEmail(data.email || "");
                 setStep(2);
             } else {
                 setError(data.error || "Invalid deployment key.");
@@ -88,7 +88,7 @@ export default function DirectorRegister() {
                 if (res.ok) {
                     router.push('/dashboard');
                 } else {
-                    const data = await res.json();
+                    const data = await res.json() as { error?: string };
                     throw new Error(data.error || "Failed to finalize registration.");
                 }
             }

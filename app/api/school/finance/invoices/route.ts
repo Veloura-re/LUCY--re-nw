@@ -6,6 +6,41 @@ export async function GET() {
     try {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            const [invoicesRes, studentsRes, paymentsRes] = await Promise.all([
+                supabaseAdmin.from('Invoice').select('*').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
+                supabaseAdmin.from('Student').select('id, firstName, lastName, studentCode').eq('schoolId', dbUser.schoolId!),
+                supabaseAdmin.from('Payment').select('*').order('createdAt', { ascending: false })
+            ]);
+
+            const studentMap = new Map((studentsRes.data || []).map((s: any) => [s.id, s]));
+            const paymentMap = new Map<string, any[]>();
+            for (const p of (paymentsRes.data || [])) {
+                if (!paymentMap.has(p.invoiceId)) {
+                    paymentMap.set(p.invoiceId, []);
+                }
+                paymentMap.get(p.invoiceId)!.push(p);
+            }
+
+            const invoices = (invoicesRes.data || []).map((inv: any) => {
+                const payments = paymentMap.get(inv.id) || [];
+                return {
+                    ...inv,
+                    student: studentMap.get(inv.studentId) || null,
+                    payments: payments.slice(0, 1)
+                };
+            });
+
+            return NextResponse.json(invoices);
+        }
+
         const invoices = await prisma.invoice.findMany({
             where: { schoolId: dbUser.schoolId! },
             include: {

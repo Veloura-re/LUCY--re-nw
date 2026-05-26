@@ -11,6 +11,35 @@ export async function GET(request: Request) {
     }
 
     try {
+        const { prisma } = require('@/lib/prisma');
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const { data: schoolsData, error: sErr } = await supabaseAdmin
+                .from('School')
+                .select('*, users:User(id), students:Student(id), grades:Grade(id)')
+                .order('createdAt', { ascending: false });
+
+            if (sErr) throw sErr;
+
+            const schools = (schoolsData || []).map((s: any) => ({
+                id: s.id,
+                name: s.name,
+                schoolCode: s.schoolCode,
+                status: s.status,
+                createdAt: s.createdAt,
+                _count: {
+                    users: s.users?.length || 0,
+                    students: s.students?.length || 0,
+                    grades: s.grades?.length || 0
+                }
+            }));
+            return NextResponse.json({ schools });
+        }
+
         const schools = await prisma.school.findMany({
             orderBy: { createdAt: 'desc' },
             include: {
@@ -39,7 +68,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = await request.json() as any;
     const { name, directorEmail } = body;
 
     if (!name || !directorEmail) {
@@ -48,47 +77,89 @@ export async function POST(request: Request) {
 
     try {
         console.log(`[AdminAPI] Creating school: ${name} (Director: ${directorEmail})`);
-        const result = await prisma.$transaction(async (tx: any) => {
-            const school = await tx.school.create({
-                data: {
-                    name,
-                    schoolCode: `SCH-${Date.now().toString().slice(-6)}`,
-                    status: 'PENDING',
-                },
-            });
-            console.log(`[AdminAPI] School created in DB: ${school.id}`);
+        
+        const { prisma } = require('@/lib/prisma');
+        let school: any = null;
+        let token = "";
 
-            const token = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
+        if (!prisma) {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            const schoolCode = `SCH-${Date.now().toString().slice(-6)}`;
+            
+            const { data: createdSchool, error: sErr } = await supabaseAdmin.from('School').insert({
+                name,
+                schoolCode,
+                status: 'PENDING',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }).select().single();
+            if (sErr || !createdSchool) throw sErr || new Error('Failed to create school record.');
+
+            school = createdSchool;
+            token = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
-            await tx.inviteToken.create({
-                data: {
-                    token,
-                    email: directorEmail,
-                    role: 'PRINCIPAL',
-                    schoolId: school.id,
-                    expiresAt,
-                },
+            const { error: invErr } = await supabaseAdmin.from('InviteToken').insert({
+                token,
+                email: directorEmail,
+                role: 'PRINCIPAL',
+                schoolId: school.id,
+                expiresAt: expiresAt.toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             });
-            console.log(`[AdminAPI] Invite token created for ${directorEmail}`);
+            if (invErr) throw invErr;
+            console.log(`[AdminAPI] Edge-Native Invite token created for ${directorEmail}`);
+        } else {
+            const result = await prisma.$transaction(async (tx: any) => {
+                const createdSchool = await tx.school.create({
+                    data: {
+                        name,
+                        schoolCode: `SCH-${Date.now().toString().slice(-6)}`,
+                        status: 'PENDING',
+                    },
+                });
+                console.log(`[AdminAPI] School created in DB: ${createdSchool.id}`);
 
-            return { school, token };
-        });
+                const createdToken = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
+                const expiresAt = new Date();
+                expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
-        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${result.token}`;
+                await tx.inviteToken.create({
+                    data: {
+                        token: createdToken,
+                        email: directorEmail,
+                        role: 'PRINCIPAL',
+                        schoolId: createdSchool.id,
+                        expiresAt,
+                    },
+                });
+                console.log(`[AdminAPI] Invite token created for ${directorEmail}`);
+
+                return { school: createdSchool, token: createdToken };
+            });
+            school = result.school;
+            token = result.token;
+        }
+
+        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
 
         // Send invite email
         const { sendInviteEmail } = await import('@/lib/email');
         console.log(`[AdminAPI] Sending invitation email to ${directorEmail}...`);
-        const emailResult = await sendInviteEmail(directorEmail, inviteUrl, name, result.token, 'PRINCIPAL', result.school.id);
+        const emailResult = await sendInviteEmail(directorEmail, inviteUrl, name, token, 'PRINCIPAL', school.id);
 
         const res = emailResult as any;
         console.log(`[AdminAPI] Email send status: ${res.success} (Skipped: ${res.skipped})`);
 
         return NextResponse.json({
-            school: result.school,
-            inviteToken: result.token,
+            school,
+            inviteToken: token,
             inviteUrl,
             emailSent: res.success && !res.skipped,
             simulated: res.simulated || false,
