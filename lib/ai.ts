@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 export async function analyzeStudentRisk(studentData: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro-latest" });
     
     const prompt = `You are a school counselor and data analyst for LUCY, a modern school management platform.
 Analyze the following student data and provide a concise JSON risk assessment.
@@ -32,7 +32,7 @@ Respond strictly in the following JSON format without any markdown wrappers or a
 export async function generateGradeFeedback(score: number, maxScore: number, subject: string, previousContext?: string) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
     const percentage = score / maxScore;
     
     const prompt = `You are an encouraging teacher. Generate a single paragraph (2-3 sentences max) of personalized, constructive feedback for a student who scored ${score}/${maxScore} (${(percentage * 100).toFixed(1)}%) in ${subject}. 
@@ -47,7 +47,7 @@ export async function processParentChat(contextData: any, userMessage: string, p
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-flash-latest",
         systemInstruction: `You are LUCY, a friendly and professional AI assistant for parents in a school management system.
 You MUST answer the parent's questions based EXCLUSIVELY on the following JSON context data about their children, school, and fees.
 If the parent asks something not covered by the context, politely inform them that you don't have that information.
@@ -74,7 +74,7 @@ ${JSON.stringify(contextData)}
  */
 export async function generateAssignmentDraft({ subject, topic, gradeLevel, requirements }: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are an expert educator assistng a teacher in creating a high-quality assignment on the LUCY platform.
 Generate an assignment draft for:
@@ -102,7 +102,7 @@ Respond STRICTLY in the following JSON format:
  */
 export async function analyzeStudentTask(assignment: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are LUCY, a student's neural study assistant. 
 Analyze the following assignment and provide a concise "Neural Breakdown" to help them succeed.
@@ -129,7 +129,7 @@ Respond strictly in the following JSON format:
  */
 export async function preEvaluateSubmission(assignment: any, studentContent: string) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are LUCY's Academic Quality Monitor. Pre-evaluate the following student submission against the assignment details.
     
@@ -159,7 +159,7 @@ export async function preEvaluateSubmission(assignment: any, studentContent: str
  */
 export async function summarizeSubmission(studentContent: string) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are a surgical summary assistant for teachers. Summarize the following student submission into a concise, high-level overview (3-4 bullet points) that highlights their main arguments and any glaring omissions.
     
@@ -177,7 +177,7 @@ export async function summarizeSubmission(studentContent: string) {
  */
 export async function generateInstitutionalInsight(analytics: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are LUCY's Institutional Strategist. Analyze the following school-wide assignment analytics and provide a high-level strategic insight for the Director.
     
@@ -206,7 +206,7 @@ export async function generateInstitutionalInsight(analytics: any) {
  */
 export async function analyzeTaskForParent(assignment: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `You are LUCY's Parental Engagement Assistant. 
     Analyze the following assignment and provide a simplified, parent-friendly breakdown to help them support their child's learning.

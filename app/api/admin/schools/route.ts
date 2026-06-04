@@ -91,11 +91,11 @@ export async function POST(request: Request) {
             const schoolCode = `SCH-${Date.now().toString().slice(-6)}`;
             
             const { data: createdSchool, error: sErr } = await supabaseAdmin.from('School').insert({
+                id: crypto.randomUUID(),
                 name,
                 schoolCode,
                 status: 'PENDING',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                createdAt: new Date().toISOString()
             }).select().single();
             if (sErr || !createdSchool) throw sErr || new Error('Failed to create school record.');
 
@@ -105,46 +105,82 @@ export async function POST(request: Request) {
             expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
             const { error: invErr } = await supabaseAdmin.from('InviteToken').insert({
+                id: crypto.randomUUID(),
                 token,
                 email: directorEmail,
                 role: 'PRINCIPAL',
                 schoolId: school.id,
                 expiresAt: expiresAt.toISOString(),
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                createdAt: new Date().toISOString()
             });
             if (invErr) throw invErr;
             console.log(`[AdminAPI] Edge-Native Invite token created for ${directorEmail}`);
         } else {
-            const result = await prisma.$transaction(async (tx: any) => {
-                const createdSchool = await tx.school.create({
-                    data: {
-                        name,
-                        schoolCode: `SCH-${Date.now().toString().slice(-6)}`,
-                        status: 'PENDING',
-                    },
-                });
-                console.log(`[AdminAPI] School created in DB: ${createdSchool.id}`);
+            try {
+                const result = await prisma.$transaction(async (tx: any) => {
+                    const createdSchool = await tx.school.create({
+                        data: {
+                            name,
+                            schoolCode: `SCH-${Date.now().toString().slice(-6)}`,
+                            status: 'PENDING',
+                        },
+                    });
+                    console.log(`[AdminAPI] School created in DB: ${createdSchool.id}`);
 
-                const createdToken = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
+                    const createdToken = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
+                    const expiresAt = new Date();
+                    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+
+                    await tx.inviteToken.create({
+                        data: {
+                            token: createdToken,
+                            email: directorEmail,
+                            role: 'PRINCIPAL',
+                            schoolId: createdSchool.id,
+                            expiresAt,
+                        },
+                    });
+                    console.log(`[AdminAPI] Invite token created for ${directorEmail}`);
+
+                    return { school: createdSchool, token: createdToken };
+                });
+                school = result.school;
+                token = result.token;
+            } catch (prismaErr) {
+                console.warn('[AdminAPI] Prisma transaction failed, falling back to Supabase REST:', prismaErr);
+                const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+                const supabaseAdmin = createSupabaseAdmin(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                    process.env.SUPABASE_SERVICE_ROLE_KEY!
+                );
+                const schoolCode = `SCH-${Date.now().toString().slice(-6)}`;
+                
+                const { data: createdSchool, error: sErr } = await supabaseAdmin.from('School').insert({
+                    id: crypto.randomUUID(),
+                    name,
+                    schoolCode,
+                    status: 'PENDING',
+                    createdAt: new Date().toISOString()
+                }).select().single();
+                if (sErr || !createdSchool) throw sErr || new Error('Failed to create school record via Supabase REST.');
+
+                school = createdSchool;
+                token = `inv_${crypto.randomUUID().replace(/-/g, '')}`;
                 const expiresAt = new Date();
                 expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
 
-                await tx.inviteToken.create({
-                    data: {
-                        token: createdToken,
-                        email: directorEmail,
-                        role: 'PRINCIPAL',
-                        schoolId: createdSchool.id,
-                        expiresAt,
-                    },
+                const { error: invErr } = await supabaseAdmin.from('InviteToken').insert({
+                    id: crypto.randomUUID(),
+                    token,
+                    email: directorEmail,
+                    role: 'PRINCIPAL',
+                    schoolId: school.id,
+                    expiresAt: expiresAt.toISOString(),
+                    createdAt: new Date().toISOString()
                 });
-                console.log(`[AdminAPI] Invite token created for ${directorEmail}`);
-
-                return { school: createdSchool, token: createdToken };
-            });
-            school = result.school;
-            token = result.token;
+                if (invErr) throw invErr;
+                console.log(`[AdminAPI] Fallback: Supabase REST Invite token created for ${directorEmail}`);
+            }
         }
 
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;

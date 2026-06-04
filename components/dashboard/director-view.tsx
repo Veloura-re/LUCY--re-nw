@@ -40,32 +40,6 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
     const [analytics, setAnalytics] = useState<any>(initialAnalytics);
     const [isLoading, setIsLoading] = useState<boolean>(!initialAnalytics && !!initialSchool);
 
-    // School Creation State
-    const [schoolName, setSchoolName] = useState("");
-    const [schoolCode, setSchoolCode] = useState("");
-
-    const handleCreateSchool = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            const res = await fetch('/api/school/onboarding', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: schoolName, code: schoolCode })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Failed to create school");
-
-            toast.success("Institutional Hub Deployed");
-            setTimeout(() => {
-                router.refresh();
-            }, 1000);
-        } catch (err: any) {
-            toast.error(err.message);
-            setIsLoading(false);
-        }
-    };
-
     useEffect(() => {
         if (initialSchool && !initialAnalytics) {
             fetch('/api/school/analytics')
@@ -130,66 +104,18 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
         );
     }
 
-    // --- ONBOARDING VIEW (No School Linked) ---
+    // --- UNLINKED VIEW ---
     if (!initialSchool) {
         return (
             <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
-                <div className="border-b border-zinc-900 pb-10">
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
-                        System <span className="text-eduGreen-500 italic">Initialization</span>
-                    </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Setup Required</p>
+                <div className="py-24 text-center rounded-3xl bg-zinc-950/40 border border-zinc-900/50 shadow-2xl">
+                    <SchoolIcon className="w-12 h-12 text-zinc-800 mx-auto mb-6" />
+                    <h2 className="text-2xl font-medium text-white mb-2">Unlinked Account</h2>
+                    <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
+                        Your director profile is not associated with any active institution.
+                        <br />Please contact the super administrator to be linked to your school.
+                    </p>
                 </div>
-
-                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-3xl overflow-hidden group shadow-2xl border-t-zinc-800/20">
-                    <CardHeader className="text-center pt-12 pb-8 px-12">
-                        <CardTitle className="text-xl md:text-3xl font-medium text-white tracking-tight">Deploy Organization</CardTitle>
-                        <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-2 italic">Institutional Neural Network Creation</CardDescription>
-                    </CardHeader>
-                    <CardContent className="px-12 pb-12">
-                        {isLoading ? (
-                            <div className="py-8 flex justify-center items-center scale-90">
-                                <SpringingLoader message="Uplinking Institutional Network" />
-                            </div>
-                        ) : (
-                            <form onSubmit={handleCreateSchool} className="space-y-8">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">School Identity</label>
-                                    <Input
-                                        placeholder="e.g. Springfield Academy"
-                                        value={schoolName}
-                                        onChange={e => setSchoolName(e.target.value)}
-                                        required
-                                        icon={<SchoolIcon className="w-4 h-4 text-eduGreen-500" />}
-                                        className="bg-zinc-900/30 border-zinc-800 text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all border-2 font-medium uppercase text-xs"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Access Code</label>
-                                    <Input
-                                        placeholder="e.g. SPRINGFIELD-001"
-                                        value={schoolCode}
-                                        onChange={e => setSchoolCode(e.target.value.toUpperCase())}
-                                        required
-                                        icon={<BookOpen className="w-4 h-4 text-eduGreen-500" />}
-                                        className="font-mono uppercase bg-zinc-900/30 border-zinc-800 text-eduGreen-400 h-12 rounded-xl focus:border-eduGreen-600 transition-all border-2 tracking-widest font-medium"
-                                    />
-                                </div>
-
-                                <Button
-                                    className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 mt-2"
-                                    disabled={isLoading}
-                                >
-                                    <span className="flex items-center justify-center">Launch Ecosystem <ArrowRight className="w-4 h-4 ml-2" /></span>
-                                </Button>
-                            </form>
-                        )}
-                    </CardContent>
-                    <CardFooter className="bg-zinc-950/20 border-t border-zinc-900/50 p-6 text-[9px] text-center text-zinc-700 font-medium uppercase tracking-[0.3em] justify-center">
-                        This sequence will bridge all scholarly nodes and faculty personnel.
-                    </CardFooter>
-                </Card>
             </div>
         );
     }

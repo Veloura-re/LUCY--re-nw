@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
-    const { token, userId, name, email } = await request.json();
+    const { token, userId, name, email } = await request.json() as { token: string; userId: string; name: string; email: string };
 
     // Validate Token again in transaction
     try {
@@ -11,8 +11,17 @@ export async function POST(request: Request) {
                 where: { token },
             });
 
-            if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
-                throw new Error("Invalid Token");
+            if (!invite || invite.expiresAt < new Date()) {
+                throw new Error("Invalid or expired token");
+            }
+
+            // If token already used but user already exists with this ID → idempotent success
+            if (invite.usedAt) {
+                const existingRegistered = await tx.user.findUnique({ where: { id: userId } });
+                if (existingRegistered) {
+                    return existingRegistered; // Already done, just return the user
+                }
+                throw new Error("Token already used");
             }
 
             // Find if a placeholder user exists
@@ -68,9 +77,22 @@ export async function POST(request: Request) {
                     where: { id: placeholderId }
                 });
 
-                // Create the newly authenticated user with preserved metadata
-                return await tx.user.create({
-                    data: {
+                // Upsert the newly authenticated user with preserved metadata
+                return await tx.user.upsert({
+                    where: { id: userId },
+                    update: {
+                        email: invite.email,
+                        name,
+                        role: invite.role,
+                        verified: true,
+                        schoolId: invite.schoolId,
+                        teacherCode: existingUser.teacherCode,
+                        gender: existingUser.gender,
+                        phone: existingUser.phone,
+                        qualification: existingUser.qualification,
+                        photoUrl: existingUser.photoUrl
+                    },
+                    create: {
                         id: userId, // Match Supabase ID
                         email: invite.email,
                         name,
@@ -85,9 +107,17 @@ export async function POST(request: Request) {
                     }
                 });
             } else {
-                // Create User Record completely fresh
-                return await tx.user.create({
-                    data: {
+                // Upsert User Record (idempotent: safe to call again on retry)
+                return await tx.user.upsert({
+                    where: { id: userId },
+                    update: {
+                        email: invite.email,
+                        name,
+                        role: invite.role,
+                        verified: true,
+                        schoolId: invite.schoolId,
+                    },
+                    create: {
                         id: userId, // Match Supabase ID
                         email: invite.email,
                         name,
