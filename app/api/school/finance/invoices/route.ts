@@ -15,9 +15,9 @@ export async function GET() {
             );
 
             const [invoicesRes, studentsRes, paymentsRes] = await Promise.all([
-                supabaseAdmin.from('Invoice').select('*').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
+                supabaseAdmin.from('Invoice').select('id, amount, status, dueDate, createdAt, studentId').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
                 supabaseAdmin.from('Student').select('id, firstName, lastName, studentCode').eq('schoolId', dbUser.schoolId!),
-                supabaseAdmin.from('Payment').select('*').order('createdAt', { ascending: false })
+                supabaseAdmin.from('Payment').select('id, amount, method, reference, invoiceId, createdAt').order('createdAt', { ascending: false })
             ]);
 
             const studentMap = new Map((studentsRes.data || []).map((s: any) => [s.id, s]));

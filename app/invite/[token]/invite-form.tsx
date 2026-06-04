@@ -65,6 +65,12 @@ export function InviteForm({ token, email, schoolName, role }: { token: string, 
             return;
         }
 
+        // Establish session explicitly by logging the user in
+        await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
         router.push('/dashboard');
     };
 

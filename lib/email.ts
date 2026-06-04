@@ -48,11 +48,41 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
 }
 
 async function getSchoolConfig(schoolId: string) {
-    const school = await prisma.school.findUnique({
-        where: { id: schoolId },
-        select: { communicationsConfig: true, name: true }
-    });
-    return school;
+    try {
+        if (!prisma) {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+            const { data, error } = await supabaseAdmin
+                .from('School')
+                .select('communicationsConfig, name')
+                .eq('id', schoolId)
+                .maybeSingle();
+            
+            if (error) throw error;
+            return data;
+        }
+
+        const school = await prisma.school.findUnique({
+            where: { id: schoolId },
+            select: { communicationsConfig: true, name: true }
+        });
+        return school;
+    } catch (err) {
+        console.error('[email.ts] Prisma getSchoolConfig failed, falling back to Supabase REST:', err);
+        try {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+            const { data } = await supabaseAdmin
+                .from('School')
+                .select('communicationsConfig, name')
+                .eq('id', schoolId)
+                .maybeSingle();
+            return data;
+        } catch (fallbackErr) {
+            console.error('[email.ts] Supabase fallback also failed:', fallbackErr);
+            return null;
+        }
+    }
 }
 
 export async function sendInviteEmail(toEmail: string, inviteUrl: string, schoolName: string, token: string, role: string = 'TEACHER', schoolId?: string) {
@@ -370,3 +400,32 @@ export async function sendLatenessNotificationEmail(
         replyTo
     });
 }
+
+export async function sendRecoveryEmail(toEmail: string, resetUrl: string) {
+    const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <span style="font-size: 40px;">🔑</span>
+                <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY</h1>
+            </div>
+            
+            <h2 style="font-size: 24px; font-weight: 800; color: #101314; margin-bottom: 16px;">Password Reset Request</h2>
+            <p style="font-size: 16px; line-height: 1.6; color: #4A4E52;">We received a request to reset your password for your LUCY account. Click the button below to choose a new password.</p>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="${resetUrl}" style="background-color: #147A52; color: #ffffff; padding: 18px 32px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">Reset Password</a>
+            </div>
+            
+            <p style="font-size: 14px; line-height: 1.6; color: #6E7377;">If the button above does not work, copy and paste this URL into your browser:</p>
+            <p style="font-size: 12px; color: #147A52; word-break: break-all;">${resetUrl}</p>
+            
+            <p style="font-size: 12px; line-height: 1.6; color: #6E7377; margin-top: 32px;">If you did not make this request, you can safely ignore this email.</p>
+            
+            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 40px 0;" />
+            <p style="font-size: 11px; text-align: center; color: #9EA3A7; text-transform: uppercase; letter-spacing: 0.1em;">LUCY Advanced Academic Infrastructure &copy; 2026</p>
+        </div>
+    `;
+
+    return sendEmail({ to: toEmail, subject: "LUCY: Reset your password", html });
+}
+

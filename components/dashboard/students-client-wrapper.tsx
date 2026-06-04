@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -107,31 +107,33 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
         }
     };
 
-    const filteredStudents = (students || [])
-        .filter(s => {
-            const matchesSearch = activeSearch === "" ||
-                (s.firstName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                    s.lastName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                    s.studentCode?.toLowerCase().includes(activeSearch.toLowerCase()));
+    const filteredStudents = useMemo(() => {
+        return (students || [])
+            .filter(s => {
+                const matchesSearch = activeSearch === "" ||
+                    (s.firstName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
+                        s.lastName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
+                        s.studentCode?.toLowerCase().includes(activeSearch.toLowerCase()));
 
-            const matchesClass = filterClassId === "ALL" || s.classId === filterClassId;
+                const matchesClass = filterClassId === "ALL" || s.classId === filterClassId;
 
-            return matchesSearch && matchesClass;
-        })
-        .sort((a, b) => {
-            let comparison = 0;
-            if (sortBy === "NAME") {
-                const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
-                const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
-                comparison = nameA.localeCompare(nameB);
-            } else if (sortBy === "CLASS") {
-                const classA = a.class?.name?.toLowerCase() || "";
-                const classB = b.class?.name?.toLowerCase() || "";
-                comparison = classA.localeCompare(classB);
-            }
+                return matchesSearch && matchesClass;
+            })
+            .sort((a, b) => {
+                let comparison = 0;
+                if (sortBy === "NAME") {
+                    const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+                    const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+                    comparison = nameA.localeCompare(nameB);
+                } else if (sortBy === "CLASS") {
+                    const classA = a.class?.name?.toLowerCase() || "";
+                    const classB = b.class?.name?.toLowerCase() || "";
+                    comparison = classA.localeCompare(classB);
+                }
 
-            return sortDir === "ASC" ? comparison : -comparison;
-        });
+                return sortDir === "ASC" ? comparison : -comparison;
+            });
+    }, [students, activeSearch, filterClassId, sortBy, sortDir]);
 
     const handleSearch = (e?: React.FormEvent) => {
         if (e) e.preventDefault();

@@ -8,6 +8,30 @@ import { createServerClient } from '@supabase/ssr'
  */
 export const runtime = 'experimental-edge'
 
+const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
+
+function checkRateLimit(ip: string, path: string): boolean {
+    const isAuth = path.startsWith('/api/auth/');
+    const limit = isAuth ? 10 : 100; // 10 requests/min for auth, 100/min for general API
+    const windowMs = 60 * 1000;
+    
+    const key = `${ip}:${isAuth ? 'auth' : 'api'}`;
+    const now = Date.now();
+    const record = rateLimitMap.get(key);
+
+    if (!record || now > record.resetTime) {
+        rateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
+        // Clean up old entries occasionally
+        if (rateLimitMap.size > 10000) rateLimitMap.clear();
+        return true;
+    }
+
+    if (record.count >= limit) return false;
+
+    record.count += 1;
+    return true;
+}
+
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
@@ -40,8 +64,9 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    // 1. Refresh session
-    const { data: { user } } = await supabase.auth.getUser()
+    // 1. Refresh session safely
+    const { data, error: userError } = await supabase.auth.getUser()
+    const user = data?.user || null
 
     // 2. Define protected paths
     const url = request.nextUrl.clone()
@@ -50,12 +75,34 @@ export async function middleware(request: NextRequest) {
     const isAuthPage = path === '/login' || path === '/register'
     const isAdminPage = path.startsWith('/admin')
     const isDashboardPage = path.startsWith('/dashboard')
+    const isApiPage = path.startsWith('/api')
+
+    // ─────────────────────────────────────────────────
+    // RATE LIMITING LAYER (Global Anti-DoS & Anti-Brute Force)
+    // ─────────────────────────────────────────────────
+    if (isApiPage) {
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '127.0.0.1';
+        if (!checkRateLimit(ip, path)) {
+            return new NextResponse(JSON.stringify({ error: "Too Many Requests" }), {
+                status: 429,
+                headers: { 'Content-Type': 'application/json', 'Retry-After': '60' }
+            })
+        }
+    }
 
     // 3. Handle Unauthenticated Users
     if (!user) {
         if (isAdminPage || isDashboardPage) {
             url.pathname = '/login'
             return NextResponse.redirect(url)
+        }
+
+        // DEFAULT API AUTHENTICATION LOCK
+        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/')) {
+            return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+                status: 401,
+                headers: { 'Content-Type': 'application/json' }
+            })
         }
     } else {
         // 4. Handle Authenticated Users
@@ -81,7 +128,6 @@ export async function middleware(request: NextRequest) {
     // 5. Advanced Security Layers
     // ─────────────────────────────────────────────────
 
-    const isApiPage = path.startsWith('/api')
     const isMutatingRequest = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)
 
     // A. Request Size Limiting (DoS Protection)

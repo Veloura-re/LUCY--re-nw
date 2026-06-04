@@ -21,18 +21,27 @@ export default function ForgotPasswordPage() {
         setIsLoading(true);
         setError(null);
 
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/auth/callback?next=/dashboard/settings`,
-        });
+        try {
+            const res = await fetch("/api/auth/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
 
-        if (resetError) {
-            setError(resetError.message);
+            const data = await res.json() as any;
+
+            if (!res.ok) {
+                setError(data.error || "Failed to initiate recovery protocol.");
+                setIsLoading(false);
+                return;
+            }
+
+            setIsSubmitted(true);
+        } catch (err: any) {
+            setError(err.message || "An unexpected connection error occurred.");
+        } finally {
             setIsLoading(false);
-            return;
         }
-
-        setIsSubmitted(true);
-        setIsLoading(false);
     };
 
     return (

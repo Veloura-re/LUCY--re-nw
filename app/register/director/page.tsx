@@ -86,6 +86,10 @@ export default function DirectorRegister() {
                 });
 
                 if (res.ok) {
+                    await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
                     router.push('/dashboard');
                 } else {
                     const data = await res.json() as { error?: string };
