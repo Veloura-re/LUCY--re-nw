@@ -197,6 +197,9 @@ model ParentStudentLink {
   pairingMethod PairingMethod
   parent        User          @relation(fields: [parentId], references: [id])
   student       Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([parentId])
+  @@index([studentId])
 }
 
 model Exam {

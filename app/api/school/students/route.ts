@@ -13,6 +13,9 @@ export async function GET(request: Request) {
         const user = await requireSchoolLinked();
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const skip = (page - 1) * limit;
 
         if (id) {
             const student = await prisma.student.findUnique({
@@ -23,20 +26,33 @@ export async function GET(request: Request) {
         }
 
         // We still provide a fallback for clients who haven't migrated to Server Components
-        const students = await prisma.student.findMany({
-            where: { schoolId: user.schoolId },
-            include: {
-                grade: true,
-                class: true,
-                invoices: {
-                    where: { status: { in: ['PENDING', 'OVERDUE'] } },
-                    select: { amount: true }
-                }
-            },
-            orderBy: { lastName: 'asc' }
-        });
+        const [students, total] = await Promise.all([
+            prisma.student.findMany({
+                where: { schoolId: user.schoolId },
+                include: {
+                    grade: true,
+                    class: true,
+                    invoices: {
+                        where: { status: { in: ['PENDING', 'OVERDUE'] } },
+                        select: { amount: true }
+                    }
+                },
+                orderBy: { lastName: 'asc' },
+                skip,
+                take: limit
+            }),
+            prisma.student.count({ where: { schoolId: user.schoolId } })
+        ]);
 
-        return NextResponse.json({ students });
+        return NextResponse.json({ 
+            students, 
+            pagination: { 
+                page, 
+                limit, 
+                total, 
+                totalPages: Math.ceil(total / limit) 
+            } 
+        });
 
     } catch (e) {
         return handleApiError(e);
@@ -47,7 +63,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const body = await request.json();
+        const body = await request.json() as any;
         const targetSchoolId = user.schoolId;
 
         const {
@@ -132,7 +148,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const body = await request.json();
+        const body = await request.json() as any;
         const { id, ...data } = body;
 
         if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });

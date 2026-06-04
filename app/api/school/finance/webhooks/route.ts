@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 // This simulates a public webhook from a payment gateway (Stripe, M-Pesa, etc.)
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
+        const body = await req.json() as any;
         const { invoiceId, transactionReference, amount, status } = body;
 
         // In a real scenario, you'd verify the webhook signature here
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
 
             // 1. Create Payment Record
             await supabaseAdmin.from('Payment').insert({
+                id: crypto.randomUUID(),
                 invoiceId: invoice.id,
                 amount: invoice.amount,
                 method: 'CARD', // Or dynamic based on provider
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
 
             // 3. (Optional) Log highly sensitive audit event
             await supabaseAdmin.from('AuditLog').insert({
+                id: crypto.randomUUID(),
                 userId: "SYSTEM", // System triggered
                 action: "AUTO_PAYMENT_CONFIRMATION",
                 resourceType: "INVOICE",
