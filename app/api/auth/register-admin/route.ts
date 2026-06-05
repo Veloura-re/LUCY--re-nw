@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { rateLimit, secureJson } from '@/lib/security';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
     const limit = rateLimit(request, "auth/register-admin", 3); // Very strict for admin reg
     if (limit) return limit;
 
-    const { userId, email, name, secretKey } = await request.json();
+    const { userId, email, name, secretKey } = await request.json() as any;
 
     // Check against ENV variable (REQUIRED)
     const VALID_SECRET = process.env.ADMIN_SECRET_KEY;
@@ -21,15 +21,22 @@ export async function POST(request: Request) {
     }
 
     try {
-        const user = await prisma.user.create({
-            data: {
-                id: userId,
-                email,
-                name,
-                role: 'SUPERADMIN',
-                verified: true,
-            }
-        });
+        const supabaseAdmin = createSupabaseAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        const { data: user, error } = await supabaseAdmin.from('User').insert({
+            id: userId,
+            email,
+            name,
+            role: 'SUPERADMIN',
+            verified: true,
+            updatedAt: new Date().toISOString()
+        }).select().single();
+
+        if (error) throw error;
+
         return secureJson({ user });
     } catch (e: any) {
         console.error(e);

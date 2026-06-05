@@ -6,27 +6,23 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Mark Prisma and Cloudflare-specific packages as external.
   serverExternalPackages: [
     "@prisma/client", 
-    ".prisma/client", 
-    "@prisma/adapter-pg-worker", 
-    "@prisma/pg-worker",
-    "cloudflare:sockets"
+    ".prisma/client"
   ],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'caeeusbhwrkelnffbbub.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
   experimental: {
     optimizePackageImports: ["lucide-react", "date-fns", "framer-motion"],
   },
   webpack: (config, { isServer, nextRuntime }) => {
-    if (isServer) {
-      config.externals.push('cloudflare:sockets');
-    }
-    
-    if (nextRuntime === 'edge') {
-      config.externals.push('node:string_decoder');
-      config.externals.push('string_decoder');
-    }
-
     // Disable minification to avoid the 'WebpackError is not a constructor' bug
     // that occurs in some Next.js 16 / Webpack 5 environments.
     config.optimization.minimize = false;
