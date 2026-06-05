@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
@@ -26,7 +25,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const { name, email, phone, gender, teacherCode, qualification, photoUrl } = await request.json();
+        const { name, email, phone, gender, teacherCode, qualification, photoUrl } = await request.json() as any;
 
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
@@ -44,7 +43,7 @@ export async function POST(request: Request) {
                 role: 'TEACHER', // Default role
                 schoolId: user.schoolId,
                 verified: false,
-                teacherCode: teacherCode || `TCH-${crypto.randomBytes(2).toString('hex').toUpperCase()}`,
+                teacherCode: teacherCode || `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`,
                 gender: gender || null,
                 phone: phone || null,
                 qualification: qualification || null,
@@ -53,7 +52,7 @@ export async function POST(request: Request) {
         });
 
         // Create Invite Token
-        const token = crypto.randomUUID().replace(/-/g, '');
+        const token = globalThis.crypto.randomUUID().replace(/-/g, '');
         await prisma.inviteToken.create({
             data: {
                 token,
@@ -86,7 +85,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const { id, name, email, phone, gender, qualification, photoUrl } = await request.json();
+        const { id, name, email, phone, gender, qualification, photoUrl } = await request.json() as any;
 
         if (!id) return NextResponse.json({ error: "Teacher ID required" }, { status: 400 });
 

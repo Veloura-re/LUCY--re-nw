@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
@@ -10,11 +10,19 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Student Token and Secure Keyphrase required" }, { status: 400 });
         }
 
+        const supabaseAdmin = createSupabaseAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
         // 1. Verify Student Code exists and is unused
         const sanitizedCode = studentCode.trim().toUpperCase();
-        const student = await prisma.student.findUnique({
-            where: { studentCode: sanitizedCode }
-        });
+        
+        const { data: student } = await supabaseAdmin
+            .from('Student')
+            .select('*')
+            .eq('studentCode', sanitizedCode)
+            .maybeSingle();
 
         if (!student) {
             return NextResponse.json({ error: "Invalid Authorization Token" }, { status: 404 });
@@ -24,7 +32,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Token already claimed" }, { status: 409 });
         }
 
-        const finalEmail = email || `${studentCode.toLowerCase()}@lucy.local`; // Use .local to avoid real emails if none provided
+        const finalEmail = email || `${studentCode.toLowerCase()}@lucy.local`;
 
         // 2. Register in Supabase Auth
         const supabase = await createClient();
@@ -58,8 +66,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Authentication Provider Failed" }, { status: 500 });
         }
 
-        // 3. Create User Account in Prisma (Synced with Supabase ID)
-        // Using Web Crypto for a safe hash in Edge environment instead of Node-only bcryptjs
+        // 3. Create User Account in Database (Synced with Supabase ID)
         const encoder = new TextEncoder();
         const pwData = encoder.encode(password);
         const hashBuffer = await crypto.subtle.digest('SHA-256', pwData);
@@ -67,37 +74,32 @@ export async function POST(req: Request) {
         const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         try {
-            const result = await prisma.$transaction(async (tx) => {
-                // Check if user already exists in Prisma
-                let user = await tx.user.findUnique({ where: { id: authUser!.id } });
+            // Check if user already exists
+            let { data: user } = await supabaseAdmin.from('User').select('*').eq('id', authUser.id).maybeSingle();
 
-                if (!user) {
-                    user = await tx.user.create({
-                        data: {
-                            id: authUser!.id,
-                            email: finalEmail,
-                            passwordHash: hashedPassword,
-                            name: `${student.firstName} ${student.lastName}`,
-                            role: "STUDENT",
-                            schoolId: student.schoolId,
-                            verified: true
-                        }
-                    });
-                }
+            if (!user) {
+                const { data: newUser, error: createError } = await supabaseAdmin.from('User').insert({
+                    id: authUser.id,
+                    email: finalEmail,
+                    passwordHash: hashedPassword,
+                    name: `${student.firstName} ${student.lastName}`,
+                    role: "STUDENT",
+                    schoolId: student.schoolId,
+                    verified: true,
+                    updatedAt: new Date().toISOString()
+                }).select().single();
+                
+                if (createError) throw createError;
+                user = newUser;
+            }
 
-                // 4. Link Student to User
-                await tx.student.update({
-                    where: { id: student.id },
-                    data: { userId: user.id }
-                });
-
-                return user;
-            });
+            // 4. Link Student to User
+            await supabaseAdmin.from('Student').update({ userId: user.id }).eq('id', student.id);
 
             return NextResponse.json({
                 success: true,
                 message: "Identity Verification Complete. Access Granted.",
-                user: { id: result.id, name: result.name, email: result.email }
+                user: { id: user.id, name: user.name, email: user.email }
             });
         } catch (dbError: any) {
             console.error("Database Sync Error:", dbError);

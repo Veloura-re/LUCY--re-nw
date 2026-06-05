@@ -9,6 +9,7 @@ export function agentDebugLog(entry: {
     runId?: string;
 }) {
     if (typeof window === "undefined") return;
+    if (process.env.NODE_ENV === "production") return;
     const body = {
         sessionId: SESSION,
         timestamp: Date.now(),
