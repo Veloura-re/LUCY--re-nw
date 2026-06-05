@@ -59,6 +59,7 @@ export default function DirectorRegister() {
 
         try {
             // 1. SignUp with Supabase
+            let authUser = null;
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
@@ -70,16 +71,29 @@ export default function DirectorRegister() {
                 }
             });
 
-            if (authError) throw authError;
+            if (authError) {
+                if (authError.message.toLowerCase().includes("already registered")) {
+                    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+                    if (signInError) throw new Error("Email already registered. Please use correct password.");
+                    authUser = signInData.user;
+                } else {
+                    throw authError;
+                }
+            } else {
+                authUser = authData.user;
+            }
 
-            if (authData.user) {
+            if (authUser) {
                 // 2. Complete registration on server (burn token, link user)
                 const res = await fetch('/api/dir/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         token: key,
-                        userId: authData.user.id,
+                        userId: authUser.id,
                         name,
                         email
                     })

@@ -37,28 +37,33 @@ export async function POST(req: Request) {
         // 2. Register in Supabase Auth
         const supabase = await createClient();
 
-        // Check if user already exists in Supabase to handle partial failures
-        const { data: { user: existingAuthUser } } = await supabase.auth.getUser();
-
         let authUser;
-        if (existingAuthUser && existingAuthUser.email === finalEmail) {
-            authUser = existingAuthUser;
-        } else {
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: finalEmail,
-                password: password,
-                options: {
-                    data: {
-                        role: 'STUDENT',
-                        full_name: `${student.firstName} ${student.lastName}`
-                    }
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: finalEmail,
+            password: password,
+            options: {
+                data: {
+                    role: 'STUDENT',
+                    full_name: `${student.firstName} ${student.lastName}`
                 }
-            });
+            }
+        });
 
-            if (authError) {
+        if (authError) {
+            if (authError.message.toLowerCase().includes("already registered")) {
+                const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                    email: finalEmail,
+                    password: password
+                });
+                if (signInError) {
+                    return NextResponse.json({ error: "Email already registered. Please use correct password." }, { status: 400 });
+                }
+                authUser = signInData.user;
+            } else {
                 console.error("Supabase Auth Error:", authError);
                 return NextResponse.json({ error: authError.message }, { status: 400 });
             }
+        } else {
             authUser = authData.user;
         }
 
