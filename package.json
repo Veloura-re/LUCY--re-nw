@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node node_modules/next/dist/bin/next dev --webpack",
     "dev:webpack": "node node_modules/next/dist/bin/next dev --webpack",
-    "build": "PRISMA_CLIENT_ENGINE_TYPE=wasm npx prisma generate && node scripts/patch-opennext.js && next build --webpack && npx @opennextjs/cloudflare build --skip-next-build",
+    "build": "npx prisma generate && next build",
     "build:local": "npm run build",
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "eslint",
@@ -19,7 +19,7 @@
     "@fontsource/space-grotesk": "^5.2.10",
     "@fontsource/unifrakturmaguntia": "^5.2.8",
     "@google/generative-ai": "^0.24.1",
-    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/adapter-pg": "^5.22.0",
     "@prisma/adapter-pg-worker": "^5.22.0",
     "@prisma/client": "^5.22.0",
     "@prisma/pg-worker": "^5.22.0",

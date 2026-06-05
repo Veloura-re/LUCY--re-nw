@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { handleApiError, requireRole, requireSchoolLinked, secureJson } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
@@ -94,7 +93,7 @@ export async function POST(request: Request) {
                     guardianPhone: guardianPhone || null,
                     secondaryPhone: secondaryPhone || null,
                     photoUrl: photoUrl || null,
-                    studentCode: `ST-${crypto.randomBytes(3).toString('hex').toUpperCase()}-${new Date().getFullYear()}`
+                    studentCode: `ST-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 6).toUpperCase()}-${new Date().getFullYear()}`
                 }
             });
 
@@ -107,7 +106,7 @@ export async function POST(request: Request) {
             });
 
             if (email) {
-                const token = crypto.randomUUID().replace(/-/g, '');
+                const token = globalThis.crypto.randomUUID().replace(/-/g, '');
                 await tx.inviteToken.create({
                     data: {
                         token,

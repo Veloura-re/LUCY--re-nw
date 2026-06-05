@@ -5,12 +5,12 @@ import { sendInviteEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL']);
+        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
         const school = await prisma.school.findUnique({ where: { id: dbUser.schoolId! } });
         if (!school) throw new Error("School not found");
 
-        const { email } = await request.json();
+        const { email } = (await request.json()) as { email: string };
         const token = crypto.randomUUID().replace(/-/g, '');
 
         await prisma.inviteToken.create({

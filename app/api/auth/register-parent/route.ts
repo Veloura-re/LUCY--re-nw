@@ -1,91 +1,83 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
-    const { userId, email, name, studentCode } = await request.json();
+    const { userId, email, name, studentCode } = await request.json() as any;
 
     try {
-        const result = await prisma.$transaction(async (tx) => {
-            // 1. Create User
-            const user = await tx.user.create({
-                data: {
-                    id: userId,
-                    email,
-                    name,
-                    role: 'PARENT',
-                    verified: true,
+        const supabaseAdmin = createSupabaseAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        // 1. Create User
+        const { data: user, error: userError } = await supabaseAdmin.from('User').insert({
+            id: userId,
+            email,
+            name,
+            role: 'PARENT',
+            verified: true,
+            updatedAt: new Date().toISOString()
+        }).select().single();
+
+        if (userError) throw userError;
+
+        // 2. Link Student if code provided
+        let link = null;
+        if (studentCode) {
+            const sanitizedCode = studentCode.trim().toUpperCase();
+            
+            const { data: student } = await supabaseAdmin
+                .from('Student')
+                .select('*')
+                .eq('studentCode', sanitizedCode)
+                .maybeSingle();
+
+            if (student) {
+                const { data: newLink, error: linkError } = await supabaseAdmin.from('ParentStudentLink').insert({
+                    parentId: user.id,
+                    studentId: student.id,
+                    pairingMethod: 'CODE'
+                }).select().single();
+                
+                if (!linkError) {
+                    link = newLink;
                 }
-            });
 
-            // 2. Link Student if code provided
-            let link = null;
-            if (studentCode) {
-                const sanitizedCode = studentCode.trim().toUpperCase();
-                const student = await tx.student.findUnique({
-                    where: { studentCode: sanitizedCode }
-                });
+                // ---------------------------------------------------------
+                // ADD TO WHOLE SCHOOL CHAT
+                // ---------------------------------------------------------
+                // 1. Find "Whole School" Chat Room
+                let { data: wholeSchoolChat } = await supabaseAdmin
+                    .from('ChatRoom')
+                    .select('id')
+                    .eq('schoolId', student.schoolId)
+                    .eq('name', 'Whole School')
+                    .eq('type', 'GROUP')
+                    .maybeSingle();
 
-                if (student) {
-                    link = await tx.parentStudentLink.create({
-                        data: {
-                            parentId: user.id,
-                            studentId: student.id,
-                            pairingMethod: 'CODE'
-                        }
-                    });
+                if (!wholeSchoolChat) {
+                    const { data: createdChat } = await supabaseAdmin.from('ChatRoom').insert({
+                        schoolId: student.schoolId,
+                        name: "Whole School",
+                        type: "GROUP",
+                    }).select('id').single();
+                    wholeSchoolChat = createdChat;
+                }
 
-                    // ---------------------------------------------------------
-                    // ADD TO WHOLE SCHOOL CHAT
-                    // ---------------------------------------------------------
-                    // 1. Find or Create "Whole School" Chat Room
-                    let wholeSchoolChat = await tx.chatRoom.findFirst({
-                        where: {
-                            schoolId: student.schoolId,
-                            name: "Whole School",
-                            type: "GROUP"
-                        }
-                    });
-
-                    if (!wholeSchoolChat) {
-                        wholeSchoolChat = await tx.chatRoom.create({
-                            data: {
-                                schoolId: student.schoolId,
-                                name: "Whole School",
-                                type: "GROUP",
-                            }
-                        });
-                    }
-
+                if (wholeSchoolChat) {
                     // 2. Add User to Chat Room
-                    // Check if already member (unlikely for new user but good practice)
-                    const existingMember = await tx.chatRoomMember.findUnique({
-                        where: {
-                            chatRoomId_userId: {
-                                chatRoomId: wholeSchoolChat.id,
-                                userId: user.id
-                            }
-                        }
-                    });
-
-                    if (!existingMember) {
-                        await tx.chatRoomMember.create({
-                            data: {
-                                chatRoomId: wholeSchoolChat.id,
-                                userId: user.id
-                            }
-                        });
-                    }
+                    await supabaseAdmin.from('ChatRoomMember').upsert({
+                        chatRoomId: wholeSchoolChat.id,
+                        userId: user.id
+                    }, { onConflict: 'chatRoomId,userId' });
                 }
             }
+        }
 
-            return { user, link };
-        });
-
-        return NextResponse.json(result);
+        return NextResponse.json({ user, link });
     } catch (e: any) {
         console.error("Parent Registration Error:", e);
-        // If user creation fails (e.g. duplicate), we return 500. 
-        // In real app, handle P2002 explicitly.
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }

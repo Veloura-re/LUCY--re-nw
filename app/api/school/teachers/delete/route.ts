@@ -7,7 +7,7 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function DELETE(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL']);
+        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
         const { email } = await request.json();
 

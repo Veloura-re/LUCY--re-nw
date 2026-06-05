@@ -1,189 +1,162 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
     const { token, userId, name, email } = await request.json() as { token: string; userId: string; name: string; email: string };
 
-    // Validate Token again in transaction
+    const supabaseAdmin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     try {
-        const result = await prisma.$transaction(async (tx) => {
-            const invite = await tx.inviteToken.findUnique({
-                where: { token },
-            });
+        // 1. Validate Token
+        const { data: invite, error: inviteError } = await supabaseAdmin
+            .from('InviteToken')
+            .select('*')
+            .eq('token', token)
+            .maybeSingle();
 
-            if (!invite || invite.expiresAt < new Date()) {
-                throw new Error("Invalid or expired token");
+        if (inviteError || !invite) {
+            throw new Error("Invalid or expired token");
+        }
+        if (new Date(invite.expiresAt) < new Date()) {
+            throw new Error("Invalid or expired token");
+        }
+
+        // If token already used, check if the user already exists with this ID
+        if (invite.usedAt) {
+            const { data: existingRegistered } = await supabaseAdmin
+                .from('User')
+                .select('*')
+                .eq('id', userId)
+                .maybeSingle();
+                
+            if (existingRegistered) {
+                return NextResponse.json({ success: true, userId });
+            }
+            throw new Error("Token already used");
+        }
+
+        // 2. Find if a placeholder user exists
+        const { data: existingUser } = await supabaseAdmin
+            .from('User')
+            .select('*')
+            .eq('email', invite.email)
+            .maybeSingle();
+
+        if (existingUser && existingUser.id !== userId) {
+            const placeholderId = existingUser.id;
+
+            // 3. Sequential Migration of User relations
+            const updates = [
+                // Teacher/Staff related
+                { table: 'TeacherAssignment', col: 'teacherId' },
+                { table: 'Timetable', col: 'teacherId' },
+                { table: 'Class', col: 'homeroomTeacherId' },
+                { table: 'MarklistConfig', col: 'teacherId' },
+                
+                // Content & Grading
+                { table: 'Exam', col: 'createdById' },
+                { table: 'Exam', col: 'lockedById' },
+                { table: 'Lesson', col: 'teacherId' },
+                { table: 'GradeRecord', col: 'createdById' },
+                { table: 'AttendanceRecord', col: 'createdById' },
+                { table: 'AttendanceRecord', col: 'lockedById' },
+
+                // Communications
+                { table: 'Message', col: 'fromUserId' },
+                { table: 'Message', col: 'toUserId' },
+                { table: 'ChatRoomMember', col: 'userId' },
+
+                // Notes & Remarks
+                { table: 'StudentRemark', col: 'teacherId' },
+                { table: 'InternalNote', col: 'authorId' },
+
+                // System & Assets
+                { table: 'AuditLog', col: 'userId' },
+                { table: 'BookRequest', col: 'userId' },
+                { table: 'Certificate', col: 'issuedById' },
+                { table: 'ResourceProgress', col: 'userId' },
+
+                // Parent/Student relations
+                { table: 'AbsenceAuthorization', col: 'parentId' },
+                { table: 'ParentStudentLink', col: 'parentId' },
+                { table: 'Student', col: 'userId' },
+                { table: 'Event', col: 'createdById' }
+            ];
+
+            for (const { table, col } of updates) {
+                await supabaseAdmin.from(table).update({ [col]: userId }).eq(col, placeholderId);
             }
 
-            // If token already used but user already exists with this ID → idempotent success
-            if (invite.usedAt) {
-                const existingRegistered = await tx.user.findUnique({ where: { id: userId } });
-                if (existingRegistered) {
-                    return existingRegistered; // Already done, just return the user
-                }
-                throw new Error("Token already used");
-            }
+            // Delete the placeholder user
+            await supabaseAdmin.from('User').delete().eq('id', placeholderId);
+        }
 
-            // Find if a placeholder user exists
-            const existingUser = await tx.user.findUnique({
-                where: { email: invite.email }
-            });
-
-            if (existingUser) {
-                // Robust Migration of all User relations
-                const placeholderId = existingUser.id;
-
-                // 1. Teacher/Staff related
-                await tx.teacherAssignment.updateMany({ where: { teacherId: placeholderId }, data: { teacherId: userId } });
-                await tx.timetable.updateMany({ where: { teacherId: placeholderId }, data: { teacherId: userId } });
-                await tx.class.updateMany({ where: { homeroomTeacherId: placeholderId }, data: { homeroomTeacherId: userId } });
-                await tx.marklistConfig.updateMany({ where: { teacherId: placeholderId }, data: { teacherId: userId } });
-
-                // 2. Content & Grading
-                await tx.exam.updateMany({ where: { createdById: placeholderId }, data: { createdById: userId } });
-                await tx.exam.updateMany({ where: { lockedById: placeholderId }, data: { lockedById: userId } });
-                await tx.lesson.updateMany({ where: { teacherId: placeholderId }, data: { teacherId: userId } });
-                await tx.gradeRecord.updateMany({ where: { createdById: placeholderId }, data: { createdById: userId } });
-                await tx.attendanceRecord.updateMany({ where: { createdById: placeholderId }, data: { createdById: userId } });
-                await tx.attendanceRecord.updateMany({ where: { lockedById: placeholderId }, data: { lockedById: userId } });
-
-                // 3. Communications
-                await tx.message.updateMany({ where: { fromUserId: placeholderId }, data: { fromUserId: userId } });
-                await tx.message.updateMany({ where: { toUserId: placeholderId }, data: { toUserId: userId } });
-                await tx.chatRoomMember.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
-
-                // 4. Notes & Remarks
-                await tx.studentRemark.updateMany({ where: { teacherId: placeholderId }, data: { teacherId: userId } });
-                await tx.internalNote.updateMany({ where: { authorId: placeholderId }, data: { authorId: userId } });
-
-                // 5. System & Assets
-                await tx.auditLog.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
-                await tx.bookRequest.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
-                await tx.certificate.updateMany({ where: { issuedById: placeholderId }, data: { issuedById: userId } });
-                await tx.resourceProgress.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
-
-                // 6. Parent/Student relations (Using any cast for potentially unlinked/new types in client)
-                try {
-                    await (tx as any).absenceAuthorization.updateMany({ where: { parentId: placeholderId }, data: { parentId: userId } });
-                    await (tx as any).parentStudentLink.updateMany({ where: { parentId: placeholderId }, data: { parentId: userId } });
-                    await (tx as any).student.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
-                    await (tx as any).event.updateMany({ where: { createdById: placeholderId }, data: { createdById: userId } });
-                } catch (e) {
-                    console.warn("Minor relation migration skipped:", e);
-                }
-
-                // Delete the placeholder user
-                await tx.user.delete({
-                    where: { id: placeholderId }
-                });
-
-                // Upsert the newly authenticated user with preserved metadata
-                return await tx.user.upsert({
-                    where: { id: userId },
-                    update: {
-                        email: invite.email,
-                        name,
-                        role: invite.role,
-                        verified: true,
-                        schoolId: invite.schoolId,
-                        teacherCode: existingUser.teacherCode,
-                        gender: existingUser.gender,
-                        phone: existingUser.phone,
-                        qualification: existingUser.qualification,
-                        photoUrl: existingUser.photoUrl
-                    },
-                    create: {
-                        id: userId, // Match Supabase ID
-                        email: invite.email,
-                        name,
-                        role: invite.role, // Use role from token
-                        verified: true,
-                        schoolId: invite.schoolId,
-                        teacherCode: existingUser.teacherCode,
-                        gender: existingUser.gender,
-                        phone: existingUser.phone,
-                        qualification: existingUser.qualification,
-                        photoUrl: existingUser.photoUrl
-                    }
-                });
-            } else {
-                // Upsert User Record (idempotent: safe to call again on retry)
-                return await tx.user.upsert({
-                    where: { id: userId },
-                    update: {
-                        email: invite.email,
-                        name,
-                        role: invite.role,
-                        verified: true,
-                        schoolId: invite.schoolId,
-                    },
-                    create: {
-                        id: userId, // Match Supabase ID
-                        email: invite.email,
-                        name,
-                        role: invite.role,
-                        verified: true,
-                        schoolId: invite.schoolId,
-                    }
-                });
-            }
+        // 5. Upsert the final User record via Supabase
+        const { error: upsertError } = await supabaseAdmin.from('User').upsert({
+            id: userId,
+            email: invite.email,
+            name: name,
+            role: invite.role,
+            verified: true,
+            schoolId: invite.schoolId,
+            updatedAt: new Date().toISOString(),
+            ...(existingUser ? {
+                teacherCode: existingUser.teacherCode,
+                gender: existingUser.gender,
+                phone: existingUser.phone,
+                qualification: existingUser.qualification,
+                photoUrl: existingUser.photoUrl
+            } : {})
         });
 
-        // Post-migration logic: Add to Whole School Chat if schoolId exists
-        if (result.schoolId) {
+        if (upsertError) {
+            console.error("User upsert error:", upsertError);
+            throw new Error("Failed to finalize user record");
+        }
+
+        // 6. Post-migration logic: Add to Whole School Chat if schoolId exists
+        if (invite.schoolId) {
             try {
                 // Ensure school is ACTIVE
-                await prisma.school.update({
-                    where: { id: result.schoolId },
-                    data: { status: 'ACTIVE' }
-                });
+                await supabaseAdmin.from('School').update({ status: 'ACTIVE' }).eq('id', invite.schoolId);
 
-                // Find or Create "Whole School" Chat Room
-                let wholeSchoolChat = await prisma.chatRoom.findFirst({
-                    where: {
-                        schoolId: result.schoolId,
-                        name: "Whole School",
-                        type: "GROUP"
-                    }
-                });
+                // Find "Whole School" Chat Room
+                let { data: wholeSchoolChat } = await supabaseAdmin
+                    .from('ChatRoom')
+                    .select('id')
+                    .eq('schoolId', invite.schoolId)
+                    .eq('name', 'Whole School')
+                    .eq('type', 'GROUP')
+                    .maybeSingle();
 
                 if (!wholeSchoolChat) {
-                    wholeSchoolChat = await prisma.chatRoom.create({
-                        data: {
-                            schoolId: result.schoolId,
-                            name: "Whole School",
-                            type: "GROUP",
-                        }
-                    });
+                    const { data: newChat } = await supabaseAdmin.from('ChatRoom').insert({
+                        schoolId: invite.schoolId,
+                        name: "Whole School",
+                        type: "GROUP",
+                    }).select('id').single();
+                    wholeSchoolChat = newChat;
                 }
 
-                // Add User to Chat Room (using Upsert to be safe)
-                await prisma.chatRoomMember.upsert({
-                    where: {
-                        chatRoomId_userId: {
-                            chatRoomId: wholeSchoolChat.id,
-                            userId: result.id
-                        }
-                    },
-                    update: {},
-                    create: {
+                if (wholeSchoolChat) {
+                    // Add User to Chat Room
+                    await supabaseAdmin.from('ChatRoomMember').upsert({
                         chatRoomId: wholeSchoolChat.id,
-                        userId: result.id
-                    }
-                });
+                        userId: userId
+                    }, { onConflict: 'chatRoomId,userId' });
+                }
             } catch (chatError) {
                 console.error("Post-registration chat/school update failed:", chatError);
-                // Don't fail the whole registration if chat sync fails
             }
         }
 
-        // Burn Token
-        await prisma.inviteToken.update({
-            where: { token },
-            data: { usedAt: new Date() }
-        });
+        // 7. Burn Token
+        await supabaseAdmin.from('InviteToken').update({ usedAt: new Date().toISOString() }).eq('token', token);
 
-        return NextResponse.json({ success: true, userId: result.id });
+        return NextResponse.json({ success: true, userId });
 
     } catch (e: any) {
         console.error(e);

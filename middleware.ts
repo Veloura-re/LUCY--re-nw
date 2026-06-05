@@ -34,9 +34,7 @@ function checkRateLimit(ip: string, path: string): boolean {
 
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
-        request: {
-            headers: request.headers,
-        },
+        request,
     })
 
     const supabase = createServerClient(
@@ -48,13 +46,11 @@ export async function middleware(request: NextRequest) {
                     return request.cookies.getAll()
                 },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) =>
+                    cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     )
                     response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
+                        request,
                     })
                     cookiesToSet.forEach(({ name, value, options }) =>
                         response.cookies.set(name, value, options)
@@ -98,7 +94,7 @@ export async function middleware(request: NextRequest) {
         }
 
         // DEFAULT API AUTHENTICATION LOCK
-        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/')) {
+        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/') && !path.startsWith('/api/dir/register')) {
             return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
                 status: 401,
                 headers: { 'Content-Type': 'application/json' }
@@ -121,6 +117,7 @@ export async function middleware(request: NextRequest) {
             }
         } else if (isAuthPage && !url.search) {
             url.pathname = '/dashboard'
+            return NextResponse.redirect(url)
         }
     }
 
@@ -176,11 +173,9 @@ export async function middleware(request: NextRequest) {
     
     if (isStaticAsset) {
         response.headers.set('Cache-Control', 'public, max-age=2592000, immutable') // 30 Days
-    } else if (isApiPage) {
-        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
     } else {
-        // Dashboard pages: SWR for perceived speed
-        response.headers.set('Cache-Control', 'public, s-maxage=1, stale-while-revalidate=59')
+        // MUST NEVER cache authenticated routes publicly!
+        response.headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate')
     }
 
     return response
