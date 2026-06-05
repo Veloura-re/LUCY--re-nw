@@ -77,20 +77,27 @@ export async function DELETE(
         const userIds = (schoolUsers || []).map((u: any) => u.id);
         console.log(`[AdminAPI] Found ${userIds.length} users to purge from Supabase.`);
 
+        // Collect all student IDs associated with the school
+        const { data: schoolStudents } = await supabaseAdmin.from('Student').select('id').eq('schoolId', id);
+        const studentIds = (schoolStudents || []).map((s: any) => s.id);
+        console.log(`[AdminAPI] Found ${studentIds.length} students to purge from Supabase.`);
+
         // Purge tables sequentially due to FK dependencies
         // Deepest leaves first
         await supabaseAdmin.from('MarklistMark').delete().eq('schoolId', id);
         await supabaseAdmin.from('MarklistEntry').delete().eq('schoolId', id);
         await supabaseAdmin.from('MarklistColumn').delete().eq('schoolId', id);
         
-        await supabaseAdmin.from('ParentStudentLink').delete().eq('parentId', id); // Wait, parentId isn't schoolId
-        await supabaseAdmin.from('AttendanceRecord').delete().eq('studentId', id);
-        await supabaseAdmin.from('GradeRecord').delete().eq('studentId', id);
-        await supabaseAdmin.from('ExamAttempt').delete().eq('studentId', id);
-        await supabaseAdmin.from('Certificate').delete().eq('studentId', id);
-        await supabaseAdmin.from('StudentRemark').delete().eq('studentId', id);
-        await supabaseAdmin.from('InternalNote').delete().eq('studentId', id);
-        await supabaseAdmin.from('AbsenceAuthorization').delete().eq('studentId', id);
+        if (studentIds.length > 0) {
+            await supabaseAdmin.from('ParentStudentLink').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('AttendanceRecord').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('GradeRecord').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('ExamAttempt').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('Certificate').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('StudentRemark').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('InternalNote').delete().in('studentId', studentIds);
+            await supabaseAdmin.from('AbsenceAuthorization').delete().in('studentId', studentIds);
+        }
         
         // Let's rely on standard schoolId cascading where possible or delete explicitly
         await supabaseAdmin.from('Student').delete().eq('schoolId', id);
