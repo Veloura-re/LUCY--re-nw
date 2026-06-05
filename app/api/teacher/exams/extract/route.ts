@@ -12,13 +12,13 @@ export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(TEACHER_ROLES);
 
-        const { image, text: rawText, mode = "MIXED", count = 5, difficulty = "INTERMEDIATE", allowedTypes = [] } = await req.json();
+        const { image, text: rawText, mode = "generative", count = 5, difficulty = "medium", allowedTypes = [] } = (await req.json()) as any;
 
         if (!image && !rawText) {
             return NextResponse.json({ error: "Missing input data (image or text)" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const typeConstraint = allowedTypes.length > 0
             ? `ONLY use these question types: ${allowedTypes.join(", ")}.`
