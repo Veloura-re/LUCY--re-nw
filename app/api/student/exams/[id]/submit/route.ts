@@ -26,7 +26,7 @@ export async function POST(
         });
         if (!exam) return NextResponse.json({ error: "Exam not found" }, { status: 404 });
 
-        const { answers } = await request.json();
+        const { answers } = (await request.json()) as any;
         const questions = exam.questions as any[] || [];
 
         let earnedPoints = 0;
@@ -74,7 +74,7 @@ export async function POST(
 
                     // AI EVALUATION
                     try {
-                        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+                        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                         const aiPrompt = `
                             Evaluate this student's essay answer for a ${weight} point question.
                             Question: ${q.text}
