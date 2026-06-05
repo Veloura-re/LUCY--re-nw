@@ -12,13 +12,13 @@ export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(TEACHER_ROLES);
 
-        const { questions } = await req.json();
+        const { questions } = (await req.json()) as any;
 
         if (!questions || !Array.isArray(questions)) {
             return NextResponse.json({ error: "No questions provided for remixing" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
             You are an expert assessment designer. Your task is to REMIX the following exam questions.
