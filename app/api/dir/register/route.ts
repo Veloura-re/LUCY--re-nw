@@ -115,8 +115,8 @@ export async function POST(request: Request) {
         });
 
         if (upsertError) {
-            console.error("User upsert error:", upsertError);
-            throw new Error("Failed to finalize user record");
+            console.error("User upsert error:", JSON.stringify(upsertError, null, 2));
+            throw new Error(`Failed to finalize user record: ${upsertError.message} (Code: ${upsertError.code}, Details: ${upsertError.details})`);
         }
 
         // 6. Post-migration logic: Add to Whole School Chat if schoolId exists
