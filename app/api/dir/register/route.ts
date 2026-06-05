@@ -38,11 +38,13 @@ export async function POST(request: Request) {
             throw new Error("Token already used");
         }
 
+        const finalEmail = email || invite.email;
+
         // 2. Find if a placeholder user exists
         const { data: existingUser } = await supabaseAdmin
             .from('User')
             .select('*')
-            .eq('email', invite.email)
+            .eq('email', finalEmail)
             .maybeSingle();
 
         if (existingUser && existingUser.id !== userId) {
@@ -97,7 +99,7 @@ export async function POST(request: Request) {
         // 5. Upsert the final User record via Supabase
         const { error: upsertError } = await supabaseAdmin.from('User').upsert({
             id: userId,
-            email: invite.email,
+            email: finalEmail,
             name: name,
             role: invite.role,
             verified: true,
