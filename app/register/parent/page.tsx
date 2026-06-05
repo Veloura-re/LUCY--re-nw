@@ -68,6 +68,7 @@ export default function ParentRegister() {
         e.preventDefault();
         setIsLoading(true);
 
+        let authUser = null;
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
@@ -77,17 +78,32 @@ export default function ParentRegister() {
         });
 
         if (authError) {
-            setError(authError.message);
-            setIsLoading(false);
-            return;
+            if (authError.message.toLowerCase().includes("already registered")) {
+                const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                if (signInError) {
+                    setError("Email already registered. Please use correct password.");
+                    setIsLoading(false);
+                    return;
+                }
+                authUser = signInData.user;
+            } else {
+                setError(authError.message);
+                setIsLoading(false);
+                return;
+            }
+        } else {
+            authUser = authData.user;
         }
 
-        if (authData.user) {
+        if (authUser) {
             const res = await fetch('/api/auth/register-parent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    userId: authData.user.id,
+                    userId: authUser.id,
                     email,
                     name,
                     studentCode // Pass code to link immediately
