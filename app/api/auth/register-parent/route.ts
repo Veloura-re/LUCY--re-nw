@@ -10,39 +10,44 @@ export async function POST(request: Request) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 1. Create User
-        const { data: user, error: userError } = await supabaseAdmin.from('User').insert({
-            id: userId,
-            email,
-            name,
-            role: 'PARENT',
-            verified: true,
-            updatedAt: new Date().toISOString()
-        }).select().single();
-
-        if (userError) throw userError;
-
-        // 2. Link Student if code provided
+        let studentInfo = null;
         let link = null;
+        
+        // 1. Validate student code if provided
         if (studentCode) {
             const sanitizedCode = studentCode.trim().toUpperCase();
-            
             const { data: student } = await supabaseAdmin
                 .from('Student')
                 .select('*')
                 .eq('studentCode', sanitizedCode)
                 .maybeSingle();
+            studentInfo = student;
+        }
 
-            if (student) {
-                const { data: newLink, error: linkError } = await supabaseAdmin.from('ParentStudentLink').insert({
-                    parentId: user.id,
-                    studentId: student.id,
-                    pairingMethod: 'CODE'
-                }).select().single();
-                
-                if (!linkError) {
-                    link = newLink;
-                }
+        // 2. Upsert User (handles Supabase trigger pre-creation)
+        const { data: user, error: userError } = await supabaseAdmin.from('User').upsert({
+            id: userId,
+            email,
+            name,
+            role: 'PARENT',
+            verified: true,
+            schoolId: studentInfo ? studentInfo.schoolId : null,
+            updatedAt: new Date().toISOString()
+        }).select().single();
+
+        if (userError) throw userError;
+
+        // 3. Link Student
+        if (studentInfo) {
+            const { data: newLink, error: linkError } = await supabaseAdmin.from('ParentStudentLink').insert({
+                parentId: user.id,
+                studentId: studentInfo.id,
+                pairingMethod: 'CODE'
+            }).select().single();
+            
+            if (!linkError) {
+                link = newLink;
+            }
 
                 // ---------------------------------------------------------
                 // ADD TO WHOLE SCHOOL CHAT
@@ -51,14 +56,14 @@ export async function POST(request: Request) {
                 let { data: wholeSchoolChat } = await supabaseAdmin
                     .from('ChatRoom')
                     .select('id')
-                    .eq('schoolId', student.schoolId)
+                    .eq('schoolId', studentInfo.schoolId)
                     .eq('name', 'Whole School')
                     .eq('type', 'GROUP')
                     .maybeSingle();
 
                 if (!wholeSchoolChat) {
                     const { data: createdChat } = await supabaseAdmin.from('ChatRoom').insert({
-                        schoolId: student.schoolId,
+                        schoolId: studentInfo.schoolId,
                         name: "Whole School",
                         type: "GROUP",
                     }).select('id').single();
@@ -72,7 +77,6 @@ export async function POST(request: Request) {
                         userId: user.id
                     }, { onConflict: 'chatRoomId,userId' });
                 }
-            }
         }
 
         return NextResponse.json({ user, link });
