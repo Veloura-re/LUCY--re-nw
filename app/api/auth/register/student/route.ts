@@ -74,24 +74,18 @@ export async function POST(req: Request) {
         const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         try {
-            // Check if user already exists
-            let { data: user } = await supabaseAdmin.from('User').select('*').eq('id', authUser.id).maybeSingle();
-
-            if (!user) {
-                const { data: newUser, error: createError } = await supabaseAdmin.from('User').insert({
-                    id: authUser.id,
-                    email: finalEmail,
-                    passwordHash: hashedPassword,
-                    name: `${student.firstName} ${student.lastName}`,
-                    role: "STUDENT",
-                    schoolId: student.schoolId,
-                    verified: true,
-                    updatedAt: new Date().toISOString()
-                }).select().single();
-                
-                if (createError) throw createError;
-                user = newUser;
-            }
+            const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
+                id: authUser.id,
+                email: finalEmail,
+                passwordHash: hashedPassword,
+                name: `${student.firstName} ${student.lastName}`,
+                role: "STUDENT",
+                schoolId: student.schoolId,
+                verified: true,
+                updatedAt: new Date().toISOString()
+            }).select().single();
+            
+            if (upsertError) throw upsertError;
 
             // 4. Link Student to User
             await supabaseAdmin.from('Student').update({ userId: user.id }).eq('id', student.id);
