@@ -19,6 +19,7 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
         phone: "",
         gender: "",
         qualification: "",
+        role: "TEACHER",
         photoUrl: ""
     });
     const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                 phone: teacher.phone || "",
                 gender: teacher.gender || "",
                 qualification: teacher.qualification || "",
+                role: teacher.role || "TEACHER",
                 photoUrl: teacher.photoUrl || ""
             });
         }
@@ -140,7 +142,20 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                         />
                     </div>
 
-                    <div className="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-zinc-900/50">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Role / Designation</label>
+                        <select
+                            value={formData.role}
+                            onChange={e => setFormData({ ...formData, role: e.target.value })}
+                            className="w-full bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl px-4 outline-none focus:border-eduGreen-600 transition-all border appearance-none"
+                        >
+                            <option value="TEACHER">TEACHER</option>
+                            <option value="HOMEROOM">HOMEROOM ADVISOR</option>
+                            <option value="PRINCIPAL">PRINCIPAL</option>
+                        </select>
+                    </div>
+
+                    <div className="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-zinc-900/50 mt-2">
                         <Button type="button" variant="ghost" onClick={onClose} className="text-zinc-500 hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
                         <Button type="submit" disabled={loading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
                             {loading ? (
