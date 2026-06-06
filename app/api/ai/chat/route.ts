@@ -56,6 +56,9 @@ export async function POST(req: Request) {
         return secureJson({ text });
     } catch (error: any) {
         console.error("[DEBUG] Chat API Error:", error);
-        return handleApiError(error);
+        return secureJson({ 
+            error: "AI API Error", 
+            details: error.message || String(error)
+        }, 500);
     }
 }

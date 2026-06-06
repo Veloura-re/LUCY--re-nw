@@ -104,14 +104,29 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4 border-t border-zinc-900/50 pt-4">
-                                            <div className="space-y-1">
-                                                <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Level / Class</p>
-                                                <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.class?.grade?.name || "N/A"} • {user.class?.name || "N/A"}</p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Age / DOB</p>
-                                                <p className="text-[10px] font-medium text-zinc-300 uppercase">{age}Y • {user.dob ? new Date(user.dob).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
-                                            </div>
+                                            {type === "STUDENT" ? (
+                                                <>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Level / Class</p>
+                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.class?.grade?.name || "N/A"} • {user.class?.name || "N/A"}</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Age / DOB</p>
+                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">{age}Y • {user.dob ? new Date(user.dob).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Department / Role</p>
+                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">Faculty • {user.role || "TEACHER"}</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Joined</p>
+                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
+                                                    </div>
+                                                </>
+                                            )}
                                             <div className="space-y-1">
                                                 <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Gender</p>
                                                 <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.gender || "N/A"}</p>
@@ -147,8 +162,13 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     </div>
 
                                     <div className="space-y-1">
-                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Guardian Registry</p>
-                                        <p className="text-xs font-medium text-white uppercase truncate">{user.guardianName || "N/A"} • <span className="text-eduGreen-500 uppercase">{user.guardianRelation || "Guardian"}</span></p>
+                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">{type === "STUDENT" ? "Guardian Registry" : "Qualification / Title"}</p>
+                                        <p className="text-xs font-medium text-white uppercase truncate">
+                                            {type === "STUDENT" 
+                                                ? <>{user.guardianName || "N/A"} • <span className="text-eduGreen-500 uppercase">{user.guardianRelation || "Guardian"}</span></>
+                                                : <span className="text-eduGreen-500 uppercase">{user.qualification || "Faculty Member"}</span>
+                                            }
+                                        </p>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
@@ -157,7 +177,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                             <p className="text-[10px] font-medium text-white uppercase">{user.gender || "---"}</p>
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Enrolled</p>
+                                            <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Enrolled / Joined</p>
                                             <p className="text-[10px] font-medium text-white uppercase">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
                                         </div>
                                         <div className="space-y-1">
@@ -167,13 +187,13 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     </div>
 
                                     <div className="space-y-2 bg-zinc-900/40 p-3 rounded-xl border border-zinc-900/50">
-                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest mb-1">Emergency Uplinks</p>
+                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest mb-1">{type === "STUDENT" ? "Emergency Uplinks" : "Contact Number"}</p>
                                         <div className="flex flex-col gap-1">
                                             <div className="flex items-center gap-2 text-white font-medium text-xs">
                                                 <Phone className="w-3 h-3 text-eduGreen-600" />
-                                                {user.guardianPhone || "N/A"}
+                                                {type === "STUDENT" ? (user.guardianPhone || "N/A") : (user.phone || "N/A")}
                                             </div>
-                                            {user.secondaryPhone && (
+                                            {type === "STUDENT" && user.secondaryPhone && (
                                                 <div className="flex items-center gap-2 text-white/60 font-medium text-[10px] pl-5 border-l border-zinc-800">
                                                     {user.secondaryPhone}
                                                 </div>
@@ -254,8 +274,13 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                                 <p className="text-[7.5pt] font-medium text-white font-mono">{code}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[4.5pt] font-medium uppercase text-zinc-500 tracking-widest mb-0.5">Classification</p>
-                                                <p className="text-[6pt] font-medium text-zinc-300 uppercase truncate">{user.class?.grade?.name} • {user.class?.name}</p>
+                                                <p className="text-[4.5pt] font-medium uppercase text-zinc-500 tracking-widest mb-0.5">{type === "STUDENT" ? "Classification" : "Department / Role"}</p>
+                                                <p className="text-[6pt] font-medium text-zinc-300 uppercase truncate">
+                                                    {type === "STUDENT" 
+                                                        ? `${user.class?.grade?.name || "N/A"} • ${user.class?.name || "N/A"}`
+                                                        : `Faculty • ${user.role || "TEACHER"}`
+                                                    }
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-[4.5pt] font-medium uppercase text-zinc-500 tracking-widest mb-0.5">Gender</p>
@@ -286,11 +311,15 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="border-b border-white/5 pb-[3mm]">
                                         <div className="flex items-center gap-1.5 mb-[1.5mm]">
                                             <User className="w-[3mm] h-[3mm] text-eduGreen-500" />
-                                            <h3 className="text-[6pt] font-medium uppercase tracking-widest text-zinc-400">Guardian Hub</h3>
+                                            <h3 className="text-[6pt] font-medium uppercase tracking-widest text-zinc-400">{type === "STUDENT" ? "Guardian Hub" : "Qualification / Title"}</h3>
                                         </div>
-                                        <p className="text-[9pt] font-medium uppercase leading-none">{user.guardianName || "N/A"}</p>
+                                        <p className="text-[9pt] font-medium uppercase leading-none">
+                                            {type === "STUDENT" ? (user.guardianName || "N/A") : (user.qualification || "Faculty Member")}
+                                        </p>
                                         <div className="flex justify-between items-end mt-1">
-                                            <p className="text-[5pt] font-medium text-eduGreen-500 uppercase tracking-widest">{user.guardianRelation || "Authorized Guardian"}</p>
+                                            <p className="text-[5pt] font-medium text-eduGreen-500 uppercase tracking-widest">
+                                                {type === "STUDENT" ? (user.guardianRelation || "Authorized Guardian") : (user.role || "TEACHER")}
+                                            </p>
                                             <div className="text-right">
                                                 <p className="text-[4pt] font-medium text-zinc-500 uppercase tracking-widest leading-none">Expires</p>
                                                 <p className="text-[6pt] font-medium text-white leading-none mt-0.5">{user.createdAt ? new Date(new Date(user.createdAt).setFullYear(new Date(user.createdAt).getFullYear() + 1)).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
@@ -298,10 +327,10 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                         </div>
                                     </div>
                                     <div className="space-y-[2mm] bg-white/5 p-[2.5mm] rounded-[2.5mm] border border-white/5">
-                                        <p className="text-[4.5pt] font-medium uppercase text-zinc-500 tracking-widest">Emergency Uplinks</p>
+                                        <p className="text-[4.5pt] font-medium uppercase text-zinc-500 tracking-widest">{type === "STUDENT" ? "Emergency Uplinks" : "Contact Number"}</p>
                                         <div className="flex flex-col gap-0.5">
-                                            <p className="text-[8.5pt] font-medium text-white">{user.guardianPhone || "N/A"}</p>
-                                            {user.secondaryPhone && (
+                                            <p className="text-[8.5pt] font-medium text-white">{type === "STUDENT" ? (user.guardianPhone || "N/A") : (user.phone || "N/A")}</p>
+                                            {type === "STUDENT" && user.secondaryPhone && (
                                                 <p className="text-[6pt] font-medium text-white/50 pl-[3mm] border-l border-white/10">{user.secondaryPhone}</p>
                                             )}
                                         </div>
