@@ -51,7 +51,7 @@ export const PersonnelPrint = React.forwardRef<HTMLDivElement, PersonnelPrintPro
                                 <td className="py-4 px-2 text-zinc-400 font-mono">{idx + 1}</td>
                                 <td className="py-4 px-2 font-bold tracking-tight">{item.teacherCode || item.staffCode || '-'}</td>
                                 <td className="py-4 px-2 font-bold uppercase">
-                                    {item.firstName || item.teacher?.firstName} <span className="text-zinc-400">{item.lastName || item.teacher?.lastName}</span>
+                                    {item.name || item.teacher?.name || "Pending Setup"}
                                 </td>
                                 {type === 'TEACHER' ? (
                                     <>
