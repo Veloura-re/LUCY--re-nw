@@ -135,7 +135,6 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                 <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
                                     <SelectItem value="TEACHER">TEACHER</SelectItem>
                                     <SelectItem value="HOMEROOM">HOMEROOM ADVISOR</SelectItem>
-                                    <SelectItem value="PRINCIPAL">PRINCIPAL</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -151,7 +150,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                             <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Gender</label>
                             <div className="flex bg-zinc-900 border-zinc-800 border rounded-xl h-12 items-center px-2 w-full overflow-x-auto">
                                 <div className="flex gap-2">
-                                    {['MALE', 'FEMALE', 'OTHER'].map((g) => (
+                                    {['MALE', 'FEMALE'].map((g) => (
                                         <button
                                             key={g}
                                             type="button"
