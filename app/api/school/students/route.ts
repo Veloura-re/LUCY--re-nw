@@ -198,6 +198,20 @@ export async function DELETE(request: Request) {
             where: { id, schoolId: user.schoolId! }
         });
 
+        if (student.userId) {
+            try {
+                const { createClient: createSupabaseAdmin } = await import('@supabase/supabase-js');
+                const supabaseAdmin = createSupabaseAdmin(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                    process.env.SUPABASE_SERVICE_ROLE_KEY!
+                );
+                await supabaseAdmin.auth.admin.deleteUser(student.userId);
+                await prisma.user.delete({ where: { id: student.userId } }).catch(() => {});
+            } catch (err) {
+                console.error("Failed to delete user account:", err);
+            }
+        }
+
         await logActivity({
             userId: user.id,
             action: 'DELETE_STUDENT',
