@@ -66,15 +66,12 @@ export async function POST(request: Request) {
         const targetSchoolId = user.schoolId;
 
         const {
-            firstName, lastName, grade, classId, email,
+            firstName, lastName, grade: gradeId, classId, email,
             gender, dob, address, guardianName, guardianPhone, secondaryPhone, photoUrl
         } = body;
 
-        let gradeRecord: any;
-        if (grade) {
-            gradeRecord = await prisma.grade.findFirst({
-                where: { schoolId: targetSchoolId!, level: parseInt(grade) || 0 }
-            });
+        if (!gradeId) {
+            return NextResponse.json({ error: "Grade is required" }, { status: 400 });
         }
 
         const result = await prisma.$transaction(async (tx) => {
@@ -83,7 +80,7 @@ export async function POST(request: Request) {
                     firstName,
                     lastName,
                     schoolId: targetSchoolId!,
-                    gradeId: gradeRecord?.id,
+                    gradeId: gradeId,
                     classId: classId || null,
                     email: email || null,
                     dob: dob ? new Date(dob) : null,
