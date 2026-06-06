@@ -119,6 +119,11 @@ export async function POST(request: Request) {
             throw new Error(`Failed to finalize user record: ${upsertError.message} (Code: ${upsertError.code}, Details: ${upsertError.details})`);
         }
 
+        // Link Student record if applicable
+        if (invite.role === 'STUDENT') {
+            await supabaseAdmin.from('Student').update({ userId: userId }).eq('email', finalEmail).eq('schoolId', invite.schoolId);
+        }
+
         // 6. Post-migration logic: Add to Whole School Chat if schoolId exists
         if (invite.schoolId) {
             try {
