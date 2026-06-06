@@ -284,7 +284,6 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                                         <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
                                             <SelectItem value="MALE">Male</SelectItem>
                                             <SelectItem value="FEMALE">Female</SelectItem>
-                                            <SelectItem value="OTHER">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <div className="grid grid-cols-2 gap-2">
