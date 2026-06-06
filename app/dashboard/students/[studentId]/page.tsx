@@ -77,7 +77,7 @@ function StudentProfileContent() {
     const fetchStudentData = async () => {
         try {
             const res = await fetch(`/api/school/students/${studentId}/report-card?_t=${Date.now()}`);
-            const d = await res.json();
+            const d: any = await res.json();
             setData(d);
             setRemarks(d.remarks || []);
             setNotes(d.internalNotes || []);
@@ -112,7 +112,7 @@ function StudentProfileContent() {
     // Fetch grades for class selection if editing
     const fetchGradesData = async () => {
         const res = await fetch('/api/school/classes');
-        const d = await res.json();
+        const d: any = await res.json();
         if (d.grades) {
             setGradesData(d.grades);
         }
@@ -132,7 +132,7 @@ function StudentProfileContent() {
                 setIsEditing(false);
                 fetchStudentData();
             } else {
-                const errorData = await res.json();
+                const errorData: any = await res.json();
                 toast.error(errorData.error || "Uplink Failure: Mutation Rejected");
             }
         } catch (err) {
@@ -196,8 +196,8 @@ function StudentProfileContent() {
         try {
             const res = await fetch(`/api/school/students/${studentId}/ai-analysis`);
             if (res.ok) {
-                const data = await res.json();
-                setAiAnalysis(data.analysis);
+                const resData: any = await res.json();
+                setAiAnalysis(resData.analysis);
                 toast.success("AI Predictive Analysis Complete");
             } else {
                 toast.error("Uplink Jammed: AI Analysis Failed");
