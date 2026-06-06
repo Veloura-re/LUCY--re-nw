@@ -155,9 +155,6 @@ export default async function AdminLayout({
                     {children}
                 </div>
             </main>
-
-            {/* Floating AI Assistant */}
-            <DynamicAIAssistant userName={dbUser.name || 'Administrator'} userId={dbUser.id} />
         </div>
     );
 }
