@@ -8,9 +8,9 @@ import { useRouter } from "next/navigation";
 import { User, Lock, Mail, AlertCircle, ArrowRight, ShieldCheck, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function InviteForm({ token, email, schoolName, role }: { token: string, email: string, schoolName: string, role: string }) {
+export function InviteForm({ token, email, schoolName, role, prefilledName }: { token: string, email: string, schoolName: string, role: string, prefilledName?: string }) {
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
+    const [name, setName] = useState(prefilledName || "");
     const [isLoading, setIsLoading] = useState(false);
     const [statusText, setStatusText] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -145,8 +145,14 @@ export function InviteForm({ token, email, schoolName, role }: { token: string, 
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 required
-                                className="w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
+                                disabled={!!prefilledName}
+                                className={`w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none ${prefilledName ? 'opacity-70 cursor-not-allowed bg-zinc-900/50' : ''}`}
                             />
+                            {prefilledName && (
+                                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <ShieldCheck className="h-4 w-4 text-eduGreen-500/70" />
+                                </div>
+                            )}
                         </div>
                     </div>
 

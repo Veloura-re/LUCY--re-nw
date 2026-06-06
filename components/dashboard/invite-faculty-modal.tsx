@@ -126,18 +126,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                 className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all"
                             />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Role / Designation</label>
-                            <Select value={formData.role} onValueChange={r => setFormData({ ...formData, role: r })}>
-                                <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all">
-                                    <SelectValue placeholder="Select Role" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
-                                    <SelectItem value="TEACHER">TEACHER</SelectItem>
-                                    <SelectItem value="HOMEROOM">HOMEROOM ADVISOR</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        {/* Role selection removed - defaults to TEACHER */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Qualification</label>
                             <Input

@@ -57,8 +57,9 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
         );
     }
 
-    // Fetch school name via Supabase REST
+    // Fetch school name and existing user name via Supabase REST
     let school: any = null;
+    let prefilledName = "";
     if (invite.schoolId) {
         const { data: s } = await supabaseAdmin
             .from('School')
@@ -66,6 +67,14 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
             .eq('id', invite.schoolId)
             .maybeSingle();
         school = s;
+    }
+    if (invite.email) {
+        const { data: u } = await supabaseAdmin
+            .from('User')
+            .select('name')
+            .eq('email', invite.email)
+            .maybeSingle();
+        if (u?.name) prefilledName = u.name;
     }
 
     // Format role for display (e.g. PRINCIPAL -> Principal, TEACHER -> Teacher)
@@ -116,6 +125,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                             email={invite.email}
                             schoolName={school?.name || ""}
                             role={invite.role}
+                            prefilledName={prefilledName}
                         />
                     </div>
                 </Card>
