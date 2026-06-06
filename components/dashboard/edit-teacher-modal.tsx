@@ -120,7 +120,7 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                         <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Gender</label>
                         <div className="flex bg-zinc-900 border-zinc-800 border rounded-xl h-12 items-center px-4">
                             <div className="flex gap-4">
-                                {['MALE', 'FEMALE', 'OTHER'].map((g) => (
+                                {['MALE', 'FEMALE'].map((g) => (
                                     <button
                                         key={g}
                                         type="button"
