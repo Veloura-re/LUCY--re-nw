@@ -16,6 +16,7 @@ import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-moda
 import { IDCardModal } from "@/components/dashboard/id-card-modal";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { EditTeacherModal } from "@/components/dashboard/edit-teacher-modal";
+import { InviteFacultyModal } from "@/components/dashboard/invite-faculty-modal";
 import Image from "next/image";
 
 interface TeachersClientWrapperProps {
@@ -38,10 +39,6 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
     });
 
     const [isInviting, setIsInviting] = useState(false);
-    const [newTeacher, setNewTeacher] = useState({
-        name: "", email: "", phone: "", gender: "", qualification: "", teacherCode: "", photoUrl: ""
-    });
-    const [inviteResult, setInviteResult] = useState<{ token: string, user: any } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [activeSearch, setActiveSearch] = useState("");
@@ -59,28 +56,13 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
     const refreshRegistry = async () => {
         try {
             const res = await fetch('/api/school/teachers');
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.teachers) setTeachers(data.teachers);
         } catch (e) { console.error(e); }
     };
 
-    const handleAddTeacher = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            const res = await fetch('/api/school/teachers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newTeacher)
-            });
-            const data = await res.json();
-            if (data.token) {
-                setInviteResult({ token: data.token, user: data.user });
-                refreshRegistry();
-            }
-        } finally {
-            setIsLoading(false);
-        }
+    const handleInviteSuccess = (token: string, user: any) => {
+        refreshRegistry();
     };
 
     const executeDelete = async () => {
@@ -104,12 +86,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
         }
     };
 
-    const copyToClipboard = () => {
-        if (!inviteResult) return;
-        navigator.clipboard.writeText(`${window.location.origin}/invite/${inviteResult.token}`);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
+
 
     const filteredTeachers = teachers
         .filter(t => {
@@ -152,11 +129,11 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                         <Download className="w-5 h-5 mr-3" /> Export PDF Registry
                     </Button>
                     <Button
-                        onClick={() => setIsInviting(!isInviting)}
+                        onClick={() => setIsInviting(true)}
                         className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-10 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95 mb-1"
                     >
                         <Plus className="mr-2 h-4 w-4" />
-                        {isInviting ? "Close Console" : "Invite Faculty"}
+                        Invite Faculty
                     </Button>
                 </div>
             </div>
@@ -228,85 +205,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                 ))}
             </div>
 
-            {isInviting && (
-                <div className="animate-in fade-in slide-in-from-top-4 duration-300">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl overflow-hidden">
-                        <CardHeader className="text-center pt-10 pb-6 border-b border-zinc-900/50">
-                            <div className="mx-auto w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center mb-6 border border-zinc-800">
-                                {inviteResult ? <MailCheck className="w-6 h-6 text-eduGreen-500" /> : <Mail className="w-6 h-6 text-eduGreen-500" />}
-                            </div>
-                            <CardTitle className="text-xl font-medium text-white tracking-tight">
-                                {inviteResult ? "Deployment Successful" : "Secure Invite Portal"}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="px-10 py-10">
-                            {isLoading ? (
-                                <div className="py-10 flex justify-center items-center">
-                                    <SpringingLoader message="Synthesizing Faculty Data" />
-                                </div>
-                            ) : !inviteResult ? (
-                                <form onSubmit={handleAddTeacher} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="md:col-span-2 space-y-3">
-                                        <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-800/50 flex justify-center">
-                                            <ImageUpload
-                                                value={newTeacher.photoUrl}
-                                                onChange={(url) => setNewTeacher({ ...newTeacher, photoUrl: url })}
-                                                bucket="avatars"
-                                            />
-                                        </div>
-                                        <Input
-                                            placeholder="Full Name"
-                                            value={newTeacher.name}
-                                            onChange={e => setNewTeacher({ ...newTeacher, name: e.target.value })}
-                                            className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
-                                            required
-                                        />
-                                    </div>
-                                    <Input
-                                        placeholder="Email Address"
-                                        type="email"
-                                        value={newTeacher.email}
-                                        onChange={e => setNewTeacher({ ...newTeacher, email: e.target.value })}
-                                        className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
-                                        required
-                                    />
-                                    <Select value={newTeacher.gender} onValueChange={g => setNewTeacher({ ...newTeacher, gender: g })}>
-                                        <SelectTrigger className="bg-zinc-900/30 border-zinc-800 text-zinc-500 h-14 rounded-2xl focus:border-eduGreen-600 border-2">
-                                            <SelectValue placeholder="Gender" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
-                                            <SelectItem value="MALE">MALE</SelectItem>
-                                            <SelectItem value="FEMALE">FEMALE</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <div className="md:col-span-2 pt-4">
-                                        <Button type="submit" className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 rounded-2xl font-medium text-xs uppercase tracking-[0.2em]">
-                                            Register & Dispatch Invite
-                                        </Button>
-                                    </div>
-                                </form>
-                            ) : (
-                                <div className="text-center space-y-8 max-w-md mx-auto">
-                                    <div className="p-8 bg-zinc-950/80 rounded-[2rem] border border-zinc-900">
-                                        <p className="text-zinc-600 text-[10px] font-medium uppercase tracking-widest mb-2">Authenticated Recipient</p>
-                                        <p className="text-lg font-medium text-white tracking-tight break-all">{inviteResult.user.email}</p>
-                                        <div className="mt-6 flex items-center justify-center gap-3">
-                                            <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
-                                            <span className="text-[10px] text-eduGreen-500 font-medium uppercase tracking-widest">Link Active & Encrypted</span>
-                                        </div>
-                                    </div>
-                                    <Button size="lg" onClick={() => { setInviteResult(null); setNewTeacher({ name: "", email: "", phone: "", gender: "", qualification: "", teacherCode: "", photoUrl: "" }); }} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 rounded-2xl font-medium text-xs uppercase tracking-[0.2em]">
-                                        New Invitation
-                                    </Button>
-                                    <Button variant="ghost" size="sm" onClick={copyToClipboard} className="text-[10px] text-zinc-600 hover:text-eduGreen-500 font-medium uppercase tracking-widest">
-                                        {copied ? "Link Copied" : "Manual Secret Copy"}
-                                    </Button>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
+
 
             <Card className="bg-zinc-950/20 backdrop-blur-xl border-zinc-900 rounded-[2.5rem] shadow-none overflow-hidden">
                 <CardHeader className="p-10 border-b border-zinc-900/30">
@@ -353,6 +252,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
             <AlertModal isOpen={alertConfig.isOpen} onClose={() => setAlertConfig(prev => ({ ...prev, isOpen: false }))} title={alertConfig.title} message={alertConfig.message} variant={alertConfig.variant} />
             <IDCardModal isOpen={!!selectedTeacherForID} onClose={() => setSelectedTeacherForID(null)} user={selectedTeacherForID} type="TEACHER" schoolName={schoolInfo?.name} schoolAddress={schoolInfo?.address} schoolLogo={schoolInfo?.logoUrl} />
             <EditTeacherModal isOpen={!!selectedTeacherForEdit} onClose={() => setSelectedTeacherForEdit(null)} onSuccess={refreshRegistry} teacher={selectedTeacherForEdit} />
+            <InviteFacultyModal isOpen={isInviting} onClose={() => setIsInviting(false)} onSuccess={handleInviteSuccess} />
         </div>
     );
 }

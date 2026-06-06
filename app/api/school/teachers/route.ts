@@ -25,9 +25,12 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const { name, email, phone, gender, teacherCode, qualification, photoUrl } = await request.json() as any;
+        const { name, email, phone, gender, teacherCode, qualification, photoUrl, role: rawRole } = await request.json() as any;
 
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
+
+        const allowedRoles = ['TEACHER', 'PRINCIPAL', 'HOMEROOM'];
+        const role = allowedRoles.includes(rawRole) ? rawRole : 'TEACHER';
 
         // Check if user already exists
         const existing = await prisma.user.findUnique({ where: { email } });
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
             data: {
                 name,
                 email,
-                role: 'TEACHER', // Default role
+                role,
                 schoolId: user.schoolId,
                 verified: false,
                 teacherCode: teacherCode || `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`,
@@ -57,7 +60,7 @@ export async function POST(request: Request) {
             data: {
                 token,
                 email,
-                role: 'TEACHER',
+                role,
                 schoolId: user.schoolId,
                 expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             }
@@ -85,16 +88,19 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
-        const { id, name, email, phone, gender, qualification, photoUrl } = await request.json() as any;
+        const { id, name, email, phone, gender, qualification, photoUrl, role: rawRole } = await request.json() as any;
 
         if (!id) return NextResponse.json({ error: "Teacher ID required" }, { status: 400 });
 
         // Ensure teacher belongs to same school
         const teacher = await prisma.user.findFirst({
-            where: { id, schoolId: user.schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } }
+            where: { id, schoolId: user.schoolId, role: { in: ['TEACHER', 'HOMEROOM', 'PRINCIPAL'] } }
         });
 
         if (!teacher) return NextResponse.json({ error: "Teacher not found" }, { status: 404 });
+
+        const allowedRoles = ['TEACHER', 'PRINCIPAL', 'HOMEROOM'];
+        const roleToUpdate = allowedRoles.includes(rawRole) ? rawRole : teacher.role;
 
         const updated = await prisma.user.update({
             where: { id },
@@ -104,7 +110,8 @@ export async function PUT(request: Request) {
                 phone,
                 gender,
                 qualification,
-                photoUrl
+                photoUrl,
+                role: roleToUpdate
             }
         });
 
