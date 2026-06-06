@@ -143,7 +143,6 @@ export default async function DashboardLayout({
 
             {/* Primary Navigation Hub (Appears in DOCK mode) */}
             {!isSidebar && <FloatingDock role={role} userEmail={dbUser.email} userName={dbUser.name} />}
-            <DynamicAIAssistant userName={dbUser?.name} userId={dbUser?.id} />
             <NeuralTutorialWrapper role={role} />
             <PreferencesProvider children={null} />
             <NetworkBanner />

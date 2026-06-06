@@ -72,11 +72,8 @@ export async function POST(req: Request) {
         }
 
         // 3. Create User Account in Database (Synced with Supabase ID)
-        const encoder = new TextEncoder();
-        const pwData = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', pwData);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        const crypto = require('crypto');
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
         try {
             const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
