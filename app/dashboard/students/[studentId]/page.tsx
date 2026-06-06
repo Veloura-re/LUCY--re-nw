@@ -76,7 +76,7 @@ function StudentProfileContent() {
 
     const fetchStudentData = async () => {
         try {
-            const res = await fetch(`/api/school/students/${studentId}/report-card`);
+            const res = await fetch(`/api/school/students/${studentId}/report-card?_t=${Date.now()}`);
             const d = await res.json();
             setData(d);
             setRemarks(d.remarks || []);
