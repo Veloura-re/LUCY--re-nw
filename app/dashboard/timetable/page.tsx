@@ -259,6 +259,15 @@ export default function TimetableManagementPage() {
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Institutional Period & Day Structure Authority</p>
                 </div>
+                <div className="flex items-center gap-4">
+                    <Button
+                        onClick={() => setConfirmGenerate(true)}
+                        isLoading={isGenerating}
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-12 px-6 text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-eduGreen-900/20"
+                    >
+                        Auto-Generate Schedule
+                    </Button>
+                </div>
             </div>
 
             <Tabs defaultValue="builder" className="space-y-8" onValueChange={setActiveTab}>
@@ -299,17 +308,6 @@ export default function TimetableManagementPage() {
                                 >
                                     {showWeekends ? "Hide Weekends" : "Include Weekends"}
                                 </Button>
-                                <Button
-                                    onClick={() => setConfirmGenerate(true)}
-                                    isLoading={isGenerating}
-                                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest shadow-lg shadow-eduGreen-900/20"
-                                >
-                                    Auto-Generate Schedule
-                                </Button>
-                                <div className="bg-eduGreen-950/10 border border-eduGreen-900/20 rounded-2xl p-4 flex items-center gap-3 mt-2">
-                                    <AlertTriangle className="w-5 h-5 text-eduGreen-500" />
-                                    <span className="text-[10px] font-medium uppercase tracking-widest text-eduGreen-500/80">Real-time conflict detection active</span>
-                                </div>
                             </div>
                         </div>
                     </Card>
