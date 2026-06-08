@@ -20,6 +20,7 @@ export default function StaffingPage() {
     const [assignments, setAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState<string | null>(null);
+    const [periodsState, setPeriodsState] = useState<Record<string, number>>({});
 
     const printRef = useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({
@@ -45,11 +46,11 @@ export default function StaffingPage() {
                 fetch('/api/school/teachers')
             ]);
 
-            const [cData, sData, tData] = await Promise.all([
+            const [cData, sData, tData] = (await Promise.all([
                 cRes.json(),
                 sRes.json(),
                 tRes.json()
-            ]);
+            ])) as any[];
 
             const flattened = (cData.grades || []).flatMap((g: any) =>
                 g.classes.map((c: any) => ({ ...c, gradeName: g.name }))
@@ -72,15 +73,16 @@ export default function StaffingPage() {
     const fetchAssignments = async (classId: string) => {
         try {
             const res = await fetch(`/api/school/staffing?classId=${classId}`);
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setAssignments(data.assignments || []);
         } catch (e) {
             console.error(e);
         }
     };
 
-    const handleAssign = async (subjectId: string, teacherId: string) => {
+    const handleAssign = async (subjectId: string, teacherId: string, overridePeriods?: number) => {
         setSaving(subjectId);
+        const periodsPerWeek = overridePeriods ?? periodsState[subjectId] ?? 5;
         try {
             const res = await fetch('/api/school/staffing', {
                 method: 'POST',
@@ -88,7 +90,8 @@ export default function StaffingPage() {
                 body: JSON.stringify({
                     classId: selectedClassId,
                     subjectId,
-                    teacherId
+                    teacherId,
+                    periodsPerWeek
                 })
             });
 
@@ -242,30 +245,49 @@ export default function StaffingPage() {
                                                         </div>
                                                     )}
 
-                                                    <div className="w-full sm:w-64">
-                                                        <Select
-                                                            defaultValue={assignment?.teacherId}
-                                                            onValueChange={(val: string) => handleAssign(subject.id, val)}
-                                                            disabled={saving === subject.id}
-                                                        >
-                                                            <SelectTrigger className="h-14 bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-white font-medium hover:border-eduGreen-900/30 transition-all">
-                                                                {saving === subject.id ? (
-                                                                    <div className="flex items-center gap-2">
-                                                                        <Loader2 className="w-4 h-4 animate-spin text-eduGreen-500" />
-                                                                        <span className="text-[10px] uppercase tracking-widest text-zinc-500">Mapping...</span>
-                                                                    </div>
-                                                                ) : (
-                                                                    <SelectValue placeholder="Select Instructor" />
-                                                                )}
-                                                            </SelectTrigger>
-                                                            <SelectContent className="bg-zinc-950 border-zinc-900 text-white">
-                                                                {teachers.map((teacher: any) => (
-                                                                    <SelectItem key={teacher.id} value={teacher.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
-                                                                        {teacher.name}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-24">
+                                                            <input 
+                                                                type="number" 
+                                                                min="1" 
+                                                                max="20"
+                                                                placeholder="Periods"
+                                                                value={periodsState[subject.id] ?? assignment?.periodsPerWeek ?? 5}
+                                                                onChange={(e) => setPeriodsState(prev => ({ ...prev, [subject.id]: parseInt(e.target.value) || 5 }))}
+                                                                onBlur={(e) => {
+                                                                    if (assignment?.teacherId) {
+                                                                        handleAssign(subject.id, assignment.teacherId, parseInt(e.target.value) || 5);
+                                                                    }
+                                                                }}
+                                                                className="h-14 w-full bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-center text-white font-medium text-sm focus:border-eduGreen-500/50 outline-none"
+                                                                title="Periods per Week"
+                                                            />
+                                                        </div>
+                                                        <div className="w-full sm:w-64">
+                                                            <Select
+                                                                defaultValue={assignment?.teacherId}
+                                                                onValueChange={(val: string) => handleAssign(subject.id, val)}
+                                                                disabled={saving === subject.id}
+                                                            >
+                                                                <SelectTrigger className="h-14 bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-white font-medium hover:border-eduGreen-900/30 transition-all">
+                                                                    {saving === subject.id ? (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Loader2 className="w-4 h-4 animate-spin text-eduGreen-500" />
+                                                                            <span className="text-[10px] uppercase tracking-widest text-zinc-500">Mapping...</span>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <SelectValue placeholder="Select Instructor" />
+                                                                    )}
+                                                                </SelectTrigger>
+                                                                <SelectContent className="bg-zinc-950 border-zinc-900 text-white">
+                                                                    {teachers.map((teacher: any) => (
+                                                                        <SelectItem key={teacher.id} value={teacher.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
+                                                                            {teacher.name}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -21,6 +21,7 @@ interface MessagesClientWrapperProps {
     initialActiveRoom?: any;
     initialMessages?: any[];
     initialNextCursor?: string | null;
+    initialTargetUserId?: string | null;
 }
 
 export default function MessagesClientWrapper({ 
@@ -28,7 +29,8 @@ export default function MessagesClientWrapper({
     initialRooms, 
     initialActiveRoom, 
     initialMessages = [],
-    initialNextCursor = null
+    initialNextCursor = null,
+    initialTargetUserId = null
 }: MessagesClientWrapperProps) {
     const supabase = createClient();
     const router = useRouter();
@@ -64,6 +66,13 @@ export default function MessagesClientWrapper({
         }
     }, [activeRoom]);
 
+    // Handle incoming initialTargetUserId to auto-open chat
+    useEffect(() => {
+        if (initialTargetUserId && !initialActiveRoom) {
+            startChat({ id: initialTargetUserId });
+        }
+    }, [initialTargetUserId, initialActiveRoom]);
+
     // Infinite Scroll Implementation
     const loadMoreMessages = useCallback(async () => {
         if (!activeRoom || !nextCursor || loadingMore) return;
@@ -71,7 +80,7 @@ export default function MessagesClientWrapper({
         setLoadingMore(true);
         try {
             const res = await fetch(`/api/messages?chatRoomId=${activeRoom.id}&cursor=${nextCursor}`);
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.messages) {
                 // Prepend older messages
                 setMessages(prev => [...data.messages, ...prev]);
@@ -134,7 +143,7 @@ export default function MessagesClientWrapper({
     const fetchRooms = async () => {
         try {
             const res = await fetch('/api/messages/rooms');
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.rooms) setRooms(data.rooms);
         } catch (e) { console.error(e); }
     };
@@ -142,7 +151,7 @@ export default function MessagesClientWrapper({
     const fetchMessages = async (chatRoomId: string) => {
         try {
             const res = await fetch(`/api/messages?chatRoomId=${chatRoomId}`);
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.messages) {
                 setMessages(data.messages);
                 setNextCursor(data.nextCursor);
@@ -195,7 +204,7 @@ export default function MessagesClientWrapper({
             } else {
                 fetchRooms();
                 // Replace temp with real response to avoid flashes
-                const data = await res.json();
+                const data: any = await res.json();
                 setMessages(prev => prev.map(m => m.id === tempId ? data.message : m));
             }
         } catch (e) {
@@ -214,7 +223,7 @@ export default function MessagesClientWrapper({
             const isStudent = me?.user_metadata?.role === 'STUDENT';
             const endpoint = isStudent ? `/api/students/lookup?code=${query}` : `/api/school/users/search?q=${query}`;
             const res = await fetch(endpoint);
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.users) {
                 setSearchResults(data.users);
                 setSearchType(data.type === 'studentCode' ? 'studentCode' : 'normal');
@@ -229,7 +238,7 @@ export default function MessagesClientWrapper({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ targetUserId: user.id })
             });
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.room) {
                 await fetchRooms();
                 setActiveRoom(data.room);
