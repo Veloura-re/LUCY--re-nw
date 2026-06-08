@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { BookOpen, Users, Calendar, ShieldCheck, Database, Sparkles, ChevronRight, HelpCircle } from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { getSession } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { getCachedUser } from "@/lib/users";
 import { redirect } from "next/navigation";
 
@@ -133,10 +132,12 @@ const SECTIONS = [
 ];
 
 export default async function HelpCenterPage() {
-    const session = await getSession();
-    if (!session?.user) redirect("/login");
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) redirect("/login");
 
-    const dbUser = await getCachedUser(session.user.id);
+    const dbUser = await getCachedUser(user.id);
     if (!dbUser) redirect("/login");
 
     return (
@@ -172,39 +173,36 @@ export default async function HelpCenterPage() {
                     Operational Chapters
                 </h2>
 
-                <Accordion type="single" collapsible className="w-full space-y-4">
+                <div className="w-full space-y-4">
                     {SECTIONS.map((section, index) => {
                         const Icon = section.icon;
                         return (
-                            <AccordionItem
+                            <details
                                 key={section.id}
-                                value={section.id}
-                                className="bg-zinc-900/50 border border-white/5 rounded-2xl overflow-hidden data-[state=open]:border-eduGreen-500/30 transition-all px-2"
+                                className="bg-zinc-900/50 border border-white/5 rounded-2xl overflow-hidden open:border-eduGreen-500/30 transition-all px-2 group"
                             >
-                                <AccordionTrigger className="hover:no-underline px-4 py-6 group">
-                                    <div className="flex items-center gap-6 text-left">
-                                        <div className="w-12 h-12 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center shrink-0 group-data-[state=open]:bg-eduGreen-900/30 group-data-[state=open]:border-eduGreen-500/30 transition-colors">
-                                            <Icon className="w-6 h-6 text-zinc-400 group-data-[state=open]:text-eduGreen-400" />
-                                        </div>
-                                        <div>
-                                            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1">
-                                                Chapter 0{index + 1}
-                                            </div>
-                                            <h3 className="text-lg font-bold text-white group-hover:text-eduGreen-400 transition-colors">
-                                                {section.title}
-                                            </h3>
-                                        </div>
+                                <summary className="px-4 py-6 cursor-pointer list-none flex items-center gap-6 text-left outline-none">
+                                    <div className="w-12 h-12 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center shrink-0 group-open:bg-eduGreen-900/30 group-open:border-eduGreen-500/30 transition-colors">
+                                        <Icon className="w-6 h-6 text-zinc-400 group-open:text-eduGreen-400" />
                                     </div>
-                                </AccordionTrigger>
-                                <AccordionContent className="px-4 pb-6 pt-2">
+                                    <div>
+                                        <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1">
+                                            Chapter 0{index + 1}
+                                        </div>
+                                        <h3 className="text-lg font-bold text-white group-hover:text-eduGreen-400 transition-colors">
+                                            {section.title}
+                                        </h3>
+                                    </div>
+                                </summary>
+                                <div className="px-4 pb-6 pt-2">
                                     <div className="pl-0 md:pl-18">
                                         {section.content}
                                     </div>
-                                </AccordionContent>
-                            </AccordionItem>
+                                </div>
+                            </details>
                         );
                     })}
-                </Accordion>
+                </div>
             </div>
         </div>
     );
