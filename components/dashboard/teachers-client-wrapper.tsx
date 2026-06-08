@@ -216,15 +216,15 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                     <div className="divide-y divide-zinc-900/40">
                         {filteredTeachers.map((teacher, idx) => (
                             <div key={idx} className="p-6 flex items-center justify-between hover:bg-eduGreen-950/5 transition-all group">
-                                <div className="flex items-center gap-6">
-                                    <div className="w-12 h-16 rounded-lg bg-zinc-950 border border-zinc-900/50 flex items-center justify-center font-medium text-zinc-800 uppercase group-hover:border-eduGreen-900/30 relative overflow-hidden">
+                                <Link href={teacher.id ? `/dashboard/teachers/${teacher.id}` : '#'} className="flex items-center gap-6 cursor-pointer">
+                                    <div className="w-12 h-16 rounded-lg bg-zinc-950 border border-zinc-900/50 flex items-center justify-center font-medium text-zinc-800 uppercase group-hover:border-eduGreen-900/30 relative overflow-hidden transition-all">
                                         {teacher.photoUrl ? <Image src={teacher.photoUrl} alt="" fill sizes="48px" className="object-cover" /> : (teacher.name?.[0] || "?")}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-zinc-100 group-hover:text-white tracking-tight text-lg">{teacher.name || "Awaiting Setup"}</p>
+                                        <p className="font-medium text-zinc-100 group-hover:text-eduGreen-400 tracking-tight text-lg transition-colors">{teacher.name || "Awaiting Setup"}</p>
                                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{teacher.email}</p>
                                     </div>
-                                </div>
+                                </Link>
                                 <div className="flex items-center gap-4">
                                     {teacher.status === 'ACTIVE' ? (
                                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-eduGreen-950/20 border border-eduGreen-900/30">

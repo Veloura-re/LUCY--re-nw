@@ -11,7 +11,7 @@ import {
     Trash2, AlertTriangle, CheckCircle2, MoreHorizontal
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AlertModal } from "@/components/ui/confirmation-modal";
+import { AlertModal, ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 const DAYS = [
     { label: "Monday", value: "MON" },
@@ -34,6 +34,8 @@ export default function TimetableManagementPage() {
     const [showWeekends, setShowWeekends] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [confirmGenerate, setConfirmGenerate] = useState(false);
     const [activeTab, setActiveTab] = useState("builder");
     const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
 
@@ -51,7 +53,7 @@ export default function TimetableManagementPage() {
     const fetchStaffing = async (classId: string) => {
         try {
             const res = await fetch(`/api/school/staffing?classId=${classId}`);
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setAssignments(data.assignments || []);
         } catch (e) {
             console.error("Failed to fetch staffing", e);
@@ -68,12 +70,12 @@ export default function TimetableManagementPage() {
                 fetch('/api/school/teachers')
             ]);
 
-            const [pData, cData, sData, tData] = await Promise.all([
-                pRes.json(),
+            const pData = (await pRes.json()) as any;
+            const [cData, sData, tData] = (await Promise.all([
                 cRes.json(),
                 sRes.json(),
                 tRes.json()
-            ]);
+            ])) as any[];
 
             setPeriods(pData.periods || []);
 
@@ -105,8 +107,8 @@ export default function TimetableManagementPage() {
                 fetch(`/api/school/timetable?classId=${classId}`),
                 fetch(`/api/school/periods?classId=${classId}`)
             ]);
-            const tData = await tRes.json();
-            const pData = await pRes.json();
+            const tData = (await tRes.json()) as any;
+            const pData = (await pRes.json()) as any;
 
             setTimetableEntries(tData.timetable || []);
             // If the class has periods, use them. Otherwise fallback to global or keep existing?
@@ -174,7 +176,7 @@ export default function TimetableManagementPage() {
                     teacherId: data.teacherId
                 })
             });
-            const result = await res.json();
+            const result = (await res.json()) as any;
             if (res.ok) {
                 fetchTimetable(selectedClassId);
             } else {
@@ -206,6 +208,42 @@ export default function TimetableManagementPage() {
                 isOpen: true,
                 variant: "error"
             });
+        }
+    };
+
+    const handleAutoGenerate = async () => {
+        setIsGenerating(true);
+        setConfirmGenerate(false);
+        try {
+            const res = await fetch('/api/school/timetable/auto-generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    overwrite: true,
+                    includeWeekends: showWeekends
+                })
+            });
+            const data = (await res.json()) as any;
+            if (res.ok) {
+                setAlertConfig({
+                    title: "Matrix Generated",
+                    message: data.message,
+                    isOpen: true,
+                    variant: "success"
+                });
+                fetchTimetable(selectedClassId);
+            } else {
+                throw new Error(data.error || "Generation failed");
+            }
+        } catch (e: any) {
+            setAlertConfig({
+                title: "Generation Failed",
+                message: e.message || "Failed to auto-generate the timetable.",
+                isOpen: true,
+                variant: "error"
+            });
+        } finally {
+            setIsGenerating(false);
         }
     };
 
@@ -261,7 +299,14 @@ export default function TimetableManagementPage() {
                                 >
                                     {showWeekends ? "Hide Weekends" : "Include Weekends"}
                                 </Button>
-                                <div className="bg-eduGreen-950/10 border border-eduGreen-900/20 rounded-2xl p-4 flex items-center gap-3">
+                                <Button
+                                    onClick={() => setConfirmGenerate(true)}
+                                    isLoading={isGenerating}
+                                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest shadow-lg shadow-eduGreen-900/20"
+                                >
+                                    Auto-Generate Schedule
+                                </Button>
+                                <div className="bg-eduGreen-950/10 border border-eduGreen-900/20 rounded-2xl p-4 flex items-center gap-3 mt-2">
                                     <AlertTriangle className="w-5 h-5 text-eduGreen-500" />
                                     <span className="text-[10px] font-medium uppercase tracking-widest text-eduGreen-500/80">Real-time conflict detection active</span>
                                 </div>
@@ -412,6 +457,16 @@ export default function TimetableManagementPage() {
                 title={alertConfig.title}
                 message={alertConfig.message}
                 variant={alertConfig.variant}
+            />
+
+            <ConfirmationModal
+                isOpen={confirmGenerate}
+                onClose={() => setConfirmGenerate(false)}
+                onConfirm={handleAutoGenerate}
+                title="Global Auto-Generation"
+                description="This will completely overwrite the current timetable for ALL classes in the school. The AI Engine will calculate the perfect schedule based on Teacher Assignments. Do you want to proceed?"
+                confirmText="Initiate Generation"
+                variant="danger"
             />
         </div>
     );

@@ -135,6 +135,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                         return (
                             <Link key={item.href} href={item.href}>
                                 <motion.div
+                                    id={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                                     whileHover={{ x: collapsed ? 0 : 2 }}
                                     className={cn(
                                         "flex items-center gap-3 h-11 px-3 rounded-2xl transition-all group font-semibold text-sm cursor-pointer",
@@ -181,11 +182,11 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                             <NavToggle mode="DOCK" />
                             <Button
                                 variant="ghost"
-                                onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tutorial"))}
+                                onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
                                 className="w-full justify-start gap-3 h-10 px-3 rounded-xl text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
                             >
                                 <Sparkles className="w-4 h-4" />
-                                Neural Onboarding
+                                Interactive Tour
                             </Button>
                         </div>
                     )}
@@ -217,9 +218,9 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {!collapsed && <SignOutButton />}
                     {collapsed && (
                         <button
-                            onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tutorial"))}
+                            onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
                             className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
-                            title="Neural Onboarding"
+                            title="Interactive Tour"
                         >
                             <Sparkles className="w-4 h-4" />
                         </button>

@@ -53,6 +53,8 @@ model User {
   payrolls               StaffPayroll[]
   student                Student?
   authoredRemarks        StudentRemark[]         @relation("TeacherRemarks")
+  teacherDossier         TeacherRemark[]         @relation("TeacherDossier")
+  authoredTeacherRemarks TeacherRemark[]         @relation("DossierAuthor")
   teacherAssignments     TeacherAssignment[]
   timetable              Timetable[]
   school                 School?                 @relation(fields: [schoolId], references: [id])
@@ -88,6 +90,22 @@ model School {
   subjects              Subject[]
   unitPacks             UnitPack[]
   users                 User[]
+  restorePoints         RestorePoint[]
+}
+
+model RestorePoint {
+  id          String   @id @default(uuid())
+  schoolId    String
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  triggeredBy String   @default("SYSTEM")
+  fileUrl     String
+  sizeBytes   Int
+  status      String   @default("COMPLETED")
+  metadata    Json?    @default("{}")
+
+  @@index([schoolId])
+  @@index([createdAt])
 }
 
 model Grade {
@@ -139,13 +157,14 @@ model Subject {
 }
 
 model TeacherAssignment {
-  id        String  @id @default(uuid())
-  teacherId String
-  classId   String
-  subjectId String
-  class     Class   @relation(fields: [classId], references: [id])
-  subject   Subject @relation(fields: [subjectId], references: [id])
-  teacher   User    @relation(fields: [teacherId], references: [id])
+  id             String  @id @default(uuid())
+  teacherId      String
+  classId        String
+  subjectId      String
+  periodsPerWeek Int     @default(5)
+  class          Class   @relation(fields: [classId], references: [id])
+  subject        Subject @relation(fields: [subjectId], references: [id])
+  teacher        User    @relation(fields: [teacherId], references: [id])
 }
 
 model Student {
@@ -440,6 +459,21 @@ model StudentRemark {
   teacher   User     @relation("TeacherRemarks", fields: [teacherId], references: [id])
 
   @@index([studentId])
+}
+
+model TeacherRemark {
+  id        String   @id @default(uuid())
+  teacherId String
+  authorId  String
+  type      String   // 'POSITIVE', 'NEGATIVE', 'REVIEW'
+  content   String
+  rating    Int?     // 1-5, optional
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teacher   User     @relation("TeacherDossier", fields: [teacherId], references: [id], onDelete: Cascade)
+  author    User     @relation("DossierAuthor", fields: [authorId], references: [id])
+
+  @@index([teacherId])
 }
 
 model InternalNote {

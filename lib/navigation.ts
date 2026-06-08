@@ -26,7 +26,8 @@ import {
     Feather,
     Landmark,
     Sparkles,
-    LayoutDashboard
+    LayoutDashboard,
+    HelpCircle
 } from "lucide-react";
 
 export type Role = 'SUPERADMIN' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
@@ -59,7 +60,8 @@ export const ICON_MAP = {
     Feather,
     Landmark,
     Sparkles,
-    LayoutDashboard
+    LayoutDashboard,
+    HelpCircle
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -78,6 +80,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Wrench', label: "System Status", href: "/admin/status" },
         { icon: 'Sparkles', label: "AI Config", href: "/admin/ai" },
         { icon: 'Cog', label: "Engine Settings", href: "/admin/settings" },
+        { icon: 'HelpCircle', label: "Help Center", href: "/dashboard/help" },
     ],
     PRINCIPAL: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
@@ -99,6 +102,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
     TEACHER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
@@ -116,6 +120,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
     HOMEROOM: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
@@ -132,6 +137,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
     PARENT: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
@@ -144,6 +150,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
     STUDENT: [
         { icon: 'Trophy', label: "My Hub", href: "/dashboard/student" },
@@ -158,6 +165,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
 };
 

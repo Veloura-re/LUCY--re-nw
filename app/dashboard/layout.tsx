@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { FloatingDock } from "@/components/dashboard/floating-dock";
 import { DynamicAIAssistant } from "@/components/dashboard/dynamic-ai-assistant";
-import { NeuralTutorialWrapper } from "@/components/dashboard/neural-tutorial-wrapper";
+import { InteractiveTour } from "@/components/dashboard/interactive-tour";
 import { NetworkBanner } from "@/components/ui/network-banner";
 import { PreferencesProvider } from "@/components/dashboard/preferences-provider";
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
@@ -143,7 +143,7 @@ export default async function DashboardLayout({
 
             {/* Primary Navigation Hub (Appears in DOCK mode) */}
             {!isSidebar && <FloatingDock role={role} userEmail={dbUser.email} userName={dbUser.name} />}
-            <NeuralTutorialWrapper role={role} />
+            <InteractiveTour role={role} />
             <PreferencesProvider children={null} />
             <NetworkBanner />
         </div>

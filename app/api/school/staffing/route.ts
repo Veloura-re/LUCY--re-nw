@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
-        const { classId, subjectId, teacherId } = await request.json();
+        const { classId, subjectId, teacherId, periodsPerWeek = 5 } = (await request.json()) as any;
 
         // Sequential lookups for isolation and stability on Cloudflare Edge
         const targetClass = await prisma.class.findUnique({ where: { id: classId }, select: { grade: { select: { schoolId: true } } } });
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
             // Update existing assignment
             const updated = await prisma.teacherAssignment.update({
                 where: { id: existing.id },
-                data: { teacherId }
+                data: { teacherId, periodsPerWeek: parseInt(periodsPerWeek) } as any
             });
             return NextResponse.json({ assignment: updated });
         } else {
@@ -43,8 +43,9 @@ export async function POST(request: Request) {
                 data: {
                     classId,
                     subjectId,
-                    teacherId
-                }
+                    teacherId,
+                    periodsPerWeek: parseInt(periodsPerWeek)
+                } as any
             });
             return NextResponse.json({ assignment });
         }

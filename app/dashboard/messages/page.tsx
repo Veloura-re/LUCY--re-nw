@@ -51,6 +51,7 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
                 initialActiveRoom={initialActiveRoom}
                 initialMessages={initialMessages}
                 initialNextCursor={initialNextCursor}
+                initialTargetUserId={params.userId}
             />
         </Suspense>
     );

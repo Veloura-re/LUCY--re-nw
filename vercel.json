@@ -1,3 +1,9 @@
 {
-  "name": "lucy-re-nw"
+  "name": "lucy-re-nw",
+  "crons": [
+    {
+      "path": "/api/cron/backups",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
