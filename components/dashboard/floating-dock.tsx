@@ -49,7 +49,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
     const items = [
         { icon: Columns2, label: "Switch to Sidebar", onClick: () => updateNavPreference("SIDEBAR"), variant: "toggle" },
         ...filteredMenu,
-        // { icon: Sparkles, label: "Neural Onboarding", onClick: () => window.dispatchEvent(new CustomEvent('lucy:open-tutorial')), variant: "toggle" },
+        { icon: Sparkles, label: "Interactive Tour", onClick: () => window.dispatchEvent(new CustomEvent('lucy:open-tour')), variant: "toggle" },
         { icon: DoorOpen, label: "Sign Out", onClick: () => setShowSignOutConfirm(true), variant: "danger" },
     ];
 
