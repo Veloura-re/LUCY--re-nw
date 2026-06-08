@@ -141,11 +141,11 @@ export default async function HelpCenterPage() {
     if (!dbUser) redirect("/login");
 
     return (
-        <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
             {/* Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-zinc-900 border border-white/10 p-8 md:p-12">
-                <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-900/20 via-transparent to-zinc-900/50" />
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-eduGreen-500/10 blur-[100px] rounded-full pointer-events-none" />
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-8 md:p-12 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] group">
+                <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-500/10 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-eduGreen-500/20 blur-[100px] rounded-full pointer-events-none group-hover:bg-eduGreen-400/30 transition-colors duration-700" />
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div>
@@ -160,8 +160,8 @@ export default async function HelpCenterPage() {
                             Comprehensive operational protocols and manuals for managing your institution via the LUCY interface.
                         </p>
                     </div>
-                    <div className="hidden md:flex w-32 h-32 rounded-2xl bg-black/50 border border-white/10 items-center justify-center backdrop-blur-md shadow-2xl">
-                        <BookOpen className="w-16 h-16 text-eduGreen-500/50" />
+                    <div className="hidden md:flex w-32 h-32 rounded-3xl bg-white/[0.05] border border-white/20 items-center justify-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rotate-3 group-hover:rotate-6 transition-transform duration-700">
+                        <BookOpen className="w-16 h-16 text-eduGreen-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
                     </div>
                 </div>
             </div>
@@ -179,23 +179,26 @@ export default async function HelpCenterPage() {
                         return (
                             <details
                                 key={section.id}
-                                className="bg-zinc-900/50 border border-white/5 rounded-2xl overflow-hidden open:border-eduGreen-500/30 transition-all px-2 group"
+                                className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden open:bg-white/[0.04] open:border-eduGreen-500/40 transition-all duration-500 px-2 group shadow-lg hover:shadow-xl hover:border-white/20"
                             >
-                                <summary className="px-4 py-6 cursor-pointer list-none flex items-center gap-6 text-left outline-none">
-                                    <div className="w-12 h-12 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center shrink-0 group-open:bg-eduGreen-900/30 group-open:border-eduGreen-500/30 transition-colors">
-                                        <Icon className="w-6 h-6 text-zinc-400 group-open:text-eduGreen-400" />
+                                <summary className="px-4 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center gap-6 text-left outline-none relative">
+                                    <div className="w-14 h-14 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 group-open:bg-eduGreen-500/20 group-open:border-eduGreen-400/50 group-open:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-500">
+                                        <Icon className="w-6 h-6 text-zinc-400 group-open:text-eduGreen-400 transition-colors duration-500" />
                                     </div>
-                                    <div>
-                                        <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-1">
+                                    <div className="flex-1">
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">
                                             Chapter 0{index + 1}
                                         </div>
-                                        <h3 className="text-lg font-bold text-white group-hover:text-eduGreen-400 transition-colors">
+                                        <h3 className="text-xl font-bold text-white group-hover:text-eduGreen-400 group-open:text-eduGreen-300 transition-colors duration-300 drop-shadow-sm">
                                             {section.title}
                                         </h3>
                                     </div>
+                                    <div className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/10 flex items-center justify-center text-zinc-500 group-open:rotate-90 group-open:text-eduGreen-400 group-open:border-eduGreen-500/30 transition-all duration-500 shrink-0">
+                                        <ChevronRight className="w-4 h-4" />
+                                    </div>
                                 </summary>
-                                <div className="px-4 pb-6 pt-2">
-                                    <div className="pl-0 md:pl-18">
+                                <div className="px-4 pb-8 pt-2">
+                                    <div className="pl-0 md:pl-20">
                                         {section.content}
                                     </div>
                                 </div>
