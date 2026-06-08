@@ -12,6 +12,7 @@ import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-moda
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
+import { ManagePrincipalsModal } from "@/components/admin/manage-principals-modal";
 
 interface School {
     id: string;
@@ -42,6 +43,7 @@ export default function SuperAdminDashboard() {
 
     const [confirmAction, setConfirmAction] = useState<{ type: 'SUSPEND' | 'DELETE' | null, schoolId: string, schoolName: string }>({ type: null, schoolId: "", schoolName: "" });
     const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
+    const [managePrincipalsSchool, setManagePrincipalsSchool] = useState<{ id: string, name: string } | null>(null);
 
     useEffect(() => {
         fetchSchools();
@@ -58,7 +60,7 @@ export default function SuperAdminDashboard() {
         try {
             const res = await fetch('/api/admin/schools');
             if (!res.ok) throw new Error('Failed to fetch schools');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setSchools(data.schools || []);
         } catch (err: any) {
             setError(err.message);
@@ -81,11 +83,11 @@ export default function SuperAdminDashboard() {
             });
 
             if (!res.ok) {
-                const data = await res.json();
+                const data = (await res.json()) as any;
                 throw new Error(data.error || 'Failed to create school');
             }
 
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setInviteUrl(data.inviteUrl);
             setInviteToken(data.inviteToken);
             setEmailSent(data.emailSent);
@@ -416,6 +418,13 @@ export default function SuperAdminDashboard() {
                                             </button>
                                         )}
                                         <button
+                                            onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
+                                            className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
+                                            title="Manage Principals"
+                                        >
+                                            <Users className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
                                             onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
                                             className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-red-900/40 hover:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
                                             title="Delete"
@@ -450,6 +459,13 @@ export default function SuperAdminDashboard() {
                 title={alertConfig.title}
                 message={alertConfig.message}
                 variant={alertConfig.variant}
+            />
+
+            <ManagePrincipalsModal
+                isOpen={managePrincipalsSchool !== null}
+                onClose={() => setManagePrincipalsSchool(null)}
+                schoolId={managePrincipalsSchool?.id || ""}
+                schoolName={managePrincipalsSchool?.name || ""}
             />
         </div>
     );

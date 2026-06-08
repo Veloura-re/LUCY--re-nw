@@ -143,6 +143,7 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
 
     const content = (
         <motion.div
+            id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
             ref={ref}
             style={{ width: isMobile ? 42 : width }}
             onMouseEnter={handleMouseEnter}

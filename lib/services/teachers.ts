@@ -34,7 +34,7 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                     .from('InviteToken')
                     .select('*')
                     .eq('schoolId', schoolId)
-                    .eq('role', 'TEACHER')
+                    .in('role', ['TEACHER', 'HOMEROOM'])
                     .is('usedAt', null);
 
                 const teacherList = users || [];
@@ -91,7 +91,7 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
             const invites = await prisma.inviteToken.findMany({
                 where: {
                     schoolId,
-                    role: 'TEACHER',
+                    role: { in: ['TEACHER', 'HOMEROOM'] },
                     usedAt: null
                 }
             });

@@ -145,14 +145,8 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 required
-                                disabled={!!prefilledName}
-                                className={`w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none ${prefilledName ? 'opacity-70 cursor-not-allowed bg-zinc-900/50' : ''}`}
+                                className="w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
                             />
-                            {prefilledName && (
-                                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                    <ShieldCheck className="h-4 w-4 text-eduGreen-500/70" />
-                                </div>
-                            )}
                         </div>
                     </div>
 
