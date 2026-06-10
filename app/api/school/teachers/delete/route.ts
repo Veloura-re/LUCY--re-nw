@@ -9,7 +9,7 @@ export async function DELETE(request: Request) {
     try {
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
-        const { email } = await request.json();
+        const { email } = await request.json() as any;
 
         if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 });
 
@@ -30,6 +30,14 @@ export async function DELETE(request: Request) {
             });
 
             if (teacher) {
+                // Delete teacher assignments and timetables to free up tasks/classes
+                await prisma.teacherAssignment.deleteMany({
+                    where: { teacherId: teacher.id }
+                });
+                await prisma.timetable.deleteMany({
+                    where: { teacherId: teacher.id }
+                });
+
                 await prisma.user.update({
                     where: { id: teacher.id },
                     data: { schoolId: null }

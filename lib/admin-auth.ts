@@ -17,7 +17,6 @@ export async function verifySuperAdmin() {
         return null;
     }
 
-    const { prisma } = require('@/lib/prisma');
     let dbUser: any = null;
 
     if (!prisma) {

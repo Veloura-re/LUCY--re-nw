@@ -5,7 +5,7 @@ import { handleApiError, requireRole } from '@/lib/security';
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'PRINCIPAL', 'HOMEROOM']);
-        const { examId, grades, attendance } = await request.json(); // grades: [{ studentId, score }], attendance: [{ studentId, status, reason }]
+        const { examId, grades, attendance } = await request.json() as any; // grades: [{ studentId, score }], attendance: [{ studentId, status, reason }]
 
         if (!examId || !grades || !Array.isArray(grades)) {
             return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
@@ -133,7 +133,8 @@ export async function GET(request: Request) {
             where: { id: examId },
             include: {
                 class: { include: { grade: true } }, // Include grade to check schoolId
-                subject: true
+                subject: true,
+                createdBy: { select: { name: true } }
             }
         });
 

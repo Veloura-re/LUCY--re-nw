@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
     try {
         const body = await req.json() as any;
-        const { invoiceId, transactionReference, amount, status } = body;
+        const { invoiceId, transactionReference, amount, status, method, note } = body;
 
         // In a real scenario, you'd verify the webhook signature here
 
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
                 id: crypto.randomUUID(),
                 invoiceId: invoice.id,
                 amount: invoice.amount,
-                method: 'CARD', // Or dynamic based on provider
+                method: method || 'CARD', // Or dynamic based on provider
                 reference: transactionReference || "AUTO_WEBHOOK",
                 status: 'SUCCESS'
             });
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                 action: "AUTO_PAYMENT_CONFIRMATION",
                 resourceType: "INVOICE",
                 resourceId: invoice.id,
-                after: { status: 'PAID', ref: transactionReference }
+                after: { status: 'PAID', ref: transactionReference, note }
             });
 
             return NextResponse.json({ success: true, message: "Invoice reconciled automatically" });
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
                 data: {
                     invoiceId: invoice.id,
                     amount: invoice.amount,
-                    method: 'CARD', // Or dynamic based on provider
+                    method: method || 'CARD', // Or dynamic based on provider
                     reference: transactionReference || "AUTO_WEBHOOK",
                     status: 'SUCCESS'
                 }
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
                     action: "AUTO_PAYMENT_CONFIRMATION",
                     resourceType: "INVOICE",
                     resourceId: invoice.id,
-                    after: { status: 'PAID', ref: transactionReference }
+                    after: { status: 'PAID', ref: transactionReference, note }
                 } as any
             });
         });

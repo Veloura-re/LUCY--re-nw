@@ -137,7 +137,8 @@ export async function GET(req: Request) {
                 include: {
                     columns: { orderBy: { order: 'asc' } },
                     class: { select: { name: true } },
-                    subject: { select: { name: true } }
+                    subject: { select: { name: true } },
+                    teacher: { select: { name: true } }
                 }
             });
         } else if (classId && subjectId) {
@@ -146,7 +147,8 @@ export async function GET(req: Request) {
                 include: {
                     columns: { orderBy: { order: 'asc' } as any },
                     class: { select: { name: true } },
-                    subject: { select: { name: true } }
+                    subject: { select: { name: true } },
+                    teacher: { select: { name: true } }
                 }
             });
         } else {
