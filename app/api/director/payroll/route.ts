@@ -126,13 +126,16 @@ export async function POST(req: Request) {
             const { data: payroll, error } = await supabaseAdmin
                 .from('StaffPayroll')
                 .insert({
+                    id: crypto.randomUUID(),
                     userId,
                     amount,
                     periodStart: new Date(periodStart).toISOString(),
                     periodEnd: new Date(periodEnd).toISOString(),
                     notes: note,
                     method: method || 'BANK_TRANSFER',
-                    status: 'COMPLETED'
+                    status: 'COMPLETED',
+                    updatedAt: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
                 })
                 .select()
                 .single();
