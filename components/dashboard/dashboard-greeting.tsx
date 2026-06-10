@@ -29,9 +29,9 @@ export function DashboardGreeting({ name, role, gender }: DashboardGreetingProps
         }));
 
         const hour = today.getHours();
-        if (hour < 12) setGreeting("Good morrow");
-        else if (hour < 18) setGreeting("Good day");
-        else setGreeting("Good even");
+        if (hour < 12) setGreeting("Good morning");
+        else if (hour < 18) setGreeting("Good afternoon");
+        else setGreeting("Good evening");
 
         const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
 
@@ -46,11 +46,11 @@ export function DashboardGreeting({ name, role, gender }: DashboardGreetingProps
     }, [name]);
 
     const getPrefix = () => {
-        if (role === "SUPERADMIN") return "Supreme Architect ";
-        if (role === "PRINCIPAL") return "Noble Governor ";
-        if (role === "TEACHER" || role === "HOMEROOM") return "Learned Scholar ";
-        if (role === "PARENT") return "Esteemed Protector ";
-        if (role === "STUDENT") return "Young Scribe ";
+        if (role === "SUPERADMIN") return "Admin ";
+        if (role === "PRINCIPAL") return "Principal ";
+        if (role === "TEACHER" || role === "HOMEROOM") return "Teacher ";
+        if (role === "PARENT") return "Parent ";
+        if (role === "STUDENT") return "Student ";
         return "";
     };
 

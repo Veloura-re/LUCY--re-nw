@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 
 // GET - List all principals and pending invites for a school
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = await params;
     const dbUser = await verifySuperAdmin();
     if (!dbUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     try {
-        const { prisma } = require('@/lib/prisma');
         const isEdge = !prisma;
 
         if (isEdge) {
@@ -21,14 +22,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
             const { data: users } = await supabase
                 .from('User')
                 .select('id, name, email, photoUrl, createdAt')
-                .eq('schoolId', params.id)
+                .eq('schoolId', resolvedParams.id)
                 .eq('role', 'PRINCIPAL');
 
             // Fetch pending invites
             const { data: invites } = await supabase
                 .from('InviteToken')
                 .select('id, email, token, createdAt, expiresAt')
-                .eq('schoolId', params.id)
+                .eq('schoolId', resolvedParams.id)
                 .eq('role', 'PRINCIPAL')
                 .is('usedAt', null);
 
@@ -39,12 +40,12 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }
 
         const activePrincipals = await prisma.user.findMany({
-            where: { schoolId: params.id, role: 'PRINCIPAL' },
+            where: { schoolId: resolvedParams.id, role: 'PRINCIPAL' },
             select: { id: true, name: true, email: true, photoUrl: true, createdAt: true }
         });
 
         const pendingInvites = await prisma.inviteToken.findMany({
-            where: { schoolId: params.id, role: 'PRINCIPAL', usedAt: null },
+            where: { schoolId: resolvedParams.id, role: 'PRINCIPAL', usedAt: null },
             select: { id: true, email: true, token: true, createdAt: true, expiresAt: true }
         });
 
@@ -58,7 +59,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // POST - Invite a new principal to this school
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = await params;
     const dbUser = await verifySuperAdmin();
     if (!dbUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -66,7 +68,6 @@ export async function POST(request: Request, { params }: { params: { id: string 
         const { email } = await request.json() as { email: string };
         if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 });
 
-        const { prisma } = require('@/lib/prisma');
         let token = `inv_${globalThis.crypto.randomUUID().replace(/-/g, '')}`;
         const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + 7);
@@ -81,7 +82,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
             );
             
-            const { data: school } = await supabase.from('School').select('name').eq('id', params.id).single();
+            const { data: school } = await supabase.from('School').select('name').eq('id', resolvedParams.id).single();
             if (school) schoolName = school.name;
 
             const { error: invErr } = await supabase.from('InviteToken').insert({
@@ -89,13 +90,13 @@ export async function POST(request: Request, { params }: { params: { id: string 
                 token,
                 email,
                 role: 'PRINCIPAL',
-                schoolId: params.id,
+                schoolId: resolvedParams.id,
                 expiresAt: expiresAt.toISOString(),
                 createdAt: new Date().toISOString()
             });
             if (invErr) throw invErr;
         } else {
-            const school = await prisma.school.findUnique({ where: { id: params.id }});
+            const school = await prisma.school.findUnique({ where: { id: resolvedParams.id }});
             if (school) schoolName = school.name;
 
             await prisma.inviteToken.create({
@@ -103,7 +104,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
                     token,
                     email,
                     role: 'PRINCIPAL',
-                    schoolId: params.id,
+                    schoolId: resolvedParams.id,
                     expiresAt
                 }
             });
@@ -112,7 +113,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
 
         const { sendInviteEmail } = await import('@/lib/email');
-        const emailResult = await sendInviteEmail(email, inviteUrl, schoolName, token, 'PRINCIPAL', params.id);
+        const emailResult = await sendInviteEmail(email, inviteUrl, schoolName, token, 'PRINCIPAL', resolvedParams.id);
         const res = emailResult as any;
 
         return NextResponse.json({

@@ -109,7 +109,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
         try {
             const res = await fetch('/api/school/teachers');
             const data = await res.json();
-            setStaff(data.teachers || []);
+            setStaff((data as any).teachers || []);
         } catch (e) { console.error(e); }
     };
 
@@ -159,6 +159,8 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 toast.success("Payment Dispatched");
                 fetchPayrollHistory();
                 setPaymentContext(prev => ({ ...prev, isOpen: false }));
+            } else {
+                toast.error(`Failed to issue payroll: ${res.statusText}`);
             }
         } catch (e) {
             toast.error("Uplink Failure");
@@ -199,6 +201,8 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 fetchInvoices();
                 fetchFinancialAnalytics();
                 setPaymentContext(prev => ({ ...prev, isOpen: false }));
+            } else {
+                toast.error(`Failed to process payment: ${res.statusText}`);
             }
         } catch (e) {
             toast.error("Internal sync error");
@@ -212,7 +216,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             const res = await fetch('/api/school/finance/pay/pending'); // I need to create this API
             if (res.ok) {
                 const data = await res.json();
-                setPendingPayments(data);
+                setPendingPayments(data as any);
             }
         } catch (e) {
             console.error("Failed to fetch pending verifications");
@@ -233,10 +237,10 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 fetchInvoices();
                 fetchFinancialAnalytics();
             } else {
-                toast.error("Verification protocol failure");
+                toast.error(`Verification Failed: ${await res.text()}`);
             }
-        } catch (e) {
-            toast.error("Internal sync error");
+        } catch (e: any) {
+            toast.error(e.message || "System error");
         } finally {
             setVerifyingPayment(null);
         }
@@ -246,7 +250,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
         try {
             const res = await fetch('/api/school/finance/invoices');
             const data = await res.json();
-            setInvoices(data);
+            setInvoices(data as any);
         } catch (e) {
             console.error("Invoice synchronizer failed:", e);
         }
@@ -267,7 +271,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
         try {
             const res = await fetch('/api/school/finance/fees');
             const data = await res.json();
-            setFees(data);
+            setFees(data as any);
         } catch (e) {
             console.error(e);
             toast.error("Failed to synchronize financial data");
@@ -330,8 +334,8 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 body: JSON.stringify({ dueDate, term: "Term 1 2024" })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Failed to generate");
-            toast.success(data.message);
+            if (!res.ok) throw new Error((data as any).message || "Failed to generate");
+            toast.success((data as any).message);
         } catch (e: any) {
             toast.error(e.message || "Institutional protocol failure");
         } finally {

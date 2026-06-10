@@ -71,12 +71,20 @@ function MarklistViewContent() {
                 const entriesRes = await fetch(`/api/marklist/entry?configId=${configId}`);
 
                 if (confRes.ok && entriesRes.ok) {
-                    const confData = await confRes.json();
-                    const entData = await entriesRes.json();
+                    const confData = await confRes.json() as any;
+                    const entData = await entriesRes.json() as any;
 
                     setConfig(confData);
                     const calculatedEntries = entData.map((e: any) => recalculateEntry(e, confData.columns));
                     setEntries(calculatedEntries);
+
+                    if (searchParams.get("autoPrint") === "true") {
+                        setTimeout(() => {
+                            if (printRef.current) {
+                                handlePrint();
+                            }
+                        }, 500);
+                    }
                 }
             } catch (e) {
                 console.error(e);
@@ -226,7 +234,7 @@ function MarklistViewContent() {
                 body: JSON.stringify({ configId })
             });
 
-            const data = await res.json();
+            const data = await res.json() as any;
             if (res.ok) {
                 toast.success(`Successfully published ${data.updatedCount} records to official gradebook`);
             } else {

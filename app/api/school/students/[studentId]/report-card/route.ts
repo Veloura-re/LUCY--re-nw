@@ -88,8 +88,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             orderBy: { submittedAt: 'desc' }
         });
 
+        const principal = await prisma.user.findFirst({
+            where: { schoolId: student.schoolId, role: 'PRINCIPAL' },
+            select: { name: true }
+        });
+
         return NextResponse.json({
             student,
+            principal,
             grades,
             assignments,
             attendance: {

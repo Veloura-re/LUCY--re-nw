@@ -94,7 +94,10 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                 <div className="mt-12 flex justify-between items-end border-t border-dashed border-zinc-200 pt-8">
                     <div className="space-y-4">
                         <div className="w-48 h-px bg-zinc-300" />
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">Subject Faculty Signature</p>
+                        <div className="flex flex-col">
+                            <p className="text-[10px] font-black uppercase text-zinc-800">{config.teacher?.name || 'Faculty Member'}</p>
+                            <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 mt-1">Subject Faculty Signature</p>
+                        </div>
                     </div>
                     <div className="space-y-4">
                         <div className="w-48 h-px bg-zinc-300" />
