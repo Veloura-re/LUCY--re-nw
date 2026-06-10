@@ -151,16 +151,21 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         );
         const { data: grades } = await supabaseAdmin.from('Grade').select('id').eq('schoolId', schoolId);
         const gradeIds = (grades || []).map((g: any) => g.id);
-        const [students, classes] = await Promise.all([
+        const [students, classes, teachers] = await Promise.all([
             supabaseAdmin.from('Student').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId),
-            supabaseAdmin.from('Class').select('id', { count: 'exact', head: true }).in('gradeId', gradeIds)
+            supabaseAdmin.from('Class').select('id', { count: 'exact', head: true }).in('gradeId', gradeIds),
+            supabaseAdmin.from('User').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId).in('role', ['TEACHER', 'HOMEROOM'])
         ]);
+
+        const teacherCount = teachers.count || 0;
 
         return {
             summary: {
                 studentCount: students.count || 0,
                 classCount: classes.count || 0,
-                avgAttendance: "100%"
+                avgAttendance: "100%",
+                activeNodes: teacherCount,
+                staffPresence: { present: teacherCount, total: teacherCount }
             },
             attendance: [],
             performanceBySubject: []
@@ -169,13 +174,20 @@ const _getSchoolAnalytics = async (schoolId: string) => {
 
     // Standard Prisma Logic for Node.js
     const { prisma } = require('@/lib/prisma');
-    const [studentCount, classCount] = await Promise.all([
+    const [studentCount, classCount, teacherCount] = await Promise.all([
         prisma.student.count({ where: { schoolId } }),
-        prisma.class.count({ where: { grade: { schoolId } } })
+        prisma.class.count({ where: { grade: { schoolId } } }),
+        prisma.user.count({ where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } } })
     ]);
 
     return {
-        summary: { studentCount, classCount, avgAttendance: "100%" },
+        summary: { 
+            studentCount, 
+            classCount, 
+            avgAttendance: "100%",
+            activeNodes: teacherCount,
+            staffPresence: { present: teacherCount, total: teacherCount } // mock presence for now
+        },
         attendance: [],
         performanceBySubject: []
     };
