@@ -182,8 +182,8 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(payroll);
-    } catch (e) {
+    } catch (e: any) {
         console.error(e);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: e?.message || "Internal Server Error", details: e }, { status: 500 });
     }
 }
