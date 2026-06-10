@@ -193,51 +193,8 @@ h6 {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
-/* Driver.js LUCY Theme Override */
-.lucy-driver-theme .driver-popover {
-  background-color: rgba(9, 9, 11, 0.95) !important;
-  border: 1px solid rgba(20, 122, 82, 0.3) !important;
-  color: white !important;
-  border-radius: 1rem !important;
-  backdrop-filter: blur(12px) !important;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(20, 122, 82, 0.1) !important;
-  font-family: inherit !important;
-}
-
-.lucy-driver-theme .driver-popover-title {
-  color: white !important;
-  font-weight: 700 !important;
-  font-size: 1.25rem !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  margin-bottom: 0.5rem !important;
-}
-
-.lucy-driver-theme .driver-popover-description {
-  color: #a1a1aa !important;
-  font-weight: 500 !important;
-  font-size: 0.875rem !important;
-  line-height: 1.5 !important;
-}
-
-.lucy-driver-theme .driver-popover-footer button {
-  background-color: #147a52 !important;
-  color: white !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  font-size: 0.65rem !important;
-  font-weight: 700 !important;
-  border-radius: 0.5rem !important;
-  border: none !important;
-  padding: 0.5rem 1rem !important;
-  transition: all 0.2s !important;
-}
-
-.lucy-driver-theme .driver-popover-footer button.driver-popover-close-btn {
-  background-color: transparent !important;
-  color: #52525b !important;
-}
-
-.lucy-driver-theme .driver-popover-footer button:hover {
-  filter: brightness(1.2) !important;
+/* Custom tour animation utilities */
+@keyframes tourPing {
+  0% { transform: scale(1); opacity: 1; }
+  75%, 100% { transform: scale(1.8); opacity: 0; }
 }

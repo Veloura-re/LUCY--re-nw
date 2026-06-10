@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Database, ShieldAlert, Download, RefreshCw, HardDrive, Upload, Loader2, CheckCircle2 } from "lucide-react";
+import { Database, ShieldAlert, Download, RefreshCw, HardDrive, Upload, Loader2, CheckCircle2, FileArchive } from "lucide-react";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
+import JSZip from "jszip";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { saveAs } from "file-saver";
 
 interface RestorePoint {
     id: string;
@@ -17,6 +21,7 @@ export default function DataSecuritySettings() {
     const [restorePoints, setRestorePoints] = useState<RestorePoint[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isArchiving, setIsArchiving] = useState(false);
     const [isRestoring, setIsRestoring] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -55,6 +60,75 @@ export default function DataSecuritySettings() {
             setAlertConfig({ title: "Backup Failed", message: err.message, isOpen: true, variant: "error" });
         } finally {
             setIsGenerating(false);
+        }
+    };
+
+    const forceDownload = async (url: string, filename: string) => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            setAlertConfig({ title: "Download Failed", message: "Could not download the file.", isOpen: true, variant: "error" });
+        }
+    };
+
+    const handleGenerateArchive = async () => {
+        setIsArchiving(true);
+        setError(null);
+        try {
+            const res = await fetch('/api/school/data-export');
+            if (!res.ok) throw new Error("Failed to fetch export data");
+            const { data } = await res.json() as any;
+
+            const zip = new JSZip();
+
+            // Helper to add a PDF table to the zip
+            const addPdfToZip = (filename: string, title: string, records: any[]) => {
+                if (!records || records.length === 0) return;
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text(title, 14, 15);
+                
+                const columns = Object.keys(records[0]).map(key => ({ header: key, dataKey: key }));
+                const body = records;
+
+                autoTable(doc, {
+                    head: [columns.map(c => c.header)],
+                    body: body.map(row => columns.map(c => String(row[c.dataKey]))),
+                    startY: 20,
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [41, 128, 185] }
+                });
+                
+                const pdfBlob = doc.output('blob');
+                zip.file(filename, pdfBlob);
+            };
+
+            addPdfToZip("Students.pdf", "Enrolled Students", data.students);
+            addPdfToZip("Personnel.pdf", "School Personnel", data.personnel);
+            addPdfToZip("Classes.pdf", "Classes & Capacities", data.classes);
+            addPdfToZip("Subjects.pdf", "Subjects Registry", data.subjects);
+            addPdfToZip("Exams.pdf", "Exams Log", data.exams);
+            addPdfToZip("Grades.pdf", "Gradebook Records", data.grades);
+            addPdfToZip("Attendance.pdf", "Attendance Records", data.attendance);
+            addPdfToZip("Invoices.pdf", "Financial Invoices", data.invoices);
+
+            const content = await zip.generateAsync({ type: "blob" });
+            saveAs(content, "LUCY_OS_Complete_Backup.zip");
+            
+            setAlertConfig({ title: "Archive Generated", message: "Your complete PDF archive has been successfully downloaded.", isOpen: true, variant: "success" });
+        } catch (err: any) {
+            setAlertConfig({ title: "Archive Failed", message: err.message, isOpen: true, variant: "error" });
+        } finally {
+            setIsArchiving(false);
         }
     };
 
@@ -127,14 +201,24 @@ export default function DataSecuritySettings() {
                         Generate a complete snapshot of your school's database. This includes all students, staff, classes, grades, and financial records. Snapshots are stored securely and can be downloaded for your records.
                     </p>
                     
-                    <Button 
-                        onClick={handleGenerateBackup}
-                        isLoading={isGenerating}
-                        className="mt-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px] shadow-lg shadow-eduGreen-900/20"
-                    >
-                        <RefreshCw className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
-                        Generate New Snapshot
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                        <Button 
+                            onClick={handleGenerateBackup}
+                            isLoading={isGenerating}
+                            className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px] shadow-lg shadow-eduGreen-900/20"
+                        >
+                            <RefreshCw className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
+                            Generate Snapshot JSON
+                        </Button>
+                        <Button 
+                            onClick={handleGenerateArchive}
+                            isLoading={isArchiving}
+                            className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
+                        >
+                            <FileArchive className={`w-4 h-4 mr-2 ${isArchiving ? 'animate-bounce' : ''}`} />
+                            Download Global Archive (ZIP/PDF)
+                        </Button>
+                    </div>
                 </div>
             </div>
 
@@ -169,15 +253,12 @@ export default function DataSecuritySettings() {
                                         </div>
                                     </div>
                                 </div>
-                                <a 
-                                    href={rp.fileUrl} 
-                                    download
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <Button
+                                    onClick={() => forceDownload(rp.fileUrl, `LUCY_Snapshot_${rp.createdAt.split('T')[0]}.json`)}
                                     className="h-10 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
                                 >
                                     <Download className="w-4 h-4" /> Download
-                                </a>
+                                </Button>
                             </div>
                         ))}
                     </div>

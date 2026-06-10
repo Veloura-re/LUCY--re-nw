@@ -16,7 +16,7 @@ export default function DirectorAttendancePage() {
     const [date, setDate] = useState<Date>(new Date());
 
     // Overview Data
-    const [stats, setStats] = useState<any>({ present: 0, absent: 0, late: 0, excused: 0, total: 0 });
+    const [stats, setStats] = useState<any>({ present: 0, absent: 0, late: 0, excused: 0, total: 0, staffPresent: 0, staffTotal: 0 });
     const [teacherCompliance, setTeacherCompliance] = useState<any[]>([]);
 
     // Staff Attendance Data
@@ -36,7 +36,7 @@ export default function DirectorAttendancePage() {
         try {
             const dateStr = date.toISOString().split('T')[0];
             const res = await fetch(`/api/director/attendance/overview?date=${dateStr}`);
-            const data = await res.json();
+            const data = await res.json() as any;
             if (res.ok && data) {
                 setStats(data.stats);
                 setTeacherCompliance(data.teacherCompliance);
@@ -53,7 +53,7 @@ export default function DirectorAttendancePage() {
         try {
             const dateStr = date.toISOString().split('T')[0];
             const res = await fetch(`/api/director/attendance/staff?date=${dateStr}`);
-            const data = await res.json();
+            const data = await res.json() as any;
             if (res.ok && data.records) {
                 setStaffRecords(data.records);
             }
@@ -197,7 +197,7 @@ export default function DirectorAttendancePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             <StatCard
                                 icon={Users}
-                                label="TOTAL SUBJECTS"
+                                label="TOTAL RECORDS"
                                 value={stats.total}
                                 color="border-white/10"
                                 glow="bg-white"

@@ -224,7 +224,7 @@ export default function StudentReportCardPage() {
                         <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest mb-4">Official Verification</p>
                         <div className="space-y-8">
                             <div className="border-b border-zinc-900 pb-2 print:border-zinc-200">
-                                <p className="text-[10px] font-black text-white print:text-black uppercase">Institutional Director</p>
+                                <p className="text-[10px] font-black text-white print:text-black uppercase">{data.principal?.name || "Institutional Director"}</p>
                             </div>
                             <div className="border-b border-zinc-900 pb-2 print:border-zinc-200">
                                 <p className="text-[10px] font-black text-white print:text-black uppercase">Registrar Authentication</p>

@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 
 // PATCH - Demote principal to TEACHER
-export async function PATCH(request: Request, { params }: { params: { id: string, userId: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string, userId: string }> }) {
+    const resolvedParams = await params;
     const dbUser = await verifySuperAdmin();
     if (!dbUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     try {
-        const { prisma } = require('@/lib/prisma');
         const isEdge = !prisma;
 
         if (isEdge) {
@@ -20,13 +21,13 @@ export async function PATCH(request: Request, { params }: { params: { id: string
             const { error } = await supabase
                 .from('User')
                 .update({ role: 'TEACHER' })
-                .eq('id', params.userId)
-                .eq('schoolId', params.id);
+                .eq('id', resolvedParams.userId)
+                .eq('schoolId', resolvedParams.id);
             
             if (error) throw error;
         } else {
             await prisma.user.update({
-                where: { id: params.userId },
+                where: { id: resolvedParams.userId },
                 data: { role: 'TEACHER' }
             });
         }
@@ -38,7 +39,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 // DELETE - Unlink user from school completely (for active users) OR Delete invite (for pending invites)
-export async function DELETE(request: Request, { params }: { params: { id: string, userId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string, userId: string }> }) {
+    const resolvedParams = await params;
     const dbUser = await verifySuperAdmin();
     if (!dbUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -46,7 +48,6 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         const { searchParams } = new URL(request.url);
         const isInvite = searchParams.get('type') === 'invite';
 
-        const { prisma } = require('@/lib/prisma');
         const isEdge = !prisma;
 
         if (isEdge) {
@@ -60,25 +61,25 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
                 const { error } = await supabase
                     .from('InviteToken')
                     .delete()
-                    .eq('id', params.userId)
-                    .eq('schoolId', params.id);
+                    .eq('id', resolvedParams.userId)
+                    .eq('schoolId', resolvedParams.id);
                 if (error) throw error;
             } else {
                 const { error } = await supabase
                     .from('User')
                     .update({ schoolId: null, role: 'TEACHER' }) // Remove from school, default role
-                    .eq('id', params.userId)
-                    .eq('schoolId', params.id);
+                    .eq('id', resolvedParams.userId)
+                    .eq('schoolId', resolvedParams.id);
                 if (error) throw error;
             }
         } else {
             if (isInvite) {
                 await prisma.inviteToken.delete({
-                    where: { id: params.userId }
+                    where: { id: resolvedParams.userId }
                 });
             } else {
                 await prisma.user.update({
-                    where: { id: params.userId },
+                    where: { id: resolvedParams.userId },
                     data: { schoolId: null, role: 'TEACHER' }
                 });
             }

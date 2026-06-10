@@ -119,7 +119,8 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: "Forbidden" }, { status: 403 });
             }
 
-            const { userId, amount, periodStart, periodEnd, notes, method } = await req.json();
+            const body = await req.json() as any;
+            const { userId, amount, periodStart, periodEnd, note, method } = body;
 
             // Insert paycheck
             const { data: payroll, error } = await supabaseAdmin
@@ -127,9 +128,9 @@ export async function POST(req: Request) {
                 .insert({
                     userId,
                     amount,
-                    periodStart: new Date(periodStart),
-                    periodEnd: new Date(periodEnd),
-                    notes,
+                    periodStart: new Date(periodStart).toISOString(),
+                    periodEnd: new Date(periodEnd).toISOString(),
+                    notes: note,
                     method: method || 'BANK_TRANSFER',
                     status: 'COMPLETED'
                 })
@@ -159,7 +160,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        const { userId, amount, periodStart, periodEnd, notes, method } = await req.json();
+        const body = await req.json() as any;
+        const { userId, amount, periodStart, periodEnd, note, method } = body;
 
         const payroll = await (prisma as any).staffPayroll.create({
             data: {
@@ -167,7 +169,7 @@ export async function POST(req: Request) {
                 amount,
                 periodStart: new Date(periodStart),
                 periodEnd: new Date(periodEnd),
-                notes,
+                notes: note,
                 method: method || 'BANK_TRANSFER',
                 status: 'COMPLETED' // Simplified for now
             },

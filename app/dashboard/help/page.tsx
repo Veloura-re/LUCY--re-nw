@@ -9,29 +9,16 @@ export const metadata: Metadata = {
     description: "The complete manual for operating your educational institution.",
 };
 
-const SECTIONS = [
+const PRINCIPAL_SECTIONS = [
     {
-        id: "getting-started",
+        id: "getting-started-principal",
         icon: Sparkles,
-        title: "Getting Started & Initialization",
+        title: "Principal Initialization",
         content: (
             <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
-                <p>
-                    Welcome to the <strong>LUCY Educational Operating System</strong>. Your school has been initialized
-                    on a high-performance neural architecture designed to minimize administrative friction.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">1. The Dashboard</h4>
-                <p>
-                    Depending on your preferences, you are either using the <strong>Tactical Dock</strong> (bottom of the screen)
-                    or the <strong>Neural Sidebar</strong> (left of the screen) to navigate.
-                    You can switch between these modes by clicking the <strong className="text-eduGreen-400">Settings</strong> cog icon.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">2. Roles & Capabilities</h4>
-                <p>
-                    LUCY operates on strict cryptographic roles. A Principal has full oversight, Teachers manage their specific
-                    classrooms, Homeroom teachers manage their assigned cohorts, and Students/Parents have restricted views
-                    of their own academic trajectories.
-                </p>
+                <p>Welcome to the <strong>LUCY Educational Operating System</strong>. As the Principal, you possess full cryptographic oversight over the entire institution's data architecture.</p>
+                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Navigation Modes</h4>
+                <p>Use the Tactical Dock or the Neural Sidebar. You can toggle this via Settings.</p>
             </div>
         )
     },
@@ -41,24 +28,12 @@ const SECTIONS = [
         title: "Faculty & Staffing Configuration",
         content: (
             <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
-                <p>
-                    The <strong>Staffing</strong> module is where you assign your invited teachers to the subjects they are qualified to teach.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">1. Inviting Faculty</h4>
-                <p>
-                    Navigate to the <strong>Teachers</strong> tab. Here you can generate encrypted invite links.
-                    Send these links to your faculty. Upon registration, they will be securely bound to your school's database.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">2. Assigning Subjects</h4>
-                <p>
-                    In the <strong>Staffing</strong> menu, select a Class. For every subject in that class's curriculum,
-                    assign a Teacher from the dropdown. 
-                </p>
+                <p>The <strong>Staffing</strong> module is where you assign your invited teachers to the subjects they are qualified to teach.</p>
+                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Inviting Faculty</h4>
+                <p>Navigate to the <strong>Teachers</strong> tab. Generate encrypted invite links to securely bind faculty to your school's database.</p>
                 <div className="bg-eduGreen-900/20 border border-eduGreen-500/30 p-4 rounded-xl mt-2">
                     <strong className="text-eduGreen-400 block mb-1">Important: Periods Per Week</strong>
-                    Next to the teacher assignment, you must input the <em>Periods Per Week</em>. 
-                    This number dictates how many times this class should happen every week (e.g., 5 periods for Core Math, 2 for Art).
-                    The Auto-Scheduler uses this data.
+                    Next to the teacher assignment, you must input the <em>Periods Per Week</em>. The Auto-Scheduler requires this data.
                 </div>
             </div>
         )
@@ -69,22 +44,12 @@ const SECTIONS = [
         title: "The Timetable Auto-Scheduler",
         content: (
             <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
-                <p>
-                    LUCY features a state-of-the-art constraint-satisfaction engine capable of generating a flawless
-                    school-wide schedule in milliseconds.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Generating the Grid</h4>
+                <p>LUCY features a state-of-the-art constraint-satisfaction engine capable of generating a flawless school-wide schedule in milliseconds.</p>
                 <ol className="list-decimal pl-5 space-y-2 mt-2">
                     <li>Ensure all Teachers are assigned in the <strong>Staffing</strong> tab.</li>
-                    <li>Ensure <strong>Periods Per Week</strong> are accurately set for every single assignment.</li>
-                    <li>Navigate to the <strong>Timetable</strong> tab.</li>
-                    <li>Click the bold <strong>Auto-Generate Schedule</strong> button.</li>
+                    <li>Ensure <strong>Periods Per Week</strong> are accurately set.</li>
+                    <li>Navigate to the <strong>Timetable</strong> tab and click the bold <strong>Auto-Generate Schedule</strong> button.</li>
                 </ol>
-                <div className="bg-red-900/20 border border-red-500/30 p-4 rounded-xl mt-4">
-                    <strong className="text-red-400 block mb-1">Warning: Overwrite Protocol</strong>
-                    Running the Auto-Generator will <em>permanently overwrite</em> the existing schedule for every class in the school.
-                    It ensures 100% collision-free scheduling (no teacher is double-booked).
-                </div>
             </div>
         )
     },
@@ -94,21 +59,38 @@ const SECTIONS = [
         title: "Data Integrity & Restore Points",
         content: (
             <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
-                <p>
-                    School data is critical. LUCY protects your institution against accidental deletions, malicious faculty actions,
-                    or catastrophic configuration errors via the <strong>Restore Point</strong> system.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Creating Backups</h4>
-                <p>
-                    Navigate to <strong>Settings</strong>. In the Data section, you can generate an encrypted `.lucy` backup file.
-                    This file contains a complete snapshot of your school (Students, Classes, Timetables, Grades, everything).
-                    Store this file safely offline.
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Restoring Data</h4>
-                <p>
-                    If a principal is demoted, or massive data loss occurs, you can upload a `.lucy` file in the Settings menu.
-                    The system will instantly overwrite the current state with the exact state from the backup file.
-                </p>
+                <p>School data is critical. Navigate to <strong>Settings &gt; Data</strong> to generate an encrypted `.lucy` backup file containing a complete snapshot of your school.</p>
+                <p>You can instantly upload this file later to overwrite the current state and restore lost data.</p>
+            </div>
+        )
+    }
+];
+
+const TEACHER_SECTIONS = [
+    {
+        id: "getting-started-teacher",
+        icon: Sparkles,
+        title: "Teacher Workspace",
+        content: (
+            <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
+                <p>Welcome to your <strong>LUCY Workspace</strong>. This interface allows you to manage the specific subjects and cohorts you have been assigned by the administration.</p>
+                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">The Dashboard</h4>
+                <p>Your overview page will display your classes, upcoming assignments, and your personal timetable.</p>
+            </div>
+        )
+    },
+    {
+        id: "classroom-management",
+        icon: BookOpen,
+        title: "Exams & Assignments",
+        content: (
+            <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
+                <p>Navigate to the <strong>Exams</strong> tab to create and grade assessments for your assigned classes.</p>
+                <ul className="list-disc pl-5 space-y-2 mt-2">
+                    <li>Select a class and subject from your assignments.</li>
+                    <li>Create an exam, setting the maximum marks.</li>
+                    <li>Input student scores seamlessly. The system automatically computes grade averages.</li>
+                </ul>
             </div>
         )
     },
@@ -118,14 +100,32 @@ const SECTIONS = [
         title: "Daily Attendance Protocols",
         content: (
             <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
-                <p>
-                    Attendance tracking is split into two paradigms: Homeroom (Daily) and Subject (Period-based).
-                </p>
-                <h4 className="text-white font-bold text-base mt-4 border-b border-white/10 pb-2">Homeroom Roll Call</h4>
-                <p>
-                    Homeroom teachers are responsible for the primary daily roll call. This takes place at the start of the day.
-                    Once submitted, the Principal can view school-wide absence metrics instantly from the Overview dashboard.
-                </p>
+                <p>If you are designated as a <strong>Homeroom Teacher</strong>, you are responsible for the primary daily roll call at the start of the day.</p>
+                <p>Additionally, you may track period-based attendance for your specific subjects depending on your school's protocols.</p>
+            </div>
+        )
+    }
+];
+
+const STUDENT_PARENT_SECTIONS = [
+    {
+        id: "getting-started-student",
+        icon: Sparkles,
+        title: "Student Portal",
+        content: (
+            <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
+                <p>Welcome to the <strong>LUCY Student Portal</strong>. This interface provides real-time access to your academic trajectory and schedule.</p>
+            </div>
+        )
+    },
+    {
+        id: "academic-records",
+        icon: BookOpen,
+        title: "Viewing Grades & Records",
+        content: (
+            <div className="space-y-4 text-zinc-300 leading-relaxed text-sm">
+                <p>Navigate to your <strong>Exams</strong> or <strong>Overview</strong> page to track your latest assessment results.</p>
+                <p>Your dashboard will also display your daily schedule and upcoming events.</p>
             </div>
         )
     }
@@ -139,6 +139,10 @@ export default async function HelpCenterPage() {
 
     const dbUser = await getCachedUser(user.id);
     if (!dbUser) redirect("/login");
+
+    let activeSections = STUDENT_PARENT_SECTIONS;
+    if (dbUser.role === 'PRINCIPAL' || dbUser.role === 'ADMIN') activeSections = PRINCIPAL_SECTIONS;
+    else if (dbUser.role === 'TEACHER') activeSections = TEACHER_SECTIONS;
 
     return (
         <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
@@ -157,7 +161,7 @@ export default async function HelpCenterPage() {
                             The Guideline Book
                         </h1>
                         <p className="text-zinc-400 text-sm md:text-base max-w-xl font-medium">
-                            Comprehensive operational protocols and manuals for managing your institution via the LUCY interface.
+                            Comprehensive operational protocols tailored for your clearance level: <strong className="text-eduGreen-400 uppercase tracking-widest text-[10px] bg-eduGreen-900/30 px-2 py-1 rounded-md ml-1">{dbUser.role}</strong>
                         </p>
                     </div>
                     <div className="hidden md:flex w-32 h-32 rounded-3xl bg-white/[0.05] border border-white/20 items-center justify-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rotate-3 group-hover:rotate-6 transition-transform duration-700">
@@ -174,7 +178,7 @@ export default async function HelpCenterPage() {
                 </h2>
 
                 <div className="w-full space-y-4">
-                    {SECTIONS.map((section, index) => {
+                    {activeSections.map((section, index) => {
                         const Icon = section.icon;
                         return (
                             <details

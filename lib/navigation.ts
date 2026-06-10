@@ -27,7 +27,8 @@ import {
     Landmark,
     Sparkles,
     LayoutDashboard,
-    HelpCircle
+    HelpCircle,
+    HardDrive
 } from "lucide-react";
 
 export type Role = 'SUPERADMIN' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
@@ -61,7 +62,8 @@ export const ICON_MAP = {
     Landmark,
     Sparkles,
     LayoutDashboard,
-    HelpCircle
+    HelpCircle,
+    HardDrive
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -102,7 +104,9 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
         { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
+
     ],
     TEACHER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },

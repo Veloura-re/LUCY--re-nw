@@ -32,7 +32,7 @@ export default function MarklistManagerPage() {
 
         try {
             const res = await fetch(`/api/director/marklists?page=${pageNum}&limit=12`);
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.configs) {
                 if (pageNum === 1) {
                     setConfigs(data.configs);
@@ -125,18 +125,24 @@ export default function MarklistManagerPage() {
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest text-center">
                                         Last Sync: {format(new Date(config.updatedAt), 'MMM do, yyyy - HH:mm')}
                                     </p>
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-3 gap-2">
                                         <Button
                                             onClick={() => router.push(`/dashboard/director/marklist/create?classId=${config.classId}&subjectId=${config.subjectId}`)}
-                                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl h-12 text-[10px] uppercase font-bold tracking-widest border border-zinc-800 hover:border-eduGreen-900 transition-all hover:text-eduGreen-400"
+                                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl h-12 text-[9px] uppercase font-bold tracking-widest border border-zinc-800 hover:border-eduGreen-900 transition-all hover:text-eduGreen-400"
                                         >
-                                            <Settings2 className="w-3.5 h-3.5 mr-2" /> Modify
+                                            <Settings2 className="w-3.5 h-3.5 mr-1" /> Edit
                                         </Button>
                                         <Button
                                             onClick={() => router.push(`/dashboard/marklist/view?configId=${config.id}`)}
-                                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl h-12 text-[10px] uppercase font-bold tracking-widest border border-zinc-800 hover:border-blue-900 transition-all hover:text-blue-400"
+                                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl h-12 text-[9px] uppercase font-bold tracking-widest border border-zinc-800 hover:border-blue-900 transition-all hover:text-blue-400"
                                         >
-                                            <GripVertical className="w-3.5 h-3.5 mr-2" /> Data Grids
+                                            <GripVertical className="w-3.5 h-3.5 mr-1" /> View
+                                        </Button>
+                                        <Button
+                                            onClick={() => router.push(`/dashboard/marklist/view?configId=${config.id}&autoPrint=true`)}
+                                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl h-12 text-[9px] uppercase font-bold tracking-widest border border-zinc-800 hover:border-rose-900 transition-all hover:text-rose-400"
+                                        >
+                                            <Download className="w-3.5 h-3.5 mr-1" /> PDF
                                         </Button>
                                     </div>
                                 </div>

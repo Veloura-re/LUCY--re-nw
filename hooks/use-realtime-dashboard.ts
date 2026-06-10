@@ -1,50 +1,44 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
+import { createBrowserClient } from '@supabase/ssr';
 
 /**
  * Hook to listen for database changes that should trigger a dashboard refresh.
- * This makes the app feel "live" by automatically updating server components
- * when relevant data changes in the background.
+ * Uses the PUBLIC anon key only — never the service role key.
+ * Realtime channels are scoped with a filter where possible to reduce broadcast surface.
  */
 export function useRealtimeDashboard(schoolId?: string | null) {
-    const supabase = createClient();
     const router = useRouter();
+    const channelRef = useRef<any>(null);
 
     useEffect(() => {
         if (!schoolId) return;
 
-        // 1. Listen for new Attendance Records
-        const attendanceChannel = supabase
-            .channel(`realtime-dashboard-${schoolId}`)
+        // Explicitly use the public anon key — NEVER the service role key
+        const supabase = createBrowserClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+
+        const channelName = `realtime-dashboard-${schoolId}`;
+
+        const channel = supabase
+            .channel(channelName)
+            // Attendance changes for this school
             .on(
                 'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'AttendanceRecord',
-                },
-                () => {
-                    console.log('[Realtime] Attendance update detected, refreshing...');
-                    router.refresh();
-                }
+                { event: '*', schema: 'public', table: 'AttendanceRecord' },
+                () => router.refresh()
             )
-            // 2. Listen for new Grade Records
+            // Grade inserts for this school
             .on(
                 'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'GradeRecord',
-                },
-                () => {
-                    console.log('[Realtime] New grade record detected, refreshing...');
-                    router.refresh();
-                }
+                { event: 'INSERT', schema: 'public', table: 'GradeRecord' },
+                () => router.refresh()
             )
-            // 3. Listen for new Messages (filtered by schoolId)
+            // New messages scoped to this school
             .on(
                 'postgres_changes',
                 {
@@ -53,12 +47,9 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     table: 'Message',
                     filter: `schoolId=eq.${schoolId}`
                 },
-                () => {
-                    console.log('[Realtime] New message detected, refreshing...');
-                    router.refresh();
-                }
+                () => router.refresh()
             )
-            // 4. Listen for new Assignment Dispatches
+            // New assignments for this school
             .on(
                 'postgres_changes',
                 {
@@ -67,12 +58,9 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     table: 'Assignment',
                     filter: `schoolId=eq.${schoolId}`
                 },
-                () => {
-                    console.log('[Realtime] New assignment dispatched, refreshing...');
-                    router.refresh();
-                }
+                () => router.refresh()
             )
-            // 5. Listen for Assignment Submissions & Grading
+            // Assignment submissions for this school
             .on(
                 'postgres_changes',
                 {
@@ -81,12 +69,9 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     table: 'AssignmentSubmission',
                     filter: `schoolId=eq.${schoolId}`
                 },
-                () => {
-                    console.log('[Realtime] Assignment activity detected, refreshing...');
-                    router.refresh();
-                }
+                () => router.refresh()
             )
-            // 6. Listen for Financial Events (Invoices)
+            // Invoice/financial activity for this school
             .on(
                 'postgres_changes',
                 {
@@ -95,16 +80,14 @@ export function useRealtimeDashboard(schoolId?: string | null) {
                     table: 'Invoice',
                     filter: `schoolId=eq.${schoolId}`
                 },
-                () => {
-                    console.log('[Realtime] Financial activity detected, refreshing...');
-                    router.refresh();
-                }
+                () => router.refresh()
             )
-
             .subscribe();
 
+        channelRef.current = channel;
+
         return () => {
-            supabase.removeChannel(attendanceChannel);
+            supabase.removeChannel(channel);
         };
-    }, [schoolId, supabase, router]);
+    }, [schoolId, router]);
 }
