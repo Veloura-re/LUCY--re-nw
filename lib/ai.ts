@@ -228,3 +228,34 @@ export async function analyzeTaskForParent(assignment: any) {
     let text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
     return JSON.parse(text);
 }
+
+/**
+ * Generate a set of interactive exam questions.
+ */
+export async function generateExamQuestions({ subject, topic, gradeLevel, count, type }: { subject: string, topic: string, gradeLevel: string, count: number, type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'SHORT_ANSWER' | 'MIXED' }) {
+    if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+    const prompt = `You are an expert educator. Generate ${count} exam questions for:
+    - Subject: ${subject}
+    - Topic: ${topic}
+    - Grade Level: ${gradeLevel}
+    - Question Type: ${type === 'MIXED' ? 'A mix of multiple choice, true/false, and short answer' : type.replace('_', ' ').toLowerCase()}
+
+    Respond STRICTLY in the following JSON format. It MUST be an array of objects:
+    [
+        {
+            "id": "q1",
+            "type": "MULTIPLE_CHOICE" | "TRUE_FALSE" | "SHORT_ANSWER",
+            "question": "The question text here",
+            "options": ["Option A", "Option B", "Option C", "Option D"], // ONLY include for MULTIPLE_CHOICE
+            "correctAnswer": "The exact string of the correct option, or true/false, or a keyword for short answer",
+            "points": 5
+        }
+    ]
+    `;
+
+    const result = await model.generateContent(prompt);
+    let text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(text);
+}
