@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Info, LogOut, Trash2, CheckCircle2, XCircle, ShieldAlert, Zap, CreditCard } from "lucide-react";
@@ -361,6 +362,8 @@ export function PaymentModal({
         if (!isNaN(numAmount) && numAmount > 0) {
             onConfirm({ amount: numAmount, method, note });
             // Note: we don't automatically close here to allow for loading states if handled by parent
+        } else {
+            toast.error("Please enter a valid disbursement amount.");
         }
     };
 
