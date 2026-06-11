@@ -852,16 +852,6 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         />
                     </div>
 
-                    <PaymentModal
-                        isOpen={paymentContext.isOpen}
-                        onClose={() => setPaymentContext(prev => ({ ...prev, isOpen: false }))}
-                        onConfirm={paymentContext.type === 'PAYROLL' ? processPayrollPayment : processInvoicePayment}
-                        title={paymentContext.title}
-                        description={paymentContext.description}
-                        defaultAmount={paymentContext.defaultAmount}
-                        isLoading={!!(isPaying || simulatingPay)}
-                        confirmText={paymentContext.type === 'PAYROLL' ? "Authorize Disbursement" : "Record Fulfillment"}
-                    />
                 </>
             ) : (
                     <PayrollDashboard 
@@ -871,6 +861,17 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         isPaying={isPaying} 
                     />
             )}
+
+            <PaymentModal
+                isOpen={paymentContext.isOpen}
+                onClose={() => setPaymentContext(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={paymentContext.type === 'PAYROLL' ? processPayrollPayment : processInvoicePayment}
+                title={paymentContext.title}
+                description={paymentContext.description}
+                defaultAmount={paymentContext.defaultAmount}
+                isLoading={!!(isPaying || simulatingPay)}
+                confirmText={paymentContext.type === 'PAYROLL' ? "Authorize Disbursement" : "Record Fulfillment"}
+            />
         </div>
     );
 }
