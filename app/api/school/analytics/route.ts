@@ -22,6 +22,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json({
             ...analytics,
+            userRole: dbUser.role,
             teacherWorkload: teacherWorkload.map(t => ({
                 name: t.name,
                 assignments: t._count.teacherAssignments,

@@ -165,31 +165,135 @@ const _getSchoolAnalytics = async (schoolId: string) => {
                 classCount: classes.count || 0,
                 avgAttendance: "100%",
                 activeNodes: teacherCount,
-                staffPresence: { present: teacherCount, total: teacherCount }
+                staffPresence: { present: teacherCount, total: teacherCount },
+                examCompletion: "0%",
+                collectedFees: 0,
+                pendingFees: 0,
+                activeReaders: 0
             },
             attendance: [],
-            performanceBySubject: []
+            performanceBySubject: [],
+            recentActivity: []
         };
     }
 
     // Standard Prisma Logic for Node.js
     const { prisma } = require('@/lib/prisma');
-    const [studentCount, classCount, teacherCount] = await Promise.all([
+    const [schoolInfo, studentCount, classCount, teacherCount] = await Promise.all([
+        prisma.school.findUnique({
+            where: { id: schoolId },
+            select: { name: true, schoolCode: true, domain: true, status: true, attendanceConfig: true, communicationsConfig: true, createdAt: true }
+        }),
         prisma.student.count({ where: { schoolId } }),
         prisma.class.count({ where: { grade: { schoolId } } }),
         prisma.user.count({ where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } } })
     ]);
 
+    // Financial Data
+    const invoices = await prisma.invoice.findMany({
+        where: { schoolId },
+        select: { amount: true, status: true, payments: { select: { amount: true, status: true } } }
+    });
+    let collectedFees = 0;
+    let pendingFees = 0;
+    invoices.forEach((inv: any) => {
+        const paid = inv.payments.filter((p: any) => p.status === 'COMPLETED').reduce((acc: number, curr: any) => acc + Number(curr.amount), 0);
+        collectedFees += paid;
+        if (inv.status !== 'PAID') {
+            pendingFees += (Number(inv.amount) - paid);
+        }
+    });
+
+    // Attendance Trends (last 5 days)
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const attendanceRecords = await prisma.attendanceRecord.findMany({
+        where: { class: { grade: { schoolId } }, date: { gte: fiveDaysAgo } },
+        select: { date: true, status: true }
+    });
+    const attendanceMap = new Map();
+    for (let i = 4; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        attendanceMap.set(d.toISOString().split('T')[0], { present: 0, total: 0 });
+    }
+    attendanceRecords.forEach((r: any) => {
+        const d = r.date.toISOString().split('T')[0];
+        if (attendanceMap.has(d)) {
+            const stats = attendanceMap.get(d);
+            stats.total++;
+            if (r.status === 'PRESENT' || r.status === 'LATE') stats.present++;
+        }
+    });
+    const attendance = Array.from(attendanceMap.entries()).map(([date, stats]) => ({
+        date: new Date(date).toLocaleDateString('en-US', { weekday: 'short' }),
+        rate: stats.total > 0 ? (stats.present / stats.total) * 100 : 100
+    }));
+    const avgAttendance = attendance.length > 0 ? (attendance.reduce((acc, curr) => acc + curr.rate, 0) / attendance.length).toFixed(1) + "%" : "100%";
+
+    // Academic Performance (Assignments + Exams)
+    const submissions = await prisma.assignmentSubmission.findMany({
+        where: { schoolId, status: 'GRADED', grade: { not: null } },
+        include: { assignment: { select: { subject: { select: { name: true } }, maxScore: true } } }
+    });
+    const subjectScores = new Map();
+    submissions.forEach((sub: any) => {
+        const subj = sub.assignment.subject.name;
+        if (!subjectScores.has(subj)) subjectScores.set(subj, { total: 0, count: 0 });
+        const stats = subjectScores.get(subj);
+        const max = sub.assignment.maxScore || 100;
+        const percentage = (sub.grade / max) * 100;
+        stats.total += percentage;
+        stats.count++;
+    });
+    const performanceBySubject = Array.from(subjectScores.entries()).map(([name, stats]: any) => ({
+        name,
+        avg: stats.total / stats.count
+    }));
+
+    // Syllabus Saturation
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentAssignments = await prisma.assignment.count({ where: { schoolId, createdAt: { gte: thirtyDaysAgo } } });
+    const totalAssignments = await prisma.assignment.count({ where: { schoolId } });
+    const examCompletion = totalAssignments > 0 ? ((recentAssignments / totalAssignments) * 100).toFixed(0) + "%" : "0%";
+
+    // Recent Activity
+    const recentActivityRaw = await prisma.auditLog.findMany({
+        where: { user: { schoolId } },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        include: { user: { select: { name: true, role: true } } }
+    });
+    const recentActivity = recentActivityRaw.map((log: any) => ({
+        id: log.id,
+        user: log.user.name,
+        role: log.user.role,
+        action: log.action,
+        resource: log.resourceType,
+        time: log.createdAt.toISOString()
+    }));
+
+    // Resource Engagement Pulse
+    const activeReaders = await prisma.resourceProgress.count({
+        where: { book: { schoolId }, completed: false }
+    });
+
     return {
         summary: { 
+            schoolInfo,
             studentCount, 
             classCount, 
-            avgAttendance: "100%",
+            avgAttendance,
             activeNodes: teacherCount,
-            staffPresence: { present: teacherCount, total: teacherCount } // mock presence for now
+            staffPresence: { present: teacherCount, total: teacherCount },
+            examCompletion,
+            collectedFees,
+            pendingFees,
+            activeReaders
         },
-        attendance: [],
-        performanceBySubject: []
+        attendance,
+        performanceBySubject,
+        recentActivity
     };
 };
 
