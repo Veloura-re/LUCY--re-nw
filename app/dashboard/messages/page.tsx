@@ -17,6 +17,10 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
+    // Auto-sync memberships to ensure Global School and Teachers groups exist
+    const { syncGroupMemberships } = await import('@/lib/messaging');
+    await syncGroupMemberships(dbUser.id, dbUser.schoolId, dbUser.role as any);
+
     // Parallelize room fetching and active conversation loading
     const initialRoomsTask = getCachedUserRooms(authUser.id, dbUser.schoolId, dbUser.role);
     
