@@ -5,6 +5,8 @@ import { ChatRoomType, Role } from '@prisma/client';
  * Ensures a user is a member of the default school-wide group chats.
  */
 export async function syncGroupMemberships(userId: string, schoolId: string, role: Role) {
+    const countBefore = await prisma.chatRoomMember.count({ where: { userId } });
+
     // 1. Ensure "Whole School" group exists — every user is added here
     let schoolRoom = await prisma.chatRoom.findFirst({
         where: { schoolId, type: ChatRoomType.GROUP, name: 'Whole School' }
@@ -164,6 +166,13 @@ export async function syncGroupMemberships(userId: string, schoolId: string, rol
             update: {},
             create: { chatRoomId: classRoom.id, userId }
         });
+    }
+
+    const countAfter = await prisma.chatRoomMember.count({ where: { userId } });
+    if (countAfter > countBefore) {
+        const { revalidateTag } = await import('next/cache');
+        const { getUserTag } = await import('@/lib/cache-keys');
+        revalidateTag(getUserTag(userId));
     }
 }
 
