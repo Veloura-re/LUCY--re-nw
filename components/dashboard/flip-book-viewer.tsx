@@ -107,10 +107,11 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                 <div className="flex-1 w-full relative flex bg-zinc-950 overflow-hidden">
                     
                     {/* PDF Frame */}
-                    <div className="flex-1 h-full relative z-0 transition-all duration-500">
+                    <div className="flex-1 h-full relative z-0 transition-all duration-500 bg-zinc-950">
                         <iframe
                             src={viewerUrl}
-                            className="w-full h-full border-none bg-zinc-950"
+                            className="absolute inset-0 w-full h-full border-none bg-zinc-950"
+                            style={{ height: '100%', minHeight: '100%' }}
                             title={book.title}
                             allow="fullscreen"
                         />
