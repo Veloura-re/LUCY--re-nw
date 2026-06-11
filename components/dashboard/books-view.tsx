@@ -30,7 +30,6 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import SpringingLoader from "@/components/dashboard/springing-loader";
-import { FlipBookViewer } from "@/components/dashboard/flip-book-viewer";
 import { Printer } from "lucide-react";
 
 interface BooksViewProps {
@@ -58,7 +57,6 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     const [loading, setLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
     const [showRequests, setShowRequests] = useState(false);
-    const [selectedBook, setSelectedBook] = useState<any | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [gradeFilter, setGradeFilter] = useState("ALL");
@@ -478,7 +476,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             <div className="flex gap-2">
                                                 <Button
                                                     disabled={isLocked || isExpired}
-                                                    onClick={() => setSelectedBook(book)}
+                                                    onClick={() => window.open(book.fileUrl, '_blank')}
                                                     className="h-12 px-6 bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                                                 >
                                                     <BookOpen className="w-4 h-4" /> Start Reading
@@ -586,7 +584,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 <span className="text-[10px] font-medium text-zinc-700 uppercase">#{idx + 1}</span>
                                                 <span className="text-xs font-medium text-zinc-400 group-hover/item:text-white transition-colors">{res.book.title}</span>
                                             </div>
-                                            <Button variant="ghost" size="icon" onClick={() => setSelectedBook(res.book)} className="text-zinc-700 hover:text-eduGreen-500"><Zap className="w-4 h-4" /></Button>
+                                            <Button variant="ghost" size="icon" onClick={() => window.open(res.book.fileUrl, '_blank')} className="text-zinc-700 hover:text-eduGreen-500"><Zap className="w-4 h-4" /></Button>
                                         </div>
                                     ))}
                                 </div>
@@ -691,13 +689,6 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                     />
                 )}
             </AnimatePresence>
-
-            {/* FlipBook Viewer Instance */}
-            <FlipBookViewer
-                isOpen={!!selectedBook}
-                onClose={() => setSelectedBook(null)}
-                book={selectedBook}
-            />
 
             <ConfirmationModal
                 isOpen={!!deleteId}

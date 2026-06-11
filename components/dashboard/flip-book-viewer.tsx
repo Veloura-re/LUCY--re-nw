@@ -40,9 +40,21 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
 
     if (!mounted || !book) return null;
 
-    // Use FitH to ensure the PDF fits to width instead of shrinking the entire page
-    // navpanes=0 hides the generic sidebar, toolbar=0 hides the top bar
-    const viewerUrl = `${book.fileUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`;
+    const parseBookMeta = (desc: string | null) => {
+        if (!desc) return { text: "", coverUrl: "" };
+        try {
+            if (desc.startsWith('{') && desc.includes('coverUrl')) {
+                const parsed = JSON.parse(desc);
+                return { text: parsed.text || "", coverUrl: parsed.coverUrl || "" };
+            }
+        } catch { }
+        return { text: desc, coverUrl: "" };
+    };
+
+    // Remove harsh FitH and zoom restrictions so the user can use native PDF zoom controls
+    const viewerUrl = `${book.fileUrl}`;
+
+    const { text: cleanDescription, coverUrl } = parseBookMeta(book.description);
 
     return (
         <Dialog open={isOpen} onOpenChange={(val: boolean) => !val && onClose()}>
@@ -123,12 +135,22 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                         sidebarOpen ? "w-80 translate-x-0 opacity-100" : "w-0 translate-x-full opacity-0 overflow-hidden"
                     )}>
                         <div className="p-8 pt-28 space-y-8 overflow-y-auto h-full scrollbar-hide w-80">
-                            {/* Visual Book Spine representation */}
-                            <div className="w-24 h-32 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border border-white/10 shadow-2xl flex flex-col justify-between p-3 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-16 h-16 bg-eduGreen-500/20 blur-xl group-hover:opacity-100 opacity-50 transition-all" />
-                                <ScrollText className="w-5 h-5 text-eduGreen-500" />
-                                <div className="text-white font-medium text-[10px] uppercase tracking-widest break-words leading-tight">{book.title.substring(0, 30)}</div>
-                            </div>
+                            {/* Visual Book Spine representation matching outer cover */}
+                            {coverUrl ? (
+                                <div className="w-full h-48 bg-zinc-900 rounded-lg border border-white/10 shadow-2xl relative overflow-hidden group">
+                                    <img src={coverUrl} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent opacity-80" />
+                                    <div className="absolute bottom-3 left-3 right-3">
+                                        <div className="text-white font-bold text-xs uppercase tracking-widest break-words leading-tight">{book.title}</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="w-24 h-32 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border border-white/10 shadow-2xl flex flex-col justify-between p-3 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-16 h-16 bg-eduGreen-500/20 blur-xl group-hover:opacity-100 opacity-50 transition-all" />
+                                    <ScrollText className="w-5 h-5 text-eduGreen-500" />
+                                    <div className="text-white font-medium text-[10px] uppercase tracking-widest break-words leading-tight">{book.title.substring(0, 30)}</div>
+                                </div>
+                            )}
 
                             <div className="space-y-6">
                                 <div>
@@ -148,10 +170,10 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                     </div>
                                 </div>
 
-                                {book.description && (
+                                {cleanDescription && (
                                     <div>
                                         <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.2em] mb-2">Synopsis</h3>
-                                        <p className="text-xs text-zinc-400 leading-relaxed font-medium">{book.description}</p>
+                                        <p className="text-xs text-zinc-400 leading-relaxed font-medium">{cleanDescription}</p>
                                     </div>
                                 )}
 
