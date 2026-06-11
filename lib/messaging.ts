@@ -7,27 +7,27 @@ import { ChatRoomType, Role } from '@prisma/client';
 export async function syncGroupMemberships(userId: string, schoolId: string, role: Role) {
     const countBefore = await prisma.chatRoomMember.count({ where: { userId } });
 
-    // 1. Ensure "Whole School" group exists — every user is added here
+    // 1. Ensure "Global School" group exists — every user is added here
     let schoolRoom = await prisma.chatRoom.findFirst({
-        where: { schoolId, type: ChatRoomType.GROUP, name: 'Whole School' }
+        where: { schoolId, type: ChatRoomType.GROUP, name: 'Global School' }
     });
 
     if (!schoolRoom) {
-        // Migrate old "School Group" name if it exists
+        // Migrate old names if they exist
         const oldRoom = await prisma.chatRoom.findFirst({
-            where: { schoolId, type: ChatRoomType.GROUP, name: 'School Group' }
+            where: { schoolId, type: ChatRoomType.GROUP, name: { in: ['School Group', 'Whole School'] } }
         });
         if (oldRoom) {
             schoolRoom = await prisma.chatRoom.update({
                 where: { id: oldRoom.id },
-                data: { name: 'Whole School' }
+                data: { name: 'Global School' }
             });
         } else {
             schoolRoom = await prisma.chatRoom.create({
                 data: {
                     schoolId,
                     type: ChatRoomType.GROUP,
-                    name: 'Whole School',
+                    name: 'Global School',
                     metadata: { description: 'General announcements and discussions for everyone in the school.' }
                 }
             });
@@ -41,28 +41,28 @@ export async function syncGroupMemberships(userId: string, schoolId: string, rol
         create: { chatRoomId: schoolRoom.id, userId }
     });
 
-    // 2. Ensure "Teachers & Staff" group — teachers, homeroom, principals, superadmin
+    // 2. Ensure "Teachers Group" group — teachers, homeroom, principals, superadmin
     if (role === Role.TEACHER || role === Role.HOMEROOM || role === Role.PRINCIPAL || role === Role.SUPERADMIN) {
         let facultyRoom = await prisma.chatRoom.findFirst({
-            where: { schoolId, type: ChatRoomType.GROUP, name: 'Teachers & Staff' }
+            where: { schoolId, type: ChatRoomType.GROUP, name: 'Teachers Group' }
         });
 
         if (!facultyRoom) {
-            // Migrate old "Teachers-Only Group" name if it exists
+            // Migrate old names if they exist
             const oldRoom = await prisma.chatRoom.findFirst({
-                where: { schoolId, type: ChatRoomType.GROUP, name: 'Teachers-Only Group' }
+                where: { schoolId, type: ChatRoomType.GROUP, name: { in: ['Teachers-Only Group', 'Teachers & Staff'] } }
             });
             if (oldRoom) {
                 facultyRoom = await prisma.chatRoom.update({
                     where: { id: oldRoom.id },
-                    data: { name: 'Teachers & Staff' }
+                    data: { name: 'Teachers Group' }
                 });
             } else {
                 facultyRoom = await prisma.chatRoom.create({
                     data: {
                         schoolId,
                         type: ChatRoomType.GROUP,
-                        name: 'Teachers & Staff',
+                        name: 'Teachers Group',
                         metadata: { description: 'Private space for staff coordination and planning.' }
                     }
                 });

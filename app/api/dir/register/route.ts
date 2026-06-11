@@ -124,34 +124,34 @@ export async function POST(request: Request) {
             await supabaseAdmin.from('Student').update({ userId: userId }).eq('email', finalEmail).eq('schoolId', invite.schoolId);
         }
 
-        // 6. Post-migration logic: Add to Whole School Chat if schoolId exists
+        // 6. Post-migration logic: Add to Global School Chat if schoolId exists
         if (invite.schoolId) {
             try {
                 // Ensure school is ACTIVE
                 await supabaseAdmin.from('School').update({ status: 'ACTIVE' }).eq('id', invite.schoolId);
 
-                // Find "Whole School" Chat Room
-                let { data: wholeSchoolChat } = await supabaseAdmin
+                // Find "Global School" Chat Room
+                let { data: globalSchoolChat } = await supabaseAdmin
                     .from('ChatRoom')
                     .select('id')
                     .eq('schoolId', invite.schoolId)
-                    .eq('name', 'Whole School')
+                    .eq('name', 'Global School')
                     .eq('type', 'GROUP')
                     .maybeSingle();
 
-                if (!wholeSchoolChat) {
+                if (!globalSchoolChat) {
                     const { data: newChat } = await supabaseAdmin.from('ChatRoom').insert({
                         schoolId: invite.schoolId,
-                        name: "Whole School",
+                        name: "Global School",
                         type: "GROUP",
                     }).select('id').single();
-                    wholeSchoolChat = newChat;
+                    globalSchoolChat = newChat;
                 }
 
-                if (wholeSchoolChat) {
+                if (globalSchoolChat) {
                     // Add User to Chat Room
                     await supabaseAdmin.from('ChatRoomMember').upsert({
-                        chatRoomId: wholeSchoolChat.id,
+                        chatRoomId: globalSchoolChat.id,
                         userId: userId
                     }, { onConflict: 'chatRoomId,userId' });
                 }

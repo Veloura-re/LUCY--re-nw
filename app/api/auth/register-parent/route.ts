@@ -50,30 +50,30 @@ export async function POST(request: Request) {
             }
 
                 // ---------------------------------------------------------
-                // ADD TO WHOLE SCHOOL CHAT
+                // ADD TO GLOBAL SCHOOL CHAT
                 // ---------------------------------------------------------
-                // 1. Find "Whole School" Chat Room
-                let { data: wholeSchoolChat } = await supabaseAdmin
+                // 1. Find "Global School" Chat Room
+                let { data: globalSchoolChat } = await supabaseAdmin
                     .from('ChatRoom')
                     .select('id')
                     .eq('schoolId', studentInfo.schoolId)
-                    .eq('name', 'Whole School')
+                    .eq('name', 'Global School')
                     .eq('type', 'GROUP')
                     .maybeSingle();
 
-                if (!wholeSchoolChat) {
-                    const { data: createdChat } = await supabaseAdmin.from('ChatRoom').insert({
+                if (!globalSchoolChat) {
+                    const { data: newChat } = await supabaseAdmin.from('ChatRoom').insert({
                         schoolId: studentInfo.schoolId,
-                        name: "Whole School",
+                        name: "Global School",
                         type: "GROUP",
                     }).select('id').single();
-                    wholeSchoolChat = createdChat;
+                    globalSchoolChat = newChat;
                 }
 
-                if (wholeSchoolChat) {
+                if (globalSchoolChat) {
                     // 2. Add User to Chat Room
                     await supabaseAdmin.from('ChatRoomMember').upsert({
-                        chatRoomId: wholeSchoolChat.id,
+                        chatRoomId: globalSchoolChat.id,
                         userId: user.id
                     }, { onConflict: 'chatRoomId,userId' });
                 }
