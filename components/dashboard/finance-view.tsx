@@ -161,10 +161,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 fetchPayrollHistory();
                 setPaymentContext(prev => ({ ...prev, isOpen: false }));
             } else {
-                toast.error(`Failed to issue payroll: ${res.statusText}`);
+                const errorData: any = await res.json().catch(() => ({}));
+                toast.error(`Failed: ${errorData.error || res.statusText}`);
             }
-        } catch (e) {
-            toast.error("Uplink Failure");
+        } catch (e: any) {
+            toast.error(e.message || "Uplink Failure");
         } finally {
             setIsPaying(null);
         }
