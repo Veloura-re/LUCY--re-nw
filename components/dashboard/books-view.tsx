@@ -39,6 +39,17 @@ interface BooksViewProps {
     children?: any[];
 }
 
+const parseBookMeta = (desc: string | null) => {
+    if (!desc) return { text: "", coverUrl: "" };
+    try {
+        if (desc.startsWith('{') && desc.includes('coverUrl')) {
+            const parsed = JSON.parse(desc);
+            return { text: parsed.text || "", coverUrl: parsed.coverUrl || "" };
+        }
+    } catch { }
+    return { text: desc, coverUrl: "" };
+};
+
 export function BooksView({ user, school, children = [] }: BooksViewProps) {
     const [books, setBooks] = useState<any[]>([]);
     const [units, setUnits] = useState<any[]>([]);
@@ -121,8 +132,8 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                 fetch('/api/school/classes'),
                 fetch('/api/school/subjects')
             ]);
-            const classesData = await classesRes.json();
-            const subjectsData = await sRes.json();
+            const classesData = await classesRes.json() as any;
+            const subjectsData = await sRes.json() as any;
             // Grades are nested inside the classes response
             setGrades(classesData.grades || []);
             // Subjects API returns { subjects: [...] }
@@ -137,7 +148,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
         try {
             const queryParams = selectedStudentId ? `?studentId=${selectedStudentId}` : '';
             const res = await fetch(`/api/school/books${queryParams}`);
-            const data = await res.json();
+            const data = await res.json() as any;
             setBooks(data);
 
             // Parallel fetch of other components relative to student context
@@ -370,12 +381,32 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         {/* Magical Corner Accents */}
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-eduGreen-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                                        <div className={cn(
-                                            "absolute top-0 left-0 w-full h-[3px] transition-all duration-300",
-                                            isCompleted ? "bg-eduGreen-500 shadow-[0_0_15px_rgba(59,214,141,0.5)]" : "bg-gradient-to-r from-eduGreen-600 via-emerald-400 to-transparent opacity-0 group-hover:opacity-100"
-                                        )} />
+                                        {/* 3D Book Cover / Spine */}
+                                        <div className="absolute -right-16 -top-12 w-48 h-64 rotate-12 opacity-80 group-hover:rotate-0 group-hover:-right-4 group-hover:-top-4 group-hover:opacity-100 transition-all duration-700 ease-in-out z-0 pointer-events-none perspective-[1000px]">
+                                            <div className="w-full h-full relative preserve-3d group-hover:rotate-y-[-15deg] transition-all duration-700">
+                                                {(() => {
+                                                    const meta = parseBookMeta(book.description);
+                                                    if (meta.coverUrl) {
+                                                        return (
+                                                            <div 
+                                                                className="absolute inset-0 rounded-l-md shadow-2xl border-l border-zinc-700/50"
+                                                                style={{ backgroundImage: `url(${meta.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                                                            >
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
+                                                            </div>
+                                                        );
+                                                    }
+                                                    return (
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-white/10 flex flex-col items-start p-4">
+                                                            <div className="w-full h-1 bg-white/5 mb-4" />
+                                                            <h4 className="text-[10px] font-bold text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
+                                        </div>
 
-                                        <CardHeader className="p-8 pb-4">
+                                        <CardHeader className="p-8 pb-4 relative z-10">
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className={cn(
                                                     "p-3 rounded-xl border transition-all",
@@ -414,9 +445,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             )}
                                         </CardHeader>
 
-                                        <CardContent className="px-8 flex-1">
-                                            <p className="text-xs text-zinc-500 font-medium line-clamp-2 leading-relaxed italic">
-                                                {book.description || "Comprehensive academic resource for institutional mastery."}
+                                        <CardContent className="px-8 flex-1 relative z-10">
+                                            <p className="text-xs text-zinc-400 font-medium line-clamp-2 leading-relaxed">
+                                                {parseBookMeta(book.description).text || "Comprehensive academic resource for institutional mastery."}
                                             </p>
 
                                             {book.teacherNote && (
@@ -665,8 +696,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
             <FlipBookViewer
                 isOpen={!!selectedBook}
                 onClose={() => setSelectedBook(null)}
-                title={selectedBook?.title || ""}
-                fileUrl={selectedBook?.fileUrl || ""}
+                book={selectedBook}
             />
 
             <ConfirmationModal
@@ -948,6 +978,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
         academicYear: new Date().getFullYear().toString(),
         edition: '',
         description: '',
+        coverUrl: '',
         teacherNote: '',
         expiresAt: '',
         prerequisiteId: ''
@@ -958,24 +989,30 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
         setLoadingClasses(true);
         fetch(`/api/school/classes?gradeId=${formData.gradeId}`)
             .then(r => r.json())
-            .then(data => setClasses(data.classes || []))
+            .then((data: any) => setClasses(data.classes || []))
             .catch(console.error)
             .finally(() => setLoadingClasses(false));
     }, [formData.gradeId]);
 
-    const handleFileUpload = async (file: File) => {
+    const handleFileUpload = async (file: File, type: 'pdf' | 'cover' = 'pdf') => {
         if (!file) return;
         setUploadingFile(true);
         const uploadData = new FormData();
         uploadData.append('file', file);
+        uploadData.append('type', type);
         try {
             const res = await fetch('/api/school/books/upload', { method: 'POST', body: uploadData });
             if (res.ok) {
-                const data = await res.json();
-                setFormData(prev => ({ ...prev, fileUrl: data.url, title: prev.title || file.name.replace(/\.[^.]+$/, '') }));
-                toast.success('File uploaded successfully');
+                const data = await res.json() as any;
+                if (type === 'cover') {
+                    setFormData(prev => ({ ...prev, coverUrl: data.url }));
+                    toast.success('Cover image applied');
+                } else {
+                    setFormData(prev => ({ ...prev, fileUrl: data.url, title: prev.title || file.name.replace(/\.[^.]+$/, '') }));
+                    toast.success('Book file uploaded successfully');
+                }
             } else {
-                const err = await res.json();
+                const err = await res.json() as any;
                 toast.error(err.error || 'Upload failed');
             }
         } catch { toast.error('Network error during upload'); }
@@ -985,7 +1022,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault(); setDragOver(false);
         const file = e.dataTransfer.files?.[0];
-        if (file) handleFileUpload(file);
+        if (file) handleFileUpload(file, 'pdf');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -996,9 +1033,17 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
         if (!formData.subjectId) { toast.error('Please select a subject'); return; }
         setLoading(true);
         try {
+            const finalFormData = { ...formData };
+            if (formData.coverUrl || formData.description) {
+                finalFormData.description = JSON.stringify({
+                    text: formData.description,
+                    coverUrl: formData.coverUrl
+                });
+            }
+
             const res = await fetch('/api/school/books', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(finalFormData)
             });
             if (res.ok) { toast.success('Book deployed to library'); onSuccess(); }
             else { const msg = await res.text(); toast.error(msg || 'Failed to deploy book'); }
@@ -1075,7 +1120,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                         )}>
                                         <input type="file" accept=".pdf,.epub,.docx,.txt"
                                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                                            onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); }}
+                                            onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, 'pdf'); }}
                                             disabled={uploadingFile} />
                                         {uploadingFile ? (
                                             <div className="flex flex-col items-center gap-3">
@@ -1103,6 +1148,27 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                         onChange={e => setFormData({ ...formData, fileUrl: e.target.value })}
                                         className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
                                 )}
+                            </div>
+
+                            <div className="flex gap-4">
+                                <div className="flex-1">
+                                    <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Cover Image <span className="text-zinc-700">(optional)</span></label>
+                                    <div className="relative flex flex-col items-center justify-center h-20 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-eduGreen-500 transition-colors cursor-pointer group">
+                                        <input type="file" accept="image/*"
+                                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                                            onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, 'cover'); }}
+                                        />
+                                        {formData.coverUrl ? (
+                                            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${formData.coverUrl})` }}>
+                                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="text-[8px] text-white uppercase tracking-widest font-bold">Change Cover</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-semibold">Upload Cover</span>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
