@@ -28,6 +28,7 @@ import { useReactToPrint } from "react-to-print";
 import { InvoicePrint } from "./invoice-print";
 import { format } from "date-fns";
 import { Printer, ChevronDown, Wallet, Users, ArrowUpCircle } from "lucide-react";
+import { PayrollDashboard } from "./payroll-dashboard";
 
 interface FinanceViewProps {
     user: any;
@@ -863,73 +864,12 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     />
                 </>
             ) : (
-                <div className="space-y-12">
-                    {/* Payroll Dashboard */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-10">
-                            <h3 className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Total Monthly Expenditure</h3>
-                            <p className="text-4xl font-medium text-white">
-                                ${Array.isArray(payrollHistory)
-                                    ? payrollHistory.filter(p => p && p.createdAt && new Date(p.createdAt).getMonth() === new Date().getMonth())
-                                        .reduce((acc, curr) => acc + Number(curr.amount || 0), 0).toLocaleString()
-                                    : "0"}
-                            </p>
-                            <p className="text-[9px] font-medium text-amber-500 uppercase tracking-widest mt-2 italic">Active Flux: Institutional Outflow</p>
-                        </Card>
-                        <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-10">
-                            <h3 className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Pending Adjustments</h3>
-                            <p className="text-4xl font-medium text-white">{staff.length} Active Node(s)</p>
-                            <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest mt-2 leading-none">Ready for Synchronization</p>
-                        </Card>
-                    </div>
-
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-amber-950/20 rounded-xl border border-amber-900/30 text-amber-500">
-                                <Wallet className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-medium text-white tracking-tight uppercase italic">Personnel <span className="text-amber-500 not-italic">Disbursement</span></h2>
-                                <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Tactical Resource Allocation Dashboard</p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4">
-                            {Array.isArray(staff) && staff.map((member) => {
-                                const lastPay = Array.isArray(payrollHistory) ? payrollHistory.find(p => p.userId === member.id) : null;
-                                return (
-                                    <Card key={member.id} className="bg-zinc-950/40 border-zinc-900/50 rounded-3xl p-6 hover:border-amber-900/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center font-medium text-zinc-700">
-                                                {member.name[0]}
-                                            </div>
-                                            <div>
-                                                <div className="text-sm font-medium text-white uppercase tracking-tight">{member.name}</div>
-                                                <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{member.email}</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-12">
-                                            <div>
-                                                <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Last Payment</div>
-                                                <div className="text-[11px] font-medium text-zinc-400">
-                                                    {lastPay ? format(new Date(lastPay.createdAt), 'dd MMM yyyy') : 'NEVER'}
-                                                </div>
-                                            </div>
-                                            <Button
-                                                onClick={() => handleIssuePayment(member.id)}
-                                                isLoading={isPaying === member.id}
-                                                className="h-12 px-8 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-amber-900/20 gap-2"
-                                            >
-                                                <ArrowUpCircle className="w-4 h-4" /> Issue Payment
-                                            </Button>
-                                        </div>
-                                    </Card>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
+                    <PayrollDashboard 
+                        staff={staff} 
+                        payrollHistory={payrollHistory} 
+                        handleIssuePayment={handleIssuePayment} 
+                        isPaying={isPaying} 
+                    />
             )}
         </div>
     );
