@@ -6,7 +6,7 @@ import { sendAssessmentAssignedEmail } from '@/lib/email';
 export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const { classId, subjectId, title, date, maxScore, questions, duration, config } = await request.json();
+        const { classId, subjectId, title, date, maxScore, questions, duration, isLocked, config } = (await request.json()) as any;
 
         const exam = await prisma.exam.create({
             data: {
@@ -17,6 +17,7 @@ export async function POST(request: Request) {
                 questions: questions ?? [],
                 dueAt: date ? new Date(date) : undefined,
                 duration: parseInt(duration) || undefined,
+                isLocked: isLocked !== undefined ? isLocked : true,
                 config: config ?? { maxScore: parseInt(maxScore) || 100 }
             },
             include: { subject: true, class: { include: { grade: true } } }

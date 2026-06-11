@@ -39,8 +39,10 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
     
     // For submission modal
     const [submissionContent, setSubmissionContent] = useState("");
+    const [submissionAttachments, setSubmissionAttachments] = useState<{name: string, url: string}[]>([]);
     const [showSubmitModal, setShowSubmitModal] = useState(false);
     const [analysis, setAnalysis] = useState<any>(null);
+    const [uploading, setUploading] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
     const [preEval, setPreEval] = useState<any>(null);
     const [evaluating, setEvaluating] = useState(false);
@@ -54,20 +56,47 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     assignmentId: selectedId,
-                    content: submissionContent
+                    content: submissionContent,
+                    attachments: submissionAttachments
                 })
             });
             
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 setAssignments(assignments.map(a => 
                     a.id === selectedId ? { ...a, submission: data.submission } : a
                 ));
                 setShowSubmitModal(false);
                 setSubmissionContent("");
+                setSubmissionAttachments([]);
             }
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.length) return;
+        setUploading(true);
+        const file = e.target.files[0];
+        
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("bucket", "submissions");
+            
+            const res = await fetch("/api/school/upload", {
+                method: "POST",
+                body: formData
+            });
+            const result: any = await res.json();
+            
+            if (res.ok && result.url) {
+                setSubmissionAttachments([...submissionAttachments, { name: file.name, url: result.url }]);
+            }
+        } finally {
+            setUploading(false);
+            e.target.value = '';
         }
     };
 
@@ -198,7 +227,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 }
                                                             })
                                                         });
-                                                        const data = await res.json();
+                                                        const data = (await res.json()) as any;
                                                         if (data.analysis) setAnalysis(data.analysis);
                                                     } finally {
                                                         setAnalyzing(false);
@@ -279,9 +308,44 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         value={submissionContent || selectedAssignment.submission?.content || ""}
                                                         onChange={(e) => setSubmissionContent(e.target.value)}
                                                         disabled={selectedAssignment.submission?.status === 'SUBMITTED'}
-                                                        placeholder="EXECUTE COURSEWORK RESPONSE HERE..." 
+                                                        placeholder="EXECUTE COURSEWORK RESPONSE HERE OR ATTACH FILES..." 
                                                         className="min-h-[250px] bg-white/5 border-white/10 rounded-[2.5rem] p-10 text-white font-medium text-sm leading-relaxed ring-0 focus:border-white/20"
                                                     />
+
+                                                    {selectedAssignment.submission?.status !== 'SUBMITTED' && (
+                                                        <div className="space-y-4">
+                                                            <div className="flex items-center gap-4">
+                                                                <Input 
+                                                                    type="file" 
+                                                                    onChange={handleFileUpload}
+                                                                    disabled={uploading}
+                                                                    className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-medium file:bg-white/10 file:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
+                                                                />
+                                                                {uploading && <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />}
+                                                            </div>
+                                                            {submissionAttachments.length > 0 && (
+                                                                <div className="space-y-2">
+                                                                    {submissionAttachments.map((m: any, i: number) => (
+                                                                        <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">
+                                                                            <div className="flex items-center gap-3">
+                                                                                <FileText className="w-4 h-4 text-emerald-500" />
+                                                                                <span className="text-[10px] font-bold text-white tracking-widest uppercase">{m.name}</span>
+                                                                            </div>
+                                                                            <Button 
+                                                                                type="button"
+                                                                                variant="ghost" 
+                                                                                size="sm"
+                                                                                onClick={() => setSubmissionAttachments(submissionAttachments.filter((_, index) => index !== i))}
+                                                                                className="text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 h-8 w-8 p-0 rounded-xl"
+                                                                            >
+                                                                                <XCircle className="w-4 h-4" />
+                                                                            </Button>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
 
                                                     <AnimatePresence>
                                                         {preEval && (
@@ -345,7 +409,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                                 }
                                                                             })
                                                                         });
-                                                                        const data = await res.json();
+                                                                        const data = (await res.json()) as any;
                                                                         if (data.evaluation) setPreEval(data.evaluation);
                                                                     } finally {
                                                                         setEvaluating(false);
@@ -384,7 +448,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         ) : (
                                                             <Button 
                                                                 onClick={handleSubmit}
-                                                                disabled={submitting || !submissionContent}
+                                                                disabled={submitting || (!submissionContent && submissionAttachments.length === 0)}
                                                                 className="h-16 px-12 rounded-[1.5rem] bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-2xl"
                                                             >
                                                                 {submitting ? "UPLOADING..." : "EXECUTE UPLOAD"}

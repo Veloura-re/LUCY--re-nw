@@ -49,7 +49,8 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
         subjectId: subjects[0]?.id || "",
         dueDate: "",
         type: "HOMEWORK",
-        maxScore: 100
+        maxScore: 100,
+        materials: [] as { name: string, url: string }[]
     });
 
     const handleCreate = async () => {
@@ -60,7 +61,7 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newAssignment)
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (res.ok) {
                 setAssignments([data.assignment, ...assignments]);
                 setShowCreate(false);
@@ -208,6 +209,37 @@ function AssignmentCard({ assignment, active, onClick }: any) {
 }
 
 function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCancel, loading }: any) {
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.length) return;
+        setUploading(true);
+        const file = e.target.files[0];
+        
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("bucket", "materials"); // Store in materials bucket
+            
+            const res = await fetch("/api/school/upload", {
+                method: "POST",
+                body: formData
+            });
+            const result = (await res.json()) as any;
+            
+            if (res.ok && result.url) {
+                setData({
+                    ...data,
+                    materials: [...(data.materials || []), { name: file.name, url: result.url }]
+                });
+            }
+        } finally {
+            setUploading(false);
+            // reset input
+            e.target.value = '';
+        }
+    };
+
     return (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#050505]/60 backdrop-blur-[50px] border border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
             <div className="p-12 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-zinc-900/40 to-transparent">
@@ -303,7 +335,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                             }
                                         })
                                     });
-                                    const resData = await res.json();
+                                    const resData = (await res.json()) as any;
                                     if (resData.draft) {
                                         setData({
                                             ...data,
@@ -320,6 +352,45 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                 <span className="text-[8px] font-black uppercase tracking-widest">Neural Draft</span>
                             </Button>
                         </div>
+                    </div>
+                </ConfigField>
+
+                <ConfigField label="ATTACH MATERIALS" icon={Download}>
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-4">
+                            <Input 
+                                type="file" 
+                                onChange={handleFileUpload}
+                                disabled={uploading}
+                                className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-medium file:bg-white/10 file:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
+                            />
+                            {uploading && <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />}
+                        </div>
+                        
+                        {data.materials?.length > 0 && (
+                            <div className="space-y-2">
+                                {data.materials.map((m: any, i: number) => (
+                                    <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">
+                                        <div className="flex items-center gap-3">
+                                            <FileText className="w-4 h-4 text-zinc-500" />
+                                            <span className="text-[10px] font-bold text-white tracking-widest uppercase">{m.name}</span>
+                                        </div>
+                                        <Button 
+                                            type="button"
+                                            variant="ghost" 
+                                            size="sm"
+                                            onClick={() => setData({
+                                                ...data,
+                                                materials: data.materials.filter((_: any, index: number) => index !== i)
+                                            })}
+                                            className="text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 h-8 w-8 p-0 rounded-xl"
+                                        >
+                                            <XCircle className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </ConfigField>
 
@@ -452,7 +523,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: submission.id, grade, feedback, status: 'GRADED' })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (res.ok) {
                 onUpdate(data.submission);
             }
@@ -493,7 +564,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                                             context: { content: submission.content }
                                         })
                                     });
-                                    const data = await res.json();
+                                    const data = (await res.json()) as any;
                                     if (data.summary) setSummary(data.summary);
                                 } finally {
                                     setSummarizing(false);
@@ -555,7 +626,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                                             previousContext: submission.content
                                         })
                                     });
-                                    const data = await res.json();
+                                    const data = (await res.json()) as any;
                                     if (data.feedback) setFeedback(data.feedback);
                                 } finally {
                                     setLoading(false);
