@@ -18,7 +18,7 @@ export default function ExamsPage() {
     const [createLoading, setCreateLoading] = useState(false);
 
     // Form State
-    const [newExam, setNewExam] = useState({ title: "", classId: "", subjectId: "", date: "", maxScore: "100" });
+    const [newExam, setNewExam] = useState({ title: "", classId: "", subjectId: "", date: "", maxScore: "100", duration: "", isLocked: true });
     const [selectedClassSubjects, setSelectedClassSubjects] = useState<any[]>([]);
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function ExamsPage() {
 
     const fetchClasses = async () => {
         const res = await fetch('/api/teacher/classes');
-        const data = await res.json();
+        const data = (await res.json()) as any;
         if (data.classes) setClasses(data.classes);
         // Auto-select first class?
         if (data.classes.length > 0) {
@@ -50,7 +50,7 @@ export default function ExamsPage() {
 
     const fetchExams = async (classId: string) => {
         const res = await fetch(`/api/teacher/exams?classId=${classId}`);
-        const data = await res.json();
+        const data = (await res.json()) as any;
         if (data.exams) setExams(data.exams);
     };
 
@@ -64,7 +64,7 @@ export default function ExamsPage() {
                 body: JSON.stringify(newExam)
             });
             setIsCreating(false);
-            setNewExam({ ...newExam, title: "", date: "" });
+            setNewExam({ ...newExam, title: "", date: "", duration: "" });
             if (newExam.classId) fetchExams(newExam.classId);
         } finally {
             await new Promise(resolve => setTimeout(resolve, 1500));
@@ -264,6 +264,36 @@ export default function ExamsPage() {
                                             className="h-14 pl-14 bg-zinc-900/50 border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium uppercase text-xs tracking-widest text-white"
                                         />
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Time Limit (Minutes)</label>
+                                    <Input
+                                        type="number"
+                                        placeholder="e.g. 45"
+                                        value={newExam.duration}
+                                        onChange={e => setNewExam({ ...newExam, duration: e.target.value })}
+                                        className="h-14 bg-zinc-900/50 border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium text-lg text-white placeholder:text-zinc-700"
+                                    />
+                                    <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Leave empty for untimed exams</p>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Lock Status</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setNewExam({ ...newExam, isLocked: !newExam.isLocked })}
+                                        className={cn(
+                                            "w-full h-14 rounded-2xl border flex items-center justify-center gap-3 font-medium text-[10px] uppercase tracking-widest transition-all",
+                                            newExam.isLocked 
+                                                ? "bg-amber-500/10 border-amber-500/30 text-amber-500" 
+                                                : "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-500"
+                                        )}
+                                    >
+                                        {newExam.isLocked ? "🔒 Exam is Locked (Hidden)" : "🔓 Exam is Unlocked (Visible)"}
+                                    </button>
+                                    <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Locked exams cannot be taken until deployed</p>
                                 </div>
                             </div>
 
