@@ -104,7 +104,11 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 transition={{ duration: 0.1 }}
                                 className="flex flex-col gap-1"
                             >
-                                <Logo className="w-10 h-10" />
+                                {dbUser.school?.logoUrl ? (
+                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-10 h-10 object-contain rounded-lg bg-zinc-900/50 p-1" />
+                                ) : (
+                                    <Logo className="w-10 h-10" />
+                                )}
                                 {dbUser.school && (
                                     <p className="text-[9px] uppercase tracking-widest text-zinc-600 font-medium truncate max-w-[140px]">{dbUser.school.name}</p>
                                 )}

@@ -81,8 +81,12 @@ export default function StudentReportCardPage() {
                 <CardContent className="p-6 md:p-10">
                     <div className="flex flex-col md:flex-row justify-between items-start gap-8">
                         <div>
-                            <div className="flex items-center gap-3 mb-6">
-                                <Sparkles className="w-8 h-8 text-eduGreen-500" />
+                            <div className="flex items-center gap-4 mb-6">
+                                {student.school?.logoUrl ? (
+                                    <img src={student.school.logoUrl} alt="School Logo" className="w-12 h-12 object-contain print:w-16 print:h-16" />
+                                ) : (
+                                    <Sparkles className="w-8 h-8 text-eduGreen-500" />
+                                )}
                                 <h1 className="text-4xl font-black tracking-tighter italic uppercase">{student.school?.name}</h1>
                             </div>
                             <div className="space-y-1">

@@ -49,6 +49,7 @@ export async function GET(request: Request) {
         return NextResponse.json({
             success: true,
             schoolName: school?.name || "LUCY Educational Institute",
+            logoUrl: school?.logoUrl || null,
             data: {
                 students: students.map(s => ({
                     ID: s.id,

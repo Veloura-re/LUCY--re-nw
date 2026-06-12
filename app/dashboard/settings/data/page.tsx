@@ -89,6 +89,13 @@ export default function DataSecuritySettings() {
             const responseData = await res.json() as any;
             const data = responseData.data;
             const schoolName = responseData.schoolName || "LUCY Educational Institute";
+            const logoUrl = responseData.logoUrl;
+
+            let logoBase64: string | null = null;
+            if (logoUrl) {
+                 const { fetchImageAsBase64 } = await import("@/lib/image-utils");
+                 logoBase64 = await fetchImageAsBase64(logoUrl);
+            }
 
             const zip = new JSZip();
 
@@ -103,6 +110,15 @@ export default function DataSecuritySettings() {
                 doc.setFillColor(15, 23, 42); 
                 doc.rect(0, 0, pageWidth, 35, 'F');
                 
+                // Custom Logo
+                if (logoBase64) {
+                    try {
+                        doc.addImage(logoBase64, 'PNG', 14, 7.5, 20, 20);
+                    } catch (e) {
+                        console.error("Could not render logo in PDF", e);
+                    }
+                }
+
                 // School Name
                 doc.setTextColor(255, 255, 255);
                 doc.setFont("helvetica", "bold");
@@ -183,6 +199,12 @@ export default function DataSecuritySettings() {
                     doc.setLineWidth(1);
                     doc.rect(14, 14, pageWidth - 28, pageHeight - 28);
 
+                    if (logoBase64) {
+                        try {
+                            doc.addImage(logoBase64, 'PNG', pageWidth / 2 - 15, 25, 30, 30);
+                        } catch (e) {}
+                    }
+
                     doc.setFont("times", "bold");
                     doc.setFontSize(36);
                     doc.setTextColor(30, 41, 59);
@@ -229,6 +251,13 @@ export default function DataSecuritySettings() {
                     
                     doc.setFillColor(30, 41, 59);
                     doc.rect(0, 0, pageWidth, 40, 'F');
+
+                    if (logoBase64) {
+                        try {
+                            doc.addImage(logoBase64, 'PNG', 14, 10, 20, 20);
+                        } catch(e) {}
+                    }
+
                     doc.setTextColor(255, 255, 255);
                     doc.setFont("helvetica", "bold");
                     doc.setFontSize(20);
@@ -269,6 +298,13 @@ export default function DataSecuritySettings() {
                     
                     doc.setFillColor(30, 41, 59);
                     doc.rect(0, 0, pageWidth, 40, 'F');
+
+                    if (logoBase64) {
+                        try {
+                            doc.addImage(logoBase64, 'PNG', 14, 10, 20, 20);
+                        } catch(e) {}
+                    }
+
                     doc.setTextColor(255, 255, 255);
                     doc.setFont("helvetica", "bold");
                     doc.setFontSize(20);

@@ -76,7 +76,7 @@ export default function SettingsPage() {
     const fetchSettings = async () => {
         try {
             const res = await fetch('/api/user/settings');
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.user) {
                 setUserData(data.user);
                 setFormData({
@@ -105,7 +105,7 @@ export default function SettingsPage() {
     const fetchSchoolSettings = async () => {
         try {
             const res = await fetch('/api/school/settings');
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.school) {
                 setSchoolData(data.school);
                 setSchoolForm({
@@ -176,7 +176,7 @@ export default function SettingsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentCode: studentCode.trim() })
             });
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.success) {
                 setVerifiedStudent(data.student);
             } else {
@@ -197,7 +197,7 @@ export default function SettingsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentCode: studentCode.trim(), confirm: true })
             });
-            const data = await res.json();
+            const data = await res.json() as any;
             if (data.success) {
                 setAlertConfig({ title: "Link Established", message: "Family protocols successfully synchronized.", isOpen: true, variant: "success" });
                 setVerifiedStudent(null);
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                     newPassword: passwordData.new
                 })
             });
-            const data = await res.json();
+            const data = await res.json() as any;
             if (res.ok) {
                 setAlertConfig({
                     title: "Security Updated",
@@ -316,7 +316,7 @@ export default function SettingsPage() {
         setDiagnosticResult(null);
         try {
             const res = await fetch('/api/diagnostic');
-            const data = await res.json();
+            const data = await res.json() as any;
             setDiagnosticResult(data);
             if (data.success) {
                 setAlertConfig({
@@ -361,11 +361,18 @@ export default function SettingsPage() {
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
-                        System <span className="text-eduGreen-500 italic">Configuration</span>
-                    </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Protocols</p>
+                <div className="flex items-center gap-6">
+                    {schoolData?.logoUrl && (
+                        <div className="w-16 h-16 shrink-0 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center p-2 shadow-2xl">
+                            <img src={schoolData.logoUrl} alt="School Logo" className="w-full h-full object-contain" />
+                        </div>
+                    )}
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                            System <span className="text-eduGreen-500 italic">Configuration</span>
+                        </h1>
+                        <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Protocols</p>
+                    </div>
                 </div>
 
                 <Button
