@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
+import { prisma as globalPrisma } from '@/lib/prisma'; // Ensure webpack bundles prisma for this chunk
 
 // Helper to get supabase client on Edge
 const getSupabase = () => {
@@ -37,7 +38,7 @@ export const getCachedClassAssignments = (schoolId: string, classId: string) => 
 
             // Node.js Prisma Fallback
             const { prisma } = require('@/lib/prisma');
-            return await prisma.assignment.findMany({
+            const data = await prisma.assignment.findMany({
                 where: { classId, schoolId },
                 include: {
                     subject: { select: { name: true } },
@@ -46,6 +47,12 @@ export const getCachedClassAssignments = (schoolId: string, classId: string) => 
                 },
                 orderBy: { dueDate: 'asc' }
             });
+            return data.map((a: any) => ({
+                ...a,
+                dueDate: a.dueDate?.toISOString(),
+                createdAt: a.createdAt?.toISOString(),
+                updatedAt: a.updatedAt?.toISOString()
+            }));
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `class-${classId}-assignments`],
         {
@@ -96,9 +103,15 @@ export const getCachedStudentAssignments = (schoolId: string, classId: string, s
                 orderBy: { dueDate: 'asc' }
             });
 
-            return assignments.map(a => ({
+            return assignments.map((a: any) => ({
                 ...a,
-                submission: a.submissions[0] || null
+                dueDate: a.dueDate?.toISOString(),
+                createdAt: a.createdAt?.toISOString(),
+                updatedAt: a.updatedAt?.toISOString(),
+                submission: a.submissions?.[0] ? {
+                    ...a.submissions[0],
+                    submittedAt: a.submissions[0].submittedAt?.toISOString()
+                } : null
             }));
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `student-${studentId}-assignments`],
@@ -131,7 +144,7 @@ export const getCachedAssignmentDetails = (schoolId: string, assignmentId: strin
 
             // Node.js Prisma Fallback
             const { prisma } = require('@/lib/prisma');
-            return await prisma.assignment.findUnique({
+            const data = await prisma.assignment.findUnique({
                 where: { id: assignmentId, schoolId },
                 include: {
                     class: { select: { name: true } },
@@ -144,6 +157,20 @@ export const getCachedAssignmentDetails = (schoolId: string, assignmentId: strin
                     }
                 }
             });
+
+            if (!data) return null;
+
+            return {
+                ...data,
+                dueDate: data.dueDate?.toISOString(),
+                createdAt: data.createdAt?.toISOString(),
+                updatedAt: data.updatedAt?.toISOString(),
+                submissions: data.submissions.map((s: any) => ({
+                    ...s,
+                    submittedAt: s.submittedAt?.toISOString(),
+                    gradedAt: s.gradedAt?.toISOString()
+                }))
+            };
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `assignment-${assignmentId}`],
         {
@@ -323,7 +350,7 @@ export const getDirectorAssignmentOversight = (schoolId: string) => {
 
             // Node.js Prisma Fallback
             const { prisma } = require('@/lib/prisma');
-            return await prisma.assignment.findMany({
+            const data = await prisma.assignment.findMany({
                 where: { schoolId, isPublished: true },
                 include: {
                     class: { select: { name: true } },
@@ -334,6 +361,13 @@ export const getDirectorAssignmentOversight = (schoolId: string) => {
                 orderBy: { dueDate: 'asc' },
                 take: 50
             });
+
+            return data.map((a: any) => ({
+                ...a,
+                dueDate: a.dueDate?.toISOString(),
+                createdAt: a.createdAt?.toISOString(),
+                updatedAt: a.updatedAt?.toISOString()
+            }));
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), 'director-oversight'],
         {
