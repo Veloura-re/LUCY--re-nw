@@ -361,14 +361,28 @@ export default function SettingsPage() {
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
-                <div className="flex items-center gap-6">
-                    {schoolData?.logoUrl && (
-                        <div className="w-16 h-16 shrink-0 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center p-2 shadow-2xl">
+                <div className="flex items-center gap-6 group">
+                    <label className={`w-16 h-16 shrink-0 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
+                        {schoolData?.logoUrl ? (
                             <img src={schoolData.logoUrl} alt="School Logo" className="w-full h-full object-contain" />
-                        </div>
-                    )}
+                        ) : (
+                            <div className="w-full h-full bg-zinc-900 rounded-xl flex items-center justify-center">
+                                <Zap className="w-6 h-6 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
+                            </div>
+                        )}
+                        {isPrincipal && (
+                            <>
+                                <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
+                                <div className="absolute -bottom-2 -right-2 bg-zinc-950 border border-zinc-800 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="bg-eduGreen-600 rounded-full w-5 h-5 flex items-center justify-center">
+                                        <span className="text-[10px] text-white font-bold">+</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </label>
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white flex items-center gap-4">
                             System <span className="text-eduGreen-500 italic">Configuration</span>
                         </h1>
                         <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Protocols</p>
