@@ -48,6 +48,13 @@ export default async function DashboardLayout({
         }
     }
 
+    // Concurrent Session Enforcement
+    if (dbUser) {
+        const deviceSession = cookieStore.get('lucy_device_session')?.value;
+        if (dbUser.activeSessionId && dbUser.activeSessionId !== deviceSession) {
+            redirect("/logout?reason=concurrent");
+        }
+    }
     if (!dbUser) {
         // Handle database uplink interruptions or missing profiles
         return (
@@ -117,7 +124,11 @@ export default async function DashboardLayout({
                 <header className="w-full pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-6 md:px-12 relative z-20">
                     <div className="hidden md:block w-32" /> {/* Spacer */}
                     <div className="flex items-center gap-4">
-                        <Logo className="w-12 h-12" />
+                        {dbUser.school?.logoUrl ? (
+                            <img src={dbUser.school.logoUrl} alt="School Logo" className="w-12 h-12 object-contain rounded-xl bg-zinc-900/50 p-1" />
+                        ) : (
+                            <Logo className="w-12 h-12" />
+                        )}
                         <div className="relative flex items-center bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
                             <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
