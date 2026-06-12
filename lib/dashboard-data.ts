@@ -231,11 +231,19 @@ const _getSchoolAnalytics = async (schoolId: string) => {
     const avgAttendance = attendance.length > 0 ? (attendance.reduce((acc, curr) => acc + curr.rate, 0) / attendance.length).toFixed(1) + "%" : "100%";
 
     // Academic Performance (Assignments + Exams)
-    const submissions = await prisma.assignmentSubmission.findMany({
-        where: { schoolId, status: 'GRADED', grade: { not: null } },
-        include: { assignment: { select: { subject: { select: { name: true } }, maxScore: true } } }
-    });
+    const [submissions, gradeRecords] = await Promise.all([
+        prisma.assignmentSubmission.findMany({
+            where: { schoolId, status: 'GRADED', grade: { not: null } },
+            include: { assignment: { select: { subject: { select: { name: true } }, maxScore: true } } }
+        }),
+        prisma.gradeRecord.findMany({
+            where: { student: { schoolId }, status: 'SUBMITTED' },
+            include: { subject: { select: { name: true } }, exam: { select: { totalMarks: true } } }
+        })
+    ]);
+
     const subjectScores = new Map();
+    
     submissions.forEach((sub: any) => {
         const subj = sub.assignment.subject.name;
         if (!subjectScores.has(subj)) subjectScores.set(subj, { total: 0, count: 0 });
@@ -243,6 +251,16 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         const max = sub.assignment.maxScore || 100;
         const percentage = (sub.grade / max) * 100;
         stats.total += percentage;
+        stats.count++;
+    });
+
+    gradeRecords.forEach((record: any) => {
+        const subj = record.subject.name;
+        if (!subjectScores.has(subj)) subjectScores.set(subj, { total: 0, count: 0 });
+        const stats = subjectScores.get(subj);
+        const max = record.exam.totalMarks || 100;
+        const percentage = (record.score / max) * 100;
+        stats.total += Math.min(percentage, 100); // Prevent over 100%
         stats.count++;
     });
     const performanceBySubject = Array.from(subjectScores.entries()).map(([name, stats]: any) => ({
