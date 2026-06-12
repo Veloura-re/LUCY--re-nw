@@ -51,6 +51,12 @@ function LoginContent() {
             return;
         }
 
+        try {
+            await fetch('/api/auth/register-session', { method: 'POST' });
+        } catch (e) {
+            console.error("Session registration failed", e);
+        }
+
         router.refresh();
         router.push("/dashboard");
     };

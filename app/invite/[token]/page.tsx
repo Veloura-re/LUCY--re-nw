@@ -63,7 +63,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     if (invite.schoolId) {
         const { data: s } = await supabaseAdmin
             .from('School')
-            .select('id, name')
+            .select('id, name, logoUrl')
             .eq('id', invite.schoolId)
             .maybeSingle();
         school = s;
@@ -95,7 +95,11 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                 <div className="mb-10 text-center flex flex-col items-center">
                     <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-zinc-900/80 border border-zinc-800 shadow-2xl mb-8 backdrop-blur-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-500/20 to-transparent opacity-50" />
-                        <ShieldCheck className="w-10 h-10 text-eduGreen-500 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
+                        {school?.logoUrl ? (
+                            <img src={school.logoUrl} alt="School Logo" className="w-16 h-16 object-contain relative z-10" />
+                        ) : (
+                            <ShieldCheck className="w-10 h-10 text-eduGreen-500 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
+                        )}
                     </div>
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-white mb-3">
                         Welcome, {formattedRole === 'Principal' ? 'Director' : formattedRole}
