@@ -7,24 +7,12 @@ import { BarChart3, TrendingUp, Users, BookOpen, Download, Filter, Sparkles, Shi
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-
 export default function ReportsPage() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
-    const [students, setStudents] = useState<any[]>([]);
-    const [studentSearch, setStudentSearch] = useState("");
-    const [loadingStudents, setLoadingStudents] = useState(true);
-    const [showFilters, setShowFilters] = useState(false);
-    const [selectedGrade, setSelectedGrade] = useState("ALL");
-    const [selectedClass, setSelectedClass] = useState("ALL");
 
     useEffect(() => {
         fetchAnalytics();
-        fetch('/api/school/students')
-            .then(r => r.json())
-            .then((d: any) => setStudents(d.students || []))
-            .finally(() => setLoadingStudents(false));
     }, []);
 
     const fetchAnalytics = async () => {
@@ -49,7 +37,6 @@ export default function ReportsPage() {
             ["Summary", "Active Nodes", data.summary?.activeNodes || "0"],
             ["Summary", "Active Readers", data.summary?.activeReaders || "0"],
             ["Architecture", "School Name", data.summary?.schoolInfo?.name || ""],
-            ["Architecture", "School Code", data.summary?.schoolInfo?.schoolCode || ""],
             ["Architecture", "Status", data.summary?.schoolInfo?.status || ""],
             ["Architecture", "System Domain", data.summary?.schoolInfo?.domain || "unassigned"],
             ["Architecture", "Genesis Date", data.summary?.schoolInfo?.createdAt ? new Date(data.summary.schoolInfo.createdAt).toLocaleDateString() : ""],
@@ -92,20 +79,11 @@ export default function ReportsPage() {
 
                 <div className="flex items-center gap-4 mb-2">
                     <Button 
-                        onClick={() => setShowFilters(!showFilters)}
-                        variant="outline" 
-                        className={cn(
-                            "rounded-2xl border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-500",
-                            showFilters && "border-eduGreen-500/50 text-eduGreen-500 bg-eduGreen-500/5"
-                        )}
-                    >
-                        <Filter className="w-4 h-4 mr-2" /> Filter Stream
-                    </Button>
-                    <Button
                         onClick={exportCoreData}
-                        className="bg-eduGreen-600 text-white hover:bg-eduGreen-500 h-12 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-2xl transition-all active:scale-95 shadow-eduGreen-900/20"
+                        variant="primary" 
+                        className="rounded-2xl bg-white text-zinc-950 hover:bg-zinc-200 transition-all h-12 px-6 shadow-xl shadow-white/10 text-xs font-semibold uppercase tracking-widest"
                     >
-                        <Download className="w-4 h-4 mr-2" /> Export Core
+                        Export Core <Download className="w-4 h-4 ml-2" />
                     </Button>
                 </div>
             </div>
@@ -265,10 +243,6 @@ export default function ReportsPage() {
                                 <span className="text-xs text-white font-medium">{data.summary?.schoolInfo?.name}</span>
                             </div>
                             <div className="flex justify-between items-center border-b border-zinc-900/50 pb-3">
-                                <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium">Access Code</span>
-                                <span className="text-[10px] text-eduGreen-400 font-mono bg-eduGreen-950/20 px-2 py-0.5 rounded-lg">{data.summary?.schoolInfo?.schoolCode}</span>
-                            </div>
-                            <div className="flex justify-between items-center border-b border-zinc-900/50 pb-3">
                                 <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium">Domain Space</span>
                                 <span className="text-[10px] text-zinc-400 font-medium">{data.summary?.schoolInfo?.domain || "Unassigned"}</span>
                             </div>
@@ -361,87 +335,18 @@ export default function ReportsPage() {
                     </p>
                 </div>
             </div>
-            {/* Student Report Drilldown */}
-            <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-900 pb-6">
+            {/* Student Report Drilldown Link */}
+            <Link href="/dashboard/reports/students" className="block group">
+                <div className="p-6 md:p-10 bg-zinc-950 border border-zinc-900 rounded-[3rem] flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-eduGreen-900/50 transition-all">
                     <div>
                         <h2 className="text-2xl font-medium text-white tracking-tight">Student Report Cards</h2>
                         <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[9px] mt-1">Individual academic synthesis</p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        {showFilters && (
-                            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-4 duration-300">
-                                <Select value={selectedGrade} onValueChange={(val) => { setSelectedGrade(val); setSelectedClass("ALL"); }}>
-                                    <SelectTrigger className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl text-xs w-32 text-zinc-400">
-                                        <SelectValue placeholder="Grade" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="ALL">All Grades</SelectItem>
-                                        {Array.from(new Set(students.map(s => s.grade?.name))).filter(Boolean).sort().map(gradeName => (
-                                            <SelectItem key={gradeName as string} value={gradeName as string}>{gradeName as string}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <Select value={selectedClass} onValueChange={setSelectedClass} disabled={selectedGrade === "ALL"}>
-                                    <SelectTrigger className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl text-xs w-32 text-zinc-400">
-                                        <SelectValue placeholder="Class" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="ALL">All Classes</SelectItem>
-                                        {Array.from(new Set(students.filter(s => selectedGrade === "ALL" || s.grade?.name === selectedGrade).map(s => s.class?.name))).filter(Boolean).sort().map(className => (
-                                            <SelectItem key={className as string} value={className as string}>{className as string}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
-                        <div className="relative w-full sm:w-auto">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
-                            <input
-                                type="text"
-                                placeholder="Search students..."
-                                value={studentSearch}
-                                onChange={e => setStudentSearch(e.target.value)}
-                                className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl pl-10 pr-4 text-white text-xs focus:outline-none focus:ring-1 focus:ring-eduGreen-500 w-full md:w-64"
-                            />
-                        </div>
+                    <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center shrink-0 group-hover:bg-eduGreen-600 transition-colors">
+                        <ChevronRight className="w-5 h-5 text-white" />
                     </div>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {loadingStudents ? (
-                        Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="h-24 bg-zinc-900/30 rounded-3xl animate-pulse border border-zinc-900" />
-                        ))
-                    ) : (
-                        students
-                            .filter((s: any) => {
-                                const matchesSearch = `${s.firstName} ${s.lastName}`.toLowerCase().includes(studentSearch.toLowerCase()) ||
-                                    s.studentCode?.toLowerCase().includes(studentSearch.toLowerCase());
-                                const matchesGrade = selectedGrade === "ALL" || s.grade?.name === selectedGrade;
-                                const matchesClass = selectedClass === "ALL" || s.class?.name === selectedClass;
-                                return matchesSearch && matchesGrade && matchesClass;
-                            })
-                            .slice(0, 48)
-                            .map((s: any) => (
-                                <Link key={s.id} href={`/dashboard/reports/${s.id}`} className="group">
-                                    <Card className="bg-zinc-950/40 border-zinc-900 rounded-3xl hover:border-eduGreen-900/40 transition-all">
-                                        <CardContent className="p-5 flex items-center gap-4">
-                                            <div className="w-11 h-11 rounded-2xl bg-eduGreen-950/30 border border-eduGreen-900/30 flex items-center justify-center text-lg font-black text-eduGreen-500 shrink-0 group-hover:border-eduGreen-700/50 transition-colors">
-                                                {s.firstName?.[0]}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="text-white font-medium text-sm truncate">{s.firstName} {s.lastName}</p>
-                                                <p className="text-zinc-600 text-[9px] uppercase tracking-widest font-mono mt-0.5">{s.studentCode}</p>
-                                                <p className="text-zinc-700 text-[9px] mt-0.5">{s.class?.name} · {s.grade?.name}</p>
-                                            </div>
-                                            <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-eduGreen-500 ml-auto shrink-0 transition-colors" />
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))
-                    )}
-                </div>
-            </div>
+            </Link>
         </div>
     );
 }
