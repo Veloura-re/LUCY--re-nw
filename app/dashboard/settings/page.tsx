@@ -460,15 +460,40 @@ export default function SettingsPage() {
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-3">
-                                    <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Professional Summary</Label>
-                                    <textarea
-                                        className="w-full bg-zinc-900/30 border-zinc-800 text-white p-6 rounded-[2rem] focus:border-eduGreen-600 transition-all border-2 font-medium text-sm min-h-[120px] resize-none outline-none"
-                                        value={formData.bio}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                                        placeholder="Enter your professional summary..."
-                                    ></textarea>
-                                </div>
+                                    <div className="space-y-3">
+                                        <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Professional Summary</Label>
+                                        <textarea
+                                            className="w-full bg-zinc-900/30 border-zinc-800 text-white p-6 rounded-[2rem] focus:border-eduGreen-600 transition-all border-2 font-medium text-sm min-h-[120px] resize-none outline-none"
+                                            value={formData.bio}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                                            placeholder="Enter your professional summary..."
+                                        ></textarea>
+                                    </div>
+
+                                    {isPrincipal && (
+                                        <div className="space-y-3 pt-6 border-t border-zinc-900/50">
+                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Brand Logo</Label>
+                                            <div className="flex items-center gap-6 p-6 bg-zinc-950/50 border border-zinc-900 rounded-2xl">
+                                                {schoolForm.logoUrl ? (
+                                                    <div className="w-16 h-16 rounded-xl bg-zinc-900 overflow-hidden border border-zinc-800 p-2">
+                                                        <img src={schoolForm.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-16 h-16 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                                                        <Zap className="w-6 h-6 text-zinc-700" />
+                                                    </div>
+                                                )}
+                                                <div className="flex-1 space-y-1">
+                                                    <h4 className="text-sm font-medium text-white tracking-tight">School Logo</h4>
+                                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Supports PNG, JPG, WebP</p>
+                                                </div>
+                                                <label className="cursor-pointer bg-zinc-900 hover:bg-zinc-800 text-white px-6 py-3 rounded-xl border border-zinc-800 transition-all font-medium text-[10px] uppercase tracking-widest text-center flex items-center justify-center">
+                                                    Upload Image
+                                                    <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    )}
                             </CardContent>
                         </Card>
                     )}
