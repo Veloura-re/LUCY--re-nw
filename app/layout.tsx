@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
 import { GlobalConnectionProbe } from "@/components/global-connection-probe";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({
   children,
@@ -41,6 +42,7 @@ export default function RootLayout({
         <GlobalConnectionProbe />
         {children}
         <Toaster position="top-right" theme="dark" closeButton richColors />
+        <Analytics />
       </body>
     </html>
   );
