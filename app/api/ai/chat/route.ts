@@ -7,16 +7,16 @@ console.log("[DEBUG] Loading Chat Route Module (Edge-Native)");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
 
-// Initialize Supabase client for Edge-native database access
-// This bypasses Prisma's current bundling issues in OpenNext
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(req: Request) {
     console.log("[DEBUG] POST /api/ai/chat entered");
     try {
+        // Initialize Supabase client for Edge-native database access
+        // This bypasses Prisma's current bundling issues in OpenNext
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
         // 1. Rate Limiting (10 requests per minute)
         const rateLimitResponse = rateLimit(req, "ai/chat", 10);
         if (rateLimitResponse) return rateLimitResponse;
