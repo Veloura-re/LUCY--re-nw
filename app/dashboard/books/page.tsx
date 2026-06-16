@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
 import { BooksView } from "@/components/dashboard/books-view";
-import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { prisma } from "@/lib/prisma";
 
 export default async function BooksPage() {
     const supabase = await createClient();
@@ -17,24 +17,15 @@ export default async function BooksPage() {
         dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
     }
 
-    // Fetch school separately (Edge-safe)
-    const supabaseAdmin = createSupabaseAdmin(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-    const { data: school } = await supabaseAdmin
-        .from('School')
-        .select('*')
-        .eq('id', dbUser.schoolId)
-        .maybeSingle();
+    const school = await prisma.school.findUnique({ where: { id: dbUser.schoolId } });
 
     let children: any[] = [];
     if (dbUser.role === 'PARENT') {
-        const { data: links } = await supabaseAdmin
-            .from('ParentStudentLink')
-            .select('*, student:Student(*)')
-            .eq('parentId', dbUser.id);
-        children = (links || []).map((l: any) => l.student);
+        const links = await prisma.parentStudentLink.findMany({
+            where: { parentId: dbUser.id },
+            include: { student: true }
+        });
+        children = links.map((l: any) => l.student);
     }
 
     return (

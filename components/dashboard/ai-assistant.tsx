@@ -314,7 +314,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 })
             });
 
-            const data = await response.json();
+            const data = (await response.json()) as any;
             if (data.content) {
                 setSessions(prev => prev.map(s =>
                     s.id === activeSessionId

@@ -1,7 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
-import { prisma as globalPrisma } from '@/lib/prisma'; // Ensure webpack bundles prisma
 
 // Helper to get supabase client on Edge
 const getSupabase = () => {
@@ -64,9 +63,9 @@ export const getCachedSchoolStudents = (schoolId: string) => {
                 orderBy: { lastName: 'asc' }
             });
 
-            return students.map(s => {
+            const result = students.map((s: any) => {
                 const unpaidCount = s.invoices.length;
-                const outstanding = s.invoices.reduce((acc, inv) => acc + Number(inv.amount), 0);
+                const outstanding = s.invoices.reduce((acc: number, inv: any) => acc + Number(inv.amount), 0);
 
                 return {
                     ...s,
@@ -76,6 +75,7 @@ export const getCachedSchoolStudents = (schoolId: string) => {
                     }
                 };
             });
+            return JSON.parse(JSON.stringify(result));
         },
         [getSchoolTag(CACHE_TAGS.STUDENTS, schoolId)],
         {
@@ -112,7 +112,7 @@ export const getCachedStudentDossier = (studentId: string, schoolId: string) => 
 
             // Node.js Prisma Fallback
             const { prisma } = require('@/lib/prisma');
-            return await prisma.student.findUnique({
+            const result = await prisma.student.findUnique({
                 where: { id: studentId, schoolId },
                 include: {
                     grade: true,
@@ -139,6 +139,7 @@ export const getCachedStudentDossier = (studentId: string, schoolId: string) => 
                     }
                 }
             });
+            return JSON.parse(JSON.stringify(result));
         },
         [`student-dossier-${studentId}`],
         {

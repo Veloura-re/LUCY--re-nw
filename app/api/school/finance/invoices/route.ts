@@ -14,15 +14,27 @@ export async function GET() {
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
             );
 
-            const [invoicesRes, studentsRes, paymentsRes] = await Promise.all([
+            const [invoicesRes, studentsRes] = await Promise.all([
                 supabaseAdmin.from('Invoice').select('id, amount, status, dueDate, createdAt, studentId').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
-                supabaseAdmin.from('Student').select('id, firstName, lastName, studentCode').eq('schoolId', dbUser.schoolId!),
-                supabaseAdmin.from('Payment').select('id, amount, method, reference, invoiceId, createdAt').order('createdAt', { ascending: false })
+                supabaseAdmin.from('Student').select('id, firstName, lastName, studentCode').eq('schoolId', dbUser.schoolId!)
             ]);
+
+            const invoiceIds = (invoicesRes.data || []).map((inv: any) => inv.id);
+            let paymentsData: any[] = [];
+            
+            // Chunk the invoiceIds to prevent URL too long errors in Supabase PostgREST
+            for (let i = 0; i < invoiceIds.length; i += 100) {
+                const chunk = invoiceIds.slice(i, i + 100);
+                const { data } = await supabaseAdmin.from('Payment')
+                    .select('id, amount, method, reference, invoiceId, createdAt')
+                    .in('invoiceId', chunk)
+                    .order('createdAt', { ascending: false });
+                if (data) paymentsData = paymentsData.concat(data);
+            }
 
             const studentMap = new Map((studentsRes.data || []).map((s: any) => [s.id, s]));
             const paymentMap = new Map<string, any[]>();
-            for (const p of (paymentsRes.data || [])) {
+            for (const p of paymentsData) {
                 if (!paymentMap.has(p.invoiceId)) {
                     paymentMap.set(p.invoiceId, []);
                 }
