@@ -1,7 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
-import { prisma as globalPrisma } from '@/lib/prisma'; // Ensure webpack bundles prisma
 
 // Helper to get supabase client on Edge
 const getSupabase = () => {
@@ -117,9 +116,10 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
                     status: 'PENDING'
                 }));
 
-            return [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
+            const result = [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
                 new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
+            return JSON.parse(JSON.stringify(result));
         },
         [`teacher-registry-${schoolId}`],
         {
