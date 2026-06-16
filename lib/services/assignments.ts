@@ -1,7 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
-import { prisma as globalPrisma } from '@/lib/prisma'; // Ensure webpack bundles prisma for this chunk
 
 // Helper to get supabase client on Edge
 const getSupabase = () => {

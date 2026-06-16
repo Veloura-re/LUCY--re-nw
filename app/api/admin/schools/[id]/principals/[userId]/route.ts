@@ -31,6 +31,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                 data: { role: 'TEACHER' }
             });
         }
+        
+        const { revalidateTag } = require('next/cache');
+        revalidateTag(`school-${resolvedParams.id}`);
+        revalidateTag(`users-${resolvedParams.id}`);
+        revalidateTag(`teacher-registry-${resolvedParams.id}`);
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
@@ -84,6 +89,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
                 });
             }
         }
+        
+        const { revalidateTag } = require('next/cache');
+        revalidateTag(`school-${resolvedParams.id}`);
+        revalidateTag(`users-${resolvedParams.id}`);
+        revalidateTag(`teacher-registry-${resolvedParams.id}`);
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         // Only Principal can manage events (exclusion of Superadmin/Teacher/Parent/Student per request)
         const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
 
-        const { title, description, date, targetRole } = await request.json();
+        const { title, description, date, targetRole } = (await request.json()) as any;
 
         const event = await prisma.event.create({
             data: {

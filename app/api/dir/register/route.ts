@@ -162,6 +162,13 @@ export async function POST(request: Request) {
 
         // 7. Burn Token
         await supabaseAdmin.from('InviteToken').update({ usedAt: new Date().toISOString() }).eq('token', token);
+        
+        if (invite.schoolId) {
+            const { revalidateTag } = require('next/cache');
+            revalidateTag(`school-${invite.schoolId}`);
+            revalidateTag(`users-${invite.schoolId}`);
+            revalidateTag(`teacher-registry-${invite.schoolId}`);
+        }
 
         return NextResponse.json({ success: true, userId });
 

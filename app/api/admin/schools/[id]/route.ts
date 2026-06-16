@@ -82,11 +82,16 @@ export async function DELETE(
         const studentIds = (schoolStudents || []).map((s: any) => s.id);
         console.log(`[AdminAPI] Found ${studentIds.length} students to purge from Supabase.`);
 
+        const { data: schoolClasses } = await supabaseAdmin.from('Class').select('id').eq('schoolId', id);
+        const classIds = (schoolClasses || []).map((c: any) => c.id);
+        
         // Purge tables sequentially due to FK dependencies
         // Deepest leaves first
-        await supabaseAdmin.from('MarklistMark').delete().eq('schoolId', id);
-        await supabaseAdmin.from('MarklistEntry').delete().eq('schoolId', id);
-        await supabaseAdmin.from('MarklistColumn').delete().eq('schoolId', id);
+        if (classIds.length > 0) {
+            await supabaseAdmin.from('Timetable').delete().in('classId', classIds);
+            await supabaseAdmin.from('TeacherAssignment').delete().in('classId', classIds);
+            await supabaseAdmin.from('Lesson').delete().in('classId', classIds);
+        }
         
         if (studentIds.length > 0) {
             await supabaseAdmin.from('ParentStudentLink').delete().in('studentId', studentIds);
@@ -102,24 +107,17 @@ export async function DELETE(
         // Let's rely on standard schoolId cascading where possible or delete explicitly
         await supabaseAdmin.from('Student').delete().eq('schoolId', id);
         
-        await supabaseAdmin.from('Payment').delete().eq('schoolId', id);
-        await supabaseAdmin.from('InvoiceItem').delete().eq('schoolId', id);
         await supabaseAdmin.from('Invoice').delete().eq('schoolId', id);
         await supabaseAdmin.from('FeeStructure').delete().eq('schoolId', id);
         
         await supabaseAdmin.from('MarklistConfig').delete().eq('schoolId', id);
         await supabaseAdmin.from('AssignmentSubmission').delete().eq('schoolId', id);
         await supabaseAdmin.from('Assignment').delete().eq('schoolId', id);
-        await supabaseAdmin.from('ResourceProgress').delete().eq('schoolId', id);
-        await supabaseAdmin.from('UnitPackResource').delete().eq('schoolId', id);
         await supabaseAdmin.from('BookRequest').delete().eq('schoolId', id);
         await supabaseAdmin.from('UnitPack').delete().eq('schoolId', id);
         await supabaseAdmin.from('Book').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Lesson').delete().eq('schoolId', id);
         
         await supabaseAdmin.from('Exam').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Timetable').delete().eq('schoolId', id);
-        await supabaseAdmin.from('TeacherAssignment').delete().eq('schoolId', id);
         await supabaseAdmin.from('Period').delete().eq('schoolId', id);
         await supabaseAdmin.from('Class').delete().eq('schoolId', id);
         await supabaseAdmin.from('Grade').delete().eq('schoolId', id);

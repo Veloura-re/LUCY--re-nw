@@ -59,7 +59,7 @@ const _getFamilyChildren = async (userId: string) => {
             }
         }
     });
-    return links.map(l => l.student);
+    return links.map((l: any) => l.student);
 };
 
 export const getFamilyChildren = unstable_cache(
@@ -103,23 +103,24 @@ const _getTeacherDashboardData = async (userId: string) => {
 
     // Standard Prisma Logic for Node.js
     const { prisma } = require('@/lib/prisma');
-    const [assignments, recentExams, clockInRecord] = await Promise.all([
-        prisma.teacherAssignment.findMany({
-            where: { teacherId: userId },
-            include: { class: { include: { grade: true } }, subject: true }
-        }),
-        prisma.exam.findMany({
-            where: { createdById: userId },
-            include: { subject: true },
-            take: 3
-        }),
-        prisma.staffAttendanceRecord.findFirst({
-            where: { userId, date: { gte: new Date(new Date().setHours(0,0,0,0)) } }
-        })
-    ]);
+    
+    const assignments = await prisma.teacherAssignment.findMany({
+        where: { teacherId: userId },
+        include: { class: { include: { grade: true } }, subject: true }
+    });
+    
+    const recentExams = await prisma.exam.findMany({
+        where: { createdById: userId },
+        include: { subject: true },
+        take: 3
+    });
+    
+    const clockInRecord = await prisma.staffAttendanceRecord.findFirst({
+        where: { userId, date: { gte: new Date(new Date().setHours(0,0,0,0)) } }
+    });
 
     return {
-        classes: assignments.map(a => ({
+        classes: assignments.map((a: any) => ({
             id: a.id,
             classId: a.classId,
             className: a.class.name,
@@ -179,15 +180,14 @@ const _getSchoolAnalytics = async (schoolId: string) => {
 
     // Standard Prisma Logic for Node.js
     const { prisma } = require('@/lib/prisma');
-    const [schoolInfo, studentCount, classCount, teacherCount] = await Promise.all([
-        prisma.school.findUnique({
-            where: { id: schoolId },
-            select: { name: true, schoolCode: true, domain: true, status: true, attendanceConfig: true, communicationsConfig: true, createdAt: true }
-        }),
-        prisma.student.count({ where: { schoolId } }),
-        prisma.class.count({ where: { grade: { schoolId } } }),
-        prisma.user.count({ where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } } })
-    ]);
+    
+    const schoolInfo = await prisma.school.findUnique({
+        where: { id: schoolId },
+        select: { name: true, schoolCode: true, domain: true, status: true, attendanceConfig: true, communicationsConfig: true, createdAt: true }
+    });
+    const studentCount = await prisma.student.count({ where: { schoolId } });
+    const classCount = await prisma.class.count({ where: { grade: { schoolId } } });
+    const teacherCount = await prisma.user.count({ where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } } });
 
     // Financial Data
     const invoices = await prisma.invoice.findMany({
@@ -224,23 +224,21 @@ const _getSchoolAnalytics = async (schoolId: string) => {
             if (r.status === 'PRESENT' || r.status === 'LATE') stats.present++;
         }
     });
-    const attendance = Array.from(attendanceMap.entries()).map(([date, stats]) => ({
+    const attendance = Array.from(attendanceMap.entries()).map(([date, stats]: any) => ({
         date: new Date(date).toLocaleDateString('en-US', { weekday: 'short' }),
         rate: stats.total > 0 ? (stats.present / stats.total) * 100 : 100
     }));
     const avgAttendance = attendance.length > 0 ? (attendance.reduce((acc, curr) => acc + curr.rate, 0) / attendance.length).toFixed(1) + "%" : "100%";
 
     // Academic Performance (Assignments + Exams)
-    const [submissions, gradeRecords] = await Promise.all([
-        prisma.assignmentSubmission.findMany({
-            where: { schoolId, status: 'GRADED', grade: { not: null } },
-            include: { assignment: { select: { subject: { select: { name: true } }, maxScore: true } } }
-        }),
-        prisma.gradeRecord.findMany({
-            where: { student: { schoolId }, status: 'SUBMITTED' },
-            include: { subject: { select: { name: true } }, exam: { select: { totalMarks: true } } }
-        })
-    ]);
+    const submissions = await prisma.assignmentSubmission.findMany({
+        where: { schoolId, status: 'GRADED', grade: { not: null } },
+        include: { assignment: { select: { subject: { select: { name: true } }, maxScore: true } } }
+    });
+    const gradeRecords = await prisma.gradeRecord.findMany({
+        where: { student: { schoolId }, status: 'SUBMITTED' },
+        include: { subject: { select: { name: true } }, exam: { select: { totalMarks: true } } }
+    });
 
     const subjectScores = new Map();
     
