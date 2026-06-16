@@ -24,11 +24,7 @@ async function main() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     const pool = new Pool({ 
-        user: 'postgres.caeeusbhwrkelnffbbub',
-        password: 'Amsocookd2133#',
-        host: 'aws-1-eu-west-1.pooler.supabase.com',
-        port: 5432,
-        database: 'postgres',
+        connectionString: env['DIRECT_URL'] || process.env.DIRECT_URL,
         ssl: { rejectUnauthorized: false }
     });
     
