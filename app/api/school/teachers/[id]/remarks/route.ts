@@ -12,7 +12,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const author = await getCachedUser(user.id);
-        if (!author || !['PRINCIPAL', 'SUPERADMIN'].includes(author.role)) {
+        if (!author || !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(author.role)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 

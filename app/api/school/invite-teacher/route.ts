@@ -5,7 +5,7 @@ import { sendInviteEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const school = await prisma.school.findUnique({ where: { id: dbUser.schoolId! } });
         if (!school) throw new Error("School not found");

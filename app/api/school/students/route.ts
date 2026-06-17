@@ -61,7 +61,7 @@ export async function GET(request: Request) {
 // POST: Add a new student
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const body = await request.json() as any;
         const targetSchoolId = user.schoolId;
 
@@ -130,7 +130,9 @@ export async function POST(request: Request) {
             // We use the school name for the email
             const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
             
-            await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
+            console.log(`📨 [STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
+            const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
+            console.log(`📨 [STUDENTS API] Invite email result:`, JSON.stringify(emailResult));
         }
 
         return secureJson({ student: result.student });
@@ -143,7 +145,7 @@ export async function POST(request: Request) {
 // PUT: Update student details
 export async function PUT(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const body = await request.json() as any;
         const { id, ...data } = body;
 

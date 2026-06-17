@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const config = await request.json();
 
         const updated = await prisma.school.update({

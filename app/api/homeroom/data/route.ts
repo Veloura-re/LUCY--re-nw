@@ -4,7 +4,7 @@ import { handleApiError, requireRole } from '@/lib/security';
 
 export async function GET(request: Request) {
     try {
-        const user = await requireRole(['HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
 
         // Find the class where this user is the homeroom teacher
         const classRecord = await prisma.class.findFirst({

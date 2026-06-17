@@ -6,7 +6,7 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function GET(request: Request) {
     try {
-        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
         const { searchParams } = new URL(request.url);
         
         const classId = searchParams.get('classId');

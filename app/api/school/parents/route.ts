@@ -4,7 +4,7 @@ import { requireRole, handleApiError } from '@/lib/security';
 
 export async function GET(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const parents = await prisma.user.findMany({
             where: {

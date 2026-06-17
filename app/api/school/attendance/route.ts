@@ -94,7 +94,7 @@ export async function POST(request: Request) {
                 const minsSinceStart = (now.getTime() - periodStart.getTime()) / (1000 * 60);
                 const isSameDay = now.toDateString() === attendanceDate.toDateString();
 
-                if (isSameDay && minsSinceStart > config.lockAfterMinutes && !['PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
+                if (isSameDay && minsSinceStart > config.lockAfterMinutes && !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
                     return NextResponse.json({
                         error: `Protocol Timeout: Attendance window expired (${config.lockAfterMinutes}m). Contact admin to unlock.`
                     }, { status: 403 });
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
             existingLocked = !!record;
         }
 
-        if (existingLocked && !['PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
+        if (existingLocked && !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
             return NextResponse.json({
                 error: 'Institutional Protocol: This log has been sealed and cannot be modified by staff. Contact administration for overrides.'
             }, { status: 403 });

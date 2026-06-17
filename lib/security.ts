@@ -5,10 +5,10 @@ import { NextResponse } from 'next/server';
 // This avoids top-level Prisma initialization which causes the handler32 error
 import type { Role } from '@prisma/client';
 
-export const ADMIN_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN'];
+export const ADMIN_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN'];
 export const TEACHER_ROLES: Role[] = ['TEACHER', 'HOMEROOM'];
-export const STAFF_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'];
-export const ALL_ROLES: Role[] = ['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT'];
+export const STAFF_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'];
+export const ALL_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT'];
 
 import { headers } from 'next/headers';
 
@@ -128,8 +128,8 @@ export async function requireSchoolLinked() {
 // remain unchanged as they don't depend on Prisma.
 
 export async function requireHomeroomAccess(classId: string) {
-    const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
-    if (user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
+    const user = await requireRole(['TEACHER', 'HOMEROOM', 'OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+    if (user.role === 'OWNER' || user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
 
     const { prisma } = require('@/lib/prisma');
     let classRecord: any = null;

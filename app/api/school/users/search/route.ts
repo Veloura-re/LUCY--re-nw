@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
         if (!query || query.length < 2) return NextResponse.json({ users: [] });
 
-        const canSearchStudentCode = ['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN'].includes(currentUser.role);
+        const canSearchStudentCode = ['OWNER', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN'].includes(currentUser.role);
 
         let results: any[] = [];
 

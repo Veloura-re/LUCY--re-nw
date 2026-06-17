@@ -33,7 +33,7 @@ export async function POST(req: Request) {
                     if (!link) return NextResponse.json({ error: "Forbidden - Not your child" }, { status: 403 });
                     if (!link.student.userId) return NextResponse.json({ error: "Student account not active" }, { status: 400 });
                     targetUserId = link.student.userId;
-                } else if (!['PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
+                } else if (!['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
                     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
                 } else {
                     const { data: student } = await supabaseAdmin
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
                 if (!link) return NextResponse.json({ error: "Forbidden - Not your child" }, { status: 403 });
                 if (!link.student.userId) return NextResponse.json({ error: "Student account not active" }, { status: 400 });
                 targetUserId = link.student.userId;
-            } else if (!['PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
+            } else if (!['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
                 return NextResponse.json({ error: "Forbidden" }, { status: 403 });
             } else {
                 // Admin can update anyone? Need to find student's userId
@@ -151,7 +151,7 @@ export async function GET(req: Request) {
                         .maybeSingle();
                     if (!link) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
                     if (link.student.userId) targetUserId = link.student.userId;
-                } else if (['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
+                } else if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
                     const { data: student } = await supabaseAdmin
                         .from('Student')
                         .select('userId')
@@ -179,7 +179,7 @@ export async function GET(req: Request) {
                 });
                 if (!link) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
                 if (link.student.userId) targetUserId = link.student.userId;
-            } else if (['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
+            } else if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
                 const student = await prisma.student.findUnique({
                     where: { id: studentId, schoolId: dbUser.schoolId! },
                     select: { userId: true }
