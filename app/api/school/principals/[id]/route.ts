@@ -93,8 +93,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         }
         
         const { revalidateTag } = require('next/cache');
-        revalidateTag(`school-${owner.schoolId}`);
-        revalidateTag(`users-${owner.schoolId}`);
+        revalidateTag(`school-${owner.schoolId}`, 'max');
+        revalidateTag(`users-${owner.schoolId}`, 'max');
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
@@ -148,8 +148,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         }
         
         const { revalidateTag } = require('next/cache');
-        revalidateTag(`school-${owner.schoolId}`);
-        revalidateTag(`users-${owner.schoolId}`);
+        revalidateTag(`school-${owner.schoolId}`, 'max');
+        revalidateTag(`users-${owner.schoolId}`, 'max');
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

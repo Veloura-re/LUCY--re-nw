@@ -5,7 +5,7 @@ import { syncAllSchoolMembers } from '@/lib/messaging';
 // POST /api/school/sync-groups — Bulk sync all users into their correct groups
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
         await syncAllSchoolMembers(user.schoolId);

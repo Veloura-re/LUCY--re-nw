@@ -4,7 +4,7 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function GET(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
         const supabaseAdmin = createSupabaseAdmin(

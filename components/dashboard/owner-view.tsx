@@ -214,11 +214,10 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                     </CardHeader>
                                     <CardContent className="p-8 flex-grow">
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-                                            {/* Featured Metric */}
                                             <div className="md:col-span-2 lg:col-span-4">
                                                 <MetricNode
                                                     label="Current Monthly Revenue"
-                                                    value="$14,250.00"
+                                                    value={`$${(analytics?.summary?.collectedFees || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                                                     icon={<DollarSign className="w-6 h-6 text-amber-500" />}
                                                     percentage={92}
                                                     trend="Positive Yield"
@@ -229,7 +228,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                             <div className="lg:col-span-1">
                                                 <MetricNode
                                                     label="Principals"
-                                                    value="2"
+                                                    value={analytics?.summary?.principalCount || 0}
                                                     icon={<Shield className="w-5 h-5" />}
                                                 />
                                             </div>
@@ -243,7 +242,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                              <div className="lg:col-span-1">
                                                 <MetricNode
                                                     label="Approvals"
-                                                    value="0"
+                                                    value={analytics?.summary?.pendingApprovals || 0}
                                                     icon={<BookOpen className="w-5 h-5" />}
                                                 />
                                             </div>

@@ -4,7 +4,7 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
     try {
-        const adminUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const adminUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         if (!adminUser.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
         const backupData = await request.json() as any;

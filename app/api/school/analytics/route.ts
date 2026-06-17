@@ -5,7 +5,7 @@ import { getSchoolAnalytics } from '@/lib/dashboard-data';
 
 export async function GET(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         // Use the centralized, cached analytics utility to ensure logic consistency
         const analytics = await getSchoolAnalytics(dbUser.schoolId!);
 

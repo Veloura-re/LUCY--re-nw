@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
         if (student?.classId) {
             await requireHomeroomAccess(student.classId);
         } else {
-            await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+            await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         }
 
         const remarks = await prisma.studentRemark.findMany({
@@ -40,7 +40,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ stu
 
         const user = student?.classId
             ? await requireHomeroomAccess(student.classId)
-            : await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+            : await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { content, term } = await request.json();
 

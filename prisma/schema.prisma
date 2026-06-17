@@ -26,6 +26,7 @@ model User {
   photoUrl               String?
   qualification          String?
   teacherCode            String?                 @unique
+  activeSessionId        String?
   authRequests           AbsenceAuthorization[]  @relation("AuthRequests")
   absenceAuthorizations  AbsenceAuthorization[]  @relation("UserAbsence")
   createdAssignments     Assignment[]

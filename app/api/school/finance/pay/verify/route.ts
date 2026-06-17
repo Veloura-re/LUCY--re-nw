@@ -4,7 +4,7 @@ import { requireRole, handleApiError } from "@/lib/security";
 
 export async function POST(req: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
 
         const body = await req.json();
         const paymentId = body.paymentId || body.payId;

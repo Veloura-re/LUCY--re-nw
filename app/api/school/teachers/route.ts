@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 // POST: Register a new teacher (and invite)
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const { name, email, phone, gender, teacherCode, qualification, photoUrl, role: rawRole } = await request.json() as any;
 
         if (!user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
@@ -75,7 +75,9 @@ export async function POST(request: Request) {
         // Find school name
         const school = await prisma.school.findUnique({ where: { id: user.schoolId } });
 
-        await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', token, 'TEACHER', user.schoolId);
+        console.log(`📨 [TEACHERS API] Sending invite to ${email} as ${role} for school "${school?.name}"`);
+        const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', token, role, user.schoolId);
+        console.log(`📨 [TEACHERS API] Invite email result:`, JSON.stringify(emailResult));
 
         return secureJson({ user: newUser, token });
 
@@ -87,7 +89,7 @@ export async function POST(request: Request) {
 // PUT: Update teacher details
 export async function PUT(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const { id, name, email, phone, gender, qualification, photoUrl, role: rawRole } = await request.json() as any;
 
         if (!id) return NextResponse.json({ error: "Teacher ID required" }, { status: 400 });

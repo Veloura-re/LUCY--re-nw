@@ -13,7 +13,7 @@ export async function GET() {
             select: { role: true, schoolId: true }
         });
 
-        if (!dbUser || (dbUser.role !== 'PRINCIPAL' && dbUser.role !== 'SUPERADMIN')) {
+        if (!dbUser || (dbUser.role !== 'OWNER' && dbUser.role !== 'PRINCIPAL' && dbUser.role !== 'SUPERADMIN')) {
             return new NextResponse("Forbidden", { status: 403 });
         }
 
