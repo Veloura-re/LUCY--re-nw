@@ -60,7 +60,7 @@ export async function GET(request: Request) {
     }
 }
 
-// POST - Create school and invite director
+// POST - Create school and invite owner
 export async function POST(request: Request) {
     const dbUser = await verifySuperAdmin();
 
@@ -69,14 +69,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json() as any;
-    const { name, directorEmail } = body;
+    const { name, ownerEmail } = body;
 
-    if (!name || !directorEmail) {
-        return NextResponse.json({ error: 'Name and director email required' }, { status: 400 });
+    if (!name || !ownerEmail) {
+        return NextResponse.json({ error: 'Name and owner email required' }, { status: 400 });
     }
 
     try {
-        console.log(`[AdminAPI] Creating school: ${name} (Director: ${directorEmail})`);
+        console.log(`[AdminAPI] Creating school: ${name} (Owner: ${ownerEmail})`);
         
         const { prisma } = require('@/lib/prisma');
         let school: any = null;
@@ -107,14 +107,14 @@ export async function POST(request: Request) {
             const { error: invErr } = await supabaseAdmin.from('InviteToken').insert({
                 id: crypto.randomUUID(),
                 token,
-                email: directorEmail,
-                role: 'PRINCIPAL',
+                email: ownerEmail,
+                role: 'OWNER',
                 schoolId: school.id,
                 expiresAt: expiresAt.toISOString(),
                 createdAt: new Date().toISOString()
             });
             if (invErr) throw invErr;
-            console.log(`[AdminAPI] Edge-Native Invite token created for ${directorEmail}`);
+            console.log(`[AdminAPI] Edge-Native Invite token created for ${ownerEmail}`);
         } else {
             try {
                 const result = await prisma.$transaction(async (tx: any) => {
@@ -134,13 +134,13 @@ export async function POST(request: Request) {
                     await tx.inviteToken.create({
                         data: {
                             token: createdToken,
-                            email: directorEmail,
-                            role: 'PRINCIPAL',
+                            email: ownerEmail,
+                            role: 'OWNER',
                             schoolId: createdSchool.id,
                             expiresAt,
                         },
                     });
-                    console.log(`[AdminAPI] Invite token created for ${directorEmail}`);
+                    console.log(`[AdminAPI] Invite token created for ${ownerEmail}`);
 
                     return { school: createdSchool, token: createdToken };
                 });
@@ -172,14 +172,14 @@ export async function POST(request: Request) {
                 const { error: invErr } = await supabaseAdmin.from('InviteToken').insert({
                     id: crypto.randomUUID(),
                     token,
-                    email: directorEmail,
-                    role: 'PRINCIPAL',
+                    email: ownerEmail,
+                    role: 'OWNER',
                     schoolId: school.id,
                     expiresAt: expiresAt.toISOString(),
                     createdAt: new Date().toISOString()
                 });
                 if (invErr) throw invErr;
-                console.log(`[AdminAPI] Fallback: Supabase REST Invite token created for ${directorEmail}`);
+                console.log(`[AdminAPI] Fallback: Supabase REST Invite token created for ${ownerEmail}`);
             }
         }
 
@@ -187,8 +187,8 @@ export async function POST(request: Request) {
 
         // Send invite email
         const { sendInviteEmail } = await import('@/lib/email');
-        console.log(`[AdminAPI] Sending invitation email to ${directorEmail}...`);
-        const emailResult = await sendInviteEmail(directorEmail, inviteUrl, name, token, 'PRINCIPAL', school.id);
+        console.log(`[AdminAPI] Sending invitation email to ${ownerEmail}...`);
+        const emailResult = await sendInviteEmail(ownerEmail, inviteUrl, name, token, 'OWNER', school.id);
 
         const res = emailResult as any;
         console.log(`[AdminAPI] Email send status: ${res.success} (Skipped: ${res.skipped})`);

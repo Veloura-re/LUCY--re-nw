@@ -122,6 +122,10 @@ export async function POST(request: Request) {
         const emailResult = await sendInviteEmail(email, inviteUrl, schoolName, token, 'PRINCIPAL', owner.schoolId);
         const res = emailResult as any;
 
+        if (!res.success && res.error) {
+            return NextResponse.json({ error: `Invite created but email failed: ${res.error}` }, { status: 500 });
+        }
+
         return NextResponse.json({ inviteToken: token, inviteUrl, emailSent: res.success && !res.skipped });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
