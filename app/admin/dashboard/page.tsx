@@ -35,7 +35,7 @@ export default function SuperAdminDashboard() {
     const [isCreating, setIsCreating] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [newSchoolName, setNewSchoolName] = useState("");
-    const [directorEmail, setDirectorEmail] = useState("");
+    const [ownerEmail, setOwnerEmail] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [inviteUrl, setInviteUrl] = useState<string | null>(null);
     const [inviteToken, setInviteToken] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export default function SuperAdminDashboard() {
             const res = await fetch('/api/admin/schools', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newSchoolName, directorEmail }),
+                body: JSON.stringify({ name: newSchoolName, ownerEmail }),
             });
 
             if (!res.ok) {
@@ -94,7 +94,7 @@ export default function SuperAdminDashboard() {
             setInviteToken(data.inviteToken);
             setEmailSent(data.emailSent);
             setNewSchoolName("");
-            setDirectorEmail("");
+            setOwnerEmail("");
             fetchSchools();
         } catch (err: any) {
             setError(err.message);
@@ -238,12 +238,12 @@ export default function SuperAdminDashboard() {
                                 />
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Director Email</label>
+                                <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Owner Email</label>
                                 <Input
                                     type="email"
-                                    placeholder="director@institution.edu"
-                                    value={directorEmail}
-                                    onChange={e => setDirectorEmail(e.target.value)}
+                                    placeholder="owner@institution.edu"
+                                    value={ownerEmail}
+                                    onChange={e => setOwnerEmail(e.target.value)}
                                     required
                                     className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
                                 />

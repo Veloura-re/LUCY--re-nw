@@ -35,6 +35,32 @@ interface TutorialStep {
 }
 
 const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
+    OWNER: [
+        {
+            title: "Executive Control",
+            description: "Welcome to your high-level administrative interface. Oversee all institutional data, financials, and personnel from a single vantage point.",
+            icon: Shield,
+            color: "bg-amber-500"
+        },
+        {
+            title: "Financial Overview",
+            description: "Access complete institutional ledger data. Monitor active revenue, track expenses, and view long-term fiscal health.",
+            icon: CreditCard,
+            color: "bg-eduGreen-500"
+        },
+        {
+            title: "Personnel Governance",
+            description: "Manage your directorial staff. Delegate full or partial permissions to Principals who will manage day-to-day scholastic activity.",
+            icon: Users,
+            color: "bg-blue-500"
+        },
+        {
+            title: "System Integrity",
+            description: "Ensure operational perfection across the institution. Monitor real-time status and security metrics to keep your neural network functioning smoothly.",
+            icon: Activity,
+            color: "bg-purple-500"
+        }
+    ],
     PRINCIPAL: [
         {
             title: "Institutional Pulse",

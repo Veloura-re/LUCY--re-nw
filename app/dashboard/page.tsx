@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { getCachedUser } from "@/lib/users";
 import { DirectorView } from "@/components/dashboard/director-view";
+import { OwnerView } from "@/components/dashboard/owner-view";
 import { ParentView } from "@/components/dashboard/parent-view";
 import { TeacherView } from "@/components/dashboard/teacher-view";
 import { StudentView } from "@/components/dashboard/student-view";
@@ -36,6 +37,12 @@ async function DashboardContent({ dbUser }: { dbUser: any }) {
     let dashboardData: any = null;
 
     switch (dbUser.role) {
+        case 'OWNER':
+            if (dbUser.schoolId) {
+                dashboardData = await getSchoolAnalytics(dbUser.schoolId);
+            }
+            return <OwnerView user={dbUser} school={dbUser.school} initialAnalytics={JSON.parse(JSON.stringify(dashboardData))} />;
+
         case 'PRINCIPAL':
             if (dbUser.schoolId) {
                 dashboardData = await getSchoolAnalytics(dbUser.schoolId);

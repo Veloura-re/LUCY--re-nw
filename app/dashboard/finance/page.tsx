@@ -39,7 +39,7 @@ export default async function FinancePage() {
 
     const schoolWithGrades = school ? { ...(school as any), grades: grades || [] } : null;
 
-    if (dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
+    if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
         return <FinanceView user={dbUser} school={schoolWithGrades} grades={grades || []} />;
     }
 

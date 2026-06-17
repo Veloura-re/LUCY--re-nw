@@ -41,8 +41,8 @@ export async function syncGroupMemberships(userId: string, schoolId: string, rol
         create: { chatRoomId: schoolRoom.id, userId }
     });
 
-    // 2. Ensure "Teachers Group" group — teachers, homeroom, principals, superadmin
-    if (role === Role.TEACHER || role === Role.HOMEROOM || role === Role.PRINCIPAL || role === Role.SUPERADMIN) {
+    // 2. Ensure "Teachers Group" group — teachers, homeroom, principals, owner, superadmin
+    if (role === Role.TEACHER || role === Role.HOMEROOM || role === Role.PRINCIPAL || role === Role.OWNER || role === Role.SUPERADMIN) {
         let facultyRoom = await prisma.chatRoom.findFirst({
             where: { schoolId, type: ChatRoomType.GROUP, name: 'Teachers Group' }
         });
