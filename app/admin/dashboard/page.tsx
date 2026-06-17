@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import {
     Plus, School, Users, GraduationCap, Copy, CheckCircle2,
     AlertCircle, Loader2, Trash2, Power, PowerOff, BookOpen,
-    ChevronRight, X, ArrowUpRight, Globe
+    ChevronRight, X, ArrowUpRight, Globe, ShieldCheck
 } from "lucide-react";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
 import { ManagePrincipalsModal } from "@/components/admin/manage-principals-modal";
+import { ManageOwnersModal } from "@/components/admin/manage-owners-modal";
 
 interface School {
     id: string;
@@ -44,6 +45,7 @@ export default function SuperAdminDashboard() {
     const [confirmAction, setConfirmAction] = useState<{ type: 'SUSPEND' | 'DELETE' | null, schoolId: string, schoolName: string }>({ type: null, schoolId: "", schoolName: "" });
     const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
     const [managePrincipalsSchool, setManagePrincipalsSchool] = useState<{ id: string, name: string } | null>(null);
+    const [manageOwnersSchool, setManageOwnersSchool] = useState<{ id: string, name: string } | null>(null);
 
     useEffect(() => {
         fetchSchools();
@@ -418,6 +420,13 @@ export default function SuperAdminDashboard() {
                                             </button>
                                         )}
                                         <button
+                                            onClick={() => setManageOwnersSchool({ id: school.id, name: school.name })}
+                                            className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
+                                            title="Manage Owners"
+                                        >
+                                            <ShieldCheck className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
                                             onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
                                             className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
                                             title="Manage Principals"
@@ -466,6 +475,13 @@ export default function SuperAdminDashboard() {
                 onClose={() => setManagePrincipalsSchool(null)}
                 schoolId={managePrincipalsSchool?.id || ""}
                 schoolName={managePrincipalsSchool?.name || ""}
+            />
+
+            <ManageOwnersModal
+                isOpen={manageOwnersSchool !== null}
+                onClose={() => setManageOwnersSchool(null)}
+                schoolId={manageOwnersSchool?.id || ""}
+                schoolName={manageOwnersSchool?.name || ""}
             />
         </div>
     );

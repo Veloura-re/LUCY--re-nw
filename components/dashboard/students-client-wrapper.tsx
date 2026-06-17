@@ -22,9 +22,10 @@ import { PenTool } from "lucide-react";
 interface StudentsClientWrapperProps {
     initialStudents: any[];
     initialGrades: any[];
+    me?: any;
 }
 
-export default function StudentsClientWrapper({ initialStudents, initialGrades }: StudentsClientWrapperProps) {
+export default function StudentsClientWrapper({ initialStudents, initialGrades, me }: StudentsClientWrapperProps) {
     const [isAdding, setIsAdding] = useState(false);
     const [newStudent, setNewStudent] = useState({
         firstName: "", lastName: "", grade: "", classId: "", email: "",
@@ -94,8 +95,13 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
             });
 
             if (res.ok) {
-                setStudents(prev => prev.filter(s => s.id !== confirmDeleteId));
-                setAlertConfig({ title: "Student Record Archived", message: "The database has successfully purged the selected entity.", isOpen: true, variant: "success" });
+                const data = await res.json() as any;
+                if (data.pendingApproval) {
+                    setAlertConfig({ title: "Request Submitted", message: "A request has been sent to the Owner for approval.", isOpen: true, variant: "success" });
+                } else {
+                    setStudents(prev => prev.filter(s => s.id !== confirmDeleteId));
+                    setAlertConfig({ title: "Student Record Archived", message: "The database has successfully purged the selected entity.", isOpen: true, variant: "success" });
+                }
             } else {
                 setAlertConfig({ title: "Purge Failed", message: "System locked. Unable to delete active student record.", isOpen: true, variant: "error" });
             }
@@ -509,9 +515,9 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades }
                 isOpen={!!confirmDeleteId}
                 onClose={() => setConfirmDeleteId(null)}
                 onConfirm={executeDelete}
-                title="Archive Student Record"
-                description="This action will permanentely deactivate the student's academic profile. Historical grade data will be retained in cold storage."
-                confirmText="Archive Record"
+                title={me?.role === 'PRINCIPAL' ? "Request Record Archival" : "Archive Student Record"}
+                description={me?.role === 'PRINCIPAL' ? "Request approval to permanently deactivate the student's academic profile." : "This action will permanently deactivate the student's academic profile. Historical grade data will be retained in cold storage."}
+                confirmText={me?.role === 'PRINCIPAL' ? "Request Archival" : "Archive Record"}
                 variant="danger"
             />
 

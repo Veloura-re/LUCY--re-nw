@@ -188,11 +188,27 @@ export async function PUT(request: Request) {
 // DELETE: Archive/Delete student
 export async function DELETE(request: Request) {
     try {
-        const user = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(['PRINCIPAL', 'OWNER', 'SUPERADMIN']);
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
         if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
+
+        const prefs = (user.preferences as any) || {};
+        const hasFullAccess = prefs?.fullAccess === true;
+
+        if (user.role === 'PRINCIPAL' && !hasFullAccess) {
+            await prisma.actionRequest.create({
+                data: {
+                    schoolId: user.schoolId!,
+                    requesterId: user.id,
+                    actionType: 'DELETE_STUDENT',
+                    payload: { studentId: id },
+                    status: 'PENDING'
+                }
+            });
+            return NextResponse.json({ success: true, pendingApproval: true, message: "Deletion request sent to Owner" });
+        }
 
         const student = await prisma.student.delete({
             where: { id, schoolId: user.schoolId! }

@@ -57,6 +57,8 @@ model User {
   authoredTeacherRemarks TeacherRemark[]         @relation("DossierAuthor")
   teacherAssignments     TeacherAssignment[]
   timetable              Timetable[]
+  requestedActions       ActionRequest[]         @relation("Requester")
+  targetedActions        ActionRequest[]         @relation("Target")
   school                 School?                 @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId, role])
@@ -79,6 +81,7 @@ model School {
   books                 Book[]
   bookRequests          BookRequest[]
   chatRooms             ChatRoom[]
+  classes               Class[]
   events                Event[]
   feeStructures         FeeStructure[]
   grades                Grade[]
@@ -91,6 +94,7 @@ model School {
   unitPacks             UnitPack[]
   users                 User[]
   restorePoints         RestorePoint[]
+  ActionRequest         ActionRequest[]
 }
 
 model RestorePoint {
@@ -138,6 +142,8 @@ model Class {
   students           Student[]
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
+  School             School?             @relation(fields: [schoolId], references: [id])
+  schoolId           String?
 }
 
 model Subject {
@@ -465,9 +471,9 @@ model TeacherRemark {
   id        String   @id @default(uuid())
   teacherId String
   authorId  String
-  type      String   // 'POSITIVE', 'NEGATIVE', 'REVIEW'
+  type      String // 'POSITIVE', 'NEGATIVE', 'REVIEW'
   content   String
-  rating    Int?     // 1-5, optional
+  rating    Int? // 1-5, optional
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   teacher   User     @relation("TeacherDossier", fields: [teacherId], references: [id], onDelete: Cascade)
@@ -874,6 +880,7 @@ enum PayrollStatus {
 
 enum Role {
   SUPERADMIN
+  OWNER
   PRINCIPAL
   TEACHER
   HOMEROOM
@@ -994,4 +1001,22 @@ enum RequestStatus {
   APPROVED
   REJECTED
   FULFILLED
+}
+
+model ActionRequest {
+  id           String   @id @default(uuid())
+  schoolId     String
+  school       School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  requesterId  String
+  requester    User     @relation("Requester", fields: [requesterId], references: [id])
+  targetUserId String?
+  targetUser   User?    @relation("Target", fields: [targetUserId], references: [id])
+  actionType   String // e.g., 'DELETE_STAFF', 'DELETE_STUDENT', 'DELETE_MARKLIST'
+  payload      Json? // Stores the exact data needed to execute the action later (e.g., { "email": "..." })
+  status       String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  reason       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([schoolId])
 }

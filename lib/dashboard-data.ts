@@ -59,7 +59,7 @@ const _getFamilyChildren = async (userId: string) => {
             }
         }
     });
-    return links.map((l: any) => l.student);
+    return JSON.parse(JSON.stringify(links.map((l: any) => l.student)));
 };
 
 export const getFamilyChildren = unstable_cache(
@@ -119,19 +119,19 @@ const _getTeacherDashboardData = async (userId: string) => {
         where: { userId, date: { gte: new Date(new Date().setHours(0,0,0,0)) } }
     });
 
-    return {
+    return JSON.parse(JSON.stringify({
         classes: assignments.map((a: any) => ({
             id: a.id,
             classId: a.classId,
             className: a.class.name,
             subjectName: a.subject.name,
-            gradeLevel: a.class.grade.level,
+            gradeLevel: a.class.grade?.level || 0,
             studentCount: 0
         })),
         exams: recentExams,
         isClockedIn: !!clockInRecord,
         attendanceSummary: []
-    };
+    }));
 };
 
 export const getTeacherDashboardData = unstable_cache(
@@ -294,7 +294,7 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         where: { book: { schoolId }, completed: false }
     });
 
-    return {
+    return JSON.parse(JSON.stringify({
         summary: { 
             schoolInfo,
             studentCount, 
@@ -310,7 +310,7 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         attendance,
         performanceBySubject,
         recentActivity
-    };
+    }));
 };
 
 export const getSchoolAnalytics = unstable_cache(
