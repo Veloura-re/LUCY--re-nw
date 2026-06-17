@@ -7,7 +7,7 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function DELETE(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['PRINCIPAL', 'OWNER', 'SUPERADMIN']);
 
         const { email } = await request.json() as any;
 
@@ -30,6 +30,24 @@ export async function DELETE(request: Request) {
             });
 
             if (teacher) {
+                const prefs = (dbUser.preferences as any) || {};
+                const hasFullAccess = prefs?.fullAccess === true;
+
+                // Intercept for PRINCIPAL without full access
+                if (dbUser.role === 'PRINCIPAL' && !hasFullAccess) {
+                    await prisma.actionRequest.create({
+                        data: {
+                            schoolId: dbUser.schoolId,
+                            requesterId: dbUser.id,
+                            targetUserId: teacher.id,
+                            actionType: 'DELETE_STAFF',
+                            payload: { email },
+                            status: 'PENDING'
+                        }
+                    });
+                    return NextResponse.json({ success: true, pendingApproval: true, message: "Termination request sent to Owner" });
+                }
+
                 // Delete teacher assignments and timetables to free up tasks/classes
                 await prisma.teacherAssignment.deleteMany({
                     where: { teacherId: teacher.id }

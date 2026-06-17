@@ -28,10 +28,11 @@ import {
     Sparkles,
     LayoutDashboard,
     HelpCircle,
-    HardDrive
+    HardDrive,
+    Crown
 } from "lucide-react";
 
-export type Role = 'SUPERADMIN' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
+export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
 
 export const ICON_MAP = {
     Compass,
@@ -63,7 +64,8 @@ export const ICON_MAP = {
     Sparkles,
     LayoutDashboard,
     HelpCircle,
-    HardDrive
+    HardDrive,
+    Crown
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -83,6 +85,30 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Sparkles', label: "AI Config", href: "/admin/ai" },
         { icon: 'Cog', label: "Engine Settings", href: "/admin/settings" },
         { icon: 'HelpCircle', label: "Help Center", href: "/dashboard/help" },
+    ],
+    OWNER: [
+        { icon: 'Compass', label: "Overview", href: "/dashboard" },
+        { icon: 'CheckSquare', label: "Approvals", href: "/dashboard/approvals" },
+        { icon: 'Crown', label: "Principals", href: "/dashboard/principals" },
+        { icon: 'UserRound', label: "Teachers", href: "/dashboard/teachers" },
+        { icon: 'Scroll', label: "Students", href: "/dashboard/students" },
+        { icon: 'Library', label: "Classes", href: "/dashboard/classes" },
+        { icon: 'Briefcase', label: "Staffing", href: "/dashboard/staffing" },
+        { icon: 'Users', label: "Parents", href: "/dashboard/parents" },
+        { icon: 'PenTool', label: "Marklists Config", href: "/dashboard/director/marklist" },
+        { icon: 'Calendar', label: "Timetable", href: "/dashboard/timetable" },
+        { icon: 'Wrench', label: "Attendance Setup", href: "/dashboard/attendance/settings" },
+        { icon: 'CheckSquare', label: "Daily Attendance", href: "/dashboard/director/attendance" },
+        { icon: 'FileKey', label: "Authorizations", href: "/dashboard/authorizations" },
+        { icon: 'Hourglass', label: "Events", href: "/dashboard/events" },
+        { icon: 'Notebook', label: "Reports", href: "/dashboard/reports" },
+        { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
+        { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
+        { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
+        { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],
     PRINCIPAL: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
