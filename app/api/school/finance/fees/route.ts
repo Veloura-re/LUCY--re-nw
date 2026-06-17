@@ -4,7 +4,7 @@ import { requireRole, handleApiError } from "@/lib/security";
 
 export async function GET() {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { prisma } = require('@/lib/prisma');
         if (!prisma) {
@@ -39,7 +39,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const body = await req.json();
         const { name, amount, category, frequency, gradeId, description } = body;

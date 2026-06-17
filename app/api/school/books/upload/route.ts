@@ -5,7 +5,7 @@ import { requireRole, handleApiError } from '@/lib/security';
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const supabase = await createClient();
 
         const formData = await request.formData();

@@ -8,7 +8,7 @@ export async function DELETE(
 ) {
     const { id: feeId } = await params;
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         await prisma.feeStructure.delete({
             where: {

@@ -24,6 +24,8 @@ interface MessagesClientWrapperProps {
     initialTargetUserId?: string | null;
 }
 
+import { usePreferences } from "@/hooks/use-preferences";
+
 export default function MessagesClientWrapper({ 
     me, 
     initialRooms, 
@@ -37,6 +39,7 @@ export default function MessagesClientWrapper({
     const searchParams = useSearchParams();
     
     // Core State
+    const { preferences } = usePreferences();
     const [rooms, setRooms] = useState<any[]>(initialRooms);
     const [activeRoom, setActiveRoom] = useState<any>(initialActiveRoom);
     const [messages, setMessages] = useState<any[]>(initialMessages);
@@ -118,6 +121,7 @@ export default function MessagesClientWrapper({
                 { event: 'INSERT', schema: 'public', table: 'Message' },
                 async (payload) => {
                     const msg = payload.new;
+                    
                     // Check if message is for a room I'm in
                     const roomIdx = rooms.findIndex(r => r.id === msg.chatRoomId);
                     if (roomIdx !== -1) {
@@ -129,6 +133,35 @@ export default function MessagesClientWrapper({
                             });
                             markAsRead(activeRoom.id);
                         }
+                        
+                        // Play Chat Sound if enabled and not from me
+                        if (msg.fromUserId !== me.id && preferences?.chatSounds !== false) {
+                            try {
+                                // Fetch latest preferences dynamically or assume enabled if not explicitly false
+                                // For immediate sync, we can check localStorage or the global window object if needed, 
+                                // but a simple read of document body class or similar is fast.
+                                // Actually, let's play a high-tech "neural" chirp using Web Audio API
+                                const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+                                if (AudioContext) {
+                                    const ctx = new AudioContext();
+                                    const osc = ctx.createOscillator();
+                                    const gain = ctx.createGain();
+                                    osc.connect(gain);
+                                    gain.connect(ctx.destination);
+                                    osc.type = 'sine';
+                                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                                    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1);
+                                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                                    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.05);
+                                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
+                                    osc.start(ctx.currentTime);
+                                    osc.stop(ctx.currentTime + 0.2);
+                                }
+                            } catch (e) {
+                                console.error('Chat sound failed', e);
+                            }
+                        }
+
                         // Refresh room list positions
                         fetchRooms();
                     }
@@ -137,7 +170,7 @@ export default function MessagesClientWrapper({
             .subscribe();
 
         return () => { supabase.removeChannel(channel); };
-    }, [me, activeRoom, rooms]);
+    }, [me, activeRoom, rooms, preferences]);
 
     // Data Actions
     const fetchRooms = async () => {

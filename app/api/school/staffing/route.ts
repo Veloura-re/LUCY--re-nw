@@ -5,7 +5,7 @@ import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security
 // POST: Assign a teacher to a subject in a class
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { classId, subjectId, teacherId, periodsPerWeek = 5 } = (await request.json()) as any;
 

@@ -108,7 +108,7 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { classId, homeroomTeacherId } = await request.json();
 
@@ -171,7 +171,7 @@ export async function PATCH(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const body = await request.json();
         const { type, name, level, gradeId } = body;
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { id, type } = await request.json();
 

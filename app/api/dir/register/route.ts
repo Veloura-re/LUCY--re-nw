@@ -165,9 +165,9 @@ export async function POST(request: Request) {
         
         if (invite.schoolId) {
             const { revalidateTag } = require('next/cache');
-            revalidateTag(`school-${invite.schoolId}`);
-            revalidateTag(`users-${invite.schoolId}`);
-            revalidateTag(`teacher-registry-${invite.schoolId}`);
+            revalidateTag(`school-${invite.schoolId}`, 'max');
+            revalidateTag(`users-${invite.schoolId}`, 'max');
+            revalidateTag(`teacher-registry-${invite.schoolId}`, 'max');
         }
 
         return NextResponse.json({ success: true, userId });

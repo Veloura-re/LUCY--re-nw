@@ -5,7 +5,7 @@ import { DayOfWeek } from '@prisma/client';
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const { overwrite = false, includeWeekends = false } = (await request.json()) as any;
 
         // 1. Fetch all assignments, periods, and existing timetables

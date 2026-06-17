@@ -92,6 +92,49 @@ export async function POST(request: Request) {
             data: { updatedAt: new Date() }
         });
 
+        // --- EMAIL ALERTS LOGIC ---
+        try {
+            // Find other members of this room
+            const otherMembers = await prisma.chatRoomMember.findMany({
+                where: { chatRoomId, userId: { not: authUser.id } },
+                include: { user: { select: { email: true, name: true, preferences: true } } }
+            });
+
+            // Dynamically import to avoid edge runtime issues if any
+            const { sendEmail } = await import('@/lib/email');
+
+            for (const member of otherMembers) {
+                if (!member.user.email) continue;
+                const prefs = member.user.preferences as any;
+                // Only send if explicitly enabled (default is false if not set in preferences, or whatever user checked)
+                // Actually, let's assume it's true unless explicitly set to false if we want it to be aggressive,
+                // but the UI sets it, so we check if emailAlerts is exactly true.
+                if (prefs?.emailAlerts === true) {
+                    await sendEmail({
+                        to: member.user.email,
+                        subject: `New Secure Message from ${authUser.user_metadata?.name || 'LUCY OS'}`,
+                        html: `
+                            <div style="font-family: sans-serif; color: #111; max-w-2xl mx-auto border: 1px solid #eaeaea; border-radius: 8px; padding: 24px;">
+                                <h2 style="color: #147A52;">Neural Uplink Received</h2>
+                                <p>You have a new message from <strong>${authUser.user_metadata?.name || 'System'}</strong>:</p>
+                                <blockquote style="border-left: 4px solid #3BD68D; padding-left: 16px; color: #444; font-style: italic; background: #f9f9f9; padding: 12px; border-radius: 4px;">
+                                    ${content || '<i>[Attachment]</i>'}
+                                </blockquote>
+                                <p style="margin-top: 32px;">
+                                    <a href="https://www.5-cn.net/dashboard/messages?chatRoomId=${chatRoomId}" style="background-color: #147A52; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View in LUCY OS</a>
+                                </p>
+                                <p style="font-size: 12px; color: #888; margin-top: 48px;">
+                                    You are receiving this because Email Alerts are enabled in your App Experience settings.
+                                </p>
+                            </div>
+                        `
+                    });
+                }
+            }
+        } catch (emailErr) {
+            console.error('Failed to send email alerts:', emailErr);
+        }
+
         return secureJson({ message });
     } catch (e) {
         return handleApiError(e);

@@ -170,9 +170,13 @@ export async function syncGroupMemberships(userId: string, schoolId: string, rol
 
     const countAfter = await prisma.chatRoomMember.count({ where: { userId } });
     if (countAfter > countBefore) {
-        const { revalidateTag } = await import('next/cache');
-        const { getUserTag } = await import('@/lib/cache-keys');
-        revalidateTag(getUserTag(userId));
+        try {
+            const { revalidateTag } = await import('next/cache');
+            const { getUserTag } = await import('@/lib/cache-keys');
+            revalidateTag(getUserTag(userId), 'max');
+        } catch (e) {
+            console.warn('[syncGroupMemberships] revalidateTag skipped (likely called during render):', e);
+        }
     }
 }
 

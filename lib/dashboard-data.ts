@@ -152,13 +152,17 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         );
         const { data: grades } = await supabaseAdmin.from('Grade').select('id').eq('schoolId', schoolId);
         const gradeIds = (grades || []).map((g: any) => g.id);
-        const [students, classes, teachers] = await Promise.all([
+        const [students, classes, teachers, principals, approvals] = await Promise.all([
             supabaseAdmin.from('Student').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId),
             supabaseAdmin.from('Class').select('id', { count: 'exact', head: true }).in('gradeId', gradeIds),
-            supabaseAdmin.from('User').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId).in('role', ['TEACHER', 'HOMEROOM'])
+            supabaseAdmin.from('User').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId).in('role', ['TEACHER', 'HOMEROOM']),
+            supabaseAdmin.from('User').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId).eq('role', 'PRINCIPAL'),
+            supabaseAdmin.from('ActionRequest').select('id', { count: 'exact', head: true }).eq('schoolId', schoolId).eq('status', 'PENDING')
         ]);
 
         const teacherCount = teachers.count || 0;
+        const principalCount = principals.count || 0;
+        const pendingApprovals = approvals.count || 0;
 
         return {
             summary: {
@@ -167,6 +171,8 @@ const _getSchoolAnalytics = async (schoolId: string) => {
                 avgAttendance: "100%",
                 activeNodes: teacherCount,
                 staffPresence: { present: teacherCount, total: teacherCount },
+                principalCount,
+                pendingApprovals,
                 examCompletion: "0%",
                 collectedFees: 0,
                 pendingFees: 0,
@@ -188,6 +194,8 @@ const _getSchoolAnalytics = async (schoolId: string) => {
     const studentCount = await prisma.student.count({ where: { schoolId } });
     const classCount = await prisma.class.count({ where: { grade: { schoolId } } });
     const teacherCount = await prisma.user.count({ where: { schoolId, role: { in: ['TEACHER', 'HOMEROOM'] } } });
+    const principalCount = await prisma.user.count({ where: { schoolId, role: 'PRINCIPAL' } });
+    const pendingApprovals = await prisma.actionRequest.count({ where: { schoolId, status: 'PENDING' } });
 
     // Financial Data
     const invoices = await prisma.invoice.findMany({
@@ -228,7 +236,7 @@ const _getSchoolAnalytics = async (schoolId: string) => {
         date: new Date(date).toLocaleDateString('en-US', { weekday: 'short' }),
         rate: stats.total > 0 ? (stats.present / stats.total) * 100 : 100
     }));
-    const avgAttendance = attendance.length > 0 ? (attendance.reduce((acc, curr) => acc + curr.rate, 0) / attendance.length).toFixed(1) + "%" : "100%";
+    const avgAttendance = attendance.length > 0 ? (attendance.reduce((acc: any, curr: any) => acc + curr.rate, 0) / attendance.length).toFixed(1) + "%" : "100%";
 
     // Academic Performance (Assignments + Exams)
     const submissions = await prisma.assignmentSubmission.findMany({
@@ -302,6 +310,8 @@ const _getSchoolAnalytics = async (schoolId: string) => {
             avgAttendance,
             activeNodes: teacherCount,
             staffPresence: { present: teacherCount, total: teacherCount },
+            principalCount,
+            pendingApprovals,
             examCompletion,
             collectedFees,
             pendingFees,

@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         // Only Principal can manage events (exclusion of Superadmin/Teacher/Parent/Student per request)
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { title, description, date, targetRole } = (await request.json()) as any;
 
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');

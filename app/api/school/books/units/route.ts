@@ -124,7 +124,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const dbUser = await requireRole(['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
 
         const body = await req.json();
         const { title, description, resourceIds } = body;
