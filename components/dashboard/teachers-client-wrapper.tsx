@@ -76,7 +76,12 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
             });
 
             if (res.ok) {
-                refreshRegistry();
+                const data = await res.json() as any;
+                if (data.pendingApproval) {
+                    setAlertConfig({ title: "Request Submitted", message: "A request has been sent to the Owner for approval.", isOpen: true, variant: "success" });
+                } else {
+                    refreshRegistry();
+                }
             } else {
                 setAlertConfig({ title: "Operation Failed", message: "Institutional access policy prevented removal.", isOpen: true, variant: "error" });
             }
@@ -248,7 +253,16 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                 </CardContent>
             </Card>
 
-            <ConfirmationModal isOpen={!!confirmDeleteEmail} onClose={() => setConfirmDeleteEmail(null)} onConfirm={executeDelete} isLoading={isLoading} title="Personnel Offboarding" description={`Revoke system access for ${confirmDeleteEmail}?`} confirmText="Terminate Access" variant="danger" />
+            <ConfirmationModal 
+                isOpen={!!confirmDeleteEmail} 
+                onClose={() => setConfirmDeleteEmail(null)} 
+                onConfirm={executeDelete} 
+                isLoading={isLoading} 
+                title={me?.role === 'PRINCIPAL' ? "Request Personnel Dismissal" : "Personnel Offboarding"} 
+                description={me?.role === 'PRINCIPAL' ? `Request approval to revoke system access for ${confirmDeleteEmail}?` : `Revoke system access for ${confirmDeleteEmail}?`} 
+                confirmText={me?.role === 'PRINCIPAL' ? "Request Dismissal" : "Terminate Access"} 
+                variant="danger" 
+            />
             <AlertModal isOpen={alertConfig.isOpen} onClose={() => setAlertConfig(prev => ({ ...prev, isOpen: false }))} title={alertConfig.title} message={alertConfig.message} variant={alertConfig.variant} />
             <IDCardModal isOpen={!!selectedTeacherForID} onClose={() => setSelectedTeacherForID(null)} user={selectedTeacherForID} type="TEACHER" schoolName={schoolInfo?.name} schoolAddress={schoolInfo?.address} schoolLogo={schoolInfo?.logoUrl} />
             <EditTeacherModal isOpen={!!selectedTeacherForEdit} onClose={() => setSelectedTeacherForEdit(null)} onSuccess={refreshRegistry} teacher={selectedTeacherForEdit} />
