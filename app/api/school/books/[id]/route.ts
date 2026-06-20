@@ -8,9 +8,9 @@ export async function PATCH(
 ) {
     const { id } = await params;
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await req.json();
+        const body = await req.json() as any;
 
         const { prisma } = require('@/lib/prisma');
         if (!prisma) {
@@ -65,7 +65,7 @@ export async function DELETE(
 ) {
     const { id } = await params;
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
         const { prisma } = require('@/lib/prisma');
         if (!prisma) {

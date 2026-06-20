@@ -175,6 +175,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'FileKey', label: "Absence Permits", href: "/dashboard/student/authorizations" },
         { icon: 'Feather', label: "Exams", href: "/dashboard/student/exams" },
         { icon: 'Award', label: "Grades", href: "/dashboard/student/grades" },
+        { icon: 'Notebook', label: "Lessons", href: "/dashboard/student/lessons" },
         { icon: 'UserRound', label: "My Profile", href: "/dashboard/student/profile" },
         { icon: 'Hourglass', label: "Events", href: "/dashboard/events" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },

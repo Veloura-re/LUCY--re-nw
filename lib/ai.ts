@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 export async function analyzeStudentRisk(studentData: any) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-latest" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
     
     const prompt = `You are a school counselor and data analyst for LUCY, a modern school management platform.
 Analyze the following student data and provide a concise JSON risk assessment.

@@ -78,6 +78,12 @@ export async function GET(req: Request) {
                 status = "ACTIVE";
             }
 
+            const rawScore = (exam.isPublished || hasSubmitted)
+                ? (exam.gradeRecords[0]?.score ?? (exam.attempts[0]?.score ? Number(exam.attempts[0].score) : undefined))
+                : undefined;
+            const maxMarks = exam.totalMarks || (exam.config as any)?.maxScore || 100;
+            const pctScore = rawScore !== undefined ? Math.round((rawScore / maxMarks) * 100) : undefined;
+
             return {
                 id: exam.id,
                 title: exam.title,
@@ -85,7 +91,7 @@ export async function GET(req: Request) {
                 date: exam.dueAt,
                 duration: exam.duration || 60,
                 status,
-                score: (exam.isPublished || hasSubmitted) ? (exam.gradeRecords[0]?.score || (exam.attempts[0]?.score ? Number(exam.attempts[0].score) : undefined)) : undefined,
+                score: pctScore,
                 isPublished: exam.isPublished
             };
         });

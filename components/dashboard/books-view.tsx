@@ -215,7 +215,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
         return matchesSearch && matchesGrade;
     });
 
-    const isDirector = ['PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(user.role);
+    const isDirector = ['PRINCIPAL', 'SUPERADMIN', 'OWNER'].includes(user.role);
 
     if (loading) return (
         <div className="min-h-[60vh] flex items-center justify-center">

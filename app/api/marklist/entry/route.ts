@@ -44,7 +44,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
-        const body = await req.json();
+        const body = (await req.json()) as any;
         const { configId, updates } = body;
 
         if (!configId) {
@@ -89,12 +89,18 @@ export async function POST(req: Request) {
                 // Upsert individual marks if provided
                 if (marks && Array.isArray(marks)) {
                     for (const m of marks) {
-                        const scoreVal = isNaN(parseFloat(m.score)) ? 0 : parseFloat(m.score);
-                        await tx.marklistMark.upsert({
-                            where: { entryId_columnId: { entryId: entry.id, columnId: m.columnId } },
-                            update: { score: scoreVal },
-                            create: { entryId: entry.id, columnId: m.columnId, score: scoreVal }
-                        });
+                        if (m.score === null || m.score === undefined || m.score === "") {
+                            await tx.marklistMark.deleteMany({
+                                where: { entryId: entry.id, columnId: m.columnId }
+                            });
+                        } else {
+                            const scoreVal = isNaN(parseFloat(m.score)) ? 0 : parseFloat(m.score);
+                            await tx.marklistMark.upsert({
+                                where: { entryId_columnId: { entryId: entry.id, columnId: m.columnId } },
+                                update: { score: scoreVal },
+                                create: { entryId: entry.id, columnId: m.columnId, score: scoreVal }
+                            });
+                        }
                     }
                 }
 
@@ -111,14 +117,8 @@ export async function POST(req: Request) {
 
                     config.columns.forEach((col: any) => {
                         const mark = currentEntry.marks.find((m: any) => m.columnId === col.id);
-                        const score = mark ? parseFloat(mark.score) : 0;
-
-                        if (col.isOptional) {
-                            if (mark) {
-                                total += score;
-                                totalMaxMarks += col.maxMarks;
-                            }
-                        } else {
+                        if (mark !== undefined && mark !== null) {
+                            const score = parseFloat(mark.score) || 0;
                             total += score;
                             totalMaxMarks += col.maxMarks;
                         }

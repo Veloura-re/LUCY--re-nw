@@ -42,11 +42,14 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
     const [grading, setGrading] = useState(false);
 
     // Create state
+    const firstClassSubjects = classes[0]?.subjects || [];
+    const initialSubjectId = firstClassSubjects[0]?.id || subjects[0]?.id || "";
+
     const [newAssignment, setNewAssignment] = useState({
         title: "",
         description: "",
         classId: classes[0]?.classId || "",
-        subjectId: subjects[0]?.id || "",
+        subjectId: initialSubjectId,
         dueDate: "",
         type: "HOMEWORK",
         maxScore: 100,
@@ -211,6 +214,37 @@ function AssignmentCard({ assignment, active, onClick }: any) {
 function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCancel, loading }: any) {
     const [uploading, setUploading] = useState(false);
 
+    // Filter subjects to only those assigned to the selected class (cohort)
+    const selectedClass = classes.find((c: any) => c.classId === data.classId);
+    let filteredSubjects = selectedClass?.subjects || [];
+
+    // Fallback in case no subjects are assigned to the selected class
+    if (filteredSubjects.length === 0) {
+        const allAssignedSubjects = subjects.filter((s: any) =>
+            classes.some((c: any) => c.subjects?.some((sub: any) => sub.id === s.id))
+        );
+        filteredSubjects = allAssignedSubjects.length > 0 ? allAssignedSubjects : subjects;
+    }
+
+    const handleClassChange = (classId: string) => {
+        const selectedCls = classes.find((c: any) => c.classId === classId);
+        let classSubjects = selectedCls?.subjects || [];
+        if (classSubjects.length === 0) {
+            classSubjects = subjects.filter((s: any) =>
+                classes.some((c: any) => c.subjects?.some((sub: any) => sub.id === s.id))
+            );
+            if (classSubjects.length === 0) {
+                classSubjects = subjects;
+            }
+        }
+        const firstSubjectId = classSubjects[0]?.id || "";
+        setData({
+            ...data,
+            classId,
+            subjectId: firstSubjectId
+        });
+    };
+
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.length) return;
         setUploading(true);
@@ -260,7 +294,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                             className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase tracking-widest ring-0"
                         />
                     </ConfigField>
-
+ 
                     <ConfigField label="TEMPORAL DEADLINE" icon={Clock}>
                         <Input 
                             type="datetime-local"
@@ -270,10 +304,10 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                         />
                     </ConfigField>
                 </div>
-
+ 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     <ConfigField label="COHORT" icon={Users}>
-                        <Select value={data.classId} onValueChange={(v) => setData({ ...data, classId: v })}>
+                        <Select value={data.classId} onValueChange={handleClassChange}>
                             <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase">
                                 <SelectValue placeholder="CLASS" />
                             </SelectTrigger>
@@ -282,18 +316,18 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                             </SelectContent>
                         </Select>
                     </ConfigField>
-
+ 
                     <ConfigField label="NEURAL PATH" icon={Brain}>
                          <Select value={data.subjectId} onValueChange={(v) => setData({ ...data, subjectId: v })}>
                             <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase">
                                 <SelectValue placeholder="SUBJECT" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl">
-                                {subjects.map((s: any) => <SelectItem key={s.id} value={s.id} className="focus:bg-white focus:text-black">{s.name}</SelectItem>)}
+                                {filteredSubjects.map((s: any) => <SelectItem key={s.id} value={s.id} className="focus:bg-white focus:text-black">{s.name}</SelectItem>)}
                             </SelectContent>
                         </Select>
                     </ConfigField>
-
+ 
                     <ConfigField label="TYPE" icon={Activity}>
                          <Select value={data.type} onValueChange={(v) => setData({ ...data, type: v })}>
                             <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase">

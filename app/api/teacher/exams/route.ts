@@ -8,6 +8,10 @@ export async function POST(request: Request) {
         const dbUser = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
         const { classId, subjectId, title, date, maxScore, questions, duration, isLocked, config } = (await request.json()) as any;
 
+        const computedMaxScore = questions && Array.isArray(questions)
+            ? questions.reduce((acc: number, q: any) => acc + (parseFloat(q.points) || 0), 0)
+            : (parseInt(maxScore) || 100);
+
         const exam = await prisma.exam.create({
             data: {
                 title,
@@ -18,7 +22,8 @@ export async function POST(request: Request) {
                 dueAt: date ? new Date(date) : undefined,
                 duration: parseInt(duration) || undefined,
                 isLocked: isLocked !== undefined ? isLocked : true,
-                config: config ?? { maxScore: parseInt(maxScore) || 100 }
+                totalMarks: computedMaxScore,
+                config: config ?? { maxScore: computedMaxScore }
             },
             include: { subject: true, class: { include: { grade: true } } }
         });

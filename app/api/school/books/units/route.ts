@@ -49,7 +49,7 @@ export async function GET(req: Request) {
                 if (!resourceMap.has(res.unitPackId)) {
                     resourceMap.set(res.unitPackId, []);
                 }
-                const book = bookMap.get(res.bookId);
+                const book = bookMap.get(res.bookId) as any;
                 if (book) {
                     resourceMap.get(res.unitPackId)!.push({
                         ...res,
@@ -124,9 +124,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await req.json();
+        const body = await req.json() as any;
         const { title, description, resourceIds } = body;
 
         if (!title) return new NextResponse("Title required", { status: 400 });
