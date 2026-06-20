@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { requireRole, handleApiError, secureJson, rateLimit, TEACHER_ROLES } from "@/lib/security";
 import { AiQuestionsArraySchema } from "@/lib/schemas";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "");
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req: Request) {
     const limit = rateLimit(req, "teacher/exams/extract", 10);
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing input data (image or text)" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const typeConstraint = allowedTypes.length > 0
             ? `ONLY use these question types: ${allowedTypes.join(", ")}.`

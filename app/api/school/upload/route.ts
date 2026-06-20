@@ -23,13 +23,14 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Unsupported file format. Please upload images, PDFs, or Word documents.' }, { status: 400 });
         }
 
+        const targetBucket = 'school-assets';
         const fileExtension = file.name.split('.').pop();
         const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
-        // Optionally organize by date or just root
-        const filePath = `${fileName}`;
+        // Organize by bucket/folder name within the public school-assets bucket
+        const filePath = `${bucket}/${fileName}`;
 
         const { data, error } = await supabase.storage
-            .from(bucket)
+            .from(targetBucket)
             .upload(filePath, file, {
                 cacheControl: '3600',
                 upsert: false
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
         }
 
         const { data: { publicUrl } } = supabase.storage
-            .from(bucket)
+            .from(targetBucket)
             .getPublicUrl(filePath);
 
         return NextResponse.json({ url: publicUrl });

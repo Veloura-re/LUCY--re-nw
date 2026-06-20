@@ -8,7 +8,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     try {
         const dbUser = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
 
-        const body = await req.json();
+        const body = (await req.json()) as any;
         const { questions, isLocked, isPublished, title, duration, config } = body;
 
         // Verify ownership?
@@ -18,6 +18,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             return NextResponse.json({ error: "Access Denied" }, { status: 403 });
         }
 
+        const computedMaxScore = questions && Array.isArray(questions)
+            ? questions.reduce((acc: number, q: any) => acc + (parseFloat(q.points) || 0), 0)
+            : undefined;
+
         const updated = await prisma.exam.update({
             where: { id },
             data: {
@@ -26,7 +30,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                 isPublished: isPublished ?? undefined,
                 title: title ?? undefined,
                 duration: duration ?? undefined,
-                config: config ?? undefined,
+                totalMarks: computedMaxScore ?? undefined,
+                config: config ?? (computedMaxScore !== undefined ? { ...((exam.config as any) || {}), maxScore: computedMaxScore } : undefined),
             } as any,
             include: {
                 subject: true,

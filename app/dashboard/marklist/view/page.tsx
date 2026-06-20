@@ -120,14 +120,9 @@ function MarklistViewContent() {
 
         columns.forEach(col => {
             const mark = entry.marks.find((m: Mark) => m.columnId === col.id);
-            const score = mark ? parseFloat(mark.score) : 0;
 
-            if (col.isOptional) {
-                if (mark) {
-                    total += score;
-                    maxTotal += col.maxMarks;
-                }
-            } else {
+            if (mark !== undefined && mark !== null) {
+                const score = parseFloat(mark.score as any) || 0;
                 total += score;
                 maxTotal += col.maxMarks;
             }
@@ -151,34 +146,48 @@ function MarklistViewContent() {
 
         const existingMarkIndex = dimMarks.findIndex(m => m.columnId === columnId);
 
-        let score = parseFloat(val);
-        if (isNaN(score)) score = 0;
-
-        const col = config.columns.find((c: Column) => c.id === columnId);
-        if (col && score > col.maxMarks) {
-            toast.warning(`Max marks for ${col.title} is ${col.maxMarks}`);
-            score = col.maxMarks;
-        }
-        if (score < 0) score = 0;
-
-        if (existingMarkIndex >= 0) {
-            dimMarks[existingMarkIndex] = { ...dimMarks[existingMarkIndex], score };
+        if (val.trim() === "") {
+            if (existingMarkIndex >= 0) {
+                dimMarks.splice(existingMarkIndex, 1);
+            }
         } else {
-            dimMarks.push({ columnId, score });
+            let score = parseFloat(val);
+            if (isNaN(score)) score = 0;
+
+            const col = config.columns.find((c: Column) => c.id === columnId);
+            if (col && score > col.maxMarks) {
+                toast.warning(`Max marks for ${col.title} is ${col.maxMarks}`);
+                score = col.maxMarks;
+            }
+            if (score < 0) score = 0;
+
+            if (existingMarkIndex >= 0) {
+                dimMarks[existingMarkIndex] = { ...dimMarks[existingMarkIndex], score };
+            } else {
+                dimMarks.push({ columnId, score });
+            }
         }
 
         entry.marks = dimMarks;
         newEntries[entryIndex] = recalculateEntry(entry, config.columns);
 
         setEntries(newEntries);
-        setUnsavedChanges(prev => new Set(prev).add(entry.studentId));
+        setUnsavedChanges(prev => {
+            const newSet = new Set(prev);
+            newSet.add(entry.studentId);
+            return newSet;
+        });
     };
 
     const handleRemarkChange = (entryIndex: number, val: string) => {
         const newEntries = [...entries];
         newEntries[entryIndex] = { ...newEntries[entryIndex], remarks: val };
         setEntries(newEntries);
-        setUnsavedChanges(prev => new Set(prev).add(newEntries[entryIndex].studentId));
+        setUnsavedChanges(prev => {
+            const newSet = new Set(prev);
+            newSet.add(newEntries[entryIndex].studentId);
+            return newSet;
+        });
     };
 
     const saveAll = async () => {
@@ -191,10 +200,13 @@ function MarklistViewContent() {
                 updates.push({
                     studentId: e.studentId,
                     remarks: e.remarks,
-                    marks: e.marks.map(m => ({
-                        columnId: m.columnId,
-                        score: m.score
-                    }))
+                    marks: config.columns.map((col: Column) => {
+                        const m = e.marks.find(mark => mark.columnId === col.id);
+                        return {
+                            columnId: col.id,
+                            score: m !== undefined ? m.score : null
+                        };
+                    })
                 });
             }
         });
@@ -206,7 +218,7 @@ function MarklistViewContent() {
                 body: JSON.stringify({ configId, updates })
             });
 
-            const data = await res.json();
+            const data = (await res.json()) as any;
 
             if (res.ok) {
                 setUnsavedChanges(new Set());

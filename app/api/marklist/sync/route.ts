@@ -8,7 +8,7 @@ export async function POST(req: Request) {
         const { data: { user: authUser } } = await supabase.auth.getUser();
         if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const body = await req.json();
+        const body = (await req.json()) as any;
         const { configId, examId } = body;
 
         if (!configId) {
@@ -66,9 +66,17 @@ export async function POST(req: Request) {
         }
 
         const stats = await (prisma as any).$transaction(async (tx: any) => {
+            const targetExam = await tx.exam.findUnique({
+                where: { id: targetExamId },
+                select: { totalMarks: true }
+            });
+            const examMaxMarks = targetExam?.totalMarks || 100;
+
             let updatedCount = 0;
             for (const entry of config.entries) {
                 if (entry.percentage !== null) {
+                    const scaledScore = (entry.percentage / 100) * examMaxMarks;
+
                     await tx.gradeRecord.upsert({
                         where: {
                             studentId_examId: {
@@ -77,7 +85,7 @@ export async function POST(req: Request) {
                             }
                         },
                         create: {
-                            score: entry.percentage,
+                            score: scaledScore,
                             studentId: entry.studentId,
                             examId: targetExamId,
                             subjectId: config.subjectId,
@@ -86,7 +94,7 @@ export async function POST(req: Request) {
                             status: 'SUBMITTED'
                         },
                         update: {
-                            score: entry.percentage,
+                            score: scaledScore,
                             remark: entry.remarks || "Synced from Marklist",
                             updatedAt: new Date()
                         }
