@@ -34,14 +34,14 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = await req.json();
+        const body = await req.json() as any;
         const { classId, subjectId, periodId, date, topic, objectives, materials } = body;
 
         const existingLesson = await prisma.lesson.findFirst({
             where: {
                 classId,
                 subjectId,
-                periodId,
+                periodId: periodId || null,
                 date: new Date(date),
                 teacherId: dbUser.id
             }
@@ -52,19 +52,19 @@ export async function POST(req: Request) {
         if (existingLesson) {
             lesson = await prisma.lesson.update({
                 where: { id: existingLesson.id },
-                data: { topic, objectives, materials }
+                data: { topic, objectives, materials: materials || null }
             });
         } else {
             lesson = await prisma.lesson.create({
                 data: {
                     classId,
                     subjectId,
-                    periodId,
+                    periodId: periodId || null,
                     teacherId: dbUser.id,
                     date: new Date(date),
                     topic,
                     objectives,
-                    materials
+                    materials: materials || null
                 }
             });
         }

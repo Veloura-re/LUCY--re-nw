@@ -5,14 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 
 console.log("[DEBUG] Loading Chat Route Module (Edge-Native)");
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
-
-// Initialize Supabase client for Edge-native database access
-// This bypasses Prisma's current bundling issues in OpenNext
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req: Request) {
     console.log("[DEBUG] POST /api/ai/chat entered");
@@ -24,6 +18,13 @@ export async function POST(req: Request) {
         // 2. Authentication
         const user = await requireAuth();
         
+        // Initialize Supabase client for Edge-native database access lazily
+        // This bypasses Prisma's current bundling issues in OpenNext and avoids build-time environment variable requirements
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
         // Use Supabase directly to bypass Prisma bundling issues
         const { data: dbUser, error: dbError } = await supabase
             .from('User')
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
         console.log(`[DEBUG] Chatting with AI for user: ${dbUser.email}`);
 
         // 3. AI Interaction
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
         
         const lastMessage = messages[messages.length - 1].content;
         const result = await model.generateContent(lastMessage);

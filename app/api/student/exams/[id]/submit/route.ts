@@ -5,7 +5,8 @@ import { sendAssessmentReportEmail } from "@/lib/email";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiGradingSchema } from "@/lib/schemas";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(
     request: Request,
@@ -71,10 +72,10 @@ export async function POST(
                         qScore = (matchedCount / q.keywords.length) * weight * 0.8; // Max 80% for keywords
                     }
                     break;
-
+                case "LONG":
                     // AI EVALUATION
                     try {
-                        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
                         const aiPrompt = `
                             Evaluate this student's essay answer for a ${weight} point question.
                             Question: ${q.text}
@@ -84,7 +85,12 @@ export async function POST(
                             Score should be between 0 and ${weight}.
                         `;
                         const res = await model.generateContent(aiPrompt);
-                        const cleanedText = res.response.text().replace(/```json|```/g, "").trim();
+                        let cleanedText = res.response.text().trim();
+                        
+                        const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+                        if (jsonMatch) {
+                            cleanedText = jsonMatch[0];
+                        }
 
                         try {
                             const rawData = JSON.parse(cleanedText);
@@ -116,7 +122,7 @@ export async function POST(
                     examId: exam.id,
                     studentId: student.id,
                     submittedAt: new Date(),
-                    score: finalScore,
+                    score: earnedPoints, // Save raw earnedPoints in DB
                     answers: answers,
                     status: 'SUBMITTED',
                     metadata: { gradingDetails } as any
@@ -129,13 +135,13 @@ export async function POST(
                     studentId: student.id,
                     examId: exam.id,
                     subjectId: exam.subjectId,
-                    score: finalScore,
+                    score: earnedPoints, // Save raw earnedPoints in DB
                     status: 'SUBMITTED',
                     remark: `AI-Assisted Grade: ${earnedPoints}/${totalPoints}`,
                     createdById: user.id
                 },
                 update: {
-                    score: finalScore,
+                    score: earnedPoints, // Save raw earnedPoints in DB
                     status: 'SUBMITTED',
                     remark: `Re-submitted AI-Assisted Grade: ${earnedPoints}/${totalPoints}`
                 }
@@ -173,8 +179,8 @@ export async function POST(
                         studentName,
                         exam.title,
                         exam.subject.name,
-                        finalScore,
-                        100, // Total score is calculated to 100 base percentage
+                        earnedPoints, // Raw score
+                        totalPoints,  // Max score
                         'PRESENT',
                         schoolId,
                         `AI-Assisted Grade: ${earnedPoints}/${totalPoints}`
@@ -187,7 +193,7 @@ export async function POST(
 
         return NextResponse.json({
             success: true,
-            score: finalScore,
+            score: finalScore, // Keep percentage response for frontend toast
             totalPoints,
             earnedPoints
         });

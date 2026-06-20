@@ -153,11 +153,32 @@ export async function GET(request: Request) {
             }
         });
 
-        // Fetch student name for the header if viewing as parent/staff
-        student = await prisma.student.findUnique({
+        // Fetch student details for class-level exams
+        const targetStudent = await prisma.student.findUnique({
             where: { id: studentIdToFetch },
-            select: { firstName: true, lastName: true }
+            select: { classId: true, firstName: true, lastName: true }
         });
+
+        let allClassExams: any[] = [];
+        let studentAttendance: any[] = [];
+
+        if (targetStudent?.classId) {
+            allClassExams = await prisma.exam.findMany({
+                where: {
+                    classId: targetStudent.classId,
+                    dueAt: { lt: new Date() }, // past due
+                    isPublished: true // only published exams
+                },
+                include: { subject: true }
+            });
+
+            studentAttendance = await prisma.attendanceRecord.findMany({
+                where: {
+                    studentId: studentIdToFetch,
+                    examId: { in: allClassExams.map(e => e.id) }
+                }
+            });
+        }
 
         // Group by Subject
         const grouped: any = {};
@@ -172,7 +193,7 @@ export async function GET(request: Request) {
                 };
             }
 
-            const max = r.exam?.config ? (r.exam.config as any).maxScore || 100 : 100;
+            const max = r.exam?.totalMarks || (r.exam?.config as any)?.maxScore || 100;
             const attempt = attempts.find(a => a.examId === r.examId);
 
             grouped[r.subjectId].exams.push({
@@ -194,6 +215,43 @@ export async function GET(request: Request) {
             grouped[r.subjectId].totalMax += Number(max);
         });
 
+        // Add unsubmitted past-due exams as 0 unless excused
+        const gradedExamIds = new Set(records.map(r => r.examId).filter(Boolean));
+        allClassExams.forEach(exam => {
+            if (!gradedExamIds.has(exam.id)) {
+                const att = studentAttendance.find(a => a.examId === exam.id);
+                if (att?.status === 'EXCUSED') {
+                    // Excused exams do not penalize the student and are ignored
+                    return;
+                }
+
+                if (!grouped[exam.subjectId]) {
+                    grouped[exam.subjectId] = {
+                        subjectId: exam.subjectId,
+                        subjectName: exam.subject.name,
+                        exams: [],
+                        totalScore: 0,
+                        totalMax: 0
+                    };
+                }
+
+                const max = exam.totalMarks || (exam.config as any)?.maxScore || 100;
+
+                grouped[exam.subjectId].exams.push({
+                    id: `missed-${exam.id}`,
+                    title: exam.title,
+                    date: exam.dueAt || exam.createdAt,
+                    score: 0,
+                    maxScore: max,
+                    remark: "Missed / Unsubmitted",
+                    attempt: null
+                });
+
+                grouped[exam.subjectId].totalScore += 0;
+                grouped[exam.subjectId].totalMax += Number(max);
+            }
+        });
+
         const result = Object.values(grouped).map((g: any) => ({
             ...g,
             average: g.totalMax > 0 ? (g.totalScore / g.totalMax) * 100 : 0
@@ -201,7 +259,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json({
             grouped: result,
-            studentName: student ? `${student.firstName} ${student.lastName}` : null
+            studentName: targetStudent ? `${targetStudent.firstName} ${targetStudent.lastName}` : null
         });
     } catch (e) {
         return handleApiError(e);

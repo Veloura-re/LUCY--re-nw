@@ -37,7 +37,7 @@ export default function StudentDashboard() {
         const fetchDashboard = async () => {
             try {
                 const res = await fetch('/api/student/dashboard');
-                const result = await res.json();
+                const result = await res.json() as any;
                 setData(result);
                 setPhotoUrl(result?.student?.photoUrl || "");
             } catch (error) {
@@ -117,7 +117,7 @@ export default function StudentDashboard() {
             {/* Dynamic Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <DashboardGreeting
-                    name={data?.student?.name || 'Student'}
+                    name={data?.studentName || 'Student'}
                     role="STUDENT"
                     gender={data?.student?.gender}
                 />
