@@ -603,53 +603,313 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                 </div>
                             </header>
 
-                            {/* Two-Column Layout (Replaced with Coming Soon) */}
-                            <div className="flex-1 flex overflow-hidden bg-black/40 backdrop-blur-3xl relative items-center justify-center">
-                                {/* Ambient Background Elements */}
-                                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-eduGreen-500/10 rounded-full blur-[120px] pointer-events-none" />
-                                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
-                                
-                                <div className="relative flex flex-col items-center justify-center text-center p-8 md:p-12 z-10">
-                                    <motion.div
-                                        initial={{ scale: 0.8, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        transition={{ duration: 1, ease: "easeOut" }}
-                                        className="mb-8 relative"
+                            <div className="flex-1 flex overflow-hidden">
+                                <AnimatePresence>
+                                    {isSidebarOpen && (
+                                        <>
+                                            {/* Mobile Backdrop */}
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                exit={{ opacity: 0 }}
+                                                onClick={() => setIsSidebarOpen(false)}
+                                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150] md:hidden"
+                                            />
+                                            <motion.aside
+                                                initial={{ x: -340, opacity: 0 }}
+                                                animate={{ x: 0, opacity: 1 }}
+                                                exit={{ x: -340, opacity: 0 }}
+                                                className="fixed md:relative inset-y-0 left-0 w-[280px] sm:w-[300px] md:w-[340px] z-[160] md:z-10 border-r border-white/5 flex flex-col bg-[#050505] md:bg-white/[0.01] overflow-hidden shrink-0"
+                                            >
+                                                <div className="p-4 md:p-8 space-y-6 md:space-y-10 flex-1 overflow-y-auto scrollbar-hide">
+                                                    <div className="flex items-center justify-between md:hidden mb-4">
+                                                        <h2 className="text-[10px] font-black text-white/40 uppercase tracking-widest italic">Neural Console</h2>
+                                                        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="text-white/20">
+                                                            <X className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            startNewChat();
+                                                            if (window.innerWidth < 768) setIsSidebarOpen(false);
+                                                        }}
+                                                        className="w-full flex items-center justify-center gap-4 p-4 md:p-5 bg-white text-black rounded-2xl md:rounded-[1.5rem] text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl group"
+                                                    >
+                                                        <Plus className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform duration-300" />
+                                                        Initialize Thread
+                                                    </button>
+
+                                                    <section className="space-y-4 relative">
+                                                        <div className="flex items-center justify-between px-2">
+                                                            <h3 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
+                                                                <Layers className="w-3 h-3" /> Protocol
+                                                            </h3>
+                                                        </div>
+
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={() => setIsProtocolOpen(!isProtocolOpen)}
+                                                                className={cn(
+                                                                    "w-full flex items-center p-3 md:p-4 rounded-xl md:rounded-2xl border transition-all gap-3 md:gap-4 group relative overflow-hidden bg-white/[0.03]",
+                                                                    isProtocolOpen ? "border-white/20 shadow-2xl" : "border-white/5 hover:border-white/10"
+                                                                )}
+                                                            >
+                                                                <div className={cn(
+                                                                    "w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner transition-colors",
+                                                                    activeB.color
+                                                                )}>
+                                                                    <IconB className="w-4 h-4 md:w-5 md:h-5 text-black" />
+                                                                </div>
+                                                                <div className="flex flex-col items-start truncate flex-1 md:hidden lg:flex">
+                                                                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">{activeB.name}</span>
+                                                                    <span className="text-[7px] md:text-[8px] text-white/20 font-medium truncate w-full uppercase">Neural Sync Active</span>
+                                                                </div>
+                                                                <motion.div
+                                                                    animate={{ rotate: isProtocolOpen ? 180 : 0 }}
+                                                                    className="text-white/20"
+                                                                >
+                                                                    <Plus className="w-4 h-4" />
+                                                                </motion.div>
+                                                            </button>
+
+                                                            <AnimatePresence>
+                                                                {isProtocolOpen && (
+                                                                    <motion.div
+                                                                        initial={{ opacity: 0, y: -10 }}
+                                                                        animate={{ opacity: 1, y: 0 }}
+                                                                        exit={{ opacity: 0, y: -10 }}
+                                                                        className="absolute top-full left-0 right-0 mt-2 z-[200] p-4 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,1)] flex flex-col gap-4 max-h-[400px] overflow-y-auto scrollbar-hide backdrop-blur-3xl"
+                                                                    >
+                                                                        <div className="flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
+                                                                            {(['TEACHER', 'CORE'] as const).map((cat) => {
+                                                                                if (cat === 'CORE' && !showHiddenCore) return null;
+                                                                                return (
+                                                                                    <button
+                                                                                        key={cat}
+                                                                                        onClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            setActiveCategory(cat);
+                                                                                        }}
+                                                                                        onDoubleClick={(e) => {
+                                                                                            e.stopPropagation();
+                                                                                            if (cat === 'TEACHER') {
+                                                                                                setShowHiddenCore(prev => !prev);
+                                                                                            }
+                                                                                        }}
+                                                                                        className={cn(
+                                                                                            "flex-1 py-1.5 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                                                                                            activeCategory === cat
+                                                                                                ? "bg-white/10 text-white shadow-lg"
+                                                                                                : "text-white/40 hover:text-white/60"
+                                                                                        )}
+                                                                                    >
+                                                                                        {cat === 'CORE' ? 'Neural Core' : 'Educators'}
+                                                                                    </button>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+
+                                                                        <div className="grid grid-cols-2 gap-2">
+                                                                            {categories[activeCategory].map((key) => {
+                                                                                const bKey = key as BehaviorType;
+                                                                                const b = BEHAVIORS[bKey];
+                                                                                const isActive = behavior === bKey;
+                                                                                const BIcon = b.icon;
+
+                                                                                return (
+                                                                                    <button
+                                                                                        key={bKey}
+                                                                                        onClick={() => {
+                                                                                            setSessions(prev => prev.map(s =>
+                                                                                                s.id === activeSessionId ? { ...s, behavior: bKey } : s
+                                                                                            ));
+                                                                                            setIsProtocolOpen(false);
+                                                                                        }}
+                                                                                        className={cn(
+                                                                                            "group p-3 rounded-xl border transition-all flex flex-col items-center gap-2 text-center",
+                                                                                            isActive
+                                                                                                ? "border-white/20 bg-white/[0.08] shadow-xl"
+                                                                                                : "border-white/5 bg-white/5 hover:bg-white/[0.05] hover:border-white/10"
+                                                                                        )}
+                                                                                    >
+                                                                                        <div className={cn(
+                                                                                            "w-8 h-8 rounded-lg flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform text-white",
+                                                                                            isActive ? b.color : "bg-white/5"
+                                                                                        )}>
+                                                                                            <BIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-white/40")} />
+                                                                                        </div>
+                                                                                        <span className={cn(
+                                                                                            "text-[8px] font-black uppercase tracking-wider truncate w-full",
+                                                                                            isActive ? "text-white" : "text-white/40"
+                                                                                        )}>{b.name}</span>
+                                                                                    </button>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </motion.div>
+                                                                )}
+                                                            </AnimatePresence>
+                                                        </div>
+                                                    </section>
+
+                                                    <section className="space-y-4">
+                                                        <div className="flex items-center justify-between px-2">
+                                                            <h3 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
+                                                                <History className="w-3 h-3" /> Neural Threads
+                                                            </h3>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            {sessions.map((s) => (
+                                                                <button
+                                                                    key={s.id}
+                                                                    onClick={() => {
+                                                                        setActiveSessionId(s.id);
+                                                                        if (window.innerWidth < 768) setIsSidebarOpen(false);
+                                                                    }}
+                                                                    className={cn(
+                                                                        "w-full flex items-center justify-between p-4 rounded-2xl border transition-all group relative overflow-hidden",
+                                                                        activeSessionId === s.id ? "bg-white/5 border-white/20 text-white shadow-xl" : "border-transparent text-white/30 hover:bg-white/[0.02]"
+                                                                    )}
+                                                                >
+                                                                    <div className="flex items-center gap-3 truncate">
+                                                                        <div className={cn("w-2 h-2 rounded-full", BEHAVIORS[s.behavior].color)} />
+                                                                        <span className="text-[10px] font-black uppercase tracking-wider truncate italic italic">{s.title}</span>
+                                                                    </div>
+                                                                    {activeSessionId === s.id && (
+                                                                        <Trash2
+                                                                            className="w-3 h-3 text-white/10 hover:text-red-500 transition-colors"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                deleteSession(e, s.id);
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </section>
+                                                </div>
+
+                                                <div className="p-8 border-t border-white/5 md:bg-black/20">
+                                                    <div className="flex items-center gap-4 px-4 py-3 bg-white/[0.03] rounded-xl border border-white/5">
+                                                        <div className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-black text-xs italic">
+                                                            {userName?.[0] || 'U'}
+                                                        </div>
+                                                        <div className="flex flex-col truncate">
+                                                            <span className="text-[10px] font-black text-white uppercase tracking-widest truncate">{userName || 'Neural Subject'}</span>
+                                                            <span className="text-[8px] text-white/20 font-bold uppercase tracking-tighter">Biometric Uplink Active</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.aside>
+                                        </>
+                                    )}
+                                </AnimatePresence>
+
+                                <main className="flex-1 flex flex-col relative bg-gradient-to-br from-transparent to-white/[0.01]">
+                                    {/* Mobile Minimal Session Switcher - Only shows when sidebar is closed and we have sessions */}
+                                    {!isSidebarOpen && sessions.length > 0 && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="md:hidden flex flex-col border-b border-white/5 p-4 gap-4 bg-white/[0.02] shrink-0"
+                                        >
+                                            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                                                <button
+                                                    onClick={() => startNewChat()}
+                                                    className="flex items-center justify-center p-2.5 bg-white text-black rounded-xl shrink-0"
+                                                >
+                                                    <Plus className="w-4 h-4" />
+                                                </button>
+                                                {sessions.map(s => (
+                                                    <button
+                                                        key={s.id}
+                                                        onClick={() => setActiveSessionId(s.id)}
+                                                        className={cn(
+                                                            "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shrink-0 border transition-all truncate max-w-[140px] italic italic",
+                                                            activeSessionId === s.id ? "bg-white/5 border-white/20 text-white shadow-lg" : "border-transparent text-white/30"
+                                                        )}
+                                                    >
+                                                        {s.title}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    <div
+                                        ref={scrollRef}
+                                        className="flex-1 overflow-y-auto p-4 md:p-10 space-y-6 md:space-y-10 scrollbar-hide relative"
                                     >
-                                        <div className="absolute inset-0 bg-eduGreen-500/20 blur-[80px] rounded-full" />
-                                        <div className="w-24 h-24 rounded-full bg-black/80 border border-white/5 flex items-center justify-center relative z-10 shadow-[0_0_50px_rgba(20,122,82,0.3)] backdrop-blur-xl">
-                                            <Sparkles className="w-10 h-10 text-eduGreen-500 animate-pulse" />
+                                        <div className="max-w-4xl mx-auto space-y-8 md:space-y-12">
+                                            {messages.map((m, i) => <RenderMessage key={i} m={m} i={i} />)}
+                                            {isLoading && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full bg-white/5 border border-white/10 w-fit"
+                                                >
+                                                    <div className="flex gap-1.5">
+                                                        {[0, 1, 2].map((i) => (
+                                                            <motion.div
+                                                                key={i}
+                                                                animate={{
+                                                                    scale: [1, 1.2, 1],
+                                                                    opacity: [0.3, 1, 0.3]
+                                                                }}
+                                                                transition={{
+                                                                    repeat: Infinity,
+                                                                    duration: 1,
+                                                                    delay: i * 0.2
+                                                                }}
+                                                                className={cn("w-1.5 h-1.5 rounded-full", activeB.color)}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest ml-2">Thinking 🤤</span>
+                                                </motion.div>
+                                            )}
                                         </div>
-                                    </motion.div>
-                                    
-                                    <motion.h2 
-                                        initial={{ y: 20, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        transition={{ delay: 0.3, duration: 0.8 }}
-                                        className="text-3xl md:text-5xl font-black text-white uppercase tracking-[0.1em] mb-4 italic"
-                                    >
-                                        Neural Core <span className="text-eduGreen-500 not-italic font-medium">Initializing</span>
-                                    </motion.h2>
-                                    
-                                    <motion.p 
-                                        initial={{ y: 20, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        transition={{ delay: 0.5, duration: 0.8 }}
-                                        className="text-white/40 font-medium text-xs md:text-sm uppercase tracking-[0.3em] max-w-lg leading-relaxed"
-                                    >
-                                        The next generation of institutional AI is currently undergoing safety alignment and cognitive calibration. 
-                                    </motion.p>
-                                    
-                                    <motion.div 
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 1, duration: 0.5 }}
-                                        className="mt-12 flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-md shadow-2xl"
-                                    >
-                                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                                        <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">Deployment Incoming</span>
-                                    </motion.div>
-                                </div>
+                                    </div>
+
+                                    <div className="p-3 md:p-10 shrink-0">
+                                        <div className="max-w-4xl mx-auto relative group">
+                                            <form
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    const input = e.currentTarget.elements.namedItem('msg') as HTMLInputElement;
+                                                    if (input.value.trim() && !isLoading) {
+                                                        handleSend(input.value.trim());
+                                                        input.value = '';
+                                                    }
+                                                }}
+                                                className="relative flex items-center gap-2 md:gap-6"
+                                            >
+                                                <div className="flex-1 relative">
+                                                    <input
+                                                        name="msg"
+                                                        placeholder="INITIALIZE COMMAND..."
+                                                        autoComplete="off"
+                                                        className="w-full h-14 md:h-20 bg-white/[0.04] border border-white/10 rounded-2xl md:rounded-[2.5rem] px-5 md:px-10 py-4 md:py-6 text-xs md:text-base text-white placeholder:text-white/10 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all font-black italic tracking-widest uppercase"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="submit"
+                                                    disabled={isLoading}
+                                                    className={cn(
+                                                        "h-12 w-12 md:h-20 md:w-20 rounded-xl md:rounded-[2.5rem] flex items-center justify-center transition-all relative group/btn border border-white/10 shrink-0",
+                                                        activeB.color,
+                                                        isLoading ? "opacity-30 grayscale cursor-not-allowed" : "hover:scale-105 active:scale-95"
+                                                    )}
+                                                >
+                                                    <Send className="w-4 h-4 md:w-8 md:h-8 text-black relative z-10" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </main>
                             </div>
                         </motion.div>
                     </motion.div>

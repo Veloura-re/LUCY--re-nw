@@ -102,7 +102,7 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Select Assessment</label>
-                            <Select onValueChange={setSelectedExamId} value={selectedExamId}>
+                            <Select onValueChange={setSelectedExamId} value={selectedExamId} disabled={fetchingExams}>
                                 <SelectTrigger className="h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white">
                                     <SelectValue placeholder={fetchingExams ? "Loading assessments..." : "Choose Exam..."} />
                                 </SelectTrigger>
@@ -162,12 +162,8 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
 
                     <div className="flex justify-end gap-3 pt-4 border-t border-zinc-900/50">
                         <Button type="button" variant="ghost" onClick={onClose} className="text-zinc-500 hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
-                        <Button type="submit" disabled={loading || !selectedExamId || !score} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
-                            {loading ? (
-                                <><span className="w-4 h-4 mr-2 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Saving...</>
-                            ) : (
-                                <><Save className="w-4 h-4 mr-2" /> Save Mark</>
-                            )}
+                        <Button type="submit" isLoading={loading} disabled={!selectedExamId || !score} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
+                            {!loading && <Save className="w-4 h-4 mr-2" />} Save Mark
                         </Button>
                     </div>
                 </form>

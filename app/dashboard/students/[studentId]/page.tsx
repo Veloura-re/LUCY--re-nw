@@ -75,6 +75,7 @@ function StudentProfileContent() {
     }, [studentId, searchParams]);
 
     const fetchStudentData = async () => {
+        setLoading(true);
         try {
             const res = await fetch(`/api/school/students/${studentId}/report-card?_t=${Date.now()}`);
             const d: any = await res.json();
@@ -252,130 +253,10 @@ function StudentProfileContent() {
                     >
                         Export Full Dossier
                     </Button>
-                    <Button
-                        onClick={() => { setIsEditing(true); fetchGradesData(); }}
-                        className="bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
-                    >
-                        Edit Profile
-                    </Button>
-                    <Button
-                        onClick={() => setShowIDCard(true)}
-                        className="bg-zinc-100 hover:bg-white text-zinc-900 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
-                    >
-                        <CreditCard className="w-4 h-4 mr-2" /> Generate ID
-                    </Button>
                 </div>
             </div>
 
-            <IDCardModal
-                isOpen={showIDCard}
-                onClose={() => setShowIDCard(false)}
-                user={student}
-                type="STUDENT"
-                schoolName={student.school?.name}
-                schoolAddress={student.school?.address}
-                schoolLogo={student.school?.logoUrl}
-            />
 
-            <Dialog open={isEditing} onOpenChange={setIsEditing}>
-                <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-[95vw] md:max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem]">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl font-black italic">Edit Student Profile</DialogTitle>
-                        <DialogDescription className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Update registry information</DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleUpdateStudent} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                        <div className="md:col-span-2 flex justify-center py-4 bg-zinc-900/30 rounded-2xl">
-                            <ImageUpload value={editForm.photoUrl} onChange={(url) => setEditForm({ ...editForm, photoUrl: url })} bucket="avatars" />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">First Name</label>
-                            <Input value={editForm.firstName} onChange={e => setEditForm({ ...editForm, firstName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Last Name</label>
-                            <Input value={editForm.lastName} onChange={e => setEditForm({ ...editForm, lastName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Email</label>
-                            <Input value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Date of Birth</label>
-                            <Input type="date" value={editForm.dob} onChange={e => setEditForm({ ...editForm, dob: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Guardian Name</label>
-                            <Input value={editForm.guardianName} onChange={e => setEditForm({ ...editForm, guardianName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Guardian Phone</label>
-                            <Input value={editForm.guardianPhone} onChange={e => setEditForm({ ...editForm, guardianPhone: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Secondary Phone (Optional)</label>
-                            <Input value={editForm.secondaryPhone} onChange={e => setEditForm({ ...editForm, secondaryPhone: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Edit Age (Auto-calculates DOB)</label>
-                            <Input
-                                type="number"
-                                value={editForm.age}
-                                onChange={e => {
-                                    const age = e.target.value;
-                                    const dob = format(new Date(new Date().getFullYear() - parseInt(age || "0"), 0, 1), 'yyyy-MM-dd');
-                                    setEditForm({ ...editForm, age, dob });
-                                }}
-                                placeholder="Enter Age"
-                                className="bg-zinc-900 border-zinc-800 rounded-xl"
-                            />
-                        </div>
-
-                        {/* Grade / Class Assignment */}
-                        <div className="md:col-span-2 border-t border-zinc-800 pt-4 space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Class Assignment</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Select
-                                    value={editSelectedGradeId}
-                                    onValueChange={(gradeId: string) => {
-                                        setEditSelectedGradeId(gradeId);
-                                        setEditForm({ ...editForm, gradeId, classId: "" });
-                                    }}
-                                >
-                                    <SelectTrigger className="bg-zinc-900 border-zinc-800 rounded-xl h-11">
-                                        <SelectValue placeholder="Select Grade" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
-                                        {gradesData.map((g: any) => (
-                                            <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <Select
-                                    value={editForm.classId || ""}
-                                    onValueChange={(classId: string) => setEditForm({ ...editForm, classId })}
-                                    disabled={!editSelectedGradeId}
-                                >
-                                    <SelectTrigger className="bg-zinc-900 border-zinc-800 rounded-xl h-11">
-                                        <SelectValue placeholder="Select Class" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
-                                        {gradesData.find((g: any) => g.id === editSelectedGradeId)?.classes.map((c: any) => (
-                                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
-                        <div className="md:col-span-2 flex justify-end gap-3 mt-4">
-                            <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-zinc-500 hover:text-white font-black uppercase text-[10px] tracking-widest">Cancel</Button>
-                            <Button type="submit" isLoading={submitting} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black uppercase text-[10px] tracking-widest rounded-xl px-8">Save Changes</Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
 
             {/* Profile Info Card */}
             <Card className="bg-zinc-950/40 backdrop-blur-2xl border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
@@ -428,45 +309,13 @@ function StudentProfileContent() {
                     </div>
                 </div>
 
-                {student.parentLinks && student.parentLinks.length > 0 && (
-                    <div className="px-10 pb-10 flex flex-wrap gap-4">
-                        <div className="w-full text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
-                            <ShieldCheck className="w-3 h-3 text-eduGreen-600" />
-                            Verified Guardians (Official Link)
-                        </div>
-                        {student.parentLinks.map((link: any, idx: number) => (
-                            <div key={idx} className="flex items-center gap-3 p-3 bg-zinc-900/30 border border-zinc-800 rounded-2xl group/parent hover:border-eduGreen-900/50 transition-all">
-                                <Avatar className="h-8 w-8 border border-zinc-800">
-                                    <AvatarFallback className="text-[10px] font-black bg-zinc-950 text-zinc-600">
-                                        {link.parent?.name?.[0] || 'G'}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <div className="text-[11px] font-black text-white uppercase tracking-tight group-hover/parent:text-eduGreen-400 transition-colors">
-                                        {link.parent?.name}
-                                    </div>
-                                    <div className="text-[9px] font-bold text-zinc-700 uppercase tracking-widest">
-                                        {link.parent?.email}
-                                    </div>
-                                </div>
-                                <Link href={`/dashboard/messages?userId=${link.parent?.id}`}>
-                                    <div className="ml-2 w-8 h-8 rounded-xl bg-zinc-950 flex items-center justify-center text-zinc-700 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 transition-all">
-                                        <MessageSquare className="w-3.5 h-3.5" />
-                                    </div>
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                )}
+
             </Card>
 
             <Tabs defaultValue="academic" className="space-y-8" onValueChange={setActiveTab}>
                 <TabsList className="bg-zinc-950/50 border border-zinc-900 p-1.5 rounded-2xl h-auto flex-wrap justify-start">
                     <TabsTrigger value="academic" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Academic DNA</TabsTrigger>
                     <TabsTrigger value="attendance" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Biometric Log</TabsTrigger>
-                    <TabsTrigger value="remarks" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Institutional Remarks</TabsTrigger>
-                    <TabsTrigger value="notes" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Faculty Notes (Secure)</TabsTrigger>
-                    <TabsTrigger value="ai" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-blue-600 data-[state=active]:text-white flex items-center gap-2"><Sparkles className="w-3 h-3"/> AI Insights</TabsTrigger>
                 </TabsList>
 
                 {/* --- Academic Section --- */}
@@ -679,213 +528,7 @@ function StudentProfileContent() {
                     </div>
                 </TabsContent>
 
-                {/* --- Remarks Section --- */}
-                <TabsContent value="remarks" className="animate-in slide-in-from-bottom-4 duration-300">
-                    <Card className="bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem] ">
-                        <CardHeader className="p-8 border-b border-zinc-800/50 flex flex-row items-center justify-between">
-                            <div>
-                                <CardTitle className="text-xl font-black text-white tracking-tight">Institutional Narrative</CardTitle>
-                                <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Formal term observations for parents & students</CardDescription>
-                            </div>
-                            <Button
-                                onClick={() => setIsAddingRemark(!isAddingRemark)}
-                                className="bg-eduGreen-600/10 hover:bg-eduGreen-600/20 text-eduGreen-500 border border-eduGreen-900/30 rounded-xl h-10 font-black uppercase text-[9px] tracking-widest"
-                            >
-                                <Plus className="w-3 h-3 mr-2" /> {isAddingRemark ? "Cancel" : "New Remark"}
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="p-8">
-                            {isAddingRemark && (
-                                <div className="mb-8 p-6 bg-zinc-950/40 border border-zinc-900 rounded-3xl animate-in slide-in-from-top-4 duration-300">
-                                    <textarea
-                                        value={newRemark}
-                                        onChange={(e) => setNewRemark(e.target.value)}
-                                        placeholder="Enter formal academic or behavioral observation..."
-                                        className="w-full bg-zinc-900/50 border-zinc-800 rounded-2xl p-4 text-sm font-bold text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
-                                    />
-                                    <div className="flex justify-end mt-4">
-                                        <Button
-                                            onClick={handleAddRemark}
-                                            disabled={submitting || !newRemark.trim()}
-                                            className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-10 px-6 font-black uppercase text-[9px] tracking-[0.2em]"
-                                        >
-                                            {submitting ? "Encrypting..." : "Publish Remark"}
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                            <div className="space-y-6">
-                                {remarks.length === 0 ? (
-                                    <div className="py-20 text-center opacity-30">
-                                        <FileText className="w-10 h-10 mx-auto mb-4" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest">No formal observations registered</p>
-                                    </div>
-                                ) : (
-                                    remarks.map((r, i) => (
-                                        <div key={i} className="p-8 bg-zinc-950/40 border border-zinc-900/50 rounded-3xl relative">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar className="h-8 w-8 border border-zinc-800">
-                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-900 text-zinc-500">{(r.teacher?.name && r.teacher.name[0]) || 'T'}</AvatarFallback>
-                                                    </Avatar>
-                                                    <div>
-                                                        <div className="text-[10px] font-black text-zinc-100 uppercase tracking-tight">{r.teacher?.name}</div>
-                                                        <div className="text-[8px] font-bold text-zinc-700 uppercase tracking-widest">Authorized Faculty</div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">{formatDate(r.createdAt, 'MMM yyyy')}</div>
-                                            </div>
-                                            <p className="text-sm font-bold text-zinc-400 leading-relaxed italic pr-12">"{r.content}"</p>
-                                            <div className="absolute bottom-6 right-8 text-[8px] font-black text-eduGreen-600/50 uppercase tracking-[0.2em]">Validated Node</div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
 
-                {/* --- Notes Section --- */}
-                <TabsContent value="notes" className="animate-in slide-in-from-bottom-4 duration-300">
-                    <Card className="bg-eduGreen-950/5 border-eduGreen-900/20 rounded-[2.5rem] ">
-                        <CardHeader className="p-8 border-b border-eduGreen-900/10 flex flex-row items-center justify-between">
-                            <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <ShieldAlert className="w-4 h-4 text-eduGreen-500" />
-                                    <span className="text-[10px] font-black text-eduGreen-500 uppercase tracking-[0.3em]">Confidential Protocol</span>
-                                </div>
-                                <CardTitle className="text-xl font-black text-white">Faculty Internal Data</CardTitle>
-                                <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Privileged observations NOT visible to parents or students</CardDescription>
-                            </div>
-                            <Button
-                                onClick={() => setIsAddingNote(!isAddingNote)}
-                                className="bg-eduGreen-600/10 hover:bg-eduGreen-600/20 text-eduGreen-500 border border-eduGreen-900/30 rounded-xl h-10 font-black uppercase text-[9px] tracking-widest"
-                            >
-                                <Plus className="w-3 h-3 mr-2" /> {isAddingNote ? "Cancel" : "Log internal Incident"}
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="p-8">
-                            {isAddingNote && (
-                                <div className="mb-8 p-6 bg-zinc-950/10 border border-eduGreen-900/20 rounded-3xl animate-in slide-in-from-top-4 duration-300">
-                                    <textarea
-                                        value={newNote}
-                                        onChange={(e) => setNewNote(e.target.value)}
-                                        placeholder="Record confidential disciplinary or behavioral data..."
-                                        className="w-full bg-zinc-900/50 border-zinc-800 rounded-2xl p-4 text-sm font-bold text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
-                                    />
-                                    <div className="flex justify-end mt-4">
-                                        <Button
-                                            onClick={handleAddNote}
-                                            disabled={submitting || !newNote.trim()}
-                                            className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-10 px-6 font-black uppercase text-[9px] tracking-[0.2em]"
-                                        >
-                                            {submitting ? "Securing..." : "Commit to Secure Node"}
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                            <div className="space-y-6">
-                                {(!data.internalNotes || data.internalNotes.length === 0) ? (
-                                    <div className="py-20 text-center opacity-40">
-                                        <MessageSquare className="w-10 h-10 mx-auto mb-4 text-eduGreen-900" />
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-eduGreen-900/50">Registry is clear of disciplinary incidents</p>
-                                    </div>
-                                ) : (
-                                    data.internalNotes.map((n: any, i: number) => (
-                                        <div key={i} className="p-8 bg-zinc-950/40 border border-zinc-900/50 rounded-3xl relative">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar className="h-8 w-8 border border-zinc-800">
-                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-900 text-eduGreen-500">{(n.author?.name && n.author.name[0]) || 'A'}</AvatarFallback>
-                                                    </Avatar>
-                                                    <div>
-                                                        <div className="text-[10px] font-black text-zinc-100 uppercase tracking-tight">{n.author?.name}</div>
-                                                        <div className="text-[8px] font-bold text-zinc-700 uppercase tracking-widest">Reporting Official</div>
-                                                    </div>
-                                                </div>
-                                                <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">{formatDate(n.createdAt, 'MMM dd, HH:mm')}</div>
-                                            </div>
-                                            <p className="text-sm font-bold text-zinc-400 leading-relaxed italic pr-12">{n.content}</p>
-                                            <div className="absolute top-8 right-8 text-eduGreen-500/20">
-                                                <ShieldAlert className="w-6 h-6" />
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {/* --- AI Insights Section --- */}
-                <TabsContent value="ai" className="animate-in slide-in-from-bottom-4 duration-300">
-                    <Card className="bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem] ">
-                        <CardHeader className="p-8 border-b border-zinc-800/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Sparkles className="w-4 h-4 text-blue-500" />
-                                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em]">Predictive Analytics Engine</span>
-                                </div>
-                                <CardTitle className="text-xl font-black text-white italic">AI Risk <span className="text-zinc-500 not-italic ml-1">Assessment</span></CardTitle>
-                                <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Synthesize academic and behavioral data into actionable insights</CardDescription>
-                            </div>
-                            <Button
-                                onClick={handleRunAiAnalysis}
-                                disabled={analyzing}
-                                className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl h-12 px-6 font-black uppercase text-[10px] tracking-widest"
-                            >
-                                {analyzing ? <SpringingLoader message="Analyzing..." /> : "Generate Analysis"}
-                            </Button>
-                        </CardHeader>
-                        <CardContent className="p-8">
-                            {!aiAnalysis && !analyzing && (
-                                <div className="py-20 text-center opacity-40">
-                                    <Sparkles className="w-12 h-12 mx-auto mb-4 text-blue-900" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest">Awaiting execution command</p>
-                                </div>
-                            )}
-                            
-                            {aiAnalysis && (
-                                <div className="space-y-8 animate-in fade-in duration-500">
-                                    <div className="flex items-center gap-4 p-6 rounded-3xl border bg-zinc-950/50" style={{
-                                        borderColor: aiAnalysis.riskLevel === 'Low' ? '#059669' : aiAnalysis.riskLevel === 'Medium' ? '#d97706' : '#e11d48'
-                                    }}>
-                                        <div className="flex-1">
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-1">Overall Risk Level</div>
-                                            <div className="text-2xl font-black text-white">{aiAnalysis.riskLevel}</div>
-                                            <p className="text-sm font-bold text-zinc-400 mt-2">{aiAnalysis.summary}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-blue-500">Key Observations</h4>
-                                            <ul className="space-y-3">
-                                                {aiAnalysis.keyObservations?.map((obs: string, idx: number) => (
-                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-300">
-                                                        <div className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
-                                                        {obs}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Recommended Interventions</h4>
-                                            <ul className="space-y-3">
-                                                {aiAnalysis.recommendedInterventions?.map((int: string, idx: number) => (
-                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-300">
-                                                        <div className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                                                        {int}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </TabsContent>
             </Tabs>
         </div >
     );

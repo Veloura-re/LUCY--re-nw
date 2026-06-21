@@ -135,6 +135,13 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                 assignment={a} 
                                 onClick={() => {
                                     setSelectedId(a.id);
+                                    if (a.submission) {
+                                        setSubmissionContent(a.submission.content || "");
+                                        setSubmissionAttachments(a.submission.attachments || []);
+                                    } else {
+                                        setSubmissionContent("");
+                                        setSubmissionAttachments([]);
+                                    }
                                     setShowSubmitModal(true);
                                 }}
                             />
@@ -198,13 +205,20 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                 <label className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">RESOURCES</label>
                                                 <div className="space-y-3">
                                                     {selectedAssignment.materials.map((m: any, i: number) => (
-                                                        <div key={i} className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-white/10 transition-all">
+                                                        <a 
+                                                            key={i} 
+                                                            href={m.url} 
+                                                            download 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer" 
+                                                            className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-white/10 transition-all"
+                                                        >
                                                             <div className="flex items-center gap-4">
                                                                 <FileText className="w-5 h-5 text-zinc-500" />
                                                                 <span className="text-[10px] font-black text-white italic uppercase">{m.name || "Resource Link"}</span>
                                                             </div>
                                                             <Download className="w-4 h-4 text-zinc-700 group-hover:text-white transition-colors" />
-                                                        </div>
+                                                        </a>
                                                     ))}
                                                 </div>
                                             </div>
@@ -233,11 +247,11 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         setAnalyzing(false);
                                                     }
                                                 }}
-                                                disabled={analyzing}
+                                                isLoading={analyzing}
                                                 className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 group"
                                             >
-                                                <Brain className={cn("w-5 h-5 text-emerald-500", analyzing && "animate-spin")} />
-                                                <span className="text-[10px] font-black uppercase tracking-widest">{analyzing ? "CALIBRATING NEURAL MODELS..." : "INITIALIZE NEURAL BREAKDOWN"}</span>
+                                                {!analyzing && <Brain className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />}
+                                                <span className="text-[10px] font-black uppercase tracking-widest">INITIALIZE NEURAL BREAKDOWN</span>
                                             </Button>
 
                                             <AnimatePresence>
@@ -329,7 +343,15 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">
                                                                             <div className="flex items-center gap-3">
                                                                                 <FileText className="w-4 h-4 text-emerald-500" />
-                                                                                <span className="text-[10px] font-bold text-white tracking-widest uppercase">{m.name}</span>
+                                                                                <a 
+                                                                                    href={m.url} 
+                                                                                    download 
+                                                                                    target="_blank" 
+                                                                                    rel="noopener noreferrer" 
+                                                                                    className="text-[10px] font-bold text-white tracking-widest uppercase hover:underline hover:text-emerald-400 transition-colors"
+                                                                                >
+                                                                                    {m.name}
+                                                                                </a>
                                                                             </div>
                                                                             <Button 
                                                                                 type="button"
@@ -415,14 +437,11 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         setEvaluating(false);
                                                                     }
                                                                 }}
-                                                                disabled={evaluating || !submissionContent}
-                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-white hover:bg-white hover:text-black transition-all group relative overflow-hidden"
+                                                                isLoading={evaluating}
+                                                                disabled={!submissionContent}
+                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-white hover:bg-white hover:text-black transition-all group relative overflow-hidden text-emerald-500"
                                                             >
-                                                                {evaluating ? (
-                                                                    <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
-                                                                ) : (
-                                                                    <Brain className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
-                                                                )}
+                                                                {!evaluating && <Brain className="w-5 h-5 group-hover:scale-110 transition-transform" />}
                                                                 <span className="absolute bottom-1 text-[6px] font-black uppercase text-emerald-500/40">PRE-EVAL</span>
                                                             </Button>
 
@@ -448,10 +467,11 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         ) : (
                                                             <Button 
                                                                 onClick={handleSubmit}
-                                                                disabled={submitting || (!submissionContent && submissionAttachments.length === 0)}
+                                                                isLoading={submitting}
+                                                                disabled={!submissionContent && submissionAttachments.length === 0}
                                                                 className="h-16 px-12 rounded-[1.5rem] bg-white text-black font-black text-[10px] uppercase tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-2xl"
                                                             >
-                                                                {submitting ? "UPLOADING..." : "EXECUTE UPLOAD"}
+                                                                EXECUTE UPLOAD
                                                             </Button>
                                                         )}
                                                     </div>

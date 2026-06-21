@@ -77,6 +77,7 @@ export async function GET(request: Request) {
             where: classId ? { classId } : { createdById: dbUser.id },
             include: {
                 gradeRecords: true,
+                attempts: true,
                 subject: true
             },
             orderBy: { dueAt: 'desc' },

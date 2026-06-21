@@ -5,7 +5,7 @@ import { handleApiError, requireRole } from '@/lib/security';
 
 export async function GET(request: Request, { params }: { params: Promise<{ studentId: string }> }) {
     try {
-        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'PARENT', 'STUDENT']);
+        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT']);
         const { studentId } = await params;
 
         const student = await prisma.student.findUnique({
@@ -72,6 +72,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             orderBy: { createdAt: 'desc' }
         });
 
+        // Fetch internal notes
+        const internalNotes = await prisma.internalNote.findMany({
+            where: { studentId },
+            include: { author: { select: { id: true, name: true } } },
+            orderBy: { createdAt: 'desc' }
+        });
+
         // Fetch Homework / Assignments
         const assignments = await prisma.assignmentSubmission.findMany({
             where: { studentId },
@@ -105,10 +112,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
                 absent: allAttendance.filter(a => a.status === 'ABSENT').length,
                 history: attendanceRecords
             },
-            remarks
+            remarks,
+            internalNotes
         });
 
     } catch (e) {
         return handleApiError(e);
     }
 }
+

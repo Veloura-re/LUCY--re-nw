@@ -224,7 +224,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 />
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <Button type="submit" className="bg-white hover:bg-zinc-200 text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
+                                                <Button type="submit" isLoading={loading} className="bg-white hover:bg-zinc-200 text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
                                                 <Button variant="ghost" type="button" onClick={() => setIsAddingGrade(false)} className="text-zinc-600 hover:text-white font-medium uppercase tracking-[0.2em] text-[10px] h-14">Discard</Button>
                                             </div>
                                         </form>
