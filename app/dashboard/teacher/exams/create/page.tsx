@@ -28,6 +28,7 @@ function CreateExamContent() {
     const [classes, setClasses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [extracting, setExtracting] = useState(false);
+    const [saving, setSaving] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Form State
@@ -210,6 +211,7 @@ function CreateExamContent() {
             return;
         }
 
+        setSaving(true);
         try {
             const totalPoints = questions.reduce((acc, q) => acc + (q.points || 0), 0);
             const res = await fetch(`/api/teacher/exams`, {
@@ -238,9 +240,11 @@ function CreateExamContent() {
                 router.push('/dashboard/teacher/exams');
             } else {
                 toast.error("Creation Failed");
+                setSaving(false);
             }
         } catch (e) {
             toast.error("Error creating exam.");
+            setSaving(false);
         }
     };
 
@@ -414,6 +418,7 @@ function CreateExamContent() {
                         </Dialog>
                         <Button
                             onClick={handleSave}
+                            isLoading={saving}
                             className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase tracking-widest px-8 rounded-xl h-11 transition-all shadow-lg shadow-eduGreen-900/20"
                         >
                             Publish
@@ -874,10 +879,11 @@ function CreateExamContent() {
                                             </div>
                                             <Button
                                                 onClick={handleAiDraft}
-                                                disabled={extracting || !aiText.trim()}
+                                                isLoading={extracting}
+                                                disabled={!aiText.trim()}
                                                 className="bg-purple-600 hover:bg-purple-500 text-white font-medium uppercase tracking-widest px-8 h-12 rounded-xl shadow-xl shadow-purple-900/20 transition-all active:scale-95 gap-2"
                                             >
-                                                {extracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                                                {!extracting && <Zap className="w-4 h-4" />}
                                                 Synthesize
                                             </Button>
                                         </div>
@@ -927,15 +933,15 @@ function CreateExamContent() {
                         className="hidden"
                     />
                     <Button
-                        disabled={extracting}
-                        onClick={() => fileInputRef.current?.click()}
-                        className="bg-zinc-950 hover:bg-zinc-800 text-zinc-400 h-14 px-6 rounded-full border border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
-                    >
-                        {extracting ? <Loader2 className="w-5 h-5 animate-spin text-eduGreen-500" /> : <ImageIcon className="w-5 h-5" />}
-                        <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">
-                            {extracting ? "Scanning..." : "Scan Image"}
-                        </span>
-                    </Button>
+                                                        isLoading={extracting}
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                        className="bg-zinc-950 hover:bg-zinc-800 text-zinc-400 h-14 px-6 rounded-full border border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                                                    >
+                                                        {!extracting && <ImageIcon className="w-5 h-5" />}
+                                                        <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">
+                                                            {extracting ? "Scanning..." : "Scan Image"}
+                                                        </span>
+                                                    </Button>
                 </div>
             </div>
         </div>

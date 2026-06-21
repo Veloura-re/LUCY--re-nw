@@ -16,6 +16,7 @@ import { useReactToPrint } from "react-to-print";
 import { useRef } from "react";
 import { ReportCardPrint } from "@/components/dashboard/report-card-print";
 import { Printer, FileDown } from "lucide-react";
+import SpringingLoader from "@/components/dashboard/springing-loader";
 
 function StudentGradesContent() {
     const searchParams = useSearchParams();
@@ -41,7 +42,7 @@ function StudentGradesContent() {
         try {
             const url = studentId ? `/api/student/grades?studentId=${studentId}` : '/api/student/grades';
             const res = await fetch(url);
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.grouped) setSubjects(data.grouped);
             if (data.studentName) setStudentName(data.studentName);
         } catch (e) {
@@ -165,9 +166,8 @@ function StudentGradesContent() {
     };
 
     if (loading) return (
-        <div className="p-20 text-center">
-            <div className="w-10 h-10 border-2 border-eduGreen-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-[10px]">Accessing Academic Matrix...</p>
+        <div className="min-h-[60vh] flex items-center justify-center">
+            <SpringingLoader message="Accessing Academic Matrix..." />
         </div>
     );
 
@@ -288,9 +288,8 @@ function StudentGradesContent() {
 export default function StudentGradesPage() {
     return (
         <Suspense fallback={
-            <div className="p-20 text-center">
-                <div className="w-10 h-10 border-2 border-eduGreen-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-[10px]">Syncing with Matrix...</p>
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <SpringingLoader message="Syncing with Matrix..." />
             </div>
         }>
             <StudentGradesContent />

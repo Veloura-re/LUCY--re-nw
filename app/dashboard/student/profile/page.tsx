@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import Image from "next/image";
+import SpringingLoader from "@/components/dashboard/springing-loader";
 
 export default function StudentProfilePage() {
     const [data, setData] = useState<any>(null);
@@ -26,8 +27,8 @@ export default function StudentProfilePage() {
     }, []);
 
     if (loading) return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-            <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin" />
+        <div className="min-h-[60vh] flex items-center justify-center">
+            <SpringingLoader message="Querying Student Profile Matrix..." />
         </div>
     );
 

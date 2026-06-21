@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         const response = await result.response;
         const text = response.text();
 
-        return secureJson({ text });
+        return secureJson({ text, content: text });
     } catch (error: any) {
         console.error("[DEBUG] Chat API Error:", error);
         return secureJson({ 
