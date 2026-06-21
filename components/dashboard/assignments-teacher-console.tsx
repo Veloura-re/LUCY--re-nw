@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,54 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
     const [showCreate, setShowCreate] = useState(false);
     const [loading, setLoading] = useState(false);
     const [grading, setGrading] = useState(false);
+
+    const [selectedAssignmentDetails, setSelectedAssignmentDetails] = useState<any | null>(null);
+    const [classStudents, setClassStudents] = useState<any[]>([]);
+    const [detailsLoading, setDetailsLoading] = useState(false);
+
+    useEffect(() => {
+        if (!selectedAssignmentId) {
+            setSelectedAssignmentDetails(null);
+            setClassStudents([]);
+            return;
+        }
+
+        const assignment = assignments.find(a => a.id === selectedAssignmentId);
+        if (!assignment) return;
+
+        let active = true;
+
+        const fetchData = async () => {
+            setDetailsLoading(true);
+            try {
+                const [detailsRes, studentsRes] = await Promise.all([
+                    fetch(`/api/school/assignments?id=${selectedAssignmentId}`),
+                    fetch(`/api/school/students?classId=${assignment.classId}`)
+                ]);
+
+                if (!active) return;
+
+                if (detailsRes.ok && studentsRes.ok) {
+                    const detailsData = (await detailsRes.json()) as any;
+                    const studentsData = (await studentsRes.json()) as any;
+                    setSelectedAssignmentDetails(detailsData.assignment);
+                    setClassStudents(studentsData.students || []);
+                }
+            } catch (error) {
+                console.error("Error fetching assignment details & students:", error);
+            } finally {
+                if (active) {
+                    setDetailsLoading(false);
+                }
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            active = false;
+        };
+    }, [selectedAssignmentId, assignments]);
 
     // Create state
     const firstClassSubjects = classes[0]?.subjects || [];
@@ -137,16 +185,22 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                                 onCancel={() => setShowCreate(false)}
                                 loading={loading}
                             />
+                        ) : detailsLoading ? (
+                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#050505]/20 backdrop-blur-sm border border-white/5 rounded-[3.5rem] p-20 text-center">
+                                <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-6" />
+                                <h3 className="text-xl font-black text-zinc-400 italic uppercase">SYNCHRONIZING SECURE DISPATCH</h3>
+                                <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-2">Retrieving cohort submission logs and materials...</p>
+                            </div>
                         ) : selectedSubmissionId ? (
                             <GradingView 
-                                submission={selectedAssignment.submissions.find((s: any) => s.id === selectedSubmissionId)}
+                                submission={selectedAssignmentDetails?.submissions?.find((s: any) => s.id === selectedSubmissionId)}
                                 onBack={() => setSelectedSubmissionId(null)}
                                 onUpdate={(updatedSub: any) => {
                                     const updatedAssignments = assignments.map(a => {
-                                        if (a.id === selectedAssignment.id) {
+                                        if (a.id === selectedAssignmentDetails?.id) {
                                             return {
                                                 ...a,
-                                                submissions: a.submissions.map((s: any) => 
+                                                submissions: (a.submissions || []).map((s: any) => 
                                                     s.id === updatedSub.id ? { ...s, ...updatedSub } : s
                                                 )
                                             };
@@ -154,12 +208,23 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                                         return a;
                                     });
                                     setAssignments(updatedAssignments);
+
+                                    if (selectedAssignmentDetails) {
+                                        setSelectedAssignmentDetails({
+                                            ...selectedAssignmentDetails,
+                                            submissions: selectedAssignmentDetails.submissions.map((s: any) => 
+                                                s.id === updatedSub.id ? { ...s, ...updatedSub } : s
+                                            )
+                                        });
+                                    }
+
                                     setSelectedSubmissionId(null);
                                 }}
                             />
-                        ) : selectedAssignment ? (
+                        ) : selectedAssignmentDetails ? (
                             <AssignmentDetailsView 
-                                assignment={selectedAssignment} 
+                                assignment={selectedAssignmentDetails} 
+                                classStudents={classStudents}
                                 onSelectSubmission={setSelectedSubmissionId}
                             />
                         ) : (
@@ -431,10 +496,11 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                 <div className="flex justify-end pt-10">
                     <Button 
                         onClick={onSave}
-                        disabled={loading || !data.title || !data.dueDate}
+                        isLoading={loading}
+                        disabled={!data.title || !data.dueDate}
                         className="h-20 px-20 rounded-[2rem] bg-white text-black font-black text-[11px] uppercase tracking-[0.4em] hover:scale-105 transition-all shadow-2xl"
                     >
-                        {loading ? "INITIALIZING DISPATCH..." : "SYNC DISPATCH"}
+                        SYNC DISPATCH
                     </Button>
                 </div>
             </div>
@@ -442,7 +508,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
     );
 }
 
-function AssignmentDetailsView({ assignment, onSelectSubmission }: any) {
+function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmission }: any) {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
             <Card className="bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-[3.5rem] overflow-hidden">
@@ -462,8 +528,13 @@ function AssignmentDetailsView({ assignment, onSelectSubmission }: any) {
                 </div>
 
                 <div className="p-12 grid grid-cols-2 lg:grid-cols-4 gap-8 bg-zinc-950/40">
-                    <Metric label="REGISTERED STUDENTS" value={assignment._count?.submissions || 0} icon={Users} />
-                    <Metric label="AVERAGE SCORE" value="—" icon={Brain} />
+                    <Metric label="SUBMITTED / TOTAL" value={`${(assignment.submissions || []).length} / ${classStudents.length}`} icon={Users} />
+                    {(() => {
+                        const gradedSubmissions = (assignment.submissions || []).filter((s: any) => s.status === 'GRADED' && s.grade !== null);
+                        const totalScore = gradedSubmissions.reduce((sum: number, s: any) => sum + parseFloat(s.grade), 0);
+                        const avg = gradedSubmissions.length > 0 ? (totalScore / gradedSubmissions.length).toFixed(1) : "—";
+                        return <Metric label="AVERAGE SCORE" value={avg} icon={Brain} />;
+                    })()}
                     <Metric label="DAYS REMAINING" value="3" icon={Clock} />
                     <Metric label="MAX POINTS" value={assignment.maxScore} icon={Zap} />
                 </div>
@@ -477,20 +548,36 @@ function AssignmentDetailsView({ assignment, onSelectSubmission }: any) {
 
                 <Card className="bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-[3rem] overflow-hidden">
                     <div className="divide-y divide-white/5">
-                        {assignment.submissions?.length === 0 ? (
+                        {classStudents.length === 0 ? (
                             <div className="p-24 text-center space-y-4">
                                 <Activity className="w-10 h-10 text-zinc-800 mx-auto animate-pulse" />
-                                <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">No Coursework Discovered in Registry</p>
+                                <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">No Students Found in Cohort</p>
                             </div>
                         ) : (
-                            assignment.submissions.map((sub: any, idx: number) => (
-                                <SubmissionRow 
-                                    key={sub.id} 
-                                    submission={sub} 
-                                    idx={idx} 
-                                    onClick={() => onSelectSubmission(sub.id)}
-                                />
-                            ))
+                            classStudents.map((student: any, idx: number) => {
+                                const studentSubmission = (assignment.submissions || []).find((s: any) => s.studentId === student.id);
+                                const sub = studentSubmission || {
+                                    id: null,
+                                    student: {
+                                        firstName: student.firstName,
+                                        lastName: student.lastName,
+                                        studentCode: student.studentCode,
+                                        id: student.id
+                                    },
+                                    status: "MISSING",
+                                    submittedAt: null,
+                                    grade: null,
+                                    feedback: null
+                                };
+                                return (
+                                    <SubmissionRow 
+                                        key={student.id} 
+                                        submission={sub} 
+                                        idx={idx} 
+                                        onClick={() => sub.id && onSelectSubmission(sub.id)}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                 </Card>
@@ -500,25 +587,36 @@ function AssignmentDetailsView({ assignment, onSelectSubmission }: any) {
 }
 
 function SubmissionRow({ submission, idx, onClick }: any) {
+    const hasSubmitted = submission.id !== null;
     return (
         <motion.div 
             initial={{ opacity: 0, x: -10 }} 
             animate={{ opacity: 1, x: 0 }} 
             transition={{ delay: idx * 0.05 }}
-            onClick={onClick}
-            className="p-10 flex flex-col md:flex-row items-center justify-between gap-8 hover:bg-white/[0.02] transition-colors group cursor-pointer"
+            onClick={hasSubmitted ? onClick : undefined}
+            className={cn(
+                "p-10 flex flex-col md:flex-row items-center justify-between gap-8 transition-colors group",
+                hasSubmitted ? "hover:bg-white/[0.02] cursor-pointer" : "cursor-default opacity-50 bg-white/[0.005]"
+            )}
         >
             <div className="flex items-center gap-8 flex-1">
                 <div className="w-16 h-16 rounded-[1.5rem] bg-[#0a0a0a] border border-white/5 flex items-center justify-center font-black text-zinc-700 text-xl italic uppercase">
-                    {submission.student?.firstName[0]}{submission.student?.lastName[0]}
+                    {(submission.student?.firstName || "S")[0]}{(submission.student?.lastName || "")[0]}
                 </div>
                 <div>
-                    <h5 className="text-xl font-black text-white italic uppercase group-hover:text-eduGreen-500 transition-colors tracking-tight">
-                        {submission.student?.firstName} <span className="text-zinc-700">{submission.student?.lastName}</span>
+                    <h5 className={cn(
+                        "text-xl font-black italic uppercase tracking-tight",
+                        hasSubmitted ? "text-white group-hover:text-eduGreen-500 transition-colors" : "text-zinc-500"
+                    )}>
+                        {submission.student?.firstName} <span className={hasSubmitted ? "text-zinc-700" : "text-zinc-800"}>{submission.student?.lastName}</span>
                     </h5>
                     <div className="flex items-center gap-4 mt-1">
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">{submission.student?.studentCode}</span>
-                        <span className="text-[9px] font-bold text-zinc-500 italic">Submitted {format(new Date(submission.submittedAt), "PPP")}</span>
+                        {submission.submittedAt ? (
+                            <span className="text-[9px] font-bold text-zinc-500 italic">Submitted {format(new Date(submission.submittedAt), "PPP")}</span>
+                        ) : (
+                            <span className="text-[9px] font-bold text-zinc-700 italic uppercase tracking-widest">No Response</span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -528,15 +626,23 @@ function SubmissionRow({ submission, idx, onClick }: any) {
                     <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">CURRENT STATUS</span>
                     <div className={cn(
                         "px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest",
-                        submission.status === 'GRADED' ? "bg-emerald-500/10 text-emerald-500" : "bg-amber-500/10 text-amber-500"
+                        submission.status === 'GRADED' ? "bg-emerald-500/10 text-emerald-500" : 
+                        submission.status === 'SUBMITTED' ? "bg-amber-500/10 text-amber-500" :
+                        "bg-zinc-500/10 text-zinc-600"
                     )}>
                         {submission.status}
                     </div>
                 </div>
                 
-                <Button className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:scale-105 active:scale-95">
-                    <ChevronRight className="w-5 h-5" />
-                </Button>
+                {hasSubmitted ? (
+                    <Button className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:scale-105 active:scale-95">
+                        <ChevronRight className="w-5 h-5" />
+                    </Button>
+                ) : (
+                    <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 text-zinc-800 flex items-center justify-center">
+                        <XCircle className="w-5 h-5" />
+                    </div>
+                )}
             </div>
         </motion.div>
     );
@@ -633,6 +739,30 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap italic">
                         {submission.content || "NO CONTENT PROVIDED IN THIS DISPATCH"}
                     </div>
+
+                    {submission.attachments && Array.isArray(submission.attachments) && submission.attachments.length > 0 && (
+                        <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
+                            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block">Coursework Attachments</span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {submission.attachments.map((file: any, i: number) => (
+                                    <a 
+                                        key={i} 
+                                        href={file.url} 
+                                        download 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-all group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <FileText className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-[10px] font-bold text-white tracking-widest uppercase truncate max-w-[180px]">{file.name}</span>
+                                        </div>
+                                        <Download className="w-4 h-4 text-zinc-700 group-hover:text-white transition-colors" />
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -692,10 +822,10 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                 <div className="flex justify-end pt-10">
                     <Button 
                         onClick={handleSave}
-                        disabled={loading}
+                        isLoading={loading}
                         className="h-20 px-20 rounded-[2rem] bg-emerald-500 text-black font-black text-[11px] uppercase tracking-[0.4em] hover:bg-white transition-all shadow-2xl"
                     >
-                        {loading ? "PROCESSING EVALUATION..." : "SYNC EVALUATION"}
+                        SYNC EVALUATION
                     </Button>
                 </div>
             </div>

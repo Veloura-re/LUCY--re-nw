@@ -4,13 +4,13 @@ import { generateAssignmentDraft, analyzeStudentTask, preEvaluateSubmission, sum
 
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'STUDENT']);
-        const body = await request.json();
+        const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'STUDENT', 'PARENT']);
+        const body = await request.json() as any;
         const { mode, context } = body;
 
         if (mode === 'generate') {
             // Only staff can generate assignments
-            if (user.role === 'STUDENT') {
+            if (user.role === 'STUDENT' || user.role === 'PARENT') {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
             const draft = await generateAssignmentDraft(context);
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         }
 
         if (mode === 'summarize') {
-            if (user.role === 'STUDENT') {
+            if (user.role === 'STUDENT' || user.role === 'PARENT') {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
             const summary = await summarizeSubmission(context.content);

@@ -95,7 +95,7 @@ export async function GET(request: Request) {
             const { data: studentData } = await supabaseAdmin.from('Student').select('firstName, lastName').eq('id', studentIdToFetch).single();
             student = studentData;
 
-            const { data: gradeData } = await supabaseAdmin.from('GradeRecord').select('*, subject:Subject(name), exam:Exam(title, config, questions)').eq('studentId', studentIdToFetch).order('createdAt', { ascending: false });
+            const { data: gradeData } = await supabaseAdmin.from('GradeRecord').select('*, subject:Subject(name), exam:Exam(title, totalMarks, config, questions)').eq('studentId', studentIdToFetch).order('createdAt', { ascending: false });
             records = gradeData || [];
             
             // For edge we skip ExamAttempts to save latency, fallback to simple grades
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
                         totalMax: 0
                     };
                 }
-                const max = r.exam?.config?.maxScore || 100;
+                const max = r.exam?.totalMarks || r.exam?.config?.maxScore || 100;
                 grouped[r.subjectId].exams.push({
                     id: r.id,
                     title: r.exam?.title || "Assignment",

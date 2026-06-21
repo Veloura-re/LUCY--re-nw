@@ -12,9 +12,11 @@ export async function GET(request: Request) {
         const user = await requireSchoolLinked();
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
+        const classId = searchParams.get('classId');
         const page = parseInt(searchParams.get('page') || '1', 10);
         const limit = parseInt(searchParams.get('limit') || '50', 10);
-        const skip = (page - 1) * limit;
+        const skip = classId ? 0 : (page - 1) * limit;
+        const take = classId ? 1000 : limit;
 
         if (id) {
             const student = await prisma.student.findUnique({
@@ -24,10 +26,15 @@ export async function GET(request: Request) {
             return NextResponse.json({ student });
         }
 
+        const whereClause: any = { schoolId: user.schoolId };
+        if (classId) {
+            whereClause.classId = classId;
+        }
+
         // We still provide a fallback for clients who haven't migrated to Server Components
         const [students, total] = await Promise.all([
             prisma.student.findMany({
-                where: { schoolId: user.schoolId },
+                where: whereClause,
                 include: {
                     grade: true,
                     class: true,
@@ -38,9 +45,9 @@ export async function GET(request: Request) {
                 },
                 orderBy: { lastName: 'asc' },
                 skip,
-                take: limit
+                take
             }),
-            prisma.student.count({ where: { schoolId: user.schoolId } })
+            prisma.student.count({ where: whereClause })
         ]);
 
         return NextResponse.json({ 
