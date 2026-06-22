@@ -6,10 +6,11 @@ import {
   Cpu, Terminal as TerminalIcon, Shield, Command, Database, Search,
   Activity, Network
 } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ui/logo";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { ParticleField } from "@/components/public/animations";
 
 // ─── Scramble Text Hook ────────────────────────────────────────────────────────
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*<>/\\[]{}";
@@ -43,41 +44,7 @@ function useScramble(target: string, delay = 0) {
   return display;
 }
 
-// ─── Particle Field ────────────────────────────────────────────────────────────
-interface Particle { id: number; x: number; y: number; size: number; speed: number; opacity: number; angle: number; }
-function ParticleField() {
-  const [particles, setParticles] = useState<Particle[]>([]);
-  useEffect(() => {
-    setParticles(
-      Array.from({ length: 60 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 2 + 0.5,
-        speed: Math.random() * 20 + 15,
-        opacity: Math.random() * 0.4 + 0.05,
-        angle: Math.random() * 360,
-      }))
-    );
-  }, []);
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map(p => (
-        <motion.div
-          key={p.id}
-          className="absolute bg-white rounded-full"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size, opacity: p.opacity }}
-          animate={{
-            y: [0, -30, 0],
-            x: [0, Math.sin(p.angle) * 15, 0],
-            opacity: [p.opacity, p.opacity * 3, p.opacity],
-          }}
-          transition={{ duration: p.speed, repeat: Infinity, ease: "easeInOut", delay: p.id * 0.1 }}
-        />
-      ))}
-    </div>
-  );
-}
+
 
 // ─── 3D Tilt Card ─────────────────────────────────────────────────────────────
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -313,11 +280,13 @@ function SignalWallPreview() {
 export default function Home() {
 
   const [booting, setBooting] = useState(true);
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const hasBooted = sessionStorage.getItem("lucy_booted");
     if (hasBooted) {
       setBooting(false);
     }
+    setMounted(true);
   }, []);
 
   const handleBootDone = () => {
@@ -395,11 +364,21 @@ export default function Home() {
   ];
 
   const marqueeItems = ["INTELLIGENCE_UNBOUND", "LUCY_OS_v1", "ZERO_LATENCY", "QUANTUM_VAULT", "NEURAL_MESH", "DISTRIBUTED_CORE", "ACADEMIC_MATRIX", "SECURE_UPLINK", "SCHOLAR_NODE", "DECENTRALIZED"];
-  const navLinks = [
+  const navLinks: { href: string; label: string; ext?: boolean }[] = [
     { href: "/intelligence", label: "intelligence" },
     { href: "/network", label: "network" },
     { href: "/security", label: "vault" },
     { href: "/docs", label: "docs" },
+    { href: "/community", label: "community" },
+  ];
+  const companyLinks = [
+    { href: "/careers", l: "careers" },
+    { href: "/partners", l: "partners" },
+    { href: "/press", l: "press" },
+    { href: "/blog", l: "signal log" },
+    { href: "/contact", l: "uplink" },
+    { href: "/support", l: "support" },
+    { href: "/community", l: "community" }
   ];
 
   const loaded = liveStats.schools > 0;
@@ -407,11 +386,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black overflow-x-hidden font-mono lowercase tracking-tight">
       {/* ── Boot Sequence ── */}
-      <BootSequence onDone={handleBootDone} />
+      {mounted && booting && <BootSequence onDone={handleBootDone} />}
 
       {/* ── Custom Cursor ── */}
-      <motion.div style={{ left: cursorX, top: cursorY }} className="fixed z-[900] pointer-events-none -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full mix-blend-difference" />
-      <motion.div style={{ left: trailX, top: trailY }} className="fixed z-[899] pointer-events-none -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-white/20 rounded-full mix-blend-difference" />
+      <motion.div style={{ x: cursorX, y: cursorY }} className="fixed top-0 left-0 z-[900] pointer-events-none w-2 h-2 -ml-1 -mt-1 bg-white rounded-full mix-blend-difference will-change-transform" />
+      <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-8 h-8 -ml-4 -mt-4 border border-white/20 rounded-full mix-blend-difference will-change-transform" />
 
       {/* ── CRT Scanlines ── */}
       <div className="fixed inset-0 z-[50] pointer-events-none" style={{
@@ -451,7 +430,13 @@ export default function Home() {
           </Link>
           <div className="hidden lg:flex items-center gap-12 text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500">
             {navLinks.map(link => (
-              <Link key={link.href} href={link.href} className="relative group hover:text-white transition-colors duration-200">
+              <Link
+                key={link.href}
+                href={link.href}
+                target={link.ext ? "_blank" : undefined}
+                rel={link.ext ? "noopener noreferrer" : undefined}
+                className="relative group hover:text-white transition-colors duration-200"
+              >
                 {link.label}
                 <span className="absolute -bottom-0.5 left-0 h-px bg-white w-0 group-hover:w-full transition-all duration-300" />
               </Link>
@@ -462,6 +447,7 @@ export default function Home() {
               <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-1 h-1 bg-white rounded-full" />
               <span>{time}</span>
             </div>
+
             <Link href="/login">
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <Button variant="ghost" className="h-9 px-4 text-[11px] uppercase tracking-widest hover:bg-white hover:text-black transition-all rounded-none border border-white/10 hover:border-white">
@@ -547,6 +533,13 @@ export default function Home() {
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button variant="ghost" className="h-12 px-8 rounded-none border border-white/10 hover:border-white/40 text-[11px] uppercase tracking-widest transition-all">
                       read_docs
+                    </Button>
+                  </motion.div>
+                </Link>
+                <Link href="/community">
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                    <Button variant="ghost" className="h-12 px-8 rounded-none border border-white/10 hover:border-white/40 text-[11px] uppercase tracking-widest transition-all gap-2">
+                      join_community
                     </Button>
                   </motion.div>
                 </Link>
@@ -1100,8 +1093,15 @@ export default function Home() {
           <div className="space-y-4">
             <div className="text-white font-bold">company</div>
             <ul className="space-y-2">
-              {[{ href: "/careers", l: "careers" }, { href: "/partners", l: "partners" }, { href: "/press", l: "press" }, { href: "/blog", l: "signal log" }, { href: "/contact", l: "uplink" }, { href: "/support", l: "support" }].map(i => (
-                <li key={i.href}><Link href={i.href} className="hover:text-white transition-colors">{i.l}</Link></li>
+              {companyLinks.map(i => (
+                <li key={i.href}>
+                  <Link
+                    href={i.href}
+                    className="hover:text-white transition-colors"
+                  >
+                    {i.l}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
