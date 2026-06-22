@@ -1,0 +1,11 @@
+{
+  "general": 1,
+  "welcome": 300,
+  "announce": 301,
+  "lounge": 302,
+  "support": 303,
+  "classes": 304,
+  "parents": 305,
+  "staff": 306,
+  "telemetry": 307
+}

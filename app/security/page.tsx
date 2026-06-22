@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowLeft, Lock, Eye, Server, AlertTriangle } from "lucide-react";
+import { Shield, ArrowLeft, Lock, Eye, Server, AlertTriangle, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
@@ -103,6 +103,31 @@ export default function Security() {
                                 </TiltCard>
                             ))}
                         </div>
+                    </section>
+
+                    {/* Vulnerability Disclosure Contact */}
+                    <section className="space-y-6">
+                        <Reveal className="flex items-center gap-4 text-zinc-500">
+                            <div className="h-px w-12 bg-zinc-800" />
+                            <span className="text-[10px] uppercase tracking-[0.4em]">vulnerability_disclosure // pgp_uplink</span>
+                        </Reveal>
+                        <Reveal delay={0.1}>
+                            <div className="p-8 border border-orange-500/10 bg-zinc-950/40 backdrop-blur-sm space-y-4">
+                                <h3 className="font-bold text-white uppercase tracking-tight text-lg">Report Security Issues</h3>
+                                <p className="text-zinc-500 text-xs leading-relaxed">
+                                    if you believe you have discovered a vulnerability or data leakage event within the lucy ecosystem, please transmit a detailed report immediately. do not disclose vulnerabilities publicly before synchronization.
+                                </p>
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-2">
+                                    <div className="flex items-center gap-3 text-orange-400">
+                                        <Mail className="w-4 h-4 shrink-0" />
+                                        <span className="font-mono text-xs font-bold">security@5-cn.net</span>
+                                    </div>
+                                    <div className="text-[9px] text-zinc-700 uppercase tracking-widest">
+                                        pgp_key_fingerprint // 8f3e 90b4 a1c2 d3e4 e5f6
+                                    </div>
+                                </div>
+                            </div>
+                        </Reveal>
                     </section>
 
                     {/* Warning panel */}

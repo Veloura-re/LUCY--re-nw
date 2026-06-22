@@ -42,8 +42,8 @@ export function CustomCursor() {
     if (prefersReduced || lowPower) return null;
     return (
         <>
-            <motion.div style={{ left: cursorX, top: cursorY }} className="fixed z-[900] pointer-events-none -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full mix-blend-difference will-change-transform" />
-            <motion.div style={{ left: trailX, top: trailY }} className="fixed z-[899] pointer-events-none -translate-x-1/2 -translate-y-1/2 w-7 h-7 border border-white/20 rounded-full mix-blend-difference will-change-transform" />
+            <motion.div style={{ x: cursorX, y: cursorY }} className="fixed top-0 left-0 z-[900] pointer-events-none w-2 h-2 -ml-1 -mt-1 bg-white rounded-full mix-blend-difference will-change-transform" />
+            <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-7 h-7 -ml-[14px] -mt-[14px] border border-white/20 rounded-full mix-blend-difference will-change-transform" />
         </>
     );
 }
@@ -540,8 +540,12 @@ export function PageFooter({ id, links }: { id: string; links: { href: string; l
         <footer className="border-t border-white/5 py-12 px-6 text-[10px] uppercase tracking-[0.2em] text-zinc-700">
             <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                 <p>© 2026 LUCY_SYS // {id}</p>
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-8 flex-wrap justify-center md:justify-end">
                     {links.map(l => <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>)}
+                    <Link href="/community" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">community</Link>
+                    <Link href="https://discord.gg/Kbm4XhzfMJ" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">discord</Link>
+                    <Link href="https://t.me/+ElIFqzvGBlYzMDBk" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">telegram</Link>
+                    <Link href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">youtube</Link>
                 </div>
             </div>
         </footer>

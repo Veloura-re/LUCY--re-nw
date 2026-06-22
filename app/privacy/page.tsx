@@ -15,7 +15,7 @@ const clauses = [
     { num: "05", title: "Third-party Services", body: "We use OpenAI for AI features (data is not stored by OpenAI beyond the session), Supabase for auth, Vercel for hosting, and Gmail SMTP for email dispatch. All third-parties are contractually bound to our privacy standards." },
     { num: "06", title: "Your Rights", body: "Institutions have the right to export their data at any time via the Director dashboard or API. Individual users may request deletion of their personal record by contacting institutional administrators." },
     { num: "07", title: "Security Practices", body: "We enforce AES-256 encryption at rest, TLS 1.3 in transit, mandatory MFA for admin accounts, append-only audit logs, and regular penetration testing." },
-    { num: "08", title: "Contact", body: "For privacy inquiries, data export requests, or incident reports, contact: privacy@lucyos.io — or open a support case through your institutional dashboard." },
+    { num: "08", title: "Contact", body: "For privacy inquiries, data export requests, or incident reports, contact: privacy@5-cn.net — or open a support case through your institutional dashboard." },
 ];
 
 export default function Privacy() {
