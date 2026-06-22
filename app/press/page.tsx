@@ -20,7 +20,7 @@ const pressKit = [
     { label: "Headquarters", val: "Cape Town, South Africa" },
     { label: "Category", val: "EdTech / Academic OS" },
     { label: "Current Version", val: "v1.0.4" },
-    { label: "Press Contact", val: "press@lucyos.io" },
+    { label: "Press Contact", val: "press@5-cn.net" },
 ];
 
 const categoryColor = (cat: string) => {
@@ -66,7 +66,7 @@ export default function Press() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-zinc-500 text-xl leading-relaxed max-w-xl">
-                                media coverage, podcast appearances, and press resources. for all inquiries, contact press@lucyos.io.
+                                media coverage, podcast appearances, and press resources. for all inquiries, contact press@5-cn.net.
                             </p>
                         </Reveal>
                     </section>
@@ -137,7 +137,7 @@ export default function Press() {
                             <div className="space-y-2">
                                 <div className="text-[9px] text-zinc-700 uppercase tracking-widest">media_inquiries</div>
                                 <h3 className="text-2xl font-bold uppercase tracking-tight">Press Contact</h3>
-                                <p className="text-zinc-500 text-xs">for interview requests, logo assets, or fact-checking — contact: press@lucyos.io</p>
+                                <p className="text-zinc-500 text-xs">for interview requests, logo assets, or fact-checking — contact: press@5-cn.net</p>
                             </div>
                             <Link href="/contact">
                                 <Button variant="outline" className="h-12 px-8 rounded-none border-white/20 text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all font-bold">
