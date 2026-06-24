@@ -75,7 +75,7 @@ export async function POST(
                 case "LONG":
                     // AI EVALUATION
                     try {
-                        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+                        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                         const aiPrompt = `
                             Evaluate this student's essay answer for a ${weight} point question.
                             Question: ${q.text}

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing input data (image or text)" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const typeConstraint = allowedTypes.length > 0
             ? `ONLY use these question types: ${allowedTypes.join(", ")}.`

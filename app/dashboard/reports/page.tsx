@@ -18,8 +18,19 @@ export default function ReportsPage() {
     const fetchAnalytics = async () => {
         try {
             const res = await fetch('/api/school/analytics');
-            const result = await res.json();
-            setData(result);
+            if (res.status === 403) {
+                // Try fetching parent's children instead
+                const parentRes = await fetch('/api/parent/children');
+                if (parentRes.ok) {
+                    const result = (await parentRes.json()) as any;
+                    setData({ isParent: true, students: result.students || [] });
+                    return;
+                }
+            }
+            if (res.ok) {
+                const result = await res.json();
+                setData(result);
+            }
         } catch (e) {
             console.error(e);
         } finally {
@@ -62,6 +73,59 @@ export default function ReportsPage() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
                 <SpringingLoader message="Synthesizing Institutional Intelligence" />
+            </div>
+        );
+    }
+
+    if (data?.isParent) {
+        return (
+            <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-20">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white uppercase italic">
+                            Scholar <span className="text-eduGreen-500 not-italic">Reports</span>
+                        </h1>
+                        <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Family Performance Synthesis & Report Cards</p>
+                    </div>
+                </div>
+
+                {data.students?.length === 0 ? (
+                    <div className="py-24 text-center bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-900">
+                        <UserCircle className="w-16 h-16 text-zinc-800 mx-auto mb-6" />
+                        <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Terminal</p>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {data.students.map((student: any) => (
+                            <Card key={student.id} className="group relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-900/40 transition-all border-t-zinc-800/10 shadow-2xl">
+                                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <CardContent className="p-8 space-y-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center border border-zinc-800 font-medium text-eduGreen-500 group-hover:border-eduGreen-900/20 transition-all shadow-xl">
+                                            {student.firstName[0]}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-medium text-white tracking-tight leading-none">{student.firstName} {student.lastName}</h3>
+                                            <p className="text-[9px] font-mono font-medium text-zinc-600 uppercase tracking-widest mt-1.5">ID: {student.studentCode} • Grade {student.grade?.level || "N/A"}</p>
+                                        </div>
+                                    </div>
+                                    <div className="pt-4 border-t border-zinc-900/50 flex justify-between items-center gap-4">
+                                        <div>
+                                            <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Academic Context</p>
+                                            <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider mt-1">{student.school?.name || "Institution"}</p>
+                                        </div>
+                                        <Link href={`/dashboard/reports/${student.id}`}>
+                                            <Button className="h-12 px-6 bg-white text-black hover:bg-zinc-200 rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all">
+                                                View Report Card <ChevronRight className="w-4 h-4 ml-2" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
         );
     }
