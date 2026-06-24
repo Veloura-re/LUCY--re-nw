@@ -19,8 +19,7 @@ const _getFamilyChildren = async (userId: string) => {
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         );
-        // Edge implementation using Supabase SDK
-        const { data: links, error } = await supabaseAdmin
+        const { data: links } = await supabaseAdmin
             .from('ParentStudentLink')
             .select(`
                 *,
@@ -28,20 +27,15 @@ const _getFamilyChildren = async (userId: string) => {
                     *,
                     grade:Grade(*),
                     school:School(*),
-                    class:Class(
-                        *,
-                        homeroomTeacher:User(id, name)
-                    )
+                    class:Class(*, homeroomTeacher:User(id, name))
                 )
             `)
             .eq('parentId', userId);
 
-        if (error || !links) return [];
-        // Add more logic here for attendance/grades if needed, or return basic profile
-        return links.map(l => l.student);
+        if (!links) return [];
+        return links.map((l: any) => l.student);
     }
 
-    // Fallback to Prisma for non-Edge (Node.js)
     const { prisma } = require('@/lib/prisma');
     const links = await prisma.parentStudentLink.findMany({
         where: { parentId: userId },
@@ -59,7 +53,80 @@ const _getFamilyChildren = async (userId: string) => {
             }
         }
     });
-    return JSON.parse(JSON.stringify(links.map((l: any) => l.student)));
+
+    const students = links.map((l: any) => l.student);
+
+    // Fetch live stats for each student in parallel
+    const studentsWithStats = await Promise.all(
+        students.map(async (student: any) => {
+            const [allAttendance, gradeRecords, pendingInvoiceCount, totalAssignments, completedAssignments, recentInvoices, outstandingInvoices] = await Promise.all([
+                prisma.attendanceRecord.findMany({
+                    where: { studentId: student.id },
+                    select: { status: true }
+                }),
+                prisma.gradeRecord.findMany({
+                    where: { studentId: student.id },
+                    include: { exam: { select: { totalMarks: true } } }
+                }),
+                prisma.invoice.count({
+                    where: { studentId: student.id, status: { in: ['PENDING', 'OVERDUE'] } }
+                }),
+                student.classId ? prisma.assignment.count({
+                    where: { classId: student.classId, isPublished: true }
+                }) : Promise.resolve(0),
+                prisma.assignmentSubmission.count({
+                    where: { studentId: student.id, status: { in: ['SUBMITTED', 'GRADED'] } }
+                }),
+                prisma.invoice.findMany({
+                    where: { studentId: student.id },
+                    orderBy: { createdAt: 'desc' },
+                    take: 3,
+                    select: { id: true, amount: true, status: true, createdAt: true }
+                }),
+                prisma.invoice.findMany({
+                    where: { studentId: student.id, status: { in: ['PENDING', 'OVERDUE'] } },
+                    select: { amount: true }
+                })
+            ]);
+
+            const totalPresent = allAttendance.filter((a: any) => a.status === 'PRESENT' || a.status === 'LATE').length;
+            const attendancePct = allAttendance.length > 0
+                ? ((totalPresent / allAttendance.length) * 100).toFixed(1)
+                : '100.0';
+
+            let totalScore = 0;
+            let totalMax = 0;
+            gradeRecords.forEach((gr: any) => {
+                const max = gr.exam?.totalMarks || 100;
+                totalScore += Number(gr.score);
+                totalMax += Number(max);
+            });
+            const averageScore = totalMax > 0
+                ? ((totalScore / totalMax) * 100).toFixed(1)
+                : '0.0';
+
+            const totalOutstanding = outstandingInvoices
+                .reduce((acc: number, inv: any) => acc + Number(inv.amount), 0)
+                .toFixed(2);
+
+            return {
+                ...student,
+                recentInvoices,
+                stats: {
+                    attendancePct,
+                    averageScore,
+                    invoiceCount: pendingInvoiceCount,
+                    totalOutstanding,
+                    assignmentStats: {
+                        total: totalAssignments,
+                        completed: completedAssignments
+                    }
+                }
+            };
+        })
+    );
+
+    return JSON.parse(JSON.stringify(studentsWithStats));
 };
 
 export const getFamilyChildren = unstable_cache(

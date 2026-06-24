@@ -111,8 +111,8 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                                         <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.class?.grade?.name || "N/A"} • {user.class?.name || "N/A"}</p>
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Age / DOB</p>
-                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">{age}Y • {user.dob ? new Date(user.dob).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
+                                                        <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Enrolled</p>
+                                                        <p className="text-[10px] font-medium text-zinc-300 uppercase">{user.enrolledAt ? new Date(user.enrolledAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
                                                     </div>
                                                 </>
                                             ) : (
@@ -178,11 +178,11 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Enrolled / Joined</p>
-                                            <p className="text-[10px] font-medium text-white uppercase">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
+                                            <p className="text-[10px] font-medium text-white uppercase">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[7px] font-medium text-zinc-600 uppercase tracking-widest">Expires</p>
-                                            <p className="text-[10px] font-medium text-eduGreen-500 uppercase">{user.createdAt ? new Date(new Date(user.createdAt).setFullYear(new Date(user.createdAt).getFullYear() + 1)).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
+                                            <p className="text-[10px] font-medium text-eduGreen-500 uppercase">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? (() => { const d = new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt); d.setMonth(d.getMonth() + 10); return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }); })() : "---"}</p>
                                         </div>
                                     </div>
 
@@ -322,7 +322,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                             </p>
                                             <div className="text-right">
                                                 <p className="text-[4pt] font-medium text-zinc-500 uppercase tracking-widest leading-none">Expires</p>
-                                                <p className="text-[6pt] font-medium text-white leading-none mt-0.5">{user.createdAt ? new Date(new Date(user.createdAt).setFullYear(new Date(user.createdAt).getFullYear() + 1)).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
+                                                <p className="text-[6pt] font-medium text-white leading-none mt-0.5">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? (() => { const d = new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt); d.setMonth(d.getMonth() + 10); return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }); })() : "---"}</p>
                                             </div>
                                         </div>
                                     </div>
