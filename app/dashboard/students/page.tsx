@@ -41,6 +41,7 @@ export default async function StudentsPage() {
             <StudentsClientWrapper 
                 initialStudents={students || []}
                 initialGrades={grades || []}
+                me={JSON.parse(JSON.stringify(dbUser))}
             />
         </Suspense>
     );

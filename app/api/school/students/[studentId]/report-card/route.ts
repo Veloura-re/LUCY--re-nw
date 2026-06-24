@@ -39,6 +39,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             if (student.userId !== user.id) {
                 return NextResponse.json({ error: 'Access denied: You can only view your own report card' }, { status: 403 });
             }
+        } else if (user.role === 'PARENT') {
+            const isLinked = student.parentLinks.some(link => link.parentId === user.id);
+            if (!isLinked) {
+                return NextResponse.json({ error: 'Access denied: Student is not linked to your parent account' }, { status: 403 });
+            }
         } else if (user.role !== 'SUPERADMIN' && student.schoolId !== user.schoolId) {
             return NextResponse.json({ error: 'Access denied' }, { status: 403 });
         }
@@ -72,12 +77,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             orderBy: { createdAt: 'desc' }
         });
 
-        // Fetch internal notes
-        const internalNotes = await prisma.internalNote.findMany({
-            where: { studentId },
-            include: { author: { select: { id: true, name: true } } },
-            orderBy: { createdAt: 'desc' }
-        });
+        // Fetch internal notes (Confidential logs - restricted to staff/admins)
+        let internalNotes: any[] = [];
+        if (['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM'].includes(user.role)) {
+            internalNotes = await prisma.internalNote.findMany({
+                where: { studentId },
+                include: { author: { select: { id: true, name: true } } },
+                orderBy: { createdAt: 'desc' }
+            });
+        }
 
         // Fetch Homework / Assignments
         const assignments = await prisma.assignmentSubmission.findMany({
@@ -113,7 +121,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
                 history: attendanceRecords
             },
             remarks,
-            internalNotes
+            internalNotes,
+            userRole: user.role
         });
 
     } catch (e) {

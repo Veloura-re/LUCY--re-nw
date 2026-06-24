@@ -159,7 +159,7 @@ async function run() {
             try {
                 await telegramRequest('sendMessage', {
                     chat_id: TELEGRAM_CHAT_ID,
-                    text: fullText,
+                    text: fullText.replace(/&/g, '&amp;'),
                     parse_mode: 'HTML',
                     disable_web_page_preview: true
                 });

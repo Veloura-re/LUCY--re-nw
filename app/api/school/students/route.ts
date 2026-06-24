@@ -10,6 +10,9 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 export async function GET(request: Request) {
     try {
         const user = await requireSchoolLinked();
+        if (user.role === 'PARENT' || user.role === 'STUDENT') {
+            return NextResponse.json({ error: 'Forbidden: Access denied' }, { status: 403 });
+        }
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
         const classId = searchParams.get('classId');
