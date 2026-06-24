@@ -16,6 +16,8 @@ const clauses = [
     { num: "06", title: "Termination", body: "Either party may terminate the agreement with 30 days written notice. Upon termination, all institutional data will be returned via export and purged from our systems within 30 days." },
     { num: "07", title: "Limitation of Liability", body: "LUCY_OS is not liable for indirect, incidental, or consequential damages arising from system use. Total liability is capped at the sum of fees paid in the preceding 12 months." },
     { num: "08", title: "Governing Law", body: "These terms are governed by South African law. Jurisdiction for disputes is the Western Cape High Court, unless both parties mutually agree to alternative dispute resolution." },
+    { num: "09", title: "Platform Benefits & Integrity", body: "By adhering to these protocols, users benefit from cryptographic data isolation, a secure educational environment, and a strict commitment to privacy. We continuously monitor and upgrade our infrastructure to protect the sanctity of institutional data." },
+    { num: "10", title: "Enforcement & Countermeasures", body: "Zero Tolerance for Malicious Activity. Any attempt to inject malicious code, harvest data, bypass authentication, distribute malware, or abuse platform infrastructure will result in immediate and permanent account termination. We employ automated heuristics, honeypots, and manual audits to trace abusive behavior. When necessary, we will execute IP-level bans and provide all tracking logs to relevant cybercrime authorities and law enforcement for prosecution." },
 ];
 
 export default function Terms() {
