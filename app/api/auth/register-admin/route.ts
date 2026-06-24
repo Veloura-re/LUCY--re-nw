@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { rateLimit, secureJson } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
     const limit = rateLimit(request, "auth/register-admin", 3); // Very strict for admin reg
@@ -16,7 +17,15 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
 
-    if (secretKey?.trim() !== VALID_SECRET?.trim()) {
+    const keyBuffer = Buffer.from(secretKey?.trim() || '');
+    const validBuffer = Buffer.from(VALID_SECRET?.trim() || '');
+
+    let isMatch = false;
+    if (keyBuffer.length === validBuffer.length && keyBuffer.length > 0) {
+        isMatch = crypto.timingSafeEqual(keyBuffer, validBuffer);
+    }
+
+    if (!isMatch) {
         return secureJson({ error: 'Invalid Administration Key.' }, 403);
     }
 
