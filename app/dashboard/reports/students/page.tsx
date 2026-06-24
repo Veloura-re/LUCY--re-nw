@@ -7,8 +7,10 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function StudentReportsPage() {
+    const router = useRouter();
     const [students, setStudents] = useState<any[]>([]);
     const [studentSearch, setStudentSearch] = useState("");
     const [loadingStudents, setLoadingStudents] = useState(true);
@@ -17,10 +19,19 @@ export default function StudentReportsPage() {
 
     useEffect(() => {
         fetch('/api/school/students')
-            .then(r => r.json())
-            .then((d: any) => setStudents(d.students || []))
+            .then(res => {
+                if (res.status === 403) {
+                    router.push('/dashboard/reports');
+                    return null;
+                }
+                return res.json();
+            })
+            .then((d: any) => {
+                if (d) setStudents(d.students || []);
+            })
+            .catch(() => {})
             .finally(() => setLoadingStudents(false));
-    }, []);
+    }, [router]);
 
     if (loadingStudents) {
         return (

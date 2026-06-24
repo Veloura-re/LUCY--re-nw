@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { UpcomingEventsWidget } from "./upcoming-events";
 import { DashboardGreeting } from "./dashboard-greeting";
-import { AIParentChatbot } from "./ai-parent-chatbot";
 import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 import { createBrowserClient } from "@supabase/ssr";
 
@@ -91,7 +90,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentCode: code, confirm: false })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (!res.ok) throw new Error(data.error || "Failed to verify code");
             setFoundStudent(data.student);
             setStatus('CONFIRMING');
@@ -111,7 +110,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 body: JSON.stringify({ studentCode: code, confirm: true })
             });
             if (!res.ok) {
-                const data = await res.json();
+                const data = (await res.json()) as any;
                 throw new Error(data.error || "Failed to link");
             }
             setStatus('SUCCESS');
@@ -137,7 +136,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
         setSearchingStaff(true);
         try {
             const res = await fetch(`/api/parent/staff?q=${encodeURIComponent(q)}`);
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.staff) setStaffResults(data.staff);
         } catch (e) {
             console.error(e);
@@ -153,7 +152,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ targetUserId: staffId })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.room) {
                 router.push(`/dashboard/messages?roomId=${data.room.id}`);
             }
@@ -471,12 +470,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                 Bookshelf
                                             </Button>
                                         </Link>
-                                        <Link href={`/dashboard/bookshelf?studentId=${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
-                                                Bookshelf
-                                            </Button>
-                                        </Link>
-                                        <Link href={`/dashboard/student/assignments?studentId=${child.id}`}>
+                                        <Link href={`/dashboard/parent/homework?studentId=${child.id}`}>
                                             <Button className="w-full h-12 bg-eduGreen-900/10 hover:bg-eduGreen-900/20 text-eduGreen-500 hover:text-eduGreen-400 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-eduGreen-900/20 hover:border-eduGreen-800/30 transition-all">
                                                 Homework
                                             </Button>
@@ -517,9 +511,25 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                         <UpcomingEventsWidget />
                     </div>
                 </>
-            ) : null}
-            
-            <AIParentChatbot />
+            ) : (
+                <div className="py-20 text-center bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-900/60 max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-800 mx-auto shadow-2xl">
+                        <GraduationCap className="w-8 h-8 text-eduGreen-500" />
+                    </div>
+                    <div className="space-y-2">
+                        <h3 className="text-xl font-medium text-white tracking-tight">No Linked Students</h3>
+                        <p className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-sm mx-auto">
+                            To view homework assignments, attendance, billing, and report cards, please link a student profile to this guardian node.
+                        </p>
+                    </div>
+                    <Button 
+                        onClick={() => setIsAdding(true)}
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-6 rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all shadow-lg active:scale-95"
+                    >
+                        Link Student Profile
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

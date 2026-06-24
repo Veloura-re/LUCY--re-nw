@@ -44,14 +44,34 @@ export async function POST(req: Request) {
             await supabaseAdmin.from('Invoice').update({ status: 'PAID' }).eq('id', invoice.id);
 
             // 3. (Optional) Log highly sensitive audit event
-            await supabaseAdmin.from('AuditLog').insert({
-                id: crypto.randomUUID(),
-                userId: "SYSTEM", // System triggered
-                action: "AUTO_PAYMENT_CONFIRMATION",
-                resourceType: "INVOICE",
-                resourceId: invoice.id,
-                after: { status: 'PAID', ref: transactionReference, note }
-            });
+            const { data: adminUser } = await supabaseAdmin
+                .from('User')
+                .select('id')
+                .eq('schoolId', invoice.schoolId)
+                .in('role', ['PRINCIPAL', 'OWNER', 'SUPERADMIN'])
+                .limit(1)
+                .maybeSingle();
+
+            let auditUserId = adminUser?.id;
+            if (!auditUserId) {
+                const { data: anyUser } = await supabaseAdmin
+                    .from('User')
+                    .select('id')
+                    .limit(1)
+                    .maybeSingle();
+                auditUserId = anyUser?.id;
+            }
+
+            if (auditUserId) {
+                await supabaseAdmin.from('AuditLog').insert({
+                    id: crypto.randomUUID(),
+                    userId: auditUserId,
+                    action: "AUTO_PAYMENT_CONFIRMATION",
+                    resourceType: "INVOICE",
+                    resourceId: invoice.id,
+                    after: { status: 'PAID', ref: transactionReference, note }
+                });
+            }
 
             return NextResponse.json({ success: true, message: "Invoice reconciled automatically" });
         }
@@ -83,15 +103,33 @@ export async function POST(req: Request) {
             });
 
             // 3. (Optional) Log highly sensitive audit event
-            await tx.auditLog.create({
-                data: {
-                    userId: "SYSTEM", // System triggered
-                    action: "AUTO_PAYMENT_CONFIRMATION",
-                    resourceType: "INVOICE",
-                    resourceId: invoice.id,
-                    after: { status: 'PAID', ref: transactionReference, note }
-                } as any
+            const adminUser = await tx.user.findFirst({
+                where: {
+                    schoolId: invoice.schoolId,
+                    role: { in: ['PRINCIPAL', 'OWNER', 'SUPERADMIN'] }
+                },
+                select: { id: true }
             });
+
+            let auditUserId = adminUser?.id;
+            if (!auditUserId) {
+                const anyUser = await tx.user.findFirst({
+                    select: { id: true }
+                });
+                auditUserId = anyUser?.id;
+            }
+
+            if (auditUserId) {
+                await tx.auditLog.create({
+                    data: {
+                        userId: auditUserId,
+                        action: "AUTO_PAYMENT_CONFIRMATION",
+                        resourceType: "INVOICE",
+                        resourceId: invoice.id,
+                        after: { status: 'PAID', ref: transactionReference, note }
+                    } as any
+                });
+            }
         });
 
         return NextResponse.json({ success: true, message: "Invoice reconciled automatically" });

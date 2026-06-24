@@ -13,7 +13,7 @@ async function testModel(genAI, modelName) {
 }
 
 async function run() {
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY);
     const models = [
         "gemini-flash-latest",
         "gemini-pro-latest",

@@ -311,8 +311,10 @@ async function run() {
                 console.log(`Posting to Telegram Topic "${topicName}" (Thread: ${threadId}) as "${msg.name}"...`);
                 
                 // Format text with HTML bold prefix for sender names
-                const senderPrefix = msg.user === 'system_node' ? '' : `👤 <b>[${msg.name}]</b>:\n`;
-                const fullText = `${senderPrefix}${msg.text}`;
+                const escapedName = msg.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const escapedText = msg.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const senderPrefix = msg.user === 'system_node' ? '' : `👤 <b>[${escapedName}]</b>:\n`;
+                const fullText = `${senderPrefix}${escapedText}`;
 
                 try {
                     const params = {

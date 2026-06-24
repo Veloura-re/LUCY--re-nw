@@ -50,8 +50,14 @@ export default async function AssignmentsHubPage() {
         case 'STUDENT':
             redirect("/dashboard/student/assignments");
 
-        case 'PARENT':
-            redirect("/dashboard/parent/homework");
+        case 'PARENT': {
+            const { getFamilyChildren } = await import("@/lib/dashboard-data");
+            const children = await getFamilyChildren(dbUser.id);
+            if (children && children.length > 0) {
+                redirect(`/dashboard/parent/homework?studentId=${children[0].id}`);
+            }
+            redirect("/dashboard");
+        }
 
         default:
             redirect("/dashboard");

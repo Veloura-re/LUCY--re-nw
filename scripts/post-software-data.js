@@ -333,13 +333,40 @@ async function run() {
     try {
         console.log("Publishing Lucy OS Software data to Telegram and Discord...");
 
+        // Load thread IDs from setup output if available
+        let TELEGRAM_TOPIC_IDS = {};
+        try {
+            const idsPath = path.join(__dirname, 'telegram-thread-ids.json');
+            if (fs.existsSync(idsPath)) {
+                TELEGRAM_TOPIC_IDS = JSON.parse(fs.readFileSync(idsPath, 'utf8'));
+                console.log("✔ Loaded live Telegram thread IDs from JSON file.");
+            }
+        } catch (e) {
+            console.log("Could not load telegram-thread-ids.json, using defaults.");
+        }
+
+        const keyMapping = {
+            'welcome-rules': 'welcome',
+            'announcements': 'announce',
+            'general': 'general',
+            'student-lounge': 'lounge',
+            'help-support': 'support',
+            'classes-discussion': 'classes',
+            'parent-updates': 'parents',
+            'staff-room': 'staff',
+            'telemetry-updates': 'telemetry'
+        };
+
         // 1. Post to Telegram
         for (const [topicName, doc] of Object.entries(DOCS)) {
-            console.log(`Posting to Telegram topic: ${topicName}...`);
-            const threadId = doc.threadId;
+            const threadKey = keyMapping[topicName] || topicName;
+            const threadId = TELEGRAM_TOPIC_IDS[threadKey] || doc.threadId;
+            console.log(`Posting to Telegram topic: ${topicName} (Thread ID: ${threadId})...`);
 
             for (const msg of doc.messages) {
-                const fullText = `<b>${msg.title}</b>\n\n${msg.text}`;
+                const escapedTitle = msg.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const escapedText = msg.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const fullText = `<b>${escapedTitle}</b>\n\n${escapedText}`;
                 try {
                     const params = {
                         chat_id: TELEGRAM_CHAT_ID,
