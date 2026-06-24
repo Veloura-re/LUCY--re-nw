@@ -33,6 +33,7 @@ function LoginContent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [error, setError] = useState<string | null>(errorParam);
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -117,10 +118,24 @@ function LoginContent() {
                                 </div>
                             )}
 
+                            <div className="flex items-start space-x-3 pt-2 pb-2">
+                                <input
+                                    type="checkbox"
+                                    id="terms"
+                                    checked={agreedToTerms}
+                                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                />
+                                <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                </label>
+                            </div>
+
                             <Button
                                 type="submit"
                                 className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white py-7 text-base font-medium rounded-2xl group"
                                 isLoading={isLoading}
+                                disabled={isLoading || !agreedToTerms}
                             >
                                 Sign In
                                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
