@@ -460,12 +460,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     )}
 
                                     <div className="grid grid-cols-3 gap-3">
-                                        <Link href={`/dashboard/student/performance?studentId=${child.id}`}>
+                                        <Link href={`/dashboard/reports/${child.id}`}>
                                             <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Performance
                                             </Button>
                                         </Link>
-                                        <Link href={`/dashboard/bookshelf?studentId=${child.id}`}>
+                                        <Link href={`/dashboard/books?studentId=${child.id}`}>
                                             <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Bookshelf
                                             </Button>

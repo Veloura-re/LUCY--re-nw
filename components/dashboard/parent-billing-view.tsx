@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     CreditCard,
     ArrowRight,
@@ -33,6 +34,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
     const [selectingPaymentId, setSelectingPaymentId] = React.useState<string | null>(null);
     const [paymentMethod, setPaymentMethod] = React.useState<string>("BANK_TRANSFER");
     const [showConfirmation, setShowConfirmation] = React.useState(false);
+    const [receiptImage, setReceiptImage] = React.useState<string | null>(null);
     const [printInvoice, setPrintInvoice] = React.useState<any>(null);
     const [printStudent, setPrintStudent] = React.useState<any>(null);
 
@@ -49,7 +51,24 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
 
     const handleInitialPay = (invoiceId: string) => {
         setSelectingPaymentId(invoiceId);
+        setReceiptImage(null);
         setShowConfirmation(true);
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("File must be less than 5MB");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setReceiptImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleConfirmPayment = async (reference: string) => {
@@ -63,10 +82,11 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                 body: JSON.stringify({
                     invoiceId: selectingPaymentId,
                     method: paymentMethod,
-                    reference: reference
+                    reference: reference,
+                    receiptImage: receiptImage
                 })
             });
-            const data = await res.json();
+            const data: any = await res.json();
             if (res.ok) {
                 toast.success(data.pending ? "Payment submitted for verification" : "Payment successful");
                 // Delay for effect then reload
@@ -233,27 +253,47 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                 onConfirm={handleConfirmPayment}
                 placeholder="Enter Transaction Reference / Bank Ref"
                 footerElement={
-                    <div className="grid grid-cols-2 gap-4 mt-4 mb-6">
-                        <Button
-                            variant="ghost"
-                            onClick={() => setPaymentMethod("BANK_TRANSFER")}
-                            className={cn(
-                                "h-14 rounded-xl border border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                paymentMethod === "BANK_TRANSFER" ? "bg-eduGreen-950/20 border-eduGreen-500 text-white" : "text-zinc-500"
-                            )}
-                        >
-                            Bank Transfer
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            onClick={() => setPaymentMethod("MOBILE_MONEY")}
-                            className={cn(
-                                "h-14 rounded-xl border border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                paymentMethod === "MOBILE_MONEY" ? "bg-eduGreen-950/20 border-eduGreen-500 text-white" : "text-zinc-500"
-                            )}
-                        >
-                            Mobile Money
-                        </Button>
+                    <div className="flex flex-col gap-4 mt-4 mb-6">
+                        <div className="grid grid-cols-2 gap-4">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setPaymentMethod("BANK_TRANSFER")}
+                                className={cn(
+                                    "h-14 rounded-xl border border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
+                                    paymentMethod === "BANK_TRANSFER" ? "bg-eduGreen-950/20 border-eduGreen-500 text-white" : "text-zinc-500"
+                                )}
+                            >
+                                Bank Transfer
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => setPaymentMethod("MOBILE_MONEY")}
+                                className={cn(
+                                    "h-14 rounded-xl border border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
+                                    paymentMethod === "MOBILE_MONEY" ? "bg-eduGreen-950/20 border-eduGreen-500 text-white" : "text-zinc-500"
+                                )}
+                            >
+                                Mobile Money
+                            </Button>
+                        </div>
+                        
+                        <div className="space-y-2 text-left">
+                            <label className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">Upload Receipt (Optional)</label>
+                            <div className="relative">
+                                <Input 
+                                    type="file" 
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    className="h-12 bg-zinc-900 border-zinc-800 text-zinc-300 text-xs file:bg-zinc-800 file:text-zinc-300 file:border-0 file:mr-4 file:px-4 file:rounded-lg hover:file:bg-zinc-700 cursor-pointer"
+                                />
+                                {receiptImage && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <CheckCircle2 className="w-4 h-4 text-eduGreen-500" />
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-[8px] text-zinc-500 uppercase tracking-widest">Our AI will automatically verify your receipt if provided.</p>
+                        </div>
                     </div>
                 }
             />
