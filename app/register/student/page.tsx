@@ -17,6 +17,7 @@ export default function StudentRegisterPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1); // 1: Code, 2: Details
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     const [formData, setFormData] = useState({
         studentCode: "",
@@ -190,6 +191,19 @@ export default function StudentRegisterPage() {
                                             </div>
                                         </div>
 
+                                        <div className="flex items-start space-x-3 pt-2 pb-2">
+                                            <input
+                                                type="checkbox"
+                                                id="terms"
+                                                checked={agreedToTerms}
+                                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                            />
+                                            <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                            </label>
+                                        </div>
+
                                         <div className="flex gap-3">
                                             <Button
                                                 type="button"
@@ -201,7 +215,7 @@ export default function StudentRegisterPage() {
                                             </Button>
                                             <Button
                                                 type="submit"
-                                                disabled={isLoading}
+                                                disabled={isLoading || !agreedToTerms}
                                                 className="flex-1 h-14 bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-eduGreen-900/20"
                                             >
                                                 {isLoading ? (

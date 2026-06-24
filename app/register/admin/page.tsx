@@ -15,6 +15,7 @@ export default function AdminRegister() {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [secretKey, setSecretKey] = useState("");
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -151,7 +152,20 @@ export default function AdminRegister() {
                             </div>
                         )}
 
-                        <Button type="submit" className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white py-6 mt-2" isLoading={isLoading}>
+                        <div className="flex items-start space-x-3 pt-2 pb-2">
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                checked={agreedToTerms}
+                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                            />
+                            <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
+                            </label>
+                        </div>
+
+                        <Button type="submit" disabled={!agreedToTerms || isLoading} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white py-6 mt-2" isLoading={isLoading}>
                             Initialize Admin Account
                         </Button>
                     </form>

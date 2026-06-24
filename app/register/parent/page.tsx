@@ -29,6 +29,7 @@ export default function ParentRegister() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -238,7 +239,20 @@ export default function ParentRegister() {
 
                             {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
-                            <Button className="w-full h-12 mt-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white" onClick={handleRegister} isLoading={isLoading}>
+                            <div className="flex items-start space-x-3 pt-2 pb-2">
+                                <input
+                                    type="checkbox"
+                                    id="terms"
+                                    checked={agreedToTerms}
+                                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                />
+                                <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                </label>
+                            </div>
+
+                            <Button className="w-full h-12 mt-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white" onClick={handleRegister} disabled={isLoading || !agreedToTerms} isLoading={isLoading}>
                                 Create Account & Link
                             </Button>
                         </CardContent>
