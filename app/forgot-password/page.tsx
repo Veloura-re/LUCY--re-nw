@@ -9,6 +9,8 @@ import { Mail, ArrowLeft, KeyRound, CheckCircle2, Shield } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
+export const dynamic = 'force-dynamic';
+
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
