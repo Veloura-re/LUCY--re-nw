@@ -60,6 +60,7 @@ model User {
   timetable              Timetable[]
   requestedActions       ActionRequest[]         @relation("Requester")
   targetedActions        ActionRequest[]         @relation("Target")
+  loggedExpenses         InstitutionalExpense[]  @relation("LoggedExpenses")
   school                 School?                 @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId, role])
@@ -96,6 +97,7 @@ model School {
   users                 User[]
   restorePoints         RestorePoint[]
   ActionRequest         ActionRequest[]
+  expenses              InstitutionalExpense[]
 }
 
 model RestorePoint {
@@ -1020,4 +1022,31 @@ model ActionRequest {
   updatedAt    DateTime @updatedAt
 
   @@index([schoolId])
+}
+
+model InstitutionalExpense {
+  id          String          @id @default(uuid())
+  schoolId    String
+  title       String
+  amount      Decimal
+  category    ExpenseCategory @default(EQUIPMENT)
+  description String?
+  receiptUrl  String?
+  loggedById  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  
+  school      School          @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  loggedBy    User            @relation("LoggedExpenses", fields: [loggedById], references: [id])
+
+  @@index([schoolId])
+}
+
+enum ExpenseCategory {
+  EQUIPMENT
+  BOOKS
+  MAINTENANCE
+  SOFTWARE
+  SERVICES
+  OTHER
 }
