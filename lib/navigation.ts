@@ -29,7 +29,8 @@ import {
     LayoutDashboard,
     HelpCircle,
     HardDrive,
-    Crown
+    Crown,
+    Receipt
 } from "lucide-react";
 
 export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
@@ -65,7 +66,8 @@ export const ICON_MAP = {
     LayoutDashboard,
     HelpCircle,
     HardDrive,
-    Crown
+    Crown,
+    Receipt
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -91,6 +93,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Crown', label: "Principals", href: "/dashboard/principals" },
         { icon: 'CheckSquare', label: "Approvals", href: "/dashboard/approvals" },
         { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
+        { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
         { icon: 'Notebook', label: "Reports", href: "/dashboard/reports" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
@@ -113,13 +116,13 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Notebook', label: "Reports", href: "/dashboard/reports" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
+        { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
         { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
         { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
-
     ],
     TEACHER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
