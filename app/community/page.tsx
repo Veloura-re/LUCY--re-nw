@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Terminal, MessageSquare, Send, Youtube, Mail, ExternalLink } from "lucide-react";
+import { ArrowLeft, Terminal, MessageSquare, Send, Youtube, Mail, ExternalLink, Video } from "lucide-react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, MatrixRain, TiltCard } from "@/components/public/animations";
@@ -33,6 +33,15 @@ export default function CommunityPage() {
             link: "https://www.youtube.com/@LucyAcademics",
             btnLabel: "youtube_channel",
             icon: Youtube,
+            color: "from-zinc-950 to-zinc-900",
+            borderColor: "border-white/10"
+        },
+        {
+            title: "tiktok_node",
+            desc: "official lucy academics tiktok for short-form feature reveals, devlogs, and platform tutorials.",
+            link: "https://tiktok.com/@lucy.academia",
+            btnLabel: "follow_tiktok",
+            icon: Video,
             color: "from-zinc-950 to-zinc-900",
             borderColor: "border-white/10"
         },
