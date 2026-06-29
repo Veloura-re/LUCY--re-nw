@@ -63,7 +63,7 @@
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.17.1",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/nodemailer": "^7.0.11",
     "@types/pg": "^8.18.0",
     "@types/react": "^19",
@@ -75,7 +75,7 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "typescript": "^5",
+    "typescript": "^5.9.3",
     "wrangler": "^4.90.0"
   },
   "prisma": {
