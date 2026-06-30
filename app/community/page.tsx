@@ -35,6 +35,7 @@ interface SocialNode {
 }
 
 export default function CommunityPage() {
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const socialNodes: SocialNode[] = [
         {
             title: "telegram_node",
@@ -165,15 +166,17 @@ export default function CommunityPage() {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
-                                className="flex justify-center"
+                                className={cn("flex justify-center transition-all duration-300", hoveredIndex === i ? "z-50 relative" : "z-0 relative")}
                             >
                                 <Link 
                                     href={node.link} 
                                     target={node.external !== false ? "_blank" : undefined} 
                                     rel={node.external !== false ? "noopener noreferrer" : undefined}
                                     className="w-full max-w-[150px]"
+                                    onMouseEnter={() => setHoveredIndex(i)}
+                                    onMouseLeave={() => setHoveredIndex(null)}
                                 >
-                                    <CommunityNodeCard node={node} />
+                                    <CommunityNodeCard node={node} hovered={hoveredIndex === i} />
                                 </Link>
                             </motion.div>
                         ))}
@@ -186,14 +189,13 @@ export default function CommunityPage() {
     );
 }
 
-function CommunityNodeCard({ node }: { node: SocialNode }) {
-    const [hovered, setHovered] = useState(false);
+function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boolean }) {
     const Icon = node.icon;
 
     return (
         <TiltCard 
             className={cn(
-                "w-full aspect-square rounded-3xl border bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer transition-all duration-500",
+                "w-full aspect-square rounded-3xl border bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative group cursor-pointer transition-all duration-500",
                 hovered ? node.hoverBorder : "border-white/10",
                 node.glowClass
             )}
@@ -201,8 +203,6 @@ function CommunityNodeCard({ node }: { node: SocialNode }) {
             <div 
                 className="flex flex-col items-center justify-center w-full h-full p-4 select-none relative" 
                 style={{ transformStyle: "preserve-3d" }}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
             >
                 {/* 3D Parallax Container */}
                 <motion.div 
@@ -236,18 +236,21 @@ function CommunityNodeCard({ node }: { node: SocialNode }) {
                     [{node.label}]
                 </motion.span>
 
-                {/* Animated Description Overlay — Magnifies and shows what we do there */}
+                {/* Animated Description Overlay — Magnifies and shows what we do there in a bended floating style */}
                 <AnimatePresence>
                     {hovered && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8, y: 15 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, y: 15 }}
-                            transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                            className="absolute bottom-3 left-3 right-3 text-center bg-zinc-950/90 border border-white/10 p-2.5 rounded-2xl pointer-events-none shadow-2xl"
-                            style={{ transformStyle: "preserve-3d", transform: "translateZ(50px)" }}
+                            initial={{ opacity: 0, scale: 0.8, y: 10, rotateX: 25 }}
+                            animate={{ opacity: 1, scale: 1, y: 0, rotateX: 12 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 10, rotateX: 25 }}
+                            transition={{ type: "spring", stiffness: 220, damping: 18 }}
+                            className="absolute top-[105%] left-1/2 -translate-x-1/2 w-[220px] text-center bg-black/95 border border-white/15 p-3 rounded-2xl pointer-events-none shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-50"
+                            style={{ transformStyle: "preserve-3d", transform: "translateZ(70px)" }}
                         >
-                            <p className="text-[8px] font-mono leading-relaxed text-zinc-400 tracking-tighter">
+                            {/* Little triangle tail */}
+                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border-l border-t border-white/15 rotate-45" />
+                            
+                            <p className="text-[10px] font-mono leading-normal text-zinc-300 tracking-tight lowercase">
                                 {node.desc}
                             </p>
                         </motion.div>
