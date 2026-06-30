@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Terminal, Send, Youtube, Mail, Video, Instagram } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, MatrixRain, TiltCard } from "@/components/public/animations";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -19,66 +21,93 @@ const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+interface SocialNode {
+    title: string;
+    link: string;
+    icon: any;
+    glowClass: string;
+    hoverBorder: string;
+    iconColor: string;
+    label: string;
+    desc: string;
+    isCustomSvg?: boolean;
+    external?: boolean;
+}
+
 export default function CommunityPage() {
-    const socialNodes = [
+    const socialNodes: SocialNode[] = [
         {
             title: "telegram_node",
             link: "https://t.me/+ElIFqzvGBlYzMDBk",
             icon: Send,
-            glowClass: "shadow-[0_0_30px_rgba(56,189,248,0.06)] hover:shadow-[0_0_50px_rgba(56,189,248,0.2)] hover:border-sky-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(56,189,248,0.04)] hover:shadow-[0_0_50px_rgba(56,189,248,0.25)]",
+            hoverBorder: "hover:border-sky-500/40",
             iconColor: "text-sky-400",
-            label: "telegram"
+            label: "telegram",
+            desc: "join the global community discussion, announcements, and live support group."
         },
         {
             title: "discord_node",
             link: "https://discord.gg/Kbm4XhzfMJ",
             icon: DiscordIcon,
-            glowClass: "shadow-[0_0_30px_rgba(99,102,241,0.06)] hover:shadow-[0_0_50px_rgba(99,102,241,0.2)] hover:border-indigo-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(99,102,241,0.04)] hover:shadow-[0_0_50px_rgba(99,102,241,0.25)]",
+            hoverBorder: "hover:border-indigo-500/40",
             iconColor: "text-indigo-400",
             label: "discord",
-            isCustomSvg: true
+            isCustomSvg: true,
+            desc: "chat with developers, get system roles, join voice channels, and request custom features."
         },
         {
             title: "youtube_channel",
             link: "https://www.youtube.com/@LucyAcademics",
             icon: Youtube,
-            glowClass: "shadow-[0_0_30px_rgba(239,68,68,0.06)] hover:shadow-[0_0_50px_rgba(239,68,68,0.2)] hover:border-red-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(239,68,68,0.04)] hover:shadow-[0_0_50px_rgba(239,68,68,0.25)]",
+            hoverBorder: "hover:border-red-500/40",
             iconColor: "text-red-500",
-            label: "youtube"
+            label: "youtube",
+            desc: "watch system walk-throughs, updates, features, and platform setup guidelines."
         },
         {
             title: "tiktok_node",
             link: "https://tiktok.com/@lucy.academia",
             icon: Video,
-            glowClass: "shadow-[0_0_30px_rgba(6,182,212,0.06)] hover:shadow-[0_0_50px_rgba(236,72,153,0.2)] hover:border-pink-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(6,182,212,0.04)] hover:shadow-[0_0_50px_rgba(236,72,153,0.25)]",
+            hoverBorder: "hover:border-pink-500/40",
             iconColor: "text-cyan-400 group-hover:text-pink-400",
-            label: "tiktok"
+            label: "tiktok",
+            desc: "explore short-form feature reveals, dev logs, UI animations, and platform sneak peeks."
         },
         {
             title: "instagram_node",
             link: "https://www.instagram.com/lucy_devs/",
             icon: Instagram,
-            glowClass: "shadow-[0_0_30px_rgba(236,72,153,0.06)] hover:shadow-[0_0_50px_rgba(245,158,11,0.2)] hover:border-orange-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(236,72,153,0.04)] hover:shadow-[0_0_50px_rgba(245,158,11,0.25)]",
+            hoverBorder: "hover:border-orange-500/40",
             iconColor: "text-pink-500",
-            label: "instagram"
+            label: "instagram",
+            desc: "view clean UI previews, visual design assets, mockups, and layout updates."
         },
         {
             title: "x_node",
             link: "https://x.com/GoodLuckfus",
             icon: XIcon,
-            glowClass: "shadow-[0_0_30px_rgba(255,255,255,0.02)] hover:shadow-[0_0_50px_rgba(255,255,255,0.12)] hover:border-white/30",
+            glowClass: "shadow-[0_0_30px_rgba(255,255,255,0.02)] hover:shadow-[0_0_50px_rgba(255,255,255,0.15)]",
+            hoverBorder: "hover:border-white/30",
             iconColor: "text-white",
             label: "x",
-            isCustomSvg: true
+            isCustomSvg: true,
+            desc: "follow live dev updates, quick changelogs, build notifications, and technical alerts."
         },
         {
             title: "direct_transmission",
             link: "/contact",
             icon: Mail,
-            glowClass: "shadow-[0_0_30px_rgba(16,185,129,0.06)] hover:shadow-[0_0_50px_rgba(16,185,129,0.2)] hover:border-emerald-500/40",
+            glowClass: "shadow-[0_0_30px_rgba(16,185,129,0.04)] hover:shadow-[0_0_50px_rgba(16,185,129,0.25)]",
+            hoverBorder: "hover:border-emerald-500/40",
             iconColor: "text-emerald-400",
             label: "contact",
-            external: false
+            external: false,
+            desc: "open support tickets, report system issues, submit security disclosures, or contact press."
         }
     ];
 
@@ -130,62 +159,104 @@ export default function CommunityPage() {
 
                     {/* Nodes 3D Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-3xl mx-auto justify-center">
-                        {socialNodes.map((node, i) => {
-                            const Icon = node.icon;
-                            return (
-                                <motion.div
-                                    key={node.title}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
-                                    className="flex justify-center"
+                        {socialNodes.map((node, i) => (
+                            <motion.div
+                                key={node.title}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
+                                className="flex justify-center"
+                            >
+                                <Link 
+                                    href={node.link} 
+                                    target={node.external !== false ? "_blank" : undefined} 
+                                    rel={node.external !== false ? "noopener noreferrer" : undefined}
+                                    className="w-full max-w-[150px]"
                                 >
-                                    <Link 
-                                        href={node.link} 
-                                        target={node.external !== false ? "_blank" : undefined} 
-                                        rel={node.external !== false ? "noopener noreferrer" : undefined}
-                                        className="w-full max-w-[150px]"
-                                    >
-                                        <TiltCard className={`w-full aspect-square rounded-3xl border border-white/10 bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer transition-all duration-300 ${node.glowClass}`}>
-                                            {/* 3D Transform Wrapper */}
-                                            <div 
-                                                className="flex flex-col items-center justify-center w-full h-full p-4 select-none" 
-                                                style={{ transformStyle: "preserve-3d" }}
-                                            >
-                                                {/* Floating Icon */}
-                                                <div 
-                                                    className={`transition-all duration-300 ${node.iconColor} group-hover:scale-110`}
-                                                    style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}
-                                                >
-                                                    {node.isCustomSvg ? (
-                                                        <Icon className="w-10 h-10" />
-                                                    ) : (
-                                                        // @ts-ignore
-                                                        <Icon className="w-10 h-10 stroke-[1.5]" />
-                                                    )}
-                                                </div>
-                                                
-                                                {/* Label under icon */}
-                                                <span 
-                                                    className="text-[9px] uppercase tracking-widest text-zinc-600 group-hover:text-zinc-300 transition-colors mt-4 select-none"
-                                                    style={{ transform: "translateZ(15px)" }}
-                                                >
-                                                    [{node.label}]
-                                                </span>
-                                            </div>
-
-                                            {/* Spotlight hover effect */}
-                                            <div className="absolute inset-0 bg-radial-gradient from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                                        </TiltCard>
-                                    </Link>
-                                </motion.div>
-                            );
-                        })}
+                                    <CommunityNodeCard node={node} />
+                                </Link>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </main>
 
             <PageFooter id="COMMUNITY_NODES" links={[{ href: "/docs", label: "docs" }, { href: "/support", label: "support" }, { href: "/contact", label: "uplink" }]} />
         </div>
+    );
+}
+
+function CommunityNodeCard({ node }: { node: SocialNode }) {
+    const [hovered, setHovered] = useState(false);
+    const Icon = node.icon;
+
+    return (
+        <TiltCard 
+            className={cn(
+                "w-full aspect-square rounded-3xl border bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer transition-all duration-500",
+                hovered ? node.hoverBorder : "border-white/10",
+                node.glowClass
+            )}
+        >
+            <div 
+                className="flex flex-col items-center justify-center w-full h-full p-4 select-none relative" 
+                style={{ transformStyle: "preserve-3d" }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+            >
+                {/* 3D Parallax Container */}
+                <motion.div 
+                    animate={{ 
+                        z: hovered ? 40 : 0,
+                        scale: hovered ? 1.2 : 1,
+                        y: hovered ? -18 : 0
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className={cn("flex flex-col items-center justify-center transition-colors duration-300", node.iconColor)}
+                    style={{ transformStyle: "preserve-3d" }}
+                >
+                    {node.isCustomSvg ? (
+                        <Icon className="w-10 h-10" />
+                    ) : (
+                        // @ts-ignore
+                        <Icon className="w-10 h-10 stroke-[1.5]" />
+                    )}
+                </motion.div>
+
+                {/* Parallax Tag Label */}
+                <motion.span 
+                    animate={{ 
+                        z: hovered ? 20 : 0,
+                        y: hovered ? -10 : 0,
+                        opacity: hovered ? 0.2 : 1
+                    }}
+                    className="text-[9px] uppercase tracking-widest text-zinc-600 mt-4 font-mono select-none"
+                    style={{ transform: "translateZ(15px)" }}
+                >
+                    [{node.label}]
+                </motion.span>
+
+                {/* Animated Description Overlay — Magnifies and shows what we do there */}
+                <AnimatePresence>
+                    {hovered && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 15 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 15 }}
+                            transition={{ type: "spring", stiffness: 250, damping: 20 }}
+                            className="absolute bottom-3 left-3 right-3 text-center bg-zinc-950/90 border border-white/10 p-2.5 rounded-2xl pointer-events-none shadow-2xl"
+                            style={{ transformStyle: "preserve-3d", transform: "translateZ(50px)" }}
+                        >
+                            <p className="text-[8px] font-mono leading-relaxed text-zinc-400 tracking-tighter">
+                                {node.desc}
+                            </p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Spotlight hover effect */}
+            <div className="absolute inset-0 bg-radial-gradient from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        </TiltCard>
     );
 }
