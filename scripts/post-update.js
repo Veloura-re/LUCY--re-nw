@@ -95,64 +95,33 @@ function discordRequest(method, path, body = null) {
     });
 }
 
-const UPDATE_TEXT_MD = `**LUCY Platform Update: Private Operating Ledger, Security Gateways, and Refinements**
+const UPDATE_TEXT_MD = `**LUCY Platform Update: Redesigned 3D Community Portal and Official Social Uplinks**
 
-We deployed a major update to **LUCY**, introducing new school management tools, zero-tolerance security, and critical bug fixes.
+We have successfully updated and pushed a complete visual overhaul of the **LUCY Academics Community Portal**. Here is what has been updated:
 
----
+*   **3D Parallax Redesign:** The community page now features a sleek, icon-only grid of glassmorphic squircles. Brand icons float above the tiles on hover using 3D perspective transforms.
+*   **Custom Brand SVGs:** Integrated high-fidelity custom vector icons for **Discord** and **X** (formerly Twitter) for a premium, clean aesthetic.
+*   **Aesthetic Neon Spotlight Glows:** Each social node features custom hover colors (e.g., custom cyan-to-pink for TikTok, sky-blue for Telegram, and emerald for direct contact) for a responsive, modern feel.
+*   **Official Social Links Configured:**
+    *   X: https://x.com/GoodLuckfus
+    *   Instagram: https://www.instagram.com/lucy_devs/
+    *   TikTok: https://tiktok.com/@lucy.academia
 
-**1. PRIVATE OPERATING COSTS LEDGER (Shared Ledger for Owners and Principals)**
-We introduced a private ledger for the school's admin. **Owners** and **Principals** can track internal operating costs separate from student billing.
+**All pipelines are live, verified, and pushed to production.**`;
 
-*   **Trackable Expenses:** Track hardware (PCs, network upgrades), resources (books, assets), utilities (rent, electricity), and maintenance.
-*   **Security and Encryption:** Restricted by **Role-Based Access Control (RBAC)**. Only **SUPERADMIN**, **OWNER**, or **PRINCIPAL** roles can access ledger data. Standard staff, parents, and students have zero access.
-*   **Audit-Ready:** Upload digital receipts, track logging staff, and filter by categories.
+const UPDATE_TEXT_HTML = `<b>LUCY Platform Update: Redesigned 3D Community Portal and Official Social Uplinks</b>
 
----
+We have successfully updated and pushed a complete visual overhaul of the <b>LUCY Academics Community Portal</b>. Here is what has been updated:
 
-**2. ENFORCED LEGAL SYSTEM and CONSENT GATEWAYS**
-To protect student privacy and block abuse, we implemented an unbreakable consent flow:
+• <b>3D Parallax Redesign:</b> The community page now features a sleek, icon-only grid of glassmorphic squircles. Brand icons float above the tiles on hover using 3D perspective transforms.
+• <b>Custom Brand SVGs:</b> Integrated high-fidelity custom vector icons for <b>Discord</b> and <b>X</b> (formerly Twitter) for a premium, clean aesthetic.
+• <b>Aesthetic Neon Spotlight Glows:</b> Each social node features custom hover colors (e.g., custom cyan-to-pink for TikTok, sky-blue for Telegram, and emerald for direct contact) for a responsive, modern feel.
+• <b>Official Social Links Configured:</b>
+  - X: https://x.com/GoodLuckfus
+  - Instagram: https://www.instagram.com/lucy_devs/
+  - TikTok: https://tiktok.com/@lucy.academia
 
-*   **Zero-Tolerance Policy:** Terms outline countermeasures against abuse, auth bypass, and scraping. Threat patterns result in **IP bans** and referral to authorities.
-*   **Mandatory Consent:** Updated login and all registration portals. Users **must** check a declaration agreeing to Terms. Buttons are disabled until ticked.
-
----
-
-**3. SYSTEM FIXES AND OPTIMIZATIONS**
-*   **Parent Dashboard:** Restored interactive click handlers and routing logic.
-*   **Database Synchronicity:** Solved a Prisma syncing bug with a dual-URL connection scheme (pooled and direct).
-*   **Auth Reliability:** Swapped legacy token parsers for optimized server-side caching using **requireRole** for snappier loads.
-*   **Compilation:** Cleaned up TypeScript mismatches in dynamic page wrappers for clean builds.
-
----
-**All schemas are migrated, routes are active, and the platform has built.**`;
-
-const UPDATE_TEXT_HTML = `<b>LUCY Platform Update: Private Operating Ledger, Security Gateways, and Platform Refinement</b>
-
-We have deployed a comprehensive update to <b>LUCY</b>, introducing highly requested school management tools, zero-tolerance security mechanisms, and several critical bug fixes. Here is a deep dive into everything that has been updated:
-
-<b>1. PRIVATE OPERATING COSTS LEDGER (Shared Ledger for Owners and Principals)</b>
-We have introduced a private, institutional ledger designed specifically for the school's high-level administration. <b>School Owners</b> and <b>Principals (Directors)</b> can now log, review, and track internal operating costs that should not mix with standard student billing.
-
-• <b>Trackable Expenses:</b> You can track <b>Hardware and Equipment</b> (school PC upgrades, server equipment), <b>Resources and Books</b> (academic materials, classroom assets, library books), <b>Rent and Utilities</b> (fixed costs, space hire, network bills), and <b>Supplies and Logistics</b> (cleaning materials, office stock, maintenance).
-• <b>Security and Encryption:</b> The ledger is hidden behind strict <b>Role-Based Access Control (RBAC)</b>. Only authenticated users with the role of <b>SUPERADMIN</b>, <b>OWNER</b>, or <b>PRINCIPAL</b> can query or modify ledger data. Standard staff, parents, and students have zero access to this ledger.
-• <b>Audit-Ready Features:</b> Support for uploading digital receipts, tracking which staff member logged the expense, and detailed breakdowns of expenditures by category.
-
-<b>2. ENFORCED LEGAL SYSTEM and CONSENT GATEWAYS</b>
-To defend against malicious actors and protect student privacy, we have implemented an unbreakable consent flow:
-
-• <b>Zero-Tolerance Policy:</b> The Terms of Service have been updated to outline direct legal countermeasures against platform abuse, auth bypass, data harvesting, and unauthorized scraping. We utilize active heuristics to flag threat patterns, resulting in <b>IP bans</b> and potential referral to authorities.
-• <b>Mandatory Consent Checkboxes:</b> We have updated the <b>Login Page</b> and all <b>4 Registration Gateways</b> (Admin, Director, Parent, Student). Users <b>must</b> explicitly check a declaration agreeing to these terms. The submission buttons are physically disabled until the agreement is ticked. Consent state is verified serverside to ensure compliance is non-bypassable.
-
-<b>3. SYSTEM FIXES and OPTIMIZATIONS</b>
-Behind the scenes, we resolved several functional issues to polish user experience:
-
-• <b>Parent Dashboard Buttons:</b> Restored fully interactive click handlers and routing logic for critical parent navigation elements.
-• <b>Database Synchronicity:</b> Solved a Prisma Client syncing bug by structuring a dual-URL connection scheme (handling transaction-pooled connections alongside direct connections).
-• <b>Session Management and Auth Reliability:</b> Replaced legacy token parsers with optimized server-side caching using <b>getCachedUser</b> and <b>requireRole</b>. This makes navigating between dashboard pages faster and prevents session dropouts.
-• <b>Typing and Compilation Errors:</b> Cleaned up TypeScript mismatches in dynamic page wrappers, eliminating compilation errors during Next.js builds.
-
-<b>All schemas are migrated, routes are active, and the platform has successfully built.</b>`;
+<b>All pipelines are live, verified, and pushed to production.</b>`;
 
 async function run() {
     try {
