@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Terminal, MessageSquare, Send, Youtube, Mail, ExternalLink, Video } from "lucide-react";
+import { ArrowLeft, Terminal, MessageSquare, Send, Youtube, Mail, ExternalLink, Video, Instagram, Twitter } from "lucide-react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
 import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, MatrixRain, TiltCard } from "@/components/public/animations";
@@ -42,6 +42,24 @@ export default function CommunityPage() {
             link: "https://tiktok.com/@lucy.academia",
             btnLabel: "follow_tiktok",
             icon: Video,
+            color: "from-zinc-950 to-zinc-900",
+            borderColor: "border-white/10"
+        },
+        {
+            title: "instagram_node",
+            desc: "official lucy academics instagram for interface previews, aesthetic feature highlights, and walkthroughs.",
+            link: "https://instagram.com/lucy.academia",
+            btnLabel: "follow_instagram",
+            icon: Instagram,
+            color: "from-zinc-950 to-zinc-900",
+            borderColor: "border-white/10"
+        },
+        {
+            title: "twitter_node",
+            desc: "official lucy academics twitter for devlogs, quick changelogs, system status updates, and build alerts.",
+            link: "https://x.com/lucy_academia",
+            btnLabel: "follow_twitter",
+            icon: Twitter,
             color: "from-zinc-950 to-zinc-900",
             borderColor: "border-white/10"
         },
