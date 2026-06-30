@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Shield, ArrowLeft, Lock, Eye, Server, AlertTriangle, Mail } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
+import { useState, useEffect } from "react";
 
 const securityLayers = [
     { id: "SEC_01", name: "AES-256 Encryption", desc: "All data-at-rest is locked under AES-256. Keys are rotated every 90 days and stored in a hardware-isolated vault.", icon: Lock },
@@ -17,6 +18,70 @@ const securityLayers = [
 ];
 
 export default function Security() {
+    const [email, setEmail] = useState("");
+    const [vulnerabilityType, setVulnerabilityType] = useState("RCE");
+    const [severity, setSeverity] = useState("LOW");
+    const [description, setDescription] = useState("");
+    
+    const [status, setStatus] = useState<'IDLE' | 'SUBMITTING' | 'SUCCESS' | 'ERROR'>('IDLE');
+    const [txLogs, setTxLogs] = useState<string[]>([]);
+    const [resultHash, setResultHash] = useState("");
+    const [resultTime, setResultTime] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setStatus('SUBMITTING');
+        setTxLogs([]);
+
+        // Terminal animation steps
+        const logs = [
+            "initializing secure uplink...",
+            "establishing peer-to-peer encryption tunnel (TLS 1.3)...",
+            "sealing disclosure payload with ephemeral AES-256 keys...",
+            "transmitting chunk package to vault host...",
+            "verifying transmission package integrity check...",
+            "establishing secure database write..."
+        ];
+
+        for (let i = 0; i < logs.length; i++) {
+            await new Promise(r => setTimeout(r, 600));
+            setTxLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${logs[i]}`]);
+        }
+
+        try {
+            const res = await fetch('/api/public/security-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, vulnerabilityType, severity, description })
+            });
+
+            const data = (await res.json()) as any;
+            if (res.ok) {
+                setTxLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] transmission verified. reference: ${data.hash.substring(0, 16)}...`]);
+                await new Promise(r => setTimeout(r, 800));
+                setResultHash(data.hash);
+                setResultTime(new Date(data.timestamp).toLocaleString());
+                setStatus('SUCCESS');
+            } else {
+                setErrorMsg(data.error || "Uplink validation rejected the transmission.");
+                setStatus('ERROR');
+            }
+        } catch (err) {
+            setErrorMsg("Network timeout. Secure socket connection terminated.");
+            setStatus('ERROR');
+        }
+    };
+
+    const resetForm = () => {
+        setEmail("");
+        setVulnerabilityType("RCE");
+        setSeverity("LOW");
+        setDescription("");
+        setStatus('IDLE');
+        setTxLogs([]);
+    };
+
     return (
         <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
             <ScanLines />
@@ -105,29 +170,171 @@ export default function Security() {
                         </div>
                     </section>
 
-                    {/* Vulnerability Disclosure Contact */}
+                    {/* Vulnerability Disclosure Contact Form */}
                     <section className="space-y-6">
                         <Reveal className="flex items-center gap-4 text-zinc-500">
                             <div className="h-px w-12 bg-zinc-800" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">vulnerability_disclosure // pgp_uplink</span>
                         </Reveal>
-                        <Reveal delay={0.1}>
-                            <div className="p-8 border border-orange-500/10 bg-zinc-950/40 backdrop-blur-sm space-y-4">
-                                <h3 className="font-bold text-white uppercase tracking-tight text-lg">Report Security Issues</h3>
-                                <p className="text-zinc-500 text-xs leading-relaxed">
-                                    if you believe you have discovered a vulnerability or data leakage event within the lucy ecosystem, please transmit a detailed report immediately. do not disclose vulnerabilities publicly before synchronization.
-                                </p>
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-6 pt-2">
-                                    <div className="flex items-center gap-3 text-orange-400">
-                                        <Mail className="w-4 h-4 shrink-0" />
-                                        <span className="font-mono text-xs font-bold">security@5-cn.net</span>
+
+                        <AnimatePresence mode="wait">
+                            {status === 'SUCCESS' ? (
+                                <motion.div
+                                    key="success-card"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="p-8 border border-emerald-500/20 bg-emerald-950/5 space-y-6 rounded-none relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-4 text-emerald-500/10">
+                                        <Shield className="w-24 h-24 stroke-[1]" />
                                     </div>
-                                    <div className="text-[9px] text-zinc-700 uppercase tracking-widest">
-                                        pgp_key_fingerprint // 8f3e 90b4 a1c2 d3e4 e5f6
+                                    <div className="space-y-2">
+                                        <div className="text-[10px] text-emerald-500 uppercase tracking-widest font-bold">transmission_secured // response_active</div>
+                                        <h3 className="font-bold text-white uppercase tracking-tight text-xl">Vulnerability Disclosure Logged</h3>
+                                        <p className="text-zinc-400 text-xs leading-relaxed max-w-2xl">
+                                            your transmission has been sealed and cataloged. our security operations center (soc) response team will evaluate the payload within 24 hours. thank you for protecting the lucy network.
+                                        </p>
                                     </div>
-                                </div>
-                            </div>
-                        </Reveal>
+                                    <div className="p-6 bg-zinc-950/80 border border-zinc-900 font-mono text-xs space-y-3 rounded-xl max-w-2xl">
+                                        <div className="flex justify-between border-b border-zinc-900 pb-2 text-zinc-500 text-[10px]">
+                                            <span>METADATA</span>
+                                            <span>VALUES</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-zinc-500">transmission_hash:</span>
+                                            <span className="text-emerald-400 font-bold select-all break-all ml-4 text-right">{resultHash}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-zinc-500">timestamp:</span>
+                                            <span className="text-zinc-300 ml-4 text-right">{resultTime}</span>
+                                        </div>
+                                    </div>
+                                    <Button 
+                                        onClick={resetForm}
+                                        className="bg-zinc-900 hover:bg-zinc-800 text-white font-black uppercase text-[10px] tracking-widest border border-zinc-800 rounded-xl px-6 h-11"
+                                    >
+                                        Transmit New Report
+                                    </Button>
+                                </motion.div>
+                            ) : status === 'SUBMITTING' ? (
+                                <motion.div
+                                    key="submitting-card"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="p-8 border border-orange-500/20 bg-zinc-950/40 backdrop-blur-sm space-y-6"
+                                >
+                                    <div className="flex items-center justify-between text-orange-500">
+                                        <div className="flex items-center gap-3">
+                                            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full" />
+                                            <span className="text-[10px] uppercase tracking-widest font-bold">transmitting_payload...</span>
+                                        </div>
+                                    </div>
+                                    <div className="p-6 bg-black border border-zinc-900 rounded-xl font-mono text-[10px] text-zinc-400 space-y-2 h-[180px] overflow-y-auto scrollbar-hide">
+                                        {txLogs.map((log, index) => (
+                                            <motion.div 
+                                                key={index}
+                                                initial={{ opacity: 0, x: -5 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                className="flex gap-2"
+                                            >
+                                                <span className="text-orange-500">&gt;</span>
+                                                <span>{log}</span>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <Reveal delay={0.1} key="idle-card">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                        {/* Left advisory card */}
+                                        <div className="p-8 border border-white/5 bg-zinc-900/5 space-y-4 lg:col-span-1">
+                                            <h3 className="font-bold text-white uppercase tracking-tight text-lg">responsible_disclosure</h3>
+                                            <p className="text-zinc-500 text-xs leading-relaxed">
+                                                if you believe you have discovered a vulnerability or data leakage event within the lucy ecosystem, please transmit a detailed report immediately.
+                                            </p>
+                                            <p className="text-zinc-600 text-[10px] leading-relaxed uppercase tracking-wider">
+                                                do not disclose vulnerabilities publicly before synchronization. all reports are reviewed and referenced.
+                                            </p>
+                                        </div>
+
+                                        {/* Form Card */}
+                                        <form onSubmit={handleFormSubmit} className="p-8 border border-white/10 bg-zinc-950/60 backdrop-blur-sm space-y-6 lg:col-span-2 rounded-none relative">
+                                            {status === 'ERROR' && (
+                                                <div className="p-4 border border-red-500/20 bg-red-950/10 text-red-500 text-xs font-bold rounded-xl flex items-center gap-2">
+                                                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                                                    <span>{errorMsg}</span>
+                                                </div>
+                                            )}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">researcher_email</label>
+                                                    <input 
+                                                        type="email"
+                                                        required
+                                                        value={email}
+                                                        onChange={e => setEmail(e.target.value)}
+                                                        placeholder="your_email@domain.com"
+                                                        className="w-full h-11 px-4 bg-zinc-900/50 border border-zinc-800 text-white text-xs font-mono rounded-xl focus:border-orange-500 focus:outline-none transition-colors"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">severity_classification</label>
+                                                    <select 
+                                                        value={severity}
+                                                        onChange={e => setSeverity(e.target.value)}
+                                                        className="w-full h-11 px-4 bg-zinc-900/50 border border-zinc-800 text-white text-xs font-mono rounded-xl focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                                                    >
+                                                        <option value="LOW">LOW</option>
+                                                        <option value="MEDIUM">MEDIUM</option>
+                                                        <option value="HIGH">HIGH</option>
+                                                        <option value="CRITICAL">CRITICAL</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="space-y-2 md:col-span-2">
+                                                    <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">vulnerability_category</label>
+                                                    <select 
+                                                        value={vulnerabilityType}
+                                                        onChange={e => setVulnerabilityType(e.target.value)}
+                                                        className="w-full h-11 px-4 bg-zinc-900/50 border border-zinc-800 text-white text-xs font-mono rounded-xl focus:border-orange-500 focus:outline-none transition-colors cursor-pointer"
+                                                    >
+                                                        <option value="RCE">RCE (Remote Code Execution)</option>
+                                                        <option value="AUTH_BYPASS">Authentication Bypass</option>
+                                                        <option value="SQL_INJECTION">SQL Injection</option>
+                                                        <option value="DATA_LEAK">Sensitive Data Leakage</option>
+                                                        <option value="XSS_CSRF">XSS / CSRF</option>
+                                                        <option value="OTHER">Other Vulnerability</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">technical_description_and_poc</label>
+                                                <textarea 
+                                                    required
+                                                    rows={5}
+                                                    value={description}
+                                                    onChange={e => setDescription(e.target.value)}
+                                                    placeholder="provide clear replication steps, impact details, and proof of concept code..."
+                                                    className="w-full p-4 bg-zinc-900/50 border border-zinc-800 text-white text-xs font-mono rounded-xl focus:border-orange-500 focus:outline-none transition-colors resize-none"
+                                                />
+                                            </div>
+
+                                            <Button 
+                                                type="submit"
+                                                className="bg-orange-500 hover:bg-orange-600 text-white font-black uppercase text-[10px] tracking-widest rounded-xl px-8 h-12 w-full sm:w-auto"
+                                            >
+                                                Transmit Disclosure Payload
+                                            </Button>
+                                        </form>
+                                    </div>
+                                </Reveal>
+                            )}
+                        </AnimatePresence>
                     </section>
 
                     {/* Warning panel */}

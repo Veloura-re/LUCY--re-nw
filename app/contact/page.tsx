@@ -85,10 +85,10 @@ export default function ContactPage() {
                                         <Mail className="w-4 h-4 text-zinc-500" />
                                         <span className="font-mono text-xs">goodluck97248@gmail.com</span>
                                     </div>
-                                    <div className="flex items-center gap-4 text-zinc-400">
+                                    <Link href="/security" className="flex items-center gap-4 text-zinc-400 hover:text-white transition-colors">
                                         <ShieldCheck className="w-4 h-4 text-zinc-500" />
-                                        <span className="font-mono text-xs">security@5-cn.net</span>
-                                    </div>
+                                        <span className="font-mono text-xs underline decoration-zinc-800">secure_vulnerability_portal</span>
+                                    </Link>
                                 </div>
                             </div>
 
