@@ -48,7 +48,7 @@ export default function CommunityPage() {
         {
             title: "instagram_node",
             desc: "official lucy academics instagram for interface previews, aesthetic feature highlights, and walkthroughs.",
-            link: "https://instagram.com/lucy.academia",
+            link: "https://www.instagram.com/lucy_devs/",
             btnLabel: "follow_instagram",
             icon: Instagram,
             color: "from-zinc-950 to-zinc-900",
@@ -57,7 +57,7 @@ export default function CommunityPage() {
         {
             title: "twitter_node",
             desc: "official lucy academics twitter for devlogs, quick changelogs, system status updates, and build alerts.",
-            link: "https://x.com/lucy_academia",
+            link: "https://x.com/GoodLuckfus",
             btnLabel: "follow_twitter",
             icon: Twitter,
             color: "from-zinc-950 to-zinc-900",
