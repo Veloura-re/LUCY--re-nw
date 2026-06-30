@@ -1,8 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 
-process.env.DATABASE_URL = "postgresql://postgres.caeeusbhwrkelnffbbub:Amsocookd2133%23@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
-process.env.DIRECT_URL = "postgresql://postgres.caeeusbhwrkelnffbbub:Amsocookd2133%23@aws-1-eu-west-1.pooler.supabase.com:5432/postgres";
-
 const prisma = new PrismaClient();
 
 async function main() {
