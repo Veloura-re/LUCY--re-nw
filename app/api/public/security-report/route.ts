@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import crypto from "crypto";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {
@@ -14,42 +13,25 @@ export async function POST(req: Request) {
 
         const reportId = crypto.randomUUID();
         const hash = crypto.createHash("sha256").update(reportId + description).digest("hex");
-        const timestamp = new Date().toISOString();
 
-        const report = {
-            id: reportId,
-            timestamp,
-            email,
-            vulnerabilityType,
-            severity,
-            description,
-            hash
-        };
-
-        // Save to workspace storage
-        const storageDir = path.join(process.cwd(), "storage");
-        if (!fs.existsSync(storageDir)) {
-            fs.mkdirSync(storageDir, { recursive: true });
-        }
-
-        const storageFile = path.join(storageDir, "security-reports.json");
-        let currentReports = [];
-        if (fs.existsSync(storageFile)) {
-            try {
-                currentReports = JSON.parse(fs.readFileSync(storageFile, "utf8"));
-            } catch (e) {
-                currentReports = [];
+        // Save to database
+        const report = await (prisma as any).securityReport.create({
+            data: {
+                id: reportId,
+                email,
+                vulnerabilityType,
+                severity,
+                description,
+                hash
             }
-        }
-        currentReports.push(report);
-        fs.writeFileSync(storageFile, JSON.stringify(currentReports, null, 2), "utf8");
+        });
 
-        console.log(`[Security Vault] New vulnerability report received. ID: ${reportId}, Hash: ${hash}`);
+        console.log(`[Security Vault] New vulnerability report received and logged to database. ID: ${reportId}, Hash: ${hash}`);
 
         return NextResponse.json({
             success: true,
-            hash,
-            timestamp
+            hash: report.hash,
+            timestamp: report.createdAt.toISOString()
         });
 
     } catch (error: any) {

@@ -1050,3 +1050,21 @@ enum ExpenseCategory {
   SERVICES
   OTHER
 }
+
+model SecurityReport {
+  id                String   @id @default(uuid())
+  email             String
+  vulnerabilityType String
+  severity          String
+  description       String
+  hash              String   @unique
+  createdAt         DateTime @default(now())
+}
+
+model WantsAccess {
+  id        String   @id @default(uuid())
+  callsign  String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}

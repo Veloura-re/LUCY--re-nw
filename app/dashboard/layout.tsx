@@ -16,6 +16,7 @@ import { PreferencesProvider } from "@/components/dashboard/preferences-provider
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";
 import { Logo } from "@/components/ui/logo";
+import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
 
 export default async function DashboardLayout({
     children,
@@ -157,6 +158,7 @@ export default async function DashboardLayout({
             <InteractiveTour role={role} />
             <PreferencesProvider children={null} />
             <NetworkBanner />
+            <WelcomeAnnouncement />
         </div>
     );
 }
