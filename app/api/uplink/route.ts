@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
         const { callsign, email, message } = await req.json() as any;
 
         // Recipient fixed as per user request
-        const recipient = "goodluck97248@gmail.com";
+        const recipient = "lucyosck21@gmail.com";
+
+        // Save to database
+        await (prisma as any).wantsAccess.create({
+            data: {
+                callsign: callsign || "UNIDENTIFIED_UNIT",
+                email: email || "NO_REPLY_PROTOCOL",
+                message: message || "Empty Transmission Packet."
+            }
+        });
 
         const html = `
             <div style="font-family: sans-serif; background: #0a0a0a; color: #fff; padding: 40px; border: 1px solid #147A52; border-radius: 12px;">
