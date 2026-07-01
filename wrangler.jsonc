@@ -10,7 +10,10 @@
   "kv_namespaces": [
     {
       "binding": "NEXT_INC_CACHE_KV",
-      "id": "placeholder_id_for_kv"
+      "id": "c1f7d5c95c8646b9a80e1c254b38eb15"
     }
-  ]
+  ],
+  "build": {
+    "command": "npm run build && npx @opennextjs/cloudflare build"
+  }
 }
