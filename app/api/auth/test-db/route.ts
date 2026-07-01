@@ -9,12 +9,14 @@ export async function GET() {
         let queryError = null;
 
         try {
+            // ✅ GOOD: Use environment variables instead of hardcoded secrets
+            const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+            if (!connectionString) {
+                throw new Error("Database connection string not configured");
+            }
+
             const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
-                port: 5432,
-                database: 'postgres',
+                connectionString,
                 ssl: { rejectUnauthorized: false }
             });
             const adapter = new PrismaPg(pool);
@@ -23,7 +25,9 @@ export async function GET() {
             await prisma.$queryRaw`SELECT 1`;
             poolTest = "success";
         } catch (e: any) {
-            queryError = e.message;
+            // ✅ GOOD: Don't leak specific error details in response
+            console.error("Database connection failed:", e);
+            queryError = "Database connection failed";
         }
 
         return NextResponse.json({ 
@@ -32,6 +36,7 @@ export async function GET() {
             time: new Date().toISOString()
         });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        console.error("Test DB route error:", e);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
