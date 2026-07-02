@@ -23,14 +23,7 @@ async function main() {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
     
-    const pool = new Pool({ 
-        user: 'postgres.caeeusbhwrkelnffbbub',
-        password: 'Amsocookd2133#',
-        host: 'aws-1-eu-west-1.pooler.supabase.com',
-        port: 5432,
-        database: 'postgres',
-        ssl: { rejectUnauthorized: false }
-    });
+    const pool = new Pool({ connectionString: env['DIRECT_URL'] || env['DATABASE_URL'] });
     
     const email = 'superadmin@lucy-app.com';
     const password = crypto.randomBytes(12).toString('base64').replace(/[^a-zA-Z0-9]/g, '') + 'A1!'; // Secure password

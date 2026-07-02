@@ -9,13 +9,8 @@ export async function GET() {
         let queryError = null;
 
         try {
-            const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
-                port: 5432,
-                database: 'postgres',
-                ssl: { rejectUnauthorized: false }
+            const pool = new Pool({
+                connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL
             });
             const adapter = new PrismaPg(pool);
             const prisma = new PrismaClient({ adapter });
