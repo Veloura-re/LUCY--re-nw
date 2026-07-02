@@ -3,6 +3,8 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         let poolTest = "not attempted";
@@ -10,8 +12,7 @@ export async function GET() {
 
         try {
             const pool = new Pool({
-                connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
-                ssl: { rejectUnauthorized: false }
+                connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL
             });
             const adapter = new PrismaPg(pool);
             const prisma = new PrismaClient({ adapter });
