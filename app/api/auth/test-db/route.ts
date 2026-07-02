@@ -4,6 +4,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET() {
     try {

@@ -58,3 +58,9 @@ prisma_push_debug.txt
 prisma_output.txt
 prisma_error.txt
 dist
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
