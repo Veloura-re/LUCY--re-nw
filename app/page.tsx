@@ -369,6 +369,7 @@ export default function Home() {
     { href: "/network", label: "network" },
     { href: "/security", label: "vault" },
     { href: "/docs", label: "docs" },
+    { href: "/deck", label: "presentation" },
     { href: "/community", label: "community" },
   ];
   const companyLinks = [
@@ -533,6 +534,13 @@ export default function Home() {
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button variant="ghost" className="h-12 px-8 rounded-none border border-white/10 hover:border-white/40 text-[11px] uppercase tracking-widest transition-all">
                       read_docs
+                    </Button>
+                  </motion.div>
+                </Link>
+                <Link href="/deck">
+                  <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                    <Button variant="ghost" className="h-12 px-8 rounded-none border border-white/10 hover:border-white/40 text-[11px] uppercase tracking-widest transition-all">
+                      view_presentation
                     </Button>
                   </motion.div>
                 </Link>
