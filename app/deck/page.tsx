@@ -6,10 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ChevronLeft, ChevronRight, Keyboard, Play, Pause, 
   Cpu, Shield, Terminal as TerminalIcon, Layers,
-  ChevronDown 
+  ChevronDown, ArrowUpRight, HelpCircle, Activity,
+  Database, Info, BookOpen, UserCheck, AlertTriangle
 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
+import { 
+  ScanLines, CustomCursor, AnimatedGrid, HexGrid, 
+  GlitchOverlay, ParticleField, TiltCard, Reveal, GlitchText 
+} from "@/components/public/animations";
 
 // ─── Custom Confetti Particle System ──────────────────────────────────────────
 function PresentationConfetti({ trigger }: { trigger: boolean }) {
@@ -96,6 +101,37 @@ function PresentationConfetti({ trigger }: { trigger: boolean }) {
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-[50] w-full h-full" />;
 }
 
+// ─── Scramble Text Hook ────────────────────────────────────────────────────────
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*<>/\\[]{}";
+function useScramble(target: string, trigger: any) {
+  const [display, setDisplay] = useState("");
+  useEffect(() => {
+    let frame: ReturnType<typeof setInterval>;
+    let step = 0;
+    const totalSteps = target.length * 4;
+    
+    frame = setInterval(() => {
+      step++;
+      setDisplay(
+        target
+          .split("")
+          .map((char, i) => {
+            if (char === " ") return " ";
+            if (char === "\n") return "\n";
+            const revealAt = (i / target.length) * totalSteps * 0.8;
+            if (step > revealAt) return char;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join("")
+      );
+      if (step >= totalSteps) clearInterval(frame);
+    }, 20);
+
+    return () => clearInterval(frame);
+  }, [target, trigger]);
+  return display;
+}
+
 // ─── Presentation Slides Config ──────────────────────────────────────────────
 interface Slide {
   id: string;
@@ -104,12 +140,14 @@ interface Slide {
   sub: string;
   layout: "split" | "grid3" | "list" | "terminal" | "cards";
   content: React.ReactNode;
+  technicalAppendix: string[];
 }
 
 export default function PresentationDeck() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showAppendix, setShowAppendix] = useState(false);
 
   const slides: Slide[] = [
     {
@@ -135,7 +173,13 @@ export default function PresentationDeck() {
             </div>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Core stack: Next.js 15, React 19, TypeScript, TailwindCSS",
+        "Edge-native execution model with regional routing latency under 45ms",
+        "Full support for custom domain aliasing and SSL auto-provisioning",
+        "Database: PostgreSQL with Prisma ORM layer"
+      ]
     },
     {
       id: "friction",
@@ -167,7 +211,12 @@ export default function PresentationDeck() {
             </p>
           </div>
         </>
-      )
+      ),
+      technicalAppendix: [
+        "Typical administrative waste: 18-24 working hours per teacher per month",
+        "EAS build errors and platform downtime compound operational losses",
+        "Information silos result in average parent engagement metrics under 30%"
+      ]
     },
     {
       id: "isolation",
@@ -196,7 +245,12 @@ export default function PresentationDeck() {
             </div>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Implementation: Prisma multi-tenant client schema partitioning",
+        "Enforces RLS at the connection layer using `SET LOCAL app.current_tenant` session tokens",
+        "AES-256 field-level encryption for sensitive security hashes and student records"
+      ]
     },
     {
       id: "ai_grading",
@@ -222,7 +276,12 @@ export default function PresentationDeck() {
             <p className="text-zinc-500 text-[10px]">&gt; notice: privacy prompt sanitized. zero data cached by openai.</p>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Uses GPT-4o-mini endpoints with system instruction sets for prompt validation",
+        "Zero-Data-Retention (ZDR) policy enabled via organization dashboard agreements",
+        "Automated fallback to exact keyword-matching heuristics on API latency"
+      ]
     },
     {
       id: "parent_sync",
@@ -250,7 +309,12 @@ export default function PresentationDeck() {
             </div>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Email engine powered by Resend (SMTP configuration utilizing domain verification keys)",
+        "Direct link login relies on signed JWT magic tokens expiring in 48 hours",
+        "Integrated rate limiting: maximum 5 notifications per parent node per hour"
+      ]
     },
     {
       id: "command_center",
@@ -279,7 +343,12 @@ export default function PresentationDeck() {
             </p>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Consolidated SuperAdmin view is protected by server middleware and JSON Web Tokens",
+        "Includes real-time system performance telemetry and CPU/Memory statistics",
+        "Database backup lifecycle: automated dumps synced to private cloud buckets every 24 hours"
+      ]
     },
     {
       id: "wants_access",
@@ -309,7 +378,12 @@ export default function PresentationDeck() {
             </div>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Endpoint: POST `/api/admin/wants-access`",
+        "Inserts structured payloads into the SQLite/PostgreSQL operational ledger",
+        "Fires direct webhooks to slack/discord coordinate networks on request arrival"
+      ]
     },
     {
       id: "security_vault",
@@ -333,7 +407,12 @@ export default function PresentationDeck() {
             <p className="text-[9px] text-zinc-600 mt-1">status: mitigated // patch deployed</p>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Endpoint: `/api/public/security-report`",
+        "Payload limits: max 5MB attachments containing logs or proof-of-concept files",
+        "Automated cryptographic fingerprinting (SHA-256) of every disclosure ticket"
+      ]
     },
     {
       id: "roles",
@@ -360,7 +439,12 @@ export default function PresentationDeck() {
             <p className="text-xs text-zinc-400 leading-relaxed font-sans">view child report cards, check live attendance logs, and contact teachers.</p>
           </div>
         </>
-      )
+      ),
+      technicalAppendix: [
+        "RBAC strategy: Next.js middleware token checks and database-level role claims",
+        "Access tokens: JWT containing tenant ID, user role, and session expiration",
+        "API rate limiting scales based on role type (SuperAdmin has absolute capacity)"
+      ]
     },
     {
       id: "billing",
@@ -385,7 +469,12 @@ export default function PresentationDeck() {
             <div className="text-[10px] text-zinc-600">payment verified via webhook // ledger synchronized</div>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Support categories: tuition fees, study materials, transport, extracurricular activities",
+        "Expense ledger records category, raw amount, date, and invoice references",
+        "Audit trail: edits to logs trigger system warnings and record the updating principal ID"
+      ]
     },
     {
       id: "telemetry",
@@ -397,25 +486,42 @@ export default function PresentationDeck() {
         <div className="space-y-4 font-mono text-xs md:text-sm">
           <p className="text-zinc-500">&gt; querying system endpoints...</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-            <a href="https://5-cn.net" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-emerald-500/30 transition-all">
-              <span className="text-emerald-400">core_portal</span> <br />
-              <span className="text-[10px] text-zinc-600">https://5-cn.net/</span>
+            <a href="https://5-cn.net" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-emerald-500/30 transition-all flex items-center justify-between">
+              <div>
+                <span className="text-emerald-400 font-bold">core_portal</span> <br />
+                <span className="text-[9px] text-zinc-600">https://5-cn.net/</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-zinc-600" />
             </a>
-            <a href="https://5-cn.net/register" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-indigo-500/30 transition-all">
-              <span className="text-indigo-400">register_node</span> <br />
-              <span className="text-[10px] text-zinc-600">https://5-cn.net/register</span>
+            <a href="https://5-cn.net/register" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-indigo-500/30 transition-all flex items-center justify-between">
+              <div>
+                <span className="text-indigo-400 font-bold">register_node</span> <br />
+                <span className="text-[9px] text-zinc-600">https://5-cn.net/register</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-zinc-600" />
             </a>
-            <a href="https://5-cn.net/security" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-pink-500/30 transition-all">
-              <span className="text-pink-400">security_vault</span> <br />
-              <span className="text-[10px] text-zinc-600">https://5-cn.net/security</span>
+            <a href="https://5-cn.net/security" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-pink-500/30 transition-all flex items-center justify-between">
+              <div>
+                <span className="text-pink-400 font-bold">security_vault</span> <br />
+                <span className="text-[9px] text-zinc-600">https://5-cn.net/security</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-zinc-600" />
             </a>
-            <a href="https://5-cn.net/contact" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-cyan-400/30 transition-all">
-              <span className="text-cyan-400">wants_access_contact</span> <br />
-              <span className="text-[10px] text-zinc-600">https://5-cn.net/contact</span>
+            <a href="https://5-cn.net/contact" target="_blank" className="p-3 border border-white/5 bg-white/[0.01] rounded-lg hover:border-cyan-400/30 transition-all flex items-center justify-between">
+              <div>
+                <span className="text-cyan-400 font-bold">wants_access_contact</span> <br />
+                <span className="text-[9px] text-zinc-600">https://5-cn.net/contact</span>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-zinc-600" />
             </a>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Deployment framework: Vercel serverless nodes with globally distributed static assets",
+        "Edge route middleware filters incoming requests based on source country codes",
+        "DNS configuration: custom root mapping utilizing Cloudflare edge routing protocols"
+      ]
     },
     {
       id: "pricing",
@@ -445,7 +551,12 @@ export default function PresentationDeck() {
             <p className="text-xs text-zinc-600 leading-relaxed font-sans">dedicated server, custom api plugins, and multi-school networking.</p>
           </div>
         </>
-      )
+      ),
+      technicalAppendix: [
+        "Core Matrix: includes all resend integrations, PostgreSQL isolated backups, and standard support channels",
+        "Enterprise Tiers: SLA commitment of 99.99% monthly availability with service credit remedies",
+        "Custom billing cycles (quarterly/annually) can be coordinated with the operations team"
+      ]
     },
     {
       id: "cta",
@@ -472,7 +583,12 @@ export default function PresentationDeck() {
             </Link>
           </div>
         </div>
-      )
+      ),
+      technicalAppendix: [
+        "Self-provisioning portal completes database schema initialization in 90 seconds",
+        "Customer success coordinator will schedule a training walkthrough for school directors",
+        "Vulnerability portal available for incident alerts post-deployment"
+      ]
     }
   ];
 
@@ -500,7 +616,7 @@ export default function PresentationDeck() {
   // Auto-play loop
   useEffect(() => {
     if (!isPlaying) return;
-    const interval = setInterval(handleNext, 8000);
+    const interval = setInterval(handleNext, 8500);
     return () => clearInterval(interval);
   }, [isPlaying, handleNext]);
 
@@ -513,15 +629,26 @@ export default function PresentationDeck() {
 
   const slide = slides[currentSlide];
 
+  // Scrambled heading effect on slide change
+  const scrambledTitle = useScramble(slide.title, currentSlide);
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-hidden relative">
-      <PresentationConfetti trigger={showConfetti} />
       
-      {/* ── Background Grid ── */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+      {/* ── Visual Overlays matching the Home Page ── */}
+      <ScanLines />
+      <CustomCursor />
+      <AnimatedGrid />
+      <HexGrid />
+      <GlitchOverlay />
+      
+      {/* Floating Particle Field background */}
+      <ParticleField count={45} />
+      
+      <PresentationConfetti trigger={showConfetti} />
 
       {/* ── Navbar ── */}
-      <nav className="border-b border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-black/50 backdrop-blur-md">
+      <nav className="border-b border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-black/85 backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2 group">
           <Logo className="w-8 h-8" />
           <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
@@ -531,7 +658,7 @@ export default function PresentationDeck() {
             <Keyboard className="w-4 h-4" />
             use [arrow keys] to navigate
           </div>
-          <span className="px-3 py-1 border border-cyan-500/20 bg-cyan-950/20 text-[10px] text-cyan-400 uppercase font-bold rounded-lg font-mono">
+          <span className="px-3 py-1 border border-cyan-500/20 bg-cyan-950/20 text-[10px] text-cyan-400 uppercase font-bold rounded-lg font-mono shadow-[0_0_15px_rgba(6,182,212,0.15)]">
             slide_{String(currentSlide + 1).padStart(2, "0")}/{String(slides.length).padStart(2, "0")}
           </span>
         </div>
@@ -549,56 +676,101 @@ export default function PresentationDeck() {
             className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[50vh]"
           >
             {/* Left Side: Header & Context */}
-            <div className="lg:col-span-6 space-y-6 text-left">
+            <div className="lg:col-span-6 space-y-6 text-left relative z-20">
               <div className="flex items-center gap-3 text-zinc-500 text-[10px] font-mono tracking-widest">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                 {slide.tag}
               </div>
-              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white">
-                {slide.title}
+              
+              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white min-h-[70px] md:min-h-[120px]">
+                <GlitchText>{scrambledTitle}</GlitchText>
               </h1>
+              
               <p className="text-xs md:text-sm text-zinc-500 leading-relaxed max-w-lg font-sans">
                 {slide.sub}
               </p>
+
+              {/* Technical Appendix toggler (The "More Info" drawer) */}
+              <div className="pt-4">
+                <Button 
+                  onClick={() => setShowAppendix(!showAppendix)}
+                  variant="ghost" 
+                  className="p-0 h-auto text-[10px] uppercase text-zinc-400 hover:text-emerald-400 flex items-center gap-2 group tracking-widest font-bold"
+                >
+                  <Info className="w-3.5 h-3.5" />
+                  {showAppendix ? "close_specifications" : "view_system_specifications"}
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${showAppendix ? "rotate-180" : ""}`} />
+                </Button>
+              </div>
+
+              {/* Expandable Appendix specs */}
+              <AnimatePresence>
+                {showAppendix && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden bg-zinc-950/80 border border-white/5 rounded-2xl p-5 mt-4 space-y-3 font-mono text-[10.5px] text-zinc-400"
+                  >
+                    <div className="text-emerald-400 font-bold uppercase border-b border-white/5 pb-1">system_appendix // specifications</div>
+                    {slide.technicalAppendix.map((spec, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <span className="text-emerald-500 font-bold shrink-0">&gt;</span>
+                        <span className="leading-relaxed font-sans">{spec}</span>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Right Side: Render Dynamic Layout */}
-            <div className="lg:col-span-6">
-              {slide.layout === "split" && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {slide.content}
-                </motion.div>
-              )}
+            {/* Right Side: 3D TiltCard Wrapping Content */}
+            <div className="lg:col-span-6 relative z-10">
+              <TiltCard className="w-full">
+                <div className="relative group transition-all duration-500">
+                  {/* Neon border glow effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-2xl opacity-10 group-hover:opacity-20 blur transition duration-1000 group-hover:duration-200" />
+                  
+                  <div className="relative bg-zinc-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-[0_15px_35px_rgba(0,0,0,0.8)] overflow-hidden min-h-[300px] flex flex-col justify-center">
+                    
+                    {slide.layout === "split" && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        {slide.content}
+                      </motion.div>
+                    )}
 
-              {slide.layout === "grid3" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 text-left">
-                  {slide.content}
-                </div>
-              )}
+                    {slide.layout === "grid3" && (
+                      <div className="grid grid-cols-1 gap-4 text-left">
+                        {slide.content}
+                      </div>
+                    )}
 
-              {slide.layout === "cards" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                  {slide.content}
-                </div>
-              )}
+                    {slide.layout === "cards" && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                        {slide.content}
+                      </div>
+                    )}
 
-              {slide.layout === "terminal" && (
-                <div className="p-5 bg-zinc-950 border border-white/10 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] font-mono text-left relative overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500" />
-                  {slide.content}
+                    {slide.layout === "terminal" && (
+                      <div className="font-mono text-left w-full">
+                        {slide.content}
+                      </div>
+                    )}
+
+                  </div>
                 </div>
-              )}
+              </TiltCard>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* ── Slide Controls ── */}
-      <footer className="border-t border-white/5 py-6 px-6 flex items-center justify-between relative z-10 bg-black/30 backdrop-blur-md">
+      <footer className="border-t border-white/5 py-6 px-6 flex items-center justify-between relative z-10 bg-black/85 backdrop-blur-md">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
