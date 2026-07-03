@@ -66,7 +66,7 @@ export default function Network() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
                     </Link>
                     <Link href="/">
                         <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">
@@ -99,7 +99,7 @@ export default function Network() {
                             </motion.span>
                         </h1>
                         <p className="text-zinc-500 text-xl leading-relaxed max-w-2xl">
-                            lucy_os runs as a single-tenant institutional platform. each school gets its own isolated data environment. no shared infrastructure between clients.
+                            lucy_academia runs as a single-tenant institutional platform. each school gets its own isolated data environment. no shared infrastructure between clients.
                         </p>
                     </motion.section>
 
@@ -148,7 +148,7 @@ export default function Network() {
                         <div className="w-1.5 h-1.5 bg-white rounded-full mt-1.5 shrink-0" />
                         <p className="text-zinc-500 text-xs leading-relaxed">
                             <span className="text-white font-bold uppercase tracking-widest text-[9px]">note // </span>
-                            lucy_os is a single-instance deployment per institution. stats above reflect live counts directly from the active database. there are no exaggerated global node claims — what you see is what is actually running.
+                            lucy_academia is a single-instance deployment per institution. stats above reflect live counts directly from the active database. there are no exaggerated global node claims — what you see is what is actually running.
                         </p>
                     </motion.div>
 

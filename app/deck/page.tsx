@@ -240,7 +240,7 @@ export default function PresentationDeck() {
             <div className="space-y-2">
               <h4 className="text-sm font-bold text-white uppercase">popia & gdpr operator compliance</h4>
               <p className="text-xs text-zinc-500 leading-relaxed font-sans">
-                defines the institution as the 'responsible party' (controller) and lucy_os strictly as the 'operator' (processor), minimizing platform exposure.
+                defines the institution as the 'responsible party' (controller) and lucy_academia strictly as the 'operator' (processor), minimizing platform exposure.
               </p>
             </div>
           </div>
