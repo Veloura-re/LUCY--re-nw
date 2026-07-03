@@ -128,7 +128,7 @@ export default function CommunityPage() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
                     </Link>
                     <Link href="/">
                         <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">

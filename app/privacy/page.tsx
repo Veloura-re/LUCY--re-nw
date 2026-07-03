@@ -8,14 +8,14 @@ import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, GlitchText }
 import { Logo } from "@/components/ui/logo";
 
 const clauses = [
-    { num: "01", title: "Responsible Party vs Operator Definition", body: "Under POPIA (Protection of Personal Information Act) and GDPR, the educational institution is the 'Responsible Party' (or Data Controller) directing data operations. LUCY_OS acts strictly as the 'Operator' (or Data Processor), processing institutional data solely on documented instructions under a mandatory Data Processing Addendum (DPA) to limit platform liabilities." },
+    { num: "01", title: "Responsible Party vs Operator Definition", body: "Under POPIA (Protection of Personal Information Act) and GDPR, the educational institution is the 'Responsible Party' (or Data Controller) directing data operations. LUCY_ACADEMIA acts strictly as the 'Operator' (or Data Processor), processing institutional data solely on documented instructions under a mandatory Data Processing Addendum (DPA) to limit platform liabilities." },
     { num: "02", title: "Data Scope & Juristic Persons Protection", body: "We collect institutional data (legal names, contact info), identity data (names, emails, active roles), and operational logs (grades, attendance, security hashes). Unlike standard frameworks, we explicitly extend POPIA's protections to 'juristic persons' (corporate schools/bodies), treating business data with the identical safeguards applied to personal student records." },
     { num: "03", title: "Cryptographic Isolation & Row-Level Security", body: "All data ingested is housed in a PostgreSQL cluster. We employ strict PostgreSQL Row-Level Security (RLS) policies at the database layer to ensure complete cryptographic and operational tenant isolation, making cross-tenant data leakage mathematically and architecturally impossible." },
     { num: "04", title: "Data Minimization & Minimizing AI Subprocessor Risks", body: "OpenAI is engaged as an AI subprocessor. Prompt payloads are stripped of extraneous PII at the platform boundary. Crucially, we enforce a strict Zero Data Retention (ZDR) policy with OpenAI, excluding prompts and responses from abuse monitoring logs entirely. No AI outputs are used for generative foundational model training." },
     { num: "05", title: "Subprocessor Risk Management", body: "We leverage Vercel (for ephemeral frontend delivery and perimeter DDoS shield) and Supabase (for database storage, encryptions at rest via AES-256, and TLS 1.3 transit tunnels). All subprocessors are legally bound to support local and global data compliance mandates, and data residency settings restrict primary storage regions to specified jurisdictions." },
     { num: "06", title: "Data Portability & Deletion Rights", body: "Responsible parties retain absolute ownership over all raw data and may execute a full structured export at any time via the Admin Ledger or direct APIs. Individual users (faculty, parents, students) can request deletion, correction, or access to their records through their school's administrators." },
     { num: "07", title: "Data Retention & Purging Lifecycle", body: "Active institution files are kept for the duration of the subscription. Upon contractual termination, all personal and operational data is permanently purged and overwritten within 30 days. System audit logs are retained for 7 years to satisfy regulatory compliance." },
-    { num: "08", title: "Emergency Breach Notification & Incident Response", body: "In the event of a security compromise or unauthorized data disclosure, LUCY_OS will notify the institutional Responsible Party within 72 hours of verification. As an Operator, we provide complete forensic details (impact scope, mitigation measures) to enable the institution to fulfill its reporting duties to the Information Regulator." },
+    { num: "08", title: "Emergency Breach Notification & Incident Response", body: "In the event of a security compromise or unauthorized data disclosure, LUCY_ACADEMIA will notify the institutional Responsible Party within 72 hours of verification. As an Operator, we provide complete forensic details (impact scope, mitigation measures) to enable the institution to fulfill its reporting duties to the Information Regulator." },
     { num: "09", title: "Governing Law & Regulatory Inquiries", body: "This privacy protocol is governed by the laws of South Africa, aligned with POPIA requirements and harmonized with GDPR. For inquiries, DPA contracts, or compliance questions, contact our security officer at lucyosck21@gmail.com." },
 ];
 
@@ -30,7 +30,7 @@ export default function Privacy() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
@@ -52,7 +52,7 @@ export default function Privacy() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-zinc-500 text-base leading-relaxed">
-                                this policy describes how lucy_os collects, processes, and protects data across all institutional nodes.
+                                this policy describes how lucy_academia collects, processes, and protects data across all institutional nodes.
                             </p>
                         </Reveal>
                     </section>

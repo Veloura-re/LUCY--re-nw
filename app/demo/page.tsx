@@ -29,7 +29,7 @@ export default function Demo() {
                         <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
                             <span className="text-black font-black text-xs">L</span>
                         </motion.div>
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
@@ -53,7 +53,7 @@ export default function Demo() {
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-zinc-500 text-xl leading-relaxed">
-                                step through a full day in an institution running lucy_os. every action traces back through the system in real-time.
+                                step through a full day in an institution running lucy_academia. every action traces back through the system in real-time.
                             </p>
                         </Reveal>
 

@@ -1,5 +1,5 @@
 /**
- * Cache Tags for LUCY OS
+ * Cache Tags for LUCY ACADEMIA
  * Used with unstable_cache and revalidateTag for granular invalidation.
  */
 export const CACHE_TAGS = {

@@ -122,7 +122,7 @@ export function WelcomeAnnouncement() {
                 finally, <span className="text-emerald-400">its up!</span>
               </h2>
               <p className="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
-                lucy os version 1.0 is initialized and online. evaluate the core feature specifications logged below.
+                lucy academia version 1.0 is initialized and online. evaluate the core feature specifications logged below.
               </p>
             </div>
 
