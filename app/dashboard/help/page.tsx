@@ -5,7 +5,7 @@ import { getCachedUser } from "@/lib/users";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-    title: "Guideline Book | LUCY OS",
+    title: "Guideline Book | LUCY ACADEMIA",
     description: "The complete manual for operating your educational institution.",
 };
 

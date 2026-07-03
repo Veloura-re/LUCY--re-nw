@@ -124,7 +124,7 @@ function DataBar({ value, label, delay = 0 }: { value: number; label: string; de
 
 // ─── Boot Sequence ─────────────────────────────────────────────────────────────
 const BOOT_LINES = [
-  "> LUCY_OS_v1.0 KERNEL INITIALIZATING...",
+  "> LUCY_ACADEMIA_v1.0 KERNEL INITIALIZATING...",
   "> LOADING NEURAL MATRIX.............. [OK]",
   "> VAULT ENCRYPTION LAYER............. [OK]",
   "> SPAWNING SCHOLAR NODES............. [OK]",
@@ -363,7 +363,7 @@ export default function Home() {
     { icon: Search, title: "deep_audit", desc: "cryptographically verifiable logs for all operations." }
   ];
 
-  const marqueeItems = ["INTELLIGENCE_UNBOUND", "LUCY_OS_v1", "ZERO_LATENCY", "QUANTUM_VAULT", "NEURAL_MESH", "DISTRIBUTED_CORE", "ACADEMIC_MATRIX", "SECURE_UPLINK", "SCHOLAR_NODE", "DECENTRALIZED"];
+  const marqueeItems = ["INTELLIGENCE_UNBOUND", "LUCY_ACADEMIA_v1", "ZERO_LATENCY", "QUANTUM_VAULT", "NEURAL_MESH", "DISTRIBUTED_CORE", "ACADEMIC_MATRIX", "SECURE_UPLINK", "SCHOLAR_NODE", "DECENTRALIZED"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
     { href: "/intelligence", label: "intelligence" },
     { href: "/network", label: "network" },
@@ -426,7 +426,7 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto flex items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-2 group">
             <Logo className="w-8 h-8" />
-            <span className="font-bold text-lg tracking-tighter">lucy_os</span>
+            <span className="font-bold text-lg tracking-tighter">lucy_academia</span>
           </Link>
           <div className="hidden lg:flex items-center gap-12 text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500">
             {navLinks.map(link => (
@@ -1071,7 +1071,7 @@ export default function Home() {
       <footer className="bg-black border-t border-white/5 py-24 px-6 text-[10px] uppercase tracking-[0.2em] text-zinc-600">
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
-            <div className="flex items-center gap-2 text-white"><Cpu className="w-4 h-4" /><span className="font-bold tracking-tighter">lucy_os</span></div>
+            <div className="flex items-center gap-2 text-white"><Cpu className="w-4 h-4" /><span className="font-bold tracking-tighter">lucy_academia</span></div>
             <p className="leading-relaxed">distributed intelligence for institutional coordination.</p>
           </div>
           <div className="space-y-4">

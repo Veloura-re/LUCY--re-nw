@@ -7,15 +7,15 @@ import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, HexGrid } from "@/components/public/animations";
 
 const mentions = [
-    { outlet: "EdTech Africa", date: "2026-02-28", title: "LUCY OS is quietly becoming the backbone for African schools scrambling to digitize.", category: "Feature" },
+    { outlet: "EdTech Africa", date: "2026-02-28", title: "LUCY ACADEMIA is quietly becoming the backbone for African schools scrambling to digitize.", category: "Feature" },
     { outlet: "TechCrunch Africa", date: "2026-02-15", title: "The school OS nobody saw coming — LUCY is rewriting institutional management for the continent.", category: "Profile" },
     { outlet: "SchoolLeader Digest", date: "2026-01-30", title: "How a zero-trust AI layer is keeping parent data private while boosting engagement 3x.", category: "Analysis" },
-    { outlet: "AI Horizons Podcast", date: "2026-01-20", title: "Episode 142: Neural routing for academic institutions — live demo with LUCY OS.", category: "Podcast" },
-    { outlet: "Cape Business News", date: "2026-01-05", title: "Western Cape schools pilot LUCY OS as the province's smart-school initiative expands.", category: "News" },
+    { outlet: "AI Horizons Podcast", date: "2026-01-20", title: "Episode 142: Neural routing for academic institutions — live demo with LUCY ACADEMIA.", category: "Podcast" },
+    { outlet: "Cape Business News", date: "2026-01-05", title: "Western Cape schools pilot LUCY ACADEMIA as the province's smart-school initiative expands.", category: "News" },
 ];
 
 const pressKit = [
-    { label: "Company Name", val: "LUCY_SYS / Lucy OS" },
+    { label: "Company Name", val: "LUCY_SYS / Lucy Academia" },
     { label: "Founded", val: "2025" },
     { label: "Headquarters", val: "Cape Town, South Africa" },
     { label: "Category", val: "EdTech / Academic OS" },
@@ -43,7 +43,7 @@ export default function Press() {
                         <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
                             <span className="text-black font-black text-xs">L</span>
                         </motion.div>
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
