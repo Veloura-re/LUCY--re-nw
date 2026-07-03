@@ -634,7 +634,7 @@ export default function PresentationDeck() {
   const scrambledTitle = useScramble(slide.title, currentSlide);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-hidden relative">
+    <div className="min-h-screen bg-black text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-x-hidden overflow-y-auto relative">
       
       {/* ── Visual Overlays matching the Home Page ── */}
       <ScanLines />
@@ -683,7 +683,7 @@ export default function PresentationDeck() {
                 {slide.tag}
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white min-h-[70px] md:min-h-[120px]">
+              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white pb-3">
                 <GlitchText>{scrambledTitle}</GlitchText>
               </h1>
               
