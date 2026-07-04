@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCachedUser, getCachedUserByEmail } from "@/lib/users";
 import { healUserMismatch } from "@/lib/auth-healing";
@@ -88,6 +88,36 @@ export default async function DashboardLayout({
     // Enforce School Suspension
     if (dbUser.role !== 'SUPERADMIN' && dbUser.school?.status === 'SUSPENDED') {
         redirect("/school-suspended");
+    }
+
+    // Enforce School Subscription / Trial
+    if (dbUser.role !== 'SUPERADMIN' && dbUser.school) {
+        const now = new Date();
+        const createdAt = new Date(dbUser.school.createdAt);
+        
+        // Default trial is 2 months (60 days) from school creation
+        const trialEndsAt = dbUser.school.trialEndsAt 
+            ? new Date(dbUser.school.trialEndsAt)
+            : new Date(createdAt.getTime() + 60 * 24 * 60 * 60 * 1000);
+
+        const isTrialExpired = now > trialEndsAt;
+        const isSubscribed = dbUser.school.subscriptionStatus === 'active';
+
+        if (isTrialExpired && !isSubscribed) {
+            const headersList = await headers();
+            const pathname = headersList.get("x-pathname") || "";
+
+            const isBillingPage = pathname === '/dashboard/billing';
+            const isLogout = pathname === '/logout' || pathname === '/auth/signout';
+
+            if (!isBillingPage && !isLogout) {
+                if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL') {
+                    redirect('/dashboard/billing');
+                } else {
+                    redirect('/school-suspended?reason=trial_expired');
+                }
+            }
+        }
     }
 
     const role = dbUser.role;

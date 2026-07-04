@@ -33,8 +33,13 @@ function checkRateLimit(ip: string, path: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('x-pathname', request.nextUrl.pathname)
+
     let response = NextResponse.next({
-        request,
+        request: {
+            headers: requestHeaders,
+        },
     })
 
     const supabase = createServerClient(

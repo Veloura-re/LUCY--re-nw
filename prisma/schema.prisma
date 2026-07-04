@@ -73,6 +73,10 @@ model School {
   domain                String?
   status                SchoolStatus           @default(PENDING)
   createdAt             DateTime               @default(now())
+  trialEndsAt           DateTime?
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  subscriptionStatus    String?                @default("trialing")
   attendanceConfig      Json?                  @default("{\"type\": \"PERIOD\", \"lockAfterMinutes\": 30, \"enableLateMarking\": true}")
   logoUrl               String?
   address               String?
