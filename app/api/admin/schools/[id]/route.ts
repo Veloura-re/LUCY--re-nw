@@ -15,10 +15,20 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { status } = await request.json() as any;
+    const { status, subscriptionStatus, trialEndsAt } = await request.json() as any;
 
-    if (!['ACTIVE', 'SUSPENDED', 'PENDING'].includes(status)) {
-        return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    const updates: any = {};
+    if (status) {
+        if (!['ACTIVE', 'SUSPENDED', 'PENDING'].includes(status)) {
+            return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+        }
+        updates.status = status;
+    }
+    if (subscriptionStatus !== undefined) {
+        updates.subscriptionStatus = subscriptionStatus;
+    }
+    if (trialEndsAt !== undefined) {
+        updates.trialEndsAt = trialEndsAt;
     }
 
     try {
@@ -29,7 +39,7 @@ export async function PATCH(
         
         const { data: school, error } = await supabaseAdmin
             .from('School')
-            .update({ status })
+            .update(updates)
             .eq('id', id)
             .select()
             .single();
