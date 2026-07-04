@@ -1091,14 +1091,33 @@ export default function PresentationDeck() {
           </span>
         </div>
 
-        {/* Slide Dots */}
-        <div className="flex items-center gap-1.5 hidden md:flex">
+        {/* 3D Hover Navigation */}
+        <div className="flex items-center gap-2 hidden lg:flex">
           {slides.map((_, i) => (
-            <button
+            <div
               key={i}
-              onClick={() => { setCurrentSlide(i); setShowAppendix(false); }}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentSlide ? "bg-white/70 scale-125" : "bg-white/15 hover:bg-white/30"}`}
-            />
+              onMouseEnter={() => {
+                setCurrentSlide(i);
+                setShowAppendix(false);
+                setIsPlaying(false); // Pause auto-play on manual hover navigation
+              }}
+              className="cursor-default"
+            >
+              <TiltCard className="w-8 h-12 xl:w-10 xl:h-14">
+                <div 
+                  className={`w-full h-full border flex flex-col justify-end p-1.5 transition-all duration-300 relative overflow-hidden group ${
+                    i === currentSlide 
+                      ? "border-white/50 bg-zinc-800" 
+                      : "border-white/10 bg-zinc-950/50 hover:bg-zinc-900/60"
+                  }`}
+                >
+                  <div className={`absolute top-0 left-0 right-0 h-px transition-all duration-300 ${i === currentSlide ? "bg-cyan-400" : "bg-transparent group-hover:bg-white/20"}`} />
+                  <span className={`text-[9px] font-mono font-bold leading-none transition-colors duration-300 ${i === currentSlide ? "text-white" : "text-zinc-600 group-hover:text-zinc-400"}`}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+              </TiltCard>
+            </div>
           ))}
         </div>
 
