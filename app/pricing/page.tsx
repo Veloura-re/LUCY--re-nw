@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, GlitchText, MatrixRain, MagneticButton, Typewriter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
+import { cn } from "@/lib/utils";
 
 const terminalLines = [
     "> pricing_engine: loading...",
@@ -47,118 +48,142 @@ export default function Pricing() {
                 </div>
             </nav>
 
-            <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
-                <div className="max-w-2xl w-full space-y-16 text-center">
+            <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-24">
+                <div className="max-w-5xl w-full space-y-16 text-center">
 
                     {/* Animated terminal */}
-                    <div className="relative overflow-hidden border border-white/5 bg-zinc-950/80 p-8 text-left">
+                    <div className="relative overflow-hidden border border-white/5 bg-zinc-950/80 p-8 text-left max-w-2xl mx-auto">
                         <div className="absolute inset-0 opacity-20"><MatrixRain cols={10} /></div>
-                        <div className="relative z-10">
+                        <div className="relative z-10 font-mono">
                             <div className="flex items-center gap-2 mb-6">
-                                <div className="w-2 h-2 bg-white/20 rounded-full" />
-                                <div className="w-2 h-2 bg-white/10 rounded-full" />
-                                <div className="w-2 h-2 bg-white/5 rounded-full" />
-                                <span className="text-[8px] text-zinc-700 uppercase tracking-widest ml-2">pricing_engine_v2.0</span>
+                                <div className="w-2 h-2 bg-eduGreen-500 rounded-full" />
+                                <div className="w-2 h-2 bg-eduGreen-500/55 rounded-full" />
+                                <div className="w-2 h-2 bg-eduGreen-500/10 rounded-full" />
+                                <span className="text-[8px] text-zinc-500 uppercase tracking-widest ml-2">pricing_engine_v3.0 // operational</span>
                             </div>
-                            <Typewriter lines={terminalLines} className="space-y-1.5" />
+                            <Typewriter lines={[
+                                "> pricing_engine: operational",
+                                "> tier_config: ACTIVE",
+                                "> rate_cards: COMPILED_AND_VERIFIED",
+                                "> sla_matrix: DEPLOYED",
+                                "> billing_currency: USD",
+                                "> status: SECURE_UPLINK_ESTABLISHED_",
+                            ]} className="space-y-1.5" />
                         </div>
                     </div>
 
                     {/* Headline */}
                     <div className="space-y-6">
                         <Reveal>
-                            <div className="flex items-center justify-center gap-3 text-zinc-600">
-                                <Clock className="w-4 h-4" />
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
-                                <span className="text-[10px] uppercase tracking-[0.4em]">pricing_matrix // coming_soon</span>
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
-                                <Clock className="w-4 h-4" />
+                            <div className="flex items-center justify-center gap-3 text-zinc-400">
+                                <Clock className="w-4 h-4 text-eduGreen-500" />
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-800" />
+                                <span className="text-[10px] uppercase tracking-[0.4em] text-white">active_tariffs // pricing_matrix</span>
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-800" />
+                                <Clock className="w-4 h-4 text-eduGreen-500" />
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                pricing<br /><GlitchText className="text-zinc-800">soon.</GlitchText>
+                            <h1 className="text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
+                                pricing<br /><span className="text-eduGreen-500">plans.</span>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-zinc-500 text-lg leading-relaxed max-w-lg mx-auto">
-                                we're finalizing our pricing tiers. institutional pilots are free — drop your email and we'll notify you when pricing goes live.
+                            <p className="text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
+                                select a node tier to provision your school instance. all plans begin with a 60-day trial evaluation period.
                             </p>
                         </Reveal>
                     </div>
 
-                    {/* Waitlist form */}
-                    <Reveal delay={0.3}>
-                        <AnimatePresence mode="wait">
-                            {!submitted ? (
-                                <motion.form key="form" onSubmit={handleSubmit} initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex gap-0 border border-white/10 overflow-hidden">
-                                    <input
-                                        type="email"
-                                        required
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        placeholder="callsign@institution.node"
-                                        className="flex-1 bg-black px-6 py-4 text-sm text-white placeholder:text-zinc-700 outline-none border-r border-white/10"
-                                    />
-                                    <MagneticButton>
-                                        <button type="submit" disabled={loading} className="h-full px-8 bg-white text-black text-[10px] uppercase tracking-widest font-bold hover:bg-zinc-200 transition-colors disabled:opacity-60 whitespace-nowrap">
-                                            {loading ? "routing..." : "notify_me"}
-                                        </button>
-                                    </MagneticButton>
-                                </motion.form>
-                            ) : (
-                                <motion.div key="success" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="py-6 border border-white/10 flex items-center justify-center gap-4 text-sm">
-                                    <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: 3, duration: 0.2 }} className="w-2 h-2 bg-white rounded-full" />
-                                    <span className="text-zinc-400">uplink_registered // we'll reach out when pricing launches</span>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </Reveal>
+                    {/* Pricing Tiers Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                        {[
+                            {
+                                tier: "Pilot Node",
+                                price: "Free",
+                                period: "up to 3 months",
+                                desc: "Full access for a single institution during evaluation period. No credit card required.",
+                                features: ["1 institution", "up to 500 students", "all core features", "email support"],
+                                highlight: false,
+                                href: "/register/admin?plan=pilot",
+                                buttonText: "deploy_pilot"
+                            },
+                            {
+                                tier: "Core Matrix",
+                                price: "$149",
+                                originalPrice: "$250",
+                                period: "/ month",
+                                desc: "Production-grade deployment for full-scale institutional management and AI assistance.",
+                                features: ["unlimited students", "all roles + AI helper", "parent portal", "priority support", "99.9% uptime SLA"],
+                                highlight: true,
+                                href: "/register/admin?plan=core",
+                                buttonText: "subscribe_now"
+                            },
+                            {
+                                tier: "Enterprise",
+                                price: "Custom",
+                                period: "per institution",
+                                desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated manager.",
+                                features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated support manager", "99.99% SLA"],
+                                highlight: false,
+                                href: "/contact",
+                                buttonText: "contact_sales"
+                            }
+                        ].map((t, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: false }}
+                                transition={{ delay: i * 0.1 }}
+                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 ${t.highlight ? "border-white/30 bg-zinc-950/80 shadow-lg shadow-white/[0.01]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
+                            >
+                                {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
+                                
+                                <div className="space-y-1">
+                                    <span className="text-[8px] uppercase tracking-widest text-zinc-500">{t.highlight ? "recommended" : `tier_0${i + 1}`}</span>
+                                    <h3 className="text-xl font-bold uppercase tracking-tight text-white font-orbitron">{t.tier}</h3>
+                                </div>
 
-                    {/* Sneak peek tiers (locked) */}
-                    <div className="space-y-4">
-                        <Reveal className="text-[9px] text-zinc-700 uppercase tracking-widest">tier_preview // [REDACTED]</Reveal>
-                        <div className="grid grid-cols-3 gap-4">
-                            {[
-                                { tier: "Pilot Node", price: "Free", period: "3-month pilot" },
-                                { tier: "Core Matrix", price: "$250", period: "/ month" },
-                                { tier: "Enterprise", price: "Custom", period: "per institution" },
-                            ].map((t, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: false }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="relative border border-white/5 bg-zinc-950/50 p-6 space-y-3 overflow-hidden group"
-                                >
-                                    {/* Blur overlay */}
-                                    <div className="absolute inset-0 backdrop-blur-sm bg-black/55 flex items-center justify-center z-10">
-                                        <motion.div animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 1.8, delay: i * 0.4 }} className="text-[8px] uppercase tracking-[0.3em] text-zinc-700">classified</motion.div>
-                                    </div>
-                                    {/* Ghosted content visible through blur */}
-                                    <div className="text-2xl font-bold text-zinc-700">{t.price}</div>
-                                    <div className="text-xs text-zinc-800 uppercase tracking-widest">{t.period}</div>
-                                    <div className="text-sm font-bold uppercase text-zinc-700">{t.tier}</div>
-                                    <div className="text-xs text-zinc-800 space-y-1">
-                                        <div>• ████████</div>
-                                        <div>• ████████</div>
-                                        <div>• ████████</div>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-3xl font-bold text-white font-orbitron">{t.price}</span>
+                                    {t.originalPrice && (
+                                        <span className="text-sm line-through text-zinc-500 font-medium">{t.originalPrice}</span>
+                                    )}
+                                    <span className="text-zinc-500 text-xs">{t.period}</span>
+                                </div>
+
+                                <p className="text-zinc-400 text-xs leading-relaxed h-12">{t.desc}</p>
+
+                                <div className="w-full h-px bg-white/10" />
+
+                                <ul className="space-y-2.5 text-xs text-zinc-300">
+                                    {t.features.map((feat, j) => (
+                                        <li key={j} className="flex gap-2.5 items-start">
+                                            <span className="text-eduGreen-500 font-bold shrink-0">+</span>
+                                            <span>{feat}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <div className="pt-4">
+                                    <Link href={t.href} className="w-full">
+                                        <Button 
+                                            variant={t.highlight ? "primary" : "outline"} 
+                                            className={cn(
+                                                "w-full h-11 rounded-none text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300",
+                                                t.highlight 
+                                                    ? "bg-white text-black hover:bg-zinc-200" 
+                                                    : "border-white/20 text-zinc-300 hover:bg-white hover:text-black"
+                                            )}
+                                        >
+                                            {t.buttonText}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-
-                    {/* Interim CTA */}
-                    <Reveal className="flex flex-wrap gap-4 justify-center">
-                        <MagneticButton>
-                            <Link href="/demo"><Button variant="outline" className="h-12 px-8 rounded-none border-white/20 text-[11px] uppercase tracking-widest hover:bg-white hover:text-black transition-all font-bold">try_demo</Button></Link>
-                        </MagneticButton>
-                        <MagneticButton>
-                            <Link href="/contact"><Button variant="outline" className="h-12 px-8 rounded-none border-white/20 text-[11px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">speak_to_team</Button></Link>
-                        </MagneticButton>
-                    </Reveal>
                 </div>
             </main>
 
