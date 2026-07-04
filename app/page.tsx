@@ -993,7 +993,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { tier: "Pilot Node", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
-                { tier: "Core Matrix", price: "$250", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
+                { tier: "Core Matrix", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
                 { tier: "Enterprise", price: "Custom", period: "per institution", desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
               ].map((p, i) => (
                 <TiltCard key={i}>

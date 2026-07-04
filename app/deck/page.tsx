@@ -543,7 +543,7 @@ export default function PresentationDeck() {
             <div className="absolute top-0 right-0 px-3 py-1 bg-emerald-600 text-white text-[8px] font-bold uppercase rounded-bl-xl font-mono">recommended</div>
             <div className="text-[10px] text-emerald-400">tier_02</div>
             <h3 className="text-lg font-bold text-white uppercase tracking-tighter">core matrix</h3>
-            <p className="text-2xl font-bold text-emerald-400">$250<span className="text-xs text-zinc-500">/mo</span></p>
+            <p className="text-2xl font-bold text-emerald-400">$149<span className="text-xs text-zinc-500">/mo</span></p>
             <p className="text-xs text-zinc-500 leading-relaxed font-sans">full administrative, grading, and parent portal infrastructure.</p>
           </div>
           <div className="p-6 border border-white/10 bg-zinc-950/50 space-y-4 hover:border-cyan-500/20 transition-all duration-300">
