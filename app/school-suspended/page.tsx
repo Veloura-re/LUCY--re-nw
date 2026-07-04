@@ -1,7 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 
-export default function SchoolSuspendedPage() {
+interface PageProps {
+    searchParams: Promise<{ reason?: string }>;
+}
+
+export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
+    const params = await searchParams;
+    const isTrialExpired = params.reason === 'trial_expired';
+
     return (
         <div className="min-h-screen bg-black flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-zinc-900 border border-red-900/50 rounded-2xl p-8 text-center space-y-6 shadow-2xl shadow-red-900/20">
@@ -22,14 +29,22 @@ export default function SchoolSuspendedPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-medium text-white">Access Restricted</h1>
+                    <h1 className="text-2xl font-medium text-white">
+                        {isTrialExpired ? "Trial Expired" : "Access Restricted"}
+                    </h1>
                     <p className="text-zinc-400">
-                        Your institution's access to the LUCY platform has been suspended.
+                        {isTrialExpired 
+                            ? "Your institution's free trial of the LUCY platform has expired."
+                            : "Your institution's access to the LUCY platform has been suspended."
+                        }
                     </p>
                 </div>
 
                 <div className="bg-red-950/20 border border-red-500/20 rounded-lg p-4 text-sm text-red-400">
-                    Please contact your school administrator or system director for more information.
+                    {isTrialExpired
+                        ? "Please contact your school administrator or owner to subscribe and reactivate access."
+                        : "Please contact your school administrator or system director for more information."
+                    }
                 </div>
 
                 <div className="pt-4">
