@@ -984,7 +984,7 @@ export default function Home() {
                 <Link href="/pricing">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button variant="outline" className="h-12 px-8 rounded-none border-white/20 text-[11px] uppercase tracking-widest hover:bg-white hover:text-black transition-all font-bold">
-                      coming_soon
+                      view_pricing
                     </Button>
                   </motion.div>
                 </Link>
@@ -1005,14 +1005,35 @@ export default function Home() {
                     className={`relative p-10 border h-full space-y-8 group cursor-default overflow-hidden transition-all duration-300 ${p.highlight ? "border-white/30 bg-zinc-950/60 shadow-lg shadow-white/[0.01]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
                   >
                     {p.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />}
+                    
+                    {/* Glowing radial pulse behind card for discount burst */}
+                    {p.tier === "Core Matrix" && (
+                      <motion.div 
+                        animate={{ opacity: [0.15, 0.35, 0.15] }} 
+                        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
+                        className="absolute inset-0 pointer-events-none" 
+                        style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)" }} 
+                      />
+                    )}
                     <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
                     
+                    {/* Pulsing discount burst badge */}
+                    {p.tier === "Core Matrix" && (
+                      <motion.div 
+                        animate={{ 
+                          scale: [1, 1.08, 1],
+                          boxShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 10px rgba(255,255,255,0.2)", "0 0 0px rgba(255,255,255,0)"]
+                        }}
+                        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                        className="absolute top-4 right-4 bg-white text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-white"
+                      >
+                        40%_discount
+                      </motion.div>
+                    )}
+
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="text-[9px] text-zinc-400 uppercase tracking-widest">{p.highlight ? "recommended_node" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
-                        {p.highlight && <motion.div animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-white/40 rounded-full" />}
-                      </div>
-                      <h3 className="text-2xl font-bold uppercase tracking-tight text-white group-hover:text-eduGreen-400 transition-colors font-orbitron">{p.tier}</h3>
+                      <div className="text-[9px] text-zinc-400 uppercase tracking-widest">{p.highlight ? "recommended_node" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
+                      <h3 className="text-2xl font-bold uppercase tracking-tight text-white group-hover:text-zinc-300 transition-colors font-orbitron">{p.tier}</h3>
                     </div>
                     
                     <div className="flex items-end gap-2">
@@ -1032,7 +1053,7 @@ export default function Home() {
                     <div className="space-y-2">
                       {p.features.map((f, j) => (
                         <motion.div key={j} initial={{ opacity: 0, x: -6 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: j * 0.05 }} className="flex gap-3 text-xs text-zinc-300">
-                          <span className="text-eduGreen-500 font-bold shrink-0">+</span>{f}
+                          <span className="text-zinc-400 font-bold shrink-0">+</span>{f}
                         </motion.div>
                       ))}
                     </div>
@@ -1040,7 +1061,7 @@ export default function Home() {
                     <div className="pt-2">
                       <Link href="/pricing" className="w-full">
                         <div className="w-full h-11 border border-white/10 bg-white/5 hover:bg-white flex items-center justify-center text-[9px] uppercase tracking-[0.3em] text-zinc-300 hover:text-black font-bold transition-all duration-300">
-                          select_tier
+                          price
                         </div>
                       </Link>
                     </div>
