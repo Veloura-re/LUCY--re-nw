@@ -37,7 +37,7 @@ function PresentationConfetti({ trigger }: { trigger: boolean }) {
     };
     window.addEventListener("resize", handleResize);
 
-    const colors = ["#10b981", "#00f0ff", "#6366f1", "#f59e0b", "#ec4899"];
+    const colors = ["#a1a1aa", "#00f0ff", "#6366f1", "#f59e0b", "#ec4899"];
     const particles: Array<{
       x: number;
       y: number;
@@ -166,7 +166,7 @@ export default function PresentationDeck() {
               </Button>
             </Link>
             <div className="flex items-center gap-3 px-5 py-3 border border-white/10 bg-white/[0.02] rounded-none text-[11px] text-zinc-400 font-mono">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+              <span className="w-2 h-2 bg-white/50 rounded-full animate-ping" />
               live node active at: https://5-cn.net/
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function PresentationDeck() {
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left">
           <div className="p-8 border border-white/10 bg-zinc-950/50 space-y-4 hover:border-cyan-500/20 transition-all duration-300">
-            <div className="text-xs text-emerald-400 font-bold font-mono">[01] administrative lock</div>
+            <div className="text-xs text-white/70 font-bold font-mono">[01] administrative lock</div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tighter">manual marking</h3>
             <p className="text-sm text-zinc-400 leading-relaxed font-sans font-light">
               administrators and faculty spend upwards of 45% of operational hours compiling grades, scaling marks, and mailing report sheets.
@@ -223,7 +223,7 @@ export default function PresentationDeck() {
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
           <div className="p-8 border border-white/10 bg-zinc-950/50 flex items-start gap-5 text-left">
-            <Shield className="w-10 h-10 text-emerald-400 shrink-0 mt-1" />
+            <Shield className="w-10 h-10 text-white/60 shrink-0 mt-1" />
             <div className="space-y-3">
               <h4 className="text-lg font-bold text-white uppercase tracking-tighter">postgresql row-level security (rls)</h4>
               <p className="text-sm text-zinc-400 leading-relaxed font-sans font-light">
@@ -255,10 +255,10 @@ export default function PresentationDeck() {
       sub: "evaluating student responses under zero data retention guidelines.",
       content: (
         <div className="p-6 bg-black border border-white/10 font-mono text-left w-full relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-white/30 to-white/10" />
           <div className="flex items-center justify-between border-b border-white/5 pb-3 text-xs text-zinc-500">
             <span>[openai_api_stream]</span>
-            <span className="text-emerald-400">status: active_zdr</span>
+            <span className="text-white/70">status: active_zdr</span>
           </div>
           <div className="space-y-3 text-xs md:text-sm mt-4">
             <p className="text-zinc-500">&gt; executing student_submission_evaluation...</p>
@@ -268,7 +268,7 @@ export default function PresentationDeck() {
               <span className="text-indigo-400">correct_keywords:</span> ["photosynthesis", "glucose", "sunlight"]
             </div>
             <p className="text-zinc-500">&gt; scanning response tokens...</p>
-            <p className="text-emerald-400 font-bold">&gt; match verified. points awarded: 10/10 [normalized score: 100%]</p>
+            <p className="text-white/70 font-bold">&gt; match verified. points awarded: 10/10 [normalized score: 100%]</p>
             <p className="text-zinc-500 text-[10.5px]">&gt; notice: privacy prompt sanitized. zero data cached by openai.</p>
           </div>
         </div>
@@ -291,7 +291,7 @@ export default function PresentationDeck() {
               the loop is closed immediately upon grade submission. the platform identifies linked parent emails and fires report credentials.
             </p>
             <div className="p-5 border border-white/10 bg-white/[0.01] rounded-none">
-              <div className="text-emerald-400 text-xs font-mono font-bold mb-2">⚡ real-time email dispatch</div>
+              <div className="text-white/60 text-xs font-mono font-bold mb-2">⚡ real-time email dispatch</div>
               <p className="text-xs text-zinc-500 leading-relaxed font-sans">
                 powered by resend mail api. parents receive report cards containing attendance metrics, exact grades, and teacher remarks.
               </p>
@@ -324,7 +324,7 @@ export default function PresentationDeck() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full text-left">
           <div className="p-8 border border-white/10 bg-zinc-950/50 space-y-4">
             <div className="flex items-center gap-3">
-              <Cpu className="w-6 h-6 text-emerald-400" />
+              <Cpu className="w-6 h-6 text-white/60" />
               <h4 className="text-md font-bold text-white uppercase tracking-tighter">school registry manager</h4>
             </div>
             <p className="text-sm text-zinc-400 leading-relaxed font-sans font-light">
@@ -366,12 +366,12 @@ export default function PresentationDeck() {
           <div className="p-6 border border-white/10 bg-zinc-950/50 space-y-3">
             <div className="text-[10px] text-zinc-500 font-mono flex items-center justify-between border-b border-white/5 pb-2">
               <span>[incoming_transmissions]</span>
-              <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="w-2.5 h-2.5 bg-white/50 rounded-full animate-pulse" />
             </div>
             <div className="text-xs space-y-2 font-mono leading-relaxed">
-              <p><span className="text-emerald-400">callsign:</span> "vanguard_academy"</p>
-              <p><span className="text-emerald-400">comm_link:</span> "director@vanguard.edu"</p>
-              <p><span className="text-emerald-400">payload:</span> "initialize pilot node for 800 student terminals."</p>
+              <p><span className="text-white/60">callsign:</span> "vanguard_academy"</p>
+              <p><span className="text-white/60">comm_link:</span> "director@vanguard.edu"</p>
+              <p><span className="text-white/60">payload:</span> "initialize pilot node for 800 student terminals."</p>
             </div>
           </div>
         </div>
@@ -422,19 +422,19 @@ export default function PresentationDeck() {
       sub: "granular permission layers protect the institutional matrix.",
       content: (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-left">
-          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-emerald-500/20 transition-all duration-300">
+          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-white/20 transition-all duration-300">
             <div className="text-[10px] text-zinc-500 font-mono font-bold">01 // OWNER</div>
             <p className="text-xs text-zinc-400 leading-relaxed font-sans">manage school configuration, logo, and core matrix parameters.</p>
           </div>
-          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-emerald-500/20 transition-all duration-300">
+          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-white/20 transition-all duration-300">
             <div className="text-[10px] text-zinc-500 font-mono font-bold">02 // PRINCIPAL</div>
             <p className="text-xs text-zinc-400 leading-relaxed font-sans">access grading sheets, manage student roster, and regulate billing.</p>
           </div>
-          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-emerald-500/20 transition-all duration-300">
+          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-white/20 transition-all duration-300">
             <div className="text-[10px] text-zinc-500 font-mono font-bold">03 // TEACHER</div>
             <p className="text-xs text-zinc-400 leading-relaxed font-sans">conduct classes, build exams, log student attendance, and assign marks.</p>
           </div>
-          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-emerald-500/20 transition-all duration-300">
+          <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-2 hover:border-white/20 transition-all duration-300">
             <div className="text-[10px] text-zinc-500 font-mono font-bold">04 // PARENT</div>
             <p className="text-xs text-zinc-400 leading-relaxed font-sans">view child report cards, check live attendance logs, and contact teachers.</p>
           </div>
@@ -464,7 +464,7 @@ export default function PresentationDeck() {
           <div className="p-6 border border-white/10 bg-zinc-950/50 space-y-3 font-mono text-xs">
             <div className="flex justify-between items-center border-b border-white/5 pb-2">
               <span className="text-zinc-400 font-bold">INVOICE_ID // 9872</span>
-              <span className="px-2 py-0.5 bg-emerald-950/50 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold rounded">PAID</span>
+              <span className="px-2 py-0.5 bg-zinc-800/50 text-white/70 border border-white/20 text-[9px] font-bold rounded">PAID</span>
             </div>
             <div className="flex justify-between font-mono">
               <span>student: "liora_van_zyl"</span>
@@ -489,9 +489,9 @@ export default function PresentationDeck() {
         <div className="space-y-4 font-mono text-xs md:text-sm w-full text-left">
           <p className="text-zinc-500 font-mono">&gt; querying system endpoints...</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-            <a href="https://5-cn.net" target="_blank" className="p-4 border border-white/10 bg-zinc-950/30 hover:border-emerald-500/30 transition-all flex items-center justify-between">
+            <a href="https://5-cn.net" target="_blank" className="p-4 border border-white/10 bg-zinc-950/30 hover:border-white/30 transition-all flex items-center justify-between">
               <div>
-                <span className="text-emerald-400 font-bold">core_portal</span> <br />
+                <span className="text-white/70 font-bold">core_portal</span> <br />
                 <span className="text-[10px] text-zinc-600">https://5-cn.net/</span>
               </div>
               <ArrowUpRight className="w-4 h-4 text-zinc-600" />
@@ -539,11 +539,11 @@ export default function PresentationDeck() {
             <p className="text-2xl font-bold text-zinc-400">free</p>
             <p className="text-xs text-zinc-600 leading-relaxed font-sans">3-month evaluation environment for test schools.</p>
           </div>
-          <div className="p-6 border border-emerald-500/20 bg-emerald-950/5 space-y-4 relative hover:border-emerald-500/30 transition-all duration-300">
-            <div className="absolute top-0 right-0 px-3 py-1 bg-emerald-600 text-white text-[8px] font-bold uppercase rounded-bl-xl font-mono">recommended</div>
-            <div className="text-[10px] text-emerald-400">tier_02</div>
+          <div className="p-6 border border-white/20 bg-zinc-950/50 space-y-4 relative hover:border-white/30 transition-all duration-300">
+            <div className="absolute top-0 right-0 px-3 py-1 bg-white text-black text-[8px] font-bold uppercase rounded-bl-xl font-mono">recommended</div>
+            <div className="text-[10px] text-zinc-400">tier_02</div>
             <h3 className="text-lg font-bold text-white uppercase tracking-tighter">core matrix</h3>
-            <p className="text-2xl font-bold text-emerald-400 flex items-baseline gap-2">
+            <p className="text-2xl font-bold text-white flex items-baseline gap-2">
               <span>$149</span>
               <span className="text-sm line-through text-zinc-500 font-medium">$250</span>
               <span className="text-xs text-zinc-500">/mo</span>
@@ -577,7 +577,7 @@ export default function PresentationDeck() {
           <div className="flex flex-wrap gap-4 pt-4">
             <Button 
               onClick={() => setShowConfetti(true)}
-              className="h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-none text-xs uppercase tracking-widest shadow-lg shadow-emerald-950/20 transition-all"
+              className="h-12 px-10 bg-white hover:bg-zinc-200 text-black font-bold rounded-none text-xs uppercase tracking-widest shadow-lg shadow-white/10 transition-all"
             >
               deploy_matrix_now
             </Button>
@@ -683,7 +683,7 @@ export default function PresentationDeck() {
             {/* Left Side: Header & Context */}
             <div className="lg:col-span-6 space-y-6 text-left relative z-20">
               <div className="flex items-center gap-3 text-zinc-500 text-[10px] font-mono tracking-widest">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse" />
                 {slide.tag}
               </div>
               
@@ -700,7 +700,7 @@ export default function PresentationDeck() {
                 <Button 
                   onClick={() => setShowAppendix(!showAppendix)}
                   variant="ghost" 
-                  className="p-0 h-auto text-[10px] uppercase text-zinc-400 hover:text-emerald-400 flex items-center gap-2 group tracking-widest font-bold"
+                  className="p-0 h-auto text-[10px] uppercase text-zinc-400 hover:text-white flex items-center gap-2 group tracking-widest font-bold"
                 >
                   <Info className="w-3.5 h-3.5" />
                   {showAppendix ? "close_specifications" : "view_system_specifications"}
@@ -717,10 +717,10 @@ export default function PresentationDeck() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden bg-zinc-950/80 border border-white/5 rounded-none p-6 mt-4 space-y-3 font-mono text-[11px] text-zinc-400"
                   >
-                    <div className="text-emerald-400 font-bold uppercase border-b border-white/5 pb-1 font-mono">system_appendix // specifications</div>
+                    <div className="text-white/70 font-bold uppercase border-b border-white/5 pb-1 font-mono">system_appendix // specifications</div>
                     {slide.technicalAppendix.map((spec, index) => (
                       <div key={index} className="flex items-start gap-2">
-                        <span className="text-emerald-500 font-bold shrink-0 font-mono">&gt;</span>
+                        <span className="text-zinc-400 font-bold shrink-0 font-mono">&gt;</span>
                         <span className="leading-relaxed font-sans font-light">{spec}</span>
                       </div>
                     ))}
@@ -734,7 +734,7 @@ export default function PresentationDeck() {
               <TiltCard className="w-full">
                 <div className="relative group transition-all duration-500">
                   {/* Neon border glow effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-none opacity-10 group-hover:opacity-20 blur transition duration-1000 group-hover:duration-200" />
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-white/30 rounded-none opacity-10 group-hover:opacity-20 blur transition duration-1000 group-hover:duration-200" />
                   
                   <div className="relative bg-zinc-950/40 backdrop-blur-md border border-white/10 rounded-none p-8 shadow-[0_15px_35px_rgba(0,0,0,0.8)] overflow-hidden min-h-[350px] flex flex-col justify-center">
                     {slide.content}
@@ -755,7 +755,7 @@ export default function PresentationDeck() {
             onClick={() => setIsPlaying(!isPlaying)}
             className="w-10 h-10 rounded-none hover:bg-white/5 text-zinc-500 hover:text-white transition-all"
           >
-            {isPlaying ? <Pause className="w-4 h-4 text-emerald-400" /> : <Play className="w-4 h-4 text-white" />}
+            {isPlaying ? <Pause className="w-4 h-4 text-white/60" /> : <Play className="w-4 h-4 text-white" />}
           </Button>
           <span className="text-[10px] text-zinc-600 font-mono hidden sm:inline">
             {isPlaying ? "[loop_active]" : "[loop_paused]"}
