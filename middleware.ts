@@ -94,7 +94,7 @@ export async function middleware(request: NextRequest) {
         }
 
         // DEFAULT API AUTHENTICATION LOCK
-        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/') && !path.startsWith('/api/dir/register')) {
+        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/') && !path.startsWith('/api/dir/register') && !path.startsWith('/api/public/')) {
             return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
                 status: 401,
                 headers: { 'Content-Type': 'application/json' }
