@@ -4,6 +4,7 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Shield, LayoutDashboard, Activity, Zap } from "lucide-react";
 import { DynamicAIAssistant } from "@/components/dashboard/dynamic-ai-assistant";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export default async function AdminLayout({
     children,
@@ -97,14 +98,9 @@ export default async function AdminLayout({
                 </div>
 
                 {/* Nav Links */}
-                <nav className="hidden md:flex items-center gap-1">
-                    <a href="/admin/dashboard"
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-eduGreen-500/10 text-eduGreen-400 border border-eduGreen-500/20 text-[11px] font-semibold uppercase tracking-widest transition-all"
-                    >
-                        <LayoutDashboard className="w-3.5 h-3.5" />
-                        Dashboard
-                    </a>
-                </nav>
+                <div className="hidden md:block">
+                    <AdminNav />
+                </div>
 
                 {/* Right */}
                 <div className="flex items-center gap-4 ml-auto">
