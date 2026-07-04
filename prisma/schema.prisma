@@ -62,6 +62,7 @@ model User {
   targetedActions        ActionRequest[]         @relation("Target")
   loggedExpenses         InstitutionalExpense[]  @relation("LoggedExpenses")
   school                 School?                 @relation(fields: [schoolId], references: [id])
+  billingReceipts        BillingReceipt[]
 
   @@index([schoolId, role])
 }
@@ -102,6 +103,7 @@ model School {
   restorePoints         RestorePoint[]
   ActionRequest         ActionRequest[]
   expenses              InstitutionalExpense[]
+  billingReceipts       BillingReceipt[]
 }
 
 model RestorePoint {
@@ -1071,4 +1073,21 @@ model WantsAccess {
   email     String
   message   String
   createdAt DateTime @default(now())
+}
+
+model BillingReceipt {
+  id            String   @id @default(uuid())
+  schoolId      String
+  school        School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  submittedById String
+  submittedBy   User     @relation(fields: [submittedById], references: [id], onDelete: Cascade)
+  amount        Decimal
+  reference     String   // bank reference/transaction number
+  receiptUrl    String   // uploaded receipt file/image URL
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([schoolId])
 }
