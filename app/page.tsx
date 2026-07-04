@@ -1002,40 +1002,47 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ delay: i * 0.1 }}
-                    className={`relative p-10 border h-full space-y-8 group cursor-default overflow-hidden ${p.highlight ? "border-white/20 bg-white/[0.02]" : "border-white/5 bg-black"}`}
+                    className={`relative p-10 border h-full space-y-8 group cursor-default overflow-hidden transition-all duration-300 ${p.highlight ? "border-white/30 bg-zinc-950/60 shadow-lg shadow-white/[0.01]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
                   >
                     {p.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />}
                     <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
+                    
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="text-[9px] text-zinc-800 uppercase tracking-widest">{p.highlight ? "recommended_node" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
-                        {p.highlight && <motion.div animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-zinc-700 rounded-full" />}
+                        <div className="text-[9px] text-zinc-400 uppercase tracking-widest">{p.highlight ? "recommended_node" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
+                        {p.highlight && <motion.div animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-white/40 rounded-full" />}
                       </div>
-                      <h3 className="text-2xl font-bold uppercase tracking-tight text-zinc-700">{p.tier}</h3>
+                      <h3 className="text-2xl font-bold uppercase tracking-tight text-white group-hover:text-eduGreen-400 transition-colors font-orbitron">{p.tier}</h3>
                     </div>
+                    
                     <div className="flex items-end gap-2">
                       {p.tier === "Core Matrix" ? (
                         <>
-                          <span className="text-4xl font-bold text-zinc-700">{p.price}</span>
+                          <span className="text-4xl font-bold text-white font-orbitron">{p.price}</span>
                           <span className="text-sm line-through text-zinc-500 mb-1">$250</span>
                         </>
                       ) : (
-                        <span className="text-4xl font-bold text-zinc-700">{p.price}</span>
+                        <span className="text-4xl font-bold text-white font-orbitron">{p.price}</span>
                       )}
-                      <span className="text-zinc-800 text-xs mb-1.5">{p.period}</span>
+                      <span className="text-zinc-400 text-xs mb-1.5">{p.period}</span>
                     </div>
-                    <p className="text-zinc-800 text-xs leading-relaxed">{p.desc}</p>
+                    
+                    <p className="text-zinc-300 text-xs leading-relaxed">{p.desc}</p>
+                    
                     <div className="space-y-2">
                       {p.features.map((f, j) => (
-                        <motion.div key={j} initial={{ opacity: 0, x: -6 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: j * 0.05 }} className="flex gap-3 text-xs text-zinc-800">
-                          <span className="text-zinc-700 shrink-0">+</span>{f}
+                        <motion.div key={j} initial={{ opacity: 0, x: -6 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: j * 0.05 }} className="flex gap-3 text-xs text-zinc-300">
+                          <span className="text-eduGreen-500 font-bold shrink-0">+</span>{f}
                         </motion.div>
                       ))}
                     </div>
+                    
                     <div className="pt-2">
-                      <div className="w-full h-11 border border-white/5 flex items-center justify-center text-[9px] uppercase tracking-[0.3em] text-zinc-700">
-                        <motion.span animate={{ opacity: [0.4, 0.9, 0.4] }} transition={{ repeat: Infinity, duration: 2.3, delay: i * 0.4 }}>coming_soon</motion.span>
-                      </div>
+                      <Link href="/pricing" className="w-full">
+                        <div className="w-full h-11 border border-white/10 bg-white/5 hover:bg-white flex items-center justify-center text-[9px] uppercase tracking-[0.3em] text-zinc-300 hover:text-black font-bold transition-all duration-300">
+                          select_tier
+                        </div>
+                      </Link>
                     </div>
                   </motion.div>
                 </TiltCard>
