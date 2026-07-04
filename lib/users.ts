@@ -29,6 +29,11 @@ export const getCachedUser = cache(async (userId: string) => {
                         status: true, 
                         logoUrl: true,
                         address: true,
+                        createdAt: true,
+                        trialEndsAt: true,
+                        stripeCustomerId: true,
+                        stripeSubscriptionId: true,
+                        subscriptionStatus: true,
                         _count: {
                             select: { students: true, users: true }
                         }
@@ -58,7 +63,21 @@ export const getCachedUserByEmail = cache(async (email: string) => {
             where: { email },
             include: { 
                 school: {
-                    select: { id: true, name: true, status: true, logoUrl: true, address: true, _count: { select: { students: true, users: true } } }
+                    select: { 
+                        id: true, 
+                        name: true, 
+                        status: true, 
+                        logoUrl: true,
+                        address: true,
+                        createdAt: true,
+                        trialEndsAt: true,
+                        stripeCustomerId: true,
+                        stripeSubscriptionId: true,
+                        subscriptionStatus: true,
+                        _count: { 
+                            select: { students: true, users: true } 
+                        } 
+                    }
                 } 
             }
         });
