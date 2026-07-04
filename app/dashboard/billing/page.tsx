@@ -473,8 +473,9 @@ export default function BillingPage() {
                             Enterprise Node Tier
                         </span>
                         
-                        <div className="flex items-baseline text-white">
+                        <div className="flex items-baseline gap-2 text-white">
                             <span className="text-4xl font-extrabold tracking-tight font-orbitron text-eduGreen-500">$149</span>
+                            <span className="text-lg line-through text-zinc-500 font-medium">$250</span>
                             <span className="ml-1 text-sm font-semibold text-zinc-400">/month</span>
                         </div>
 
