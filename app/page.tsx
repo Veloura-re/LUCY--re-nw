@@ -1014,7 +1014,14 @@ export default function Home() {
                       <h3 className="text-2xl font-bold uppercase tracking-tight text-zinc-700">{p.tier}</h3>
                     </div>
                     <div className="flex items-end gap-2">
-                      <span className="text-4xl font-bold text-zinc-700">{p.price}</span>
+                      {p.tier === "Core Matrix" ? (
+                        <>
+                          <span className="text-4xl font-bold text-zinc-700">{p.price}</span>
+                          <span className="text-sm line-through text-zinc-500 mb-1">$250</span>
+                        </>
+                      ) : (
+                        <span className="text-4xl font-bold text-zinc-700">{p.price}</span>
+                      )}
                       <span className="text-zinc-800 text-xs mb-1.5">{p.period}</span>
                     </div>
                     <p className="text-zinc-800 text-xs leading-relaxed">{p.desc}</p>
