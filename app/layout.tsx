@@ -8,7 +8,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "LUCY | Neural School OS",
+  title: "LUCY | Academia",
   description: "Advanced Learning Unified Cognitive Yield Architecture",
   icons: {
     icon: "/icon.svg",
