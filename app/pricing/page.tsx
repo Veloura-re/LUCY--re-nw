@@ -2,36 +2,21 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Clock, Bell } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, GlitchText, MatrixRain, MagneticButton, Typewriter } from "@/components/public/animations";
+import { ArrowLeft, Clock } from "lucide-react";
+import { motion } from "framer-motion";
+import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, MatrixRain, Typewriter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
-import { cn } from "@/lib/utils";
 
 const terminalLines = [
-    "> pricing_engine: loading...",
-    "> tier_config: PENDING_FINALIZATION",
-    "> rate_cards: COMPILING",
-    "> sla_matrix: CALCULATING",
-    "> eta: Q2 2026",
-    "> status: COMING_SOON_",
+    "> pricing_engine: operational",
+    "> tier_config: ACTIVE",
+    "> rate_cards: COMPILED_AND_VERIFIED",
+    "> sla_matrix: DEPLOYED",
+    "> billing_currency: USD",
+    "> status: SECURE_UPLINK_ESTABLISHED_",
 ];
 
 export default function Pricing() {
-    const [email, setEmail] = useState("");
-    const [submitted, setSubmitted] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email.trim()) return;
-        setLoading(true);
-        await new Promise(r => setTimeout(r, 900));
-        setLoading(false);
-        setSubmitted(true);
-    };
-
     return (
         <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
             <ScanLines />
@@ -56,19 +41,12 @@ export default function Pricing() {
                         <div className="absolute inset-0 opacity-20"><MatrixRain cols={10} /></div>
                         <div className="relative z-10 font-mono">
                             <div className="flex items-center gap-2 mb-6">
-                                <div className="w-2 h-2 bg-eduGreen-500 rounded-full" />
-                                <div className="w-2 h-2 bg-eduGreen-500/55 rounded-full" />
-                                <div className="w-2 h-2 bg-eduGreen-500/10 rounded-full" />
+                                <div className="w-2 h-2 bg-white/30 rounded-full" />
+                                <div className="w-2 h-2 bg-white/15 rounded-full" />
+                                <div className="w-2 h-2 bg-white/5 rounded-full" />
                                 <span className="text-[8px] text-zinc-500 uppercase tracking-widest ml-2">pricing_engine_v3.0 // operational</span>
                             </div>
-                            <Typewriter lines={[
-                                "> pricing_engine: operational",
-                                "> tier_config: ACTIVE",
-                                "> rate_cards: COMPILED_AND_VERIFIED",
-                                "> sla_matrix: DEPLOYED",
-                                "> billing_currency: USD",
-                                "> status: SECURE_UPLINK_ESTABLISHED_",
-                            ]} className="space-y-1.5" />
+                            <Typewriter lines={terminalLines} className="space-y-1.5" />
                         </div>
                     </div>
 
@@ -76,16 +54,16 @@ export default function Pricing() {
                     <div className="space-y-6">
                         <Reveal>
                             <div className="flex items-center justify-center gap-3 text-zinc-400">
-                                <Clock className="w-4 h-4 text-eduGreen-500" />
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-800" />
+                                <Clock className="w-4 h-4 text-white/40" />
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
                                 <span className="text-[10px] uppercase tracking-[0.4em] text-white">active_tariffs // pricing_matrix</span>
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-800" />
-                                <Clock className="w-4 h-4 text-eduGreen-500" />
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                                <Clock className="w-4 h-4 text-white/40" />
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
-                                pricing<br /><span className="text-eduGreen-500">plans.</span>
+                                pricing<br /><span className="text-zinc-600">plans.</span>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
@@ -106,7 +84,7 @@ export default function Pricing() {
                                 features: ["1 institution", "up to 500 students", "all core features", "email support"],
                                 highlight: false,
                                 href: "/register/admin?plan=pilot",
-                                buttonText: "deploy_pilot"
+                                buttonText: "price"
                             },
                             {
                                 tier: "Core Matrix",
@@ -117,7 +95,7 @@ export default function Pricing() {
                                 features: ["unlimited students", "all roles + AI helper", "parent portal", "priority support", "99.9% uptime SLA"],
                                 highlight: true,
                                 href: "/register/admin?plan=core",
-                                buttonText: "subscribe_now"
+                                buttonText: "price"
                             },
                             {
                                 tier: "Enterprise",
@@ -127,7 +105,7 @@ export default function Pricing() {
                                 features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated support manager", "99.99% SLA"],
                                 highlight: false,
                                 href: "/contact",
-                                buttonText: "contact_sales"
+                                buttonText: "price"
                             }
                         ].map((t, i) => (
                             <motion.div
@@ -136,9 +114,33 @@ export default function Pricing() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: false }}
                                 transition={{ delay: i * 0.1 }}
-                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 ${t.highlight ? "border-white/30 bg-zinc-950/80 shadow-lg shadow-white/[0.01]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
+                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 ${t.highlight ? "border-white/30 bg-zinc-950/80 shadow-lg shadow-white/[0.02]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
                             >
                                 {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
+                                
+                                {/* Glowing radial pulse behind Core Matrix card */}
+                                {t.tier === "Core Matrix" && (
+                                    <motion.div 
+                                        animate={{ opacity: [0.1, 0.3, 0.1] }} 
+                                        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
+                                        className="absolute inset-0 pointer-events-none" 
+                                        style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)" }} 
+                                    />
+                                )}
+
+                                {/* Pulsing discount burst badge */}
+                                {t.tier === "Core Matrix" && (
+                                    <motion.div 
+                                        animate={{ 
+                                            scale: [1, 1.08, 1],
+                                            boxShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 12px rgba(255,255,255,0.25)", "0 0 0px rgba(255,255,255,0)"]
+                                        }}
+                                        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                                        className="absolute top-4 right-4 bg-white text-black px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10"
+                                    >
+                                        40%_discount
+                                    </motion.div>
+                                )}
                                 
                                 <div className="space-y-1">
                                     <span className="text-[8px] uppercase tracking-widest text-zinc-500">{t.highlight ? "recommended" : `tier_0${i + 1}`}</span>
@@ -160,7 +162,7 @@ export default function Pricing() {
                                 <ul className="space-y-2.5 text-xs text-zinc-300">
                                     {t.features.map((feat, j) => (
                                         <li key={j} className="flex gap-2.5 items-start">
-                                            <span className="text-eduGreen-500 font-bold shrink-0">+</span>
+                                            <span className="text-zinc-400 font-bold shrink-0">+</span>
                                             <span>{feat}</span>
                                         </li>
                                     ))}
@@ -168,17 +170,9 @@ export default function Pricing() {
 
                                 <div className="pt-4">
                                     <Link href={t.href} className="w-full">
-                                        <Button 
-                                            variant={t.highlight ? "primary" : "outline"} 
-                                            className={cn(
-                                                "w-full h-11 rounded-none text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300",
-                                                t.highlight 
-                                                    ? "bg-white text-black hover:bg-zinc-200" 
-                                                    : "border-white/20 text-zinc-300 hover:bg-white hover:text-black"
-                                            )}
-                                        >
+                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 ${t.highlight ? "bg-white text-black border-white hover:bg-zinc-200" : "border-white/20 text-zinc-300 bg-white/5 hover:bg-white hover:text-black"}`}>
                                             {t.buttonText}
-                                        </Button>
+                                        </div>
                                     </Link>
                                 </div>
                             </motion.div>
@@ -187,7 +181,7 @@ export default function Pricing() {
                 </div>
             </main>
 
-            <PageFooter id="PRICING_COMING_SOON" links={[{ href: "/features", label: "features" }, { href: "/demo", label: "demo" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="PRICING_ACTIVE" links={[{ href: "/features", label: "features" }, { href: "/demo", label: "demo" }, { href: "/contact", label: "uplink" }]} />
         </div>
     );
 }
