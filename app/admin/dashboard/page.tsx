@@ -1,28 +1,24 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import {
-    Plus, School, Users, GraduationCap, Copy, CheckCircle2,
-    AlertCircle, Loader2, Trash2, Power, PowerOff, BookOpen,
-    ChevronRight, X, ArrowUpRight, Globe, ShieldCheck, History, FileText
+    School, Users, GraduationCap, AlertCircle, Loader2, BookOpen,
+    Globe, ShieldCheck, CreditCard, Inbox, ArrowUpRight, CheckCircle2, ShieldAlert
 } from "lucide-react";
-import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
-import { ManagePrincipalsModal } from "@/components/admin/manage-principals-modal";
-import { ManageOwnersModal } from "@/components/admin/manage-owners-modal";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
+import { toast } from "sonner";
 
-interface School {
+interface SchoolType {
     id: string;
     name: string;
     schoolCode: string;
     status: string;
     createdAt: string;
+    subscriptionStatus: string | null;
     _count: {
         users: number;
         students: number;
@@ -31,105 +27,16 @@ interface School {
 }
 
 export default function SuperAdminDashboard() {
-    const [schools, setSchools] = useState<School[]>([]);
+    const [schools, setSchools] = useState<SchoolType[]>([]);
     const [userName, setUserName] = useState("Administrator");
     const [isLoading, setIsLoading] = useState(true);
-    const [isCreating, setIsCreating] = useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [newSchoolName, setNewSchoolName] = useState("");
-    const [ownerEmail, setOwnerEmail] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [inviteUrl, setInviteUrl] = useState<string | null>(null);
-    const [inviteToken, setInviteToken] = useState<string | null>(null);
-    const [copied, setCopied] = useState<'token' | 'url' | null>(null);
-    const [emailSent, setEmailSent] = useState(false);
-
-    // Security Disclosures Tab States
-    const [activeTab, setActiveTab] = useState<'SCHOOLS' | 'BILLING' | 'SECURITY' | 'WANTS_ACCESS'>('SCHOOLS');
-    const [billingReceipts, setBillingReceipts] = useState<any[]>([]);
-    const [isLoadingBilling, setIsLoadingBilling] = useState(false);
-    interface SecurityReport {
-        id: string;
-        email: string;
-        vulnerabilityType: string;
-        severity: string;
-        description: string;
-        hash: string;
-        createdAt: string;
-    }
-    const [securityReports, setSecurityReports] = useState<SecurityReport[]>([]);
-    const [isLoadingReports, setIsLoadingReports] = useState(false);
-
-    const fetchSecurityReports = async () => {
-        setIsLoadingReports(true);
-        try {
-            const res = await fetch('/api/admin/security-reports');
-            if (!res.ok) throw new Error('Failed to fetch security reports');
-            const data = (await res.json()) as any;
-            setSecurityReports(data.reports || []);
-        } catch (err: any) {
-            console.error(err.message);
-        } finally {
-            setIsLoadingReports(false);
-        }
-    };
-
-    // Wants Access Tab States
-    interface AccessRequest {
-        id: string;
-        callsign: string;
-        email: string;
-        message: string;
-        createdAt: string;
-    }
-    const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
-    const [isLoadingAccess, setIsLoadingAccess] = useState(false);
-
-    const fetchAccessRequests = async () => {
-        setIsLoadingAccess(true);
-        try {
-            const res = await fetch('/api/admin/wants-access');
-            if (!res.ok) throw new Error('Failed to fetch access requests');
-            const data = (await res.json()) as any;
-            setAccessRequests(data.requests || []);
-        } catch (err: any) {
-            console.error(err.message);
-        } finally {
-            setIsLoadingAccess(false);
-        }
-    };
+    const [securityCount, setSecurityCount] = useState(0);
+    const [requestCount, setRequestCount] = useState(0);
+    const [pendingReceiptsCount, setPendingReceiptsCount] = useState(0);
+    const [recentReceipts, setRecentReceipts] = useState<any[]>([]);
 
     useEffect(() => {
-        if (activeTab === 'SECURITY') {
-            fetchSecurityReports();
-        } else if (activeTab === 'WANTS_ACCESS') {
-            fetchAccessRequests();
-        } else if (activeTab === 'BILLING') {
-            fetchBillingReceipts();
-        }
-    }, [activeTab]);
-
-    const fetchBillingReceipts = async () => {
-        setIsLoadingBilling(true);
-        try {
-            const res = await fetch('/api/admin/billing/receipts');
-            if (!res.ok) throw new Error('Failed to fetch billing receipts');
-            const data = await res.json() as any;
-            setBillingReceipts(data.receipts || []);
-        } catch (err: any) {
-            console.error(err.message);
-        } finally {
-            setIsLoadingBilling(false);
-        }
-    };
-
-    const [confirmAction, setConfirmAction] = useState<{ type: 'SUSPEND' | 'DELETE' | null, schoolId: string, schoolName: string }>({ type: null, schoolId: "", schoolName: "" });
-    const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
-    const [managePrincipalsSchool, setManagePrincipalsSchool] = useState<{ id: string, name: string } | null>(null);
-    const [manageOwnersSchool, setManageOwnersSchool] = useState<{ id: string, name: string } | null>(null);
-
-    useEffect(() => {
-        fetchSchools();
+        fetchDashboardMetrics();
         fetchUser();
     }, []);
 
@@ -139,163 +46,65 @@ export default function SuperAdminDashboard() {
         if (user?.user_metadata?.name) setUserName(user.user_metadata.name);
     };
 
-    const fetchSchools = async () => {
+    const fetchDashboardMetrics = async () => {
+        setIsLoading(true);
         try {
-            const res = await fetch('/api/admin/schools');
-            if (!res.ok) throw new Error('Failed to fetch schools');
-            const data = (await res.json()) as any;
-            setSchools(data.schools || []);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleResolveReceipt = async (receiptId: string, status: 'APPROVED' | 'REJECTED', notes?: string) => {
-        try {
-            const res = await fetch(`/api/admin/billing/receipts/${receiptId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status, notes }),
-            });
-            if (!res.ok) throw new Error('Failed to resolve receipt');
-            toast.success(`Receipt ${status.toLowerCase()} successfully`);
-            fetchBillingReceipts();
-            fetchSchools();
-        } catch (err: any) {
-            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
-        }
-    };
-
-    const handleUpdateBillingStatus = async (schoolId: string, subscriptionStatus: string | null) => {
-        try {
-            const res = await fetch(`/api/admin/schools/${schoolId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ subscriptionStatus }),
-            });
-            if (!res.ok) throw new Error('Failed to update billing status');
-            toast.success('Billing status updated successfully');
-            fetchSchools();
-        } catch (err: any) {
-            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
-        }
-    };
-
-    const handleExtendTrial = async (schoolId: string, days: number) => {
-        try {
-            const targetSchool = schools.find(s => s.id === schoolId) as any;
-            const currentTrial = targetSchool?.trialEndsAt ? new Date(targetSchool.trialEndsAt) : new Date();
-            const newTrial = new Date(currentTrial.getTime() + days * 24 * 60 * 60 * 1000);
-            
-            const res = await fetch(`/api/admin/schools/${schoolId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ trialEndsAt: newTrial.toISOString() }),
-            });
-            if (!res.ok) throw new Error('Failed to extend trial');
-            toast.success(`Trial extended by ${days} days`);
-            fetchSchools();
-        } catch (err: any) {
-            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
-        }
-    };
-
-    const handleCreateSchool = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setIsCreating(true);
-        setEmailSent(false);
-
-        try {
-            const res = await fetch('/api/admin/schools', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newSchoolName, ownerEmail }),
-            });
-
-            if (!res.ok) {
-                const data = (await res.json()) as any;
-                throw new Error(data.error || 'Failed to create school');
+            // 1. Fetch schools list
+            const resSchools = await fetch('/api/admin/schools');
+            if (resSchools.ok) {
+                const data = await resSchools.json() as any;
+                setSchools(data.schools || []);
             }
 
-            const data = (await res.json()) as any;
-            setInviteUrl(data.inviteUrl);
-            setInviteToken(data.inviteToken);
-            setEmailSent(data.emailSent);
-            setNewSchoolName("");
-            setOwnerEmail("");
-            fetchSchools();
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsCreating(false);
-        }
-    };
+            // 2. Fetch security reports count
+            const resSecurity = await fetch('/api/admin/security-reports');
+            if (resSecurity.ok) {
+                const data = await resSecurity.json() as any;
+                setSecurityCount(data.reports?.length || 0);
+            }
 
-    const executeSuspend = async () => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(`/api/admin/schools/${confirmAction.schoolId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'SUSPENDED' }),
-            });
-            if (!res.ok) throw new Error('Failed to suspend school');
-            fetchSchools();
+            // 3. Fetch wants access requests count
+            const resRequests = await fetch('/api/admin/wants-access');
+            if (resRequests.ok) {
+                const data = await resRequests.json() as any;
+                setRequestCount(data.requests?.length || 0);
+            }
+
+            // 4. Fetch pending receipts count & recent receipts list
+            const resReceipts = await fetch('/api/admin/billing/receipts');
+            if (resReceipts.ok) {
+                const data = await resReceipts.json() as any;
+                const receiptsList = data.receipts || [];
+                setRecentReceipts(receiptsList.slice(0, 3)); // show top 3
+                setPendingReceiptsCount(receiptsList.filter((r: any) => r.status === 'PENDING').length);
+            }
         } catch (err: any) {
-            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
+            console.error('Failed to load dashboard metrics:', err);
+            toast.error('Sync failure with database node.');
         } finally {
-            setConfirmAction({ type: null, schoolId: "", schoolName: "" });
             setIsLoading(false);
         }
-    };
-
-    const handleActivateSchool = async (schoolId: string) => {
-        try {
-            await fetch(`/api/admin/schools/${schoolId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: 'ACTIVE' }),
-            });
-            fetchSchools();
-        } catch (err: any) {
-            setAlertConfig({ title: 'Activation Failed', message: err.message, isOpen: true, variant: 'error' });
-        }
-    };
-
-    const executeDelete = async () => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(`/api/admin/schools/${confirmAction.schoolId}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Failed to delete school');
-            fetchSchools();
-        } catch (err: any) {
-            setAlertConfig({ title: "Deletion Failed", message: err.message, isOpen: true, variant: "error" });
-        } finally {
-            setConfirmAction({ type: null, schoolId: "", schoolName: "" });
-            setIsLoading(false);
-        }
-    };
-
-    const copyToClipboard = (text: string, type: 'token' | 'url') => {
-        navigator.clipboard.writeText(text);
-        setCopied(type);
-        setTimeout(() => setCopied(null), 2000);
     };
 
     const totalStaff = schools.reduce((sum, s) => sum + s._count.users, 0);
     const totalStudents = schools.reduce((sum, s) => sum + s._count.students, 0);
     const activeSchools = schools.filter(s => s.status === 'ACTIVE').length;
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+                <Loader2 className="w-8 h-8 animate-spin text-eduGreen-600 opacity-60" />
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Calibrating Core Modules...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-10 animate-in fade-in duration-300">
-
             <DashboardGreeting
                 name={userName}
                 role="SUPERADMIN"
-                gender={null} // Optionally you could fetch this too, but Supreme Architect is gender neutral
+                gender={null}
             />
 
             {/* Stats Row */}
@@ -320,614 +129,134 @@ export default function SuperAdminDashboard() {
                 ))}
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="flex border-b border-white/5 gap-2">
-                <button
-                    onClick={() => setActiveTab('SCHOOLS')}
-                    className={cn(
-                        "px-6 py-3 border-b-2 font-mono text-xs uppercase tracking-wider font-bold transition-all rounded-t-xl",
-                        activeTab === 'SCHOOLS' 
-                            ? "border-eduGreen-500 bg-eduGreen-950/10 text-white" 
-                            : "border-transparent text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    [schools_ledger]
-                </button>
-                <button
-                    onClick={() => setActiveTab('BILLING')}
-                    className={cn(
-                        "px-6 py-3 border-b-2 font-mono text-xs uppercase tracking-wider font-bold transition-all rounded-t-xl",
-                        activeTab === 'BILLING' 
-                            ? "border-emerald-500 bg-emerald-950/10 text-white" 
-                            : "border-transparent text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    [billing_controls]
-                </button>
-                <button
-                    onClick={() => setActiveTab('SECURITY')}
-                    className={cn(
-                        "px-6 py-3 border-b-2 font-mono text-xs uppercase tracking-wider font-bold transition-all rounded-t-xl",
-                        activeTab === 'SECURITY' 
-                            ? "border-orange-500 bg-orange-950/10 text-white" 
-                            : "border-transparent text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    [security_disclosures]
-                </button>
-                <button
-                    onClick={() => setActiveTab('WANTS_ACCESS')}
-                    className={cn(
-                        "px-6 py-3 border-b-2 font-mono text-xs uppercase tracking-wider font-bold transition-all rounded-t-xl",
-                        activeTab === 'WANTS_ACCESS' 
-                            ? "border-sky-500 bg-sky-950/10 text-white" 
-                            : "border-transparent text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    [wants_access]
-                </button>
-            </div>
-
-            {/* Schools Section */}
-            {activeTab === 'SCHOOLS' && (
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-medium text-white tracking-tight">Managed Institutions</h2>
-                            <p className="text-[11px] text-zinc-600 uppercase tracking-widest font-medium mt-1">
-                                {schools.length} environment{schools.length !== 1 ? 's' : ''} registered
-                            </p>
-                        </div>
-                        <Button
-                            onClick={() => { setShowForm(true); setInviteToken(null); setInviteUrl(null); }}
-                            className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-11 px-6 rounded-xl font-semibold text-[11px] uppercase tracking-widest shadow-xl shadow-eduGreen-900/30 transition-all flex items-center gap-2"
+            {/* Quick Action Hub */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* System Navigation Card Grid */}
+                <div className="space-y-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 font-orbitron">System Controls</h2>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* School control */}
+                        <Link 
+                            href="/admin/schools" 
+                            className="bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-40 group transition-all"
                         >
-                            <Plus className="w-4 h-4" />
-                            New School
-                        </Button>
-                    </div>
-
-                    {/* Inline Create Form */}
-                    {showForm && !inviteToken && (
-                        <div className="relative rounded-2xl border border-eduGreen-500/20 bg-eduGreen-500/5 p-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-eduGreen-500/40 to-transparent" />
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
-                                        <Plus className="w-4 h-4 text-eduGreen-400" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base font-semibold text-white">Provision New Institution</h3>
-                                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-0.5">Deploy a new school environment</p>
-                                    </div>
+                            <div className="flex items-center justify-between">
+                                <div className="w-10 h-10 rounded-xl bg-eduGreen-950/20 border border-eduGreen-500/10 flex items-center justify-center text-eduGreen-500">
+                                    <School className="w-5 h-5" />
                                 </div>
-                                <button onClick={() => setShowForm(false)} className="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
+                                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                             </div>
+                            <div>
+                                <h3 className="text-white font-bold text-sm uppercase tracking-tight">Schools Ledger</h3>
+                                <p className="text-zinc-500 text-[10px] uppercase tracking-wider mt-1">{schools.length} total nodes registered</p>
+                            </div>
+                        </Link>
 
-                            <form onSubmit={handleCreateSchool} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Institution Name</label>
-                                    <Input
-                                        placeholder="e.g. International Academy"
-                                        value={newSchoolName}
-                                        onChange={e => setNewSchoolName(e.target.value)}
-                                        required
-                                        className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
-                                    />
+                        {/* Billing Control */}
+                        <Link 
+                            href="/admin/billing" 
+                            className="bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-40 group transition-all"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-950/20 border border-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                    <CreditCard className="w-5 h-5" />
                                 </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Owner Email</label>
-                                    <Input
-                                        type="email"
-                                        placeholder="owner@institution.edu"
-                                        value={ownerEmail}
-                                        onChange={e => setOwnerEmail(e.target.value)}
-                                        required
-                                        className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
-                                    />
+                                <div className="flex items-center gap-1.5">
+                                    {pendingReceiptsCount > 0 && (
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    )}
+                                    <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                 </div>
-                                <Button
-                                    type="submit"
-                                    className="h-12 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-semibold text-[11px] uppercase tracking-widest shadow-lg shadow-eduGreen-900/20 transition-all"
-                                    isLoading={isCreating}
-                                >
-                                    Initialize School
-                                </Button>
-                            </form>
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-sm uppercase tracking-tight">Billing & License</h3>
+                                <p className="text-zinc-500 text-[10px] uppercase tracking-wider mt-1">
+                                    {pendingReceiptsCount} wire verification{pendingReceiptsCount !== 1 ? 's' : ''} pending
+                                </p>
+                            </div>
+                        </Link>
 
-                            {error && (
-                                <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30 text-[11px] text-red-400 font-medium">
-                                    <AlertCircle className="w-4 h-4 shrink-0" />
-                                    {error}
+                        {/* Security Disclosures */}
+                        <Link 
+                            href="/admin/security" 
+                            className="bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-40 group transition-all"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="w-10 h-10 rounded-xl bg-orange-950/20 border border-orange-500/10 flex items-center justify-center text-orange-500">
+                                    <ShieldCheck className="w-5 h-5" />
+                                </div>
+                                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-sm uppercase tracking-tight">Vulnerabilities</h3>
+                                <p className="text-zinc-500 text-[10px] uppercase tracking-wider mt-1">{securityCount} disclosure reports</p>
+                            </div>
+                        </Link>
+
+                        {/* Access requests */}
+                        <Link 
+                            href="/admin/requests" 
+                            className="bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-40 group transition-all"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="w-10 h-10 rounded-xl bg-sky-950/20 border border-sky-500/10 flex items-center justify-center text-sky-500">
+                                    <Inbox className="w-5 h-5" />
+                                </div>
+                                <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-all transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold text-sm uppercase tracking-tight">Access Requests</h3>
+                                <p className="text-zinc-500 text-[10px] uppercase tracking-wider mt-1">{requestCount} sign-ups logged</p>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+
+                {/* System Alerts / Urgent items */}
+                <div className="space-y-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 font-orbitron">System Health Alerts</h2>
+                    
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 h-[21rem] flex flex-col justify-between">
+                        <div className="space-y-4 overflow-y-auto pr-2 scrollbar-thin">
+                            {pendingReceiptsCount > 0 ? (
+                                <div className="flex gap-3 text-emerald-400 bg-emerald-950/10 border border-emerald-900/30 p-3 rounded-xl">
+                                    <CheckCircle2 className="w-5 h-5 shrink-0" />
+                                    <div className="text-[11px] leading-relaxed">
+                                        <strong className="block uppercase tracking-wider text-[10px] text-white">Pending Wire Verification</strong>
+                                        There are {pendingReceiptsCount} wire transfers waiting for manual review in the licensing module.
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex gap-3 text-zinc-500 bg-zinc-950/50 border border-zinc-900/60 p-3 rounded-xl">
+                                    <CheckCircle2 className="w-5 h-5 shrink-0" />
+                                    <div className="text-[11px] leading-relaxed">
+                                        <strong className="block uppercase tracking-wider text-[10px] text-zinc-400">All Billings Settled</strong>
+                                        No pending manual payment receipts waiting in the queue.
+                                    </div>
+                                </div>
+                            )}
+
+                            {securityCount > 0 && (
+                                <div className="flex gap-3 text-orange-400 bg-orange-950/10 border border-orange-900/30 p-3 rounded-xl">
+                                    <ShieldAlert className="w-5 h-5 shrink-0" />
+                                    <div className="text-[11px] leading-relaxed">
+                                        <strong className="block uppercase tracking-wider text-[10px] text-white">Security Vulnerabilities Logged</strong>
+                                        {securityCount} disclosure reports have been posted via public uplink. Review disclosure details immediately.
+                                    </div>
                                 </div>
                             )}
                         </div>
-                    )}
-
-                    {/* Invite Token Result */}
-                    {inviteToken && (
-                        <div className="relative rounded-2xl border border-eduGreen-500/20 bg-zinc-950 p-8 animate-in fade-in zoom-in-95 duration-400 shadow-2xl">
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent" />
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-                                        <span className="text-sm font-semibold text-eduGreen-400 uppercase tracking-wider">Institution Provisioned</span>
-                                    </div>
-                                    {emailSent ? (
-                                        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-eduGreen-950/40 border border-eduGreen-900/30 text-[9px] font-semibold text-eduGreen-500 uppercase tracking-widest">
-                                            <CheckCircle2 className="w-3 h-3" /> Email Sent
-                                        </span>
-                                    ) : (
-                                        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/30 border border-amber-900/30 text-[9px] font-semibold text-amber-500 uppercase tracking-widest">
-                                            <AlertCircle className="w-3 h-3" /> Manual Delivery
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔑 Invite Token</label>
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-3.5 font-mono text-xl text-eduGreen-400 tracking-[0.25em] text-center">
-                                            {inviteToken}
-                                        </div>
-                                        <button
-                                            onClick={() => copyToClipboard(inviteToken, 'token')}
-                                            className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
-                                        >
-                                            {copied === 'token' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔗 Invite URL</label>
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 font-mono text-[10px] text-zinc-400 truncate">
-                                            {inviteUrl}
-                                        </div>
-                                        <button
-                                            onClick={() => copyToClipboard(inviteUrl || '', 'url')}
-                                            className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
-                                        >
-                                            {copied === 'url' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Button
-                                onClick={() => { setInviteToken(null); setInviteUrl(null); setShowForm(false); }}
-                                className="w-full h-11 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all"
-                            >
-                                Done
-                            </Button>
-                        </div>
-                    )}
-
-                    {/* Schools List */}
-                    {isLoading ? (
-                        <div className="flex flex-col items-center justify-center py-24 gap-4">
-                            <Loader2 className="w-8 h-8 animate-spin text-eduGreen-600 opacity-60" />
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Loading institutions...</p>
-                        </div>
-                    ) : schools.length === 0 ? (
-                        <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-900">
-                            <School className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
-                            <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No schools provisioned yet</p>
-                            <p className="text-[10px] text-zinc-700 mt-1">Use the button above to deploy your first institution</p>
-                        </div>
-                    ) : (
-                        <div className="rounded-2xl border border-white/5 overflow-hidden">
-                            {/* Table Header */}
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5">
-                                <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Institution</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Staff</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Students</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Status</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Actions</div>
-                            </div>
-
-                            {/* Table Rows */}
-                            <div className="divide-y divide-white/5 bg-black">
-                                {schools.map((school, idx) => (
-                                    <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-white/[0.01] items-center transition-colors">
-                                        <div className="col-span-4 flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:border-eduGreen-500/30 transition-all">
-                                                <School className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-white text-xs">{school.name}</h4>
-                                                <p className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
-                                            </div>
-                                        </div>
-                                        <div className="col-span-2 text-center text-xs font-mono text-zinc-400">{school._count.users}</div>
-                                        <div className="col-span-2 text-center text-xs font-mono text-zinc-400">{school._count.students}</div>
-                                        <div className="col-span-2 text-center">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider",
-                                                school.status === 'ACTIVE' && "bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400",
-                                                school.status === 'PENDING' && "bg-amber-950/20 border-amber-900/50 text-amber-400",
-                                                school.status === 'SUSPENDED' && "bg-red-950/20 border-red-900/50 text-red-400"
-                                            )}>
-                                                {school.status}
-                                            </span>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="col-span-2 flex items-center justify-end gap-1.5">
-                                            {school.status === 'ACTIVE' ? (
-                                                <button
-                                                    onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
-                                                    title="Suspend"
-                                                >
-                                                    <PowerOff className="w-3 h-3" />
-                                                    <span className="hidden lg:block">Suspend</span>
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => handleActivateSchool(school.id)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
-                                                    title="Activate"
-                                                >
-                                                    <Power className="w-3 h-3" />
-                                                    <span className="hidden lg:block">Activate</span>
-                                                </button>
-                                            )}
-                                            <button
-                                                onClick={() => setManageOwnersSchool({ id: school.id, name: school.name })}
-                                                className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
-                                                title="Manage Owners"
-                                            >
-                                                <ShieldCheck className="w-3.5 h-3.5" />
-                                            </button>
-                                            <button
-                                                onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
-                                                className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
-                                                title="Manage Principals"
-                                            >
-                                                <Users className="w-3.5 h-3.5" />
-                                            </button>
-                                            <button
-                                                onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
-                                                className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-red-900/40 hover:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
-                                                title="Delete"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Security Reports Section */}
-            {activeTab === 'SECURITY' && (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-medium text-white tracking-tight">Vulnerability Disclosures</h2>
-                            <p className="text-[11px] text-zinc-600 uppercase tracking-widest font-medium mt-1">
-                                {securityReports.length} report{securityReports.length !== 1 ? 's' : ''} logged in vault
-                            </p>
-                        </div>
-                    </div>
-
-                    {isLoadingReports ? (
-                        <div className="flex flex-col items-center justify-center py-24 gap-4">
-                            <Loader2 className="w-8 h-8 animate-spin text-orange-500 opacity-60" />
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Loading reports...</p>
-                        </div>
-                    ) : securityReports.length === 0 ? (
-                        <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-900">
-                            <ShieldCheck className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
-                            <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No disclosures logged</p>
-                            <p className="text-[10px] text-zinc-700 mt-1">Vulnerabilities reported via the public security portal will appear here</p>
-                        </div>
-                    ) : (
-                        <div className="rounded-2xl border border-white/5 overflow-hidden">
-                            {/* Table Header */}
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5">
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Reporter Email</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Category</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Severity</div>
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Description</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
-                            </div>
-                            
-                            {/* Table Rows */}
-                            <div className="divide-y divide-white/5 bg-black">
-                                {securityReports.map((report, idx) => (
-                                    <div key={report.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-white/[0.01] items-center transition-colors">
-                                        <div className="col-span-3 font-mono text-xs text-white select-all truncate">{report.email}</div>
-                                        <div className="col-span-2 text-center">
-                                            <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-[9px] font-bold text-zinc-400">
-                                                {report.vulnerabilityType}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full border text-[9px] font-bold",
-                                                report.severity === 'CRITICAL' && "bg-red-950/20 border-red-900/50 text-red-400",
-                                                report.severity === 'HIGH' && "bg-orange-950/20 border-orange-900/50 text-orange-400",
-                                                report.severity === 'MEDIUM' && "bg-amber-950/20 border-amber-900/50 text-amber-400",
-                                                report.severity === 'LOW' && "bg-zinc-900 border-zinc-800 text-zinc-400"
-                                            )}>
-                                                {report.severity}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-3 text-xs text-zinc-400 leading-relaxed font-mono select-all pr-2">
-                                            {report.description}
-                                        </div>
-                                        <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
-                                            {new Date(report.createdAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Wants Access Section */}
-            {activeTab === 'WANTS_ACCESS' && (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-medium text-white tracking-tight">Access Ledger</h2>
-                            <p className="text-[11px] text-zinc-600 uppercase tracking-widest font-medium mt-1">
-                                {accessRequests.length} request{accessRequests.length !== 1 ? 's' : ''} logged in ledger
-                            </p>
-                        </div>
-                    </div>
-
-                    {isLoadingAccess ? (
-                        <div className="flex flex-col items-center justify-center py-24 gap-4">
-                            <Loader2 className="w-8 h-8 animate-spin text-sky-500 opacity-60" />
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Loading requests...</p>
-                        </div>
-                    ) : accessRequests.length === 0 ? (
-                        <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-900">
-                            <Users className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
-                            <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No requests logged</p>
-                            <p className="text-[10px] text-zinc-700 mt-1">Submissions from the public contact uplink page will appear here</p>
-                        </div>
-                    ) : (
-                        <div className="rounded-2xl border border-white/5 overflow-hidden">
-                            {/* Table Header */}
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5">
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Callsign / Identifier</div>
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Direct Comm Link</div>
-                                <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Payload Content</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
-                            </div>
-                            
-                            {/* Table Rows */}
-                            <div className="divide-y divide-white/5 bg-black">
-                                {accessRequests.map((req, idx) => (
-                                    <div key={req.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-white/[0.01] items-center transition-colors">
-                                        <div className="col-span-3 font-mono text-xs text-white select-all truncate">{req.callsign}</div>
-                                        <div className="col-span-3 font-mono text-xs text-zinc-400 select-all truncate">{req.email}</div>
-                                        <div className="col-span-4 text-xs text-zinc-300 leading-relaxed font-mono select-all pr-2">
-                                            {req.message}
-                                        </div>
-                                        <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
-                                            {new Date(req.createdAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* Billing Management Section */}
-            {activeTab === 'BILLING' && (
-                <div className="space-y-10 animate-in fade-in duration-300">
-                    
-                    {/* Manual Receipts List */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-medium text-white tracking-tight flex items-center gap-2">
-                            <History className="w-5 h-5 text-emerald-500" />
-                            Pending Bank Transfer Verifications
-                        </h2>
-                        {isLoadingBilling ? (
-                            <div className="flex flex-col items-center justify-center py-12 gap-4">
-                                <Loader2 className="w-6 h-6 animate-spin text-emerald-500 opacity-60" />
-                            </div>
-                        ) : billingReceipts.length === 0 ? (
-                            <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-900 text-zinc-600 text-xs">
-                                No pending bank transfer verifications found.
-                            </div>
-                        ) : (
-                            <div className="rounded-2xl border border-white/5 overflow-hidden">
-                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
-                                    <div className="col-span-3">School Node</div>
-                                    <div className="col-span-2">Submitter</div>
-                                    <div className="col-span-2 text-center">Amount</div>
-                                    <div className="col-span-2">Reference ID</div>
-                                    <div className="col-span-1 text-center">Receipt</div>
-                                    <div className="col-span-2 text-right">Actions</div>
-                                </div>
-                                <div className="divide-y divide-white/5 bg-black">
-                                    {billingReceipts.map((receipt) => (
-                                        <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.01] items-center transition-colors text-xs text-white">
-                                            <div className="col-span-3 font-semibold">
-                                                {receipt.school?.name || 'Unknown School'}
-                                            </div>
-                                            <div className="col-span-2 text-zinc-400">
-                                                {receipt.submittedBy?.name || 'Unknown User'}
-                                            </div>
-                                            <div className="col-span-2 text-center font-bold text-emerald-400">
-                                                ${parseFloat(receipt.amount).toFixed(2)}
-                                            </div>
-                                            <div className="col-span-2 font-mono text-zinc-300 truncate select-all">
-                                                {receipt.reference}
-                                            </div>
-                                            <div className="col-span-1 text-center">
-                                                <a 
-                                                    href={receipt.receiptUrl} 
-                                                    target="_blank" 
-                                                    rel="noreferrer" 
-                                                    className="inline-flex text-[10px] text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
-                                                >
-                                                    View
-                                                </a>
-                                            </div>
-                                            <div className="col-span-2 flex items-center justify-end gap-2">
-                                                {receipt.status === 'PENDING' ? (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleResolveReceipt(receipt.id, 'APPROVED')}
-                                                            className="px-2.5 py-1 rounded-md bg-emerald-950/20 border border-emerald-900/50 hover:bg-emerald-900/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider transition-all"
-                                                        >
-                                                            Approve
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                const reason = prompt('Rejection reason (optional):') || '';
-                                                                handleResolveReceipt(receipt.id, 'REJECTED', reason);
-                                                            }}
-                                                            className="px-2.5 py-1 rounded-md bg-red-950/20 border border-red-900/50 hover:bg-red-900/30 text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
-                                                        >
-                                                            Reject
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    <span className={`px-2.5 py-0.5 rounded text-[9px] font-bold uppercase border ${
-                                                        receipt.status === 'APPROVED' 
-                                                            ? 'border-emerald-900/30 text-emerald-500 bg-emerald-950/10' 
-                                                            : 'border-red-900/30 text-red-500 bg-red-950/10'
-                                                    }`}>
-                                                        {receipt.status}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* School Billing Overview Table */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-medium text-white tracking-tight flex items-center gap-2">
-                            <School className="w-5 h-5 text-emerald-500" />
-                            School License Ledger
-                        </h2>
-                        <div className="rounded-2xl border border-white/5 overflow-hidden">
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
-                                <div className="col-span-3">School Name</div>
-                                <div className="col-span-2">Trial Ends</div>
-                                <div className="col-span-2 text-center">Remaining</div>
-                                <div className="col-span-2 text-center">Billing State</div>
-                                <div className="col-span-3 text-right">Billing Actions</div>
-                            </div>
-                            <div className="divide-y divide-white/5 bg-black">
-                                {schools.map((school: any) => {
-                                    const trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
-                                    const now = new Date();
-                                    const remainingDays = trialEndsAt 
-                                        ? Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-                                        : 0;
-                                    const expired = trialEndsAt ? now > trialEndsAt : false;
-                                    const activeSub = school.subscriptionStatus === 'active';
-
-                                    return (
-                                        <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.01] items-center transition-colors text-xs text-white">
-                                            <div className="col-span-3">
-                                                <div className="font-semibold">{school.name}</div>
-                                                <div className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
-                                            </div>
-                                            <div className="col-span-2 font-mono text-zinc-400">
-                                                {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (60d Default)'}
-                                            </div>
-                                            <div className="col-span-2 text-center font-mono">
-                                                {activeSub ? (
-                                                    <span className="text-emerald-500 font-bold">UNLIMITED</span>
-                                                ) : expired ? (
-                                                    <span className="text-red-500 font-bold">EXPIRED</span>
-                                                ) : (
-                                                    <span className="text-zinc-300 font-semibold">{remainingDays} days</span>
-                                                )}
-                                            </div>
-                                            <div className="col-span-2 text-center">
-                                                <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
-                                                    activeSub 
-                                                        ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-400' 
-                                                        : 'bg-zinc-950 border-zinc-800 text-zinc-500'
-                                                }`}>
-                                                    {activeSub ? 'Paying' : 'Non-paying'}
-                                                </span>
-                                            </div>
-                                            <div className="col-span-3 flex items-center justify-end gap-1.5">
-                                                <button
-                                                    onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
-                                                    className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
-                                                >
-                                                    {activeSub ? 'Set Non-paying' : 'Set Paying'}
-                                                </button>
-                                                <button
-                                                    onClick={() => handleExtendTrial(school.id, 30)}
-                                                    className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
-                                                >
-                                                    +30 Days
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                        
+                        <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] text-zinc-600 font-mono">
+                            <span>Status: Node Operational</span>
+                            <span>System Load: 1.04</span>
                         </div>
                     </div>
                 </div>
-            )}
 
-            <ConfirmationModal
-                isOpen={confirmAction.type !== null}
-                onClose={() => setConfirmAction({ type: null, schoolId: "", schoolName: "" })}
-                onConfirm={confirmAction.type === 'DELETE' ? executeDelete : executeSuspend}
-                isLoading={isLoading}
-                title={confirmAction.type === 'DELETE' ? "Delete Institution" : "Suspend Institution"}
-                description={confirmAction.type === 'DELETE'
-                    ? `⚠️ This will permanently delete "${confirmAction.schoolName}" and all its data — students, staff, grades, records, and invoices. This action cannot be undone.`
-                    : `Suspend access for "${confirmAction.schoolName}"? All active sessions will be terminated.`
-                }
-                confirmText={confirmAction.type === 'DELETE' ? "Delete Everything" : "Suspend"}
-                variant={confirmAction.type === 'DELETE' ? "danger" : "warning"}
-            />
-
-            <AlertModal
-                isOpen={alertConfig.isOpen}
-                onClose={() => setAlertConfig(prev => ({ ...prev, isOpen: false }))}
-                title={alertConfig.title}
-                message={alertConfig.message}
-                variant={alertConfig.variant}
-            />
-
-            <ManagePrincipalsModal
-                isOpen={managePrincipalsSchool !== null}
-                onClose={() => setManagePrincipalsSchool(null)}
-                schoolId={managePrincipalsSchool?.id || ""}
-                schoolName={managePrincipalsSchool?.name || ""}
-            />
-
-            <ManageOwnersModal
-                isOpen={manageOwnersSchool !== null}
-                onClose={() => setManageOwnersSchool(null)}
-                schoolId={manageOwnersSchool?.id || ""}
-                schoolName={manageOwnersSchool?.name || ""}
-            />
+            </div>
 
             <WelcomeAnnouncement />
         </div>
