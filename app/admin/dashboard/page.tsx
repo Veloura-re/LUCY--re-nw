@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import {
     Plus, School, Users, GraduationCap, Copy, CheckCircle2,
     AlertCircle, Loader2, Trash2, Power, PowerOff, BookOpen,
-    ChevronRight, X, ArrowUpRight, Globe, ShieldCheck
+    ChevronRight, X, ArrowUpRight, Globe, ShieldCheck, History, FileText
 } from "lucide-react";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
 import { ManagePrincipalsModal } from "@/components/admin/manage-principals-modal";
@@ -44,7 +45,9 @@ export default function SuperAdminDashboard() {
     const [emailSent, setEmailSent] = useState(false);
 
     // Security Disclosures Tab States
-    const [activeTab, setActiveTab] = useState<'SCHOOLS' | 'SECURITY' | 'WANTS_ACCESS'>('SCHOOLS');
+    const [activeTab, setActiveTab] = useState<'SCHOOLS' | 'BILLING' | 'SECURITY' | 'WANTS_ACCESS'>('SCHOOLS');
+    const [billingReceipts, setBillingReceipts] = useState<any[]>([]);
+    const [isLoadingBilling, setIsLoadingBilling] = useState(false);
     interface SecurityReport {
         id: string;
         email: string;
@@ -101,8 +104,24 @@ export default function SuperAdminDashboard() {
             fetchSecurityReports();
         } else if (activeTab === 'WANTS_ACCESS') {
             fetchAccessRequests();
+        } else if (activeTab === 'BILLING') {
+            fetchBillingReceipts();
         }
     }, [activeTab]);
+
+    const fetchBillingReceipts = async () => {
+        setIsLoadingBilling(true);
+        try {
+            const res = await fetch('/api/admin/billing/receipts');
+            if (!res.ok) throw new Error('Failed to fetch billing receipts');
+            const data = await res.json() as any;
+            setBillingReceipts(data.receipts || []);
+        } catch (err: any) {
+            console.error(err.message);
+        } finally {
+            setIsLoadingBilling(false);
+        }
+    };
 
     const [confirmAction, setConfirmAction] = useState<{ type: 'SUSPEND' | 'DELETE' | null, schoolId: string, schoolName: string }>({ type: null, schoolId: "", schoolName: "" });
     const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
@@ -130,6 +149,56 @@ export default function SuperAdminDashboard() {
             setError(err.message);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleResolveReceipt = async (receiptId: string, status: 'APPROVED' | 'REJECTED', notes?: string) => {
+        try {
+            const res = await fetch(`/api/admin/billing/receipts/${receiptId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status, notes }),
+            });
+            if (!res.ok) throw new Error('Failed to resolve receipt');
+            toast.success(`Receipt ${status.toLowerCase()} successfully`);
+            fetchBillingReceipts();
+            fetchSchools();
+        } catch (err: any) {
+            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
+        }
+    };
+
+    const handleUpdateBillingStatus = async (schoolId: string, subscriptionStatus: string | null) => {
+        try {
+            const res = await fetch(`/api/admin/schools/${schoolId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subscriptionStatus }),
+            });
+            if (!res.ok) throw new Error('Failed to update billing status');
+            toast.success('Billing status updated successfully');
+            fetchSchools();
+        } catch (err: any) {
+            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
+        }
+    };
+
+    const handleExtendTrial = async (schoolId: string, days: number) => {
+        try {
+            const targetSchool = schools.find(s => s.id === schoolId) as any;
+            const currentTrial = targetSchool?.trialEndsAt ? new Date(targetSchool.trialEndsAt) : new Date();
+            const newTrial = new Date(currentTrial.getTime() + days * 24 * 60 * 60 * 1000);
+            
+            const res = await fetch(`/api/admin/schools/${schoolId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ trialEndsAt: newTrial.toISOString() }),
+            });
+            if (!res.ok) throw new Error('Failed to extend trial');
+            toast.success(`Trial extended by ${days} days`);
+            fetchSchools();
+        } catch (err: any) {
+            setAlertConfig({ title: "Action Failed", message: err.message, isOpen: true, variant: "error" });
         }
     };
 
@@ -263,6 +332,17 @@ export default function SuperAdminDashboard() {
                     )}
                 >
                     [schools_ledger]
+                </button>
+                <button
+                    onClick={() => setActiveTab('BILLING')}
+                    className={cn(
+                        "px-6 py-3 border-b-2 font-mono text-xs uppercase tracking-wider font-bold transition-all rounded-t-xl",
+                        activeTab === 'BILLING' 
+                            ? "border-emerald-500 bg-emerald-950/10 text-white" 
+                            : "border-transparent text-zinc-500 hover:text-zinc-300"
+                    )}
+                >
+                    [billing_controls]
                 </button>
                 <button
                     onClick={() => setActiveTab('SECURITY')}
@@ -647,6 +727,169 @@ export default function SuperAdminDashboard() {
                             </div>
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* Billing Management Section */}
+            {activeTab === 'BILLING' && (
+                <div className="space-y-10 animate-in fade-in duration-300">
+                    
+                    {/* Manual Receipts List */}
+                    <div className="space-y-4">
+                        <h2 className="text-xl font-medium text-white tracking-tight flex items-center gap-2">
+                            <History className="w-5 h-5 text-emerald-500" />
+                            Pending Bank Transfer Verifications
+                        </h2>
+                        {isLoadingBilling ? (
+                            <div className="flex flex-col items-center justify-center py-12 gap-4">
+                                <Loader2 className="w-6 h-6 animate-spin text-emerald-500 opacity-60" />
+                            </div>
+                        ) : billingReceipts.length === 0 ? (
+                            <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-900 text-zinc-600 text-xs">
+                                No pending bank transfer verifications found.
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl border border-white/5 overflow-hidden">
+                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                                    <div className="col-span-3">School Node</div>
+                                    <div className="col-span-2">Submitter</div>
+                                    <div className="col-span-2 text-center">Amount</div>
+                                    <div className="col-span-2">Reference ID</div>
+                                    <div className="col-span-1 text-center">Receipt</div>
+                                    <div className="col-span-2 text-right">Actions</div>
+                                </div>
+                                <div className="divide-y divide-white/5 bg-black">
+                                    {billingReceipts.map((receipt) => (
+                                        <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.01] items-center transition-colors text-xs text-white">
+                                            <div className="col-span-3 font-semibold">
+                                                {receipt.school?.name || 'Unknown School'}
+                                            </div>
+                                            <div className="col-span-2 text-zinc-400">
+                                                {receipt.submittedBy?.name || 'Unknown User'}
+                                            </div>
+                                            <div className="col-span-2 text-center font-bold text-emerald-400">
+                                                ${parseFloat(receipt.amount).toFixed(2)}
+                                            </div>
+                                            <div className="col-span-2 font-mono text-zinc-300 truncate select-all">
+                                                {receipt.reference}
+                                            </div>
+                                            <div className="col-span-1 text-center">
+                                                <a 
+                                                    href={receipt.receiptUrl} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    className="inline-flex text-[10px] text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
+                                                >
+                                                    View
+                                                </a>
+                                            </div>
+                                            <div className="col-span-2 flex items-center justify-end gap-2">
+                                                {receipt.status === 'PENDING' ? (
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleResolveReceipt(receipt.id, 'APPROVED')}
+                                                            className="px-2.5 py-1 rounded-md bg-emerald-950/20 border border-emerald-900/50 hover:bg-emerald-900/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider transition-all"
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                const reason = prompt('Rejection reason (optional):') || '';
+                                                                handleResolveReceipt(receipt.id, 'REJECTED', reason);
+                                                            }}
+                                                            className="px-2.5 py-1 rounded-md bg-red-950/20 border border-red-900/50 hover:bg-red-900/30 text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <span className={`px-2.5 py-0.5 rounded text-[9px] font-bold uppercase border ${
+                                                        receipt.status === 'APPROVED' 
+                                                            ? 'border-emerald-900/30 text-emerald-500 bg-emerald-950/10' 
+                                                            : 'border-red-900/30 text-red-500 bg-red-950/10'
+                                                    }`}>
+                                                        {receipt.status}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* School Billing Overview Table */}
+                    <div className="space-y-4">
+                        <h2 className="text-xl font-medium text-white tracking-tight flex items-center gap-2">
+                            <School className="w-5 h-5 text-emerald-500" />
+                            School License Ledger
+                        </h2>
+                        <div className="rounded-2xl border border-white/5 overflow-hidden">
+                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                                <div className="col-span-3">School Name</div>
+                                <div className="col-span-2">Trial Ends</div>
+                                <div className="col-span-2 text-center">Remaining</div>
+                                <div className="col-span-2 text-center">Billing State</div>
+                                <div className="col-span-3 text-right">Billing Actions</div>
+                            </div>
+                            <div className="divide-y divide-white/5 bg-black">
+                                {schools.map((school: any) => {
+                                    const trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
+                                    const now = new Date();
+                                    const remainingDays = trialEndsAt 
+                                        ? Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                                        : 0;
+                                    const expired = trialEndsAt ? now > trialEndsAt : false;
+                                    const activeSub = school.subscriptionStatus === 'active';
+
+                                    return (
+                                        <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.01] items-center transition-colors text-xs text-white">
+                                            <div className="col-span-3">
+                                                <div className="font-semibold">{school.name}</div>
+                                                <div className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
+                                            </div>
+                                            <div className="col-span-2 font-mono text-zinc-400">
+                                                {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (60d Default)'}
+                                            </div>
+                                            <div className="col-span-2 text-center font-mono">
+                                                {activeSub ? (
+                                                    <span className="text-emerald-500 font-bold">UNLIMITED</span>
+                                                ) : expired ? (
+                                                    <span className="text-red-500 font-bold">EXPIRED</span>
+                                                ) : (
+                                                    <span className="text-zinc-300 font-semibold">{remainingDays} days</span>
+                                                )}
+                                            </div>
+                                            <div className="col-span-2 text-center">
+                                                <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${
+                                                    activeSub 
+                                                        ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-400' 
+                                                        : 'bg-zinc-950 border-zinc-800 text-zinc-500'
+                                                }`}>
+                                                    {activeSub ? 'Paying' : 'Non-paying'}
+                                                </span>
+                                            </div>
+                                            <div className="col-span-3 flex items-center justify-end gap-1.5">
+                                                <button
+                                                    onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
+                                                    className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                >
+                                                    {activeSub ? 'Set Non-paying' : 'Set Paying'}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleExtendTrial(school.id, 30)}
+                                                    className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                >
+                                                    +30 Days
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
