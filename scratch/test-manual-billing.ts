@@ -29,13 +29,13 @@ async function main() {
 
     if (action === '--submit') {
         const reference = `TXN-${Math.floor(100000 + Math.random() * 900000)}`;
-        console.log(`📤 Submitting billing receipt (Ref: ${reference}, Amount: $250.00)...`);
+        console.log(`📤 Submitting billing receipt (Ref: ${reference}, Amount: $149.00)...`);
         
         const receipt = await prisma.billingReceipt.create({
             data: {
                 schoolId: school.id,
                 submittedById: owner.id,
-                amount: 250.00,
+                amount: 149.00,
                 reference,
                 receiptUrl: 'https://example.com/receipts/proof.png',
                 status: 'PENDING',
