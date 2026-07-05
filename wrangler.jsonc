@@ -14,5 +14,8 @@
       "binding": "NEXT_CACHE_WORKERS_KV",
       "id": "11111111111111111111111111111111"
     }
-  ]
+  ],
+  "build": {
+    "command": "npm run build"
+  }
 }
