@@ -30,7 +30,8 @@ import {
     HelpCircle,
     HardDrive,
     Crown,
-    Receipt
+    Receipt,
+    CreditCard
 } from "lucide-react";
 
 export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
@@ -67,7 +68,8 @@ export const ICON_MAP = {
     HelpCircle,
     HardDrive,
     Crown,
-    Receipt
+    Receipt,
+    CreditCard
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -91,6 +93,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
     OWNER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'Crown', label: "Principals", href: "/dashboard/principals" },
+        { icon: 'CreditCard', label: "Billing & Subscription", href: "/dashboard/billing" },
         { icon: 'CheckSquare', label: "Approvals", href: "/dashboard/approvals" },
         { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
         { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
@@ -102,6 +105,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
     ],
     PRINCIPAL: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
+        { icon: 'CreditCard', label: "Billing & Subscription", href: "/dashboard/billing" },
         { icon: 'UserRound', label: "Teachers", href: "/dashboard/teachers" },
         { icon: 'Scroll', label: "Students", href: "/dashboard/students" },
         { icon: 'Library', label: "Classes", href: "/dashboard/classes" },
