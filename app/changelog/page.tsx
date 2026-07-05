@@ -8,6 +8,14 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 
 const releases = [
     {
+        version: "v1.0.5", date: "2026-07-04", label: "stable", changes: [
+            { type: "new", text: "Redesigned Contact node into a 4-step sequential wizard uplink interface" },
+            { type: "new", text: "Overhauled Presentation Deck with 13 slides, stat counters, and 3D hover navigation" },
+            { type: "improve", text: "Standardized platform aesthetic to strict monochrome (zinc/white) terminal style" },
+            { type: "improve", text: "Updated global browser metadata title to 'LUCY | Academia'" }
+        ]
+    },
+    {
         version: "v1.0.4", date: "2026-03-01", label: "stable", changes: [
             { type: "fix", text: "Resolved race condition in attendance sync during high-concurrency writes" },
             { type: "fix", text: "Parent notification latency reduced from 4s to 0.8s" },

@@ -11,6 +11,7 @@ interface SchoolType {
     id: string;
     name: string;
     schoolCode: string;
+    createdAt: string;
     trialEndsAt: string | null;
     subscriptionStatus: string | null;
 }
@@ -339,8 +340,15 @@ export default function BillingControlsPage() {
                         </div>
                         <div className="divide-y divide-white/5 bg-black">
                             {filteredSchools.map((school) => {
-                                const trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
                                 const now = new Date();
+                                let trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
+                                
+                                // Default to 60 days from creation if no explicit trial date is set
+                                if (!trialEndsAt && school.createdAt) {
+                                    trialEndsAt = new Date(school.createdAt);
+                                    trialEndsAt.setDate(trialEndsAt.getDate() + 60);
+                                }
+                                
                                 const remainingDays = trialEndsAt 
                                     ? Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
                                     : 0;
