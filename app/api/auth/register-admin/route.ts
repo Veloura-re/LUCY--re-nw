@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { rateLimit, secureJson } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
-import crypto from 'crypto';
 
 export async function POST(request: Request) {
     const limit = rateLimit(request, "auth/register-admin", 3); // Very strict for admin reg
@@ -17,23 +16,23 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
 
+    // Cloudflare Workers has global crypto implementation. Web Crypto API subtle crypto handles timing attacks.
+    // However, for simple string comparison in Edge/Workers where Node crypto isn't available, we can
+    // use a simple constant-time comparison manually.
     const providedKey = secretKey?.trim() || "";
     const expectedKey = VALID_SECRET.trim();
 
-    // Prevent timing attacks when comparing strings
-    // First check lengths to prevent easy timing attack on length
-    // But we still need to do timingSafeEqual to prevent branch prediction/timing attack
-    const bufferA = Buffer.from(providedKey);
-    const bufferB = Buffer.from(expectedKey);
+    let isMatch = providedKey.length === expectedKey.length;
+    let mismatch = 0;
 
-    let isMatch = bufferA.length === bufferB.length;
+    // We do a constant time comparison. If lengths differ, we still loop to avoid timing leak on length
+    for (let i = 0; i < expectedKey.length; i++) {
+        const charA = isMatch ? providedKey.charCodeAt(i) : expectedKey.charCodeAt(i);
+        const charB = expectedKey.charCodeAt(i);
+        mismatch |= (charA ^ charB);
+    }
 
-    // We pad or use expectedKey so timingSafeEqual always receives equal length buffers
-    // which is required by the API. If lengths mismatch, we compare expected to expected
-    // but force isMatch to false.
-    const finalBufferA = isMatch ? bufferA : bufferB;
-
-    if (!crypto.timingSafeEqual(finalBufferA, bufferB) || !isMatch) {
+    if (mismatch !== 0 || !isMatch) {
         return secureJson({ error: 'Invalid Administration Key.' }, 403);
     }
 
