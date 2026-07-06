@@ -4,7 +4,7 @@ import { handleApiError, requireRole } from '@/lib/security';
 
 export async function GET() {
     try {
-        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL']);
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
 
         const school = await prisma.school.findUnique({
             where: { id: user.schoolId! },
@@ -23,7 +23,7 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
     try {
-        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL']);
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
         const { name, schoolCode, logoUrl, address, locations, communicationsConfig } = await request.json();
 
         const school = await prisma.school.update({

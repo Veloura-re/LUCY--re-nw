@@ -18,7 +18,7 @@ const clauses = [
     { num: "08", title: "Warranty Disclaimer", body: "The platform is provided on an 'as-is' and 'as-available' basis. LUCY_ACADEMIA disclaims all warranties of any kind, whether express, implied, statutory, or otherwise, including but not limited to any implied warranties of merchantability, fitness for a particular purpose, or error-free system operation." },
     { num: "09", title: "Limitation of Liability & Consequential Damage Cap", body: "LUCY_ACADEMIA shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including lost tuition revenue, reputational harm, or data loss. Our aggregate direct liability for any claim is strictly capped at the total amount of subscription fees paid by the institution in the 12 months immediately preceding the event." },
     { num: "10", title: "Mutual Indemnification", body: "The institution agrees to defend, indemnify, and hold harmless LUCY_ACADEMIA against any third-party claims, liabilities, or expenses arising from the institution's violation of privacy laws, upload of copyrighted curriculum without license, or misuse of user information." },
-    { num: "11", title: "Governing Law & Disputes Jurisdiction", body: "These terms are governed exclusively by the laws of South Africa. The parties submit to the sole jurisdiction of the Western Cape High Court in Cape Town for any disputes arising from this agreement." },
+    { num: "11", title: "Governing Law & Disputes Jurisdiction", body: "These terms are governed exclusively by the laws of Ethiopia. The parties submit to the sole jurisdiction of the Federal Courts in Addis Ababa for any disputes arising from this agreement." },
 ];
 
 export default function Terms() {
