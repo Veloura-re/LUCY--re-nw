@@ -52,7 +52,7 @@ export async function PATCH(
 
             // 3. If approved, activate subscription and extend trial
             if (status === 'APPROVED') {
-                const extendedTrialDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
+                const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
                 const { error: updateSchoolErr } = await supabaseAdmin
                     .from('School')
                     .update({
@@ -75,7 +75,7 @@ export async function PATCH(
                 });
 
                 if (status === 'APPROVED') {
-                    const extendedTrialDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
+                    const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
                     await tx.school.update({
                         where: { id: receipt.schoolId },
                         data: {

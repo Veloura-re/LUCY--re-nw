@@ -54,27 +54,22 @@ export default function BillingPage() {
         fetchSchoolBillingAndReceipts();
     }, []);
 
-    const handleSubscribeSimulation = async () => {
+    const handleStripeCheckout = async () => {
         setSubmitting(true);
         try {
-            const res = await fetch('/api/school/billing/simulate', {
+            const res = await fetch('/api/school/billing/checkout', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
             });
             const data = await res.json() as any;
-            if (data.success) {
-                toast.success('Stripe link established! Subscription activated.');
-                // Refresh data
-                await fetchSchoolBillingAndReceipts();
-                setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 1500);
+            if (data.checkoutUrl) {
+                window.location.href = data.checkoutUrl;
             } else {
-                toast.error(data.error || 'Failed to simulate Stripe link.');
+                toast.error(data.error || 'Failed to initialize secure checkout.');
+                setSubmitting(false);
             }
         } catch (err) {
-            toast.error('Simulation server connection failed.');
-        } finally {
+            toast.error('Checkout initialization failed.');
             setSubmitting(false);
         }
     };
@@ -278,8 +273,7 @@ export default function BillingPage() {
                     </div>
 
                     {/* Subscription Setup Area */}
-                    {!isSubscribed && (
-                        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
                             {/* Inner Tab Header */}
                             <div className="flex border-b border-zinc-800 bg-zinc-950/50">
                                 <button
@@ -316,7 +310,7 @@ export default function BillingPage() {
                                         </p>
                                     </div>
                                     <button
-                                        onClick={handleSubscribeSimulation}
+                                        onClick={handleStripeCheckout}
                                         disabled={submitting}
                                         className="w-full py-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
@@ -409,8 +403,6 @@ export default function BillingPage() {
                                 </form>
                             )}
                         </div>
-                    )}
-
                     {/* Receipt Submission Ledger */}
                     {pastReceipts.length > 0 && (
                         <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 space-y-4">
