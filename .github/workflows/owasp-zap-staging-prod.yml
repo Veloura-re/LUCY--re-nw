@@ -1,0 +1,40 @@
+name: OWASP ZAP Full Security Scan (Staging & Prod)
+
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+  schedule:
+    # Run automatically every Sunday at midnight (UTC) against Production
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  security_scan:
+    runs-on: ubuntu-latest
+    name: ZAP Full Scan
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Run OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          # TODO: If scanning staging, replace this with your staging domain (e.g., staging.lucy-re-nw.com)
+          # For scheduled runs on main, this targets production.
+          target: 'https://lucy-re-nw.vercel.app'
+          
+          # We set this to false initially so false positives don't block your team from merging code.
+          # Once you fix all initial vulnerabilities, set this to true!
+          fail_action: false
+          
+          # Automatically create a GitHub issue if severe vulnerabilities are found
+          allow_issue_writing: true
+          issue_title: 'Security Alert: ZAP Full Security Scan'
+          
+          # Upload the HTML report to GitHub Actions
+          artifact_name: 'zap_full_scan_report'
