@@ -23,12 +23,14 @@ async function main() {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
     
+    const connectionString = env['DIRECT_URL'] || env['DATABASE_URL'];
+    if (!connectionString) {
+        console.error("Missing Database connection string in .dev.vars");
+        process.exit(1);
+    }
+
     const pool = new Pool({ 
-        user: 'postgres.caeeusbhwrkelnffbbub',
-        password: 'Amsocookd2133#',
-        host: 'aws-1-eu-west-1.pooler.supabase.com',
-        port: 5432,
-        database: 'postgres',
+        connectionString,
         ssl: { rejectUnauthorized: false }
     });
     

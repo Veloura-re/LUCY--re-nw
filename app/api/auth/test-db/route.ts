@@ -9,12 +9,13 @@ export async function GET() {
         let queryError = null;
 
         try {
+            // Use environment variables instead of hardcoded credentials for security
+            const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+            if (!connectionString) {
+                throw new Error("Database connection string not found in environment variables.");
+            }
             const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
-                port: 5432,
-                database: 'postgres',
+                connectionString,
                 ssl: { rejectUnauthorized: false }
             });
             const adapter = new PrismaPg(pool);

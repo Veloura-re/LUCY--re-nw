@@ -1,7 +1,17 @@
 const { PrismaClient } = require('@prisma/client');
+const fs = require('fs');
 
-process.env.DATABASE_URL = "postgresql://postgres.caeeusbhwrkelnffbbub:Amsocookd2133%23@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
-process.env.DIRECT_URL = "postgresql://postgres.caeeusbhwrkelnffbbub:Amsocookd2133%23@aws-1-eu-west-1.pooler.supabase.com:5432/postgres";
+try {
+    const envContent = fs.readFileSync('.dev.vars', 'utf-8');
+    envContent.split('\n').forEach(line => {
+        if (line.includes('=')) {
+            const [key, ...rest] = line.split('=');
+            process.env[key.trim()] = rest.join('=').trim().replace('\r', '');
+        }
+    });
+} catch (e) {
+    console.log("Could not load .dev.vars, assuming environment variables are set.");
+}
 
 const prisma = new PrismaClient();
 
