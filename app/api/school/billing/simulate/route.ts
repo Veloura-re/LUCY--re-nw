@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         const mockCustomerId = `cus_${Math.random().toString(36).slice(2, 10)}`;
         const mockSubscriptionId = `sub_${Math.random().toString(36).slice(2, 10)}`;
         // Future date for extended billing
-        const extendedTrialDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+        const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
         if (!db) {
             // Edge runtime fallback using Supabase

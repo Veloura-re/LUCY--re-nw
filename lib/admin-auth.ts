@@ -38,9 +38,9 @@ export async function verifySuperAdmin() {
                 .eq('email', user.email)
                 .maybeSingle();
             dbUser = u2;
-            if (dbUser) {
-                await supabaseAdmin.from('User').update({ id: user.id }).eq('email', user.email);
-                dbUser.id = user.id;
+            if (dbUser && dbUser.id !== user.id) {
+                console.error(`[AdminAuth] CRITICAL SECURITY ALERT (Edge): ID Mismatch for ${user.email}. Access Denied.`);
+                return null;
             }
         }
     } else {
@@ -50,20 +50,16 @@ export async function verifySuperAdmin() {
             select: { id: true, role: true, email: true }
         });
 
-        // Fallback: email-based lookup + auto-sync ID
+        // Fallback: email-based lookup (Read-only, NO auto-sync for SUPERADMIN to prevent spoofing)
         if (!dbUser && user.email) {
             dbUser = await prisma.user.findUnique({
                 where: { email: user.email },
                 select: { id: true, role: true, email: true }
             });
-
-            if (dbUser) {
-                console.warn(`[AdminAuth] Auto-Sync: Updating ID for ${user.email}. Old: ${dbUser.id} -> New: ${user.id}`);
-                dbUser = await prisma.user.update({
-                    where: { email: user.email },
-                    data: { id: user.id },
-                    select: { id: true, role: true, email: true }
-                });
+            
+            if (dbUser && dbUser.id !== user.id) {
+                console.error(`[AdminAuth] CRITICAL SECURITY ALERT: ID Mismatch for ${user.email}. Supabase ID: ${user.id}, Database ID: ${dbUser.id}. Access Denied to prevent account takeover.`);
+                return null;
             }
         }
     }
