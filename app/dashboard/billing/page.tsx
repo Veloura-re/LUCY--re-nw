@@ -328,20 +328,30 @@ export default function BillingPage() {
                             {paymentMode === 'BANK' && (
                                 <form onSubmit={handleManualReceiptSubmit} className="p-6 space-y-6 animate-in fade-in duration-300">
                                     {/* Bank Details */}
-                                    <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-4 space-y-2 text-xs">
-                                        <h4 className="font-bold text-white uppercase tracking-tight text-[10px] text-eduGreen-500">Official Bank Wire Details</h4>
-                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-400">
-                                            <span>Bank:</span> <span className="text-white font-semibold">LUCY ACADEMIA LEDGER CORP</span>
-                                            <span>Account:</span> <span className="text-white font-semibold">1003-8842-1985</span>
-                                            <span>Route/Swift:</span> <span className="text-white font-semibold">LUCYACXX</span>
-                                            <span>Memo Reference:</span> <span className="text-eduGreen-400 font-bold select-all">{schoolInfo.schoolCode}</span>
+                                    <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-4 space-y-4 text-xs">
+                                        <h4 className="font-bold text-white uppercase tracking-tight text-[10px] text-eduGreen-500">Official Payment Methods</h4>
+                                        
+                                        <div className="space-y-3">
+                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-400">
+                                                <span>Method:</span> <span className="text-white font-semibold">Telebirr</span>
+                                                <span>Account / Phone:</span> <span className="text-white font-semibold">0997267373</span>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-400">
+                                                <span>Method:</span> <span className="text-white font-semibold">Commercial Bank of Ethiopia (CBE)</span>
+                                                <span>Account:</span> <span className="text-zinc-500 italic">...pending</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-400 pt-2 border-t border-zinc-800/50">
+                                            <span>Transfer Reason / Memo:</span> <span className="text-eduGreen-400 font-bold select-all">{schoolInfo.schoolCode}</span>
                                         </div>
                                     </div>
 
                                     {/* Receipt Form Inputs */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Transfer Amount (USD)</label>
+                                            <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Transfer Amount</label>
                                             <div className="relative">
                                                 <DollarSign className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                                                 <input
