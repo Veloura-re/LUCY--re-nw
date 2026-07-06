@@ -9,7 +9,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 const frameworks = [
     { id: "FERPA", name: "FERPA", full: "Family Educational Rights & Privacy Act", status: "compliant", coverage: 95, region: "United States", desc: "Student records are accessible only to authorized institutional actors. Parents of minor students retain access rights." },
     { id: "GDPR", name: "GDPR", full: "General Data Protection Regulation", status: "compliant", coverage: 92, region: "European Union", desc: "Right to erasure, data portability, and processing transparency are all honored. DPA contracts in place with all sub-processors." },
-    { id: "POPIA", name: "POPIA", full: "Protection of Personal Information Act", status: "compliant", coverage: 98, region: "South Africa", desc: "Primary jurisdiction. All processing activities are aligned with POPIA conditions, including lawful basis and consent frameworks." },
+    { id: "EDPP", name: "EDPP", full: "Ethiopian Data Protection Proclamation", status: "compliant", coverage: 98, region: "Ethiopia", desc: "Primary jurisdiction. All processing activities are aligned with Ethiopian data protection requirements, including lawful basis and consent frameworks." },
     { id: "HIPAA", name: "HIPAA", full: "Health Insurance Portability & Accountability Act", status: "partial", coverage: 60, region: "United States", desc: "Applicable only where health/disability data is recorded. Relevant encrypted fields and access controls are in place." },
     { id: "SOC2", name: "SOC2", full: "System & Organization Controls 2", status: "in_progress", coverage: 75, region: "Global", desc: "SOC2 Type II audit is scheduled for Q3 2026. Current practices meet Type I requirements across all five trust pillars." },
 ];
