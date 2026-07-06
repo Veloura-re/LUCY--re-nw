@@ -1,29 +1,23 @@
 -- ============================================================
--- LUCY Security Hardening: Supabase RLS Policies (FIXED v3)
--- Run this in the Supabase SQL Editor (Dashboard > SQL Editor)
+-- LUCY Security Hardening: Supabase RLS Policies (STRICT v4)
+-- Run this in the Supabase SQL Editor or via Prisma raw query
 -- ============================================================
 
 -- ─────────────────────────────────────────────────
--- 1. Enable RLS on all critical tables
+-- 1. Helper Functions (Improves Performance & Avoids Recursion)
 -- ─────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION get_auth_school_id()
+RETURNS TEXT AS $$
+  SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text LIMIT 1;
+$$ LANGUAGE SQL STABLE SECURITY DEFINER;
 
-ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Student" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "School" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Class" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Grade" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "GradeRecord" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "AttendanceRecord" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Exam" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Invoice" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Payment" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "PublicComment" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "AuditLog" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Message" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "InternalNote" ENABLE ROW LEVEL SECURITY;
+CREATE OR REPLACE FUNCTION get_auth_role()
+RETURNS TEXT AS $$
+  SELECT "role"::text FROM "User" WHERE id = auth.uid()::text LIMIT 1;
+$$ LANGUAGE SQL STABLE SECURITY DEFINER;
 
 -- ─────────────────────────────────────────────────
--- 2. Clean up existing policies
+-- 2. Clean up existing permissive policies
 -- ─────────────────────────────────────────────────
 DROP POLICY IF EXISTS "users_read_own" ON "User";
 DROP POLICY IF EXISTS "users_update_own" ON "User";
@@ -46,191 +40,160 @@ DROP POLICY IF EXISTS "audit_admin_read" ON "AuditLog";
 DROP POLICY IF EXISTS "messages_own" ON "Message";
 DROP POLICY IF EXISTS "messages_send" ON "Message";
 DROP POLICY IF EXISTS "notes_access" ON "InternalNote";
+DROP POLICY IF EXISTS "Superadmins can manage schools" ON "School";
+DROP POLICY IF EXISTS "Users can view their own school" ON "School";
+DROP POLICY IF EXISTS "Users can read own record" ON "User";
+DROP POLICY IF EXISTS "Superadmins can manage all users" ON "User";
+DROP POLICY IF EXISTS "Superadmins can manage invite tokens" ON "InviteToken";
 
 -- ─────────────────────────────────────────────────
--- 3. USER table policies
+-- 3. ENABLE RLS
 -- ─────────────────────────────────────────────────
-
-CREATE POLICY "users_read_own" ON "User"
-    FOR SELECT USING (auth.uid()::text = id);
-
-CREATE POLICY "users_update_own" ON "User"
-    FOR UPDATE USING (auth.uid()::text = id);
-
--- ─────────────────────────────────────────────────
--- 4. SCHOOL-SCOPED tables
--- ─────────────────────────────────────────────────
-
--- Student Table (HAS schoolId)
-CREATE POLICY "students_school_read" ON "Student"
-    FOR SELECT USING (
-        "schoolId" IN (
-            SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-        )
-    );
-
-CREATE POLICY "students_school_write" ON "Student"
-    FOR ALL USING (
-        "schoolId" IN (
-            SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-        )
-    );
-
--- School Table (id IS the schoolId)
-CREATE POLICY "school_read_own" ON "School"
-    FOR SELECT USING (
-        id IN (
-            SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-        )
-    );
-
--- Class Table (NO schoolId direct, use gradeId -> Grade)
-CREATE POLICY "classes_school_read" ON "Class"
-    FOR SELECT USING (
-        "gradeId" IN (
-            SELECT id FROM "Grade" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
-        )
-    );
-
-CREATE POLICY "classes_school_write" ON "Class"
-    FOR ALL USING (
-        "gradeId" IN (
-            SELECT id FROM "Grade" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
-        )
-    );
-
--- Grade Table (HAS schoolId)
-CREATE POLICY "grades_school_read" ON "Grade"
-    FOR SELECT USING (
-        "schoolId" IN (
-            SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-        )
-    );
-
--- GradeRecords (Use studentId -> Student -> schoolId)
-CREATE POLICY "grade_records_school" ON "GradeRecord"
-    FOR ALL USING (
-        "studentId" IN (
-            SELECT id FROM "Student" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
-        )
-    );
-
--- Attendance (Use studentId -> Student -> schoolId)
-CREATE POLICY "attendance_school" ON "AttendanceRecord"
-    FOR ALL USING (
-        "studentId" IN (
-            SELECT id FROM "Student" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
-        )
-    );
-
--- Exam (NO schoolId direct, use subjectId -> Subject)
-CREATE POLICY "exams_school" ON "Exam"
-    FOR ALL USING (
-        "subjectId" IN (
-            SELECT id FROM "Subject" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
-        )
-    );
+ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Student" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "School" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Class" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Grade" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "GradeRecord" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "AttendanceRecord" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Exam" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Invoice" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Payment" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "PublicComment" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "AuditLog" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Message" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "InternalNote" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "InviteToken" ENABLE ROW LEVEL SECURITY;
 
 -- ─────────────────────────────────────────────────
--- 5. FINANCE tables (Use studentId)
+-- 4. STRICT POLICIES BY ROLE
 -- ─────────────────────────────────────────────────
 
-CREATE POLICY "invoices_school" ON "Invoice"
-    FOR ALL USING (
-        "studentId" IN (
-            SELECT id FROM "Student" WHERE "schoolId" IN (
-                SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-            )
+-- ==========================================
+-- User
+-- ==========================================
+CREATE POLICY "user_read_own" ON "User" FOR SELECT USING (id = auth.uid()::text);
+CREATE POLICY "user_update_own" ON "User" FOR UPDATE USING (id = auth.uid()::text);
+CREATE POLICY "user_read_school_staff" ON "User" FOR SELECT USING (
+    get_auth_school_id() = "schoolId" AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM')
+);
+CREATE POLICY "user_superadmin_all" ON "User" FOR ALL USING (
+    get_auth_role() = 'SUPERADMIN' OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'SUPERADMIN'
+);
+
+-- ==========================================
+-- School
+-- ==========================================
+CREATE POLICY "school_read" ON "School" FOR SELECT USING (
+    id = get_auth_school_id() 
+);
+CREATE POLICY "school_superadmin_all" ON "School" FOR ALL USING (
+    get_auth_role() = 'SUPERADMIN' OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'SUPERADMIN'
+);
+
+-- ==========================================
+-- Student
+-- ==========================================
+CREATE POLICY "student_staff_all" ON "Student" FOR ALL USING (
+    "schoolId" = get_auth_school_id() AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM')
+);
+CREATE POLICY "student_self_read" ON "Student" FOR SELECT USING (
+    "userId" = auth.uid()::text
+);
+CREATE POLICY "student_parent_read" ON "Student" FOR SELECT USING (
+    id IN (SELECT "studentId" FROM "ParentStudentLink" WHERE "parentId" = auth.uid()::text)
+);
+
+-- ==========================================
+-- Class, Grade, Subject
+-- ==========================================
+CREATE POLICY "class_read_all" ON "Class" FOR SELECT USING (
+    "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = get_auth_school_id())
+);
+CREATE POLICY "grade_read_all" ON "Grade" FOR SELECT USING (
+    "schoolId" = get_auth_school_id()
+);
+CREATE POLICY "subject_read_all" ON "Subject" FOR SELECT USING (
+    "schoolId" = get_auth_school_id()
+);
+CREATE POLICY "class_staff_write" ON "Class" FOR ALL USING (
+    "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = get_auth_school_id()) AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+);
+
+-- ==========================================
+-- GradeRecord (Security Hardened)
+-- ==========================================
+CREATE POLICY "graderecord_staff_all" ON "GradeRecord" FOR ALL USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()) 
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM')
+);
+CREATE POLICY "graderecord_student_read" ON "GradeRecord" FOR SELECT USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "userId" = auth.uid()::text)
+);
+CREATE POLICY "graderecord_parent_read" ON "GradeRecord" FOR SELECT USING (
+    "studentId" IN (SELECT "studentId" FROM "ParentStudentLink" WHERE "parentId" = auth.uid()::text)
+);
+
+-- ==========================================
+-- AttendanceRecord
+-- ==========================================
+CREATE POLICY "attendance_staff_all" ON "AttendanceRecord" FOR ALL USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()) 
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM')
+);
+CREATE POLICY "attendance_student_read" ON "AttendanceRecord" FOR SELECT USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "userId" = auth.uid()::text)
+);
+CREATE POLICY "attendance_parent_read" ON "AttendanceRecord" FOR SELECT USING (
+    "studentId" IN (SELECT "studentId" FROM "ParentStudentLink" WHERE "parentId" = auth.uid()::text)
+);
+
+-- ==========================================
+-- Invoices and Payments
+-- ==========================================
+CREATE POLICY "finance_staff_all" ON "Invoice" FOR ALL USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()) 
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+);
+CREATE POLICY "finance_student_read" ON "Invoice" FOR SELECT USING (
+    "studentId" IN (SELECT id FROM "Student" WHERE "userId" = auth.uid()::text)
+);
+CREATE POLICY "finance_parent_read" ON "Invoice" FOR SELECT USING (
+    "studentId" IN (SELECT "studentId" FROM "ParentStudentLink" WHERE "parentId" = auth.uid()::text)
+);
+
+CREATE POLICY "payment_staff_all" ON "Payment" FOR ALL USING (
+    "invoiceId" IN (
+        SELECT id FROM "Invoice" WHERE "studentId" IN (
+            SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()
         )
-    );
+    )
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+);
 
-CREATE POLICY "payments_school" ON "Payment"
-    FOR ALL USING (
-        "invoiceId" IN (
-            SELECT id FROM "Invoice" WHERE "studentId" IN (
-                SELECT id FROM "Student" WHERE "schoolId" IN (
-                    SELECT "schoolId" FROM "User" WHERE id = auth.uid()::text
-                )
-            )
-        )
-    );
+-- ==========================================
+-- Invite Tokens
+-- ==========================================
+CREATE POLICY "invite_superadmin_all" ON "InviteToken" FOR ALL USING (
+    get_auth_role() = 'SUPERADMIN' OR (auth.jwt() -> 'user_metadata' ->> 'role') = 'SUPERADMIN'
+);
+CREATE POLICY "invite_staff_all" ON "InviteToken" FOR ALL USING (
+    "schoolId" = get_auth_school_id() AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+);
 
--- ─────────────────────────────────────────────────
--- 6. PUBLIC COMMENTS
--- ─────────────────────────────────────────────────
+-- ==========================================
+-- Audit Logs
+-- ==========================================
+CREATE POLICY "audit_admin_read" ON "AuditLog" FOR SELECT USING (
+    get_auth_role() IN ('SUPERADMIN', 'OWNER', 'PRINCIPAL')
+);
 
-CREATE POLICY "comments_public_read" ON "PublicComment"
-    FOR SELECT USING (approved = true);
-
-CREATE POLICY "comments_insert" ON "PublicComment"
-    FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "comments_admin_modify" ON "PublicComment"
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM "User"
-            WHERE id = auth.uid()::text
-            AND role IN ('SUPERADMIN', 'PRINCIPAL')
-        )
-    );
-
-CREATE POLICY "comments_admin_delete" ON "PublicComment"
-    FOR DELETE USING (
-        EXISTS (
-            SELECT 1 FROM "User"
-            WHERE id = auth.uid()::text
-            AND role IN ('SUPERADMIN', 'PRINCIPAL')
-        )
-    );
-
--- ─────────────────────────────────────────────────
--- 7. AUDIT LOGS
--- ─────────────────────────────────────────────────
-
-CREATE POLICY "audit_admin_read" ON "AuditLog"
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM "User"
-            WHERE id = auth.uid()::text
-            AND role IN ('SUPERADMIN', 'PRINCIPAL')
-        )
-    );
-
--- ─────────────────────────────────────────────────
--- 8. MESSAGES (HAS schoolId)
--- ─────────────────────────────────────────────────
-
-CREATE POLICY "messages_own" ON "Message"
-    FOR SELECT USING (
-        "fromUserId" = auth.uid()::text
-        OR "toUserId" = auth.uid()::text
-    );
-
-CREATE POLICY "messages_send" ON "Message"
-    FOR INSERT WITH CHECK (
-        "fromUserId" = auth.uid()::text
-    );
-
--- ─────────────────────────────────────────────────
--- 9. INTERNAL NOTES
--- ─────────────────────────────────────────────────
-
-CREATE POLICY "notes_access" ON "InternalNote"
-    FOR ALL USING (
-        "authorId" = auth.uid()::text
-        OR EXISTS (
-            SELECT 1 FROM "User"
-            WHERE id = auth.uid()::text
-            AND role IN ('SUPERADMIN', 'PRINCIPAL')
-        )
-    );
+-- ==========================================
+-- Messages
+-- ==========================================
+CREATE POLICY "messages_own" ON "Message" FOR SELECT USING (
+    "fromUserId" = auth.uid()::text OR "toUserId" = auth.uid()::text
+);
+CREATE POLICY "messages_send" ON "Message" FOR INSERT WITH CHECK (
+    "fromUserId" = auth.uid()::text
+);
