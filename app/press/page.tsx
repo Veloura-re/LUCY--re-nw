@@ -17,7 +17,7 @@ const mentions = [
 const pressKit = [
     { label: "Company Name", val: "LUCY_SYS / Lucy Academia" },
     { label: "Founded", val: "2025" },
-    { label: "Headquarters", val: "Cape Town, South Africa" },
+    { label: "Headquarters", val: "Addis Ababa, Ethiopia" },
     { label: "Category", val: "EdTech / Academic OS" },
     { label: "Current Version", val: "v1.0.4" },
     { label: "Press Contact", val: "press@5-cn.net" },
