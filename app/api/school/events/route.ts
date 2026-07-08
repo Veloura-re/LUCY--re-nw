@@ -6,22 +6,44 @@ export async function GET(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
-        // Fetch remaining (future) events
-        const events = await prisma.event.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                OR: [
-                    { targetRole: null },
-                    { targetRole: dbUser.role }
-                ]
-            } as any,
-            orderBy: { eventDate: 'asc' },
-            include: { createdBy: { select: { name: true, role: true } } }
-        });
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const search = searchParams.get('search') || '';
+        const skip = (page - 1) * limit;
+
+        const where: any = {
+            schoolId: dbUser.schoolId,
+            OR: [
+                { targetRole: null },
+                { targetRole: dbUser.role }
+            ]
+        };
+
+        if (search) {
+            where.title = { contains: search, mode: 'insensitive' };
+        }
+
+        const [events, total] = await Promise.all([
+            prisma.event.findMany({
+                where,
+                skip,
+                take: limit,
+                orderBy: { eventDate: 'asc' },
+                include: { createdBy: { select: { name: true, role: true } } }
+            }),
+            prisma.event.count({ where })
+        ]);
 
         return NextResponse.json({
             events,
-            userRole: dbUser.role
+            userRole: dbUser.role,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
         });
     } catch (e) {
         return handleApiError(e);

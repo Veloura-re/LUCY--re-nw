@@ -6,23 +6,37 @@ export async function GET(req: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
-        // Fetch Configs
-        const configs = await prisma.marklistConfig.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                // Optional: filter by teacherId if role is TEACHER?
-                // For now, list all. Teacher might want to see others or just theirs. 
-                // Director wants to see all.
-            },
-            include: {
-                class: { select: { name: true } },
-                subject: { select: { name: true } },
-                columns: { select: { id: true } } // just count
-            },
-            orderBy: { updatedAt: 'desc' }
-        });
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json(configs);
+        const where = { schoolId: dbUser.schoolId };
+
+        const [configs, total] = await Promise.all([
+            prisma.marklistConfig.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    class: { select: { name: true } },
+                    subject: { select: { name: true } },
+                    columns: { select: { id: true } }
+                },
+                orderBy: { updatedAt: 'desc' }
+            }),
+            prisma.marklistConfig.count({ where })
+        ]);
+
+        return NextResponse.json({
+            configs,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         return handleApiError(error);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,15 +9,18 @@ import { Plus, Search, BookOpen, GraduationCap, Users, MessageSquare, Shield, Fi
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReactToPrint } from "react-to-print";
-import { StudentRegistryPrint } from "@/components/dashboard/student-registry-print";
 import SpringingLoader from "@/components/dashboard/springing-loader";
-import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { format } from "date-fns";
 import Image from "next/image";
-import { GradeStudentModal } from "@/components/dashboard/grade-student-modal";
 import { PenTool } from "lucide-react";
+import dynamic from 'next/dynamic';
+
+const StudentRegistryPrint = dynamic(() => import('@/components/dashboard/student-registry-print').then(m => m.StudentRegistryPrint), { ssr: false });
+const ConfirmationModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.ConfirmationModal), { ssr: false });
+const AlertModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.AlertModal), { ssr: false });
+const GradeStudentModal = dynamic(() => import('@/components/dashboard/grade-student-modal').then(m => m.GradeStudentModal), { ssr: false });
 
 interface StudentsClientWrapperProps {
     initialStudents: any[];
@@ -39,6 +42,11 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
     const [filterClassId, setFilterClassId] = useState<string>("ALL");
     const [sortBy, setBy] = useState<"NAME" | "CLASS">("NAME");
     const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
+    
+    // Pagination state
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
 
     // Deletion Modal
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -113,36 +121,47 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
         }
     };
 
-    const filteredStudents = useMemo(() => {
-        return (students || [])
-            .filter(s => {
-                const matchesSearch = activeSearch === "" ||
-                    (s.firstName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                        s.lastName?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                        s.studentCode?.toLowerCase().includes(activeSearch.toLowerCase()));
+    const isMounted = useRef(false);
 
-                const matchesClass = filterClassId === "ALL" || s.classId === filterClassId;
-
-                return matchesSearch && matchesClass;
-            })
-            .sort((a, b) => {
-                let comparison = 0;
-                if (sortBy === "NAME") {
-                    const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
-                    const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
-                    comparison = nameA.localeCompare(nameB);
-                } else if (sortBy === "CLASS") {
-                    const classA = a.class?.name?.toLowerCase() || "";
-                    const classB = b.class?.name?.toLowerCase() || "";
-                    comparison = classA.localeCompare(classB);
-                }
-
-                return sortDir === "ASC" ? comparison : -comparison;
+    const fetchStudents = async () => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                sortBy,
+                sortDir,
+                ...(filterClassId !== "ALL" && { classId: filterClassId }),
+                ...(activeSearch && { search: activeSearch })
             });
-    }, [students, activeSearch, filterClassId, sortBy, sortDir]);
+            const res = await fetch(`/api/school/students?${params.toString()}`);
+            if (res.ok) {
+                const data = await res.json() as any;
+                setStudents(data.students);
+                if (data.pagination) {
+                    setTotalPages(data.pagination.totalPages || 1);
+                }
+            }
+        } catch(e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            // On first mount, initialStudents already has up to limit items. 
+            // We just need to estimate totalPages if not provided. We'll leave it as 1 or dynamically adjust on first sort/search.
+            return;
+        }
+        fetchStudents();
+    }, [page, activeSearch, filterClassId, sortBy, sortDir]);
 
     const handleSearch = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
+        setPage(1);
         setActiveSearch(searchTerm);
     };
 
@@ -397,7 +416,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
             </Dialog>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredStudents.map((student) => (
+                {(students || []).map((student) => (
                     <div key={student.id} className="group relative">
                         <Card className="bg-zinc-950 border-zinc-950 hover:bg-zinc-900/30 transition-all h-full rounded-[2rem] group/card shadow-none hover:shadow-2xl hover:shadow-black/50 overflow-hidden border">
                             <Link href={`/dashboard/students/${student.id}`} className="block">
@@ -511,6 +530,31 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 ))}
             </div>
 
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8 pb-4">
+                    <Button
+                        variant="outline"
+                        disabled={page <= 1}
+                        onClick={() => setPage(p => p - 1)}
+                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                    >
+                        Previous
+                    </Button>
+                    <span className="text-zinc-500 font-medium text-sm tracking-wider uppercase">
+                        Page <span className="text-white">{page}</span> of {totalPages}
+                    </span>
+                    <Button
+                        variant="outline"
+                        disabled={page >= totalPages}
+                        onClick={() => setPage(p => p + 1)}
+                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
+
             <ConfirmationModal
                 isOpen={!!confirmDeleteId}
                 onClose={() => setConfirmDeleteId(null)}
@@ -537,7 +581,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
 
             {/* Hidden Print Template */}
             <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
-                <StudentRegistryPrint ref={printRef} students={filteredStudents} />
+                <StudentRegistryPrint ref={printRef} students={students || []} />
             </div>
         </div >
     );

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, GraduationCap, Printer, Download, Sparkles, User, Calendar, Award } from "lucide-react";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function StudentReportCardPage() {
     const { studentId } = useParams();
@@ -83,7 +84,7 @@ export default function StudentReportCardPage() {
                         <div>
                             <div className="flex items-center gap-4 mb-6">
                                 {student.school?.logoUrl ? (
-                                    <img src={student.school.logoUrl} alt="School Logo" className="w-12 h-12 object-contain print:w-16 print:h-16" />
+                                    <Image src={student.school.logoUrl} alt="School Logo" width={64} height={64} className="w-12 h-12 object-contain print:w-16 print:h-16" />
                                 ) : (
                                     <Sparkles className="w-8 h-8 text-eduGreen-500" />
                                 )}

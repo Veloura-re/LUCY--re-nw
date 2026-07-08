@@ -9,14 +9,13 @@ import { NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { FloatingDock } from "@/components/dashboard/floating-dock";
-import { DynamicAIAssistant } from "@/components/dashboard/dynamic-ai-assistant";
-import { InteractiveTour } from "@/components/dashboard/interactive-tour";
-import { NetworkBanner } from "@/components/ui/network-banner";
+import { DynamicAIAssistant, InteractiveTour, NetworkBanner } from "@/app/dashboard/dynamic-components";
 import { PreferencesProvider } from "@/components/dashboard/preferences-provider";
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";
 import { Logo } from "@/components/ui/logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
+import Image from "next/image";
 
 export default async function DashboardLayout({
     children,
@@ -156,7 +155,7 @@ export default async function DashboardLayout({
                     <div className="hidden md:block w-32" /> {/* Spacer */}
                     <div className="flex items-center gap-4">
                         {dbUser.school?.logoUrl ? (
-                            <img src={dbUser.school.logoUrl} alt="School Logo" className="w-12 h-12 object-contain rounded-xl bg-zinc-900/50 p-1" />
+                            <Image src={dbUser.school.logoUrl} alt="School Logo" width={48} height={48} className="w-12 h-12 object-contain rounded-xl bg-zinc-900/50 p-1" />
                         ) : (
                             <Logo className="w-12 h-12" />
                         )}
