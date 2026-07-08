@@ -50,11 +50,31 @@ export async function POST(req: Request) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const lastMessage = messages[messages.length - 1].content;
-        const result = await model.generateContent(lastMessage);
-        const response = await result.response;
-        const text = response.text();
+        const result = await model.generateContentStream(lastMessage);
+        
+        const stream = new ReadableStream({
+            async start(controller) {
+                try {
+                    for await (const chunk of result.stream) {
+                        const chunkText = chunk.text();
+                        if (chunkText) {
+                            controller.enqueue(new TextEncoder().encode(chunkText));
+                        }
+                    }
+                    controller.close();
+                } catch (error) {
+                    controller.error(error);
+                }
+            }
+        });
 
-        return secureJson({ text, content: text });
+        return new Response(stream, {
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8",
+                "Transfer-Encoding": "chunked",
+                "Cache-Control": "no-cache",
+            },
+        });
     } catch (error: any) {
         console.error("[DEBUG] Chat API Error:", error);
         return secureJson({ 

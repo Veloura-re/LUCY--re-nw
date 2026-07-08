@@ -10,6 +10,10 @@ export default function MarklistIndexPage() {
     const router = useRouter();
     const [configs, setConfigs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
 
     useEffect(() => {
         // Fetch all marklists (filtered by teacher serverside ideally, or client side)
@@ -22,13 +26,23 @@ export default function MarklistIndexPage() {
         // My previous API required params. I'll modify `GET /api/marklist/config` to return ALL if no params provided (filtered by school).
 
         fetchConfigs();
-    }, []);
+    }, [page]);
 
     const fetchConfigs = async () => {
         try {
-            const res = await fetch("/api/marklist/config/list"); // New Endpoint
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString()
+            });
+            const res = await fetch(`/api/marklist/config/list?${params.toString()}`); // New Endpoint
             if (res.ok) {
-                setConfigs(await res.json());
+                const data = await res.json() as any;
+                if (data.configs) {
+                    setConfigs(data.configs);
+                    if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+                } else {
+                    setConfigs(data); // Fallback
+                }
             }
         } catch (e) {
             console.error(e);
@@ -75,6 +89,35 @@ export default function MarklistIndexPage() {
                             </CardContent>
                         </Card>
                     ))}
+                </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 p-4 rounded-xl mt-8">
+                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                        Page {page} of {totalPages}
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                            className="bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Next
+                        </Button>
+                    </div>
                 </div>
             )}
         </div>

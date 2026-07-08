@@ -5,6 +5,7 @@ import { InviteForm } from "./invite-form"; // Client component
 import { ShieldCheck, AlertCircle, Building2, UserCircle2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function InvitePage({ params }: { params: Promise<{ token: string }> }) {
     const { token } = await params;
@@ -96,7 +97,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                     <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-zinc-900/80 border border-zinc-800 shadow-2xl mb-8 backdrop-blur-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-500/20 to-transparent opacity-50" />
                         {school?.logoUrl ? (
-                            <img src={school.logoUrl} alt="School Logo" className="w-16 h-16 object-contain relative z-10" />
+                            <Image src={school.logoUrl} alt="School Logo" width={64} height={64} className="w-16 h-16 object-contain relative z-10" />
                         ) : (
                             <ShieldCheck className="w-10 h-10 text-eduGreen-500 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
                         )}

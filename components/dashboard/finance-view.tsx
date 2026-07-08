@@ -48,6 +48,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [activeTab, setActiveTab] = useState<"REVENUE" | "EXPENSES">("REVENUE");
+    
+    // Pagination state for invoices
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
     const [staff, setStaff] = useState<any[]>([]);
     const [payrollHistory, setPayrollHistory] = useState<any[]>([]);
     const [isPaying, setIsPaying] = useState<string | null>(null);
@@ -100,11 +105,14 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     useEffect(() => {
         fetchFees();
         fetchFinancialAnalytics();
-        fetchInvoices();
         fetchPendingPayments();
         fetchStaff();
         fetchPayrollHistory();
     }, []);
+
+    useEffect(() => {
+        fetchInvoices();
+    }, [page, searchQuery, statusFilter]);
 
     const fetchStaff = async () => {
         try {
@@ -250,9 +258,20 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
     const fetchInvoices = async () => {
         try {
-            const res = await fetch('/api/school/finance/invoices');
-            const data = await res.json();
-            setInvoices(data as any);
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                status: statusFilter,
+                ...(searchQuery && { search: searchQuery })
+            });
+            const res = await fetch(`/api/school/finance/invoices?${params.toString()}`);
+            const data = await res.json() as any;
+            if (data.invoices) {
+                setInvoices(data.invoices);
+                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+            } else {
+                setInvoices(data as any);
+            }
         } catch (e) {
             console.error("Invoice synchronizer failed:", e);
         }
@@ -679,13 +698,13 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <Input
                                         placeholder="Search Scholar..."
                                         value={searchQuery}
-                                        onChange={e => setSearchQuery(e.target.value)}
+                                        onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
                                         className="h-12 w-64 pl-12 bg-zinc-950 border-zinc-900 rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xs"
                                     />
                                 </div>
                                 <select
                                     value={statusFilter}
-                                    onChange={e => setStatusFilter(e.target.value)}
+                                    onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
                                     className="h-12 bg-zinc-950 border border-zinc-900 rounded-xl px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-widest focus:border-eduGreen-500 outline-none hover:border-zinc-800 transition-all appearance-none cursor-pointer"
                                 >
                                     <option value="ALL">All Statuses</option>
@@ -697,12 +716,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
-                            {invoices.filter(inv => {
-                                const name = `${inv.student.firstName} ${inv.student.lastName}`.toLowerCase();
-                                const matchesSearch = name.includes(searchQuery.toLowerCase());
-                                const matchesFilter = statusFilter === 'ALL' || inv.status === statusFilter;
-                                return matchesSearch && matchesFilter;
-                            }).map((inv, i) => (
+                            {invoices.map((inv, i) => (
                                 <Card key={inv.id} className="bg-zinc-950/20 border-zinc-900/50 rounded-3xl p-6 hover:border-zinc-800 transition-all group overflow-hidden relative">
                                     <div className="absolute inset-0 bg-gradient-to-r from-eduGreen-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -760,6 +774,34 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                 </Card>
                             ))}
                         </div>
+
+                        {totalPages > 1 && (
+                            <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
+                                <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                                    Page {page} of {totalPages}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        disabled={page === 1}
+                                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={page === totalPages}
+                                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {fees.map((fee) => (

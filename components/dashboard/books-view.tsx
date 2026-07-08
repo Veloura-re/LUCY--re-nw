@@ -60,6 +60,11 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [gradeFilter, setGradeFilter] = useState("ALL");
+    
+    // Pagination State
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
     const [activeTab, setActiveTab] = useState<'library' | 'units' | 'requests'>('library');
     const [requestModal, setRequestModal] = useState(false);
     const [unitModal, setUnitModal] = useState(false);
@@ -122,7 +127,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     useEffect(() => {
         fetchInitialData();
         fetchBooks();
-    }, [selectedStudentId]);
+    }, [selectedStudentId, page]);
 
     const fetchInitialData = async () => {
         try {
@@ -144,16 +149,26 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     const fetchBooks = async () => {
         setLoading(true);
         try {
-            const queryParams = selectedStudentId ? `?studentId=${selectedStudentId}` : '';
-            const res = await fetch(`/api/school/books${queryParams}`);
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                ...(selectedStudentId && { studentId: selectedStudentId })
+            });
+            const res = await fetch(`/api/school/books?${queryParams.toString()}`);
             const data = await res.json() as any;
-            setBooks(data);
+            if (data.books) {
+                setBooks(data.books);
+                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+            } else {
+                setBooks(data); // Fallback
+            }
 
             // Parallel fetch of other components relative to student context
+            const baseQuery = selectedStudentId ? `?studentId=${selectedStudentId}` : '';
             Promise.all([
-                fetch(`/api/school/books/units${queryParams}`).then(r => r.json()).then(setUnits),
-                fetch(`/api/school/books/requests${queryParams}`).then(r => r.json()).then(setRequests),
-                fetch(`/api/school/books/progress${queryParams}`).then(r => r.json()).then(setProgress)
+                fetch(`/api/school/books/units${baseQuery}`).then(r => r.json()).then(setUnits),
+                fetch(`/api/school/books/requests${baseQuery}`).then(r => r.json()).then(setRequests),
+                fetch(`/api/school/books/progress${baseQuery}`).then(r => r.json()).then(setProgress)
             ].map(p => p.catch(console.error)));
         } catch (e) {
             toast.error("Failed to retrieve library records");
@@ -356,6 +371,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
 
             {/* Active Section Content */}
             {activeTab === 'library' && (
+                <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence>
                         {filteredBooks.map((book, i) => {
@@ -533,6 +549,36 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         </div>
                     )}
                 </div>
+                
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md mt-8">
+                        <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                            Page {page} of {totalPages}
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages}
+                                className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </>
             )}
 
             {/* Units Section */}

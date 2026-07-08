@@ -136,37 +136,56 @@ export async function GET(req: Request) {
             return NextResponse.json(books);
         }
 
-        const books = await prisma.book.findMany({
-            where: {
-                schoolId: dbUser.schoolId,
-                ...(targetGradeId && { gradeId: targetGradeId }),
-                ...(targetClassId && { classId: targetClassId }),
-                ...(subjectId && { subjectId }),
-                ...(query && {
-                    OR: [
-                        { title: { contains: query, mode: 'insensitive' } },
-                        { author: { contains: query, mode: 'insensitive' } },
-                        { description: { contains: query, mode: 'insensitive' } }
-                    ]
-                }),
-                // Optionally filter out expired for non-principals
-                ...(dbUser.role !== 'PRINCIPAL' && dbUser.role !== 'SUPERADMIN' && {
-                    OR: [
-                        { expiresAt: null },
-                        { expiresAt: { gt: new Date() } }
-                    ]
-                })
-            },
-            include: {
-                grade: true,
-                subject: true,
-                class: true,
-                prerequisite: true // For UI check
-            },
-            orderBy: { createdAt: 'desc' }
-        });
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json(books);
+        const where = {
+            schoolId: dbUser.schoolId,
+            ...(targetGradeId && { gradeId: targetGradeId }),
+            ...(targetClassId && { classId: targetClassId }),
+            ...(subjectId && { subjectId }),
+            ...(query && {
+                OR: [
+                    { title: { contains: query, mode: 'insensitive' } },
+                    { author: { contains: query, mode: 'insensitive' } },
+                    { description: { contains: query, mode: 'insensitive' } }
+                ]
+            }),
+            // Optionally filter out expired for non-principals
+            ...(dbUser.role !== 'PRINCIPAL' && dbUser.role !== 'SUPERADMIN' && {
+                OR: [
+                    { expiresAt: null },
+                    { expiresAt: { gt: new Date() } }
+                ]
+            })
+        };
+
+        const [books, total] = await Promise.all([
+            prisma.book.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    grade: true,
+                    subject: true,
+                    class: true,
+                    prerequisite: true // For UI check
+                },
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.book.count({ where })
+        ]);
+
+        return NextResponse.json({
+            books,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (e) {
         return handleApiError(e);
     }

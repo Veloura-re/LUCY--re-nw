@@ -26,7 +26,8 @@ export default async function TeachersPage() {
 
     try {
         // Sequential fetch ensures we don't burst CPU limits during cold start DB initialization
-        teachers = await getCachedTeacherRegistry(dbUser.schoolId);
+        const allTeachers = await getCachedTeacherRegistry(dbUser.schoolId);
+        teachers = allTeachers.slice(0, 50);
         schoolInfo = await getCachedSchoolInfoForRegistry(dbUser.schoolId);
     } catch (e) {
         console.error('[TeachersPage] Sequence fetch error:', e);

@@ -314,14 +314,32 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 })
             });
 
-            const data = (await response.json()) as any;
-            if (data.content) {
-                setSessions(prev => prev.map(s =>
-                    s.id === activeSessionId
-                        ? { ...s, messages: [...newMessages, { role: "ai", content: data.content }], updatedAt: Date.now() }
-                        : s
-                ));
+            if (!response.body) throw new Error("No response body");
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+            let done = false;
+            let aiMessageContent = "";
+
+            setSessions(prev => prev.map(s =>
+                s.id === activeSessionId
+                    ? { ...s, messages: [...newMessages, { role: "ai", content: "" }], updatedAt: Date.now() }
+                    : s
+            ));
+
+            while (!done) {
+                const { value, done: readerDone } = await reader.read();
+                done = readerDone;
+                if (value) {
+                    const chunk = decoder.decode(value, { stream: true });
+                    aiMessageContent += chunk;
+                    setSessions(prev => prev.map(s => {
+                        if (s.id !== activeSessionId) return s;
+                        return { ...s, messages: [...newMessages, { role: "ai", content: aiMessageContent }], updatedAt: Date.now() };
+                    }));
+                }
             }
+
         } catch (error) {
             console.error("[AI Assistant] Error in handleSend:", error);
             setSessions(prev => prev.map(s =>

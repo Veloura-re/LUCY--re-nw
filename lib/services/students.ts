@@ -148,3 +148,126 @@ export const getCachedStudentDossier = (studentId: string, schoolId: string) => 
         }
     )();
 };
+
+export interface StudentQueryParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    classId?: string;
+    sortBy?: 'NAME' | 'CLASS';
+    sortDir?: 'ASC' | 'DESC';
+}
+
+/**
+ * Service to fetch paginated students with dynamic filtering.
+ */
+export const getPaginatedSchoolStudents = async (schoolId: string, params: StudentQueryParams = {}) => {
+    const { prisma: _prismaCheck } = require('@/lib/prisma');
+    const isEdge = !_prismaCheck;
+    
+    const page = params.page || 1;
+    const limit = params.limit || 50;
+    const offset = (page - 1) * limit;
+
+    if (isEdge) {
+        const supabase = getSupabase();
+        let query = supabase
+            .from('Student')
+            .select('*, grade:Grade(*), class:Class(*), parentLinks:ParentStudentLink(*, parent:User(id, name, role)), invoices:Invoice(*)', { count: 'exact' })
+            .eq('schoolId', schoolId);
+
+        if (params.classId && params.classId !== 'ALL') {
+            query = query.eq('classId', params.classId);
+        }
+        
+        if (params.search) {
+            query = query.or(`firstName.ilike.%${params.search}%,lastName.ilike.%${params.search}%,studentCode.ilike.%${params.search}%`);
+        }
+
+        if (params.sortBy === 'CLASS') {
+            // Note: Supabase Edge doesn't natively sort by foreign table column easily without rpc or views. 
+            // We'll sort by classId as a proxy or fallback to lastName.
+            query = query.order('classId', { ascending: params.sortDir === 'ASC' });
+        } else {
+            query = query.order('lastName', { ascending: params.sortDir === 'ASC' });
+        }
+
+        query = query.range(offset, offset + limit - 1);
+
+        const { data: students, count } = await query;
+
+        const result = (students || []).map((s: any) => {
+            const unpaidInvoices = (s.invoices || []).filter((inv: any) => ['PENDING', 'OVERDUE'].includes(inv.status));
+            const outstanding = unpaidInvoices.reduce((acc: number, inv: any) => acc + Number(inv.amount), 0);
+            return {
+                ...s,
+                finance: { unpaidCount: unpaidInvoices.length, outstanding: outstanding.toFixed(2) }
+            };
+        });
+
+        return {
+            data: result,
+            metadata: {
+                total: count || 0,
+                page,
+                limit,
+                totalPages: Math.ceil((count || 0) / limit)
+            }
+        };
+    }
+
+    // Node.js Prisma Fallback
+    const { prisma } = require('@/lib/prisma');
+    
+    const where: any = { schoolId };
+    if (params.classId && params.classId !== 'ALL') {
+        where.classId = params.classId;
+    }
+    if (params.search) {
+        where.OR = [
+            { firstName: { contains: params.search, mode: 'insensitive' } },
+            { lastName: { contains: params.search, mode: 'insensitive' } },
+            { studentCode: { contains: params.search, mode: 'insensitive' } }
+        ];
+    }
+
+    let orderBy: any = { lastName: params.sortDir === 'DESC' ? 'desc' : 'asc' };
+    if (params.sortBy === 'CLASS') {
+        orderBy = { class: { name: params.sortDir === 'DESC' ? 'desc' : 'asc' } };
+    }
+
+    const [total, students] = await Promise.all([
+        prisma.student.count({ where }),
+        prisma.student.findMany({
+            where,
+            include: {
+                grade: true,
+                class: true,
+                parentLinks: { include: { parent: { select: { id: true, name: true, role: true } } } },
+                invoices: { where: { status: { in: ['PENDING', 'OVERDUE'] } }, select: { amount: true } }
+            },
+            orderBy,
+            skip: offset,
+            take: limit
+        })
+    ]);
+
+    const result = students.map((s: any) => {
+        const outstanding = s.invoices.reduce((acc: number, inv: any) => acc + Number(inv.amount), 0);
+        return {
+            ...s,
+            finance: { unpaidCount: s.invoices.length, outstanding: outstanding.toFixed(2) }
+        };
+    });
+
+    return JSON.parse(JSON.stringify({
+        data: result,
+        metadata: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        }
+    }));
+};
+
