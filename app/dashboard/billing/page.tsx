@@ -12,7 +12,7 @@ export default function BillingPage() {
     const [schoolInfo, setSchoolInfo] = useState<any>(null);
     
     // Tab State
-    const [paymentMode, setPaymentMode] = useState<'STRIPE' | 'BANK'>('STRIPE');
+    const [paymentMode, setPaymentMode] = useState<'STRIPE' | 'CHAPA' | 'BANK'>('STRIPE');
     
     // Manual Payment Form States
     const [amount, setAmount] = useState('149.00');
@@ -70,6 +70,26 @@ export default function BillingPage() {
             }
         } catch (err) {
             toast.error('Checkout initialization failed.');
+            setSubmitting(false);
+        }
+    };
+
+    const handleChapaCheckout = async () => {
+        setSubmitting(true);
+        try {
+            const res = await fetch('/api/school/billing/chapa-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json() as any;
+            if (data.checkoutUrl) {
+                window.location.href = data.checkoutUrl;
+            } else {
+                toast.error(data.error || 'Failed to initialize Chapa checkout.');
+                setSubmitting(false);
+            }
+        } catch (err) {
+            toast.error('Chapa checkout initialization failed.');
             setSubmitting(false);
         }
     };
@@ -275,7 +295,7 @@ export default function BillingPage() {
                     {/* Subscription Setup Area */}
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
                             {/* Inner Tab Header */}
-                            <div className="flex border-b border-zinc-800 bg-zinc-950/50">
+                            <div className="flex border-b border-white/5">
                                 <button
                                     onClick={() => setPaymentMode('STRIPE')}
                                     className={`flex-1 py-4 text-xs font-black uppercase tracking-wider font-orbitron transition-all border-b-2 flex items-center justify-center gap-2 ${
@@ -285,7 +305,18 @@ export default function BillingPage() {
                                     }`}
                                 >
                                     <CreditCard className="w-4 h-4" />
-                                    Stripe Payment Gateway
+                                    Stripe Gateway
+                                </button>
+                                <button
+                                    onClick={() => setPaymentMode('CHAPA')}
+                                    className={`flex-1 py-4 text-xs font-black uppercase tracking-wider font-orbitron transition-all border-b-2 flex items-center justify-center gap-2 ${
+                                        paymentMode === 'CHAPA'
+                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-white'
+                                            : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                                    }`}
+                                >
+                                    <DollarSign className="w-4 h-4" />
+                                    Telebirr / CBE
                                 </button>
                                 <button
                                     onClick={() => setPaymentMode('BANK')}
@@ -320,6 +351,30 @@ export default function BillingPage() {
                                             <CreditCard className="w-4 h-4" />
                                         )}
                                         Establish Stripe Connection & Subscribe
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Chapa Setup View */}
+                            {paymentMode === 'CHAPA' && (
+                                <div className="p-6 space-y-6 animate-in fade-in duration-300">
+                                    <div className="space-y-2">
+                                        <h3 className="text-sm font-semibold text-white uppercase tracking-tight">Pay via Telebirr or CBE</h3>
+                                        <p className="text-zinc-400 text-xs leading-relaxed">
+                                            Pay locally using Ethiopian Birr (ETB). Selecting this option will open the secure Chapa checkout portal where you can pay using Telebirr, CBE, or local bank cards. Your subscription activates immediately upon payment.
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleChapaCheckout}
+                                        disabled={submitting}
+                                        className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {submitting ? (
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                        ) : (
+                                            <DollarSign className="w-4 h-4" />
+                                        )}
+                                        Pay with Telebirr / CBE
                                     </button>
                                 </div>
                             )}
