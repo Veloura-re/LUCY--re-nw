@@ -9,12 +9,9 @@ export async function GET() {
         let queryError = null;
 
         try {
+            // 🛡️ Sentinel: Removed hardcoded database credentials
             const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
-                port: 5432,
-                database: 'postgres',
+                connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
                 ssl: { rejectUnauthorized: false }
             });
             const adapter = new PrismaPg(pool);
