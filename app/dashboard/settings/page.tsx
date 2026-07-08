@@ -364,7 +364,7 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-6 group">
                     <label className={`w-16 h-16 shrink-0 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
                         {schoolData?.logoUrl ? (
-                            <img src={schoolData.logoUrl} alt="School Logo" className="w-full h-full object-contain" />
+                            <Image src={schoolData.logoUrl} alt="School Logo" width={64} height={64} className="w-full h-full object-contain" />
                         ) : (
                             <div className="w-full h-full bg-zinc-900 rounded-xl flex items-center justify-center">
                                 <Zap className="w-6 h-6 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
@@ -476,7 +476,7 @@ export default function SettingsPage() {
                                             <div className="flex items-center gap-6 p-6 bg-zinc-950/50 border border-zinc-900 rounded-2xl">
                                                 {schoolForm.logoUrl ? (
                                                     <div className="w-16 h-16 rounded-xl bg-zinc-900 overflow-hidden border border-zinc-800 p-2">
-                                                        <img src={schoolForm.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                                                        <Image src={schoolForm.logoUrl} alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
                                                     </div>
                                                 ) : (
                                                     <div className="w-16 h-16 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">

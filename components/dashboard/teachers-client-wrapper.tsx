@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,6 +45,12 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
     const [filterStatus, setFilterStatus] = useState<string>("ALL");
     const [sortBy, setBy] = useState<"NAME" | "STATUS">("NAME");
     const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
+    
+    // Pagination state
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
+
     const [copied, setCopied] = useState(false);
 
     // Modal State
@@ -53,12 +59,46 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
     const [selectedTeacherForID, setSelectedTeacherForID] = useState<any>(null);
     const [selectedTeacherForEdit, setSelectedTeacherForEdit] = useState<any>(null);
 
-    const refreshRegistry = async () => {
+    const isMounted = useRef(false);
+
+    const fetchTeachers = async () => {
+        setIsLoading(true);
         try {
-            const res = await fetch('/api/school/teachers');
-            const data = await res.json() as any;
-            if (data.teachers) setTeachers(data.teachers);
-        } catch (e) { console.error(e); }
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                sortBy,
+                sortDir,
+                status: filterStatus,
+                ...(activeSearch && { search: activeSearch })
+            });
+            const res = await fetch(`/api/school/teachers?${params.toString()}`);
+            if (res.ok) {
+                const data = await res.json() as any;
+                setTeachers(data.teachers);
+                if (data.pagination) {
+                    setTotalPages(data.pagination.totalPages || 1);
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    
+    useEffect(() => {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        }
+        fetchTeachers();
+    }, [page, activeSearch, filterStatus, sortBy, sortDir]);
+
+    const refreshRegistry = async () => {
+        setPage(1);
+        await fetchTeachers();
     };
 
     const handleInviteSuccess = (token: string, user: any) => {
@@ -93,22 +133,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
 
 
 
-    const filteredTeachers = teachers
-        .filter(t => {
-            const matchesSearch = activeSearch === "" ||
-                (t.name?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                    t.email?.toLowerCase().includes(activeSearch.toLowerCase()) ||
-                    t.teacherCode?.toLowerCase().includes(activeSearch.toLowerCase()));
-
-            const matchesStatus = filterStatus === "ALL" || t.status === filterStatus;
-            return matchesSearch && matchesStatus;
-        })
-        .sort((a, b) => {
-            let comparison = 0;
-            if (sortBy === "NAME") comparison = (a.name || "").localeCompare(b.name || "");
-            else if (sortBy === "STATUS") comparison = a.status.localeCompare(b.status);
-            return sortDir === "ASC" ? comparison : -comparison;
-        });
+    const filteredTeachers = teachers; // Filtering and sorting is now done server-side
 
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
@@ -145,7 +170,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
 
             {/* Compact Search & Filters Bar */}
             <div className="flex flex-col md:flex-row items-center gap-3 bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
-                <form onSubmit={(e) => { e.preventDefault(); setActiveSearch(searchTerm); }} className="relative flex-1 w-full group">
+                <form onSubmit={(e) => { e.preventDefault(); setPage(1); setActiveSearch(searchTerm); }} className="relative flex-1 w-full group">
                     <div className="relative flex gap-2">
                         <div className="relative flex-1">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
@@ -161,7 +186,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                 </form>
 
                 <div className="flex items-center gap-2 w-full md:w-auto">
-                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(1); }}>
                         <SelectTrigger className="h-10 bg-zinc-900/50 border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-500 min-w-[140px]">
                             <div className="flex items-center gap-2">
                                 <Filter className="w-3 h-3" />
@@ -179,6 +204,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                         const [by, dir] = v.split("-");
                         setBy(by as any);
                         setSortDir(dir as any);
+                        setPage(1);
                     }}>
                         <SelectTrigger className="h-10 bg-zinc-900/50 border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-500 min-w-[130px]">
                             <div className="flex items-center gap-2">
@@ -252,6 +278,35 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
+                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                        Page {page} of {totalPages}
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1 || isLoading}
+                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages || isLoading}
+                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             <ConfirmationModal 
                 isOpen={!!confirmDeleteEmail} 

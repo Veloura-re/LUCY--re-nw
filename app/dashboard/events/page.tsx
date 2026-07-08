@@ -19,16 +19,25 @@ export default function EventsPage() {
     const [createLoading, setCreateLoading] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
+
     useEffect(() => {
         fetchEvents();
-    }, []);
+    }, [page]);
 
     const fetchEvents = async () => {
         try {
-            const res = await fetch('/api/school/events');
-            const data = await res.json();
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString()
+            });
+            const res = await fetch(`/api/school/events?${params.toString()}`);
+            const data = await res.json() as any;
             if (data.events) setEvents(data.events);
             if (data.userRole) setUserRole(data.userRole);
+            if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
         } catch (e) {
             console.error(e);
         } finally {
@@ -142,6 +151,35 @@ export default function EventsPage() {
                     <div>
                         <p className="text-zinc-700 font-medium uppercase tracking-[0.4em] text-xs">No Scheduled Operations</p>
                         <p className="text-zinc-800 text-[10px] font-medium uppercase tracking-widest mt-2">Institutional registry is awaiting new entries</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
+                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                        Page {page} of {totalPages}
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            disabled={page === totalPages}
+                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                        >
+                            Next
+                        </Button>
                     </div>
                 </div>
             )}

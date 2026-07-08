@@ -49,9 +49,9 @@ export async function GET(request: Request) {
             const userMap = new Map((usersRes.data || []).map((u: any) => [u.id, u]));
 
             const authorizations = (authData || []).map((auth: any) => {
-                const student = auth.studentId ? studentMap.get(auth.studentId) : null;
-                const user = auth.userId ? userMap.get(auth.userId) : null;
-                const requestor = auth.requestorId ? userMap.get(auth.requestorId) : null;
+                const student = auth.studentId ? studentMap.get(auth.studentId) as any : null;
+                const user = auth.userId ? userMap.get(auth.userId) as any : null;
+                const requestor = auth.requestorId ? userMap.get(auth.requestorId) as any : null;
 
                 const belongsToSchool =
                     (student && student.schoolId === dbUser.schoolId) ||
@@ -71,31 +71,50 @@ export async function GET(request: Request) {
             return NextResponse.json({ authorizations });
         }
 
-        const authorizations = await (prisma as any).absenceAuthorization.findMany({
-            where: {
-                OR: [
-                    { student: { schoolId: dbUser.schoolId! } },
-                    { user: { schoolId: dbUser.schoolId! } },
-                    { requestor: { schoolId: dbUser.schoolId! } }
-                ],
-                ...(studentId ? { studentId } : {}),
-                ...(status ? { status } : {}),
-            },
-            include: {
-                student: {
-                    select: { firstName: true, lastName: true, studentCode: true }
-                },
-                user: {
-                    select: { name: true, email: true, role: true }
-                },
-                requestor: {
-                    select: { name: true, email: true, role: true }
-                }
-            },
-            orderBy: { createdAt: 'desc' }
-        });
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json({ authorizations });
+        const where = {
+            OR: [
+                { student: { schoolId: dbUser.schoolId! } },
+                { user: { schoolId: dbUser.schoolId! } },
+                { requestor: { schoolId: dbUser.schoolId! } }
+            ],
+            ...(studentId ? { studentId } : {}),
+            ...(status ? { status } : {}),
+        };
+
+        const [authorizations, total] = await Promise.all([
+            (prisma as any).absenceAuthorization.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    student: {
+                        select: { firstName: true, lastName: true, studentCode: true }
+                    },
+                    user: {
+                        select: { name: true, email: true, role: true }
+                    },
+                    requestor: {
+                        select: { name: true, email: true, role: true }
+                    }
+                },
+                orderBy: { createdAt: 'desc' }
+            }),
+            (prisma as any).absenceAuthorization.count({ where })
+        ]);
+
+        return NextResponse.json({
+            authorizations,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
     } catch (e) {
         return handleApiError(e);
     }
@@ -120,14 +139,14 @@ export async function PATCH(request: Request) {
                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
             );
-            const { data, error } = await supabaseAdmin
+            const { data: auth, error } = await (supabaseAdmin as any)
                 .from('AbsenceAuthorization')
                 .update({ status })
                 .eq('id', id)
                 .select()
                 .single();
             if (error) throw error;
-            return NextResponse.json({ authorization: data });
+            return NextResponse.json({ id: auth.id, status: auth.status });
         }
 
         const authorization = await (prisma as any).absenceAuthorization.update({

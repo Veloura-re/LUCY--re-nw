@@ -5,6 +5,7 @@ import { logActivity } from '@/lib/audit';
 import { sendInviteEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { getPaginatedSchoolStudents } from '@/lib/services/students';
 
 // GET: List all students in the school
 export async function GET(request: Request) {
@@ -15,11 +16,12 @@ export async function GET(request: Request) {
         }
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
-        const classId = searchParams.get('classId');
+        const classId = searchParams.get('classId') || undefined;
+        const search = searchParams.get('search') || undefined;
         const page = parseInt(searchParams.get('page') || '1', 10);
         const limit = parseInt(searchParams.get('limit') || '50', 10);
-        const skip = classId ? 0 : (page - 1) * limit;
-        const take = classId ? 1000 : limit;
+        const sortBy = (searchParams.get('sortBy') as 'NAME' | 'CLASS') || 'NAME';
+        const sortDir = (searchParams.get('sortDir') as 'ASC' | 'DESC') || 'ASC';
 
         if (id) {
             const student = await prisma.student.findUnique({
@@ -29,38 +31,18 @@ export async function GET(request: Request) {
             return NextResponse.json({ student });
         }
 
-        const whereClause: any = { schoolId: user.schoolId };
-        if (classId) {
-            whereClause.classId = classId;
-        }
-
-        // We still provide a fallback for clients who haven't migrated to Server Components
-        const [students, total] = await Promise.all([
-            prisma.student.findMany({
-                where: whereClause,
-                include: {
-                    grade: true,
-                    class: true,
-                    invoices: {
-                        where: { status: { in: ['PENDING', 'OVERDUE'] } },
-                        select: { amount: true }
-                    }
-                },
-                orderBy: { lastName: 'asc' },
-                skip,
-                take
-            }),
-            prisma.student.count({ where: whereClause })
-        ]);
+        const result = await getPaginatedSchoolStudents(user.schoolId!, {
+            page,
+            limit,
+            search,
+            classId,
+            sortBy,
+            sortDir
+        });
 
         return NextResponse.json({ 
-            students, 
-            pagination: { 
-                page, 
-                limit, 
-                total, 
-                totalPages: Math.ceil(total / limit) 
-            } 
+            students: result.data, 
+            pagination: result.metadata 
         });
 
     } catch (e) {

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Mail, Loader2, ArrowDownCircle, UserX, User, Copy, CheckCircle2, Crown, ShieldAlert } from "lucide-react";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
 import { Switch } from "@/components/ui/switch";
+import Image from "next/image";
 
 interface Principal {
     id: string;
@@ -221,7 +222,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                         <div className="flex items-center gap-5">
                                             <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center overflow-hidden border border-zinc-800">
                                                 {p.photoUrl ? (
-                                                    <img src={p.photoUrl} alt={p.name || ''} className="w-full h-full object-cover" />
+                                                    <Image src={p.photoUrl} alt={p.name || ''} width={48} height={48} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <User className="w-5 h-5 text-zinc-500" />
                                                 )}

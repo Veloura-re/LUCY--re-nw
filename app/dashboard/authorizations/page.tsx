@@ -28,16 +28,30 @@ export default function StaffAuthorizationsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [processingId, setProcessingId] = useState<string | null>(null);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 50;
+
     useEffect(() => {
         fetchAuthorizations();
-    }, [statusFilter]);
+    }, [statusFilter, page]);
 
     const fetchAuthorizations = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/school/authorizations?status=${statusFilter}`);
-            const data = await res.json();
-            setAuthorizations(data.authorizations || []);
+            const params = new URLSearchParams({
+                status: statusFilter,
+                page: page.toString(),
+                limit: limit.toString()
+            });
+            const res = await fetch(`/api/school/authorizations?${params.toString()}`);
+            const data = await res.json() as any;
+            if (data.authorizations) {
+                setAuthorizations(data.authorizations);
+                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+            } else {
+                setAuthorizations(data);
+            }
         } catch (error) {
             toast.error("Failed to sync authorization matrix");
         } finally {
@@ -58,7 +72,7 @@ export default function StaffAuthorizationsPage() {
                 toast.success(`Authorization ${status.toLowerCase()}`);
                 fetchAuthorizations();
             } else {
-                const data = await res.json();
+                const data = await res.json() as any;
                 toast.error(data.error || "Action failed");
             }
         } catch (error) {
@@ -316,6 +330,35 @@ export default function StaffAuthorizationsPage() {
                             <p className="text-zinc-800 mt-2 text-xs font-medium uppercase tracking-widest">
                                 No signals in the {statusFilter} {typeFilter !== 'ALL' ? typeFilter.toLowerCase() + ' ' : ''}nexus.
                             </p>
+                        </div>
+                    )}
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md mt-8">
+                            <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                                Page {page} of {totalPages}
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={page === 1}
+                                    className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                >
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={page === totalPages}
+                                    className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                >
+                                    Next
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>

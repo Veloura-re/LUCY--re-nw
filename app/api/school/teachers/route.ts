@@ -10,12 +10,54 @@ import { getCachedTeacherRegistry, getCachedSchoolInfoForRegistry } from '@/lib/
 export async function GET(request: Request) {
     try {
         const dbUser = await requireRole(STAFF_ROLES);
+        const { searchParams } = new URL(request.url);
+        
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const search = searchParams.get('search')?.toLowerCase() || '';
+        const status = searchParams.get('status') || 'ALL';
+        const sortBy = searchParams.get('sortBy') || 'NAME';
+        const sortDir = searchParams.get('sortDir') || 'ASC';
 
         // Fetch from the optimized, cached service
-        const all = await getCachedTeacherRegistry(dbUser.schoolId!);
+        let all = await getCachedTeacherRegistry(dbUser.schoolId!);
         const school = await getCachedSchoolInfoForRegistry(dbUser.schoolId!);
 
-        return secureJson({ teachers: all, school });
+        // Server-side filtering
+        if (status !== 'ALL') {
+            all = all.filter((t: any) => t.status === status);
+        }
+        if (search) {
+            all = all.filter((t: any) => 
+                t.name?.toLowerCase().includes(search) || 
+                t.email?.toLowerCase().includes(search)
+            );
+        }
+
+        // Server-side sorting
+        all = all.sort((a: any, b: any) => {
+            if (sortBy === 'STATUS') {
+                const cmp = a.status.localeCompare(b.status);
+                return sortDir === 'DESC' ? -cmp : cmp;
+            } else {
+                const nameA = a.name || a.email;
+                const nameB = b.name || b.email;
+                const cmp = nameA.localeCompare(nameB);
+                return sortDir === 'DESC' ? -cmp : cmp;
+            }
+        });
+
+        // Server-side pagination
+        const total = all.length;
+        const totalPages = Math.ceil(total / limit);
+        const offset = (page - 1) * limit;
+        const paginated = all.slice(offset, offset + limit);
+
+        return secureJson({ 
+            teachers: paginated, 
+            school,
+            pagination: { page, limit, totalPages, total }
+        });
     } catch (e) {
         return handleApiError(e);
     }
