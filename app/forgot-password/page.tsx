@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
             const data = await res.json() as any;
 
             if (!res.ok) {
-                setError(data.error || "Failed to initiate recovery protocol.");
+                setError(data.error || "Failed to initiate password recovery.");
                 setIsLoading(false);
                 return;
             }
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
                     )}
                     <div className="text-[9px] text-center text-zinc-600 flex items-center justify-center gap-2 px-8 font-medium">
                         <Shield className="w-3 h-3 text-eduGreen-900/50" />
-                        <span className="uppercase tracking-tighter">Secure Recovery Protocol • Encrypted Link</span>
+                        <span className="uppercase tracking-tighter">Secure Password Recovery</span>
                     </div>
                 </CardFooter>
             </Card>
