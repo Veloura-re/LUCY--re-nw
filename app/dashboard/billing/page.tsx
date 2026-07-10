@@ -160,9 +160,9 @@ export default function BillingPage() {
     const createdAt = new Date(schoolInfo.createdAt);
     const trialEndsAt = schoolInfo.trialEndsAt 
         ? new Date(schoolInfo.trialEndsAt) 
-        : new Date(createdAt.getTime() + 60 * 24 * 60 * 60 * 1000);
+        : new Date(createdAt.getTime() + 120 * 24 * 60 * 60 * 1000);
 
-    const totalTrialDuration = 60 * 24 * 60 * 60 * 1000;
+    const totalTrialDuration = 120 * 24 * 60 * 60 * 1000;
     const timeElapsed = now.getTime() - createdAt.getTime();
     const trialPercentElapsed = Math.min(100, Math.max(0, (timeElapsed / totalTrialDuration) * 100));
 
@@ -252,7 +252,7 @@ export default function BillingPage() {
                         {!isSubscribed && (
                             <div className="space-y-3">
                                 <div className="flex justify-between text-xs font-semibold text-zinc-400">
-                                    <span>60-Day Trial Progress</span>
+                                    <span>120-Day Trial Progress</span>
                                     <span>{isExpired ? 'Expired' : `${daysRemaining} days remaining`}</span>
                                 </div>
                                 <div className="w-full bg-zinc-950 h-2.5 rounded-full overflow-hidden border border-zinc-800/50">

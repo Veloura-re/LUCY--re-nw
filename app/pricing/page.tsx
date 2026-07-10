@@ -68,7 +68,7 @@ export default function Pricing() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
-                                select a node tier to provision your school instance. all plans begin with a 60-day trial evaluation period.
+                                select a node tier to provision your school instance. all plans begin with a 120-day trial evaluation period.
                             </p>
                         </Reveal>
                     </div>
