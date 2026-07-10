@@ -270,8 +270,8 @@ export default function SettingsPage() {
         e.preventDefault();
         if (passwordData.new !== passwordData.confirm) {
             setAlertConfig({
-                title: "Hash Mismatch",
-                message: "New security hashes do not match the institutional protocol.",
+                title: "Password Mismatch",
+                message: "New passwords do not match.",
                 isOpen: true,
                 variant: "error"
             });
@@ -290,8 +290,8 @@ export default function SettingsPage() {
             const data = await res.json() as any;
             if (res.ok) {
                 setAlertConfig({
-                    title: "Security Updated",
-                    message: "Institutional security protocols have been successfully synchronized.",
+                    title: "Password Updated",
+                    message: "Your password has been successfully updated.",
                     isOpen: true,
                     variant: "success"
                 });
@@ -438,7 +438,7 @@ export default function SettingsPage() {
                     {activeTab === 'profile' && (
                         <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Identity Matrix</CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Profile Overview</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Global administrative parameters</CardDescription>
                             </CardHeader>
                             <CardContent className="p-6 md:p-8 pt-6 space-y-10">
@@ -501,14 +501,14 @@ export default function SettingsPage() {
                     {activeTab === 'security' && (
                         <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Security Layer</CardTitle>
-                                <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Encryption and access protocols</CardDescription>
+                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Security</CardTitle>
+                                <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Password and access</CardDescription>
                             </CardHeader>
                             <CardContent className="p-8 pt-6 space-y-8">
                                 <form onSubmit={handlePasswordUpdate} className="space-y-6">
                                     {!isResetMode && (
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Current Authorization Key</Label>
+                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Current Password</Label>
                                             <Input
                                                 type="password"
                                                 value={passwordData.current}
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                                     )}
                                     <div className="grid md:grid-cols-2 gap-8">
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">New Security Hash</Label>
+                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">New Password</Label>
                                             <Input
                                                 type="password"
                                                 value={passwordData.new}
@@ -528,7 +528,7 @@ export default function SettingsPage() {
                                             />
                                         </div>
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Confirm New Hash</Label>
+                                            <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Confirm New Password</Label>
                                             <Input
                                                 type="password"
                                                 value={passwordData.confirm}
@@ -542,7 +542,7 @@ export default function SettingsPage() {
                                         isLoading={saving}
                                         className="w-full bg-zinc-900 hover:bg-eduGreen-600 text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-800 transition-all"
                                     >
-                                        Update Security Protocol
+                                        Update Password
                                     </Button>
                                 </form>
 
