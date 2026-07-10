@@ -78,12 +78,19 @@ export async function POST(request: Request) {
         if (prisma) {
             const existingUser = await prisma.user.findUnique({ where: { email } });
             if (existingUser) {
-                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+                if (existingUser.schoolId && existingUser.schoolId !== owner.schoolId) {
+                    return NextResponse.json({ error: 'Email is already registered to another institution.' }, { status: 400 });
+                }
+                if (existingUser.schoolId === owner.schoolId && existingUser.verified) {
+                    return NextResponse.json({ error: 'User is already an active member of this school.' }, { status: 400 });
+                }
+                // If schoolId is null, they were deleted or are unassigned. Let the invite proceed so they can be re-linked.
             }
 
             const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
             if (existingInvite) {
-                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+                // If they have an existing invite, just delete the old one to issue a new one
+                await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
             }
         }
 

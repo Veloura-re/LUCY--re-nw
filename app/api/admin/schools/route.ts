@@ -83,12 +83,14 @@ export async function POST(request: Request) {
         if (prisma) {
             const existingUser = await prisma.user.findUnique({ where: { email: ownerEmail } });
             if (existingUser) {
-                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+                if (existingUser.schoolId !== null) {
+                    return NextResponse.json({ error: 'Email is already registered to an existing institution.' }, { status: 400 });
+                }
             }
 
             const existingInvite = await prisma.inviteToken.findFirst({ where: { email: ownerEmail } });
             if (existingInvite) {
-                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+                await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
             }
         } else {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
@@ -97,14 +99,14 @@ export async function POST(request: Request) {
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
             );
             
-            const { data: existingUser } = await supabaseAdmin.from('User').select('id').eq('email', ownerEmail).maybeSingle();
-            if (existingUser) {
-                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            const { data: existingUser } = await supabaseAdmin.from('User').select('id, schoolId').eq('email', ownerEmail).maybeSingle();
+            if (existingUser && existingUser.schoolId !== null) {
+                return NextResponse.json({ error: 'Email is already registered to an existing institution.' }, { status: 400 });
             }
 
             const { data: existingInvite } = await supabaseAdmin.from('InviteToken').select('id').eq('email', ownerEmail).maybeSingle();
             if (existingInvite) {
-                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+                await supabaseAdmin.from('InviteToken').delete().eq('id', existingInvite.id);
             }
         }
 
