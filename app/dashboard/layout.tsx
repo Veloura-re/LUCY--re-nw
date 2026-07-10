@@ -94,10 +94,10 @@ export default async function DashboardLayout({
         const now = new Date();
         const createdAt = new Date(dbUser.school.createdAt);
         
-        // Default trial is 2 months (60 days) from school creation
+        // Default trial is 4 months (120 days) from school creation
         const trialEndsAt = dbUser.school.trialEndsAt 
             ? new Date(dbUser.school.trialEndsAt)
-            : new Date(createdAt.getTime() + 60 * 24 * 60 * 60 * 1000);
+            : new Date(createdAt.getTime() + 120 * 24 * 60 * 60 * 1000);
 
         const isTrialExpired = now > trialEndsAt;
         const isSubscribed = dbUser.school.subscriptionStatus === 'active';

@@ -832,7 +832,7 @@ export default function PresentationDeck() {
         </div>
       ),
       technicalAppendix: [
-        "Pilot: 3-month free evaluation, converts to paid or deactivates after trial period",
+        "Pilot: 4-month free evaluation, converts to paid or deactivates after trial period",
         "Core Matrix: includes all Resend integrations, PostgreSQL backups, and standard support",
         "Enterprise: SLA 99.99%, custom billing cycles (quarterly/annually), dedicated infrastructure",
         "All plans include: POPIA/GDPR compliance, automatic SSL, and data export on demand"
