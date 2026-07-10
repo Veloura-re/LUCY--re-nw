@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
+import { sendInviteEmail } from '@/lib/email';
 
 // GET - List all owners and pending invites for a school
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -126,7 +127,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
 
-        const { sendInviteEmail } = await import('@/lib/email');
         const emailResult = await sendInviteEmail(email, inviteUrl, schoolName, token, 'OWNER', resolvedParams.id);
         const res = emailResult as any;
 
