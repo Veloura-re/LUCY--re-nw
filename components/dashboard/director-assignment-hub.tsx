@@ -158,7 +158,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                 </p>
                                 <div className="flex items-center gap-4 pt-6 border-t border-white/5">
                                     <Activity className="w-4 h-4 text-zinc-700" />
-                                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Strategic Matrix Synthesis</span>
+                                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Strategic Overview Synthesis</span>
                                 </div>
                             </div>
                             
@@ -231,7 +231,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                         <div>
                             <CardTitle className="text-lg md:text-2xl font-medium text-white tracking-tight flex items-center gap-3">
                                 <MapIcon className="w-5 h-5 text-eduGreen-500" />
-                                Institutional task Matrix
+                                Institutional Task Dashboard
                             </CardTitle>
                             <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.2em] mt-1">Real-time Global Sync</p>
                         </div>

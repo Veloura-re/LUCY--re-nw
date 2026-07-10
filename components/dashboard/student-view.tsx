@@ -202,7 +202,7 @@ export function StudentView({ user }: StudentProps) {
                             )}
                             <Link href="/dashboard/student/timetable">
                                 <Button variant="ghost" className="w-full mt-8 text-[10px] font-medium uppercase tracking-widest text-zinc-600 hover:text-white group">
-                                    Full Matrix <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    Full Schedule <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </CardContent>

@@ -292,7 +292,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                     {loading ? (
                         <div className="p-32 flex justify-center flex-col items-center gap-6">
                             <Activity className="w-12 h-12 text-white animate-pulse" />
-                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Querying Institutional Matrix...</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Querying Institutional Records...</p>
                         </div>
                     ) : (
                         students.map((student, idx) => (
@@ -312,7 +312,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 </div>
             </Card>
 
-            <AlertModal isOpen={showAlert} onClose={() => setShowAlert(false)} title="SYNC SUCCESSFUL" message="The matrix has been encrypted and archived." variant="success" />
+            <AlertModal isOpen={showAlert} onClose={() => setShowAlert(false)} title="SYNC SUCCESSFUL" message="The attendance records have been securely archived." variant="success" />
         </div>
     );
 }
