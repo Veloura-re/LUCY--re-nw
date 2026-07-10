@@ -81,6 +81,16 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 // Invalidate cache implicitly through revalidation or refresh
                 // For immediate UI update, we add it to the list
                 setStudents(prev => [data.student, ...prev]);
+                
+                if (data.token) {
+                    if (data.emailSent === false) {
+                        setAlertConfig({ title: "Email Delivery Failed", message: `The system could not deliver the email. Share this token manually: ${data.token}`, isOpen: true, variant: "error" });
+                    } else {
+                        setAlertConfig({ title: "Invite Sent", message: `An invitation has been sent to the student.`, isOpen: true, variant: "success" });
+                    }
+                } else {
+                    setAlertConfig({ title: "Student Enrolled", message: "Student record has been created successfully.", isOpen: true, variant: "success" });
+                }
             }
         } catch (e) {
             console.error(e);
