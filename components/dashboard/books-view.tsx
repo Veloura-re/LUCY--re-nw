@@ -467,7 +467,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             {book.teacherNote && (
                                                 <div className="mt-6 p-4 bg-eduGreen-500/5 border border-eduGreen-500/10 rounded-2xl relative overflow-hidden group/note">
                                                     <div className="absolute top-0 right-0 p-2 opacity-20"><Zap className="w-3 h-3 text-eduGreen-500" /></div>
-                                                    <p className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest mb-1">Pedagogical Note</p>
+                                                    <p className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</p>
                                                     <p className="text-[10px] text-zinc-400 font-medium leading-relaxed">{book.teacherNote}</p>
                                                 </div>
                                             )}
@@ -944,7 +944,7 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                 <div className="p-10 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/40">
                     <div>
                         <h2 className="text-2xl font-medium text-white tracking-tight uppercase">Request Resource</h2>
-                        <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Submit pedagogical requirements</p>
+                        <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Submit requirements</p>
                     </div>
                     <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-white rounded-full">
                         <X className="w-5 h-5" />
@@ -974,7 +974,7 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                         />
                     </div>
                     <textarea
-                        placeholder="Reason for request / Pedagogical context..."
+                        placeholder="Reason for request / Context..."
                         value={formData.reason}
                         onChange={e => setFormData({ ...formData, reason: e.target.value })}
                         className="w-full h-32 bg-zinc-900 border border-zinc-900 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-white resize-none"
