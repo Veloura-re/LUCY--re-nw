@@ -124,11 +124,11 @@ function DataBar({ value, label, delay = 0 }: { value: number; label: string; de
 
 // ─── Boot Sequence ─────────────────────────────────────────────────────────────
 const BOOT_LINES = [
-  "> LUCY_ACADEMIA_v1.0 KERNEL INITIALIZATING...",
-  "> LOADING NEURAL MATRIX.............. [OK]",
-  "> VAULT ENCRYPTION LAYER............. [OK]",
-  "> SPAWNING SCHOLAR NODES............. [OK]",
-  "> COGNITIVE ENGINE ONLINE............ [OK]",
+  "> LUCY_ACADEMIA_v1.0 INITIALIZING...",
+  "> LOADING SYSTEM CONFIGURATION....... [OK]",
+  "> SECURE STORAGE LAYER............... [OK]",
+  "> PREPARING USER WORKSPACES.......... [OK]",
+  "> ANALYTICS ENGINE ONLINE............ [OK]",
   "> ALL SYSTEMS NOMINAL",
   "> LAUNCHING INTERFACE_",
 ];
@@ -363,7 +363,7 @@ export default function Home() {
     { icon: Search, title: "deep_audit", desc: "cryptographically verifiable logs for all operations." }
   ];
 
-  const marqueeItems = ["INTELLIGENCE_UNBOUND", "LUCY_ACADEMIA_v1", "ZERO_LATENCY", "QUANTUM_VAULT", "NEURAL_MESH", "DISTRIBUTED_CORE", "ACADEMIC_MATRIX", "SECURE_UPLINK", "SCHOLAR_NODE", "DECENTRALIZED"];
+  const marqueeItems = ["EMPOWERING_EDUCATION", "LUCY_ACADEMIA_v1", "HIGH_PERFORMANCE", "SECURE_STORAGE", "CONNECTED_CAMPUS", "CENTRAL_DASHBOARD", "ACADEMIC_SYSTEM", "SECURE_ACCESS", "STUDENT_PORTAL", "CLOUD_NATIVE"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
     { href: "/intelligence", label: "intelligence" },
     { href: "/network", label: "network" },
@@ -680,7 +680,7 @@ export default function Home() {
           <div className="max-w-[1400px] mx-auto space-y-16">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="flex items-center gap-4 text-zinc-600">
               <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-zinc-800" />
-              <span className="text-[10px] uppercase tracking-[0.4em]">core_capability_matrix</span>
+              <span className="text-[10px] uppercase tracking-[0.4em]">core_features</span>
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-[1px] bg-white/10 overflow-hidden border border-white/10">
@@ -730,7 +730,7 @@ export default function Home() {
           <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="space-y-8">
               <div className="text-[10px] uppercase tracking-[0.4em] text-zinc-600">system_vitals</div>
-              <h2 className="text-4xl font-bold uppercase tracking-tighter">Performance Matrix</h2>
+              <h2 className="text-4xl font-bold uppercase tracking-tighter">Platform Performance</h2>
               <div className="space-y-8">
                 <DataBar value={99} label="auth_success_rate" delay={0} />
                 <DataBar value={94} label="attendance_sync_accuracy" delay={200} />
@@ -784,7 +784,7 @@ export default function Home() {
                 distributed <br /><span className="text-zinc-800">architecture.</span>
               </h2>
               <p className="text-zinc-500 text-lg leading-relaxed max-w-md">
-                deploy isolated instances locally or through our cloud node. complete data sovereignty over your academic matrix.
+                deploy isolated instances locally or through our cloud node. complete data sovereignty over your academic system.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/network">
@@ -891,7 +891,7 @@ export default function Home() {
           <div className="max-w-[1400px] mx-auto space-y-20">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="flex items-center gap-4 text-zinc-600">
               <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-zinc-800" />
-              <span className="text-[10px] uppercase tracking-[0.4em]">role_matrix // who_uses_lucy</span>
+              <span className="text-[10px] uppercase tracking-[0.4em]">user_roles // who_uses_lucy</span>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
@@ -976,7 +976,7 @@ export default function Home() {
               <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="space-y-4">
                 <div className="flex items-center gap-4 text-zinc-600">
                   <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-zinc-800" />
-                  <span className="text-[10px] uppercase tracking-[0.4em]">pricing_matrix // coming_soon</span>
+                  <span className="text-[10px] uppercase tracking-[0.4em]">pricing_plans // coming_soon</span>
                 </div>
                 <h2 className="text-5xl font-bold uppercase tracking-tighter leading-none">simple<br /><span className="text-zinc-800">pricing.</span></h2>
               </motion.div>
@@ -993,7 +993,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { tier: "Pilot Node", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
-                { tier: "Core Matrix", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
+                { tier: "Core Platform", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
                 { tier: "Enterprise", price: "Custom", period: "per institution", desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
               ].map((p, i) => (
                 <TiltCard key={i}>
@@ -1007,7 +1007,7 @@ export default function Home() {
                     {p.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />}
                     
                     {/* Glowing radial pulse behind card for discount burst */}
-                    {p.tier === "Core Matrix" && (
+                    {p.tier === "Core Platform" && (
                       <motion.div 
                         animate={{ opacity: [0.15, 0.35, 0.15] }} 
                         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
@@ -1018,7 +1018,7 @@ export default function Home() {
                     <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
                     
                     {/* Pulsing discount burst badge */}
-                    {p.tier === "Core Matrix" && (
+                    {p.tier === "Core Platform" && (
                       <motion.div 
                         animate={{ 
                           scale: [1, 1.08, 1],
@@ -1037,7 +1037,7 @@ export default function Home() {
                     </div>
                     
                     <div className="flex items-end gap-2">
-                      {p.tier === "Core Matrix" ? (
+                      {p.tier === "Core Platform" ? (
                         <>
                           <span className="text-4xl font-bold text-white font-orbitron">{p.price}</span>
                           <span className="text-sm line-through text-zinc-500 mb-1">$250</span>
@@ -1088,7 +1088,7 @@ export default function Home() {
               initiate_connection
             </motion.h2>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-zinc-500 text-lg max-w-lg mx-auto leading-relaxed">
-              your institutional node awaits provisioning. the lucy matrix is standing by.
+              your institutional node awaits provisioning. the lucy platform is standing by.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">

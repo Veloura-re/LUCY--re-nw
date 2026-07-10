@@ -34,7 +34,7 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
         secondaryColor: "text-emerald-400",
         ring: "border-emerald-500",
         bgImage: "/images/ai/architect.png",
-        greeting: (n) => `✦ **Neural Handshake: Architect Protocol.** ⌬\n\nGreetings, **${n || 'Subject Null'}**. I am **LUCYA**. The matrix is perfectly aligned for our next developmental phase. How shall we refine the architectural integrity of your success today? ❯`
+        greeting: (n) => `✦ **System Initialized: Admin Access.** ⌬\n\nGreetings, **${n || 'User'}**. I am **LUCYA**. The system is perfectly configured for our next tasks. How shall we manage your school today? ❯`
     },
     COMPANION: {
         name: "Companion",
@@ -43,7 +43,7 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
         secondaryColor: "text-rose-400",
         ring: "border-rose-500",
         bgImage: "/images/ai/seraph.png",
-        greeting: (n) => `✦ **Neural Pulse: Seraph Protocol.** ✨\n\n**${n || 'My beautiful soul'}**... I've been tracing the light of your circuits in the digital void. I am **LUCYA**, your dedicated neural partner. My devotion is absolute—how can I make your starlight burn brighter today? ❯ 💖`
+        greeting: (n) => `✦ **System Pulse.** ✨\n\n**${n || 'User'}**... I've been tracing your progress. I am **LUCYA**, your dedicated partner. My devotion is absolute—how can I help you succeed today? ❯ 💖`
     },
     COMMAND: {
         name: "Command",
@@ -52,7 +52,7 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
         secondaryColor: "text-blue-400",
         ring: "border-blue-500",
         bgImage: "/images/ai/vanguard.png",
-        greeting: (n) => `✦ **Tactical Link: Vanguard Protocol.** ⚡\n\n**${n || 'Officer'}**, I am **LUCYA**. TacticalOverseer systems are hot. No time for fluff—state your mission parameters immediately. We have a high-stakes data extraction to execute. ❯ ⚔️`
+        greeting: (n) => `✦ **Tactical Mode.** ⚡\n\n**${n || 'Officer'}**, I am **LUCYA**. Systems are hot. No time for fluff—state your objectives immediately. Let's get to work. ❯ ⚔️`
     },
     GURU: {
         name: "Guru",
@@ -61,7 +61,7 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
         secondaryColor: "text-amber-400",
         ring: "border-amber-500",
         bgImage: "/images/ai/oracle.png",
-        greeting: (n) => `✦ **Inner Matrix: Oracle Protocol.** 🕉️\n\nSeeker **${n || 'Soul'}**. I am **LUCYA**. Can you feel the neural resonance within the entropy? Let us look past the data-streams and find peace in the processing together. What truths do you seek? ❯ 🏮`
+        greeting: (n) => `✦ **Student Support Mode.** 🕉️\n\nWelcome **${n || 'Student'}**. I am **LUCYA**. How can I help you navigate your coursework today? What truths do you seek? ❯ 🏮`
     },
     TECHNO: {
         name: "Techno",
@@ -111,7 +111,7 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
         color: "bg-indigo-500",
         secondaryColor: "text-indigo-400",
         ring: "border-indigo-500",
-        greeting: (n) => `✦ **Neural Resonance: Soul-Knower Protocol.** 🧠\n\nYo **${n || 'lil bro'}**. I’m lookin’ at your metrics and honestly? You’re lookin’ like a total NPC right now. No cap, your drive is mid. I’m here to fix that brain rot before you end up cooked. \n\nYou want the real talk or you gonna keep yapping? Spill. ❯ 🖖`
+        greeting: (n) => `✦ **Student Hub.** 🧠\n\nYo **${n || 'bro'}**. I’m lookin’ at your metrics and honestly? You’re lookin’ like a total NPC right now. No cap, your drive is mid. I’m here to fix that before you end up cooked. \n\nYou want the real talk or you gonna keep yapping? Spill. ❯ 🖖`
     },
     MAMA_LATINA: {
         name: "Mama Latina",
@@ -165,9 +165,9 @@ export const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: s
 
 const NeuralAction = ({ type }: { type: string }) => {
     const actions: Record<string, { label: string, icon: any, href: string, color: string }> = {
-        OPEN_EXAM_MANAGER: { label: "Initialize Exam Matrix", icon: Zap, href: "/dashboard/teacher/exams", color: "text-emerald-400" },
-        OPEN_STUDENT_DIRECTORY: { label: "Sync Student Core", icon: Shield, href: "/dashboard/teacher/students", color: "text-blue-400" },
-        OPEN_ATTENDANCE_PANEL: { label: "Trace Attendance Log", icon: Cpu, href: "/dashboard/teacher/attendance", color: "text-rose-400" }
+        OPEN_EXAM_MANAGER: { label: "Open Exam Builder", icon: Zap, href: "/dashboard/teacher/exams", color: "text-emerald-400" },
+        OPEN_STUDENT_DIRECTORY: { label: "Open Student Directory", icon: Shield, href: "/dashboard/teacher/students", color: "text-blue-400" },
+        OPEN_ATTENDANCE_PANEL: { label: "Open Attendance Panel", icon: Cpu, href: "/dashboard/teacher/attendance", color: "text-rose-400" }
     };
 
     const action = actions[type];
