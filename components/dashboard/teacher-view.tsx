@@ -193,8 +193,8 @@ export function TeacherView({ user, initialData }: {
                                                 </div>
                                                 <span className="text-[10px] font-medium text-white/50 uppercase tracking-[0.3em]">Module Registry</span>
                                             </div>
-                                            <h3 className="text-3xl font-medium text-white tracking-tight">PEDAGOGICAL SCROLL</h3>
-                                            <p className="text-eduGreen-100/70 text-sm font-medium mt-3">Construct custom assessments with full pedagogical control.</p>
+                                            <h3 className="text-3xl font-medium text-white tracking-tight">EXAM BUILDER</h3>
+                                            <p className="text-eduGreen-100/70 text-sm font-medium mt-3">Construct custom assessments with full control.</p>
                                         </div>
 
                                         <div className="mt-8 flex items-center justify-between">

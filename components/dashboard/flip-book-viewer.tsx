@@ -200,7 +200,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                 
                                 {book.teacherNote && (
                                     <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 mt-4">
-                                        <h3 className="text-[9px] font-semibold text-amber-500 uppercase tracking-widest mb-1">Pedagogical Note</h3>
+                                        <h3 className="text-[9px] font-semibold text-amber-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</h3>
                                         <p className="text-[10px] font-medium text-amber-500/80 leading-relaxed">{book.teacherNote}</p>
                                     </div>
                                 )}
