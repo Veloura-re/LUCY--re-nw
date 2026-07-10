@@ -12,37 +12,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { ParticleField } from "@/components/public/animations";
 
-// ─── Scramble Text Hook ────────────────────────────────────────────────────────
-const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*<>/\\[]{}";
-function useScramble(target: string, delay = 0) {
-  const [display, setDisplay] = useState("");
-  useEffect(() => {
-    let frame: ReturnType<typeof setTimeout>;
-    let step = 0;
-    const totalSteps = target.length * 5;
-    const start = () => {
-      frame = setInterval(() => {
-        step++;
-        setDisplay(
-          target
-            .split("")
-            .map((char, i) => {
-              if (char === " ") return " ";
-              if (char === "\n") return "\n";
-              const revealAt = (i / target.length) * totalSteps * 0.8;
-              if (step > revealAt) return char;
-              return CHARS[Math.floor(Math.random() * CHARS.length)];
-            })
-            .join("")
-        );
-        if (step >= totalSteps) clearInterval(frame);
-      }, 30);
-    };
-    const to = setTimeout(start, delay);
-    return () => { clearTimeout(to); clearInterval(frame); };
-  }, [target, delay]);
-  return display;
-}
+
 
 
 
@@ -315,8 +285,9 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -50]);
 
-  const heroLine1 = useScramble("INTELLIGENCE", booting ? 2500 : 200);
-  const heroLine2 = useScramble("UNBOUND.", booting ? 2800 : 500);
+  // Using standard framer-motion fade-in that wraps the container
+  const heroLine1 = "INTELLIGENCE";
+  const heroLine2 = "UNBOUND.";
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
@@ -482,7 +453,7 @@ export default function Home() {
                 <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-white rounded-full" />
               </motion.div>
 
-              {/* Scramble hero title */}
+              {/* Fade-in hero title */}
               <motion.div 
                 initial={{ opacity: 0, rotateX: 45, y: 40 }} 
                 animate={{ opacity: 1, rotateX: 0, y: 0 }} 
