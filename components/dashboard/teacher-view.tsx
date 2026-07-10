@@ -65,23 +65,23 @@ export function TeacherView({ user, initialData }: {
                     ]);
 
                     if (classesRes.ok) {
-                        const data = await classesRes.json();
+                        const data = await classesRes.json() as any;
                         setClasses(data.classes);
                     }
 
                     if (examsRes.ok) {
-                        const data = await examsRes.json();
+                        const data = await examsRes.json() as any;
                         setExams(data.exams?.slice(0, 3) || []);
                     }
 
                     const clockInRes = await fetch('/api/teacher/attendance/clock-in');
                     if (clockInRes.ok) {
-                        const clockData = await clockInRes.json();
+                        const clockData = await clockInRes.json() as any;
                         setIsClockedIn(clockData.clockedIn);
                     }
 
                     if (analyticsRes.ok) {
-                        const data = await analyticsRes.json();
+                        const data = await analyticsRes.json() as any;
                         const attendanceRate = data.attendanceRate || "100%";
                         const missingCount = data.missingCount || 0;
                         setAttendanceSummary([
