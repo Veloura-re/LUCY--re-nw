@@ -343,10 +343,10 @@ export default function BillingControlsPage() {
                                 const now = new Date();
                                 let trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
                                 
-                                // Default to 60 days from creation if no explicit trial date is set
+                                // Default to 120 days from creation if no explicit trial date is set
                                 if (!trialEndsAt && school.createdAt) {
                                     trialEndsAt = new Date(school.createdAt);
-                                    trialEndsAt.setDate(trialEndsAt.getDate() + 60);
+                                    trialEndsAt.setDate(trialEndsAt.getDate() + 120);
                                 }
                                 
                                 const remainingDays = trialEndsAt 
@@ -362,7 +362,7 @@ export default function BillingControlsPage() {
                                             <div className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
                                         </div>
                                         <div className="col-span-2 font-mono text-zinc-400">
-                                            {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (60d Default)'}
+                                            {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (120d Default)'}
                                         </div>
                                         <div className="col-span-2 text-center font-mono">
                                             {activeSub ? (

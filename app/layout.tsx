@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "@fontsource/orbitron";
 import "@fontsource/space-grotesk";
 import "@fontsource/cinzel";
 import "@fontsource/permanent-marker";
