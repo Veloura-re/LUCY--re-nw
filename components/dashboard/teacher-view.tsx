@@ -221,9 +221,9 @@ export function TeacherView({ user, initialData }: {
                                                 <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
                                                     <Zap className="w-6 h-6 text-indigo-200" />
                                                 </div>
-                                                <span className="text-[10px] font-medium text-white/50 uppercase tracking-[0.3em]">Neural Synthesis</span>
+                                                <span className="text-[10px] font-medium text-white/50 uppercase tracking-[0.3em]">AI Generation</span>
                                             </div>
-                                            <h3 className="text-3xl font-medium text-white tracking-tight uppercase">NEURAL SCRIBE</h3>
+                                            <h3 className="text-3xl font-medium text-white tracking-tight uppercase">AI GENERATOR</h3>
                                             <p className="text-indigo-100/70 text-sm font-medium mt-3">Leverage semantic drafting to generate elite-tier content.</p>
                                         </div>
 

@@ -75,18 +75,38 @@ export async function POST(request: Request) {
         const role = allowedRoles.includes(rawRole) ? rawRole : 'TEACHER';
 
         // Check if user already exists
-        const existing = await prisma.user.findUnique({ where: { email } });
+        let existing = await prisma.user.findUnique({ where: { email } });
         if (existing) {
-            return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            if (existing.schoolId && existing.schoolId !== user.schoolId) {
+                return NextResponse.json({ error: 'Email is already registered to another institution.' }, { status: 400 });
+            }
+            if (existing.schoolId === user.schoolId && existing.verified) {
+                return NextResponse.json({ error: 'User is already an active member of this school.' }, { status: 400 });
+            }
+            
+            // Re-link the user if they were deleted (schoolId is null) or not verified yet
+            existing = await prisma.user.update({
+                where: { email },
+                data: {
+                    schoolId: user.schoolId,
+                    role: role,
+                    name: name || existing.name,
+                    phone: phone || existing.phone,
+                    gender: gender || existing.gender,
+                    qualification: qualification || existing.qualification,
+                    photoUrl: photoUrl || existing.photoUrl,
+                    teacherCode: existing.teacherCode || teacherCode || `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
+                }
+            });
         }
 
         const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
         if (existingInvite) {
-            return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+            await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
         }
 
-        // Create User (Pending Verification)
-        const newUser = await prisma.user.create({
+        // Create User if doesn't exist
+        const newUser = existing || await prisma.user.create({
             data: {
                 name,
                 email,
