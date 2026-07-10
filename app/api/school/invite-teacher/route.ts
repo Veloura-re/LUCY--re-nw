@@ -14,12 +14,17 @@ export async function POST(request: Request) {
 
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            if (existingUser.schoolId && existingUser.schoolId !== dbUser.schoolId) {
+                return NextResponse.json({ error: 'Email is already registered to another institution.' }, { status: 400 });
+            }
+            if (existingUser.schoolId === dbUser.schoolId && existingUser.verified) {
+                return NextResponse.json({ error: 'User is already an active member of this school.' }, { status: 400 });
+            }
         }
 
         const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
         if (existingInvite) {
-            return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+            await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
         }
 
         const token = crypto.randomUUID().replace(/-/g, '');
