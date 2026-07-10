@@ -79,6 +79,35 @@ export async function POST(request: Request) {
         console.log(`[AdminAPI] Creating school: ${name} (Owner: ${ownerEmail})`);
         
         const { prisma } = require('@/lib/prisma');
+
+        if (prisma) {
+            const existingUser = await prisma.user.findUnique({ where: { email: ownerEmail } });
+            if (existingUser) {
+                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            }
+
+            const existingInvite = await prisma.inviteToken.findFirst({ where: { email: ownerEmail } });
+            if (existingInvite) {
+                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+            }
+        } else {
+            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            
+            const { data: existingUser } = await supabaseAdmin.from('User').select('id').eq('email', ownerEmail).maybeSingle();
+            if (existingUser) {
+                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            }
+
+            const { data: existingInvite } = await supabaseAdmin.from('InviteToken').select('id').eq('email', ownerEmail).maybeSingle();
+            if (existingInvite) {
+                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+            }
+        }
+
         let school: any = null;
         let token = "";
 
