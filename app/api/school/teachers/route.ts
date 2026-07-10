@@ -77,7 +77,12 @@ export async function POST(request: Request) {
         // Check if user already exists
         const existing = await prisma.user.findUnique({ where: { email } });
         if (existing) {
-            return NextResponse.json({ error: 'User with this email already exists' }, { status: 400 });
+            return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+        }
+
+        const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
+        if (existingInvite) {
+            return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
         }
 
         // Create User (Pending Verification)
