@@ -81,10 +81,17 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                 const data = (await res.json()) as any;
                 throw new Error(data.error || "Failed to invite principal");
             }
+            const data = (await res.json()) as any;
             
             setNewEmail("");
             fetchPrincipals();
-            setAlertConfig({ title: "Invite Sent", message: `An invitation has been sent to ${newEmail}.`, isOpen: true, variant: "success" });
+            setAlertConfig({ title: "Invite Created", message: `An invitation has been created for ${newEmail}.`, isOpen: true, variant: "success" });
+            
+            if (!data.emailSent) {
+                setTimeout(() => {
+                    setAlertConfig({ title: "Email Delivery Failed", message: `The system could not deliver the email. Share this token manually: ${data.inviteToken}`, isOpen: true, variant: "error" });
+                }, 2000);
+            }
         } catch (err: any) {
             setError(err.message);
         } finally {
