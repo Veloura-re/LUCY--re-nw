@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { sendInviteEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
     try {
@@ -62,7 +63,6 @@ export async function POST(request: Request) {
                         });
                         
                         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
-                        const { sendInviteEmail } = await import('@/lib/email');
                         // Fetch school name
                         const { data: schoolData } = await supabaseAdmin.from('School').select('name').eq('id', user.schoolId).single();
                         await sendInviteEmail(user.email, inviteUrl, schoolData?.name || 'Institution', token, user.role, user.schoolId);

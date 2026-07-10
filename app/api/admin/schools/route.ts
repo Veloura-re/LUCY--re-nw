@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { sendInviteEmail } from '@/lib/email';
 import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 
@@ -217,7 +218,6 @@ export async function POST(request: Request) {
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
 
         // Send invite email
-        const { sendInviteEmail } = await import('@/lib/email');
         console.log(`[AdminAPI] Sending invitation email to ${ownerEmail}...`);
         const emailResult = await sendInviteEmail(ownerEmail, inviteUrl, name, token, 'OWNER', school.id);
 
