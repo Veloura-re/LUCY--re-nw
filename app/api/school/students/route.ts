@@ -66,6 +66,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Grade is required" }, { status: 400 });
         }
 
+        if (email) {
+            const existingUser = await prisma.user.findUnique({ where: { email } });
+            if (existingUser) {
+                return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+            }
+
+            const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
+            if (existingInvite) {
+                return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+            }
+        }
+
         const result = await prisma.$transaction(async (tx) => {
             const student = await tx.student.create({
                 data: {

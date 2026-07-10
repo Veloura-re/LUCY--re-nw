@@ -11,6 +11,17 @@ export async function POST(request: Request) {
         if (!school) throw new Error("School not found");
 
         const { email } = (await request.json()) as { email: string };
+
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (existingUser) {
+            return NextResponse.json({ error: 'Email is already registered to an existing account.' }, { status: 400 });
+        }
+
+        const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
+        if (existingInvite) {
+            return NextResponse.json({ error: 'An invitation is already pending for this email address.' }, { status: 400 });
+        }
+
         const token = crypto.randomUUID().replace(/-/g, '');
 
         await prisma.inviteToken.create({
