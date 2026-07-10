@@ -25,7 +25,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
         teacherCode: ""
     });
     const [loading, setLoading] = useState(false);
-    const [inviteResult, setInviteResult] = useState<{ token: string, user: any } | null>(null);
+    const [inviteResult, setInviteResult] = useState<{ token: string, user: any, emailSent?: boolean } | null>(null);
     const [copied, setCopied] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -41,7 +41,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
 
             const data = await res.json() as any;
             if (data.token) {
-                setInviteResult({ token: data.token, user: data.user });
+                setInviteResult({ token: data.token, user: data.user, emailSent: data.emailSent });
                 onSuccess(data.token, data.user);
             }
         } catch (error) {
@@ -165,10 +165,21 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                         <div className="p-8 bg-zinc-900/50 rounded-[2rem] border border-zinc-800/50">
                             <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest mb-2">Authenticated Recipient</p>
                             <p className="text-lg font-medium text-white tracking-tight break-all">{inviteResult.user.email}</p>
-                            <div className="mt-6 flex items-center justify-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
-                                <span className="text-[10px] text-eduGreen-500 font-medium uppercase tracking-widest">Link Active & Encrypted</span>
-                            </div>
+                            
+                            {inviteResult.emailSent === false ? (
+                                <div className="mt-6 flex flex-col items-center justify-center gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                        <span className="text-[10px] text-red-500 font-medium uppercase tracking-widest">Email Delivery Failed</span>
+                                    </div>
+                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest text-center mt-2">The system could not deliver the email. Please share this token manually.</p>
+                                </div>
+                            ) : (
+                                <div className="mt-6 flex items-center justify-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
+                                    <span className="text-[10px] text-eduGreen-500 font-medium uppercase tracking-widest">Link Active & Encrypted</span>
+                                </div>
+                            )}
                         </div>
                         <Button size="lg" onClick={() => { setInviteResult(null); setFormData({ name: "", email: "", phone: "", gender: "", qualification: "", role: "TEACHER", photoUrl: "", teacherCode: "" }); }} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-lg shadow-eduGreen-900/20">
                             Create Another Invitation

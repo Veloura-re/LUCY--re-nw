@@ -136,7 +136,15 @@ export async function POST(request: Request) {
             
             console.log(`📨 [STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
             const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
-            console.log(`📨 [STUDENTS API] Invite email result:`, JSON.stringify(emailResult));
+            const res = emailResult as any;
+            console.log(`📨 [STUDENTS API] Invite email result:`, JSON.stringify(res));
+            
+            return secureJson({ 
+                student: result.student, 
+                token: result.token, 
+                emailSent: res.success && !res.skipped, 
+                emailError: res.error || null 
+            });
         }
 
         return secureJson({ student: result.student });
