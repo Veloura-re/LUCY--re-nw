@@ -90,7 +90,8 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
             
             if (!data.emailSent) {
                 setTimeout(() => {
-                    setAlertConfig({ title: "Email Delivery Failed", message: `The system could not deliver the email. Share this token manually: ${data.inviteToken}`, isOpen: true, variant: "error" });
+                    const errorMsg = data.emailError ? `Reason: ${data.emailError}` : "The system could not deliver the email.";
+                    setAlertConfig({ title: "Email Delivery Failed", message: `${errorMsg} Share this token manually: ${data.inviteToken}`, isOpen: true, variant: "error" });
                 }, 2000);
             }
         } catch (err: any) {
