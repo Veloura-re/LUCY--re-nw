@@ -175,9 +175,12 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                     <p className="text-[10px] text-zinc-500 uppercase tracking-widest text-center mt-2">The system could not deliver the email. Please share this token manually.</p>
                                 </div>
                             ) : (
-                                <div className="mt-6 flex items-center justify-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
-                                    <span className="text-[10px] text-eduGreen-500 font-medium uppercase tracking-widest">Link Active & Encrypted</span>
+                                <div className="mt-6 flex flex-col items-center justify-center gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
+                                        <span className="text-[10px] text-eduGreen-500 font-medium uppercase tracking-widest">Link Active & Encrypted</span>
+                                    </div>
+                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest text-center mt-2">Remind the recipient to check their spam/junk folder.</p>
                                 </div>
                             )}
                         </div>
