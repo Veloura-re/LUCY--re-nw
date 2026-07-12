@@ -127,10 +127,10 @@ function BootSequence({ onDone }: { onDone: () => void }) {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[999] bg-black flex flex-col items-center justify-center font-mono"
         >
-          <div className="relative text-7xl md:text-[12rem] font-bold tracking-tighter text-zinc-900 select-none">
+          <div className="relative text-7xl md:text-[12rem] font-bold tracking-tighter text-zinc-900 select-none uppercase">
             LUCY
             <div 
-              className="absolute top-0 left-0 bottom-0 text-white overflow-hidden whitespace-nowrap select-none"
+              className="absolute top-0 left-0 bottom-0 text-white overflow-hidden whitespace-nowrap select-none uppercase"
               style={{ width: `${percent}%` }}
             >
               LUCY
@@ -245,16 +245,11 @@ export default function Home() {
   const [booting, setBooting] = useState(true);
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    const hasBooted = sessionStorage.getItem("lucy_booted");
-    if (hasBooted) {
-      setBooting(false);
-    }
     setMounted(true);
   }, []);
 
   const handleBootDone = () => {
     setBooting(false);
-    sessionStorage.setItem("lucy_booted", "true");
   };
   const [scrolled, setScrolled] = useState(false);
   const [time, setTime] = useState("");
