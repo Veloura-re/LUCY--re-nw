@@ -7,7 +7,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "LUCY | Academia",
+  title: "LUCY OS",
   description: "Advanced Learning Unified Cognitive Yield Architecture",
   icons: {
     icon: "/icon.svg",
