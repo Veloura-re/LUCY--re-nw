@@ -95,36 +95,50 @@ function DataBar({ value, label, delay = 0 }: { value: number; label: string; de
 // ─── Boot Sequence ─────────────────────────────────────────────────────────────
 function BootSequence({ onDone }: { onDone: () => void }) {
   const [done, setDone] = useState(false);
+  const [percent, setPercent] = useState(0);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDone(true);
-      setTimeout(onDone, 500);
-    }, 2000);
-    return () => clearTimeout(timer);
+    let startTime = Date.now();
+    const duration = 2200;
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const p = Math.min(100, Math.floor((elapsed / duration) * 100));
+      setPercent(p);
+      
+      if (p < 100) {
+        requestAnimationFrame(animate);
+      } else {
+        setTimeout(() => {
+          setDone(true);
+          setTimeout(onDone, 600);
+        }, 300);
+      }
+    };
+    
+    requestAnimationFrame(animate);
   }, [onDone]);
 
   return (
     <AnimatePresence>
       {!done && (
         <motion.div
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[999] bg-black flex items-center justify-center"
+          exit={{ opacity: 0, filter: "blur(10px)" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="fixed inset-0 z-[999] bg-black flex flex-col items-center justify-center font-mono"
         >
-          <motion.div
-            animate={{ 
-              scale: [1, 1.5, 0.5, 1],
-              rotate: [0, 90, 180, 270, 360],
-              borderRadius: ["20%", "50%", "20%"]
-            }}
-            transition={{
-              duration: 1.5,
-              ease: "easeInOut",
-              times: [0, 0.2, 0.5, 0.8, 1],
-              repeat: Infinity,
-            }}
-            className="w-12 h-12 bg-white"
-          />
+          <div className="relative text-7xl md:text-[12rem] font-bold tracking-tighter text-zinc-900 select-none">
+            LUCY
+            <div 
+              className="absolute top-0 left-0 bottom-0 text-white overflow-hidden whitespace-nowrap select-none"
+              style={{ width: `${percent}%` }}
+            >
+              LUCY
+            </div>
+          </div>
+          <div className="mt-8 text-zinc-500 text-sm md:text-base tracking-widest font-light">
+            {percent.toString().padStart(3, '0')}%
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
