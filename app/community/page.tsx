@@ -70,7 +70,7 @@ export default function CommunityPage() {
         },
         {
             title: "tiktok_node",
-            link: "https://tiktok.com/@lucy.academia",
+            link: "https://tiktok.com/@lucy.os",
             icon: Video,
             glowClass: "shadow-[0_0_30px_rgba(6,182,212,0.04)] hover:shadow-[0_0_50px_rgba(236,72,153,0.25)]",
             hoverBorder: "hover:border-pink-500/40",
@@ -128,7 +128,7 @@ export default function CommunityPage() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/">
                         <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">

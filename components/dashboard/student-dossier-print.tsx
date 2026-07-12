@@ -397,7 +397,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     {/* ── FOOTER ── */}
                     <div style={{ marginTop: "6mm", paddingTop: "4mm", borderTop: "1px solid #e8e8e8", display: "flex", justifyContent: "space-between", fontSize: "6pt", color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                         <span>{schoolName} · Official Academic Dossier · Confidential</span>
-                        <span>Generated {format(now, "dd MMM yyyy, HH:mm")} · LUCY ACADEMIA</span>
+                        <span>Generated {format(now, "dd MMM yyyy, HH:mm")} · LUCY OS</span>
                     </div>
                 </div>
             </div>

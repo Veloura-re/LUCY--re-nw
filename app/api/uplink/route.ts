@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
                     <p style="font-size: 14px; line-height: 1.6; color: #ccc;">${message || "Empty Transmission Packet."}</p>
                 </div>
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
-                <p style="font-size: 10px; color: #444; text-align: center;">LUCY ACADEMIA // INITIALIZATION PROTOCOL // SECURE TRANSIT</p>
+                <p style="font-size: 10px; color: #444; text-align: center;">LUCY OS // INITIALIZATION PROTOCOL // SECURE TRANSIT</p>
             </div>
         `;
 
