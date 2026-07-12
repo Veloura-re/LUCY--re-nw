@@ -117,7 +117,7 @@ function useScramble(target: string, trigger: any) {
 }
 
 // ─── Animated Stat Counter Component ──────────────────────────────────────────
-function StatBlock({ label, value, suffix = "", delay = 0 }: { label: string; value: number; suffix?: string; delay?: number }) {
+function StatBlock({ label, value, prefix = "", suffix = "", delay = 0 }: { label: string; value: number; prefix?: string; suffix?: string; delay?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -126,7 +126,8 @@ function StatBlock({ label, value, suffix = "", delay = 0 }: { label: string; va
       transition={{ delay, duration: 0.5 }}
       className="text-center space-y-1"
     >
-      <div className="text-3xl md:text-4xl font-bold text-white font-mono">
+      <div className="text-3xl md:text-4xl font-bold text-white font-mono flex items-center justify-center">
+        {prefix && <span>{prefix}</span>}
         <Counter from={0} to={value} suffix={suffix} duration={2} />
       </div>
       <div className="text-[9px] text-zinc-500 uppercase tracking-widest">{label}</div>
@@ -171,79 +172,20 @@ export default function PresentationDeck() {
   const [showAppendix, setShowAppendix] = useState(false);
 
   const slides: Slide[] = [
-    // ──────────────────── SLIDE 01: INTRO ────────────────────
+    // ──────────────────── SLIDE 01: THE FLYWHEEL ────────────────────
     {
-      id: "initialize",
-      tag: "initialize_node // system_brief",
-      title: "LUCY OS",
-      sub: "the next-generation cognitive architecture for institutional management. bridging school owners, directors, teachers, parents, and students under one secure, unified platform.",
-      content: (
-        <div className="space-y-8 w-full">
-          <div className="relative overflow-hidden border border-white/5 bg-zinc-950/80 p-6 text-left">
-            <div className="absolute inset-0 opacity-10"><MatrixRain cols={8} /></div>
-            <div className="relative z-10 font-mono">
-              <div className="flex items-center gap-2 mb-4">
-                <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-2 h-2 bg-white/40 rounded-full" />
-                <span className="text-[8px] text-zinc-500 uppercase tracking-widest">system_core // v3.2.0</span>
-              </div>
-              <Typewriter lines={[
-                "> kernel_boot: LUCY OS initialized",
-                "> modules: [grading, attendance, billing, ai_engine, parent_portal]",
-                "> security: RLS_ENFORCED // POPIA_COMPLIANT",
-                "> uptime: 99.9% SLA guaranteed",
-                "> status: ALL_SYSTEMS_OPERATIONAL_",
-              ]} className="space-y-1.5" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-4 gap-4">
-            <StatBlock label="active_modules" value={27} delay={0.1} />
-            <StatBlock label="api_endpoints" value={84} delay={0.2} />
-            <StatBlock label="uptime_sla" value={99} suffix="%" delay={0.3} />
-            <StatBlock label="response_ms" value={45} suffix="ms" delay={0.4} />
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/" target="_blank">
-              <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button className="h-12 px-10 bg-white text-black hover:bg-zinc-200 font-bold rounded-none text-xs uppercase tracking-widest transition-all">
-                  explore_portal
-                </Button>
-              </motion.div>
-            </Link>
-            <motion.div
-              animate={{ borderColor: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.15)", "rgba(255,255,255,0.05)"] }}
-              transition={{ repeat: Infinity, duration: 3 }}
-              className="flex items-center gap-3 px-5 py-3 border bg-white/[0.02] rounded-none text-[11px] text-zinc-400 font-mono"
-            >
-              <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-2 h-2 bg-white/50 rounded-full" />
-              live node active at: https://5-cn.net/
-            </motion.div>
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Core stack: Next.js 15, React 19, TypeScript, TailwindCSS",
-        "Edge-native execution with regional routing latency under 45ms",
-        "Database: PostgreSQL with Prisma ORM, multi-tenant architecture",
-        "Authentication: bcrypt hashed passwords, JWT session tokens",
-        "Hosting: Vercel edge network with automatic SSL provisioning"
-      ]
-    },
-
-    // ──────────────────── SLIDE 02: THE PROBLEM ────────────────────
-    {
-      id: "friction",
-      tag: "diagnostics // core_friction_analysis",
-      title: "the fragmented institution",
-      sub: "legacy educational infrastructure is broken. schools lose hundreds of hours per year on manual processes that should be automated.",
+      id: "flywheel",
+      tag: "strategic_core // concept",
+      title: "the lucy flywheel effect",
+      sub: "technology as a revenue-generating, time-saving asset that creates a continuous loop of institutional improvement.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { tag: "[01] administrative_lock", title: "manual marking", desc: "teachers spend 45% of operational hours compiling grades, scaling marks, and hand-delivering report sheets to parents.", stat: "45%", statLabel: "time_wasted" },
-              { tag: "[02] delivery_gap", title: "communication delay", desc: "parents remain alienated from student performance. grade releases and attendance alerts take days — sometimes weeks.", stat: "72h", statLabel: "avg_delay" },
-              { tag: "[03] structural_risk", title: "data leakage", desc: "multi-school platforms lack strict cryptographic separation, risking database overlap and exposure of student identity records.", stat: "0", statLabel: "tolerance" },
+              { num: "01", title: "operational efficiency", desc: "automated billing and grading free up massive amounts of administrative time and capital." },
+              { num: "02", title: "educator empowerment", desc: "the saved time is reinvested into teachers, reducing burnout and drastically improving instructional quality." },
+              { num: "03", title: "unmatched parent trust", desc: "better teaching combined with total digital transparency creates highly engaged, loyal parents." },
+              { num: "04", title: "premium brand growth", desc: "high parent satisfaction justifies premium tuition rates and drives rapid new student enrollment." }
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -251,641 +193,469 @@ export default function PresentationDeck() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
                 transition={{ delay: i * 0.15, duration: 0.5 }}
-                whileHover={{ y: -4, borderColor: "rgba(255,255,255,0.2)" }}
-                className="p-6 border border-white/10 bg-zinc-950/50 space-y-4 transition-all duration-300 group cursor-default"
+                className="p-6 border border-white/10 bg-zinc-950/50 space-y-4"
               >
-                <div className="text-[10px] text-zinc-500 font-bold font-mono">{item.tag}</div>
+                <div className="text-2xl font-bold text-white/20 font-mono">{item.num}</div>
                 <h3 className="text-lg font-bold text-white uppercase tracking-tighter">{item.title}</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed font-sans">{item.desc}</p>
-                <div className="pt-2 border-t border-white/5">
-                  <div className="text-2xl font-bold text-white font-mono">{item.stat}</div>
-                  <div className="text-[8px] text-zinc-600 uppercase tracking-widest">{item.statLabel}</div>
-                </div>
               </motion.div>
             ))}
           </div>
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: false }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent origin-left"
-          />
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.5 }}
-            className="text-[10px] text-zinc-600 text-center uppercase tracking-widest"
-          >
-            LUCY OS eliminates all three vectors simultaneously
-          </motion.p>
         </div>
       ),
       technicalAppendix: [
-        "Typical administrative waste: 18-24 working hours per teacher per month",
-        "Information silos result in average parent engagement metrics under 30%",
-        "83% of African schools still rely on paper-based reporting systems",
-        "Average cost of a data breach in education: $3.65M (IBM 2024)"
+        "Traditional administration views tech as a cost center.",
+        "LUCY shifts the paradigm: automation feeds directly into brand growth."
       ]
     },
 
-    // ──────────────────── SLIDE 03: PLATFORM OVERVIEW ────────────────────
+    // ──────────────────── FINANCIAL & OPERATIONAL SUPERIORITY ────────────────────
     {
-      id: "overview",
-      tag: "architecture // platform_modules",
-      title: "complete school os",
-      sub: "27+ integrated modules covering every operational dimension of modern academic institutions.",
-      content: (
-        <div className="space-y-4 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <FeatureItem icon={GraduationCap} title="student management" desc="complete student profiles, enrollment, class assignments, ID cards, and academic history tracking." delay={0} />
-            <FeatureItem icon={ClipboardList} title="exam engine" desc="create, assign, and AI-grade examinations. supports multiple choice, short answer, essay, and file upload question types." delay={0.05} />
-            <FeatureItem icon={BarChart3} title="marklist & reports" desc="automated mark compilation, GPA calculation, class rankings, and one-click report card generation with PDF export." delay={0.1} />
-            <FeatureItem icon={Calendar} title="timetable builder" desc="drag-and-drop timetable creation with conflict detection, room assignment, and automatic teacher scheduling." delay={0.15} />
-            <FeatureItem icon={UserCheck} title="attendance system" desc="daily attendance logging per class. automatic absence alerts to parents via email. full attendance history and analytics." delay={0.2} />
-            <FeatureItem icon={CreditCard} title="billing & finance" desc="student invoicing, payment tracking, expense management, and automated financial reports for directors and owners." delay={0.25} />
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-6 pt-2"
-          >
-            <div className="text-[9px] text-zinc-600 uppercase tracking-widest">+21 more modules</div>
-            <motion.div animate={{ width: ["20px", "60px", "20px"] }} transition={{ repeat: Infinity, duration: 3 }} className="h-px bg-zinc-700" />
-          </motion.div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Full module list: students, teachers, classes, exams, marklist, reports, attendance, timetable, billing, events, books, messages, AI helper, parent portal, homeroom, approvals, authorizations, operating costs, staffing, settings, data management, director panel, student portal, help center",
-        "Each module enforces role-based access control (RBAC) at both middleware and database layers",
-        "All data operations are scoped to the authenticated school tenant — zero cross-tenant visibility"
-      ]
-    },
-
-    // ──────────────────── SLIDE 04: AI ENGINE ────────────────────
-    {
-      id: "ai_grading",
-      tag: "engine // cognitive_evaluators",
-      title: "ai-powered intelligence",
-      sub: "automated exam grading, smart answer evaluation, and an integrated AI assistant — all under zero data retention.",
+      id: "finance_01",
+      tag: "financial // superiority",
+      title: "instant financial reconciliation",
+      sub: "never manually cross-reference a bank slip again. automated ledgers via telebirr, cbe birr, or stripe.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            className="p-6 bg-black border border-white/10 font-mono relative overflow-hidden"
-          >
-            <motion.div
-              animate={{ opacity: [0.05, 0.15, 0.05] }}
-              transition={{ repeat: Infinity, duration: 4 }}
-              className="absolute inset-0"
-              style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)" }}
-            />
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between border-b border-white/5 pb-3 text-xs text-zinc-500">
-                <span>[openai_api_stream // gpt-4o-mini]</span>
-                <motion.span animate={{ opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }} className="text-white/70">status: active_zdr</motion.span>
-              </div>
-              <div className="space-y-3 text-xs md:text-sm mt-4">
-                <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.2 }} className="text-zinc-500">&gt; executing student_submission_evaluation...</motion.p>
-                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.4 }} className="p-4 bg-zinc-950 border border-white/5 text-[12px] leading-relaxed">
-                  <span className="text-zinc-400">question_type:</span> "short_answer" <br />
-                  <span className="text-zinc-400">student_response:</span> "photosynthesis converts carbon dioxide into glucose using sunlight." <br />
-                  <span className="text-zinc-400">correct_keywords:</span> ["photosynthesis", "glucose", "sunlight"]
-                </motion.div>
-                <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.6 }} className="text-zinc-500">&gt; scanning response tokens...</motion.p>
-                <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 0.8 }} className="text-white/70 font-bold">&gt; match verified. points awarded: 10/10 [normalized score: 100%]</motion.p>
-                <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} transition={{ delay: 1 }} className="text-zinc-600 text-[10px]">&gt; notice: zero data retention (ZDR) active. no student data cached by openai.</motion.p>
-              </div>
-            </div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">By eliminating manual ledger entry, finance teams reclaim up to 40 hours a week. This allows institutions to reallocate headcount from data entry to strategic financial planning.</p>
           </motion.div>
-
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { icon: Zap, label: "auto-grading", desc: "MCQ, short answer, essay" },
-              { icon: MessageSquare, label: "ai_assistant", desc: "contextual help for teachers" },
-              { icon: Eye, label: "zero_retention", desc: "no student data cached" },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: 0.3 + i * 0.1 }}
-                className="p-4 border border-white/10 bg-zinc-950/50 text-center space-y-2"
-              >
-                <item.icon className="w-5 h-5 text-zinc-400 mx-auto" />
-                <div className="text-[10px] text-white font-bold uppercase tracking-tight">{item.label}</div>
-                <div className="text-[9px] text-zinc-600">{item.desc}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Uses GPT-4o-mini with system instruction sets for prompt sanitization",
-        "Zero-Data-Retention (ZDR) enforced via OpenAI organization-level agreements",
-        "Automated fallback to exact keyword-matching heuristics on API latency > 3s",
-        "AI helper dashboard available to teachers for lesson planning and content generation"
-      ]
-    },
-
-    // ──────────────────── SLIDE 05: SECURITY ────────────────────
-    {
-      id: "isolation",
-      tag: "architecture // security_matrix",
-      title: "cryptographic isolation",
-      sub: "every school operates in a hermetically sealed data silo. cross-tenant access is architecturally impossible.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { icon: Shield, title: "row-level security (rls)", desc: "every database query is programmatically restricted by tenant variables. postgres enforces isolation at the engine level — not the app level." },
-              { icon: Lock, title: "bcrypt password hashing", desc: "all user credentials are one-way hashed using bcrypt with cost factor 12. plaintext passwords never touch the database or logs." },
-              { icon: Layers, title: "popia & gdpr compliance", desc: "the institution is the 'responsible party' (controller). LUCY OS operates strictly as the 'operator' (processor), minimizing legal exposure." },
-              { icon: Database, title: "encrypted at rest & transit", desc: "TLS 1.3 encrypts all data in transit. AES-256 field-level encryption protects sensitive student records, financial data, and authentication tokens." },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.1, duration: 0.4 }}
-                whileHover={{ borderColor: "rgba(255,255,255,0.25)" }}
-                className="p-6 border border-white/10 bg-zinc-950/50 flex items-start gap-4 transition-all duration-300"
-              >
-                <item.icon className="w-6 h-6 text-zinc-400 shrink-0 mt-0.5" />
-                <div className="space-y-2">
-                  <h4 className="text-sm font-bold text-white uppercase tracking-tight">{item.title}</h4>
-                  <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            transition={{ delay: 0.5 }}
-            className="p-4 border border-white/5 bg-zinc-950/30 text-center"
-          >
-            <div className="text-[9px] text-zinc-600 uppercase tracking-widest">vulnerability disclosure: <span className="text-zinc-400">5-cn.net/security</span></div>
-          </motion.div>
-        </div>
-      ),
-      technicalAppendix: [
-        "RLS enforced via Prisma using `SET LOCAL app.current_tenant` session tokens",
-        "AES-256 field-level encryption for student PII, financial records, and API keys",
-        "Security headers: HSTS, X-Frame-Options, X-Content-Type-Options, CSP enforced",
-        "White-hat vulnerability submission pipeline at /security with SHA-256 fingerprinting"
-      ]
-    },
-
-    // ──────────────────── SLIDE 06: EXAM SYSTEM ────────────────────
-    {
-      id: "exams",
-      tag: "module // exam_engine_v2",
-      title: "examination architecture",
-      sub: "a complete exam lifecycle — from creation to AI-grading to parent notification — in one integrated pipeline.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-5 gap-2">
-            {[
-              { step: "01", label: "create", desc: "build exam" },
-              { step: "02", label: "assign", desc: "to classes" },
-              { step: "03", label: "execute", desc: "students take" },
-              { step: "04", label: "grade", desc: "AI + manual" },
-              { step: "05", label: "notify", desc: "parents emailed" },
-            ].map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.12 }}
-                className="p-3 border border-white/10 bg-zinc-950/50 text-center space-y-1 relative"
-              >
-                {i < 4 && <div className="absolute top-1/2 -right-2 w-2 h-px bg-white/20 hidden md:block" />}
-                <div className="text-[10px] text-zinc-600 font-mono">{s.step}</div>
-                <div className="text-xs font-bold text-white uppercase tracking-tight">{s.label}</div>
-                <div className="text-[9px] text-zinc-500">{s.desc}</div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent origin-left"
-          />
-
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-3">
-              <div className="text-[10px] text-zinc-500 font-mono font-bold">question_types_supported</div>
-              <div className="space-y-2">
-                {["multiple_choice", "short_answer", "long_essay", "file_upload", "true_false"].map((type, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.08 }} className="flex items-center gap-2 text-xs text-zinc-400">
-                    <span className="text-zinc-600 font-bold">+</span> {type}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            <div className="p-5 border border-white/10 bg-zinc-950/50 space-y-3">
-              <div className="text-[10px] text-zinc-500 font-mono font-bold">grading_modes</div>
-              <div className="space-y-2">
-                {[
-                  "ai_auto_grade — instant keyword + semantic analysis",
-                  "manual_override — teacher reviews and adjusts",
-                  "hybrid_mode — AI grades, teacher confirms",
-                  "rubric_based — custom scoring rubrics per question",
-                ].map((mode, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.08 }} className="text-[10px] text-zinc-400 leading-relaxed">
-                    <span className="text-zinc-600 font-bold">+</span> {mode}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+            <StatBlock label="hours_saved_weekly" value={40} suffix="h" delay={0.1} />
+            <StatBlock label="ledger_accuracy" value={99.99} suffix="%" delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Exam creation supports question banks with randomization options",
-        "PDF extraction: teachers can upload existing exam PDFs and AI will parse questions automatically",
-        "Time-limited exams with automatic submission on expiry",
-        "Gradebook view shows per-question analytics and class averages"
+        "Cryptographic webhooks connected directly to national payment gateways.",
+        "USSD push authorization confirms transaction in milliseconds without duplicate billing."
       ]
     },
-
-    // ──────────────────── SLIDE 07: PARENT PORTAL ────────────────────
     {
-      id: "parent_sync",
-      tag: "communication // parent_link_protocol",
-      title: "instant parent sync",
-      sub: "parents are connected to their child's academic life in real-time. grades, attendance, reports — delivered automatically.",
+      id: "finance_02",
+      tag: "financial // superiority",
+      title: "elimination of paper & printing",
+      sub: "transitioning to digital permission slips, assignments, and electronic records saves massive amounts of capital.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} className="text-zinc-400 text-sm leading-relaxed font-sans font-light">
-                the loop closes automatically upon grade submission. parent emails are identified, report credentials are generated, and notifications are dispatched — zero manual work required.
-              </motion.p>
-              <div className="space-y-3">
-                {[
-                  { icon: Mail, label: "email_dispatch", desc: "report cards with grades, attendance, and remarks via Resend API" },
-                  { icon: Bell, label: "absence_alerts", desc: "instant notification when a student is marked absent" },
-                  { icon: FileText, label: "report_access", desc: "parents log in to view full report history, download PDFs" },
-                  { icon: Lock, label: "magic_link_auth", desc: "secure passwordless login with 48-hour JWT token expiry" },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: false }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-3 text-xs text-zinc-400"
-                  >
-                    <item.icon className="w-4 h-4 text-zinc-500 shrink-0" />
-                    <div><span className="text-white font-bold">{item.label}:</span> {item.desc}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.3 }}
-              className="p-6 border border-white/10 bg-zinc-950/50 space-y-3"
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                <span className="text-[10px] text-zinc-500 font-mono">[parent_notification_log]</span>
-                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-2 h-2 bg-white/40 rounded-full" />
-              </div>
-              <div className="text-xs space-y-2 font-mono leading-relaxed">
-                <p><span className="text-white/60">to:</span> "parent@email.com"</p>
-                <p><span className="text-white/60">subject:</span> "report_card — term_2_2026"</p>
-                <p><span className="text-white/60">payload:</span> grades, attendance_%, teacher_remarks</p>
-                <p><span className="text-white/60">status:</span> <span className="text-white/70 font-bold">DELIVERED ✓</span></p>
-              </div>
-            </motion.div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Mid-sized institutions historically spend thousands of dollars annually on physical supplies. Digitizing workflows boosts bottom-line profitability and positions the school as an ESG leader.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={FileText} title="digital documents" desc="visually stunning, legally compliant digital documents generated on the fly." delay={0.1} />
+            <FeatureItem icon={Lock} title="cryptographic signatures" desc="secure hashes bind parent identity to consent forms." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Email engine: Resend API with domain verification and DKIM signing",
-        "Magic link auth: signed JWT tokens with 48-hour expiry, single-use",
-        "Rate limiting: max 5 notifications per parent per hour to prevent spam",
-        "Parent portal includes: grades, attendance history, report downloads, teacher contact"
+        "Built-in PDF rendering engine.",
+        "Digital signatures captured via mobile app using secure cryptographic hashes."
       ]
     },
-
-    // ──────────────────── SLIDE 08: ROLE ARCHITECTURE ────────────────────
     {
-      id: "roles",
-      tag: "access_control // rbac_hierarchy",
-      title: "unified role system",
-      sub: "five distinct permission tiers with granular access controls — from platform superadmin to student self-service.",
-      content: (
-        <div className="space-y-4 w-full text-left">
-          {[
-            { role: "SUPERADMIN", code: "00", desc: "platform-level control. provision schools, suspend tenants, manage billing, access all audit logs. the master key.", perms: "full_system_access" },
-            { role: "OWNER", code: "01", desc: "school configuration, logo, subscription management, director appointments, and institutional settings.", perms: "school_config + billing" },
-            { role: "PRINCIPAL / DIRECTOR", code: "02", desc: "manage teachers, students, classes, marklists, reports, events, timetables, and school finance.", perms: "academic + operations" },
-            { role: "TEACHER", code: "03", desc: "conduct classes, create and grade exams, log attendance, write student remarks, and manage homeroom.", perms: "classroom + grading" },
-            { role: "PARENT", code: "04", desc: "view child report cards, attendance records, download PDFs, and communicate with teachers.", perms: "read_only + contact" },
-          ].map((r, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
-              whileHover={{ x: 4, borderColor: "rgba(255,255,255,0.2)" }}
-              className="flex items-start gap-4 p-4 border border-white/10 bg-zinc-950/50 transition-all duration-300 cursor-default"
-            >
-              <div className="shrink-0 w-10 h-10 border border-white/10 flex items-center justify-center text-[10px] text-zinc-500 font-mono font-bold">{r.code}</div>
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-bold text-white uppercase tracking-tight">{r.role}</div>
-                  <div className="text-[8px] text-zinc-600 font-mono">{r.perms}</div>
-                </div>
-                <p className="text-[10px] text-zinc-500 leading-relaxed font-sans">{r.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      ),
-      technicalAppendix: [
-        "RBAC: Next.js middleware + database role claims validated on every request",
-        "JWT payload: tenant ID, user role, session expiry, and permission flags",
-        "Student self-service portal: view grades, attendance, timetable, and take exams",
-        "API rate limiting scales by role — superadmin has unlimited capacity"
-      ]
-    },
-
-    // ──────────────────── SLIDE 09: BILLING & STRIPE ────────────────────
-    {
-      id: "billing",
-      tag: "ledger // financial_infrastructure",
-      title: "billing & payments",
-      sub: "stripe-powered subscription management for platform payments. in-app student invoicing for school-level finances.",
+      id: "finance_03",
+      tag: "financial // superiority",
+      title: "real-time profit & loss tracking",
+      sub: "log daily expenses against incoming tuition revenue for a live view of the school's financial health.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="text-[10px] text-zinc-500 font-mono font-bold border-b border-white/5 pb-2">platform_subscription // stripe</div>
-              {[
-                "secure card storage via Stripe Elements — we never see card numbers",
-                "encrypted webhooks verify payment status in real-time",
-                "automatic invoice generation on subscription renewal",
-                "owners/directors confirm monthly payments in-dashboard",
-                "PCI DSS Level 1 compliance — highest security standard",
-              ].map((item, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.08 }} className="flex gap-2 text-xs text-zinc-400">
-                  <span className="text-zinc-600 font-bold shrink-0">+</span> {item}
-                </motion.div>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.3 }}
-              className="p-6 border border-white/10 bg-zinc-950/50 space-y-3 font-mono text-xs"
-            >
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-zinc-400 font-bold">INVOICE_ID // 9872</span>
-                <span className="px-2 py-0.5 bg-zinc-800/50 text-white/70 border border-white/20 text-[9px] font-bold">PAID</span>
-              </div>
-              <div className="flex justify-between"><span>student: "liora_van_zyl"</span><span>total: $1,250.00</span></div>
-              <div className="flex justify-between"><span>category: "tuition_fee"</span><span>term: "T2_2026"</span></div>
-              <div className="text-[10px] text-zinc-600 pt-2 border-t border-white/5">payment verified via stripe webhook // ledger synchronized</div>
-            </motion.div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Principals no longer wait for end-of-month reports. Immediate visibility prevents overspending and allows agile, data-driven campus management.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Activity} title="live dashboard" desc="instant visual charts." delay={0.1} />
+            <FeatureItem icon={Database} title="query engine" desc="aggregates thousands of micro-transactions." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Stripe integration: Customer portal, payment methods, invoices, and webhook verification",
-        "Card data handled exclusively by Stripe — LUCY never processes or stores card numbers",
-        "School-level billing: tuition, materials, transport, extracurricular activities",
-        "Audit trail: all financial edits are logged with timestamp and editor ID"
+        "Powered by a high-performance analytics query engine on PostgreSQL cluster.",
+        "Aggregates micro-transactions instantly via React/Next.js frontend."
       ]
     },
-
-    // ──────────────────── SLIDE 10: REPORTS & ANALYTICS ────────────────────
     {
-      id: "reports",
-      tag: "output // report_generation_engine",
-      title: "reports & analytics",
-      sub: "automated report card generation, attendance analytics, class performance breakdowns, and exportable PDF reports.",
+      id: "finance_04",
+      tag: "financial // superiority",
+      title: "eradication of lost revenue",
+      sub: "automated sms and push notification fee reminders drastically increase on-time payments.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { title: "report_cards", desc: "auto-generated per student with grades, attendance %, teacher remarks, and class rank. downloadable as PDF.", icon: FileText },
-              { title: "attendance_analytics", desc: "daily, weekly, and term-level attendance breakdowns. absence patterns flagged automatically with parent alerts.", icon: BarChart3 },
-              { title: "class_performance", desc: "subject-level analytics showing averages, pass rates, and grade distribution across all enrolled students.", icon: Activity },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.15 }}
-                whileHover={{ y: -3, borderColor: "rgba(255,255,255,0.2)" }}
-                className="p-6 border border-white/10 bg-zinc-950/50 space-y-3 transition-all duration-300 cursor-default"
-              >
-                <item.icon className="w-6 h-6 text-zinc-400" />
-                <div className="text-xs font-bold text-white uppercase tracking-tight">{item.title}</div>
-                <p className="text-[10px] text-zinc-500 leading-relaxed font-sans">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            <StatBlock label="reports_generated" value={12400} suffix="+" delay={0.1} />
-            <StatBlock label="avg_generation" value={3} suffix="s" delay={0.2} />
-            <StatBlock label="export_formats" value={2} delay={0.3} />
-            <StatBlock label="data_points" value={50} suffix="+" delay={0.4} />
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Consistent cash flow is the lifeblood of any private institution. Automating collections avoids awkward phone calls and increases on-time payments by up to 25%.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <StatBlock label="payment_increase" value={25} suffix="%" delay={0.1} />
+            <FeatureItem icon={Bell} title="push & sms" desc="localized reminders straight to parent devices." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Report cards compile: student info, per-subject grades, GPA, class rank, attendance %, conduct remarks",
-        "PDF generation uses server-side rendering for consistent formatting across devices",
-        "Student-level reports accessible to parents via the parent portal with magic link auth",
-        "Director-level analytics dashboard shows school-wide KPIs and trends"
+        "Automated background cron jobs running on edge servers.",
+        "Programmatically fires personalized, localized SMS and push notifications to parent devices."
       ]
     },
 
-    // ──────────────────── SLIDE 11: LIVE ENDPOINTS ────────────────────
+    // ──────────────────── EMPOWERING EDUCATORS ────────────────────
     {
-      id: "telemetry",
-      tag: "telemetry // active_endpoints",
-      title: "live system telemetry",
-      sub: "inspect the operational nodes of our production infrastructure. every endpoint is monitored and accessible.",
+      id: "edu_05",
+      tag: "empowering // educators",
+      title: "ai-assisted exam generation",
+      sub: "built-in AI assistant automatically generates high-fidelity, curriculum-aligned exam questions.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }} className="text-zinc-500 font-mono text-xs">&gt; querying production endpoints...</motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-            {[
-              { label: "core_portal", url: "https://5-cn.net/", color: "white/70" },
-              { label: "register_node", url: "https://5-cn.net/register", color: "zinc-400" },
-              { label: "security_vault", url: "https://5-cn.net/security", color: "zinc-400" },
-              { label: "contact_uplink", url: "https://5-cn.net/contact", color: "zinc-400" },
-              { label: "pricing_matrix", url: "https://5-cn.net/pricing", color: "zinc-400" },
-              { label: "presentation_deck", url: "https://5-cn.net/deck", color: "zinc-400" },
-            ].map((ep, i) => (
-              <motion.a
-                key={i}
-                href={ep.url}
-                target="_blank"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ borderColor: "rgba(255,255,255,0.3)", x: 3 }}
-                className="p-4 border border-white/10 bg-zinc-950/30 transition-all flex items-center justify-between"
-              >
-                <div>
-                  <span className={`text-${ep.color} font-bold`}>{ep.label}</span> <br />
-                  <span className="text-[10px] text-zinc-600">{ep.url}</span>
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-zinc-600" />
-              </motion.a>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-4 pt-2">
-            <StatBlock label="edge_regions" value={12} delay={0.1} />
-            <StatBlock label="cold_start_ms" value={180} suffix="ms" delay={0.2} />
-            <StatBlock label="ssl_grade" value={100} suffix="%" delay={0.3} />
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Teacher burnout is the highest hidden cost in education. State-of-the-art AI tools improve retention rates, reduce hiring costs, and elevate instructional quality.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Cpu} title="LLM integration" desc="generates pedagogy-aligned questions." delay={0.1} />
+            <FeatureItem icon={Shield} title="zero data retention" desc="strict privacy APIs." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Deployment: Vercel serverless with globally distributed edge network",
-        "DNS: custom root mapping via Cloudflare with automatic SSL",
-        "Edge middleware filters requests by authentication status and role",
-        "API monitoring: uptime checks every 60 seconds with Slack/Discord alerts"
+        "Integrates directly with enterprise LLMs via zero-data-retention APIs.",
+        "Pre-configured prompt engineering aligned with national standards, exportable to PDF."
       ]
     },
-
-    // ──────────────────── SLIDE 12: PRICING ────────────────────
     {
-      id: "pricing",
-      tag: "pricing // subscription_tiers",
-      title: "scalable saas pricing",
-      sub: "flexible tiers from free pilot evaluation to enterprise-grade multi-school networks. currently offering 40% off core matrix.",
+      id: "edu_06",
+      tag: "empowering // educators",
+      title: "lightning-fast digital roll call",
+      sub: "take attendance in seconds from any phone or laptop. instantly synced to central database.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { tier: "Pilot Node", price: "Free", period: "up to 3 months", desc: "full access for a single school. no credit card required.", features: ["1 institution", "500 students max", "all core features", "email support"], highlight: false },
-              { tier: "Core Matrix", price: "$149", originalPrice: "$250", period: "/ month", desc: "production-grade deployment with AI, parent portal, and priority support.", features: ["unlimited students", "all roles + AI", "parent portal", "priority support", "99.9% SLA"], highlight: true },
-              { tier: "Enterprise", price: "Custom", period: "per institution", desc: "multi-school networks, custom integrations, dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
-            ].map((t, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: i * 0.12 }}
-                whileHover={{ y: -4 }}
-                className={`p-6 border space-y-4 relative overflow-hidden transition-all duration-300 cursor-default ${t.highlight ? "border-white/25 bg-zinc-950/60" : "border-white/10 bg-zinc-950/50"}`}
-              >
-                {t.highlight && (
-                  <>
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                    <motion.div
-                      animate={{ scale: [1, 1.08, 1], boxShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 12px rgba(255,255,255,0.2)", "0 0 0px rgba(255,255,255,0)"] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="absolute top-3 right-3 bg-white text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest z-10"
-                    >
-                      40%_off
-                    </motion.div>
-                  </>
-                )}
-                <div className="text-[10px] text-zinc-500">{t.highlight ? "recommended" : `tier_0${i + 1}`}</div>
-                <h3 className="text-lg font-bold text-white uppercase tracking-tighter">{t.tier}</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-white">{t.price}</span>
-                  {t.originalPrice && <span className="text-sm line-through text-zinc-500">{t.originalPrice}</span>}
-                  <span className="text-xs text-zinc-500">{t.period}</span>
-                </div>
-                <p className="text-[10px] text-zinc-500 leading-relaxed font-sans">{t.desc}</p>
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
-                  {t.features.map((f, j) => (
-                    <div key={j} className="flex gap-2 text-[10px] text-zinc-400">
-                      <span className="text-zinc-600 font-bold">+</span> {f}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Reclaiming just 10 minutes per class equates to hundreds of hours of recovered instructional time per year. Classes start faster; front office is never bottlenecked.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <StatBlock label="time_recovered_daily" value={10} suffix="m" delay={0.1} />
+            <FeatureItem icon={Zap} title="offline-first sync" desc="works even if school Wi-Fi drops." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Pilot: 4-month free evaluation, converts to paid or deactivates after trial period",
-        "Core Matrix: includes all Resend integrations, PostgreSQL backups, and standard support",
-        "Enterprise: SLA 99.99%, custom billing cycles (quarterly/annually), dedicated infrastructure",
-        "All plans include: POPIA/GDPR compliance, automatic SSL, and data export on demand"
+        "Offline-first Progressive Web App architecture.",
+        "Local cache stores data and background-syncs the moment connectivity is restored."
+      ]
+    },
+    {
+      id: "edu_07",
+      tag: "empowering // educators",
+      title: "automated grade computation",
+      sub: "engine automatically calculates weighted averages, curves, and updates database in real-time.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Automating the underlying mathematics eliminates friction, removes human error, and empowers teachers to finalize class scores effortlessly.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={BarChart3} title="dynamic curves" desc="mathematical uniformity across classrooms." delay={0.1} />
+            <FeatureItem icon={Settings} title="algorithm builder" desc="flexible grading weight formulas." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Grading engine utilizes a highly flexible algorithm builder.",
+        "Administrators pre-define formulas globally (e.g., 30% Assessment, 70% Final)."
+      ]
+    },
+    {
+      id: "edu_08",
+      tag: "empowering // educators",
+      title: "tamper-proof academic integrity",
+      sub: "strict row-level security and immutable audit logs prevent unauthorized tampering of grades.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Guaranteeing that grades cannot be maliciously altered builds immense trust with accreditation bodies and university admissions boards.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Shield} title="row-level security" desc="blocked unauthorized queries." delay={0.1} />
+            <FeatureItem icon={TerminalIcon} title="audit logs" desc="immutable forensic tracking." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Implemented natively at the PostgreSQL database kernel with RLS.",
+        "Every mutation triggers an immutable audit log storing User ID, Timestamp, Old/New Value."
       ]
     },
 
-    // ──────────────────── SLIDE 13: CTA ────────────────────
+    // ──────────────────── UNMATCHED PARENT ENGAGEMENT ────────────────────
     {
-      id: "cta",
-      tag: "initialize_session // deployment",
-      title: "initialize your node",
-      sub: "deploy the future of academic management. provision your school in under 90 seconds.",
+      id: "parent_09",
+      tag: "parent // engagement",
+      title: "real-time academic transparency",
+      sub: "proactive visibility into current grades, assignments, and attendance via parent portal.",
       content: (
-        <div className="space-y-8 w-full max-w-xl">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false }}
-            className="text-zinc-300 text-base md:text-lg leading-relaxed font-sans font-light"
-          >
-            connect with a representative, secure your custom portal, and provision your student terminals. the setup takes less than 2 minutes.
-          </motion.p>
-
-          <div className="grid grid-cols-3 gap-4">
-            <StatBlock label="setup_time" value={90} suffix="s" delay={0.1} />
-            <StatBlock label="schools_live" value={15} suffix="+" delay={0.2} />
-            <StatBlock label="students_served" value={4200} suffix="+" delay={0.3} />
-          </div>
-
-          <div className="flex flex-wrap gap-4 pt-4">
-            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-              <Button 
-                onClick={() => setShowConfetti(true)}
-                className="h-12 px-10 bg-white hover:bg-zinc-200 text-black font-bold rounded-none text-xs uppercase tracking-widest shadow-lg shadow-white/10 transition-all"
-              >
-                deploy_matrix_now
-              </Button>
-            </motion.div>
-            <Link href="/contact" target="_blank">
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                <Button variant="outline" className="h-12 px-8 rounded-none border border-white/10 text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all font-bold">
-                  schedule_consultation
-                </Button>
-              </motion.div>
-            </Link>
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Continuous feedback loops result in home-based encouragement, drastically improving school pass rates, student confidence, and prestige.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Eye} title="live visibility" desc="grades pushed with zero delay." delay={0.1} />
+            <FeatureItem icon={Database} title="unified database" desc="instant synchronization." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Self-provisioning: database schema initialization completes in ~90 seconds",
-        "Post-deployment: customer success coordinator schedules a director training walkthrough",
-        "Data migration: CSV import tools available for existing student and grade records",
-        "Support channels: email, in-app help center, and Discord community"
+        "Operates on a single unified database.",
+        "WebSocket connections push live data directly to the Parent's mobile dashboard."
+      ]
+    },
+    {
+      id: "parent_10",
+      tag: "parent // engagement",
+      title: "centralized, secure communication",
+      sub: "secure internal messaging replaces chaotic WhatsApp groups, protecting teacher privacy.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Protecting off-hours peace of staff is crucial. Centralizing communication ensures professional, logged, and moderated interactions.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={MessageSquare} title="secure chat" desc="end-to-end encrypted protocols." delay={0.1} />
+            <FeatureItem icon={Clock} title="do not disturb" desc="automated muting for off-hours." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "End-to-end encrypted chat protocols.",
+        "High-level oversight capabilities and 'Do Not Disturb' hours."
+      ]
+    },
+    {
+      id: "parent_11",
+      tag: "parent // engagement",
+      title: "instant absence alerts",
+      sub: "automated push notifications immediately inform parents if a student is absent or late.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Student safety is the ultimate liability. Instant alerts provide peace of mind, cementing long-term institutional loyalty.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <StatBlock label="delivery_speed" value={3} suffix="s" delay={0.1} />
+            <FeatureItem icon={Bell} title="FCM & SMS" desc="bypasses standard processing queues." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "High-priority queue architecture.",
+        "Executes Firebase Cloud Messaging (FCM) and SMS gateways within 3 seconds of input."
+      ]
+    },
+    {
+      id: "parent_12",
+      tag: "parent // engagement",
+      title: "secure digital authorizations",
+      sub: "legally sign field trip slips, medical waivers, and transport agreements directly via mobile.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Digital authorizations achieve 100% compliance in a fraction of the time, reducing legal and operational friction.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Lock} title="binding signatures" desc="exact UTC timestamps and IP records." delay={0.1} />
+            <StatBlock label="compliance_rate" value={100} suffix="%" delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Legally binding digital signature protocols.",
+        "Records exact UTC timestamp, IP address, and authenticated user token immutably."
+      ]
+    },
+
+    // ──────────────────── STUDENT AGENCY ────────────────────
+    {
+      id: "student_13",
+      tag: "student // agency",
+      title: "the gamified student hub",
+      sub: "beautifully designed dashboard for tracking gpa, assignments, and educational trajectory.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Gamification shifts the burden of motivation. App-like interfaces raise internal accountability and school-wide performance.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Palette} title="consumer UI" desc="fluid, engaging react/framer motion apps." delay={0.1} />
+            <FeatureItem icon={BarChart3} title="data visualizers" desc="interactive timeline and grade charts." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Student UI built using React/Framer Motion.",
+        "Data visualizers render complex grade arrays into highly readable, interactive mobile charts."
+      ]
+    },
+    {
+      id: "student_14",
+      tag: "student // agency",
+      title: "dynamic digital timetables",
+      sub: "live timetables update instantly if a room changes or a substitute teacher is assigned.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Hallway confusion is eliminated. An informed student body moves efficiently, optimizing every minute of the school day.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Calendar} title="relational graph" desc="mutations propagate instantly." delay={0.1} />
+            <FeatureItem icon={Zap} title="zero refresh" desc="UI updates without page reloads." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Scheduling engine uses a relational graph matrix.",
+        "Mutations propagate instantly across the network updating UI without page refreshes."
+      ]
+    },
+
+    // ──────────────────── ULTIMATE ADMIN CONTROL ────────────────────
+    {
+      id: "admin_15",
+      tag: "administrative // control",
+      title: "one-click report cards",
+      sub: "standardized transcripts generated for the entire school instantly.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Eliminates three days of administrative overtime, wipes out transcription errors, and delivers flawless documents to parents.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <StatBlock label="generation_time" value={60} suffix="s" delay={0.1} />
+            <FeatureItem icon={FileText} title="vectorized PDFs" desc="compiles thousands of data points." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Scalable headless browser architecture on the server side.",
+        "Compiles thousands of data points into perfectly formatted PDFs in parallel under 60 seconds."
+      ]
+    },
+    {
+      id: "admin_16",
+      tag: "administrative // control",
+      title: "total hardware agnosticism",
+      sub: "modern cloud application runs flawlessly on any device with an internet connection.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">No need for expensive IT departments or server rooms. Capital expenditure on infrastructure drops to zero.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <StatBlock label="infrastructure_cost" value={0} prefix="$" delay={0.1} />
+            <FeatureItem icon={Globe} title="global edge network" desc="responsive on any device." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Deployed as a serverless web application via Vercel's global edge network.",
+        "Serves optimized code directly to user browser across PC, Mac, iOS, Android."
+      ]
+    },
+    {
+      id: "admin_17",
+      tag: "administrative // control",
+      title: "granular staff accountability",
+      sub: "microscopic visibility into staff performance, grading speeds, and attendance compliance.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Activity} title="telemetry data" desc="tracking exact API request timestamps." delay={0.1} />
+            <FeatureItem icon={BarChart3} title="KPI visualizer" desc="indisputable compliance metrics." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Backend telemetry aggregates exact timestamps for API requests (grading, attendance).",
+        "Data feeds into an objective KPI visualizer for leadership dashboards."
+      ]
+    },
+    {
+      id: "admin_18",
+      tag: "administrative // control",
+      title: "zero data loss & backups",
+      sub: "heavily encrypted and backed up in real-time to enterprise-grade cloud databases.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Guaranteeing absolute permanence of decades of records protects the school from catastrophic liability and natural disasters.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Database} title="continuous PITR" desc="point-in-time recovery." delay={0.1} />
+            <FeatureItem icon={Lock} title="geographic distribution" desc="survives regional failures." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "PostgreSQL backend utilizes continuous Point-in-Time Recovery (PITR).",
+        "Automated hourly snapshots distributed across multiple geographic availability zones."
+      ]
+    },
+    {
+      id: "admin_19",
+      tag: "administrative // control",
+      title: "conflict-free timetables",
+      sub: "digital scheduling engine prevents double-booking teachers or assigning two classes to one room.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Eliminates weeks of trial and error, optimizes campus space, and guarantees balanced and fair teacher workloads.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Calendar} title="constraint algorithm" desc="evaluates capacity and availability." delay={0.1} />
+            <FeatureItem icon={Zap} title="instant flagging" desc="identifies impossible configurations." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "Schedule builder incorporates a constraint-satisfaction algorithm.",
+        "Evaluates hard constraints simultaneously to suggest optimal academic week routing."
+      ]
+    },
+    {
+      id: "admin_20",
+      tag: "administrative // control",
+      title: "premium brand perception",
+      sub: "a state-of-the-art digital ecosystem elevates the status of the entire institution.",
+      content: (
+        <div className="space-y-6 w-full text-left">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
+            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-zinc-400">Technology is a massive differentiator. It justifies premium tuition rates and drives enrollment by signaling modern, secure excellence.</p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <FeatureItem icon={Palette} title="premium UI/UX" desc="silicon valley design standards." delay={0.1} />
+            <FeatureItem icon={Eye} title="institutional prestige" desc="subconscious reinforcement of trust." delay={0.2} />
+          </div>
+        </div>
+      ),
+      technicalAppendix: [
+        "UI/UX built on premium design systems used by Silicon Valley tech giants.",
+        "Smooth animations and crystal-clear typography subconsciously reinforce quality."
       ]
     }
   ];
