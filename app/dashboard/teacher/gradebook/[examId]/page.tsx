@@ -173,7 +173,7 @@ export default function GradebookPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ isPublished: true, isLocked: true })
             });
-            setAlertConfig({ title: "Results Published", message: "Broadcasting finalized data...", isOpen: true, variant: "success" });
+            setAlertConfig({ title: "Results Published", message: "Broadcasting finalized data... Parents should check their spam folders for the reports.", isOpen: true, variant: "success" });
             fetchData();
         } catch (e) {
             console.error(e);
