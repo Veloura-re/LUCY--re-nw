@@ -93,31 +93,14 @@ function DataBar({ value, label, delay = 0 }: { value: number; label: string; de
 }
 
 // ─── Boot Sequence ─────────────────────────────────────────────────────────────
-const BOOT_LINES = [
-  "> LUCY_OS_v1.0 INITIALIZING...",
-  "> LOADING SYSTEM CONFIGURATION....... [OK]",
-  "> SECURE STORAGE LAYER............... [OK]",
-  "> PREPARING USER WORKSPACES.......... [OK]",
-  "> ANALYTICS ENGINE ONLINE............ [OK]",
-  "> ALL SYSTEMS NOMINAL",
-  "> LAUNCHING INTERFACE_",
-];
-
 function BootSequence({ onDone }: { onDone: () => void }) {
-  const [lines, setLines] = useState<string[]>([]);
   const [done, setDone] = useState(false);
   useEffect(() => {
-    let i = 0;
-    const add = () => {
-      if (i < BOOT_LINES.length) {
-        setLines(prev => [...prev, BOOT_LINES[i]]);
-        i++;
-        setTimeout(add, i === BOOT_LINES.length ? 600 : 250 + Math.random() * 150);
-      } else {
-        setTimeout(() => { setDone(true); setTimeout(onDone, 600); }, 400);
-      }
-    };
-    setTimeout(add, 300);
+    const timer = setTimeout(() => {
+      setDone(true);
+      setTimeout(onDone, 500);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, [onDone]);
 
   return (
@@ -125,27 +108,23 @@ function BootSequence({ onDone }: { onDone: () => void }) {
       {!done && (
         <motion.div
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[999] bg-black flex flex-col justify-center px-12 md:px-24 font-mono"
+          transition={{ duration: 0.5 }}
+          className="fixed inset-0 z-[999] bg-black flex items-center justify-center"
         >
-          <div className="space-y-1.5 max-w-2xl">
-            {lines.map((line, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.1 }}
-                className={cn("text-xs md:text-sm tracking-tight", i === lines.length - 1 ? "text-white" : "text-zinc-600")}
-              >
-                {line}
-              </motion.div>
-            ))}
-            <motion.span
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ repeat: Infinity, duration: 0.6 }}
-              className="inline-block w-2 h-3 bg-white ml-1"
-            />
-          </div>
+          <motion.div
+            animate={{ 
+              scale: [1, 1.5, 0.5, 1],
+              rotate: [0, 90, 180, 270, 360],
+              borderRadius: ["20%", "50%", "20%"]
+            }}
+            transition={{
+              duration: 1.5,
+              ease: "easeInOut",
+              times: [0, 0.2, 0.5, 0.8, 1],
+              repeat: Infinity,
+            }}
+            className="w-12 h-12 bg-white"
+          />
         </motion.div>
       )}
     </AnimatePresence>
