@@ -122,7 +122,7 @@ export function WelcomeAnnouncement() {
                 finally, <span className="text-emerald-400">its up!</span>
               </h2>
               <p className="text-xs text-zinc-500 max-w-md mx-auto leading-relaxed">
-                lucy academia version 1.0 is initialized and online. evaluate the core feature specifications logged below.
+                LUCY OS version 1.0 is initialized and online. evaluate the core feature specifications logged below.
               </p>
             </div>
 
@@ -182,7 +182,7 @@ export function WelcomeAnnouncement() {
                 <a href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-red-500/20 bg-red-950/10 text-red-400 hover:bg-red-500/20 transition-all">
                   youtube
                 </a>
-                <a href="https://tiktok.com/@lucy.academia" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-pink-500/20 bg-pink-950/10 text-pink-400 hover:bg-pink-500/20 transition-all">
+                <a href="https://tiktok.com/@lucy.os" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-pink-500/20 bg-pink-950/10 text-pink-400 hover:bg-pink-500/20 transition-all">
                   tiktok
                 </a>
                 <a href="https://www.instagram.com/lucy_devs/" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-orange-500/20 bg-orange-950/10 text-orange-400 hover:bg-orange-500/20 transition-all">

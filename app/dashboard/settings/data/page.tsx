@@ -162,7 +162,7 @@ export default function DataSecuritySettings() {
                         doc.setFontSize(8);
                         doc.setTextColor(148, 163, 184);
                         doc.text(str, pageWidth / 2, pageHeight - 10, { align: "center" });
-                        doc.text("SECURE LUCY ACADEMIA EXPORT", 14, pageHeight - 10);
+                        doc.text("SECURE LUCY OS EXPORT", 14, pageHeight - 10);
                     }
                 });
                 
@@ -332,7 +332,7 @@ export default function DataSecuritySettings() {
             }
 
             const content = await zip.generateAsync({ type: "blob" });
-            saveAs(content, "LUCY_ACADEMIA_Complete_Archive.zip");
+            saveAs(content, "LUCY OS_Complete_Archive.zip");
             
             setAlertConfig({ title: "Archive Generated", message: "Your complete PDF archive with all formal documents has been successfully downloaded.", isOpen: true, variant: "success" });
         } catch (err: any) {

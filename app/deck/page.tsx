@@ -175,7 +175,7 @@ export default function PresentationDeck() {
     {
       id: "initialize",
       tag: "initialize_node // system_brief",
-      title: "LUCY ACADEMIA",
+      title: "LUCY OS",
       sub: "the next-generation cognitive architecture for institutional management. bridging school owners, directors, teachers, parents, and students under one secure, unified platform.",
       content: (
         <div className="space-y-8 w-full">
@@ -187,7 +187,7 @@ export default function PresentationDeck() {
                 <span className="text-[8px] text-zinc-500 uppercase tracking-widest">system_core // v3.2.0</span>
               </div>
               <Typewriter lines={[
-                "> kernel_boot: LUCY_ACADEMIA initialized",
+                "> kernel_boot: LUCY OS initialized",
                 "> modules: [grading, attendance, billing, ai_engine, parent_portal]",
                 "> security: RLS_ENFORCED // POPIA_COMPLIANT",
                 "> uptime: 99.9% SLA guaranteed",
@@ -278,7 +278,7 @@ export default function PresentationDeck() {
             transition={{ delay: 0.5 }}
             className="text-[10px] text-zinc-600 text-center uppercase tracking-widest"
           >
-            lucy_academia eliminates all three vectors simultaneously
+            LUCY OS eliminates all three vectors simultaneously
           </motion.p>
         </div>
       ),
@@ -407,7 +407,7 @@ export default function PresentationDeck() {
             {[
               { icon: Shield, title: "row-level security (rls)", desc: "every database query is programmatically restricted by tenant variables. postgres enforces isolation at the engine level — not the app level." },
               { icon: Lock, title: "bcrypt password hashing", desc: "all user credentials are one-way hashed using bcrypt with cost factor 12. plaintext passwords never touch the database or logs." },
-              { icon: Layers, title: "popia & gdpr compliance", desc: "the institution is the 'responsible party' (controller). lucy_academia operates strictly as the 'operator' (processor), minimizing legal exposure." },
+              { icon: Layers, title: "popia & gdpr compliance", desc: "the institution is the 'responsible party' (controller). LUCY OS operates strictly as the 'operator' (processor), minimizing legal exposure." },
               { icon: Database, title: "encrypted at rest & transit", desc: "TLS 1.3 encrypts all data in transit. AES-256 field-level encryption protects sensitive student records, financial data, and authentication tokens." },
             ].map((item, i) => (
               <motion.div
@@ -947,7 +947,7 @@ export default function PresentationDeck() {
       <nav className="border-b border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-black/85 backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2 group">
           <Logo className="w-8 h-8" />
-          <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
+          <span className="font-bold text-lg tracking-tighter text-white">LUCY OS</span>
         </Link>
         <div className="flex items-center gap-4">
           <div className="text-[10px] text-zinc-500 uppercase tracking-widest hidden md:flex items-center gap-2">

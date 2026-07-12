@@ -38,7 +38,7 @@ export default function Features() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_academia</span>
+                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
                     </Link>
                     <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
@@ -103,7 +103,7 @@ export default function Features() {
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold uppercase tracking-tighter">Cryptographic Transparency</h2>
                                 <p className="text-zinc-500 text-sm leading-relaxed">
-                                    every action within lucy_academia is recorded on a cryptographically verifiable ledger. audits can be performed in real-time without compromising the integrity of the scholar vault.
+                                    every action within lucy_os is recorded on a cryptographically verifiable ledger. audits can be performed in real-time without compromising the integrity of the scholar vault.
                                 </p>
                                 <div className="space-y-3">
                                     {["audit_integrity", "encryption_coverage", "api_uptime"].map((label, i) => (
