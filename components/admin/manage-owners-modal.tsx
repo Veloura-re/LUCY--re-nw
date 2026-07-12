@@ -85,7 +85,7 @@ export function ManageOwnersModal({ isOpen, onClose, schoolId, schoolName }: Man
             
             setNewEmail("");
             fetchOwners();
-            setAlertConfig({ title: "Invite Created", message: `An invitation has been created for ${newEmail}.`, isOpen: true, variant: "success" });
+            setAlertConfig({ title: "Invite Created", message: `An invitation has been created for ${newEmail}. Please remind them to check their spam/junk folder.`, isOpen: true, variant: "success" });
             
             if (!data.emailSent) {
                 setTimeout(() => {
