@@ -98,17 +98,28 @@ function BootSequence({ onDone }: { onDone: () => void }) {
   const [percent, setPercent] = useState(0);
 
   useEffect(() => {
+    const hasBooted = sessionStorage.getItem("lucy_booted");
+    if (hasBooted) {
+      setDone(true);
+      onDone();
+      return;
+    }
+
     let startTime = Date.now();
-    const duration = 2200;
+    const duration = 2000;
     
     const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const p = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setPercent(p);
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
       
-      if (p < 100) {
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      setPercent(Math.floor(easeProgress * 100));
+      
+      if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
+        sessionStorage.setItem("lucy_booted", "true");
         setTimeout(() => {
           setDone(true);
           setTimeout(onDone, 600);
@@ -127,13 +138,15 @@ function BootSequence({ onDone }: { onDone: () => void }) {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[999] bg-black flex flex-col items-center justify-center font-mono"
         >
-          <div className="relative text-7xl md:text-[12rem] font-bold tracking-tighter text-zinc-900 select-none uppercase">
+          <div className="relative inline-block text-7xl md:text-[12rem] font-bold tracking-tighter text-zinc-900 select-none uppercase leading-none">
             LUCY
             <div 
-              className="absolute top-0 left-0 bottom-0 text-white overflow-hidden whitespace-nowrap select-none uppercase"
-              style={{ width: `${percent}%` }}
+              className="absolute bottom-0 left-0 right-0 overflow-hidden"
+              style={{ height: `${percent}%` }}
             >
-              LUCY
+              <div className="absolute bottom-0 left-0 right-0 text-white text-center flex justify-center whitespace-nowrap">
+                LUCY
+              </div>
             </div>
           </div>
           <div className="mt-8 text-zinc-500 text-sm md:text-base tracking-widest font-light">

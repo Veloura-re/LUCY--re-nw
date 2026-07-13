@@ -699,7 +699,6 @@ export default function PresentationDeck() {
   }, [showConfetti]);
 
   const slide = slides[currentSlide];
-  const scrambledTitle = useScramble(slide.title, currentSlide);
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-x-hidden overflow-y-auto relative">
@@ -772,7 +771,7 @@ export default function PresentationDeck() {
                 transition={{ delay: 0.15, duration: 0.5 }}
                 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white pb-3"
               >
-                <GlitchText>{scrambledTitle}</GlitchText>
+                {slide.title}
               </motion.h1>
               
               <motion.p
