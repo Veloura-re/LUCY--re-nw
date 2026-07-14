@@ -125,7 +125,17 @@ export async function POST(request: Request) {
             });
         }
 
-        return NextResponse.json({ 
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'AUTO_GENERATE_TIMETABLE', resourceType: 'timetable', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ 
             success: true, 
             generatedCount: newTimetableEntries.length,
             unassignedCount,

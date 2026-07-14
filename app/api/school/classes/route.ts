@@ -163,7 +163,17 @@ export async function PATCH(request: Request) {
         // Invalidate Structure Caches
         revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
 
-        return NextResponse.json({ success: true, class: updatedClass });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true, class: updatedClass });
     } catch (e) {
         return handleApiError(e);
     }
@@ -185,7 +195,17 @@ export async function POST(request: Request) {
                 }
             });
             revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!), 'max');
-            return NextResponse.json({ grade });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ grade });
         } else if (type === 'CLASS') {
             const parentGrade = await prisma.grade.findUnique({ where: { id: gradeId } });
             if (!parentGrade || parentGrade.schoolId !== dbUser.schoolId) {
@@ -249,7 +269,17 @@ export async function DELETE(request: Request) {
         } else {
             return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
         }
-        return NextResponse.json({ success: true });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
     } catch (e) {
         return handleApiError(e);
     }

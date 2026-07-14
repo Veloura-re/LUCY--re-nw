@@ -36,7 +36,17 @@ export async function POST(request: Request) {
                 where: { id: existing.id },
                 data: { teacherId, periodsPerWeek: parseInt(periodsPerWeek) } as any
             });
-            return NextResponse.json({ assignment: updated });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'staffing', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ assignment: updated });
         } else {
             // Create new assignment
             const assignment = await prisma.teacherAssignment.create({

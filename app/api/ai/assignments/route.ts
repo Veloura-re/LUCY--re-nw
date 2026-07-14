@@ -14,7 +14,17 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
             const draft = await generateAssignmentDraft(context);
-            return NextResponse.json({ draft });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'assignment', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ draft });
         }
 
         if (mode === 'analyze') {
