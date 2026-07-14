@@ -15,7 +15,16 @@ const sections = [
     { id: "04", title: "AI Neural Assistant", items: ["Persona Overview", "Switching Personas", "Chat Sessions", "Privacy & Isolation"] },
     { id: "05", title: "Timetable Engine", items: ["Creating Periods", "Assigning Teachers", "Student View", "Conflicts"] },
     { id: "06", title: "API Reference", items: ["Authentication", "Endpoints", "Rate Limits", "Webhook Events"] },
+    { id: "07", title: "Legal & Compliance", items: ["Terms of Service", "Privacy Policy", "Data Processing Agreement", "Service Level Agreement", "Cyber Liability Insurance"] },
 ];
+
+const legalLinks: Record<string, string> = {
+    "Terms of Service": "/terms",
+    "Privacy Policy": "/privacy",
+    "Data Processing Agreement": "/dpa",
+    "Service Level Agreement": "/sla",
+    "Cyber Liability Insurance": "/insurance"
+};
 
 const codeSnippet = `// Authenticate and fetch student attendance
 const res = await fetch('/api/school/attendance', {
@@ -110,14 +119,19 @@ export default function Docs() {
                             </div>
 
                             <div className="space-y-2">
-                                {sections[active].items.map((item, j) => (
-                                    <motion.div key={j} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: j * 0.07 }}
-                                        className="flex items-center justify-between p-4 border border-white/5 hover:border-white/15 hover:bg-white/2 group cursor-pointer transition-all"
-                                    >
-                                        <span className="text-zinc-400 text-sm group-hover:text-white transition-colors">{item}</span>
-                                        <ChevronRight className="w-3 h-3 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all" />
-                                    </motion.div>
-                                ))}
+                                {sections[active].items.map((item, j) => {
+                                    const href = legalLinks[item];
+                                    const content = (
+                                        <motion.div key={j} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: j * 0.07 }}
+                                            className="flex items-center justify-between p-4 border border-white/5 hover:border-white/15 hover:bg-white/2 group cursor-pointer transition-all"
+                                        >
+                                            <span className="text-zinc-400 text-sm group-hover:text-white transition-colors">{item}</span>
+                                            <ChevronRight className="w-3 h-3 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                                        </motion.div>
+                                    );
+                                    
+                                    return href ? <Link key={j} href={href}>{content}</Link> : content;
+                                })}
                             </div>
                         </motion.div>
                     </div>
