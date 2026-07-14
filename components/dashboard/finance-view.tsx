@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -391,6 +392,14 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         <Zap className={cn("mr-2 h-4 w-4 text-amber-500", isGenerating && "animate-pulse")} />
                         {isGenerating ? "Executing Cycle..." : "Launch Invoicing Cycle"}
                     </Button>
+                    <Link href="/dashboard/finance/students">
+                        <Button
+                            variant="ghost"
+                            className="rounded-2xl border border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
+                        >
+                            <Users className="mr-2 h-4 w-4 text-eduGreen-500" /> Student Dossiers
+                        </Button>
+                    </Link>
                     {!isCreating && (
                         <Button
                             onClick={() => setIsCreating(true)}
