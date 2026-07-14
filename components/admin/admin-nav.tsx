@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, School, CreditCard, ShieldCheck, Inbox } from 'lucide-react';
+import { LayoutDashboard, School, CreditCard, ShieldCheck, Inbox, ScrollText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function AdminNav() {
@@ -14,6 +14,7 @@ export function AdminNav() {
         { href: '/admin/billing', label: 'Billing & Licenses', icon: CreditCard },
         { href: '/admin/security', label: 'Security Disclosures', icon: ShieldCheck },
         { href: '/admin/requests', label: 'Access Requests', icon: Inbox },
+        { href: '/admin/logs', label: 'Activity Logs', icon: ScrollText },
     ];
 
     return (
