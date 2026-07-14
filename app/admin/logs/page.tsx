@@ -9,6 +9,7 @@ import {
     XCircle, Zap, Bug, Globe, AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LiveTracker } from '@/components/dashboard/live-tracker';
 
 type Tab = 'activity' | 'errors';
 
@@ -173,7 +174,9 @@ export default function AdminLogsPage() {
                     <h1 className="text-2xl font-bold text-white tracking-tight">Logs & Monitoring</h1>
                     <p className="text-sm text-zinc-500 mt-0.5">Audit trail + error monitoring across all schools</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
+                    <LiveTracker />
+                    <div className="w-px h-6 bg-white/10" />
                     <button onClick={() => { fetchLogs(); if (tab === 'errors') fetchErrors(); }}
                         className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-xs font-medium">
                         <RefreshCw className="w-3.5 h-3.5" /> Refresh
