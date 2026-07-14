@@ -37,7 +37,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         revalidateTag(`users-${resolvedParams.id}`);
         revalidateTag(`teacher-registry-${resolvedParams.id}`);
 
-        return NextResponse.json({ success: true });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'school', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -95,7 +105,17 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         revalidateTag(`users-${resolvedParams.id}`);
         revalidateTag(`teacher-registry-${resolvedParams.id}`);
 
-        return NextResponse.json({ success: true });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'school', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

@@ -191,7 +191,17 @@ export async function POST(
             console.error("Failed to process parent notifications:", err);
         }
 
-        return NextResponse.json({
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'SUBMIT', resourceType: 'exam', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({
             success: true,
             score: finalScore, // Keep percentage response for frontend toast
             totalPoints,

@@ -46,7 +46,17 @@ export async function PATCH(
 
         if (error) throw error;
         
-        return NextResponse.json({ school });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'school', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ school });
     } catch (error) {
         console.error("Error updating school:", error);
         return NextResponse.json({ error: 'Failed to update school' }, { status: 500 });
@@ -79,7 +89,17 @@ export async function DELETE(
         const { data: existingSchool } = await supabaseAdmin.from('School').select('id').eq('id', id).maybeSingle();
         if (!existingSchool) {
             console.log(`[AdminAPI] School ${id} already deleted. Acknowledging.`);
-            return NextResponse.json({ success: true, message: 'Already deleted' });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'school', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true, message: 'Already deleted' });
         }
 
         // Collect all user IDs associated with the school

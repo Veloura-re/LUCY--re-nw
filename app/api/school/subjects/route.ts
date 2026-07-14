@@ -56,7 +56,17 @@ export async function POST(request: Request) {
                 .select()
                 .single();
             if (error) throw error;
-            return NextResponse.json({ subject });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'subject', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ subject });
         }
 
         const subject = await prisma.subject.create({
@@ -105,7 +115,17 @@ export async function DELETE(request: Request) {
                 .eq('id', id);
             if (error) throw error;
 
-            return NextResponse.json({ success: true });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'subject', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
         }
 
         // Tenant Isolation: Ensure the subject being deleted actually belongs to this school

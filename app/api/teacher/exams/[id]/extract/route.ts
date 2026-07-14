@@ -58,7 +58,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
         try {
             const questions = JSON.parse(text);
-            return NextResponse.json({ questions });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'EXTRACT_EXAM', resourceType: 'exam', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ questions });
         } catch (parseError) {
             console.error("Failed to parse Gemini response:", text);
             return NextResponse.json({ error: "AI returned invalid format", raw: text }, { status: 500 });

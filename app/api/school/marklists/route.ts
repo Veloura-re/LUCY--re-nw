@@ -97,7 +97,17 @@ export async function POST(request: Request) {
         // Optional: Pre-fill GradeRecords with 0 or null for all students in class?
         // Not necessary, UI can handle "missing" grades.
 
-        return NextResponse.json({ marklist });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'marklist', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ marklist });
 
     } catch (e: any) {
         return NextResponse.json({ error: e.message || "Failed to create marklist" }, { status: 500 });
