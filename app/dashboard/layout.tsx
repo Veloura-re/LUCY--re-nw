@@ -15,6 +15,7 @@ import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";
 import { Logo } from "@/components/ui/logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
+import { PresenceBroadcaster } from "@/components/dashboard/presence-broadcaster";
 import Image from "next/image";
 
 export default async function DashboardLayout({
@@ -188,6 +189,7 @@ export default async function DashboardLayout({
             <PreferencesProvider children={null} />
             <NetworkBanner />
             <WelcomeAnnouncement />
+            <PresenceBroadcaster user={{ id: dbUser.id, name: dbUser.name, email: dbUser.email, role: dbUser.role, schoolId: dbUser.schoolId }} />
         </div>
     );
 }
