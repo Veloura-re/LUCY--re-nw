@@ -104,6 +104,8 @@ model School {
   ActionRequest         ActionRequest[]
   expenses              InstitutionalExpense[]
   billingReceipts       BillingReceipt[]
+  auditLogs             AuditLog[]
+  errorLogs             ErrorLog[]
 }
 
 model RestorePoint {
@@ -439,16 +441,55 @@ model AbsenceAuthorization {
 }
 
 model AuditLog {
-  id           String   @id @default(uuid())
+  id           String      @id @default(uuid())
   userId       String
+  schoolId     String?
   action       String
   resourceType String
   resourceId   String?
+  level        LogLevel    @default(INFO)
+  statusCode   Int?
+  path         String?
   before       Json?
   after        Json?
   ip           String?
-  createdAt    DateTime @default(now())
-  user         User     @relation(fields: [userId], references: [id])
+  userAgent    String?
+  createdAt    DateTime    @default(now())
+  user         User        @relation(fields: [userId], references: [id])
+  school       School?     @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  @@index([schoolId])
+  @@index([userId])
+  @@index([level])
+  @@index([createdAt])
+}
+
+model ErrorLog {
+  id          String    @id @default(uuid())
+  schoolId    String?
+  userId      String?
+  level       LogLevel  @default(ERROR)
+  type        String    // 'ui_crash' | 'api_error' | 'route_404' | 'auth_failure'
+  message     String
+  stack       String?
+  path        String?
+  statusCode  Int?
+  ip          String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  school      School?   @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+
+  @@index([schoolId])
+  @@index([type])
+  @@index([level])
+  @@index([createdAt])
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
 }
 
 model InviteToken {
