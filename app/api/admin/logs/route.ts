@@ -1,6 +1,6 @@
-import { createClient } from '@/utils/supabase/server';
-import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: Request) {
     const supabase = await createClient();
@@ -16,8 +16,9 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '50');
     const search = searchParams.get('search') || '';
-    const action = searchParams.get('action') || '';
+    const schoolId = searchParams.get('schoolId') || '';
     const resourceType = searchParams.get('resourceType') || '';
+    const level = searchParams.get('level') || '';
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -29,29 +30,42 @@ export async function GET(request: Request) {
             { user: { email: { contains: search, mode: 'insensitive' } } },
         ];
     }
-    if (action) where.action = { contains: action, mode: 'insensitive' };
+    if (schoolId) where.schoolId = schoolId;
     if (resourceType) where.resourceType = resourceType;
+    if (level) where.level = level;
 
-    const [logs, total] = await Promise.all([
+    const [logs, total, actionStats, schoolStats] = await Promise.all([
         prisma.auditLog.findMany({
             where,
             orderBy: { createdAt: 'desc' },
             skip,
             take: limit,
             include: {
-                user: { select: { id: true, name: true, email: true, role: true } }
+                user: { select: { id: true, name: true, email: true, role: true } },
             }
         }),
-        prisma.auditLog.count({ where })
+        prisma.auditLog.count({ where }),
+        prisma.auditLog.groupBy({
+            by: ['action'] as any,
+            _count: { action: true },
+            orderBy: { _count: { action: 'desc' } },
+            take: 6
+        }),
+        prisma.auditLog.groupBy({
+            by: ['schoolId'] as any,
+            _count: { schoolId: true },
+            where: { schoolId: { not: null } },
+            orderBy: { _count: { schoolId: 'desc' } },
+            take: 10
+        })
     ]);
 
-    // Stats for top section
-    const stats = await prisma.auditLog.groupBy({
-        by: ['action'],
-        _count: { action: true },
-        orderBy: { _count: { action: 'desc' } },
-        take: 5
+    // Enrich schoolStats with school names
+    const schoolIds = schoolStats.map(s => s.schoolId!).filter(Boolean);
+    const schools = await prisma.school.findMany({
+        where: { id: { in: schoolIds } },
+        select: { id: true, name: true, schoolCode: true }
     });
 
-    return NextResponse.json({ logs, total, page, limit, stats });
+    return NextResponse.json({ logs, total, page, limit, actionStats, schoolStats, schools });
 }
