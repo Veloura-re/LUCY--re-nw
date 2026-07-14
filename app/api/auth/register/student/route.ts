@@ -92,7 +92,17 @@ export async function POST(req: Request) {
             // 4. Link Student to User
             await supabaseAdmin.from('Student').update({ userId: user.id }).eq('id', student.id);
 
-            return NextResponse.json({
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'REGISTER', resourceType: 'registration', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({
                 success: true,
                 message: "Identity Verification Complete. Access Granted.",
                 user: { id: user.id, name: user.name, email: user.email }

@@ -143,7 +143,17 @@ export async function POST(req: Request) {
             }
         });
 
-        return NextResponse.json({ success: true });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'marklist', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Save Marks Error:", error);
         if (error.message === "unauthorized_teacher") {

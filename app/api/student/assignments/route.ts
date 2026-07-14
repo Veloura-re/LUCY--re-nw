@@ -177,7 +177,17 @@ export async function POST(request: Request) {
         revalidateTag(`student-${student.id}-assignments`, 'max');
         revalidateTag(`assignment-${assignmentId}`, 'max');
 
-        return NextResponse.json({ submission });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'assignment', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ submission });
 
     } catch (e) {
         return handleApiError(e);

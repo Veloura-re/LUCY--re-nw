@@ -33,7 +33,17 @@ export async function POST(request: Request) {
                 .maybeSingle();
                 
             if (existingRegistered) {
-                return NextResponse.json({ success: true, userId });
+                
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'REGISTER', resourceType: 'director_registration', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true, userId });
             }
             throw new Error("Token already used");
         }

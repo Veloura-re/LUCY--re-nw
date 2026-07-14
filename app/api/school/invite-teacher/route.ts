@@ -45,7 +45,17 @@ export async function POST(request: Request) {
         const emailResult = await sendInviteEmail(email, inviteUrl, school.name, token, 'TEACHER', dbUser.schoolId!);
 
         const result = emailResult as any;
-        return NextResponse.json({
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'INVITE', resourceType: 'teacher_invite', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({
             token,
             sent: result.success && !result.skipped,
             simulated: result.simulated || false,

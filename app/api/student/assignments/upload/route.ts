@@ -46,7 +46,17 @@ export async function POST(request: Request) {
             .from('books')
             .getPublicUrl(filePath);
 
-        return NextResponse.json({
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPLOAD', resourceType: 'assignment', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({
             url: publicUrl,
             name: file.name,
             size: file.size

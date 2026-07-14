@@ -46,7 +46,17 @@ export async function PUT(request: Request) {
         revalidateTag(scTag, 'max');
         revalidateTag(`assignment-${submission.assignmentId}`, 'max');
 
-        return NextResponse.json({ submission: updatedSubmission });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'assignment', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ submission: updatedSubmission });
 
     } catch (e) {
         return handleApiError(e);

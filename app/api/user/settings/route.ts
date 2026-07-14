@@ -92,7 +92,17 @@ export async function PATCH(request: Request) {
             });
         }
 
-        return NextResponse.json({ user });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ user });
     } catch (e) {
         return handleApiError(e);
     }

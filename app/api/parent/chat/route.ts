@@ -42,7 +42,17 @@ export async function POST(request: Request) {
 
         // Pass context to AI along with the prompt
         const responseText = await processParentChat(parentContext, message, previousHistory);
-        return NextResponse.json({ text: responseText });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'action', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ text: responseText });
     } catch (e: any) {
         console.error('[Parent Chat API Error]', e);
         return NextResponse.json({ error: e.message || 'Failed to process chat' }, { status: 500 });

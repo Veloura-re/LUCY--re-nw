@@ -59,7 +59,17 @@ export async function POST(request: Request) {
         const chapaData = await response.json() as any;
 
         if (chapaData.status === "success" && chapaData.data?.checkout_url) {
-            return NextResponse.json({ checkoutUrl: chapaData.data.checkout_url });
+            
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'INITIATE_PAYMENT', resourceType: 'billing', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ checkoutUrl: chapaData.data.checkout_url });
         } else {
             console.error("Chapa Initialization Error:", chapaData);
             return NextResponse.json({ error: 'Failed to initialize Chapa checkout.' }, { status: 500 });

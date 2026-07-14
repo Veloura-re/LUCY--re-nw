@@ -76,7 +76,17 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: "Student not found" }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'student_action', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ success: true });
     } catch (e: any) {
         return handleApiError(e);
     }

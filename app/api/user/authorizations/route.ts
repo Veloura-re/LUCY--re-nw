@@ -71,7 +71,17 @@ export async function POST(request: Request) {
             data
         });
 
-        return NextResponse.json({ authorization });
+        
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'authorization', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+return NextResponse.json({ authorization });
     } catch (e: any) {
         console.error(e);
         console.error(`[POST /api/user/authorizations] Error: ${e.message}`, e.stack);
