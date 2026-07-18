@@ -1,1 +1,0 @@
-This folder contains the built output assets for the worker "lucy" generated at 2026-07-18T11:18:31.809Z.
