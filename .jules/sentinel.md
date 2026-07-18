@@ -1,0 +1,4 @@
+## 2025-02-13 - [CRITICAL] Fix weak password hashing algorithm
+**Vulnerability:** Fast, unsalted hash (`crypto.createHash('sha256')`) used for hashing passwords in `app/api/auth/register/student/route.ts`. This allows for fast dictionary attacks and rainbow table attacks.
+**Learning:** Due to constraints in V8 isolates for Cloudflare, `bcryptjs` is preferred over `bcrypt` because it is a pure JavaScript implementation and does not rely on native C bindings. The lack of a salt with standard hashing makes reversing hashes significantly easier.
+**Prevention:** Always use a slow, adaptive hashing algorithm (like `bcrypt`, `argon2`, or `scrypt`) with a sufficient cost factor / salt rounds (e.g. 10 for bcrypt) instead of standard fast cryptographic hashes (like SHA-256 or MD5) for storing passwords.

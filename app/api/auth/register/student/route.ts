@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
     try {
@@ -72,8 +73,8 @@ export async function POST(req: Request) {
         }
 
         // 3. Create User Account in Database (Synced with Supabase ID)
-        const crypto = require('crypto');
-        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        // 🛡️ SECURITY: Use bcrypt with 10 salt rounds instead of fast unsalted hash for secure password storage
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         try {
             const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
