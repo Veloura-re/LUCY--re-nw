@@ -1,0 +1,4 @@
+## 2024-05-18 - Weak Password Hashing in Student Registration
+**Vulnerability:** The student registration API (`app/api/auth/register/student/route.ts`) was using a weak, un-salted `SHA-256` hashing algorithm via Node's native `crypto.createHash('sha256')` to store the `passwordHash` in the database.
+**Learning:** Using simple, fast cryptographic hashes like SHA-256 without salt for password storage is insecure, as it leaves the system highly vulnerable to dictionary attacks and rainbow tables. Because this codebase integrates with Cloudflare Workers (which limits some Node native modules), the pure JS library `bcryptjs` is required instead of the native `bcrypt`.
+**Prevention:** Always use specialized password hashing algorithms like bcrypt, scrypt, or Argon2 that include a random salt and a work factor to slow down brute force attacks. Ensure code reviews flag direct usage of `crypto.createHash()` for password-related data.
