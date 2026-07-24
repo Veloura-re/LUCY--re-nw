@@ -1,0 +1,4 @@
+## 2025-02-12 - Hardcoded Credentials in Configuration and Scripts
+**Vulnerability:** Scripts like `delete_schools.ts` and `scripts/create-superadmin.js`, as well as `worker-configuration.d.ts`, `scratch/verify-assignments.js`, `prisma_error.txt`, `prisma_push_debug.txt`, and `app/api/auth/test-db/route.ts` contained hardcoded credentials, including plaintext passwords, API keys, and connection strings.
+**Learning:** Development and utility scripts are often committed by mistake containing production or testing secrets. Type definition files might accidentally include literal values instead of types.
+**Prevention:** Use environment variables (e.g., `process.env.DATABASE_URL`) exclusively for secrets in all scripts. Ensure `.gitignore` covers local scripts if they are intended to contain hardcoded secrets, or better yet, avoid hardcoding secrets entirely. Use `string` type definitions instead of literal string values for secrets in `.d.ts` files.

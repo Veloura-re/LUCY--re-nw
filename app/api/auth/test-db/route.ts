@@ -10,9 +10,9 @@ export async function GET() {
 
         try {
             const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
+                user: process.env.PGUSER || 'postgres',
+                password: process.env.PGPASSWORD || 'postgres',
+                host: process.env.PGHOST || 'localhost',
                 port: 5432,
                 database: 'postgres',
                 ssl: { rejectUnauthorized: false }
