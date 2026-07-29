@@ -5,8 +5,8 @@ import { requireRole } from "@/lib/security";
 export async function POST(req: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
-        const body = await req.json();
-        const { classId, subjectId, teacherId, columns } = body;
+        const body = await req.json() as { classId: string; subjectId: string; teacherId: string; columns: any[]; termId?: string; schoolId?: string };
+        const { classId, subjectId, teacherId, columns, termId } = body;
 
         // Auto-assign schoolId from the authenticated user's session to prevent UI spoofing/errors
         const schoolId = user.schoolId || body.schoolId;
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
                 // Update basic info
                 await tx.marklistConfig.update({
                     where: { id: existing.id },
-                    data: { teacherId, updatedAt: new Date() }
+                    data: { teacherId, termId: termId || null, updatedAt: new Date() }
                 });
 
                 // Reconcile columns
@@ -77,6 +77,7 @@ export async function POST(req: Request) {
                         classId,
                         subjectId,
                         teacherId,
+                        termId: termId || null,
                         columns: {
                             create: columns.map((col: any) => ({
                                 title: col.title,

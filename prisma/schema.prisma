@@ -106,6 +106,35 @@ model School {
   billingReceipts       BillingReceipt[]
   auditLogs             AuditLog[]
   errorLogs             ErrorLog[]
+  terms                 AcademicTerm[]
+  termStructure         TermStructure          @default(QUARTERS)
+  termStructureLocked   Boolean                @default(false)
+  defaultBillingCycle   FeeFrequency           @default(TERM)
+}
+
+enum TermStructure {
+  SEMESTERS
+  QUARTERS
+  TRIMESTERS
+  CUSTOM
+}
+
+model AcademicTerm {
+  id        String   @id @default(uuid())
+  schoolId  String
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school    School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  marklists MarklistConfig[]
+  exams     Exam[]
+  remarks   StudentRemark[]
+
+  @@index([schoolId])
 }
 
 model RestorePoint {
@@ -269,6 +298,8 @@ model Exam {
   subject           Subject            @relation(fields: [subjectId], references: [id])
   attempts          ExamAttempt[]
   gradeRecords      GradeRecord[]
+  term              AcademicTerm?      @relation(fields: [termId], references: [id])
+  termId            String?
 
   @@index([classId])
   @@index([subjectId])
@@ -441,22 +472,22 @@ model AbsenceAuthorization {
 }
 
 model AuditLog {
-  id           String      @id @default(uuid())
+  id           String   @id @default(uuid())
   userId       String
   schoolId     String?
   action       String
   resourceType String
   resourceId   String?
-  level        LogLevel    @default(INFO)
+  level        LogLevel @default(INFO)
   statusCode   Int?
   path         String?
   before       Json?
   after        Json?
   ip           String?
   userAgent    String?
-  createdAt    DateTime    @default(now())
-  user         User        @relation(fields: [userId], references: [id])
-  school       School?     @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+  school       School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
 
   @@index([schoolId])
   @@index([userId])
@@ -465,20 +496,20 @@ model AuditLog {
 }
 
 model ErrorLog {
-  id          String    @id @default(uuid())
-  schoolId    String?
-  userId      String?
-  level       LogLevel  @default(ERROR)
-  type        String    // 'ui_crash' | 'api_error' | 'route_404' | 'auth_failure'
-  message     String
-  stack       String?
-  path        String?
-  statusCode  Int?
-  ip          String?
-  userAgent   String?
-  metadata    Json?
-  createdAt   DateTime  @default(now())
-  school      School?   @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  id         String   @id @default(uuid())
+  schoolId   String?
+  userId     String?
+  level      LogLevel @default(ERROR)
+  type       String // 'ui_crash' | 'api_error' | 'route_404' | 'auth_failure'
+  message    String
+  stack      String?
+  path       String?
+  statusCode Int?
+  ip         String?
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  school     School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
 
   @@index([schoolId])
   @@index([type])
@@ -504,15 +535,16 @@ model InviteToken {
 }
 
 model StudentRemark {
-  id        String   @id @default(uuid())
-  studentId String
-  teacherId String
-  content   String
-  term      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  teacher   User     @relation("TeacherRemarks", fields: [teacherId], references: [id])
+  id             String        @id @default(uuid())
+  studentId      String
+  teacherId      String
+  content        String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  termId         String?
+  term           AcademicTerm? @relation(fields: [termId], references: [id])
+  student        Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher        User          @relation("TeacherRemarks", fields: [teacherId], references: [id])
 
   @@index([studentId])
 }
@@ -802,21 +834,23 @@ model ResourceProgress {
 }
 
 model MarklistConfig {
-  id        String           @id @default(uuid())
-  schoolId  String
-  classId   String
-  subjectId String
-  teacherId String?
-  isLocked  Boolean          @default(false)
-  status    String           @default("DRAFT")
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-  columns   MarklistColumn[]
-  class     Class            @relation(fields: [classId], references: [id])
-  school    School           @relation(fields: [schoolId], references: [id])
-  subject   Subject          @relation(fields: [subjectId], references: [id])
-  teacher   User?            @relation(fields: [teacherId], references: [id])
-  entries   MarklistEntry[]
+  id             String           @id @default(uuid())
+  schoolId       String
+  classId        String
+  subjectId      String
+  teacherId      String?
+  isLocked       Boolean          @default(false)
+  status         String           @default("DRAFT")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  columns        MarklistColumn[]
+  class          Class            @relation(fields: [classId], references: [id])
+  school         School           @relation(fields: [schoolId], references: [id])
+  subject        Subject          @relation(fields: [subjectId], references: [id])
+  teacher        User?            @relation(fields: [teacherId], references: [id])
+  entries        MarklistEntry[]
+  term           AcademicTerm?    @relation(fields: [termId], references: [id])
+  termId         String?
 
   @@unique([classId, subjectId])
   @@index([schoolId])
@@ -1022,6 +1056,8 @@ enum FeeFrequency {
   ONCE
   MONTHLY
   TERM
+  QUARTERLY
+  SEMESTERLY
   ANNUAL
 }
 
@@ -1082,9 +1118,9 @@ model InstitutionalExpense {
   loggedById  String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
-  
-  school      School          @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  loggedBy    User            @relation("LoggedExpenses", fields: [loggedById], references: [id])
+
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  loggedBy User   @relation("LoggedExpenses", fields: [loggedById], references: [id])
 
   @@index([schoolId])
 }
@@ -1123,8 +1159,8 @@ model BillingReceipt {
   submittedById String
   submittedBy   User     @relation(fields: [submittedById], references: [id], onDelete: Cascade)
   amount        Decimal
-  reference     String   // bank reference/transaction number
-  receiptUrl    String   // uploaded receipt file/image URL
+  reference     String // bank reference/transaction number
+  receiptUrl    String // uploaded receipt file/image URL
   status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
   notes         String?
   createdAt     DateTime @default(now())

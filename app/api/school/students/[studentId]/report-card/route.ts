@@ -108,9 +108,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
             select: { name: true }
         });
 
+        const terms = await prisma.academicTerm.findMany({
+            where: { schoolId: student.schoolId },
+            orderBy: { startDate: 'desc' }
+        });
+
         return NextResponse.json({
             student,
             principal,
+            terms,
             grades,
             assignments,
             attendance: {
