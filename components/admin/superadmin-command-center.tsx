@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface SchoolType {
     id: string;
@@ -39,7 +40,7 @@ const cardVariants = {
         opacity: 1,
         y: 0,
         scale: 1,
-        transition: { type: "spring", stiffness: 280, damping: 22 }
+        transition: { type: "spring" as const, stiffness: 280, damping: 22 }
     }
 };
 
@@ -192,7 +193,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                             <Icon className={cn("w-4 h-4 relative z-10", isActive ? "text-emerald-400" : "text-zinc-500")} />
                             <span className="relative z-10">{tab.label}</span>
                             
-                            {tab.alert && (
+                            {(tab as any).alert && (
                                 <span className="relative z-10 w-2 h-2 rounded-full bg-orange-500 animate-pulse shadow-[0_0_8px_#f97316]" />
                             )}
                         </button>
