@@ -66,8 +66,7 @@ export async function middleware(request: NextRequest) {
     )
 
     // 1. Refresh session safely
-    const { data, error: userError } = await supabase.auth.getUser()
-    const user = { id: '349bf9be-7860-43a9-93f2-3e12b49962f9', email: 'infostudio9724@gmail.com', user_metadata: { role: 'TEACHER' } };
+    const { data: { user } } = await supabase.auth.getUser()
 
     // 2. Define protected paths
     const url = request.nextUrl.clone()

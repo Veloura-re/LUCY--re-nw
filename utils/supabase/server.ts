@@ -27,10 +27,5 @@ export async function createClient() {
     }
   )
 
-  // MOCK FOR SUBAGENT RECORDING
-  client.auth.getUser = async () => {
-      return { data: { user: { id: '349bf9be-7860-43a9-93f2-3e12b49962f9', email: 'infostudio9724@gmail.com' } as any }, error: null } as any;
-  };
-
   return client;
 }
