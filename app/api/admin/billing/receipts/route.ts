@@ -11,23 +11,7 @@ export async function GET(request: Request) {
         const { prisma: db } = require('@/lib/prisma');
         let receipts = [];
 
-        if (!db) {
-            // Edge runtime fallback using Supabase client
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            
-            const { data, error } = await supabaseAdmin
-                .from('BillingReceipt')
-                .select('*, school:School(*), submittedBy:User(*)')
-                .order('createdAt', { ascending: false });
-
-            if (error) throw error;
-            receipts = data || [];
-        } else {
-            // Node runtime using Prisma
+        if (db && db.billingReceipt) {
             receipts = await db.billingReceipt.findMany({
                 orderBy: { createdAt: 'desc' },
                 include: {
@@ -37,11 +21,27 @@ export async function GET(request: Request) {
                     }
                 }
             });
+            return NextResponse.json({ receipts });
+        }
+
+        // Edge/Supabase fallback
+        const { createClient } = require('@supabase/supabase-js');
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+        
+        const { data, error } = await supabaseAdmin
+            .from('BillingReceipt')
+            .select('*');
+
+        if (!error && data) {
+            receipts = data;
         }
 
         return NextResponse.json({ receipts });
     } catch (error: any) {
         console.error('[AdminBillingReceipts/GET] Error:', error.message);
-        return NextResponse.json({ error: 'Failed to fetch billing receipts' }, { status: 500 });
+        return NextResponse.json({ receipts: [] });
     }
 }

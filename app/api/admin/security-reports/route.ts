@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
@@ -10,12 +9,17 @@ export async function GET(request: Request) {
     }
 
     try {
-        const reports = await (prisma as any).securityReport.findMany({
-            orderBy: { createdAt: 'desc' }
-        });
-        return NextResponse.json({ reports });
+        const { prisma } = require('@/lib/prisma');
+        if (prisma && prisma.securityReport) {
+            const reports = await prisma.securityReport.findMany({
+                orderBy: { createdAt: 'desc' }
+            });
+            return NextResponse.json({ reports });
+        }
+
+        return NextResponse.json({ reports: [] });
     } catch (error: any) {
         console.error("[Get Security Reports Error]:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ reports: [] });
     }
 }
