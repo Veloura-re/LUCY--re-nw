@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, School, CreditCard, ShieldCheck, Inbox, ScrollText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function AdminNav() {
     const pathname = usePathname();
@@ -18,26 +19,30 @@ export function AdminNav() {
     ];
 
     return (
-        <nav className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-            {links.map((link) => {
-                const Icon = link.icon;
-                const isActive = pathname === link.href;
-                return (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-semibold uppercase tracking-widest transition-all border shrink-0",
-                            isActive
-                                ? "bg-eduGreen-500/10 text-eduGreen-400 border-eduGreen-500/20"
-                                : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-300"
-                        )}
-                    >
-                        <Icon className="w-3.5 h-3.5" />
-                        {link.label}
-                    </Link>
-                );
-            })}
-        </nav>
+        <div className="flex items-center justify-between gap-4 w-full">
+            <nav className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                {links.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = pathname === link.href;
+                    return (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all border shrink-0",
+                                isActive
+                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                                    : "bg-transparent text-slate-500 dark:text-zinc-500 border-transparent hover:text-slate-900 dark:hover:text-zinc-200"
+                            )}
+                        >
+                            <Icon className="w-3.5 h-3.5" />
+                            {link.label}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <ThemeToggle />
+        </div>
     );
 }
