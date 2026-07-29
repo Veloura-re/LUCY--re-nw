@@ -27,9 +27,11 @@ export default function MarklistConfigPage() {
     // Selection State
     const [classes, setClasses] = useState<any[]>([]);
     const [subjects, setSubjects] = useState<any[]>([]);
+    const [terms, setTerms] = useState<any[]>([]);
 
     const [selectedClassId, setSelectedClassId] = useState("");
     const [selectedSubjectId, setSelectedSubjectId] = useState("");
+    const [selectedTermId, setSelectedTermId] = useState("");
 
     // Config State
     const [configId, setConfigId] = useState<string | null>(null);
@@ -41,28 +43,25 @@ export default function MarklistConfigPage() {
     useEffect(() => {
         fetchClasses();
         fetchSubjects();
+        fetchTerms();
     }, []);
 
     // Check for search params after options load
     useEffect(() => {
         const initialClassId = searchParams.get('classId');
         const initialSubjectId = searchParams.get('subjectId');
+        const initialTermId = searchParams.get('termId');
 
-        if (initialClassId && classes.some(c => c.id === initialClassId)) {
-            setSelectedClassId(initialClassId);
-        }
-        if (initialSubjectId && subjects.some(s => s.id === initialSubjectId)) {
-            setSelectedSubjectId(initialSubjectId);
-        }
-    }, [searchParams, classes, subjects]);
+        if (initialClassId && classes.some(c => c.id === initialClassId)) setSelectedClassId(initialClassId);
+        if (initialSubjectId && subjects.some(s => s.id === initialSubjectId)) setSelectedSubjectId(initialSubjectId);
+        if (initialTermId && terms.some(t => t.id === initialTermId)) setSelectedTermId(initialTermId);
+    }, [searchParams, classes, subjects, terms]);
 
     const fetchClasses = async () => {
         try {
             const res = await fetch("/api/school/classes");
             if (res.ok) {
                 const data = await res.json();
-                // API returns { grades: [{ classes: [...] }] }
-                // We need to flatten this to get all classes
                 const flatClasses = data.grades?.flatMap((g: any) => g.classes) || [];
                 setClasses(flatClasses);
             }
@@ -72,12 +71,23 @@ export default function MarklistConfigPage() {
     const fetchSubjects = async () => {
         try {
             const res = await fetch("/api/school/subjects");
-            // API returns { subjects: [...] }
             if (res.ok) {
                 const data = await res.json();
                 setSubjects(data.subjects || []);
             }
         } catch (e) { console.error("Subjects fetch failed", e); }
+    };
+
+    const fetchTerms = async () => {
+        try {
+            const res = await fetch("/api/school/terms");
+            if (res.ok) {
+                const data = await res.json();
+                setTerms(data.terms || []);
+                const active = (data.terms || []).find((t: any) => t.isActive);
+                if (active && !selectedTermId) setSelectedTermId(active.id);
+            }
+        } catch (e) { console.error("Terms fetch failed", e); }
     };
 
     // Fetch Config when selection changes
@@ -90,6 +100,7 @@ export default function MarklistConfigPage() {
                 const data = await res.json();
                 if (data && data.columns) {
                     setConfigId(data.id);
+                    if (data.termId && !selectedTermId) setSelectedTermId(data.termId);
                     setColumns(data.columns.map((c: any) => ({
                         id: c.id,
                         title: c.title,
@@ -156,6 +167,7 @@ export default function MarklistConfigPage() {
                 schoolId: classes.find(c => c.id === selectedClassId)?.schoolId,
                 classId: selectedClassId,
                 subjectId: selectedSubjectId,
+                termId: selectedTermId || undefined,
                 columns: columns.map((c, i) => ({ ...c, order: i })) // Ensure order
             };
 
@@ -226,6 +238,19 @@ export default function MarklistConfigPage() {
                             </SelectTrigger>
                             <SelectContent>
                                 {subjects.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Academic Term</Label>
+                        <Select value={selectedTermId} onValueChange={setSelectedTermId}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select Term (Optional)" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none" className="text-zinc-500 italic">No Term (General)</SelectItem>
+                                {terms.map(t => <SelectItem key={t.id} value={t.id}>{t.name} {t.isActive && "(Active)"}</SelectItem>)}
                             </SelectContent>
                         </Select>
                     </div>
