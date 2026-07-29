@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Shield, Zap, LogOut, Lock, MapPin, Sliders, Trophy, Briefcase, Plus, Search, Trash2, Bell, LayoutGrid, Volume2 } from "lucide-react";
+import { User, Shield, Zap, LogOut, Lock, MapPin, Sliders, Trophy, Briefcase, Plus, Search, Trash2, Bell, LayoutGrid, Volume2, Calendar } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import SpringingLoader from "@/components/dashboard/springing-loader";
@@ -13,6 +13,7 @@ import { AlertModal } from "@/components/ui/confirmation-modal";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { SettingsAcademicTerms } from "@/components/dashboard/settings-academic-terms";
 
 export default function SettingsPage() {
     const router = useRouter();
@@ -22,7 +23,7 @@ export default function SettingsPage() {
     const [loggingOut, setLoggingOut] = useState(false);
     const [userData, setUserData] = useState<any>(null);
     const [schoolData, setSchoolData] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'school' | 'preferences' | 'family' | 'workload' | 'communications'>('profile');
+    const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'school' | 'preferences' | 'family' | 'workload' | 'communications' | 'academic'>('profile');
     const [formData, setFormData] = useState({
         name: "",
         bio: "",
@@ -408,7 +409,7 @@ export default function SettingsPage() {
                         ...(userData?.role === 'PARENT' ? [{ id: 'family', icon: Trophy, label: "Family Hub" }] : []),
                         ...(userData?.role === 'TEACHER' || userData?.role === 'HOMEROOM' ? [{ id: 'workload', icon: Briefcase, label: "Teaching Load" }] : []),
                         { id: 'school', icon: Zap, label: "Institutional Hub" },
-                        ...(isPrincipal ? [{ id: 'communications', icon: Bell, label: "Institutional Communications" }] : [])
+                        ...(isPrincipal ? [{ id: 'academic', icon: Calendar, label: "Academic Terms" }, { id: 'communications', icon: Bell, label: "Institutional Communications" }] : [])
                     ].map((item) => (
                         <button
                             key={item.id}

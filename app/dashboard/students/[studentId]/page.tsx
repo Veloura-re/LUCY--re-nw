@@ -26,6 +26,7 @@ import { useReactToPrint } from "react-to-print";
 import Image from "next/image";
 import { StudentDossierPrint } from "@/components/dashboard/student-dossier-print";
 import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
+import { StudentTermSummary } from "@/components/dashboard/student-term-summary";
 
 function StudentProfileContent() {
     const formatDate = (dateString: any, fmt: string) => {
@@ -473,6 +474,7 @@ function StudentProfileContent() {
             <Tabs defaultValue="academic" className="space-y-8" onValueChange={setActiveTab}>
                 <TabsList className="bg-zinc-950/50 border border-zinc-900 p-1.5 rounded-2xl h-auto flex-wrap justify-start">
                     <TabsTrigger value="academic" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Academic DNA</TabsTrigger>
+                    <TabsTrigger value="terms" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Term Summary</TabsTrigger>
                     <TabsTrigger value="attendance" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Biometric Log</TabsTrigger>
                     <TabsTrigger value="remarks" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Institutional Remarks</TabsTrigger>
                     <TabsTrigger value="notes" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Faculty Notes (Secure)</TabsTrigger>
@@ -622,6 +624,10 @@ function StudentProfileContent() {
                             </Card>
                         </div>
                     </div>
+                </TabsContent>
+
+                <TabsContent value="terms" className="animate-in slide-in-from-bottom-4 duration-300">
+                    <StudentTermSummary data={data} />
                 </TabsContent>
 
                 {/* --- Attendance Section --- */}

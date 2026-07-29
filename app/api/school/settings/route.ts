@@ -24,7 +24,12 @@ export async function GET() {
 export async function PATCH(request: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
-        const { name, schoolCode, logoUrl, address, locations, communicationsConfig } = await request.json();
+        const { name, schoolCode, logoUrl, address, locations, communicationsConfig, termStructure, termStructureLocked, defaultBillingCycle } = await request.json();
+
+        const currentSchool = await prisma.school.findUnique({ where: { id: user.schoolId! } });
+        if (currentSchool?.termStructureLocked && termStructure && termStructure !== currentSchool.termStructure) {
+            return NextResponse.json({ error: "Term Structure is locked and cannot be changed" }, { status: 400 });
+        }
 
         const school = await prisma.school.update({
             where: { id: user.schoolId! },
@@ -34,7 +39,10 @@ export async function PATCH(request: Request) {
                 logoUrl,
                 address,
                 locations,
-                communicationsConfig
+                communicationsConfig,
+                ...(termStructure && { termStructure }),
+                ...(typeof termStructureLocked === 'boolean' && { termStructureLocked }),
+                ...(defaultBillingCycle && { defaultBillingCycle })
             }
         });
 
