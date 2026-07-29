@@ -16,6 +16,7 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { updateNavPreference } from "@/utils/nav-actions";
 import { ICON_MAP, NAV_ITEMS } from "@/lib/navigation";
 import { Columns2, DoorOpen, Sparkles } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const SCALING_FACTOR = 1.6;
 const DISTANCE_THRESHOLD = 150;
@@ -62,17 +63,23 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
                 <motion.div
                     onMouseMove={(e) => mouseX.set(e.pageX)}
                     onMouseLeave={() => mouseX.set(Infinity)}
-                    className="flex items-end gap-2 px-3 pt-3 pb-3 rounded-[2.5rem] bg-white/[0.03] backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)] border-t-white/20 w-max max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide pointer-events-auto"
+                    className="flex items-center gap-2 px-3 pt-3 pb-3 rounded-[2.5rem] bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-max max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide pointer-events-auto"
                 >
                     {/* Name pill — desktop only */}
                     {userName && (
-                        <div className="hidden md:flex items-center gap-2 px-3 h-[42px] rounded-2xl bg-white/[0.03] border border-white/[0.05] shrink-0 mr-1">
-                            <div className="w-5 h-5 rounded-full bg-eduGreen-600 flex items-center justify-center text-[9px] font-black text-white shrink-0">
+                        <div className="hidden md:flex items-center gap-2 px-3 h-[42px] rounded-2xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shrink-0 mr-1">
+                            <div className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[9px] font-black text-white shrink-0">
                                 {userName[0]?.toUpperCase()}
                             </div>
-                            <span className="text-[10px] font-semibold text-zinc-300 uppercase tracking-widest whitespace-nowrap max-w-[90px] truncate">{userName}</span>
+                            <span className="text-[10px] font-semibold text-slate-700 dark:text-zinc-300 uppercase tracking-widest whitespace-nowrap max-w-[90px] truncate">{userName}</span>
                         </div>
                     )}
+
+                    {/* Theme Toggle Switcher */}
+                    <div className="shrink-0">
+                        <ThemeToggle className="!w-[42px] !h-[42px] !rounded-2xl" />
+                    </div>
+
                     {items.map((item: any, i: number) => (
                         <IconContainer mouseX={mouseX} key={i} {...item} />
                     ))}

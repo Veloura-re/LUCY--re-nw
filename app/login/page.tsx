@@ -10,6 +10,7 @@ import { Mail, Lock, ShieldCheck, ArrowRight, Loader2, AlertCircle, Shield } fro
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { motion } from "framer-motion";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
@@ -63,22 +64,27 @@ function LoginContent() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4 font-sans text-white relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-zinc-950 p-4 font-sans text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300">
+            {/* Top Right Theme Toggle */}
+            <div className="absolute top-6 right-6 z-50">
+                <ThemeToggle />
+            </div>
+
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-eduGreen-500/20 blur-[120px] rounded-full" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/10 dark:bg-eduGreen-500/20 blur-[120px] rounded-full" />
                 <div className="absolute -bottom-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-emerald-500/10 blur-[120px]" />
             </div>
 
             <TiltCard className="w-full max-w-md">
-                <Card className="w-full max-w-md bg-zinc-900/90 border-zinc-800 shadow-2xl relative z-10 overflow-hidden">
+                <Card className="w-full max-w-md bg-white/90 dark:bg-zinc-900/90 border-slate-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl relative z-10 overflow-hidden backdrop-blur-xl">
                     <CardHeader className="space-y-2 items-center text-center pb-2 pt-8">
                         <div className="mx-auto flex justify-center mb-4">
                             <Logo className="w-16 h-16" />
                         </div>
-                        <CardTitle className="text-2xl font-medium text-white tracking-tight">
+                        <CardTitle className="text-2xl font-medium text-slate-900 dark:text-white tracking-tight">
                             Welcome Back
                         </CardTitle>
-                        <CardDescription className="text-zinc-500 font-medium text-sm">
+                        <CardDescription className="text-slate-500 dark:text-zinc-500 font-medium text-sm">
                             Access your workspace
                         </CardDescription>
                     </CardHeader>
@@ -143,15 +149,15 @@ function LoginContent() {
                         </form>
                     </CardContent>
 
-                    <CardFooter className="flex flex-col gap-4 border-t border-zinc-800 py-6 justify-center bg-zinc-950/40">
-                        <div className="text-xs text-center text-zinc-500 font-medium">
+                    <CardFooter className="flex flex-col gap-4 border-t border-slate-200/80 dark:border-zinc-800 py-6 justify-center bg-slate-50/80 dark:bg-zinc-950/40">
+                        <div className="text-xs text-center text-slate-600 dark:text-zinc-500 font-medium">
                             New to LUCY?{" "}
-                            <Link href="/register" className="text-eduGreen-500 font-medium hover:underline">
+                            <Link href="/register" className="text-emerald-600 dark:text-eduGreen-500 font-medium hover:underline">
                                 Create an account
                             </Link>
                         </div>
-                        <div className="text-[9px] text-center text-zinc-600 flex items-center justify-center gap-2 px-8 font-medium">
-                            <Shield className="w-3 h-3 text-eduGreen-900/50" />
+                        <div className="text-[9px] text-center text-slate-400 dark:text-zinc-600 flex items-center justify-center gap-2 px-8 font-medium">
+                            <Shield className="w-3 h-3 text-emerald-600 dark:text-eduGreen-900/50" />
                             <span className="uppercase tracking-tighter">Secure Educational Platform • AES-256 Encryption</span>
                         </div>
                     </CardFooter>
