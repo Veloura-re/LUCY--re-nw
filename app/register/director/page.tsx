@@ -214,7 +214,7 @@ export default function DirectorRegister() {
                                         onChange={e => setName(e.target.value)}
                                         required
                                         placeholder="Enter full name"
-                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
+                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white dark:text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
                                     />
                                 </div>
 
@@ -225,7 +225,7 @@ export default function DirectorRegister() {
                                         icon={<Mail className="w-4 h-4 text-zinc-600" />}
                                         value={email}
                                         disabled
-                                        className="bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 text-zinc-700 h-16 rounded-[1.25rem] cursor-not-allowed opacity-50 font-medium"
+                                        className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 text-zinc-700 h-16 rounded-[1.25rem] cursor-not-allowed opacity-50 font-medium"
                                     />
                                 </div>
 
@@ -238,7 +238,7 @@ export default function DirectorRegister() {
                                         onChange={e => setPassword(e.target.value)}
                                         required
                                         placeholder="••••••••"
-                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
+                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white dark:text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
                                     />
                                 </div>
                             </div>
@@ -256,7 +256,7 @@ export default function DirectorRegister() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                 />
                                 <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                     I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
@@ -274,7 +274,7 @@ export default function DirectorRegister() {
                             <button
                                 type="button"
                                 onClick={() => setStep(1)}
-                                className="w-full text-[9px] font-medium text-zinc-800 uppercase tracking-[0.3em] hover:text-zinc-600 transition-colors py-2"
+                                className="w-full text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-[0.3em] hover:text-zinc-600 transition-colors py-2"
                             >
                                 Use Different Key
                             </button>
@@ -283,7 +283,7 @@ export default function DirectorRegister() {
                 </CardContent>
 
                 <CardFooter className="justify-center border-t border-zinc-200 dark:border-zinc-900 py-8 bg-white/20 dark:bg-zinc-950/20">
-                    <Link href="/login" className="text-zinc-800 hover:text-zinc-500 text-[9px] font-medium uppercase tracking-[0.4em] transition-all">
+                    <Link href="/login" className="text-zinc-800 dark:text-zinc-200 hover:text-zinc-500 text-[9px] font-medium uppercase tracking-[0.4em] transition-all">
                         Return to Portal
                     </Link>
                 </CardFooter>

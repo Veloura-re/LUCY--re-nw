@@ -91,7 +91,7 @@ export default function ApprovalsClient() {
                     <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center opacity-20 mb-8 border border-zinc-300 dark:border-zinc-800">
                         <ShieldAlert className="w-10 h-10 text-zinc-900 dark:text-white" />
                     </div>
-                    <p className="text-zinc-500 font-medium uppercase tracking-[0.4em] text-xs">Queue Clear</p>
+                    <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-xs">Queue Clear</p>
                     <p className="text-zinc-700 text-[10px] font-medium uppercase tracking-widest mt-3">No pending actions require authorization.</p>
                 </div>
             ) : (
@@ -106,12 +106,12 @@ export default function ApprovalsClient() {
                                         </div>
                                         <div>
                                             <h3 className="text-xl font-medium tracking-tight text-zinc-900 dark:text-white">{formatActionType(request.actionType)}</h3>
-                                            <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Requested by {request.requester?.name} ({request.requester?.role})</p>
+                                            <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Requested by {request.requester?.name} ({request.requester?.role})</p>
                                         </div>
                                     </div>
                                     <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-300 dark:border-zinc-800/50">
                                         <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
-                                            <span className="text-zinc-500 uppercase tracking-wider text-[9px] mr-2">Target Data:</span>
+                                            <span className="text-zinc-600 dark:text-zinc-500 uppercase tracking-wider text-[9px] mr-2">Target Data:</span>
                                             {JSON.stringify(request.payload)}
                                         </p>
                                     </div>

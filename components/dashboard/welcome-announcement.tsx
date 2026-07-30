@@ -201,7 +201,7 @@ export function WelcomeAnnouncement() {
                   localStorage.setItem("lucy_v1_announced", "true");
                   setShowV1Doc(false);
                 }}
-                className="w-full md:w-auto h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-emerald-950/20 transition-all"
+                className="w-full md:w-auto h-12 px-10 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-emerald-950/20 transition-all"
               >
                 establish_session
               </Button>

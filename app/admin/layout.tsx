@@ -93,7 +93,7 @@ export default async function AdminLayout({
                         <span className="text-zinc-900 dark:text-white font-black tracking-[0.15em] text-sm font-orbitron">LUCY</span>
                         <span className="text-eduGreen-500 font-black tracking-[0.15em] text-sm font-orbitron"> OS</span>
                     </div>
-                    <div className="w-px h-5 bg-white/10 mx-1" />
+                    <div className="w-px h-5 bg-zinc-300 dark:bg-white/10 mx-1" />
                     <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em]">Admin Engine</span>
                 </div>
 
@@ -130,12 +130,12 @@ export default async function AdminLayout({
             {/* Main Content */}
             <main className="relative z-10 flex-1 pt-16">
                 {/* Greeting Banner */}
-                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-black/[0.02] dark:from-white/[0.02] to-transparent px-8 py-8">
+                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-white dark:from-black/[0.02] dark:from-white/[0.02] to-transparent px-8 py-8">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.4em] mb-1">Infrastructure Control</p>
                             <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white">
-                                {greeting}<span className="text-zinc-500">{honorific}</span>
+                                {greeting}<span className="text-zinc-600 dark:text-zinc-500">{honorific}</span>
                             </h1>
                         </div>
                         <div className="hidden lg:flex items-center gap-2 text-zinc-700">

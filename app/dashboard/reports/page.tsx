@@ -92,7 +92,7 @@ export default function ReportsPage() {
 
                 {data.students?.length === 0 ? (
                     <div className="py-24 text-center bg-white/20 dark:bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-200 dark:border-zinc-900">
-                        <UserCircle className="w-16 h-16 text-zinc-800 mx-auto mb-6" />
+                        <UserCircle className="w-16 h-16 text-zinc-800 dark:text-zinc-200 mx-auto mb-6" />
                         <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Terminal</p>
                     </div>
                 ) : (
@@ -220,13 +220,13 @@ export default function ReportsPage() {
                         {data.attendance?.length > 0 ? data.attendance.map((a: any, i: number) => (
                             <div key={i} className="flex-1 flex flex-col items-center gap-4 group h-full justify-end">
                                 <span className="text-[10px] font-medium text-zinc-900 dark:text-white opacity-0 group-hover:opacity-100 transition-opacity">{a.rate.toFixed(0)}%</span>
-                                <div className="w-full bg-zinc-100 dark:bg-zinc-900 rounded-t-xl relative overflow-hidden group-hover:bg-zinc-800 transition-colors" style={{ height: '100%', minHeight: '10px' }}>
+                                <div className="w-full bg-zinc-100 dark:bg-zinc-900 rounded-t-xl relative overflow-hidden group-hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-colors" style={{ height: '100%', minHeight: '10px' }}>
                                     <div 
                                         className="absolute bottom-0 w-full bg-gradient-to-t from-eduGreen-600 to-emerald-400 rounded-t-xl shadow-[0_0_15px_rgba(20,122,82,0.3)] transition-all duration-1000 ease-out" 
                                         style={{ height: `${a.rate}%` }} 
                                     />
                                 </div>
-                                <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest">{a.date}</span>
+                                <span className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{a.date}</span>
                             </div>
                         )) : (
                             <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-600 uppercase tracking-widest font-medium">No Recent Data</div>
@@ -248,7 +248,7 @@ export default function ReportsPage() {
                         <CardContent className="p-6 md:p-10 space-y-10 relative z-10">
                             <div>
                                 <div className="flex justify-between items-end mb-3">
-                                    <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Capital Acquired</span>
+                                    <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Capital Acquired</span>
                                     <span className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">${data.summary?.collectedFees?.toLocaleString() || "0"}</span>
                                 </div>
                                 <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden p-0.5 border border-zinc-300 dark:border-zinc-800">
@@ -257,7 +257,7 @@ export default function ReportsPage() {
                             </div>
                             <div>
                                 <div className="flex justify-between items-end mb-3">
-                                    <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Pending Clearances</span>
+                                    <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Pending Clearances</span>
                                     <span className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">${data.summary?.pendingFees?.toLocaleString() || "0"}</span>
                                 </div>
                                 <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden p-0.5 border border-zinc-300 dark:border-zinc-800">
@@ -275,7 +275,7 @@ export default function ReportsPage() {
                         <CardContent className="p-6 md:p-10 flex-1 overflow-y-auto max-h-[300px] space-y-4">
                             {data.recentActivity?.map((act: any) => (
                                 <div key={act.id} className="flex gap-4 items-start p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
-                                    <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                                         <History className="w-4 h-4 text-eduGreen-500" />
                                     </div>
                                     <div>

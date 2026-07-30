@@ -56,7 +56,7 @@ export function StudentTermSummary({ data }: { data: any }) {
                                             <Badge variant="outline" className="text-[9px] uppercase tracking-widest text-eduGreen-400 border-eduGreen-400/30 bg-eduGreen-400/10">Active Term</Badge>
                                         )}
                                     </h3>
-                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5">
+                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-0.5">
                                         {new Date(term.startDate).toLocaleDateString()} — {new Date(term.endDate).toLocaleDateString()}
                                     </p>
                                 </div>
@@ -64,7 +64,7 @@ export function StudentTermSummary({ data }: { data: any }) {
                             
                             <div className="flex items-center gap-6">
                                 <div className="text-right">
-                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Term Average</p>
+                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Term Average</p>
                                     <p className="text-xl font-bold text-zinc-900 dark:text-white">
                                         {metrics.avgScore !== null ? `${metrics.avgScore.toFixed(1)}%` : '--'}
                                     </p>
@@ -88,17 +88,17 @@ export function StudentTermSummary({ data }: { data: any }) {
                                             {metrics.grades.slice(0, 5).map((grade: any) => (
                                                 <div key={grade.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50">
                                                     <div>
-                                                        <p className="text-xs font-medium text-zinc-200">{grade.subject?.name}</p>
-                                                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{grade.exam?.title}</p>
+                                                        <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{grade.subject?.name}</p>
+                                                        <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{grade.exam?.title}</p>
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="text-sm font-bold text-zinc-900 dark:text-white">{grade.score}</p>
-                                                        <p className="text-[9px] text-zinc-500">/ {grade.exam?.maxScore}</p>
+                                                        <p className="text-[9px] text-zinc-600 dark:text-zinc-500">/ {grade.exam?.maxScore}</p>
                                                     </div>
                                                 </div>
                                             ))}
                                             {metrics.grades.length > 5 && (
-                                                <p className="text-[10px] text-zinc-500 text-center pt-2">+{metrics.grades.length - 5} more assessments</p>
+                                                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 text-center pt-2">+{metrics.grades.length - 5} more assessments</p>
                                             )}
                                         </div>
                                     )}
@@ -118,7 +118,7 @@ export function StudentTermSummary({ data }: { data: any }) {
                                             {metrics.remarks.map((remark: any) => (
                                                 <div key={remark.id} className="p-3 rounded-xl bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 space-y-2">
                                                     <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed">"{remark.remark}"</p>
-                                                    <div className="flex items-center justify-between text-[9px] uppercase tracking-widest text-zinc-500">
+                                                    <div className="flex items-center justify-between text-[9px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">
                                                         <span>{remark.teacher?.name}</span>
                                                         <span>{new Date(remark.createdAt).toLocaleDateString()}</span>
                                                     </div>

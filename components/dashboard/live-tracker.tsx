@@ -50,10 +50,10 @@ export function LiveTracker() {
                     <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute inset-0 bg-emerald-500/20 rounded-full" />
                     <div className="relative w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                 </div>
-                <span className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-widest">{activeUsers.length} <span className="text-zinc-500">Online</span></span>
+                <span className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-widest">{activeUsers.length} <span className="text-zinc-600 dark:text-zinc-500">Online</span></span>
             </div>
             
-            <div className="w-px h-4 bg-white/10" />
+            <div className="w-px h-4 bg-zinc-300 dark:bg-white/10" />
 
             <div className="flex items-center -space-x-2">
                 <AnimatePresence>
@@ -76,7 +76,7 @@ export function LiveTracker() {
                         </motion.div>
                     ))}
                     {activeUsers.length > 5 && (
-                        <div className="w-6 h-6 rounded-full border-2 border-[#050505] bg-zinc-800 flex items-center justify-center text-[8px] font-bold text-zinc-600 dark:text-zinc-400 z-10 relative">
+                        <div className="w-6 h-6 rounded-full border-2 border-[#050505] bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-[8px] font-bold text-zinc-600 dark:text-zinc-400 z-10 relative">
                             +{activeUsers.length - 5}
                         </div>
                     )}

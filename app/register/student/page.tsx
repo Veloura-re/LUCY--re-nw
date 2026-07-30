@@ -65,7 +65,7 @@ export default function StudentRegisterPage() {
     return (
         <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background Ambience */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-white dark:via-black to-white dark:to-black" />
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent opacity-50" />
 
             <motion.div
@@ -80,10 +80,10 @@ export default function StudentRegisterPage() {
                         <ShieldCheck className="w-8 h-8 text-eduGreen-500" />
                     </div>
                     <h1 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Student Portal</h1>
-                    <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Secure Institutional Access</p>
+                    <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Secure Institutional Access</p>
                 </div>
 
-                <Card className="bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 shadow-2xl overflow-hidden">
+                <Card className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 shadow-2xl overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-eduGreen-600 to-eduGreen-400" />
 
                     <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
@@ -107,7 +107,7 @@ export default function StudentRegisterPage() {
                                         className="space-y-6"
                                     >
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 ml-1">Student Invite Token</Label>
+                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Student Invite Token</Label>
                                             <div className="relative group">
                                                 <KeyRound className="absolute left-4 top-4 w-5 h-5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                                                 <Input
@@ -146,7 +146,7 @@ export default function StudentRegisterPage() {
                                         className="space-y-6"
                                     >
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 ml-1">Secure Email Uplink</Label>
+                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Secure Email Uplink</Label>
                                             <div className="relative group">
                                                 <Mail className="absolute left-4 top-4 w-5 h-5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                                                 <Input
@@ -161,7 +161,7 @@ export default function StudentRegisterPage() {
 
                                         <div className="grid gap-4">
                                             <div className="space-y-3">
-                                                <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 ml-1">Access Keyphrase</Label>
+                                                <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Access Keyphrase</Label>
                                                 <div className="relative group">
                                                     <Lock className="absolute left-4 top-4 w-5 h-5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                                                     <Input
@@ -176,7 +176,7 @@ export default function StudentRegisterPage() {
                                             </div>
 
                                             <div className="space-y-3">
-                                                <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 ml-1">Confirm Keyphrase</Label>
+                                                <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Confirm Keyphrase</Label>
                                                 <div className="relative group">
                                                     <Lock className="absolute left-4 top-4 w-5 h-5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                                                     <Input
@@ -197,7 +197,7 @@ export default function StudentRegisterPage() {
                                                 id="terms"
                                                 checked={agreedToTerms}
                                                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                                className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                             />
                                             <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                                 I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
@@ -209,7 +209,7 @@ export default function StudentRegisterPage() {
                                                 type="button"
                                                 onClick={() => setStep(1)}
                                                 variant="ghost"
-                                                className="h-14 px-6 text-zinc-500 hover:text-white font-medium uppercase tracking-widest rounded-xl"
+                                                className="h-14 px-6 text-zinc-600 dark:text-zinc-500 hover:text-white font-medium uppercase tracking-widest rounded-xl"
                                             >
                                                 Back
                                             </Button>

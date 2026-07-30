@@ -43,7 +43,7 @@ const CATEGORY_ICONS: Record<Expense["category"], React.ReactNode> = {
     MAINTENANCE: <Wrench className="w-4 h-4 text-orange-500" />,
     SOFTWARE: <Shield className="w-4 h-4 text-purple-500" />,
     SERVICES: <Briefcase className="w-4 h-4 text-emerald-500" />,
-    OTHER: <Activity className="w-4 h-4 text-zinc-500" />,
+    OTHER: <Activity className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />,
 };
 
 export function OperatingCostsView() {
@@ -229,7 +229,7 @@ export function OperatingCostsView() {
             </div>
 
             {/* Expenses List */}
-            <Card className="bg-white/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
+            <Card className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
                 <CardHeader>
                     <CardTitle className="text-lg font-medium text-slate-900 dark:text-white flex items-center gap-2">
                         <FileText className="w-5 h-5 text-slate-600 dark:text-zinc-400" />

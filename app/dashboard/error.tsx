@@ -22,7 +22,7 @@ export default function DashboardError({
             <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight mb-2">
                 Connection Interrupted
             </h2>
-            <p className="text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
+            <p className="text-zinc-600 dark:text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
                 The institutional uplink experienced a momentary disruption during cold-start. Re-establishing the secure connection typically resolves this.
             </p>
             <button

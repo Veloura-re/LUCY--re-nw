@@ -158,7 +158,7 @@ export default function BillingControlsPage() {
                     <CreditCard className="w-6 h-6 text-eduGreen-500" />
                     BILLING & LICENSE CONTROL
                 </h1>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-1">
+                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-1">
                     Approve manual receipts, override licenses, and audit transaction records
                 </p>
             </div>
@@ -175,7 +175,7 @@ export default function BillingControlsPage() {
                 {/* Receipts Filters */}
                 <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                        <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                         <input
                             type="text"
                             placeholder="Search receipts by school, submitter, reference..."
@@ -185,7 +185,7 @@ export default function BillingControlsPage() {
                         />
                     </div>
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-                        <SlidersHorizontal className="w-4 h-4 text-zinc-500 mr-2 flex-shrink-0" />
+                        <SlidersHorizontal className="w-4 h-4 text-zinc-600 dark:text-zinc-500 mr-2 flex-shrink-0" />
                         {(['ALL', 'PENDING', 'APPROVED', 'REJECTED'] as const).map((status) => (
                             <button
                                 key={status}
@@ -193,8 +193,8 @@ export default function BillingControlsPage() {
                                 className={cn(
                                     "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                     receiptFilter === status
-                                        ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
-                                        : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
+                                        ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-400 dark:border-zinc-700"
+                                        : "bg-transparent text-zinc-600 dark:text-zinc-500 border-transparent hover:text-zinc-400"
                                 )}
                             >
                                 {status}
@@ -213,7 +213,7 @@ export default function BillingControlsPage() {
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
                             <div className="col-span-3">School Node</div>
                             <div className="col-span-2">Submitter</div>
                             <div className="col-span-2 text-center">Amount</div>
@@ -293,7 +293,7 @@ export default function BillingControlsPage() {
                 {/* School License Filters */}
                 <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                        <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                         <input
                             type="text"
                             placeholder="Search schools by name or code..."
@@ -303,7 +303,7 @@ export default function BillingControlsPage() {
                         />
                     </div>
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-                        <SlidersHorizontal className="w-4 h-4 text-zinc-500 mr-2 flex-shrink-0" />
+                        <SlidersHorizontal className="w-4 h-4 text-zinc-600 dark:text-zinc-500 mr-2 flex-shrink-0" />
                         {(['ALL', 'PAYING', 'NON_PAYING'] as const).map((f) => (
                             <button
                                 key={f}
@@ -311,8 +311,8 @@ export default function BillingControlsPage() {
                                 className={cn(
                                     "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                     schoolFilter === f
-                                        ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
-                                        : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
+                                        ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-400 dark:border-zinc-700"
+                                        : "bg-transparent text-zinc-600 dark:text-zinc-500 border-transparent hover:text-zinc-400"
                                 )}
                             >
                                 {f.replace('_', ' ')}
@@ -331,7 +331,7 @@ export default function BillingControlsPage() {
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
                             <div className="col-span-3">School Name</div>
                             <div className="col-span-2">Trial Ends</div>
                             <div className="col-span-2 text-center">Remaining</div>
@@ -359,7 +359,7 @@ export default function BillingControlsPage() {
                                     <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
                                         <div className="col-span-3">
                                             <div className="font-semibold">{school.name}</div>
-                                            <div className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
+                                            <div className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
                                         </div>
                                         <div className="col-span-2 font-mono text-zinc-600 dark:text-zinc-400">
                                             {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (120d Default)'}
@@ -378,7 +378,7 @@ export default function BillingControlsPage() {
                                                 "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border",
                                                 activeSub 
                                                     ? "bg-emerald-950/20 border-emerald-900/50 text-emerald-400" 
-                                                    : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-500"
+                                                    : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500"
                                             )}>
                                                 {activeSub ? 'Paying' : 'Non-paying'}
                                             </span>
@@ -386,13 +386,13 @@ export default function BillingControlsPage() {
                                         <div className="col-span-3 flex items-center justify-end gap-1.5">
                                             <button
                                                 onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
-                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
                                             >
                                                 {activeSub ? 'Set Non-paying' : 'Set Paying'}
                                             </button>
                                             <button
                                                 onClick={() => handleExtendTrial(school.id, 30)}
-                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
                                             >
                                                 +30 Days
                                             </button>

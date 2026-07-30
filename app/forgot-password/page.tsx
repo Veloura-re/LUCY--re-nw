@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
                             <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">
                                 Recover Access
                             </CardTitle>
-                            <CardDescription className="text-zinc-500 font-medium text-sm">
+                            <CardDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-sm">
                                 Enter your email to reset your <span className="text-eduGreen-500">LUCY</span> password
                             </CardDescription>
                         </CardHeader>
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
                         </div>
                         <div className="space-y-2">
                             <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white">Check your Inbox</CardTitle>
-                            <p className="text-zinc-500 text-sm font-medium leading-relaxed">
+                            <p className="text-zinc-600 dark:text-zinc-500 text-sm font-medium leading-relaxed">
                                 We've sent password reset instructions to <br />
                                 <span className="text-zinc-900 dark:text-white font-medium">{email}</span>
                             </p>
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
 
                 <CardFooter className="flex flex-col gap-4 border-t border-zinc-300 dark:border-zinc-800 py-6 justify-center bg-white/40 dark:bg-zinc-950/40">
                     {!isSubmitted && (
-                        <Link href="/login" className="flex items-center gap-2 text-xs text-zinc-500 font-medium hover:text-eduGreen-500 transition-colors uppercase tracking-widest">
+                        <Link href="/login" className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-500 font-medium hover:text-eduGreen-500 transition-colors uppercase tracking-widest">
                             <ArrowLeft className="w-3.5 h-3.5" />
                             Back to Sign In
                         </Link>

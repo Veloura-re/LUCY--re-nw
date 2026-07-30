@@ -148,7 +148,7 @@ export function SettingsAcademicTerms() {
             <div className="flex justify-between items-center">
                 <div>
                     <h2 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Academic & Financial Cycles</h2>
-                    <p className="text-xs text-zinc-500 mt-1 uppercase tracking-widest">Manage quarters, semesters, and billing periods</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-500 mt-1 uppercase tracking-widest">Manage quarters, semesters, and billing periods</p>
                 </div>
             </div>
 
@@ -163,7 +163,7 @@ export function SettingsAcademicTerms() {
                 
                 <CardHeader>
                     <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">System Architecture</CardTitle>
-                    <CardDescription className="text-xs text-zinc-500 max-w-2xl">
+                    <CardDescription className="text-xs text-zinc-600 dark:text-zinc-500 max-w-2xl">
                         Define the primary structure for your academic year. This controls how report cards and student rankings are generated.
                     </CardDescription>
                 </CardHeader>
@@ -184,7 +184,7 @@ export function SettingsAcademicTerms() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Academic Structure</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Academic Structure</Label>
                             <Select 
                                 value={settingsData.termStructure} 
                                 onValueChange={v => setSettingsData({...settingsData, termStructure: v})}
@@ -203,7 +203,7 @@ export function SettingsAcademicTerms() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Default Billing Cycle</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Default Billing Cycle</Label>
                             <Select 
                                 value={settingsData.defaultBillingCycle} 
                                 onValueChange={v => setSettingsData({...settingsData, defaultBillingCycle: v})}
@@ -248,7 +248,7 @@ export function SettingsAcademicTerms() {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">Periods Timeline</CardTitle>
-                        <CardDescription className="text-xs text-zinc-500">Define the actual dates for your grading periods.</CardDescription>
+                        <CardDescription className="text-xs text-zinc-600 dark:text-zinc-500">Define the actual dates for your grading periods.</CardDescription>
                     </div>
                     {terms.length === 0 && (
                         <Button 
@@ -263,7 +263,7 @@ export function SettingsAcademicTerms() {
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Term Name</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Term Name</Label>
                             <Input 
                                 placeholder="e.g. Q1 2026, Semester 1"
                                 value={formData.name}
@@ -272,13 +272,13 @@ export function SettingsAcademicTerms() {
                             />
                         </div>
                         <div className="flex items-center justify-between px-4 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-xl h-12 mt-6">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Set as Active Term</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Set as Active Term</Label>
                             <Switch checked={formData.isActive} onCheckedChange={c => setFormData({ ...formData, isActive: c })} />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Start Date</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Start Date</Label>
                             <Input 
                                 type="date"
                                 value={formData.startDate}
@@ -287,7 +287,7 @@ export function SettingsAcademicTerms() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500">End Date</Label>
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">End Date</Label>
                             <Input 
                                 type="date"
                                 value={formData.endDate}
@@ -323,7 +323,7 @@ export function SettingsAcademicTerms() {
                                         <span className="px-2 py-0.5 rounded-full bg-eduGreen-500/20 text-eduGreen-400 text-[9px] uppercase tracking-widest">Active</span>
                                     )}
                                 </h3>
-                                <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">
+                                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-1">
                                     {new Date(t.startDate).toLocaleDateString()} — {new Date(t.endDate).toLocaleDateString()}
                                 </p>
                             </div>
@@ -331,9 +331,9 @@ export function SettingsAcademicTerms() {
                         <div className="flex items-center gap-2">
                             <div className="text-right mr-4">
                                 <p className="text-zinc-900 dark:text-white text-xs font-medium">{t._count?.marklists || 0}</p>
-                                <p className="text-[9px] text-zinc-500 uppercase tracking-widest">Marklists</p>
+                                <p className="text-[9px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Marklists</p>
                             </div>
-                            <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">
+                            <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>

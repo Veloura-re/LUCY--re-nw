@@ -265,7 +265,7 @@ function MarklistViewContent() {
     return (
         <div className="flex flex-col h-screen max-h-screen bg-white dark:bg-zinc-950">
             {/* Header */}
-            <div className=" border-b border-zinc-200 dark:border-zinc-900/50 px-8 py-6 flex items-center justify-between bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl shrink-0">
+            <div className=" border-b border-zinc-200 dark:border-zinc-900/50 px-8 py-6 flex items-center justify-between bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl shrink-0">
                 <div>
                     <h2 className="text-2xl font-medium uppercase tracking-tighter text-zinc-900 dark:text-white">
                         {config.class?.name} <span className="text-eduGreen-500 italic">::</span> {config.subject?.name}
@@ -294,7 +294,7 @@ function MarklistViewContent() {
                         className={cn(
                             "h-12 px-6 rounded-2xl font-medium uppercase tracking-[0.2em] text-[10px] transition-all",
                             unsavedChanges.size === 0
-                                ? "bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-eduGreen-500 border border-eduGreen-900/30 active:scale-95"
+                                ? "bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-eduGreen-500 border border-eduGreen-900/30 active:scale-95"
                                 : "bg-zinc-100 dark:bg-zinc-900 text-zinc-700 border border-zinc-200 dark:border-zinc-900 pointer-events-none opacity-50"
                         )}
                     >
@@ -344,11 +344,11 @@ function MarklistViewContent() {
                         <tbody className="divide-y divide-zinc-900/20">
                             {entries.map((entry, idx) => (
                                 <tr key={entry.id} className="group hover:bg-eduGreen-950/5 transition-all">
-                                    <td className="px-8 py-4 font-medium text-[10px] text-zinc-800 text-center group-hover:text-zinc-600">{idx + 1}</td>
+                                    <td className="px-8 py-4 font-medium text-[10px] text-zinc-800 dark:text-zinc-200 text-center group-hover:text-zinc-600">{idx + 1}</td>
                                     <td className="px-8 py-4">
                                         <div className="flex flex-col">
-                                            <span className="font-semibold text-zinc-100 uppercase tracking-tight leading-tight">{entry.student.firstName} {entry.student.lastName}</span>
-                                            <span className="text-[7px] font-medium text-zinc-800 uppercase tracking-widest mt-1">Authorized Profile</span>
+                                            <span className="font-semibold text-zinc-900 dark:text-white dark:text-zinc-100 uppercase tracking-tight leading-tight">{entry.student.firstName} {entry.student.lastName}</span>
+                                            <span className="text-[7px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-1">Authorized Profile</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-4 font-mono text-[9px] text-zinc-600 border-r border-zinc-200 dark:border-zinc-900/20 tracking-tighter">
@@ -367,8 +367,8 @@ function MarklistViewContent() {
                                                     placeholder="--"
                                                     onChange={(e) => handleScoreChange(idx, col.id, e.target.value)}
                                                     className={cn(
-                                                        "w-full h-10 bg-transparent border-0 text-center font-medium text-lg focus:ring-1 focus:ring-eduGreen-600/30 rounded-lg placeholder:text-zinc-900 transition-all outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
-                                                        score === "" ? "text-zinc-800" : getPerformanceColor((parseFloat(score.toString()) / col.maxMarks) * 100).text
+                                                        "w-full h-10 bg-transparent border-0 text-center font-medium text-lg focus:ring-1 focus:ring-eduGreen-600/30 rounded-lg placeholder:text-zinc-900 dark:text-white transition-all outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                                                        score === "" ? "text-zinc-800 dark:text-zinc-200" : getPerformanceColor((parseFloat(score.toString()) / col.maxMarks) * 100).text
                                                     )}
                                                 />
                                             </td>

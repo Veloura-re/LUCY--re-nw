@@ -46,7 +46,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                 </Card>
 
                 <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] p-8 backdrop-blur-xl hover:border-zinc-800 transition-colors">
-                    <h3 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <h3 className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <User className="w-3 h-3" /> Active Personnel Nodes
                     </h3>
                     <p className="text-4xl font-semibold text-zinc-900 dark:text-white tracking-tight">{staff?.length || 0}</p>
@@ -54,7 +54,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                 </Card>
 
                 <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] p-8 backdrop-blur-xl hover:border-zinc-800 transition-colors">
-                    <h3 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <h3 className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <Activity className="w-3 h-3" /> Average Disbursement
                     </h3>
                     <p className="text-4xl font-semibold text-zinc-900 dark:text-white tracking-tight">
@@ -71,7 +71,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                     </div>
                     <div>
                         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight uppercase italic">Tactical <span className="text-amber-500 not-italic">Roster</span></h2>
-                        <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mt-1">Select node to authorize disbursement</p>
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-1">Select node to authorize disbursement</p>
                     </div>
                 </div>
 
@@ -112,7 +112,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                             <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Last Authorized</div>
                                             <div className="text-xs font-semibold text-zinc-900 dark:text-white flex items-center gap-2 justify-end">
                                                 {lastPay ? `$${Number(lastPay.amount).toLocaleString()} ` : '---'}
-                                                <span className="text-[10px] text-zinc-500 font-normal">
+                                                <span className="text-[10px] text-zinc-600 dark:text-zinc-500 font-normal">
                                                     {lastPay ? format(new Date(lastPay.createdAt), 'dd MMM yy') : ''}
                                                 </span>
                                             </div>
@@ -122,7 +122,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                             <Button
                                                 variant="ghost"
                                                 onClick={() => setExpandedStaff(isExpanded ? null : member.id)}
-                                                className="h-12 w-12 rounded-xl border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-white text-zinc-500"
+                                                className="h-12 w-12 rounded-xl border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-white text-zinc-600 dark:text-zinc-500"
                                             >
                                                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                             </Button>
@@ -156,11 +156,11 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                                         {memberHistory.slice(0, 4).map((pay: any, i: number) => (
                                                             <div key={pay.id || i} className="p-4 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 flex flex-col gap-2">
                                                                 <div className="flex justify-between items-center">
-                                                                    <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest">{format(new Date(pay.createdAt), 'MMM yyyy')}</span>
-                                                                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{pay.method || 'BANK'}</span>
+                                                                    <span className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{format(new Date(pay.createdAt), 'MMM yyyy')}</span>
+                                                                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{pay.method || 'BANK'}</span>
                                                                 </div>
                                                                 <div className="text-lg font-semibold text-zinc-900 dark:text-white">${Number(pay.amount).toLocaleString()}</div>
-                                                                {pay.notes && <div className="text-[10px] text-zinc-500 truncate mt-1">"{pay.notes}"</div>}
+                                                                {pay.notes && <div className="text-[10px] text-zinc-600 dark:text-zinc-500 truncate mt-1">"{pay.notes}"</div>}
                                                             </div>
                                                         ))}
                                                     </div>

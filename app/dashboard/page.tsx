@@ -62,7 +62,7 @@ async function DashboardContent({ dbUser }: { dbUser: any }) {
             redirect('/dashboard/student');
 
         default:
-            return <div className="p-20 text-center font-medium uppercase tracking-widest text-zinc-800">Operational Role Not Discovered</div>;
+            return <div className="p-20 text-center font-medium uppercase tracking-widest text-zinc-800 dark:text-zinc-200">Operational Role Not Discovered</div>;
     }
 }
 

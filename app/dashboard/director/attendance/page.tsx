@@ -164,7 +164,7 @@ export default function DirectorAttendancePage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={handlePreviousDay}
-                            className="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
                         >
                             &larr;
                         </motion.button>
@@ -176,7 +176,7 @@ export default function DirectorAttendancePage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={handleNextDay}
-                            className="w-12 h-12 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
                         >
                             &rarr;
                         </motion.button>
@@ -323,7 +323,7 @@ export default function DirectorAttendancePage() {
                                     whileTap={{ scale: 0.95 }}
                                     onClick={saveStaffAttendance}
                                     disabled={saving}
-                                    className="bg-emerald-500 hover:bg-emerald-400 text-black rounded-[1.25rem] px-10 h-16 shadow-[0_0_40px_rgba(16,185,129,0.3)] border border-white/20 transition-all font-black uppercase tracking-[0.2em] italic text-[11px] flex items-center gap-4"
+                                    className="bg-emerald-500 hover:bg-emerald-400 text-black rounded-[1.25rem] px-10 h-16 shadow-[0_0_40px_rgba(16,185,129,0.3)] border border-zinc-300 dark:border-white/20 transition-all font-black uppercase tracking-[0.2em] italic text-[11px] flex items-center gap-4"
                                 >
                                     {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                     COMMIT REGISTER
@@ -359,8 +359,8 @@ export default function DirectorAttendancePage() {
                                                     <div>
                                                         <h4 className="font-black text-3xl text-zinc-900 dark:text-white italic tracking-tight group-hover/staff:translate-x-2 transition-transform">{record.name.toUpperCase()}</h4>
                                                         <div className="flex items-center gap-4 mt-4">
-                                                            <div className="px-3 py-1 bg-white/5 rounded-lg border border-zinc-200 dark:border-white/5 text-[8px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.2em]">FACULTY GRID</div>
-                                                            <div className="w-1 h-1 rounded-full bg-white/10" />
+                                                            <div className="px-3 py-1 bg-zinc-200 dark:bg-white/5 rounded-lg border border-zinc-200 dark:border-white/5 text-[8px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.2em]">FACULTY GRID</div>
+                                                            <div className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-white/10" />
                                                             <p className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] italic">Verified Instructor</p>
                                                         </div>
                                                     </div>
@@ -375,7 +375,7 @@ export default function DirectorAttendancePage() {
                                                             <SelectValue placeholder="UNMARKED" />
                                                         </SelectTrigger>
                                                         <SelectContent className="bg-[#050505] border-zinc-300 dark:border-white/10 rounded-[1.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] p-2">
-                                                            <SelectItem value="PENDING" className="text-zinc-900 dark:text-white/20 focus:bg-white/5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">UNMARKED</SelectItem>
+                                                            <SelectItem value="PENDING" className="text-zinc-900 dark:text-white/20 focus:bg-zinc-200 dark:bg-white/5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">UNMARKED</SelectItem>
                                                             <SelectItem value="PRESENT" className="text-emerald-500 focus:bg-emerald-500/10 focus:text-emerald-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">PRESENT</SelectItem>
                                                             <SelectItem value="ABSENT" className="text-rose-500 focus:bg-rose-500/10 focus:text-rose-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">ABSENT</SelectItem>
                                                             <SelectItem value="LATE" className="text-amber-500 focus:bg-amber-500/10 focus:text-amber-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">LATE</SelectItem>
@@ -414,7 +414,7 @@ function StatCard({ icon: Icon, label, value, color, glow, percentage }: any) {
             <CardContent className="p-10 relative z-10 flex flex-col justify-between h-full min-h-[220px]">
                 <div>
                     <div className="flex items-center gap-6 mb-8">
-                        <div className={cn("p-4 bg-white/5 rounded-2xl border border-zinc-200 dark:border-white/5 shadow-2xl group-hover:scale-110 transition-transform", color)}>
+                        <div className={cn("p-4 bg-zinc-200 dark:bg-white/5 rounded-2xl border border-zinc-200 dark:border-white/5 shadow-2xl group-hover:scale-110 transition-transform", color)}>
                             <Icon className="w-6 h-6" />
                         </div>
                         <p className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] font-mono leading-none">{label}</p>
@@ -427,7 +427,7 @@ function StatCard({ icon: Icon, label, value, color, glow, percentage }: any) {
                                     <span className="text-zinc-900 dark:text-white/40">Sync Rate</span>
                                     <span className={color.split(' ').find((c: string) => c.includes('text-'))}>{percentage}%</span>
                                 </div>
-                                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-1 w-full bg-zinc-200 dark:bg-white/5 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${percentage}%` }}

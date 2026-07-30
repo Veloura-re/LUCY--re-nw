@@ -116,10 +116,10 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                 
                 <div className="space-y-4">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Assigned Email</label>
+                        <label className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Assigned Email</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Mail className="h-4 w-4 text-zinc-500" />
+                                <Mail className="h-4 w-4 text-zinc-600 dark:text-zinc-500" />
                             </div>
                             <input
                                 type="email"
@@ -137,7 +137,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                         <label className="text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest ml-1">Full Legal Name</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <User className="h-4 w-4 text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
+                                <User className="h-4 w-4 text-zinc-600 dark:text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
                             </div>
                             <input
                                 type="text"
@@ -154,7 +154,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                         <label className="text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest ml-1">Secure Password</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Lock className="h-4 w-4 text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
+                                <Lock className="h-4 w-4 text-zinc-600 dark:text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
                             </div>
                             <input
                                 type="password"
@@ -207,7 +207,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                     )}
                 </Button>
                 
-                <p className="text-center text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-6">
+                <p className="text-center text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-6">
                     Protected by Institutional Access Control
                 </p>
             </form>

@@ -143,7 +143,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                             key={g}
                                             type="button"
                                             onClick={() => setFormData({ ...formData, gender: g })}
-                                            className={`text-[9px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all whitespace-nowrap ${formData.gender === g ? 'bg-emerald-600 text-zinc-900 dark:text-white' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-zinc-300'}`}
+                                            className={`text-[9px] font-medium uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all whitespace-nowrap ${formData.gender === g ? 'bg-emerald-600 text-white' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-zinc-300'}`}
                                         >
                                             {g}
                                         </button>
@@ -154,7 +154,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
 
                         <div className="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-slate-200/80 dark:border-zinc-900/50 mt-2">
                             <Button type="button" variant="ghost" onClick={resetAndClose} className="text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
-                            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px] shadow-lg shadow-emerald-900/20">
+                            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px] shadow-lg shadow-emerald-900/20">
                                 <Mail className="w-4 h-4 mr-2" /> Dispatch Invite
                             </Button>
                         </div>
@@ -183,7 +183,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                 </div>
                             )}
                         </div>
-                        <Button size="lg" onClick={() => { setInviteResult(null); setFormData({ name: "", email: "", phone: "", gender: "", qualification: "", role: "TEACHER", photoUrl: "", teacherCode: "" }); }} className="w-full bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-900/20">
+                        <Button size="lg" onClick={() => { setInviteResult(null); setFormData({ name: "", email: "", phone: "", gender: "", qualification: "", role: "TEACHER", photoUrl: "", teacherCode: "" }); }} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-900/20">
                             Create Another Invitation
                         </Button>
                         <Button variant="ghost" size="sm" onClick={copyToClipboard} className="text-[10px] text-slate-500 dark:text-zinc-500 hover:text-emerald-600 dark:hover:text-eduGreen-500 font-medium uppercase tracking-widest">

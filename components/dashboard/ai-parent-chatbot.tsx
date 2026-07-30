@@ -63,7 +63,7 @@ export function AIParentChatbot() {
                     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-zinc-950/50">
                         {messages.map((msg, i) => (
                             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-emerald-600 text-zinc-900 dark:text-white shadow-lg' : 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 shadow-md'}`}>
+                                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 shadow-md'}`}>
                                     <div className="prose dark:prose-invert prose-sm max-w-none">
                                         <ReactMarkdown>
                                             {msg.content}
@@ -90,7 +90,7 @@ export function AIParentChatbot() {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                         />
-                        <Button size="icon" className="bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white rounded-xl" onClick={handleSend} disabled={loading || !input.trim()}>
+                        <Button size="icon" className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl" onClick={handleSend} disabled={loading || !input.trim()}>
                             <Send className="w-4 h-4" />
                         </Button>
                     </div>

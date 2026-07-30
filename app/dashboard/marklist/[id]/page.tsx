@@ -173,7 +173,7 @@ export default function MarklistEntryPage() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard/marklist">
-                        <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900">
+                        <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900">
                             <ChevronLeft className="w-6 h-6" />
                         </Button>
                     </Link>
@@ -182,18 +182,18 @@ export default function MarklistEntryPage() {
                             <span className="text-[10px] font-black text-eduGreen-500 uppercase tracking-widest bg-eduGreen-900/10 px-2 py-1 rounded-lg">
                                 {exam.category?.replace('_', ' ')}
                             </span>
-                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg">
+                            <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg">
                                 {exam.totalMarks} Marks
                             </span>
                         </div>
                         <h1 className="text-3xl font-black tracking-tighter text-zinc-900 dark:text-white">{exam.title}</h1>
-                        <p className="text-zinc-500 font-bold text-sm mt-1">{exam.className} • {exam.subjectName}</p>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-sm mt-1">{exam.className} • {exam.subjectName}</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <div className="flex flex-col items-end mr-4">
-                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Class Average</span>
+                        <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Class Average</span>
                         <span className="text-xl font-black text-zinc-900 dark:text-white">{stats.avg.toFixed(1)}</span>
                     </div>
 
@@ -222,7 +222,7 @@ export default function MarklistEntryPage() {
                 <CardContent className="p-0">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-white/50 dark:bg-zinc-950/50 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                            <thead className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500">
                                 <tr>
                                     <th className="p-6 w-20">#</th>
                                     <th className="p-6">Student</th>
@@ -266,7 +266,7 @@ export default function MarklistEntryPage() {
                                                         }`}
                                                 />
                                             </td>
-                                            <td className={`p-6 text-center font-mono ${pct !== "-" ? getPerformanceColor(parseFloat(pct)).text : 'text-zinc-500'}`}>{pct}%</td>
+                                            <td className={`p-6 text-center font-mono ${pct !== "-" ? getPerformanceColor(parseFloat(pct)).text : 'text-zinc-600 dark:text-zinc-500'}`}>{pct}%</td>
                                             <td className="p-6 text-center">
                                                 <span className={`px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border text-xs ${pct !== "-" ? `${getPerformanceColor(parseFloat(pct)).text} ${getPerformanceColor(parseFloat(pct)).border}` : 'text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800'}`}>
                                                     {grade}
@@ -279,7 +279,7 @@ export default function MarklistEntryPage() {
                                                         placeholder="Add remark..."
                                                         value={student.remark || ""}
                                                         onChange={e => handleMarkChange(student.id, 'remark', e.target.value)}
-                                                        className="bg-transparent border-transparent hover:bg-zinc-200 dark:hover:bg-zinc-900/50 hover:border-zinc-800 focus:bg-zinc-100 dark:bg-zinc-900 focus:border-eduGreen-800 transition-all placeholder:text-zinc-800 text-zinc-600 dark:text-zinc-400"
+                                                        className="bg-transparent border-transparent hover:bg-zinc-200 dark:hover:bg-zinc-900/50 hover:border-zinc-800 focus:bg-zinc-100 dark:bg-zinc-900 focus:border-eduGreen-800 transition-all placeholder:text-zinc-800 dark:text-zinc-200 text-zinc-600 dark:text-zinc-400"
                                                     />
                                                     <Button
                                                         variant="ghost"

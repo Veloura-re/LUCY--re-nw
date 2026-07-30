@@ -42,14 +42,14 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     render() {
         if (this.state.hasError) {
             return this.props.fallback ?? (
-                <div className="min-h-screen bg-black flex items-center justify-center text-white p-8">
+                <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center text-zinc-900 dark:text-white p-8">
                     <div className="max-w-md text-center space-y-4">
-                        <div className="text-4xl font-black text-white/10">500</div>
-                        <h1 className="text-xl font-bold text-white">Something went wrong</h1>
-                        <p className="text-sm text-zinc-500">This error has been automatically reported. Try refreshing the page.</p>
+                        <div className="text-4xl font-black text-zinc-900 dark:text-white/10">500</div>
+                        <h1 className="text-xl font-bold text-zinc-900 dark:text-white">Something went wrong</h1>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-500">This error has been automatically reported. Try refreshing the page.</p>
                         <button
                             onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
-                            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-zinc-300 hover:bg-white/10 transition-all"
+                            className="px-4 py-2 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 hover:bg-white/10 transition-all"
                         >
                             Refresh page
                         </button>

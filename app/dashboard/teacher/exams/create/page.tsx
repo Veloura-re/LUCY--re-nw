@@ -256,13 +256,13 @@ function CreateExamContent() {
             <div className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-900 px-8 py-4">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-500 hover:text-white">
+                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <h1 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic truncate max-w-[200px] md:max-w-md">
                             {title || "Untitled Assessment"}
                         </h1>
-                        <Badge variant="outline" className="hidden md:flex border-zinc-300 dark:border-zinc-800 text-zinc-500 font-medium uppercase tracking-widest text-[8px]">
+                        <Badge variant="outline" className="hidden md:flex border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[8px]">
                             Draft Protocol
                         </Badge>
                     </div>
@@ -270,7 +270,7 @@ function CreateExamContent() {
                     <div className="flex items-center gap-3">
                         <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-eduGreen-500 hidden md:flex">
+                                <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 hidden md:flex">
                                     <Eye className="w-5 h-5" />
                                 </Button>
                             </DialogTrigger>
@@ -283,7 +283,7 @@ function CreateExamContent() {
                                             <span className="text-zinc-600 text-[10px] uppercase tracking-widest font-medium">Est. Duration: {duration}m</span>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" size="icon" onClick={() => setIsPreviewOpen(false)} className="text-zinc-500 hover:text-white">
+                                    <Button variant="ghost" size="icon" onClick={() => setIsPreviewOpen(false)} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
                                         <X className="w-5 h-5" />
                                     </Button>
                                 </div>
@@ -300,13 +300,13 @@ function CreateExamContent() {
                                             <div key={q.id} className="space-y-6">
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-eduGreen-500 font-medium text-sm">0{i + 1}.</span>
-                                                    <h3 className="text-xl font-medium text-zinc-100">{q.text}</h3>
+                                                    <h3 className="text-xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100">{q.text}</h3>
                                                 </div>
                                                 {q.type === "MCQ" && (
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-8">
                                                         {q.options?.map((opt: string, optIndex: number) => (
                                                             <div key={optIndex} className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 text-sm text-zinc-600 dark:text-zinc-400 font-medium flex items-center gap-3">
-                                                                <div className="w-5 h-5 rounded-full border border-zinc-700 flex items-center justify-center text-[10px] text-zinc-600">{String.fromCharCode(65 + optIndex)}</div>
+                                                                <div className="w-5 h-5 rounded-full border border-zinc-400 dark:border-zinc-700 flex items-center justify-center text-[10px] text-zinc-600">{String.fromCharCode(65 + optIndex)}</div>
                                                                 {opt}
                                                             </div>
                                                         ))}
@@ -314,12 +314,12 @@ function CreateExamContent() {
                                                 )}
                                                 {q.type === "TF" && (
                                                     <div className="flex gap-4 ml-8 text-xs font-medium uppercase tracking-widest">
-                                                        <div className="px-6 py-3 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-500">True</div>
-                                                        <div className="px-6 py-3 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-500">False</div>
+                                                        <div className="px-6 py-3 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-600 dark:text-zinc-500">True</div>
+                                                        <div className="px-6 py-3 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-600 dark:text-zinc-500">False</div>
                                                     </div>
                                                 )}
                                                 {q.type === "LONG" && (
-                                                    <div className="ml-8 p-6 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-2xl h-32 flex items-center justify-center text-zinc-800 text-[10px] uppercase tracking-widest italic">
+                                                    <div className="ml-8 p-6 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800 rounded-2xl h-32 flex items-center justify-center text-zinc-800 dark:text-zinc-200 text-[10px] uppercase tracking-widest italic">
                                                         Input Analysis Hub
                                                     </div>
                                                 )}
@@ -333,14 +333,14 @@ function CreateExamContent() {
 
                         <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-eduGreen-500 hidden md:flex">
+                                <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 hidden md:flex">
                                     <Settings className="w-5 h-5" />
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white rounded-[2.5rem] w-[95vw] sm:max-w-lg p-0 max-h-[85vh] overflow-y-auto shadow-2xl">
                                 <DialogHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900">
                                     <DialogTitle className="text-2xl font-medium italic uppercase flex items-center gap-3">
-                                        <Settings className="w-6 h-6 text-zinc-500" /> Advanced Control
+                                        <Settings className="w-6 h-6 text-zinc-600 dark:text-zinc-500" /> Advanced Control
                                     </DialogTitle>
                                     <DialogDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px]">
                                         Configure Neural Assessment Parameters
@@ -350,7 +350,7 @@ function CreateExamContent() {
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <div className="space-y-0.5">
-                                                <Label className="text-xs font-medium text-zinc-200 uppercase tracking-tight">Time Allocation</Label>
+                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Time Allocation</Label>
                                                 <p className="text-[10px] text-zinc-600 font-medium">Minutes until protocol completion</p>
                                             </div>
                                             <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-3">
@@ -366,7 +366,7 @@ function CreateExamContent() {
 
                                         <div className="flex items-center justify-between">
                                             <div className="space-y-0.5">
-                                                <Label className="text-xs font-medium text-zinc-200 uppercase tracking-tight">Shuffle Matrix</Label>
+                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Shuffle Matrix</Label>
                                                 <p className="text-[10px] text-zinc-600 font-medium">Randomize question sequence for each user</p>
                                             </div>
                                             <Switch
@@ -377,7 +377,7 @@ function CreateExamContent() {
 
                                         <div className="flex items-center justify-between">
                                             <div className="space-y-0.5">
-                                                <Label className="text-xs font-medium text-zinc-200 uppercase tracking-tight">Instant Feedback</Label>
+                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Instant Feedback</Label>
                                                 <p className="text-[10px] text-zinc-600 font-medium">Allow users to see results upon submission</p>
                                             </div>
                                             <Switch
@@ -388,7 +388,7 @@ function CreateExamContent() {
 
                                         <div className="space-y-3 pt-4">
                                             <div className="flex items-center justify-between">
-                                                <Label className="text-xs font-medium text-zinc-200 uppercase tracking-tight">Accuracy Threshold</Label>
+                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Accuracy Threshold</Label>
                                                 <span className="text-eduGreen-500 font-bold text-xs">{passingScore}%</span>
                                             </div>
                                             <input
@@ -409,7 +409,7 @@ function CreateExamContent() {
                                     </div>
                                     <Button
                                         onClick={() => setIsSettingsOpen(false)}
-                                        className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest h-12 rounded-xl transition-all"
+                                        className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest h-12 rounded-xl transition-all"
                                     >
                                         Apply Matrix Parameters
                                     </Button>
@@ -437,16 +437,16 @@ function CreateExamContent() {
                                 value={title}
                                 onChange={e => setTitle(e.target.value)}
                                 placeholder="Assessment Title"
-                                className="border-none bg-transparent text-4xl font-medium text-zinc-900 dark:text-white h-auto p-0 focus-visible:ring-0 placeholder:text-zinc-800 italic uppercase"
+                                className="border-none bg-transparent text-4xl font-medium text-zinc-900 dark:text-white h-auto p-0 focus-visible:ring-0 placeholder:text-zinc-800 dark:text-zinc-200 italic uppercase"
                             />
-                            <div className="h-[1px] bg-zinc-800 w-full" />
+                            <div className="h-[1px] bg-zinc-200 dark:bg-zinc-800 w-full" />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-3">
                                 <label className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest ml-1">Target Class</label>
                                 <Select onValueChange={handleClassChange}>
-                                    <SelectTrigger className="h-12 bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
+                                    <SelectTrigger className="h-12 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
                                         <SelectValue placeholder="Select Class" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-xl">
@@ -462,7 +462,7 @@ function CreateExamContent() {
                             <div className="space-y-3">
                                 <label className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest ml-1">Subject</label>
                                 <Select onValueChange={setSubjectId}>
-                                    <SelectTrigger className="h-12 bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
+                                    <SelectTrigger className="h-12 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
                                         <SelectValue placeholder="Select Subject" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-xl">
@@ -481,7 +481,7 @@ function CreateExamContent() {
                                     type="date"
                                     value={dueDate}
                                     onChange={e => setDueDate(e.target.value)}
-                                    className="h-12 bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-1 focus:ring-eduGreen-600 transition-all"
+                                    className="h-12 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 font-medium text-zinc-900 dark:text-white focus:ring-1 focus:ring-eduGreen-600 transition-all"
                                 />
                             </div>
                         </div>
@@ -516,7 +516,7 @@ function CreateExamContent() {
                                             <p className="text-zinc-600 font-medium text-[8px] mt-1 uppercase tracking-widest">Fact Retrieval • Precise Scoring</p>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="mt-8 text-zinc-500 group-hover:text-eduGreen-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
+                                    <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
                                         Initialize Protocol <Plus className="ml-2 w-3 h-3" />
                                     </Button>
                                 </Card>
@@ -542,7 +542,7 @@ function CreateExamContent() {
                                             <p className="text-zinc-600 font-medium text-[8px] mt-1 uppercase tracking-widest">Depth of Thought • Analysis</p>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="mt-8 text-zinc-500 group-hover:text-amber-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
+                                    <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-amber-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
                                         Begin Analysis <Plus className="ml-2 w-3 h-3" />
                                     </Button>
                                 </Card>
@@ -565,7 +565,7 @@ function CreateExamContent() {
                                             <p className="text-zinc-600 font-medium text-[8px] mt-1 uppercase tracking-widest">AI Assisted • Topic Driven</p>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="mt-8 text-zinc-500 group-hover:text-purple-400 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
+                                    <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-purple-400 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
                                         Activate AI <Plus className="ml-2 w-3 h-3" />
                                     </Button>
                                 </Card>
@@ -609,7 +609,7 @@ function CreateExamContent() {
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeQuestion(i)}
-                                            className="text-zinc-800 hover:text-red-500 transition-colors h-8 w-8"
+                                            className="text-zinc-800 dark:text-zinc-200 hover:text-red-500 transition-colors h-8 w-8"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
@@ -619,7 +619,7 @@ function CreateExamContent() {
                                         value={q.text}
                                         onChange={e => updateQuestion(i, 'text', e.target.value)}
                                         placeholder="Question Stem..."
-                                        className="border-none bg-transparent text-xl font-medium text-zinc-900 dark:text-white p-0 focus-visible:ring-0 placeholder:text-zinc-800 resize-none min-h-[60px]"
+                                        className="border-none bg-transparent text-xl font-medium text-zinc-900 dark:text-white p-0 focus-visible:ring-0 placeholder:text-zinc-800 dark:text-zinc-200 resize-none min-h-[60px]"
                                     />
 
                                     {q.type === "MCQ" && (
@@ -651,7 +651,7 @@ function CreateExamContent() {
                                                             {q.options.length > 2 && (
                                                                 <button
                                                                     onClick={() => removeOption(i, optIndex)}
-                                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-800 hover:text-red-500 transition-colors opacity-0 group-hover/opt:opacity-100"
+                                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-800 dark:text-zinc-200 hover:text-red-500 transition-colors opacity-0 group-hover/opt:opacity-100"
                                                                 >
                                                                     <Trash2 className="w-3.5 h-3.5" />
                                                                 </button>
@@ -700,7 +700,7 @@ function CreateExamContent() {
                                                         value={q.criteria}
                                                         onChange={e => updateQuestion(i, 'criteria', e.target.value)}
                                                         placeholder="Grading Criteria / Automated Rubric Guidance..."
-                                                        className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-2xl min-h-[120px] font-medium text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-800"
+                                                        className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-2xl min-h-[120px] font-medium text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-800 dark:text-zinc-200"
                                                     />
                                                     <div className="flex items-center gap-6">
                                                         <div className="flex items-center gap-2">
@@ -754,16 +754,16 @@ function CreateExamContent() {
                 <div className="fixed bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-zinc-100/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-300 dark:border-zinc-800 p-2 rounded-full shadow-2xl z-50">
                     <Button
                         onClick={() => addQuestion()}
-                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-eduGreen-500 h-14 w-14 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-110 active:scale-90"
+                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-eduGreen-500 h-14 w-14 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-110 active:scale-90"
                     >
                         <Plus className="w-6 h-6" />
                     </Button>
-                    <div className="w-[1px] h-8 bg-zinc-800 mx-1" />
-                    <div className="w-[1px] h-8 bg-zinc-800 mx-1" />
+                    <div className="w-[1px] h-8 bg-zinc-200 dark:bg-zinc-800 mx-1" />
+                    <div className="w-[1px] h-8 bg-zinc-200 dark:bg-zinc-800 mx-1" />
 
                     <Dialog open={isAiOpen} onOpenChange={setIsAiOpen}>
                         <DialogTrigger asChild>
-                            <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
+                            <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
                                 <FileText className="w-5 h-5" />
                                 <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">Neural Write</span>
                             </Button>
@@ -771,10 +771,10 @@ function CreateExamContent() {
                         <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white rounded-[2rem] w-[95vw] sm:max-w-2xl p-0 max-h-[85vh] overflow-y-auto shadow-2xl">
                             <Tabs defaultValue="draft" className="w-full">
                                 <TabsList className="w-full h-12 bg-zinc-100/50 dark:bg-zinc-900/50 border-b border-zinc-300 dark:border-zinc-800 rounded-none p-0 flex">
-                                    <TabsTrigger value="draft" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-500 data-[state=active]:text-purple-400">
+                                    <TabsTrigger value="draft" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 data-[state=active]:text-purple-400">
                                         Neural Draft
                                     </TabsTrigger>
-                                    <TabsTrigger value="guide" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-500 data-[state=active]:text-purple-400">
+                                    <TabsTrigger value="guide" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 data-[state=active]:text-purple-400">
                                         How it Works
                                     </TabsTrigger>
                                 </TabsList>
@@ -856,7 +856,7 @@ function CreateExamContent() {
                                             value={aiText}
                                             onChange={e => setAiText(e.target.value)}
                                             placeholder="Paste lecture notes, textbook snippets, or topics here..."
-                                            className="min-h-[160px] bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 font-medium text-dm-textMain focus:ring-purple-500 transition-all placeholder:text-zinc-800"
+                                            className="min-h-[160px] bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 font-medium text-dm-textMain focus:ring-purple-500 transition-all placeholder:text-zinc-800 dark:text-zinc-200"
                                         />
 
                                         <div className="flex items-center justify-between pt-2">
@@ -869,7 +869,7 @@ function CreateExamContent() {
                                                             onClick={() => setAiCount(n)}
                                                             className={cn(
                                                                 "px-2.5 py-1 rounded-md text-[8px] font-medium transition-all",
-                                                                aiCount === n ? "bg-purple-600 text-zinc-900 dark:text-white shadow-lg font-medium" : "text-zinc-700 hover:text-zinc-500"
+                                                                aiCount === n ? "bg-purple-600 text-white shadow-lg font-medium" : "text-zinc-700 hover:text-zinc-500"
                                                             )}
                                                         >
                                                             {n}
@@ -894,7 +894,7 @@ function CreateExamContent() {
                                     <div className="p-10 space-y-8">
                                         <div className="space-y-2">
                                             <h3 className="text-xl font-medium text-zinc-900 dark:text-white italic uppercase">How it Works</h3>
-                                            <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Mastering the Neural Architect</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Mastering the Neural Architect</p>
                                         </div>
 
                                         <div className="space-y-6">
@@ -904,7 +904,7 @@ function CreateExamContent() {
                                                 { step: "03", title: "Synthesis", desc: "LUCY processes the data and generates a formal assessment schema ready for review." }
                                             ].map((s, idx) => (
                                                 <div key={idx} className="flex gap-6 items-start">
-                                                    <div className="text-2xl font-medium text-zinc-900 leading-none">{s.step}</div>
+                                                    <div className="text-2xl font-medium text-zinc-900 dark:text-white leading-none">{s.step}</div>
                                                     <div className="space-y-1">
                                                         <p className="text-zinc-900 dark:text-white font-medium text-sm uppercase tracking-tight">{s.title}</p>
                                                         <p className="text-zinc-600 text-[10px] font-medium leading-relaxed">{s.desc}</p>
@@ -935,7 +935,7 @@ function CreateExamContent() {
                     <Button
                                                         isLoading={extracting}
                                                         onClick={() => fileInputRef.current?.click()}
-                                                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 h-14 px-6 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                                                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 h-14 px-6 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
                                                     >
                                                         {!extracting && <ImageIcon className="w-5 h-5" />}
                                                         <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">
@@ -954,7 +954,7 @@ export default function CreateExamPage() {
             <div className="min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="w-8 h-8 animate-spin text-eduGreen-500" />
-                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-[0.2em] animate-pulse">Initializing Synthesis Matrix</p>
+                    <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] animate-pulse">Initializing Synthesis Matrix</p>
                 </div>
             </div>
         }>

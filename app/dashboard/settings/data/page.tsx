@@ -393,7 +393,7 @@ export default function DataSecuritySettings() {
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300 pb-20">
             <div>
                 <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Data & Security</h1>
-                <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">Manage system backups and disaster recovery</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">Manage system backups and disaster recovery</p>
             </div>
 
             {/* Backup Generation Panel */}
@@ -423,7 +423,7 @@ export default function DataSecuritySettings() {
                         <Button 
                             onClick={handleGenerateArchive}
                             isLoading={isArchiving}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
+                            className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-400 dark:border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
                         >
                             <FileArchive className={`w-4 h-4 mr-2 ${isArchiving ? 'animate-bounce' : ''}`} />
                             Download Global Archive (ZIP/PDF)
@@ -438,11 +438,11 @@ export default function DataSecuritySettings() {
                 
                 {isLoading ? (
                     <div className="py-12 flex justify-center">
-                        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
+                        <Loader2 className="w-6 h-6 animate-spin text-zinc-600 dark:text-zinc-500" />
                     </div>
                 ) : restorePoints.length === 0 ? (
                     <div className="text-center py-12 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-2xl">
-                        <p className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">No snapshots found</p>
+                        <p className="text-[11px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">No snapshots found</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
@@ -457,15 +457,15 @@ export default function DataSecuritySettings() {
                                             Restore Point - {new Date(rp.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </p>
                                         <div className="flex items-center gap-3 mt-1">
-                                            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">{new Date(rp.createdAt).toLocaleTimeString()}</span>
+                                            <span className="text-[10px] text-zinc-600 dark:text-zinc-500 font-mono uppercase tracking-wider">{new Date(rp.createdAt).toLocaleTimeString()}</span>
                                             <span className="text-[10px] text-zinc-600">•</span>
-                                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium">{formatBytes(rp.sizeBytes)}</span>
+                                            <span className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium">{formatBytes(rp.sizeBytes)}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <Button
                                     onClick={() => forceDownload(rp.fileUrl, `LUCY_Snapshot_${rp.createdAt.split('T')[0]}.json`)}
-                                    className="h-10 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
+                                    className="h-10 px-4 rounded-xl bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
                                 >
                                     <Download className="w-4 h-4" /> Download
                                 </Button>
@@ -496,7 +496,7 @@ export default function DataSecuritySettings() {
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                                 />
-                                <div className={`flex items-center gap-3 px-4 h-12 rounded-xl border border-dashed transition-all ${uploadFile ? 'bg-eduGreen-950/20 border-eduGreen-500/50 text-eduGreen-400' : 'bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-500'}`}>
+                                <div className={`flex items-center gap-3 px-4 h-12 rounded-xl border border-dashed transition-all ${uploadFile ? 'bg-eduGreen-950/20 border-eduGreen-500/50 text-eduGreen-400' : 'bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-400 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-500'}`}>
                                     {uploadFile ? <CheckCircle2 className="w-5 h-5" /> : <Upload className="w-5 h-5" />}
                                     <span className="text-[11px] font-medium uppercase tracking-widest truncate">
                                         {uploadFile ? uploadFile.name : "Select Snapshot File (.json)"}

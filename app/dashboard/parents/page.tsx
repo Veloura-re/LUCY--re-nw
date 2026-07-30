@@ -85,7 +85,7 @@ export default function ParentsPage() {
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Parent <span className="text-eduGreen-500">Inventory</span>
                     </h1>
-                    <p className="text-zinc-500 font-medium max-w-xl text-sm md:text-base">
+                    <p className="text-zinc-600 dark:text-zinc-500 font-medium max-w-xl text-sm md:text-base">
                         Locate and manage parental contacts by searching with their child's unique student key. Seamlessly connect with the family ecosystem.
                     </p>
                 </div>
@@ -96,7 +96,7 @@ export default function ParentsPage() {
                 <CardContent className="p-8 md:p-12">
                     <form onSubmit={handleSearch} className="max-w-2xl mx-auto space-y-6">
                         <div className="text-center space-y-2 mb-8">
-                            <h2 className="text-xl font-medium text-zinc-100 italic font-mono tracking-tight">Parent-Student Link</h2>
+                            <h2 className="text-xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 italic font-mono tracking-tight">Parent-Student Link</h2>
                             <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-[0.3em]">Search by Student Name or Unique Student Code</p>
                             <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-[0.3em]">e.g., "John Doe" or "ST-XXXXXX-2024"</p>
                         </div>
@@ -108,7 +108,7 @@ export default function ParentsPage() {
                                     placeholder="SEARCH BY NAME OR CODE"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    className="h-16 bg-white/80 dark:bg-zinc-950/80 border-2 border-zinc-300 dark:border-zinc-800 rounded-[1.25rem] px-8 text-eduGreen-400 font-mono text-lg focus:border-eduGreen-600 transition-all placeholder:text-zinc-900"
+                                    className="h-16 bg-white/80 dark:bg-zinc-950/80 border-2 border-zinc-300 dark:border-zinc-800 rounded-[1.25rem] px-8 text-eduGreen-400 font-mono text-lg focus:border-eduGreen-600 transition-all placeholder:text-zinc-900 dark:text-white"
                                     maxLength={40}
                                     required
                                 />
@@ -143,9 +143,9 @@ export default function ParentsPage() {
                             <h3 className="text-lg font-medium text-zinc-900 dark:text-white">{result.student.name}</h3>
                             <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
                                 <span>{result.student.code}</span>
-                                <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                 <span>{result.student.gradeName}</span>
-                                <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                 <span>{result.student.className}</span>
                             </div>
                         </div>
@@ -164,7 +164,7 @@ export default function ParentsPage() {
                                                 <div className="space-y-1">
                                                     <h4 className="text-xl font-medium text-zinc-900 dark:text-white group-hover:text-eduGreen-400 transition-colors">{parent.name}</h4>
                                                     <div className="flex flex-col gap-1">
-                                                        <div className="flex items-center gap-2 text-xs text-zinc-500">
+                                                        <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-500">
                                                             <Mail className="w-3 h-3" />
                                                             {parent.email}
                                                         </div>
@@ -186,7 +186,7 @@ export default function ParentsPage() {
                                             </div>
                                             <Button
                                                 onClick={() => handleStartChat(parent.id)}
-                                                className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 hover:bg-eduGreen-950/20 hover:border-eduGreen-900/50 text-zinc-500 hover:text-eduGreen-400 rounded-2xl px-6 font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
+                                                className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 hover:bg-eduGreen-950/20 hover:border-eduGreen-900/50 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 rounded-2xl px-6 font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
                                             >
                                                 Direct Message <MessageSquare className="w-3.5 h-3.5" />
                                             </Button>
@@ -200,7 +200,7 @@ export default function ParentsPage() {
                                     <Users className="w-6 h-6 text-zinc-700" />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-zinc-500 font-medium uppercase tracking-widest text-xs">No parents linked to this student yet.</p>
+                                    <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-xs">No parents linked to this student yet.</p>
                                     <p className="text-[10px] text-zinc-700">The student needs to share their code with a parent to link accounts.</p>
                                 </div>
                             </div>
@@ -216,7 +216,7 @@ export default function ParentsPage() {
                         { title: "Direct Connectivity", desc: "Start conversations and share updates instantly from the management hub." },
                         { title: "Unified Directory", desc: "Access verified institutional contacts in a secure, central location." }
                     ].map((feature, i) => (
-                        <div key={i} className="p-8 rounded-[2rem] bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900/50 space-y-3">
+                        <div key={i} className="p-8 rounded-[2rem] bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900/50 space-y-3">
                             <div className="w-8 h-8 rounded-lg bg-eduGreen-950/20 border border-eduGreen-900/20 flex items-center justify-center">
                                 <span className="text-eduGreen-500 font-medium text-xs">{i + 1}</span>
                             </div>

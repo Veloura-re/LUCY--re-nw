@@ -173,7 +173,7 @@ export default function ExamEditorPage() {
             <div className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-900 px-8 py-4">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-500 hover:text-white">
+                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <h1 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight uppercase italic truncate max-w-[200px] md:max-w-md">
@@ -194,7 +194,7 @@ export default function ExamEditorPage() {
                 <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-eduGreen-600" />
                     <div className="flex flex-wrap gap-4">
-                        <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-500 font-bold uppercase tracking-widest text-[9px] py-1.5 px-4">
+                        <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[9px] py-1.5 px-4">
                             {exam?.subject?.name}
                         </Badge>
                         <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-eduGreen-500 font-bold uppercase tracking-widest text-[9px] py-1.5 px-4">
@@ -222,10 +222,10 @@ export default function ExamEditorPage() {
                                         <div className="flex items-center gap-3">
                                             <Tabs value={q.type} onValueChange={(val: any) => updateQuestion(i, { type: val })} className="bg-white dark:bg-zinc-950 p-1 rounded-xl border border-zinc-300 dark:border-zinc-800">
                                                 <TabsList className="bg-transparent h-8 p-0 gap-1">
-                                                    <TabsTrigger value="MCQ" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-800 data-[state=active]:text-eduGreen-400"><List className="w-3 h-3 mr-1" /> MCQ</TabsTrigger>
-                                                    <TabsTrigger value="SHORT" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-800 data-[state=active]:text-blue-400"><AlignLeft className="w-3 h-3 mr-1" /> Short</TabsTrigger>
-                                                    <TabsTrigger value="LONG" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-800 data-[state=active]:text-purple-400"><FileText className="w-3 h-3 mr-1" /> Essay</TabsTrigger>
-                                                    <TabsTrigger value="TF" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-800 data-[state=active]:text-orange-400"><CheckCircle2 className="w-3 h-3 mr-1" /> T/F</TabsTrigger>
+                                                    <TabsTrigger value="MCQ" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-200 dark:bg-zinc-800 data-[state=active]:text-eduGreen-400"><List className="w-3 h-3 mr-1" /> MCQ</TabsTrigger>
+                                                    <TabsTrigger value="SHORT" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-200 dark:bg-zinc-800 data-[state=active]:text-blue-400"><AlignLeft className="w-3 h-3 mr-1" /> Short</TabsTrigger>
+                                                    <TabsTrigger value="LONG" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-200 dark:bg-zinc-800 data-[state=active]:text-purple-400"><FileText className="w-3 h-3 mr-1" /> Essay</TabsTrigger>
+                                                    <TabsTrigger value="TF" className="h-7 text-[8px] font-black uppercase tracking-widest data-[state=active]:bg-zinc-200 dark:bg-zinc-800 data-[state=active]:text-orange-400"><CheckCircle2 className="w-3 h-3 mr-1" /> T/F</TabsTrigger>
                                                 </TabsList>
                                             </Tabs>
                                             <div className="flex items-center gap-2 bg-white dark:bg-zinc-950 h-10 px-4 rounded-xl border border-zinc-300 dark:border-zinc-800">
@@ -247,7 +247,7 @@ export default function ExamEditorPage() {
                                         value={q.text}
                                         onChange={e => updateQuestion(i, { text: e.target.value })}
                                         placeholder="Enter the question narrative..."
-                                        className="border-none bg-transparent text-xl font-bold text-zinc-900 dark:text-white p-0 focus-visible:ring-0 placeholder:text-zinc-800 resize-none min-h-[50px] italic"
+                                        className="border-none bg-transparent text-xl font-bold text-zinc-900 dark:text-white p-0 focus-visible:ring-0 placeholder:text-zinc-800 dark:text-zinc-200 resize-none min-h-[50px] italic"
                                     />
 
                                     {/* Type Specific Fields */}
@@ -269,7 +269,7 @@ export default function ExamEditorPage() {
                                                         onChange={e => updateOption(i, optIndex, e.target.value)}
                                                         placeholder={`Choice ${String.fromCharCode(65 + optIndex)}`}
                                                         className={cn(
-                                                            "bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 font-medium text-sm transition-all focus:border-eduGreen-600",
+                                                            "bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 font-medium text-sm transition-all focus:border-eduGreen-600",
                                                             q.correctOption === optIndex && "border-eduGreen-900/30 bg-eduGreen-950/20 text-zinc-900 dark:text-white"
                                                         )}
                                                     />
@@ -295,7 +295,7 @@ export default function ExamEditorPage() {
                                                     value={q.keywords?.join(", ")}
                                                     onChange={e => updateQuestion(i, { keywords: e.target.value.split(",").map(k => k.trim()) })}
                                                     placeholder="essential, terminology, required"
-                                                    className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 font-medium text-xs px-6"
+                                                    className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 font-medium text-xs px-6"
                                                 />
                                             </div>
                                         </div>
@@ -365,12 +365,12 @@ export default function ExamEditorPage() {
                         <Plus className="w-6 h-6" />
                     </Button>
 
-                    <div className="w-[1px] h-8 bg-zinc-800 mx-2" />
+                    <div className="w-[1px] h-8 bg-zinc-200 dark:bg-zinc-800 mx-2" />
 
                     <Button
                         onClick={handleRemix}
                         disabled={extracting}
-                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-amber-500 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-amber-500 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
                     >
                         {extracting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                         <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Remix</span>
@@ -378,7 +378,7 @@ export default function ExamEditorPage() {
 
                     <Dialog open={isAiOpen} onOpenChange={setIsAiOpen}>
                         <DialogTrigger asChild>
-                            <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
+                            <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
                                 <FileText className="w-5 h-5" />
                                 <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Neural Write</span>
                             </Button>
@@ -386,7 +386,7 @@ export default function ExamEditorPage() {
                         <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[3rem] p-12 max-w-2xl">
                             <DialogHeader>
                                 <DialogTitle className="text-4xl font-black text-zinc-900 dark:text-white italic uppercase italic mb-2">Cognitive Synthesis</DialogTitle>
-                                <DialogDescription className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Convert drafts into valid assessment nodes</DialogDescription>
+                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Convert drafts into valid assessment nodes</DialogDescription>
                             </DialogHeader>
                             <Textarea
                                 value={aiText}
@@ -409,7 +409,7 @@ export default function ExamEditorPage() {
                     <Button
                         disabled={extracting}
                         onClick={() => fileInputRef.current?.click()}
-                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
                     >
                         {extracting ? <Loader2 className="w-5 h-5 animate-spin text-eduGreen-500" /> : <ImageIcon className="w-5 h-5 text-eduGreen-500" />}
                         <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Scan Paper</span>

@@ -187,7 +187,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
 
                 <div className="flex items-center gap-2 w-full md:w-auto">
                     <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(1); }}>
-                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-500 min-w-[140px]">
+                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[140px]">
                             <div className="flex items-center gap-2">
                                 <Filter className="w-3 h-3" />
                                 <SelectValue placeholder="STATUS" />
@@ -206,7 +206,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                         setSortDir(dir as any);
                         setPage(1);
                     }}>
-                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-500 min-w-[130px]">
+                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[130px]">
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-3 h-3" />
                                 <SelectValue placeholder="SORT" />
@@ -231,7 +231,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                     <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20">
                         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">{stat.label}</p>
                         <p className="text-4xl font-medium text-zinc-900 dark:text-white">{stat.value}</p>
-                        <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2">{stat.sub}</p>
+                        <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2">{stat.sub}</p>
                     </Card>
                 ))}
             </div>
@@ -248,11 +248,11 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                         {filteredTeachers.map((teacher, idx) => (
                             <div key={idx} className="p-6 flex items-center justify-between hover:bg-eduGreen-950/5 transition-all group">
                                 <Link href={teacher.id ? `/dashboard/teachers/${teacher.id}` : '#'} className="flex items-center gap-6 cursor-pointer">
-                                    <div className="w-12 h-16 rounded-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center font-medium text-zinc-800 uppercase group-hover:border-eduGreen-900/30 relative overflow-hidden transition-all">
+                                    <div className="w-12 h-16 rounded-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center font-medium text-zinc-800 dark:text-zinc-200 uppercase group-hover:border-eduGreen-900/30 relative overflow-hidden transition-all">
                                         {teacher.photoUrl ? <Image src={teacher.photoUrl} alt="" fill sizes="48px" className="object-cover" /> : (teacher.name?.[0] || "?")}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-zinc-100 group-hover:text-eduGreen-400 tracking-tight text-lg transition-colors">{teacher.name || "Awaiting Setup"}</p>
+                                        <p className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-eduGreen-400 tracking-tight text-lg transition-colors">{teacher.name || "Awaiting Setup"}</p>
                                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{teacher.email}</p>
                                     </div>
                                 </Link>
@@ -271,7 +271,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                                     {teacher.id && <Link href={`/dashboard/messages?userId=${teacher.id}`}><Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500"><MessageSquare className="w-4 h-4" /></Button></Link>}
                                     <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForEdit(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-white"><Pencil className="w-4 h-4" /></Button>
                                     <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForID(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-white"><ShieldCheck className="w-4 h-4" /></Button>
-                                    <Button variant="ghost" size="icon" onClick={() => setConfirmDeleteEmail(teacher.email)} className="w-10 h-10 rounded-xl text-zinc-800 hover:text-red-500"><Trash2 className="w-4 h-4" /></Button>
+                                    <Button variant="ghost" size="icon" onClick={() => setConfirmDeleteEmail(teacher.email)} className="w-10 h-10 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-500"><Trash2 className="w-4 h-4" /></Button>
                                 </div>
                             </div>
                         ))}
@@ -282,7 +282,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
             {/* Pagination Controls */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
-                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                    <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                         Page {page} of {totalPages}
                     </p>
                     <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1 || isLoading}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                         >
                             Previous
                         </Button>
@@ -300,7 +300,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages || isLoading}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                         >
                             Next
                         </Button>

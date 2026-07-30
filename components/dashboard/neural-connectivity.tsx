@@ -52,13 +52,13 @@ export function NeuralConnectivity() {
                             <Activity className="w-5 h-5 text-amber-500" />
                             Neural Connectivity
                         </CardTitle>
-                        <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.2em] mt-1 italic">Synchronization Diagnostic Gauge</p>
+                        <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 italic">Synchronization Diagnostic Gauge</p>
                     </div>
                     <Button
                         onClick={fetchDiagnostics}
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-500 hover:text-white"
+                        className="h-8 w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
                     >
                         <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
                     </Button>
@@ -104,7 +104,7 @@ export function NeuralConnectivity() {
                             <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900/50">
                                 <Button 
                                     onClick={() => setIsModalOpen(true)}
-                                    className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[9px] font-medium uppercase tracking-widest transition-all italic"
+                                    className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[9px] font-medium uppercase tracking-widest transition-all italic"
                                 >
                                     Initialize Restoration Protocols
                                 </Button>
@@ -128,7 +128,7 @@ function GapItem({ label, count, icon: Icon, color, desc }: { label: string, cou
     return (
         <div className="flex items-center justify-between group/gap">
             <div className="flex items-center gap-4">
-                <div className={cn("w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center transition-colors group-hover/gap:border-zinc-700", color)}>
+                <div className={cn("w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center transition-colors group-hover/gap:border-zinc-400 dark:border-zinc-700", color)}>
                     <Icon className="w-5 h-5" />
                 </div>
                 <div>

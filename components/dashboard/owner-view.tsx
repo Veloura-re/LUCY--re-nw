@@ -109,9 +109,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
         return (
             <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
                 <div className="py-24 text-center rounded-3xl bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 shadow-2xl">
-                    <SchoolIcon className="w-12 h-12 text-zinc-800 mx-auto mb-6" />
+                    <SchoolIcon className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mx-auto mb-6" />
                     <h2 className="text-2xl font-medium text-zinc-900 dark:text-white mb-2">Unlinked Account</h2>
-                    <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
+                    <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
                         Your owner profile is not associated with any active institution.
                         <br />Please contact the super administrator to be linked to your school.
                     </p>
@@ -140,7 +140,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                 <DashboardGreeting name={user?.name || 'Owner'} role="Owner" gender={user?.gender} />
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     <Link href="/dashboard/events" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2">
+                        <Button className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2">
                             <Calendar className="w-3 h-3 text-eduGreen-500" />
                             Events Portal
                         </Button>
@@ -190,7 +190,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                     </div>
                                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">{stat.label}</p>
                                     <p className="text-4xl font-medium text-zinc-900 dark:text-white">{stat.value}</p>
-                                    <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2">{stat.desc}</p>
+                                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2">{stat.desc}</p>
                                 </Card>
                             ))}
                         </div>
@@ -204,7 +204,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                                 <DollarSign className="w-5 h-5 text-amber-500" />
                                                 Executive Overview
                                             </CardTitle>
-                                            <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.2em] mt-1 ml-8">Financials & Personnel Ledger</p>
+                                            <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 ml-8">Financials & Personnel Ledger</p>
                                         </div>
                                         <div className="flex space-x-1">
                                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -331,7 +331,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="py-20 text-center text-[10px] font-medium uppercase text-zinc-800 tracking-[0.3em]">No Data Uplink Found</div>
+                                            <div className="py-20 text-center text-[10px] font-medium uppercase text-zinc-800 dark:text-zinc-200 tracking-[0.3em]">No Data Uplink Found</div>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -373,7 +373,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                         </div>
                         <span className={cn(
                             "font-medium uppercase tracking-[0.2em]",
-                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-500 group-hover/metric:text-zinc-600 dark:text-zinc-400 transition-colors"
+                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-600 dark:text-zinc-500 group-hover/metric:text-zinc-600 dark:text-zinc-400 transition-colors"
                         )}>{label}</span>
                     </div>
 
@@ -389,7 +389,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                     <div>
                         <div className={cn(
                             "font-semibold tracking-tighter mb-2 mt-4",
-                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-100"
+                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-900 dark:text-white dark:text-zinc-100"
                         )}>
                             {value}
                         </div>
@@ -418,7 +418,7 @@ function AttendanceWaveform({ data }: { data: any[] }) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 uppercase tracking-widest">Awaiting Neural Link...</div>;
+    if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Neural Link...</div>;
 
     const points = data.map((d, i) => {
         const x = (i / (data.length - 1)) * 100;

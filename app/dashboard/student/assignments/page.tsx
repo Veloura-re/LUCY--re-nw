@@ -42,7 +42,7 @@ export default async function StudentAssignmentsPage() {
     if (!student || !student.classId) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center p-20 text-center">
-                <Activity className="w-12 h-12 text-zinc-800 mb-6 animate-pulse" />
+                <Activity className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
                 <h3 className="text-2xl font-black text-zinc-700 italic uppercase tracking-tighter">Registry Sync Required</h3>
                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">Your profile is not yet linked to a cohort. Contact administration for enrollment.</p>
             </div>

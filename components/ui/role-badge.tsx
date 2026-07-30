@@ -12,7 +12,7 @@ export function RoleBadge({ role, className }: RoleBadgeProps) {
         PRINCIPAL: { label: "Director", color: "bg-eduGreen-950/30 text-eduGreen-400 border-eduGreen-800/50" },
         TEACHER: { label: "Teacher", color: "bg-sky-950/30 text-sky-400 border-sky-800/50" },
         HOMEROOM: { label: "Homeroom", color: "bg-orange-950/30 text-orange-400 border-orange-800/50" },
-        PARENT: { label: "Parent", color: "bg-zinc-900/50 text-zinc-400 border-zinc-800" },
+        PARENT: { label: "Parent", color: "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800" },
         STUDENT: { label: "Student", color: "bg-blue-950/30 text-blue-400 border-blue-800/50" },
     };
 

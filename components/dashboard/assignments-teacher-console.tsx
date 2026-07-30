@@ -133,11 +133,11 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                     className="space-y-2"
                 >
                     <div className="flex items-center gap-3 mb-1">
-                        <div className="h-[1px] w-12 bg-white/10" />
-                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.5em] italic">Tactical Console v4.0</span>
+                        <div className="h-[1px] w-12 bg-zinc-300 dark:bg-white/10" />
+                        <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.5em] italic">Tactical Console v4.0</span>
                     </div>
                     <h2 className="text-5xl md:text-8xl font-black tracking-[calc(-0.05em)] text-zinc-900 dark:text-white italic leading-[0.85] uppercase">
-                        TASK <span className="text-zinc-800 not-italic">COMMAND</span>
+                        TASK <span className="text-zinc-800 dark:text-zinc-200 not-italic">COMMAND</span>
                     </h2>
                 </motion.div>
 
@@ -229,7 +229,7 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                             />
                         ) : (
                             <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#050505]/20 backdrop-blur-sm border border-zinc-200 dark:border-white/5 rounded-[3.5rem] p-20 text-center">
-                                <Brain className="w-16 h-16 text-zinc-800 mb-6 animate-pulse" />
+                                <Brain className="w-16 h-16 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
                                 <h3 className="text-2xl font-black text-zinc-700 italic uppercase">Operational Selection Required</h3>
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">Select a dispatch to review student submissions or manage parameters.</p>
                             </div>
@@ -253,20 +253,20 @@ function AssignmentCard({ assignment, active, onClick }: any) {
         >
             <div className="relative z-10 space-y-4">
                 <div className="flex justify-between items-start">
-                    <span className={cn("text-[9px] font-black uppercase tracking-[0.2em]", active ? "text-zinc-500" : "text-zinc-600")}>
+                    <span className={cn("text-[9px] font-black uppercase tracking-[0.2em]", active ? "text-zinc-600 dark:text-zinc-500" : "text-zinc-600")}>
                         {assignment.subject?.name}
                     </span>
-                    <div className={cn("px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em]", active ? "bg-white dark:bg-black text-zinc-900 dark:text-white" : "bg-white/5 text-zinc-600 dark:text-zinc-400")}>
+                    <div className={cn("px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.1em]", active ? "bg-white dark:bg-black text-zinc-900 dark:text-white" : "bg-zinc-200 dark:bg-white/5 text-zinc-600 dark:text-zinc-400")}>
                         {assignment.type}
                     </div>
                 </div>
                 <div>
                     <h4 className={cn("text-xl font-black italic uppercase leading-tight", active ? "text-black" : "text-zinc-900 dark:text-white")}>{assignment.title}</h4>
                     <div className="flex items-center gap-4 mt-2">
-                        <div className={cn("flex items-center gap-2 text-[9px] font-bold uppercase", active ? "text-zinc-600" : "text-zinc-500")}>
+                        <div className={cn("flex items-center gap-2 text-[9px] font-bold uppercase", active ? "text-zinc-600" : "text-zinc-600 dark:text-zinc-500")}>
                             <Users className="w-3 h-3" /> {assignment._count?.submissions || 0} SUBMITTED
                         </div>
-                        <div className={cn("flex items-center gap-2 text-[9px] font-bold uppercase", active ? "text-zinc-600" : "text-zinc-500")}>
+                        <div className={cn("flex items-center gap-2 text-[9px] font-bold uppercase", active ? "text-zinc-600" : "text-zinc-600 dark:text-zinc-500")}>
                             <Calendar className="w-3 h-3" /> {format(new Date(assignment.dueDate), "dd MMM")}
                         </div>
                     </div>
@@ -343,10 +343,10 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
             <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex justify-between items-center bg-gradient-to-r from-zinc-900/40 to-transparent">
                 <div className="space-y-1">
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em]">Initialize Dispatch</span>
+                    <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.3em]">Initialize Dispatch</span>
                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase">New Academic Task</h3>
                 </div>
-                <Button variant="ghost" onClick={onCancel} className="text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Abort</Button>
+                <Button variant="ghost" onClick={onCancel} className="text-zinc-600 dark:text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Abort</Button>
             </div>
             
             <div className="p-12 space-y-10">
@@ -356,7 +356,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                             value={data.title}
                             onChange={(e) => setData({ ...data, title: e.target.value })}
                             placeholder="ENTER TASK TITLE..." 
-                            className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0"
+                            className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0"
                         />
                     </ConfigField>
  
@@ -365,7 +365,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                             type="datetime-local"
                             value={data.dueDate}
                             onChange={(e) => setData({ ...data, dueDate: e.target.value })}
-                            className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest"
+                            className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest"
                         />
                     </ConfigField>
                 </div>
@@ -373,10 +373,10 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     <ConfigField label="COHORT" icon={Users}>
                         <Select value={data.classId} onValueChange={handleClassChange}>
-                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
+                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
                                 <SelectValue placeholder="CLASS" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 {classes.map((c: any) => <SelectItem key={c.classId} value={c.classId} className="focus:bg-white focus:text-black">{c.className}</SelectItem>)}
                             </SelectContent>
                         </Select>
@@ -384,10 +384,10 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
  
                     <ConfigField label="NEURAL PATH" icon={Brain}>
                          <Select value={data.subjectId} onValueChange={(v) => setData({ ...data, subjectId: v })}>
-                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
+                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
                                 <SelectValue placeholder="SUBJECT" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 {filteredSubjects.map((s: any) => <SelectItem key={s.id} value={s.id} className="focus:bg-white focus:text-black">{s.name}</SelectItem>)}
                             </SelectContent>
                         </Select>
@@ -395,10 +395,10 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
  
                     <ConfigField label="TYPE" icon={Activity}>
                          <Select value={data.type} onValueChange={(v) => setData({ ...data, type: v })}>
-                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
+                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase">
                                 <SelectValue placeholder="TYPE" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="HOMEWORK" className="focus:bg-white focus:text-black">HOMEWORK</SelectItem>
                                 <SelectItem value="PROJECT" className="focus:bg-white focus:text-black">PROJECT</SelectItem>
                                 <SelectItem value="ESSAY" className="focus:bg-white focus:text-black">ESSAY</SelectItem>
@@ -414,7 +414,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                             value={data.description}
                             onChange={(e) => setData({ ...data, description: e.target.value })}
                             placeholder="DEFINE REQUIREMENTS AND OBJECTIVES..." 
-                            className="min-h-[150px] bg-white/5 border-zinc-300 dark:border-white/10 rounded-[2rem] p-8 text-zinc-900 dark:text-white font-medium text-sm leading-relaxed ring-0 focus:border-white/20"
+                            className="min-h-[150px] bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-[2rem] p-8 text-zinc-900 dark:text-white font-medium text-sm leading-relaxed ring-0 focus:border-zinc-300 dark:border-white/20"
                         />
                         
                         <div className="absolute top-4 right-4 group">
@@ -445,7 +445,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                         });
                                     }
                                 }}
-                                className="h-10 px-6 rounded-xl bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                                className="h-10 px-6 rounded-xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all flex items-center gap-2"
                             >
                                 <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
                                 <span className="text-[8px] font-black uppercase tracking-widest">Neural Draft</span>
@@ -461,7 +461,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                 type="file" 
                                 onChange={handleFileUpload}
                                 disabled={uploading}
-                                className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-medium file:bg-white/10 file:text-zinc-900 dark:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
+                                className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-medium file:bg-zinc-300 dark:bg-white/10 file:text-zinc-900 dark:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
                             />
                             {uploading && <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />}
                         </div>
@@ -469,9 +469,9 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                         {data.materials?.length > 0 && (
                             <div className="space-y-2">
                                 {data.materials.map((m: any, i: number) => (
-                                    <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl">
+                                    <div key={i} className="flex items-center justify-between p-4 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl">
                                         <div className="flex items-center gap-3">
-                                            <FileText className="w-4 h-4 text-zinc-500" />
+                                            <FileText className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                                             <span className="text-[10px] font-bold text-zinc-900 dark:text-white tracking-widest uppercase">{m.name}</span>
                                         </div>
                                         <Button 
@@ -482,7 +482,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                                 ...data,
                                                 materials: data.materials.filter((_: any, index: number) => index !== i)
                                             })}
-                                            className="text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 h-8 w-8 p-0 rounded-xl"
+                                            className="text-zinc-600 dark:text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 h-8 w-8 p-0 rounded-xl"
                                         >
                                             <XCircle className="w-4 h-4" />
                                         </Button>
@@ -515,14 +515,14 @@ function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmiss
                 <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="space-y-2">
                         <div className="flex items-center gap-4">
-                            <span className="px-5 py-1.5 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{assignment.type}</span>
+                            <span className="px-5 py-1.5 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{assignment.type}</span>
                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Due {format(new Date(assignment.dueDate), "PPP")}</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase tracking-tight">{assignment.title}</h2>
                         <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">{assignment.description}</p>
                     </div>
                     <div className="flex gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl border-zinc-300 dark:border-white/10 bg-white/5 text-zinc-900 dark:text-white font-black text-[10px] uppercase hover:bg-white hover:text-black transition-all">EDIT</Button>
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl border-zinc-300 dark:border-white/10 bg-zinc-200 dark:bg-white/5 text-zinc-900 dark:text-white font-black text-[10px] uppercase hover:bg-white hover:text-black transition-all">EDIT</Button>
                         <Button variant="outline" className="h-14 px-8 rounded-2xl border-rose-500/20 bg-rose-500/5 text-rose-500 font-black text-[10px] uppercase hover:bg-rose-500 hover:text-white transition-all">TERMINATE</Button>
                     </div>
                 </div>
@@ -542,7 +542,7 @@ function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmiss
 
             <div className="space-y-6">
                 <div className="flex items-center gap-4 ml-2">
-                    <div className="h-[1px] w-8 bg-zinc-800" />
+                    <div className="h-[1px] w-8 bg-zinc-200 dark:bg-zinc-800" />
                     <h3 className="text-[11px] font-black text-zinc-900 dark:text-white uppercase tracking-[0.4em] italic">SUBMISSION REGISTRY</h3>
                 </div>
 
@@ -550,7 +550,7 @@ function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmiss
                     <div className="divide-y divide-white/5">
                         {classStudents.length === 0 ? (
                             <div className="p-24 text-center space-y-4">
-                                <Activity className="w-10 h-10 text-zinc-800 mx-auto animate-pulse" />
+                                <Activity className="w-10 h-10 text-zinc-800 dark:text-zinc-200 mx-auto animate-pulse" />
                                 <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">No Students Found in Cohort</p>
                             </div>
                         ) : (
@@ -600,20 +600,20 @@ function SubmissionRow({ submission, idx, onClick }: any) {
             )}
         >
             <div className="flex items-center gap-8 flex-1">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center font-black text-zinc-700 text-xl italic uppercase">
+                <div className="w-16 h-16 rounded-[1.5rem] bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center font-black text-zinc-700 text-xl italic uppercase">
                     {(submission.student?.firstName || "S")[0]}{(submission.student?.lastName || "")[0]}
                 </div>
                 <div>
                     <h5 className={cn(
                         "text-xl font-black italic uppercase tracking-tight",
-                        hasSubmitted ? "text-zinc-900 dark:text-white group-hover:text-eduGreen-500 transition-colors" : "text-zinc-500"
+                        hasSubmitted ? "text-zinc-900 dark:text-white group-hover:text-eduGreen-500 transition-colors" : "text-zinc-600 dark:text-zinc-500"
                     )}>
-                        {submission.student?.firstName} <span className={hasSubmitted ? "text-zinc-700" : "text-zinc-800"}>{submission.student?.lastName}</span>
+                        {submission.student?.firstName} <span className={hasSubmitted ? "text-zinc-700" : "text-zinc-800 dark:text-zinc-200"}>{submission.student?.lastName}</span>
                     </h5>
                     <div className="flex items-center gap-4 mt-1">
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">{submission.student?.studentCode}</span>
                         {submission.submittedAt ? (
-                            <span className="text-[9px] font-bold text-zinc-500 italic">Submitted {format(new Date(submission.submittedAt), "PPP")}</span>
+                            <span className="text-[9px] font-bold text-zinc-600 dark:text-zinc-500 italic">Submitted {format(new Date(submission.submittedAt), "PPP")}</span>
                         ) : (
                             <span className="text-[9px] font-bold text-zinc-700 italic uppercase tracking-widest">No Response</span>
                         )}
@@ -635,11 +635,11 @@ function SubmissionRow({ submission, idx, onClick }: any) {
                 </div>
                 
                 {hasSubmitted ? (
-                    <Button className="w-14 h-14 rounded-2xl bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:scale-105 active:scale-95">
+                    <Button className="w-14 h-14 rounded-2xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:scale-105 active:scale-95">
                         <ChevronRight className="w-5 h-5" />
                     </Button>
                 ) : (
-                    <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-zinc-200 dark:border-white/5 text-zinc-800 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-zinc-200 dark:border-white/5 text-zinc-800 dark:text-zinc-200 flex items-center justify-center">
                         <XCircle className="w-5 h-5" />
                     </div>
                 )}
@@ -679,7 +679,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Evaluation Node</span>
                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase">{submission.student?.firstName}'s Submission</h3>
                 </div>
-                <Button variant="ghost" onClick={onBack} className="text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
+                <Button variant="ghost" onClick={onBack} className="text-zinc-600 dark:text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
             </div>
 
             <div className="p-12 space-y-10">
@@ -711,7 +711,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                                 }
                             }}
                             disabled={summarizing || !submission.content}
-                            className="h-8 px-4 rounded-xl bg-white/5 text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center gap-2"
+                            className="h-8 px-4 rounded-xl bg-zinc-200 dark:bg-white/5 text-zinc-600 dark:text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center gap-2"
                         >
                             {summarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Brain className="w-3 h-3" />}
                             <span className="text-[8px] font-black uppercase tracking-widest">Neural Synthesis</span>
@@ -742,7 +742,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
 
                     {submission.attachments && Array.isArray(submission.attachments) && submission.attachments.length > 0 && (
                         <div className="mt-8 pt-8 border-t border-zinc-200 dark:border-white/5 space-y-4">
-                            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block">Coursework Attachments</span>
+                            <span className="text-[9px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest block">Coursework Attachments</span>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {submission.attachments.map((file: any, i: number) => (
                                     <a 
@@ -751,7 +751,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                                         download 
                                         target="_blank" 
                                         rel="noopener noreferrer" 
-                                        className="p-4 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-all group"
+                                        className="p-4 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-all group"
                                     >
                                         <div className="flex items-center gap-3">
                                             <FileText className="w-4 h-4 text-emerald-500" />
@@ -771,7 +771,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                             value={grade}
                             onChange={(e) => setGrade(e.target.value)}
                             placeholder="GRADE (e.g. 95, A+)..." 
-                            className="h-16 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-black text-lg uppercase tracking-widest ring-0"
+                            className="h-16 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-black text-lg uppercase tracking-widest ring-0"
                         />
                     </ConfigField>
 
@@ -815,7 +815,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
                         placeholder="PROVIDE ACADEMIC INSIGHTS AND RECOMMENDATIONS..." 
-                        className="min-h-[150px] bg-white/5 border-zinc-300 dark:border-white/10 rounded-[2rem] p-8 text-zinc-900 dark:text-white font-medium text-sm leading-relaxed ring-0"
+                        className="min-h-[150px] bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-[2rem] p-8 text-zinc-900 dark:text-white font-medium text-sm leading-relaxed ring-0"
                     />
                 </ConfigField>
 

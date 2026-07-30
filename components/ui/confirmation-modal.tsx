@@ -71,13 +71,13 @@ export function ConfirmationModal({
     const getConfirmButtonStyle = () => {
         switch (variant) {
             case "danger":
-                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white shadow-lg shadow-red-950/50";
+                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-zinc-900 dark:text-white shadow-lg shadow-red-950/50";
             case "warning":
                 return "bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-lg shadow-amber-950/50";
             case "logout":
-                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white shadow-lg shadow-red-950/50";
+                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-zinc-900 dark:text-white shadow-lg shadow-red-950/50";
             default:
-                return "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-white shadow-lg shadow-eduGreen-950/50";
+                return "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-zinc-900 dark:text-white shadow-lg shadow-eduGreen-950/50";
         }
     };
 
@@ -101,7 +101,7 @@ export function ConfirmationModal({
                     <DialogTitle className="text-2xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
-                    <DialogDescription className="text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
+                    <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
                         {description}
                     </DialogDescription>
                 </DialogHeader>
@@ -162,7 +162,7 @@ export function AlertModal({
                     borderColor: "border-eduGreen-900/50",
                     iconColor: "text-eduGreen-500",
                     glowColor: "shadow-[0_0_60px_rgba(20,184,115,0.2)]",
-                    buttonStyle: "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-white shadow-lg shadow-eduGreen-950/50"
+                    buttonStyle: "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-zinc-900 dark:text-white shadow-lg shadow-eduGreen-950/50"
                 };
             case "error":
                 return {
@@ -171,7 +171,7 @@ export function AlertModal({
                     borderColor: "border-red-900/50",
                     iconColor: "text-red-500",
                     glowColor: "shadow-[0_0_60px_rgba(239,68,68,0.2)]",
-                    buttonStyle: "bg-gradient-to-b from-zinc-700 to-zinc-800 hover:from-zinc-600 hover:to-zinc-700 text-white shadow-lg shadow-zinc-950/50"
+                    buttonStyle: "bg-gradient-to-b from-zinc-700 to-zinc-800 hover:from-zinc-600 hover:to-zinc-700 text-zinc-900 dark:text-white shadow-lg shadow-zinc-950/50"
                 };
             default:
                 return {
@@ -205,7 +205,7 @@ export function AlertModal({
                     <DialogTitle className="text-xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
-                    <DialogDescription className="text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
+                    <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
                         {message}
                     </DialogDescription>
                 </DialogHeader>
@@ -282,7 +282,7 @@ export function InputModal({
                         {title}
                     </DialogTitle>
                     {description && (
-                        <DialogDescription className="text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
                             {description}
                         </DialogDescription>
                     )}
@@ -311,7 +311,7 @@ export function InputModal({
                         </Button>
                         <Button
                             type="submit"
-                            className="flex-1 h-14 rounded-2xl font-medium text-sm transition-all duration-200 active:scale-95 bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-white shadow-lg shadow-eduGreen-950/50"
+                            className="flex-1 h-14 rounded-2xl font-medium text-sm transition-all duration-200 active:scale-95 bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-zinc-900 dark:text-white shadow-lg shadow-eduGreen-950/50"
                         >
                             {confirmText}
                         </Button>
@@ -382,7 +382,7 @@ export function PaymentModal({
                         {title}
                     </DialogTitle>
                     {description && (
-                        <DialogDescription className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-xs mx-auto">
                             {description}
                         </DialogDescription>
                     )}
@@ -391,7 +391,7 @@ export function PaymentModal({
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
+                            <label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
                             <div className="relative">
                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-amber-500 font-medium">$</span>
                                 <input
@@ -408,7 +408,7 @@ export function PaymentModal({
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Transmission Method</label>
+                            <label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Transmission Method</label>
                             <select
                                 value={method}
                                 onChange={(e) => setMethod(e.target.value)}
@@ -422,7 +422,7 @@ export function PaymentModal({
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Internal Reference / Note</label>
+                            <label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Internal Reference / Note</label>
                             <textarea
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
@@ -445,7 +445,7 @@ export function PaymentModal({
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-1 h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all active:scale-95 bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white shadow-lg shadow-amber-950/50"
+                            className="flex-1 h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all active:scale-95 bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-900 dark:text-white shadow-lg shadow-amber-950/50"
                         >
                             {isLoading ? (
                                 <span className="flex items-center gap-2">
