@@ -105,7 +105,7 @@ export default function AttendanceSettingsPage() {
                     <CardContent className="p-10 space-y-10">
                         <div className="flex items-center justify-between gap-8">
                             <div className="space-y-1">
-                                <h4 className="font-medium text-zinc-100 uppercase tracking-widest text-sm">Period-Wise Verification</h4>
+                                <h4 className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 uppercase tracking-widest text-sm">Period-Wise Verification</h4>
                                 <p className="text-xs text-zinc-600 font-medium uppercase tracking-wider leading-relaxed max-w-sm">
                                     Teachers mark attendance for every individual period (default). Highly granular.
                                 </p>
@@ -119,7 +119,7 @@ export default function AttendanceSettingsPage() {
 
                         <div className="flex items-center justify-between gap-8">
                             <div className="space-y-1">
-                                <h4 className="font-medium text-zinc-100 uppercase tracking-widest text-sm">Legacy Daily Mode</h4>
+                                <h4 className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 uppercase tracking-widest text-sm">Legacy Daily Mode</h4>
                                 <p className="text-xs text-zinc-600 font-medium uppercase tracking-wider leading-relaxed max-w-sm">
                                     A single attendance record for the entire academic day.
                                 </p>
@@ -173,7 +173,7 @@ export default function AttendanceSettingsPage() {
 
                         <div className="flex items-center justify-between gap-8 pt-6 border-t border-zinc-200 dark:border-zinc-900">
                             <div className="space-y-1">
-                                <h4 className="font-medium text-zinc-100 uppercase tracking-widest text-sm">Late Marking Capability</h4>
+                                <h4 className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 uppercase tracking-widest text-sm">Late Marking Capability</h4>
                                 <p className="text-xs text-zinc-600 font-medium uppercase tracking-wider leading-relaxed max-w-sm">
                                     Allow instructors to designate students as "Late" instead of just Present/Absent.
                                 </p>

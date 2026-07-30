@@ -86,7 +86,7 @@ export function TeacherView({ user, initialData }: {
                         const missingCount = data.missingCount || 0;
                         setAttendanceSummary([
                             { label: "Attendance Rate", value: attendanceRate, trend: "Institutional Avg", color: "text-eduGreen-500" },
-                            { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-500" : "text-zinc-500" }
+                            { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-500" : "text-zinc-600 dark:text-zinc-500" }
                         ]);
                         setPendingEvaluations(data.pendingEvaluations || 0);
                         setRecentSubmissions(data.recentSubmissions || []);
@@ -138,7 +138,7 @@ export function TeacherView({ user, initialData }: {
                         className={cn(
                             "h-12 px-8 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all border w-full md:w-auto",
                             isClockedIn
-                                ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-500 cursor-not-allowed"
+                                ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 cursor-not-allowed"
                                 : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-zinc-900 dark:text-white border-zinc-300 dark:border-white/10 hover:scale-105 active:scale-95"
                         )}
                     >
@@ -154,7 +154,7 @@ export function TeacherView({ user, initialData }: {
 
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                         <Link href="/dashboard/teacher/attendance" className="w-full sm:w-auto">
-                            <Button variant="outline" className="w-full sm:w-auto rounded-xl border-zinc-300 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:border-zinc-700 transition-all h-12 px-8 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-white shadow-xl">
+                            <Button variant="outline" className="w-full sm:w-auto rounded-xl border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:border-zinc-700 transition-all h-12 px-8 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-white shadow-xl">
                                 <Calendar className="mr-3 h-4 w-4 text-eduGreen-500" /> Attendance
                             </Button>
                         </Link>
@@ -182,13 +182,13 @@ export function TeacherView({ user, initialData }: {
                         >
                             <Link href="/dashboard/teacher/exams/create" className="group block h-full">
                                 <Card className="h-full bg-gradient-to-br from-eduGreen-600 to-emerald-900 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(15,94,63,0.3)] group-hover:shadow-[0_25px_60px_rgba(15,94,63,0.5)] transition-all relative border-t-white/20">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300 dark:bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
                                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/20 dark:bg-black/20 blur-2xl -ml-12 -mb-12" />
 
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
                                         <div>
                                             <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
+                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-zinc-300 dark:border-white/20">
                                                     <Plus className="w-6 h-6 text-zinc-900 dark:text-white" />
                                                 </div>
                                                 <span className="text-[10px] font-medium text-zinc-900 dark:text-white/50 uppercase tracking-[0.3em]">Module Registry</span>
@@ -213,12 +213,12 @@ export function TeacherView({ user, initialData }: {
                         >
                             <Link href="/dashboard/teacher/exams/create?mode=ai" className="group block h-full">
                                 <Card className="h-full bg-gradient-to-br from-indigo-600 to-purple-900 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(79,70,229,0.3)] group-hover:shadow-[0_25px_60px_rgba(79,70,229,0.5)] transition-all relative border-t-white/20">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300 dark:bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
 
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
                                         <div>
                                             <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
+                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-zinc-300 dark:border-white/20">
                                                     <Zap className="w-6 h-6 text-indigo-200" />
                                                 </div>
                                                 <span className="text-[10px] font-medium text-zinc-900 dark:text-white/50 uppercase tracking-[0.3em]">AI Generation</span>
@@ -264,7 +264,7 @@ export function TeacherView({ user, initialData }: {
                             </div>
                             <div className="text-center">
                                 <p className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">No Nodes Discovered</p>
-                                <p className="text-zinc-800 text-[10px] font-medium uppercase tracking-widest mt-3 max-w-sm">Institutional assignments have not been established. Contact administration for grid access.</p>
+                                <p className="text-zinc-800 dark:text-zinc-200 text-[10px] font-medium uppercase tracking-widest mt-3 max-w-sm">Institutional assignments have not been established. Contact administration for grid access.</p>
                             </div>
                         </div>
                     ) : (
@@ -277,14 +277,14 @@ export function TeacherView({ user, initialData }: {
                                 >
                                     <Card className="group relative bg-gradient-to-br from-eduGreen-600 to-emerald-800 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl shadow-eduGreen-950/40 border-t-white/20 h-full flex flex-col">
                                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16" />
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300 dark:bg-white/10 blur-3xl -mr-16 -mt-16" />
 
                                         <CardHeader className="p-10 pb-4 relative z-10">
                                             <div className="flex items-start justify-between gap-4 mb-6">
                                                 <div className="px-4 py-2 rounded-xl bg-white/15 border border-white/25 text-[9px] font-medium text-zinc-900 dark:text-white uppercase tracking-[0.2em] backdrop-blur-md">
                                                     Active Authority
                                                 </div>
-                                                <div className="p-4 bg-white/10 rounded-2x border border-white/20 shadow-xl backdrop-blur-md">
+                                                <div className="p-4 bg-zinc-300 dark:bg-white/10 rounded-2x border border-zinc-300 dark:border-white/20 shadow-xl backdrop-blur-md">
                                                     <Users className="w-6 h-6 text-zinc-900 dark:text-white" />
                                                 </div>
                                             </div>
@@ -302,7 +302,7 @@ export function TeacherView({ user, initialData }: {
 
                                         <CardFooter className="p-10 pt-0 relative z-10 mt-auto">
                                             <Link href="/dashboard/homeroom" className="w-full">
-                                                <Button className="w-full h-12 bg-white/50 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
+                                                <Button className="w-full h-12 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
                                                     Launch Console <ArrowRight className="ml-3 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </Button>
                                             </Link>
@@ -333,7 +333,7 @@ export function TeacherView({ user, initialData }: {
                                                 {cls.subjectName}
                                             </CardTitle>
                                             <div className="flex items-center gap-3 mt-4">
-                                                <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">GRADE {cls.gradeLevel}</span>
+                                                <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">GRADE {cls.gradeLevel}</span>
                                                 <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-950" />
                                                 <span className="text-[10px] font-medium text-eduGreen-700 uppercase tracking-widest">Academic Node</span>
                                             </div>
@@ -362,7 +362,7 @@ export function TeacherView({ user, initialData }: {
 
                                         <CardFooter className="p-10 pt-0">
                                             <Link href={`/dashboard/teacher/attendance?classId=${cls.classId}`} className="w-full">
-                                                <Button className="w-full h-12 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-eduGreen-600 text-zinc-500 hover:text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-white/5 hover:border-eduGreen-500 transition-all group/btn backdrop-blur-md shadow-xl">
+                                                <Button className="w-full h-12 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-eduGreen-600 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-white/5 hover:border-eduGreen-500 transition-all group/btn backdrop-blur-md shadow-xl">
                                                     Sync Grid <ArrowRight className="ml-3 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </Button>
                                             </Link>
@@ -394,7 +394,7 @@ export function TeacherView({ user, initialData }: {
                                     className="flex justify-between items-center p-6 bg-white/[0.03] rounded-3xl border border-zinc-200 dark:border-white/5 group hover:bg-white/[0.05] transition-all"
                                 >
                                     <div className="space-y-1">
-                                        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">{stat.label}</span>
+                                        <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{stat.label}</span>
                                         <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-tighter">{stat.trend}</div>
                                     </div>
                                     <div className="text-right">
@@ -403,7 +403,7 @@ export function TeacherView({ user, initialData }: {
                                 </motion.div>
                             ))}
                             <Link href="/dashboard/teacher/attendance">
-                                <Button variant="ghost" className="w-full h-14 text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-950/20 rounded-2xl transition-all">
+                                <Button variant="ghost" className="w-full h-14 text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-950/20 rounded-2xl transition-all">
                                     Full Register <ArrowRight className="w-4 h-4 ml-3" />
                                 </Button>
                             </Link>
@@ -433,7 +433,7 @@ export function TeacherView({ user, initialData }: {
                                     <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">Pending Evaluation</span>
                                     <div className={cn(
                                         "text-4xl font-black italic mt-1",
-                                        pendingEvaluations > 0 ? "text-zinc-900 dark:text-white" : "text-zinc-800"
+                                        pendingEvaluations > 0 ? "text-zinc-900 dark:text-white" : "text-zinc-800 dark:text-zinc-200"
                                     )}>{pendingEvaluations}</div>
                                 </div>
                                 <div className="text-right">
@@ -461,13 +461,13 @@ export function TeacherView({ user, initialData }: {
                                                         <h5 className="text-[11px] font-bold text-zinc-900 dark:text-white uppercase italic group-hover:text-emerald-500 transition-colors">{sub.student?.firstName} {sub.student?.lastName}</h5>
                                                         <p className="text-[9px] font-medium text-zinc-600 uppercase truncate max-w-[150px]">{sub.assignment?.title}</p>
                                                     </div>
-                                                    <ChevronRight className="w-4 h-4 text-zinc-800 group-hover:text-emerald-500 transition-colors" />
+                                                    <ChevronRight className="w-4 h-4 text-zinc-800 dark:text-zinc-200 group-hover:text-emerald-500 transition-colors" />
                                                 </div>
                                             </Link>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-12 bg-white/5 border border-dashed border-zinc-300 dark:border-white/10 rounded-[2rem] text-center">
+                                    <div className="py-12 bg-zinc-200 dark:bg-white/5 border border-dashed border-zinc-300 dark:border-white/10 rounded-[2rem] text-center">
                                         <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest italic">Neural Registry Clear</p>
                                     </div>
                                 )}
@@ -501,12 +501,12 @@ export function TeacherView({ user, initialData }: {
                                         <span className="text-[9px] font-medium text-eduGreen-600 uppercase tracking-[0.2em]">{exam.subject?.name}</span>
                                         <div className="flex items-center gap-1.5">
                                             <Link href={`/dashboard/teacher/exams/${exam.id}/editor`}>
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-500 hover:text-purple-400 hover:bg-purple-500/10">
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-500 hover:text-purple-400 hover:bg-purple-500/10">
                                                     <Sparkles className="w-3.5 h-3.5" />
                                                 </Button>
                                             </Link>
                                             <Link href={`/dashboard/teacher/gradebook/${exam.id}`}>
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-500/10">
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-500/10">
                                                     <Brain className="w-3.5 h-3.5" />
                                                 </Button>
                                             </Link>
@@ -515,17 +515,17 @@ export function TeacherView({ user, initialData }: {
                                     <div className="font-medium text-lg text-zinc-900 dark:text-white group-hover:text-eduGreen-400 transition-colors flex items-center justify-between relative z-10 italic uppercase tracking-tight">
                                         {exam.title}
                                         <Link href={`/dashboard/teacher/gradebook/${exam.id}`}>
-                                            <ArrowRight className="w-4 h-4 text-zinc-800 group-hover:text-eduGreen-400 transition-all translate-x-1 group-hover:translate-x-2" />
+                                            <ArrowRight className="w-4 h-4 text-zinc-800 dark:text-zinc-200 group-hover:text-eduGreen-400 transition-all translate-x-1 group-hover:translate-x-2" />
                                         </Link>
                                     </div>
                                 </motion.div>
                             )) : (
                                 <div className="text-center py-10 bg-white/[0.02] rounded-3xl border border-dashed border-zinc-200 dark:border-white/5">
-                                    <p className="text-[10px] font-medium text-zinc-800 uppercase tracking-widest">No recent assessments</p>
+                                    <p className="text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">No recent assessments</p>
                                 </div>
                             )}
                             <Link href="/dashboard/teacher/exams">
-                                <Button variant="ghost" className="w-full h-14 text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-950/20 rounded-2xl transition-all">
+                                <Button variant="ghost" className="w-full h-14 text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-950/20 rounded-2xl transition-all">
                                     Archive View <ArrowRight className="w-4 h-4 ml-3" />
                                 </Button>
                             </Link>

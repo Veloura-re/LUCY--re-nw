@@ -1024,7 +1024,7 @@ export default function Home() {
                           boxShadow: ["0 0 0px rgba(0,0,0,0)", "0 0 10px rgba(16,185,129,0.2)", "0 0 0px rgba(0,0,0,0)"]
                         }}
                         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                        className="absolute top-4 right-4 bg-emerald-500 text-zinc-900 dark:text-white dark:bg-white dark:text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-emerald-500 dark:border-white rounded-sm dark:rounded-none"
+                        className="absolute top-4 right-4 bg-emerald-500 text-white dark:bg-white dark:text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-emerald-500 dark:border-white rounded-sm dark:rounded-none"
                       >
                         40%_discount
                       </motion.div>

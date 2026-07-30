@@ -105,32 +105,32 @@ export default function AdminRegister() {
                         <div className="space-y-4">
                             <Input
                                 label="Admin Name"
-                                icon={<User className="w-4 h-4 text-zinc-500" />}
+                                icon={<User className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />}
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 required
                                 placeholder="System Administrator"
-                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <Input
                                 label="Email"
                                 type="email"
-                                icon={<Mail className="w-4 h-4 text-zinc-500" />}
+                                icon={<Mail className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />}
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 required
                                 placeholder="admin@lucy.edu"
-                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <Input
                                 label="Password"
                                 type="password"
-                                icon={<Lock className="w-4 h-4 text-zinc-500" />}
+                                icon={<Lock className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />}
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
                                 required
                                 placeholder="••••••••"
-                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <div className="pt-2">
                                 <Input
@@ -158,7 +158,7 @@ export default function AdminRegister() {
                                 id="terms"
                                 checked={agreedToTerms}
                                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                             />
                             <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                 I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
@@ -171,7 +171,7 @@ export default function AdminRegister() {
                     </form>
                 </CardContent>
                 <CardFooter className="justify-center border-t border-zinc-300 dark:border-zinc-800 py-4">
-                    <Link href="/login" className="text-zinc-500 hover:text-white text-sm transition-colors">
+                    <Link href="/login" className="text-zinc-600 dark:text-zinc-500 hover:text-white text-sm transition-colors">
                         Return to Login
                     </Link>
                 </CardFooter>

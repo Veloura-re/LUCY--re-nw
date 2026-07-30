@@ -387,7 +387,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         variant="ghost"
                         onClick={() => setShowInvoiceModal(true)}
                         disabled={isGenerating}
-                        className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
+                        className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white"
                     >
                         <Zap className={cn("mr-2 h-4 w-4 text-amber-500", isGenerating && "animate-pulse")} />
                         {isGenerating ? "Executing Cycle..." : "Launch Invoicing Cycle"}
@@ -395,7 +395,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <Link href="/dashboard/finance/students">
                         <Button
                             variant="ghost"
-                            className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
+                            className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white"
                         >
                             <Users className="mr-2 h-4 w-4 text-eduGreen-500" /> Student Dossiers
                         </Button>
@@ -448,7 +448,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                             </div>
                             <div className="h-16 w-16 relative">
                                 <svg className="w-full h-full transform -rotate-90">
-                                    <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-zinc-900" />
+                                    <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-zinc-900 dark:text-white" />
                                     <motion.circle
                                         cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent"
                                         strokeDasharray="175.9"
@@ -505,7 +505,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         <form onSubmit={handleCreateFee} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Structure Name</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Structure Name</label>
                                     <Input
                                         required
                                         value={formData.name}
@@ -515,7 +515,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Target Grade</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Target Grade</label>
                                     <select
                                         value={formData.gradeId}
                                         onChange={e => setFormData({ ...formData, gradeId: e.target.value })}
@@ -531,7 +531,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
                                     <div className="relative">
                                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-eduGreen-500" />
                                         <Input
@@ -546,7 +546,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Cycle</label>
+                                        <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Cycle</label>
                                         <select
                                             value={formData.frequency}
                                             onChange={e => setFormData({ ...formData, frequency: e.target.value })}
@@ -559,7 +559,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Classification</label>
+                                        <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Classification</label>
                                         <select
                                             value={formData.category}
                                             onChange={e => setFormData({ ...formData, category: e.target.value })}
@@ -595,7 +595,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     onClick={() => setActiveTab("REVENUE")}
                     className={cn(
                         "px-8 py-3 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
-                        activeTab === "REVENUE" ? "bg-eduGreen-600 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-300"
+                        activeTab === "REVENUE" ? "bg-eduGreen-600 text-white shadow-lg" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
                     )}
                 >
                     Revenue Hub
@@ -604,7 +604,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     onClick={() => setActiveTab("EXPENSES")}
                     className={cn(
                         "px-8 py-3 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
-                        activeTab === "EXPENSES" ? "bg-amber-600 text-zinc-900 dark:text-white shadow-lg" : "text-zinc-500 hover:text-zinc-300"
+                        activeTab === "EXPENSES" ? "bg-amber-600 text-zinc-900 dark:text-white shadow-lg" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
                     )}
                 >
                     Expense Nexus (Payroll)
@@ -638,7 +638,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                     <div className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{pay.invoice.student.firstName} {pay.invoice.student.lastName}</div>
                                                     <div className="flex items-center gap-2 mt-0.5">
                                                         <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice.student.studentCode}</span>
-                                                        <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                        <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                                         <span className="text-[10px] font-medium text-amber-500/80 uppercase tracking-widest">{pay.method.replace('_', ' ')}</span>
                                                     </div>
                                                 </div>
@@ -786,7 +786,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
                         {totalPages > 1 && (
                             <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
-                                <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                                <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                                     Page {page} of {totalPages}
                                 </p>
                                 <div className="flex items-center gap-2">
@@ -795,7 +795,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                                     >
                                         Previous
                                     </Button>
@@ -804,7 +804,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                                     >
                                         Next
                                     </Button>
@@ -834,7 +834,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         {fee.name}
                                     </CardTitle>
                                     <div className="flex items-center gap-3 mt-2">
-                                        <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-zinc-800 group-hover:border-eduGreen-900/20 transition-all">
+                                        <span className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-zinc-800 group-hover:border-eduGreen-900/20 transition-all">
                                             {fee.category}
                                         </span>
                                         <span className="text-[9px] font-medium text-eduGreen-900 uppercase tracking-tighter">
@@ -861,7 +861,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         {fees.length === 0 && !isCreating && (
                             <div className="md:col-span-2 py-32 text-center">
                                 <div className="w-20 h-20 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6 opacity-30">
-                                    <CreditCard className="w-10 h-10 text-zinc-500" />
+                                    <CreditCard className="w-10 h-10 text-zinc-600 dark:text-zinc-500" />
                                 </div>
                                 <p className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">No Fee Protocols Active</p>
                                 <Button variant="ghost" onClick={() => setIsCreating(true)} className="text-eduGreen-500 mt-4 font-medium uppercase tracking-widest text-[10px]">
@@ -929,7 +929,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 }
 
 function RevenueFluxChart({ data }: { data: any }) {
-    if (!data) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 uppercase tracking-widest">Initializing Neural Stream...</div>;
+    if (!data) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Initializing Neural Stream...</div>;
 
     const maxVal = Math.max(...data.datasets[0].data, ...data.datasets[1].data, 1000);
 
@@ -947,7 +947,7 @@ function RevenueFluxChart({ data }: { data: any }) {
                                 initial={{ height: 0 }}
                                 animate={{ height: `${penHeight}%` }}
                                 transition={{ duration: 0.8, delay: i * 0.05 }}
-                                className="w-full bg-zinc-100/80 dark:bg-zinc-900/80 rounded-t-sm border-x border-t border-zinc-300 dark:border-zinc-800 group-hover/bar:bg-zinc-800 transition-colors"
+                                className="w-full bg-zinc-100/80 dark:bg-zinc-900/80 rounded-t-sm border-x border-t border-zinc-300 dark:border-zinc-800 group-hover/bar:bg-zinc-200 dark:bg-zinc-800 transition-colors"
                             />
                             {/* Revenue Bar */}
                             <motion.div

@@ -247,7 +247,7 @@ export default function TimetableManagementPage() {
         }
     };
 
-    if (loading) return <div className="p-12 text-zinc-500 font-medium uppercase tracking-widest animate-pulse">Synchronizing Clockwork...</div>;
+    if (loading) return <div className="p-12 text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest animate-pulse">Synchronizing Clockwork...</div>;
 
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
@@ -283,7 +283,7 @@ export default function TimetableManagementPage() {
                             <div className="space-y-3 w-72">
                                 <label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 ml-1">Class Cohort</label>
                                 <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                                    <SelectTrigger className="h-14 bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium">
+                                    <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium">
                                         <SelectValue placeholder="Select Class" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white">
@@ -319,7 +319,7 @@ export default function TimetableManagementPage() {
                                 <tr className="bg-white/80 dark:bg-zinc-950/80 border-b border-zinc-200 dark:border-zinc-900">
                                     <th className="p-6 text-left text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 w-48 border-r border-zinc-200 dark:border-zinc-900">Period Slot</th>
                                     {DAYS.filter(d => showWeekends || !["SAT", "SUN"].includes(d.value)).map(day => (
-                                        <th key={day.value} className="p-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500">{day.label}</th>
+                                        <th key={day.value} className="p-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500">{day.label}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -339,7 +339,7 @@ export default function TimetableManagementPage() {
                                                     {entry ? (
                                                         <div className="bg-zinc-100/50 dark:bg-zinc-900/50 p-4 rounded-[1.25rem] border border-zinc-300 dark:border-zinc-800 relative group overflow-hidden shadow-xl hover:border-eduGreen-900/30 transition-all">
                                                             <div className="font-medium text-eduGreen-500 text-sm tracking-tight mb-1">{entry.subject?.name}</div>
-                                                            <div className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                                                            <div className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
                                                                 <Users className="w-3 h-3" /> {entry.teacher?.name}
                                                             </div>
                                                             <button
@@ -378,7 +378,7 @@ export default function TimetableManagementPage() {
                                 <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Configure global teaching slots</p>
                             </div>
                             <div className="flex gap-4">
-                                <Button onClick={addPeriod} variant="outline" className="border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 text-zinc-500 hover:text-white rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest transition-all">
+                                <Button onClick={addPeriod} variant="outline" className="border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest transition-all">
                                     <Plus className="w-4 h-4 mr-2" /> Add Slot
                                 </Button>
                                 <Button onClick={handleSavePeriods} isLoading={saving} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-8 rounded-2xl font-medium uppercase text-[10px] tracking-widest shadow-2xl transition-all shadow-eduGreen-900/20">
@@ -401,7 +401,7 @@ export default function TimetableManagementPage() {
                                                         newP[idx].name = e.target.value;
                                                         setPeriods(newP);
                                                     }}
-                                                    className="h-12 bg-zinc-100 dark:bg-zinc-900 border-0 rounded-xl text-zinc-900 dark:text-white font-medium placeholder:text-zinc-800"
+                                                    className="h-12 bg-zinc-100 dark:bg-zinc-900 border-0 rounded-xl text-zinc-900 dark:text-white font-medium placeholder:text-zinc-800 dark:text-zinc-200"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -435,7 +435,7 @@ export default function TimetableManagementPage() {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => setPeriods(periods.filter((_, i) => i !== idx))}
-                                                    className="text-zinc-800 hover:text-red-500 hover:bg-red-950/20"
+                                                    className="text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -487,7 +487,7 @@ function SlotAssigner({ subjects, teachers, staffing, onAssign }: any) {
         return (
             <button
                 onClick={() => setOpen(true)}
-                className="w-10 h-10 rounded-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center text-zinc-800 hover:text-eduGreen-500 hover:border-eduGreen-900/30 transition-all active:scale-90"
+                className="w-10 h-10 rounded-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center text-zinc-800 dark:text-zinc-200 hover:text-eduGreen-500 hover:border-eduGreen-900/30 transition-all active:scale-90"
             >
                 <Plus className="w-4 h-4" />
             </button>
@@ -534,7 +534,7 @@ function SlotAssigner({ subjects, teachers, staffing, onAssign }: any) {
                         size="sm"
                         variant="ghost"
                         onClick={() => setOpen(false)}
-                        className="text-[9px] font-medium uppercase tracking-widest text-zinc-500 h-9"
+                        className="text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 h-9"
                     >
                         Cancel
                     </Button>

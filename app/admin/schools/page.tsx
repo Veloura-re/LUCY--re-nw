@@ -171,7 +171,7 @@ export default function SchoolsLedgerPage() {
                         <School className="w-6 h-6 text-eduGreen-500" />
                         INSTITUTION LEDGER
                     </h1>
-                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-1">
+                    <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-1">
                         Register, deploy, and manage distinct school instances
                     </p>
                 </div>
@@ -195,17 +195,17 @@ export default function SchoolsLedgerPage() {
                             </div>
                             <div>
                                 <h3 className="text-base font-semibold text-zinc-900 dark:text-white">Provision New Institution</h3>
-                                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-0.5">Deploy a new school environment</p>
+                                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-0.5">Deploy a new school environment</p>
                             </div>
                         </div>
-                        <button onClick={() => setShowForm(false)} className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-colors">
+                        <button onClick={() => setShowForm(false)} className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors">
                             <X className="w-4 h-4" />
                         </button>
                     </div>
 
                     <form onSubmit={handleCreateSchool} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Institution Name</label>
+                            <label className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Institution Name</label>
                             <Input
                                 placeholder="e.g. International Academy"
                                 value={newSchoolName}
@@ -215,7 +215,7 @@ export default function SchoolsLedgerPage() {
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Owner Email</label>
+                            <label className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Owner Email</label>
                             <Input
                                 type="email"
                                 placeholder="owner@institution.edu"
@@ -274,7 +274,7 @@ export default function SchoolsLedgerPage() {
                                 </div>
                                 <button
                                     onClick={() => copyToClipboard(inviteToken, 'token')}
-                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
+                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 transition-all"
                                 >
                                     {copied === 'token' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
                                 </button>
@@ -288,7 +288,7 @@ export default function SchoolsLedgerPage() {
                                 </div>
                                 <button
                                     onClick={() => copyToClipboard(inviteUrl || '', 'url')}
-                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
+                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 transition-all"
                                 >
                                     {copied === 'url' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
                                 </button>
@@ -298,7 +298,7 @@ export default function SchoolsLedgerPage() {
 
                     <Button
                         onClick={() => { setInviteToken(null); setInviteUrl(null); setShowForm(false); }}
-                        className="w-full h-11 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all"
+                        className="w-full h-11 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all"
                     >
                         Done
                     </Button>
@@ -308,7 +308,7 @@ export default function SchoolsLedgerPage() {
             {/* Filtering Settings Panel */}
             <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                     <input
                         type="text"
                         placeholder="Search school name or code..."
@@ -318,7 +318,7 @@ export default function SchoolsLedgerPage() {
                     />
                 </div>
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-                    <SlidersHorizontal className="w-4 h-4 text-zinc-500 mr-2 flex-shrink-0" />
+                    <SlidersHorizontal className="w-4 h-4 text-zinc-600 dark:text-zinc-500 mr-2 flex-shrink-0" />
                     {(['ALL', 'ACTIVE', 'PENDING', 'SUSPENDED'] as const).map((status) => (
                         <button
                             key={status}
@@ -326,8 +326,8 @@ export default function SchoolsLedgerPage() {
                             className={cn(
                                 "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 statusFilter === status
-                                    ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
-                                    : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
+                                    ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-400 dark:border-zinc-700"
+                                    : "bg-transparent text-zinc-600 dark:text-zinc-500 border-transparent hover:text-zinc-400"
                             )}
                         >
                             {status}
@@ -344,14 +344,14 @@ export default function SchoolsLedgerPage() {
                 </div>
             ) : filteredSchools.length === 0 ? (
                 <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900">
-                    <School className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
+                    <School className="w-10 h-10 text-zinc-800 dark:text-zinc-200 mx-auto mb-4" />
                     <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No schools discovered</p>
                     <p className="text-[10px] text-zinc-700 mt-1">Adjust filters or provision your first institution above</p>
                 </div>
             ) : (
                 <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
                         <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Institution</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Staff</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Students</div>
@@ -369,7 +369,7 @@ export default function SchoolsLedgerPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-semibold text-xs">{school.name}</h4>
-                                        <p className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
+                                        <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
                                     </div>
                                 </div>
                                 <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.users}</div>
@@ -390,7 +390,7 @@ export default function SchoolsLedgerPage() {
                                     {school.status === 'ACTIVE' ? (
                                         <button
                                             onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
                                             title="Suspend"
                                         >
                                             <PowerOff className="w-3 h-3" />
@@ -399,7 +399,7 @@ export default function SchoolsLedgerPage() {
                                     ) : (
                                         <button
                                             onClick={() => handleActivateSchool(school.id)}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
                                             title="Activate"
                                         >
                                             <Power className="w-3 h-3" />

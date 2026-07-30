@@ -47,7 +47,7 @@ export default function StudentAuthorizationsPage() {
                 <div className="w-20 h-20 border-2 border-eduGreen-500/20 rounded-full animate-ping absolute inset-0" />
                 <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin relative z-10" />
             </div>
-            <p className="text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Personal Authorization Nexus...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Personal Authorization Nexus...</p>
         </div>
     );
 
@@ -81,7 +81,7 @@ export default function StudentAuthorizationsPage() {
                     onClick={() => setShowModal(true)}
                     className="bg-white text-black hover:bg-zinc-200 h-16 px-10 rounded-[2rem] font-bold text-[10px] uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all active:scale-95 group overflow-hidden relative"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white dark:via-black/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
                     <Plus className="mr-3 h-5 w-5" /> New Permit
                 </Button>
             </div>
@@ -137,11 +137,11 @@ export default function StudentAuthorizationsPage() {
                                                             {auth.status}
                                                         </Badge>
                                                     </div>
-                                                    <div className="flex items-center gap-6 mt-4 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
+                                                    <div className="flex items-center gap-6 mt-4 text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em]">
                                                         <div className="flex items-center gap-2.5">
                                                             <CalendarIcon className="w-4 h-4 text-zinc-700" />
                                                             <span className="text-zinc-600 dark:text-zinc-400">{new Date(auth.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                                            <Zap className="w-3 h-3 text-zinc-800" />
+                                                            <Zap className="w-3 h-3 text-zinc-800 dark:text-zinc-200" />
                                                             <span className="text-zinc-600 dark:text-zinc-400">{new Date(auth.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                                         </div>
                                                     </div>
@@ -149,15 +149,15 @@ export default function StudentAuthorizationsPage() {
                                             </div>
 
                                             <div className="flex-1 max-w-lg p-6 bg-white/40 dark:bg-zinc-950/40 rounded-[2rem] border border-zinc-200 dark:border-white/5 text-xs font-medium text-zinc-600 dark:text-zinc-400 italic leading-relaxed shadow-inner">
-                                                <div className="text-[8px] font-bold text-zinc-800 uppercase tracking-widest mb-2 not-italic">Justification Log</div>
+                                                <div className="text-[8px] font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mb-2 not-italic">Justification Log</div>
                                                 "{auth.reason}"
                                             </div>
 
                                             <div className="text-right hidden lg:block">
                                                 <p className="text-[8px] font-bold text-zinc-700 uppercase tracking-[0.4em] mb-2">Request Hash</p>
-                                                <p className="text-[11px] font-mono text-zinc-500">{auth.id.split('-')[0].toUpperCase()}</p>
-                                                <div className="mt-4 flex items-center justify-end gap-2 text-[9px] font-bold text-zinc-800 uppercase tracking-widest">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
+                                                <p className="text-[11px] font-mono text-zinc-600 dark:text-zinc-500">{auth.id.split('-')[0].toUpperCase()}</p>
+                                                <div className="mt-4 flex items-center justify-end gap-2 text-[9px] font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                                     {new Date(auth.createdAt).toLocaleDateString()}
                                                 </div>
                                             </div>
@@ -181,10 +181,10 @@ export default function StudentAuthorizationsPage() {
                         >
                             <div className="relative inline-block mb-8">
                                 <div className="absolute inset-0 bg-eduGreen-500/20 blur-[40px] rounded-full animate-pulse" />
-                                <FileText className="w-20 h-20 text-zinc-800 mx-auto relative z-10" />
+                                <FileText className="w-20 h-20 text-zinc-800 dark:text-zinc-200 mx-auto relative z-10" />
                             </div>
                             <div className="text-zinc-600 font-black uppercase tracking-[0.8em] text-xl italic ml-4">CLEAN RECORD</div>
-                            <p className="text-zinc-800 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active absence permits recorded in the neural registry.</p>
+                            <p className="text-zinc-800 dark:text-zinc-200 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active absence permits recorded in the neural registry.</p>
                             <Button
                                 onClick={() => setShowModal(true)}
                                 variant="ghost"

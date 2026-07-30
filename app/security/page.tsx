@@ -262,7 +262,7 @@ export default function Security() {
                                         </div>
 
                                         {/* Form Card */}
-                                        <form onSubmit={handleFormSubmit} className="p-8 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 lg:col-span-2 rounded-xl dark:rounded-none relative shadow-sm dark:shadow-none">
+                                        <form onSubmit={handleFormSubmit} className="p-8 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 lg:col-span-2 rounded-xl dark:rounded-none relative shadow-sm dark:shadow-none">
                                             {status === 'ERROR' && (
                                                 <div className="p-4 border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-950/10 text-red-600 dark:text-red-500 text-xs font-bold rounded-xl flex items-center gap-2">
                                                     <AlertTriangle className="w-4 h-4 shrink-0" />

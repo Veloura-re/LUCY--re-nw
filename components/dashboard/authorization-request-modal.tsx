@@ -202,7 +202,7 @@ export function AuthorizationRequestModal({ isOpen, onClose, studentId: initialS
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder="Detail the cause for institutional absence / leave protocol..."
-                            className="min-h-[140px] bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-white/5 rounded-[2rem] text-slate-900 dark:text-white font-medium text-sm focus:ring-2 focus:ring-eduGreen-500/20 focus:border-eduGreen-500/30 resize-none p-6 placeholder:text-slate-400 dark:placeholder:text-zinc-800 transition-all"
+                            className="min-h-[140px] bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-white/5 rounded-[2rem] text-slate-900 dark:text-white font-medium text-sm focus:ring-2 focus:ring-eduGreen-500/20 focus:border-eduGreen-500/30 resize-none p-6 placeholder:text-slate-400 dark:placeholder:text-zinc-800 dark:text-zinc-200 transition-all"
                             required
                         />
                     </div>

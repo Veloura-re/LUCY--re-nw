@@ -61,7 +61,7 @@ export default function SecurityDisclosuresPage() {
                     <ShieldCheck className="w-6 h-6 text-orange-500" />
                     SECURITY DISCLOSURES
                 </h1>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-1">
+                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-1">
                     Review incoming security vulnerabilities reported from outside nodes
                 </p>
             </div>
@@ -69,7 +69,7 @@ export default function SecurityDisclosuresPage() {
             {/* Filter Panel */}
             <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                     <input
                         type="text"
                         placeholder="Search disclosures by reporter, description, category..."
@@ -79,7 +79,7 @@ export default function SecurityDisclosuresPage() {
                     />
                 </div>
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-                    <SlidersHorizontal className="w-4 h-4 text-zinc-500 mr-2 flex-shrink-0" />
+                    <SlidersHorizontal className="w-4 h-4 text-zinc-600 dark:text-zinc-500 mr-2 flex-shrink-0" />
                     {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => (
                         <button
                             key={sev}
@@ -87,8 +87,8 @@ export default function SecurityDisclosuresPage() {
                             className={cn(
                                 "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 severityFilter === sev
-                                    ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
-                                    : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
+                                    ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-400 dark:border-zinc-700"
+                                    : "bg-transparent text-zinc-600 dark:text-zinc-500 border-transparent hover:text-zinc-400"
                             )}
                         >
                             {sev}
@@ -105,14 +105,14 @@ export default function SecurityDisclosuresPage() {
                 </div>
             ) : filteredReports.length === 0 ? (
                 <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900">
-                    <ShieldCheck className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
+                    <ShieldCheck className="w-10 h-10 text-zinc-800 dark:text-zinc-200 mx-auto mb-4" />
                     <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No disclosures logged</p>
                     <p className="text-[10px] text-zinc-700 mt-1">Adjust filters or search parameters</p>
                 </div>
             ) : (
                 <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
                         <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Reporter Email</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Category</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Severity</div>

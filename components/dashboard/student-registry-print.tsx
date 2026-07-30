@@ -26,7 +26,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                 <div className="flex justify-between items-start border-b-2 border-black pb-8 mb-10">
                     <div>
                         <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Institutional Network</span></h1>
-                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-500">{title}</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-600 dark:text-zinc-500">{title}</p>
                     </div>
                     <div className="text-right">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Generated On</p>
@@ -45,7 +45,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
 
                         <table className="w-full border-collapse">
                             <thead>
-                                <tr className="border-b border-zinc-200 text-[10px] font-bold uppercase tracking-widest text-zinc-500 text-left">
+                                <tr className="border-b border-zinc-200 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500 text-left">
                                     <th className="py-4 px-2 w-12">#</th>
                                     <th className="py-4 px-2">ID Code</th>
                                     <th className="py-4 px-2">Full Legal Name</th>
@@ -64,14 +64,14 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                                         <td className="py-4 px-2 font-bold uppercase tracking-tight">
                                             {student.firstName} <span className="text-zinc-600 dark:text-zinc-400">{student.lastName}</span>
                                         </td>
-                                        <td className="py-4 px-2 text-zinc-500 font-medium">{student.gender?.[0] || 'U'}</td>
-                                        <td className="py-4 px-2 text-zinc-500 font-medium">
+                                        <td className="py-4 px-2 text-zinc-600 dark:text-zinc-500 font-medium">{student.gender?.[0] || 'U'}</td>
+                                        <td className="py-4 px-2 text-zinc-600 dark:text-zinc-500 font-medium">
                                             {student.guardianName} ({student.guardianPhone})
                                         </td>
                                         <td className="py-4 px-2">
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest border",
-                                                student.enrollmentStatus === 'ACTIVE' ? "bg-zinc-100 border-zinc-200 text-zinc-800" : "bg-zinc-50 border-zinc-100 text-zinc-700 dark:text-zinc-300"
+                                                student.enrollmentStatus === 'ACTIVE' ? "bg-zinc-100 border-zinc-200 text-zinc-800 dark:text-zinc-200" : "bg-zinc-50 border-zinc-100 text-zinc-700 dark:text-zinc-300"
                                             )}>
                                                 {student.enrollmentStatus}
                                             </span>

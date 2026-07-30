@@ -63,7 +63,7 @@ export function ImageUpload({ value, onChange, disabled, bucket = 'avatars' }: I
     return (
         <div className="flex items-center gap-6">
             <div className="relative group">
-                <Avatar className="h-24 w-24 rounded-2xl border-2 border-dashed border-zinc-800 bg-zinc-900/50">
+                <Avatar className="h-24 w-24 rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/50">
                     <AvatarImage src={preview} className="object-cover" />
                     <AvatarFallback className="bg-transparent">
                         {isUploading ? <Loader2 className="w-8 h-8 text-eduGreen-500 animate-spin" /> : <ImageIcon className="w-8 h-8 text-zinc-700" />}
@@ -73,7 +73,7 @@ export function ImageUpload({ value, onChange, disabled, bucket = 'avatars' }: I
                     <button
                         type="button"
                         onClick={handleRemove}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-2 -right-2 bg-red-500 text-zinc-900 dark:text-white rounded-full p-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                         <X className="w-3 h-3" />
                     </button>
@@ -86,7 +86,7 @@ export function ImageUpload({ value, onChange, disabled, bucket = 'avatars' }: I
                     variant="outline"
                     disabled={disabled || isUploading}
                     onClick={() => fileInputRef.current?.click()}
-                    className="bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-300 h-10 px-4 rounded-xl font-medium text-[10px] uppercase tracking-widest"
+                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 h-10 px-4 rounded-xl font-medium text-[10px] uppercase tracking-widest"
                 >
                     <Upload className="w-3 h-3 mr-2" />
                     {isUploading ? "Uploading..." : "Upload Photo"}

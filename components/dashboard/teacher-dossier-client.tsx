@@ -61,7 +61,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
             case 'POSITIVE': return <Sparkles className="w-4 h-4 text-emerald-500" />;
             case 'NEGATIVE': return <AlertTriangle className="w-4 h-4 text-rose-500" />;
             case 'REVIEW': return <Star className="w-4 h-4 text-amber-500" />;
-            default: return <FileText className="w-4 h-4 text-zinc-500" />;
+            default: return <FileText className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />;
         }
     };
 
@@ -86,7 +86,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                         <span>{teacher.role} Clearance</span>
                     </div>
                     <h1 className="text-4xl font-medium tracking-tight text-zinc-900 dark:text-white">{teacher.name || "Awaiting Setup"}</h1>
-                    <p className="text-zinc-500 text-xs font-mono mt-2">{teacher.email}</p>
+                    <p className="text-zinc-600 dark:text-zinc-500 text-xs font-mono mt-2">{teacher.email}</p>
                 </div>
             </div>
 
@@ -100,17 +100,17 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                         <CardContent className="p-6">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Entry Type</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Entry Type</label>
                                     <div className="grid grid-cols-3 gap-2">
-                                        <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Good</button>
-                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Infraction</button>
-                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Review</button>
+                                        <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Good</button>
+                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Infraction</button>
+                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Review</button>
                                     </div>
                                 </div>
 
                                 {remarkType === 'REVIEW' && (
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Rating (1-5)</label>
+                                        <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Rating (1-5)</label>
                                         <div className="flex gap-2">
                                             {[1,2,3,4,5].map(num => (
                                                 <button key={num} type="button" onClick={() => setRating(num)} className={cn("flex-1 py-2 rounded-xl transition-all border", rating === num ? "bg-amber-500/20 border-amber-500 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:border-zinc-600")}>
@@ -122,7 +122,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                 )}
 
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Observation</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Observation</label>
                                     <Textarea 
                                         value={content}
                                         onChange={e => setContent(e.target.value)}
@@ -145,7 +145,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                     <div className="space-y-4">
                         {remarks.length === 0 ? (
                             <div className="p-12 text-center rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/20 dark:bg-zinc-950/20">
-                                <p className="text-xs text-zinc-500 font-mono">No entries found in registry.</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono">No entries found in registry.</p>
                             </div>
                         ) : (
                             remarks.map((remark) => (

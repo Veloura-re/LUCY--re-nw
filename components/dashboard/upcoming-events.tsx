@@ -44,7 +44,7 @@ export function UpcomingEventsWidget() {
             </CardHeader>
             <CardContent className="p-10 pt-0">
                 <div className="text-center py-10 bg-white/[0.02] rounded-3xl border border-dashed border-zinc-200 dark:border-white/5">
-                    <p className="text-[10px] font-medium text-zinc-800 uppercase tracking-widest">No events scheduled</p>
+                    <p className="text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">No events scheduled</p>
                 </div>
             </CardContent>
         </Card>
@@ -57,7 +57,7 @@ export function UpcomingEventsWidget() {
                     <Calendar className="w-4 h-4 text-eduGreen-500" /> High-Level Events
                 </CardTitle>
                 <Link href="/dashboard/events">
-                    <Button variant="ghost" size="sm" className="h-8 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-eduGreen-400">View All</Button>
+                    <Button variant="ghost" size="sm" className="h-8 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400">View All</Button>
                 </Link>
             </CardHeader>
             <CardContent className="p-6 md:p-10 pt-4 space-y-6">
@@ -78,7 +78,7 @@ export function UpcomingEventsWidget() {
 
                         <div className="flex-1">
                             <h4 className="font-medium text-base text-zinc-900 dark:text-white group-hover:text-eduGreen-400 transition-colors line-clamp-1 uppercase tracking-tight italic" title={event.title}>{event.title}</h4>
-                            <p className="text-[11px] font-medium text-zinc-500 mb-3 line-clamp-1">{event.description}</p>
+                            <p className="text-[11px] font-medium text-zinc-600 dark:text-zinc-500 mb-3 line-clamp-1">{event.description}</p>
                             <div className="flex items-center gap-4 text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
                                 <div className="flex items-center gap-1.5">
                                     <Clock className="w-3 h-3 text-eduGreen-700" />
@@ -93,7 +93,7 @@ export function UpcomingEventsWidget() {
                             </div>
                         </div>
 
-                        <ArrowRight className="w-4 h-4 text-zinc-900 group-hover:text-eduGreen-600 transition-all self-center" />
+                        <ArrowRight className="w-4 h-4 text-zinc-900 dark:text-white group-hover:text-eduGreen-600 transition-all self-center" />
                     </motion.div>
                 ))}
             </CardContent>

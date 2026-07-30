@@ -175,9 +175,9 @@ export default function HomeroomDashboard() {
                     <Shield className="w-10 h-10 text-eduGreen-500" />
                 </div>
                 <h1 className="text-3xl font-medium text-zinc-900 dark:text-white mb-2 uppercase tracking-tighter">Access Restricted</h1>
-                <p className="text-zinc-500 font-medium uppercase tracking-widest text-xs">No Homeroom assignment detected for this identity.</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-xs">No Homeroom assignment detected for this identity.</p>
                 <Link href="/dashboard">
-                    <Button className="mt-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl">Return to Core</Button>
+                    <Button className="mt-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl">Return to Core</Button>
                 </Link>
             </div>
         );
@@ -196,7 +196,7 @@ export default function HomeroomDashboard() {
                         <h1 className="text-4xl md:text-5xl font-medium text-zinc-900 dark:text-white tracking-tighter leading-none">
                             Class <span className="text-eduGreen-500 italic">{myClass.name}</span>
                         </h1>
-                        <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-4 opacity-80">
+                        <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-4 opacity-80">
                             {myClass.gradeName} &bull; {myClass.students.length} Registered Learners
                         </p>
                     </div>
@@ -208,7 +208,7 @@ export default function HomeroomDashboard() {
                             </Button>
                             <div className="px-4 py-2 flex items-center gap-3 border-x border-zinc-200 dark:border-zinc-900">
                                 <Calendar className="w-4 h-4 text-eduGreen-500" />
-                                <span className="font-medium text-zinc-100 text-[10px] uppercase tracking-widest">{format(date, 'MMMM dd, yyyy')}</span>
+                                <span className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 text-[10px] uppercase tracking-widest">{format(date, 'MMMM dd, yyyy')}</span>
                             </div>
                             <Button variant="ghost" size="icon" onClick={() => setDate(addDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-white rounded-xl">
                                 <ChevronRight className="w-5 h-5" />
@@ -265,7 +265,7 @@ export default function HomeroomDashboard() {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <p className="font-medium text-zinc-100 group-hover:text-white transition-colors tracking-tight text-base mb-0.5">{student.firstName} {student.lastName}</p>
+                                                    <p className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-white transition-colors tracking-tight text-base mb-0.5">{student.firstName} {student.lastName}</p>
                                                     {authorizations[student.id] && (
                                                         <Badge className="bg-eduGreen-950/30 text-eduGreen-500 border-eduGreen-500/20 uppercase tracking-widest text-[8px] px-2 py-0.5 rounded-lg flex items-center gap-1">
                                                             <CheckCircle2 className="w-2.5 h-2.5" /> Verified Permit
@@ -311,14 +311,14 @@ export default function HomeroomDashboard() {
                                             <div className="flex items-center gap-2">
                                                 {student.userId && (
                                                     <Link href={`/dashboard/messages?userId=${student.userId}`}>
-                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
+                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
                                                             <MessageSquare className="w-4 h-4" />
                                                         </Button>
                                                     </Link>
                                                 )}
                                                 {student.parentLinks?.[0]?.parent && (
                                                     <Link href={`/dashboard/messages?userId=${student.parentLinks[0].parent.id}`}>
-                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-amber-500 hover:bg-amber-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
+                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-amber-500 hover:bg-amber-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
                                                             <Shield className="w-4 h-4" />
                                                         </Button>
                                                     </Link>
@@ -369,7 +369,7 @@ function StatusButton({ active, onClick, color, icon: Icon, label }: any) {
                 "w-11 h-11 rounded-2xl transition-all border p-0",
                 active
                     ? cn("bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 shadow-xl", color)
-                    : "bg-transparent border-transparent text-zinc-800 hover:text-zinc-600 hover:border-zinc-900"
+                    : "bg-transparent border-transparent text-zinc-800 dark:text-zinc-200 hover:text-zinc-600 hover:border-zinc-900"
             )}
         >
             <Icon className={cn("w-5 h-5", active ? "scale-110" : "")} />

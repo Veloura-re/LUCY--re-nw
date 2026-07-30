@@ -173,7 +173,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                             <DialogTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
+                                    className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
                                 >
                                     <MessageSquare className="mr-2 h-4 w-4 text-eduGreen-500" /> Contact Staff
                                 </Button>
@@ -207,7 +207,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                     onClick={() => startStaffChat(staff.id)}
                                                     className="w-full flex items-center gap-4 p-4 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-2xl border border-transparent hover:border-eduGreen-900/30 hover:bg-zinc-200 dark:hover:bg-zinc-900 transition-all text-left group"
                                                 >
-                                                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center font-medium text-xs text-zinc-500 group-hover:text-eduGreen-500 transition-all">
+                                                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center font-medium text-xs text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 transition-all">
                                                         {staff.name[0]}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
@@ -217,17 +217,17 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                             {staff.role}
                                                         </div>
                                                     </div>
-                                                    <MessageSquare className="w-4 h-4 text-zinc-800 group-hover:text-eduGreen-500 transition-all" />
+                                                    <MessageSquare className="w-4 h-4 text-zinc-800 dark:text-zinc-200 group-hover:text-eduGreen-500 transition-all" />
                                                 </button>
                                             ))
                                         ) : staffSearchQuery.length >= 2 ? (
                                             <div className="py-12 text-center">
-                                                <p className="text-[10px] font-medium text-zinc-800 uppercase tracking-widest">No matching staff discovered</p>
+                                                <p className="text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">No matching staff discovered</p>
                                             </div>
                                         ) : (
                                             <div className="py-12 text-center">
-                                                <Shield className="w-8 h-8 text-zinc-900 mx-auto mb-4" />
-                                                <p className="text-[10px] font-medium text-zinc-800 uppercase tracking-widest">Staff Index Standby</p>
+                                                <Shield className="w-8 h-8 text-zinc-900 dark:text-white mx-auto mb-4" />
+                                                <p className="text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Staff Index Standby</p>
                                             </div>
                                         )}
                                     </div>
@@ -290,18 +290,18 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                             ) : (status === 'CONFIRMING' || status === 'LINKING') && foundStudent ? (
                                 <div className="bg-zinc-100/20 dark:bg-zinc-900/20 rounded-[2rem] p-8 border border-zinc-200 dark:border-zinc-900 animate-in fade-in slide-in-from-bottom-8">
                                     <div className="grid gap-4">
-                                        <div className="flex items-center gap-5 p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
+                                        <div className="flex items-center gap-5 p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
-                                                <User className="h-7 w-7 text-zinc-500" />
+                                                <User className="h-7 w-7 text-zinc-600 dark:text-zinc-500" />
                                             </div>
                                             <div>
                                                 <p className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest">Full Name</p>
                                                 <p className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">{foundStudent.firstName} {foundStudent.lastName}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-5 p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
+                                        <div className="flex items-center gap-5 p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
-                                                <SchoolIcon className="h-7 w-7 text-zinc-500" />
+                                                <SchoolIcon className="h-7 w-7 text-zinc-600 dark:text-zinc-500" />
                                             </div>
                                             <div>
                                                 <p className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest">Institutional Context</p>
@@ -381,7 +381,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             <span className="text-xl font-medium text-eduGreen-500">{child.firstName[0]}</span>
                                         </div>
                                         <div className="flex flex-col items-end gap-2">
-                                            <div className="px-3 py-1 rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900 text-[9px] font-medium text-zinc-500 uppercase tracking-widest group-hover:text-eduGreen-600 group-hover:border-eduGreen-900/20 transition-all">
+                                            <div className="px-3 py-1 rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900 text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest group-hover:text-eduGreen-600 group-hover:border-eduGreen-900/20 transition-all">
                                                 Active Profile
                                             </div>
                                             <span className="text-[8px] font-mono text-zinc-700 font-medium uppercase tracking-wider">
@@ -415,7 +415,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <div className="p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Unpaid Invoices</p>
                                             <div className="flex items-center gap-2">
-                                                <div className={cn("w-2 h-2 rounded-full", Number(child.stats?.invoiceCount) > 0 ? "bg-amber-500 animate-pulse" : "bg-zinc-800")} />
+                                                <div className={cn("w-2 h-2 rounded-full", Number(child.stats?.invoiceCount) > 0 ? "bg-amber-500 animate-pulse" : "bg-zinc-200 dark:bg-zinc-800")} />
                                                 <span className="text-lg font-medium text-zinc-900 dark:text-white">{child.stats?.invoiceCount || "0"}</span>
                                             </div>
                                         </div>
@@ -441,7 +441,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             </div>
                                             <div className="space-y-2">
                                                 {child.recentInvoices?.map((inv: any) => (
-                                                    <div key={inv.id} className="group/inv flex items-center justify-between p-3 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-xl hover:border-eduGreen-900/20 transition-all">
+                                                    <div key={inv.id} className="group/inv flex items-center justify-between p-3 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-xl hover:border-eduGreen-900/20 transition-all">
                                                         <div className="flex items-center gap-3">
                                                             <div className={cn(
                                                                 "w-1.5 h-1.5 rounded-full",
@@ -461,12 +461,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
 
                                     <div className="grid grid-cols-3 gap-3">
                                         <Link href={`/dashboard/reports/${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Performance
                                             </Button>
                                         </Link>
                                         <Link href={`/dashboard/books?studentId=${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Bookshelf
                                             </Button>
                                         </Link>
@@ -482,21 +482,21 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             <div className="grid grid-cols-2 gap-3">
                                                 {child.userId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.userId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> {child.firstName}
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                                 {child.class?.homeroomTeacherId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.class.homeroomTeacherId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> Teacher
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                             </div>
                                             <Link href={`/dashboard/parent/authorizations?studentId=${child.id}`}>
-                                                <Button className="w-full h-12 bg-white dark:bg-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
+                                                <Button className="w-full h-12 bg-white dark:bg-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
                                                     <FileText className="w-4 h-4 mr-2" /> Request Leave Authorization
                                                 </Button>
                                             </Link>
@@ -518,7 +518,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                     </div>
                     <div className="space-y-2">
                         <h3 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">No Linked Students</h3>
-                        <p className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-sm mx-auto">
+                        <p className="text-zinc-600 dark:text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-sm mx-auto">
                             To view homework assignments, attendance, billing, and report cards, please link a student profile to this guardian node.
                         </p>
                     </div>

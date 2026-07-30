@@ -29,12 +29,12 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                 <div className="flex justify-between items-start border-b-2 border-black pb-8 mb-10">
                     <div>
                         <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Grading Sheet</span></h1>
-                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-500">{exam.title}</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-600 dark:text-zinc-500">{exam.title}</p>
                     </div>
                     <div className="text-right">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Assessment Category</p>
                         <p className="text-sm font-bold uppercase">{exam.category?.replace('_', ' ')}</p>
-                        <p className="text-[10px] font-medium text-zinc-500 mt-1">{exam.className} • {exam.subjectName}</p>
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 mt-1">{exam.className} • {exam.subjectName}</p>
                     </div>
                 </div>
 
@@ -77,7 +77,7 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                                     </td>
                                     <td className="py-4 px-2 text-center font-bold text-lg">{student.score ?? '-'}</td>
                                     <td className="py-4 px-2 text-center font-bold">{grade}</td>
-                                    <td className="py-4 px-2 text-zinc-500 italic">{student.remark || '-'}</td>
+                                    <td className="py-4 px-2 text-zinc-600 dark:text-zinc-500 italic">{student.remark || '-'}</td>
                                 </tr>
                             );
                         })}
@@ -88,7 +88,7 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                 <div className="mt-20 grid grid-cols-2 gap-20">
                     <div className="space-y-4 text-center">
                         <div className="h-px bg-white dark:bg-black w-full mb-2" />
-                        <p className="text-[10px] font-black uppercase text-zinc-800">{exam.createdBy?.name || 'Faculty Member'}</p>
+                        <p className="text-[10px] font-black uppercase text-zinc-800 dark:text-zinc-200">{exam.createdBy?.name || 'Faculty Member'}</p>
                         <p className="text-[8px] font-bold uppercase tracking-[0.3em]">Examiner Signature</p>
                     </div>
                     <div className="space-y-4">

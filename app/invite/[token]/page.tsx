@@ -24,7 +24,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
 
     if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4 font-sans selection:bg-red-500/30">
+            <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-[#0a0a0a] p-4 font-sans selection:bg-red-500/30">
                 {/* Background Ambient Glow */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-red-600/10 rounded-[100%] blur-[120px]" />
@@ -38,7 +38,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                             <AlertCircle className="w-8 h-8 text-red-500 relative z-10" />
                         </div>
                         <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white mb-2">Access Denied</h1>
-                        <p className="text-sm font-medium text-zinc-500 uppercase tracking-widest">Token Invalid or Expired</p>
+                        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Token Invalid or Expired</p>
                     </div>
 
                     <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900/50 shadow-2xl overflow-hidden rounded-3xl border-t-zinc-800/30">
@@ -48,7 +48,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                                     The secure invitation link you clicked is no longer valid. It may have been used already, or the 7-day expiration window has passed.
                                 </p>
                             </div>
-                            <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-semibold">
+                            <p className="text-[11px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-semibold">
                                 Please contact your institutional administrator to provision a new access token.
                             </p>
                         </CardContent>
@@ -82,7 +82,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
     const formattedRole = invite.role.charAt(0) + invite.role.slice(1).toLowerCase();
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4 font-sans selection:bg-eduGreen-500/30">
+        <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-[#0a0a0a] p-4 font-sans selection:bg-eduGreen-500/30">
             {/* Background Ambient Glow */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-eduGreen-600/10 rounded-[100%] blur-[150px]" />
@@ -116,10 +116,10 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                     
                     <CardHeader className="text-center pb-2 pt-10 px-8">
                         <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white flex items-center justify-center gap-2">
-                            <UserCircle2 className="w-5 h-5 text-zinc-500" />
+                            <UserCircle2 className="w-5 h-5 text-zinc-600 dark:text-zinc-500" />
                             Account Provisioning
                         </CardTitle>
-                        <CardDescription className="text-zinc-500 text-sm mt-2">
+                        <CardDescription className="text-zinc-600 dark:text-zinc-500 text-sm mt-2">
                             Please verify your identity and set a secure password to initialize your institutional access.
                         </CardDescription>
                     </CardHeader>

@@ -51,9 +51,9 @@ function AssignmentsLoadingFallback() {
             <div className="text-center space-y-2">
                 <p className="text-[11px] font-black uppercase tracking-[0.5em] text-zinc-900 dark:text-white italic">Synchronizing Task Command</p>
                 <div className="flex items-center gap-3 justify-center">
-                    <div className="h-[1px] w-6 bg-zinc-800" />
+                    <div className="h-[1px] w-6 bg-zinc-200 dark:bg-zinc-800" />
                     <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Neural Link Encryption Active</p>
-                    <div className="h-[1px] w-6 bg-zinc-800" />
+                    <div className="h-[1px] w-6 bg-zinc-200 dark:bg-zinc-800" />
                 </div>
             </div>
         </div>

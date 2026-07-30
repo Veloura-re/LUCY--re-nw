@@ -137,7 +137,7 @@ export default function TeacherSchedulePage() {
             {/* Daily View */}
             <div className="grid grid-cols-1 gap-8">
                 {daySchedule.length === 0 ? (
-                    <div className="p-32 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900 flex flex-col items-center justify-center text-zinc-800 gap-4">
+                    <div className="p-32 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 gap-4">
                         <Calendar className="w-12 h-12 opacity-20" />
                         <p className="font-medium uppercase tracking-[0.3em] text-sm italic">No Scheduled Engagements</p>
                     </div>
@@ -159,9 +159,9 @@ export default function TeacherSchedulePage() {
                                         <h3 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight mb-2 group-hover:text-eduGreen-500 transition-colors">
                                             {slot.subject?.name}
                                         </h3>
-                                        <div className="flex items-center gap-4 text-zinc-500 font-medium text-xs uppercase tracking-widest">
+                                        <div className="flex items-center gap-4 text-zinc-600 dark:text-zinc-500 font-medium text-xs uppercase tracking-widest">
                                             <div className="flex items-center gap-2">
-                                                <Users className="w-4 h-4 text-zinc-800" />
+                                                <Users className="w-4 h-4 text-zinc-800 dark:text-zinc-200" />
                                                 Cohort {slot.class?.name}
                                             </div>
                                             <div className="w-1 h-1 rounded-full bg-zinc-100 dark:bg-zinc-900" />
@@ -171,7 +171,7 @@ export default function TeacherSchedulePage() {
                                     <div className="flex flex-col gap-2">
                                         <button
                                             onClick={() => openSyncModal(slot)}
-                                            className="h-12 px-6 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all hover:border-eduGreen-500/50 hover:text-eduGreen-500"
+                                            className="h-12 px-6 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all hover:border-eduGreen-500/50 hover:text-eduGreen-500"
                                         >
                                             Access Lesson Sync
                                         </button>
@@ -193,15 +193,15 @@ export default function TeacherSchedulePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Weekly Load</p>
-                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{timetable.length} <span className="text-sm text-zinc-800 uppercase">Periods</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{timetable.length} <span className="text-sm text-zinc-800 dark:text-zinc-200 uppercase">Periods</span></p>
                 </Card>
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Subject Reach</p>
-                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.subjectId)).size} <span className="text-sm text-zinc-800 uppercase">Focus Areas</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.subjectId)).size} <span className="text-sm text-zinc-800 dark:text-zinc-200 uppercase">Focus Areas</span></p>
                 </Card>
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Active Cohorts</p>
-                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.classId)).size} <span className="text-sm text-zinc-800 uppercase">Groups</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.classId)).size} <span className="text-sm text-zinc-800 dark:text-zinc-200 uppercase">Groups</span></p>
                 </Card>
             </div>
 
@@ -223,7 +223,7 @@ export default function TeacherSchedulePage() {
                     ) : (
                         <form onSubmit={handleLessonSync} className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">Topic of Study</Label>
+                                <Label className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Topic of Study</Label>
                                 <Input
                                     value={lessonData.topic}
                                     onChange={e => setLessonData({ ...lessonData, topic: e.target.value })}
@@ -233,7 +233,7 @@ export default function TeacherSchedulePage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">Learning Objectives</Label>
+                                <Label className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Learning Objectives</Label>
                                 <Textarea
                                     value={lessonData.objectives}
                                     onChange={e => setLessonData({ ...lessonData, objectives: e.target.value })}

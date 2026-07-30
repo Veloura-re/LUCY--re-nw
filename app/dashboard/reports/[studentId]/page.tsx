@@ -30,7 +30,7 @@ export default function StudentReportCardPage() {
     }, [studentId]);
 
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black"><SpringingLoader message="Compiling Academic Records" /></div>;
-    if (!data?.student) return <div className="min-h-screen flex items-center justify-center text-zinc-500 font-black uppercase tracking-widest">Profile Discovery Failed</div>;
+    if (!data?.student) return <div className="min-h-screen flex items-center justify-center text-zinc-600 dark:text-zinc-500 font-black uppercase tracking-widest">Profile Discovery Failed</div>;
 
     const { student, grades, attendance, remarks } = data;
 
@@ -68,10 +68,10 @@ export default function StudentReportCardPage() {
                 </div>
 
                 <div className="flex gap-4 mb-1">
-                    <Button onClick={printReport} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white">
+                    <Button onClick={printReport} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
                         <Printer className="w-4 h-4 mr-2" /> Print PDF
                     </Button>
-                    <Button onClick={exportRawData} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white">
+                    <Button onClick={exportRawData} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
                         <Download className="w-4 h-4 mr-2" /> Download JSON
                     </Button>
                 </div>
@@ -166,7 +166,7 @@ export default function StudentReportCardPage() {
                                     </div>
                                 </div>
                             )) : (
-                                <p className="text-center py-12 text-zinc-800 font-black uppercase tracking-[0.3em] text-[10px]">No qualitative data recorded</p>
+                                <p className="text-center py-12 text-zinc-800 dark:text-zinc-200 font-black uppercase tracking-[0.3em] text-[10px]">No qualitative data recorded</p>
                             )}
                         </div>
                     </div>
@@ -189,7 +189,7 @@ export default function StudentReportCardPage() {
                                                 </div>
                                                 <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{note.author?.name}</span>
                                             </div>
-                                            <span className="text-[9px] font-mono text-zinc-800 uppercase italic">
+                                            <span className="text-[9px] font-mono text-zinc-800 dark:text-zinc-200 uppercase italic">
                                                 {new Date(note.createdAt).toLocaleDateString()}
                                             </span>
                                         </div>
@@ -218,7 +218,7 @@ export default function StudentReportCardPage() {
                             <div className="p-6 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-3xl border border-zinc-200 dark:border-zinc-900 print:bg-transparent print:border-zinc-200 text-center">
                                 <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest mb-2">Institutional Standing</p>
                                 <p className="text-4xl font-black text-zinc-900 dark:text-white print:text-black">EXCEL</p>
-                                <div className="mt-4 h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                                <div className="mt-4 h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                                     <div className="h-full bg-eduGreen-600 w-[85%]" />
                                 </div>
                             </div>

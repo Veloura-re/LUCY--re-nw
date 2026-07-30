@@ -79,11 +79,11 @@ export function StaffPaycheckView({ user }: { user: any }) {
                                     <div key={pay.id} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-eduGreen-900/5 transition-all group/row">
                                         <div className="flex items-center gap-6">
                                             <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center group-hover/row:border-eduGreen-900/30 transition-all shadow-2xl relative overflow-hidden">
-                                                <Calendar className="w-6 h-6 text-zinc-800 group-hover/row:text-eduGreen-500" />
+                                                <Calendar className="w-6 h-6 text-zinc-800 dark:text-zinc-200 group-hover/row:text-eduGreen-500" />
                                                 <div className="absolute inset-x-0 bottom-0 h-1 bg-eduGreen-500/20" />
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-xl text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight">
+                                                <h4 className="font-medium text-xl text-zinc-900 dark:text-white dark:text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight">
                                                     {format(new Date(pay.periodStart), 'MMM yyyy')} Disbursement
                                                 </h4>
                                                 <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mt-1">
@@ -107,7 +107,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
                                                 <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Amount</p>
                                                 <p className="text-2xl font-medium text-zinc-900 dark:text-white">${Number(pay.amount).toLocaleString()}</p>
                                             </div>
-                                            <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl text-zinc-800 hover:text-eduGreen-500 hover:bg-eduGreen-900/10 transition-all border border-transparent hover:border-eduGreen-900/30">
+                                            <Button variant="ghost" size="icon" className="w-12 h-12 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-eduGreen-500 hover:bg-eduGreen-900/10 transition-all border border-transparent hover:border-eduGreen-900/30">
                                                 <FileText className="w-5 h-5" />
                                             </Button>
                                         </div>
@@ -139,7 +139,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
                             </div>
                         </div>
 
-                        <Button className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] border border-zinc-300 dark:border-zinc-800 transition-all gap-3">
+                        <Button className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] border border-zinc-300 dark:border-zinc-800 transition-all gap-3">
                             <Printer className="w-4 h-4" />
                             Print Summary
                         </Button>

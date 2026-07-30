@@ -29,7 +29,7 @@ export default function NeuralPage() {
         return (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
                 <Loader2 className="w-12 h-12 text-eduGreen-500 animate-spin mb-4" />
-                <p className="text-zinc-500 font-medium uppercase tracking-[0.3em] text-[10px]">Synchronizing Neural Correlates</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.3em] text-[10px]">Synchronizing Neural Correlates</p>
             </div>
         );
     }
@@ -51,8 +51,8 @@ export default function NeuralPage() {
                 </div>
 
                 <div className="hidden md:flex flex-col items-end gap-1">
-                    <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Core Synchronized</div>
-                    <div className="flex items-center gap-3 px-4 py-2 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl backdrop-blur-xl">
+                    <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Core Synchronized</div>
+                    <div className="flex items-center gap-3 px-4 py-2 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl backdrop-blur-xl">
                         <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.6)]" />
                         <span className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-tighter">Standby Mode</span>
                     </div>
@@ -86,7 +86,7 @@ export default function NeuralPage() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
-                        className="text-zinc-500 font-medium text-xs md:text-sm uppercase tracking-[0.3em] max-w-lg leading-relaxed"
+                        className="text-zinc-600 dark:text-zinc-500 font-medium text-xs md:text-sm uppercase tracking-[0.3em] max-w-lg leading-relaxed"
                     >
                         The next generation of institutional AI is currently undergoing safety alignment and cognitive calibration. 
                     </motion.p>

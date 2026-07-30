@@ -294,7 +294,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                         {/* Header Area */}
                         <div className="flex items-center justify-between mb-12">
                             <div className="flex items-center gap-4">
-                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-zinc-300 dark:border-white/10 shadow-2xl")}>
+                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 shadow-2xl")}>
                                     <Sparkles className={cn("w-6 h-6", steps[currentStep].color.replace('bg-', 'text-'))} />
                                 </div>
                                 <div>
@@ -304,7 +304,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                             </div>
                             <button
                                 onClick={handleComplete}
-                                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-900 dark:text-white/30 hover:text-white"
+                                className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-200 dark:bg-white/5 hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-900 dark:text-white/30 hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -379,7 +379,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                         key={i}
                                         className={cn(
                                             "h-1.5 rounded-full transition-all duration-300",
-                                            i === currentStep ? cn("w-8", steps[currentStep].color) : "w-1.5 bg-white/10"
+                                            i === currentStep ? cn("w-8", steps[currentStep].color) : "w-1.5 bg-zinc-300 dark:bg-white/10"
                                         )}
                                     />
                                 ))}

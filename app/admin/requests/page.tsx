@@ -55,7 +55,7 @@ export default function AccessRequestsPage() {
                     <Users className="w-6 h-6 text-sky-500" />
                     ACCESS REQUESTS
                 </h1>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-1">
+                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-1">
                     Manage direct access requests submitted through the public intake portal
                 </p>
             </div>
@@ -63,7 +63,7 @@ export default function AccessRequestsPage() {
             {/* Filter Panel */}
             <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5">
                 <div className="relative">
-                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
+                    <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                     <input
                         type="text"
                         placeholder="Search requests by callsign, email, payload..."
@@ -82,14 +82,14 @@ export default function AccessRequestsPage() {
                 </div>
             ) : filteredRequests.length === 0 ? (
                 <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900">
-                    <Users className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
+                    <Users className="w-10 h-10 text-zinc-800 dark:text-zinc-200 mx-auto mb-4" />
                     <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No requests discovered</p>
                     <p className="text-[10px] text-zinc-700 mt-1">Adjust filters or search parameters</p>
                 </div>
             ) : (
                 <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
                         <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Callsign / Identifier</div>
                         <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Direct Comm Link</div>
                         <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Payload Content</div>

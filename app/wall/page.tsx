@@ -137,7 +137,7 @@ export default function Wall() {
                                         value={form.callsign}
                                         onChange={e => setForm(f => ({ ...f, callsign: e.target.value }))}
                                         placeholder="your_handle"
-                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 transition-colors rounded-md dark:rounded-none"
+                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-zinc-300 dark:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 transition-colors rounded-md dark:rounded-none"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -152,7 +152,7 @@ export default function Wall() {
                                         value={form.message}
                                         onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                                         placeholder="transmit your signal..."
-                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 resize-none transition-colors rounded-md dark:rounded-none"
+                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-zinc-300 dark:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 resize-none transition-colors rounded-md dark:rounded-none"
                                     />
                                 </div>
                             </div>
