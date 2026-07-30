@@ -72,8 +72,9 @@ export async function POST(req: Request) {
         }
 
         // 3. Create User Account in Database (Synced with Supabase ID)
-        const crypto = require('crypto');
-        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        const bcrypt = require('bcryptjs');
+        // SECURITY: Using bcryptjs instead of crypto.createHash for slow, salted password hashing
+        const hashedPassword = bcrypt.hashSync(password, 10);
 
         try {
             const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
