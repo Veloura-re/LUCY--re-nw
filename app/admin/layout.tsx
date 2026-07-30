@@ -75,7 +75,7 @@ export default async function AdminLayout({
     const honorific = dbUser.gender === 'MALE' ? ', Sir' : dbUser.gender === 'FEMALE' ? ", Ma'am" : "";
 
     return (
-        <div className="min-h-screen bg-[#080808] flex flex-col font-sans text-zinc-900 dark:text-white">
+        <div className="min-h-screen bg-zinc-50 dark:bg-[#080808] flex flex-col font-sans text-zinc-900 dark:text-white">
             {/* Background */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-eduGreen-500/5 rounded-full blur-[150px]" />
@@ -83,7 +83,7 @@ export default async function AdminLayout({
             </div>
 
             {/* Top Nav */}
-            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-zinc-200 dark:border-white/5 bg-[#080808]/80 backdrop-blur-xl flex items-center px-8 gap-6">
+            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-zinc-200 dark:border-white/5 bg-white/80 dark:bg-[#080808]/80 backdrop-blur-xl flex items-center px-8 gap-6">
                 {/* Logo */}
                 <div className="flex items-center gap-3 mr-auto">
                     <div className="w-8 h-8 rounded-lg bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
@@ -130,7 +130,7 @@ export default async function AdminLayout({
             {/* Main Content */}
             <main className="relative z-10 flex-1 pt-16">
                 {/* Greeting Banner */}
-                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-white/[0.02] to-transparent px-8 py-8">
+                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-black/[0.02] dark:from-white/[0.02] to-transparent px-8 py-8">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.4em] mb-1">Infrastructure Control</p>
