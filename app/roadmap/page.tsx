@@ -49,20 +49,20 @@ const quarters = [
 
 export default function Roadmap() {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
+                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-slate-900 dark:bg-white flex items-center justify-center">
+                            <span className="text-white dark:text-black font-black text-xs">L</span>
                         </motion.div>
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -70,18 +70,18 @@ export default function Roadmap() {
                 <div className="max-w-5xl mx-auto space-y-24">
 
                     <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <Map className="w-4 h-4" />
-                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[10px] uppercase tracking-[0.4em] font-bold">evolution_vector // quarterly_directive</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                road<br /><GlitchText className="text-zinc-800">map.</GlitchText>
+                                road<br /><GlitchText className="text-slate-300 dark:text-zinc-800">map.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
-                            <p className="text-zinc-500 text-lg leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
                                 the planned trajectory of the lucy neural matrix. publicly transparent, quarterly-gated development vectors.
                             </p>
                         </Reveal>
@@ -95,41 +95,42 @@ export default function Roadmap() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.1, duration: 0.3 }}
-                                    className={`h-full p-10 border space-y-8 cursor-default relative overflow-hidden ${q.label.includes("current") ? "border-white/20 bg-zinc-900/10" : "border-white/5 bg-black"}`}
+                                    className={`h-full p-10 border space-y-8 cursor-default relative overflow-hidden rounded-xl dark:rounded-none ${q.label.includes("current") ? "border-slate-300 dark:border-white/20 bg-slate-50 dark:bg-zinc-900/10" : "border-slate-200 dark:border-white/5 bg-white dark:bg-black"}`}
                                 >
-                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none hidden dark:block" style={{ background: "radial-gradient(circle at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none dark:hidden" style={{ background: "radial-gradient(circle at 50% 0%, rgba(0,0,0,0.02) 0%, transparent 70%)" }} />
 
-                                    <div className="space-y-2">
+                                    <div className="space-y-2 relative z-10">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[9px] text-zinc-700 uppercase tracking-widest">{q.label}</span>
+                                            <span className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest">{q.label}</span>
                                             {q.label.includes("current") && (
-                                                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-white rounded-full" />
+                                                <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                                             )}
                                         </div>
-                                        <div className="h-px bg-zinc-900 overflow-hidden">
+                                        <div className="h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden">
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 whileInView={{ width: q.done ? "100%" : q.label.includes("current") ? "40%" : "0%" }}
                                                 viewport={{ once: true }}
                                                 transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-                                                className="h-full bg-white/30"
+                                                className="h-full bg-slate-400 dark:bg-white/30"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-3 relative z-10">
                                         {q.items.map((item, j) => (
                                             <motion.div key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: j * 0.07 }} className="flex items-start gap-4 text-xs">
                                                 {item.done ? (
-                                                    <CheckCircle className="w-3 h-3 text-white shrink-0 mt-0.5" />
+                                                    <CheckCircle className="w-3 h-3 text-slate-900 dark:text-white shrink-0 mt-0.5" />
                                                 ) : q.label.includes("current") ? (
                                                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.8 }}>
-                                                        <Loader className="w-3 h-3 text-zinc-600 shrink-0 mt-0.5" />
+                                                        <Loader className="w-3 h-3 text-slate-500 dark:text-zinc-600 shrink-0 mt-0.5" />
                                                     </motion.div>
                                                 ) : (
-                                                    <Clock className="w-3 h-3 text-zinc-800 shrink-0 mt-0.5" />
+                                                    <Clock className="w-3 h-3 text-slate-400 dark:text-zinc-800 shrink-0 mt-0.5" />
                                                 )}
-                                                <span className={item.done ? "text-zinc-400" : "text-zinc-600"}>{item.title}</span>
+                                                <span className={item.done ? "text-slate-600 dark:text-zinc-400" : "text-slate-500 dark:text-zinc-600"}>{item.title}</span>
                                             </motion.div>
                                         ))}
                                     </div>

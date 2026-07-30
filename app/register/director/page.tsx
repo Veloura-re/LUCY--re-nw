@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Building2, KeyRound, Mail, Lock, User, Check, AlertCircle, ArrowRight, Loader2, Sparkles } from "lucide-react";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+
 export default function DirectorRegister() {
     const [step, setStep] = useState(1); // 1: Validate Key, 2: Register Details
     const [key, setKey] = useState("");
@@ -119,42 +121,47 @@ export default function DirectorRegister() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4 font-sans text-white relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-zinc-950 p-4 font-sans text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300">
+            {/* Top Right Theme Toggle */}
+            <div className="absolute top-6 right-6 z-50">
+                <ThemeToggle />
+            </div>
+
             {/* Immersive Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-eduGreen-500/10 blur-[140px] rounded-full" />
-                <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-eduGreen-600/5 blur-[100px] rounded-full" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/10 dark:bg-eduGreen-500/10 blur-[140px] rounded-full" />
+                <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-emerald-600/5 dark:bg-eduGreen-600/5 blur-[100px] rounded-full" />
 
                 {/* Subtle Grid Overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
             </div>
 
-            <Card className="w-full max-w-md bg-zinc-950/50 backdrop-blur-2xl border-zinc-900 shadow-2xl relative z-10 rounded-[2.5rem] overflow-hidden">
+            <Card className="w-full max-w-md bg-white/90 dark:bg-zinc-950/50 backdrop-blur-2xl border-slate-200/80 dark:border-zinc-900 shadow-xl dark:shadow-2xl relative z-10 rounded-[2.5rem] overflow-hidden">
                 <CardHeader className="text-center pb-2 pt-10">
                     <div className="mx-auto flex justify-center mb-6">
                         {/* Cyberpunk Mark Wrapper */}
-                        <div className="relative flex items-center bg-zinc-950 border-r-2 border-eduGreen-500 pr-3 overflow-hidden group">
+                        <div className="relative flex items-center bg-slate-100 dark:bg-zinc-950 border-r-2 border-emerald-600 dark:border-eduGreen-500 pr-3 overflow-hidden group rounded-lg p-1">
                             {/* Glitch Overlay Effect */}
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
 
-                            <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-3xl font-black tracking-[0.2em] font-orbitron text-white ml-2">
+                            <span className="text-emerald-600 dark:text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
+                            <span className="relative text-3xl font-black tracking-[0.2em] font-orbitron text-slate-900 dark:text-white ml-2">
                                 LUCY
-                                <span className="absolute -top-1 -right-2 text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
+                                <span className="absolute -top-1 -right-2 text-[10px] text-emerald-600 dark:text-eduGreen-500 tracking-tighter">OS</span>
                             </span>
-                            <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
+                            <span className="text-emerald-600 dark:text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
                         </div>
                     </div>
 
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/50 border border-zinc-800/50 text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.2em] mb-4">
-                        <Sparkles className="w-3.5 h-3.5 fill-eduGreen-500" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/50 text-[10px] font-medium text-emerald-600 dark:text-eduGreen-500 uppercase tracking-[0.2em] mb-4">
+                        <Sparkles className="w-3.5 h-3.5 fill-emerald-600 dark:fill-eduGreen-500" />
                         <span>Institutional Access</span>
                     </div>
 
-                    <CardTitle className="text-3xl font-medium text-zinc-100 tracking-tighter">
+                    <CardTitle className="text-3xl font-medium text-slate-900 dark:text-zinc-100 tracking-tighter">
                         {step === 1 ? "Deploy Institution" : "Finalize Setup"}
                     </CardTitle>
-                    <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[10px] mt-2">
+                    <CardDescription className="text-slate-500 dark:text-zinc-600 font-medium uppercase tracking-widest text-[10px] mt-2">
                         {step === 1
                             ? "Enter your Master Deployment Key"
                             : `Environment: ${schoolName}`}
@@ -165,14 +172,14 @@ export default function DirectorRegister() {
                     {step === 1 ? (
                         <form onSubmit={handleValidateKey} className="space-y-8">
                             <div className="space-y-3">
-                                <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Deployment Key</label>
+                                <label className="text-[10px] font-medium text-slate-500 dark:text-zinc-700 uppercase tracking-[0.3em] ml-2">Deployment Key</label>
                                 <Input
-                                    icon={<KeyRound className="w-4 h-4 text-eduGreen-500" />}
+                                    icon={<KeyRound className="w-4 h-4 text-emerald-600 dark:text-eduGreen-500" />}
                                     value={key}
                                     onChange={e => setKey(e.target.value)}
                                     required
                                     placeholder="inv_xxxxxxxxxxxx"
-                                    className="bg-zinc-900/30 border-zinc-800 text-eduGreen-400 placeholder:text-zinc-900 font-mono h-16 rounded-[1.25rem] focus:border-eduGreen-600 focus:bg-zinc-900/50 transition-all border-2"
+                                    className="bg-slate-50 dark:bg-zinc-900/30 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-eduGreen-400 placeholder:text-slate-400 dark:placeholder:text-zinc-700 font-mono h-16 rounded-[1.25rem] focus:border-emerald-600 focus:bg-slate-100 dark:focus:bg-zinc-900/50 transition-all border-2"
                                 />
                             </div>
 

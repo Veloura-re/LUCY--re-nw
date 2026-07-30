@@ -66,20 +66,20 @@ export default function Wall() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
+                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-slate-900 dark:bg-white flex items-center justify-center">
+                            <span className="text-white dark:text-black font-black text-xs">L</span>
                         </motion.div>
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -88,22 +88,22 @@ export default function Wall() {
 
                     {/* Hero */}
                     <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <MessageSquare className="w-4 h-4" />
-                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[10px] uppercase tracking-[0.4em] font-bold">signal_wall // public_transmissions</span>
-                            <div className="ml-auto flex items-center gap-2 text-[9px] text-zinc-700 uppercase tracking-widest">
-                                <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.3, repeat: Infinity }} className="w-1.5 h-1.5 bg-white rounded-full" />
+                            <div className="ml-auto flex items-center gap-2 text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest">
+                                <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.3, repeat: Infinity }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                                 live
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                signal<br /><GlitchText className="text-zinc-800">wall.</GlitchText>
+                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                                signal<br /><GlitchText className="text-slate-400 dark:text-zinc-800">wall.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-zinc-500 text-lg leading-relaxed max-w-xl">
+                            <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-xl">
                                 leave a transmission for the matrix. public signals from operators around the world — live and unfiltered.
                             </p>
                         </Reveal>
@@ -111,17 +111,17 @@ export default function Wall() {
 
                     {/* Submit form */}
                     <Reveal>
-                        <form onSubmit={handleSubmit} className="border border-white/10 bg-zinc-950/30 p-8 space-y-6">
-                            <div className="text-[9px] text-zinc-700 uppercase tracking-widest mb-2">new_transmission</div>
+                        <form onSubmit={handleSubmit} className="border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/30 p-8 space-y-6 rounded-xl dark:rounded-none">
+                            <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest mb-2 font-bold">new_transmission</div>
 
                             {/* Emoji picker */}
                             <div className="space-y-2">
-                                <div className="text-[9px] text-zinc-700 uppercase tracking-widest">signal_icon</div>
+                                <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest font-bold">signal_icon</div>
                                 <div className="flex flex-wrap gap-2">
                                     {EMOJIS.map(e => (
                                         <motion.button key={e} type="button" onClick={() => setForm(f => ({ ...f, emoji: e }))}
                                             whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                                            className={`w-10 h-10 border text-lg transition-all ${form.emoji === e ? "border-white/40 bg-white/10" : "border-white/5 hover:border-white/20"}`}
+                                            className={`w-10 h-10 border text-lg transition-all rounded-md dark:rounded-none ${form.emoji === e ? "border-slate-400 bg-slate-200 dark:border-white/40 dark:bg-white/10 shadow-sm" : "border-slate-200 bg-white dark:bg-transparent dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20"}`}
                                         >{e}</motion.button>
                                     ))}
                                 </div>
@@ -129,7 +129,7 @@ export default function Wall() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <div className="text-[9px] text-zinc-700 uppercase tracking-widest">callsign</div>
+                                    <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest font-bold">callsign</div>
                                     <input
                                         type="text"
                                         maxLength={40}
@@ -137,13 +137,13 @@ export default function Wall() {
                                         value={form.callsign}
                                         onChange={e => setForm(f => ({ ...f, callsign: e.target.value }))}
                                         placeholder="your_handle"
-                                        className="w-full bg-black border border-white/5 focus:border-white/20 outline-none px-4 py-3 text-sm text-white placeholder:text-zinc-700 transition-colors"
+                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 transition-colors rounded-md dark:rounded-none"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <div className="text-[9px] text-zinc-700 uppercase tracking-widest">message</div>
-                                        <div className={`text-[8px] uppercase tracking-widest transition-colors ${form.message.length > 250 ? "text-red-500" : "text-zinc-700"}`}>{form.message.length}/280</div>
+                                        <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest font-bold">message</div>
+                                        <div className={`text-[8px] uppercase tracking-widest transition-colors font-bold ${form.message.length > 250 ? "text-red-500" : "text-slate-500 dark:text-zinc-700"}`}>{form.message.length}/280</div>
                                     </div>
                                     <textarea
                                         rows={3}
@@ -152,16 +152,16 @@ export default function Wall() {
                                         value={form.message}
                                         onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                                         placeholder="transmit your signal..."
-                                        className="w-full bg-black border border-white/5 focus:border-white/20 outline-none px-4 py-3 text-sm text-white placeholder:text-zinc-700 resize-none transition-colors"
+                                        className="w-full bg-white dark:bg-black border border-slate-200 dark:border-white/5 focus:border-slate-400 dark:focus:border-white/20 outline-none px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-700 resize-none transition-colors rounded-md dark:rounded-none"
                                     />
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
                                 <MagneticButton>
-                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-white text-black text-[10px] uppercase tracking-widest font-bold hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2">
+                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-slate-900 text-white dark:bg-white dark:text-black text-[10px] uppercase tracking-widest font-bold hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2 rounded-md dark:rounded-none">
                                         {status === "loading" ? (
-                                            <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} className="w-3 h-3 border border-black border-t-transparent rounded-full" />routing...</>
+                                            <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} className="w-3 h-3 border border-white dark:border-black border-t-transparent rounded-full" />routing...</>
                                         ) : status === "success" ? (
                                             <>✓ transmitted</>
                                         ) : (
@@ -170,8 +170,8 @@ export default function Wall() {
                                     </button>
                                 </MagneticButton>
                                 <AnimatePresence>
-                                    {status === "limit" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-500 uppercase tracking-widest">daily limit reached for this callsign</motion.div>}
-                                    {status === "error" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-500 uppercase tracking-widest">transmission_failed — try again</motion.div>}
+                                    {status === "limit" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold">daily limit reached for this callsign</motion.div>}
+                                    {status === "error" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold">transmission_failed — try again</motion.div>}
                                 </AnimatePresence>
                             </div>
                         </form>
@@ -180,21 +180,21 @@ export default function Wall() {
                     {/* Comment feed */}
                     <section className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <Reveal className="flex items-center gap-3 text-zinc-500">
-                                <div className="h-px w-12 bg-zinc-800" />
+                            <Reveal className="flex items-center gap-3 text-slate-400 dark:text-zinc-500">
+                                <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
                                 <span className="text-[10px] uppercase tracking-[0.4em]">incoming_signals // {comments.length}_received</span>
                             </Reveal>
                         </div>
 
                         {loading ? (
                             <div className="py-20 text-center">
-                                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.3, repeat: Infinity, ease: "linear" }} className="inline-block w-4 h-4 border border-white/20 border-t-white/80 rounded-full" />
-                                <div className="text-[9px] text-zinc-700 uppercase tracking-widest mt-4">fetching_signals...</div>
+                                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.3, repeat: Infinity, ease: "linear" }} className="inline-block w-4 h-4 border border-slate-400 dark:border-white/20 border-t-slate-900 dark:border-t-white/80 rounded-full" />
+                                <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest mt-4">fetching_signals...</div>
                             </div>
                         ) : comments.length === 0 ? (
-                            <div className="py-20 text-center text-zinc-700 text-[10px] uppercase tracking-widest">no transmissions yet — be first to signal</div>
+                            <div className="py-20 text-center text-slate-500 dark:text-zinc-700 text-[10px] uppercase tracking-widest">no transmissions yet — be first to signal</div>
                         ) : (
-                            <div className="space-y-px border border-white/5 overflow-hidden">
+                            <div className="space-y-px border border-slate-200 dark:border-white/5 overflow-hidden rounded-xl dark:rounded-none">
                                 <AnimatePresence>
                                     {comments.map((c, i) => (
                                         <motion.div
@@ -203,17 +203,17 @@ export default function Wall() {
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, height: 0 }}
                                             transition={{ delay: i < 10 ? i * 0.04 : 0 }}
-                                            className="bg-black border-b last:border-b-0 border-white/5 p-6 flex gap-5 group hover:bg-zinc-900/10 transition-colors cursor-default"
+                                            className="bg-white dark:bg-black border-b last:border-b-0 border-slate-200 dark:border-white/5 p-6 flex gap-5 group hover:bg-slate-50 dark:hover:bg-zinc-900/10 transition-colors cursor-default"
                                         >
                                             <div className="text-2xl shrink-0 mt-0.5">{c.emoji}</div>
                                             <div className="flex-1 space-y-2 min-w-0">
                                                 <div className="flex items-center gap-3 flex-wrap">
-                                                    <span className="font-bold text-sm uppercase tracking-tight">{c.callsign}</span>
-                                                    <motion.div animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.2 }} className="text-[9px] text-zinc-700 uppercase tracking-widest">{timeAgo(c.createdAt)}</motion.div>
+                                                    <span className="font-bold text-sm uppercase tracking-tight text-slate-900 dark:text-white">{c.callsign}</span>
+                                                    <motion.div animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.2 }} className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest">{timeAgo(c.createdAt)}</motion.div>
                                                 </div>
-                                                <p className="text-zinc-400 text-sm leading-relaxed break-words">{c.message}</p>
-                                                <div className="h-px bg-zinc-900 overflow-hidden">
-                                                    <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.8, delay: i * 0.04 }} className="h-full bg-white/5" />
+                                                <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed break-words">{c.message}</p>
+                                                <div className="h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden">
+                                                    <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 0.8, delay: i * 0.04 }} className="h-full bg-slate-300 dark:bg-white/5" />
                                                 </div>
                                             </div>
                                         </motion.div>

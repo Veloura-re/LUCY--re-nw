@@ -73,7 +73,7 @@ export function DialogContent({ children, className }: any) {
         >
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/90"
+                className="absolute inset-0 bg-slate-900/40 dark:bg-black/90 backdrop-blur-md transition-colors duration-300"
                 onClick={() => setIsOpen(false)}
                 style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, willChange: 'opacity' }}
             />
@@ -82,9 +82,9 @@ export function DialogContent({ children, className }: any) {
             <div
                 className={cn(
                     "relative w-full max-w-md mx-auto",
-                    "bg-zinc-950",
-                    "border border-zinc-800/80",
-                    "rounded-[2rem] shadow-2xl",
+                    "bg-white/95 dark:bg-zinc-950",
+                    "border border-slate-200/90 dark:border-zinc-800/80",
+                    "rounded-[2rem] shadow-2xl text-slate-900 dark:text-zinc-100 backdrop-blur-2xl",
                     "p-8",
                     "animate-in fade-in-0 zoom-in-95 duration-300",
                     className
@@ -96,7 +96,7 @@ export function DialogContent({ children, className }: any) {
                 }}
             >
                 {/* Top Glow */}
-                <div className="absolute -inset-px bg-gradient-to-b from-zinc-700/30 via-transparent to-transparent rounded-[2rem] pointer-events-none" />
+                <div className="absolute -inset-px bg-gradient-to-b from-slate-200/40 dark:from-zinc-700/30 via-transparent to-transparent rounded-[2rem] pointer-events-none" />
 
                 {/* Content */}
                 <div className="relative z-10">
@@ -105,7 +105,7 @@ export function DialogContent({ children, className }: any) {
 
                 {/* Close Button */}
                 <button
-                    className="absolute right-5 top-5 w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 hover:border-zinc-600 transition-all duration-200 group z-20"
+                    className="absolute right-5 top-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-zinc-800 transition-all duration-200 group z-20"
                     onClick={() => setIsOpen(false)}
                 >
                     <X className="h-4 w-4 transition-transform group-hover:rotate-90 duration-200" />
@@ -129,7 +129,7 @@ export function DialogHeader({ children, className }: any) {
 
 export function DialogTitle({ children, className }: any) {
     return (
-        <h3 className={cn("text-2xl font-medium tracking-tight text-white", className)}>
+        <h3 className={cn("text-2xl font-medium tracking-tight text-slate-900 dark:text-white", className)}>
             {children}
         </h3>
     );
@@ -137,7 +137,7 @@ export function DialogTitle({ children, className }: any) {
 
 export function DialogDescription({ children, className }: any) {
     return (
-        <p className={cn("text-sm text-zinc-500 font-medium mt-2 leading-relaxed", className)}>
+        <p className={cn("text-sm text-slate-500 dark:text-zinc-500 font-medium mt-2 leading-relaxed", className)}>
             {children}
         </p>
     );

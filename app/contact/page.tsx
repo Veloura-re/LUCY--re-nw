@@ -45,19 +45,19 @@ export default function ContactPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
                     <Link href="/">
-                        <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">
+                        <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             return_to_main
                         </Button>
@@ -73,13 +73,13 @@ export default function ContactPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center space-y-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-white/10 bg-zinc-950/60 text-[10px] text-zinc-500 uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest rounded-md dark:rounded-none">
                             <Terminal className="w-3.5 h-3.5" /> secure_comms // uplink // step_{step}
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white leading-none">
+                        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
                             <GlitchText>establish uplink.</GlitchText>
                         </h1>
-                        <p className="text-sm md:text-base text-zinc-500 max-w-xl mx-auto lowercase leading-relaxed font-sans font-light">
+                        <p className="text-sm md:text-base text-slate-500 dark:text-zinc-500 max-w-xl mx-auto lowercase leading-relaxed font-sans font-light">
                             initiate contact with a vanguard representative. please configure your transmission packet below.
                         </p>
                     </motion.div>
@@ -96,7 +96,7 @@ export default function ContactPage() {
                                     transition={{ duration: 0.3 }}
                                     className="absolute inset-0 space-y-6"
                                 >
-                                    <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest border-b border-white/5 pb-2">
+                                    <div className="text-[10px] text-slate-500 dark:text-zinc-500 font-bold uppercase tracking-widest border-b border-slate-200 dark:border-white/5 pb-2">
                                         [01] select_transmission_vector
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -104,12 +104,12 @@ export default function ContactPage() {
                                             <button
                                                 key={c.id}
                                                 onClick={() => { setCategory(c.id as Category); setStep(2); }}
-                                                className="p-6 border border-white/10 bg-zinc-950/50 hover:bg-zinc-900/80 hover:border-white/30 text-left transition-all duration-300 group relative overflow-hidden"
+                                                className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/50 hover:bg-slate-100 dark:hover:bg-zinc-900/80 hover:border-slate-300 dark:hover:border-white/30 text-left transition-all duration-300 group relative overflow-hidden rounded-xl dark:rounded-none"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                                                <c.icon className="w-6 h-6 text-zinc-400 mb-4 group-hover:text-white transition-colors" />
-                                                <h3 className="font-bold text-white uppercase tracking-tight text-sm">{c.label}</h3>
-                                                <p className="text-[10px] text-zinc-500 mt-2 font-sans">{c.desc}</p>
+                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 dark:via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                                <c.icon className="w-6 h-6 text-slate-400 dark:text-zinc-400 mb-4 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
+                                                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-tight text-sm">{c.label}</h3>
+                                                <p className="text-[10px] text-slate-500 dark:text-zinc-500 mt-2 font-sans">{c.desc}</p>
                                             </button>
                                         ))}
                                     </div>
@@ -126,52 +126,52 @@ export default function ContactPage() {
                                     transition={{ duration: 0.3 }}
                                     className="absolute inset-0 space-y-6"
                                 >
-                                    <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/5 pb-2">
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-500 font-bold uppercase tracking-widest">
                                             [02] node_identification
                                         </div>
-                                        <div className="text-[10px] text-zinc-600 font-mono">
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-600 font-mono">
                                             vector: {category}
                                         </div>
                                     </div>
 
-                                    <div className="p-8 border border-white/10 bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-none">
+                                    <div className="p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex justify-between">
+                                            <label className="text-[9px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest flex justify-between">
                                                 <span>callsign // identifier</span>
-                                                <span className="text-zinc-700">*required</span>
+                                                <span className="text-slate-400 dark:text-zinc-700">*required</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 autoFocus
                                                 value={formData.callsign}
                                                 onChange={(e) => setFormData({ ...formData, callsign: e.target.value })}
-                                                className="w-full bg-black border border-white/10 focus:border-white outline-none px-4 py-3 text-sm text-white transition-colors rounded-none placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder="enter_callsign_ or school_name_"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex justify-between">
+                                            <label className="text-[9px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest flex justify-between">
                                                 <span>direct_comm_link // email</span>
-                                                <span className="text-zinc-700">*required</span>
+                                                <span className="text-slate-400 dark:text-zinc-700">*required</span>
                                             </label>
                                             <input
                                                 type="email"
                                                 value={formData.email}
                                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                className="w-full bg-black border border-white/10 focus:border-white outline-none px-4 py-3 text-sm text-white transition-colors rounded-none placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder="user@domain.com"
                                             />
                                         </div>
 
                                         <div className="flex items-center justify-between pt-4">
-                                            <Button variant="ghost" onClick={() => setStep(1)} className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white rounded-none">
+                                            <Button variant="ghost" onClick={() => setStep(1)} className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white rounded-md dark:rounded-none">
                                                 <ArrowLeft className="w-3.5 h-3.5 mr-2" /> back
                                             </Button>
                                             <Button 
                                                 onClick={() => setStep(3)} 
                                                 disabled={!formData.callsign || !formData.email || !formData.email.includes('@')}
-                                                className="text-[10px] uppercase tracking-widest bg-white text-black hover:bg-zinc-200 rounded-none h-10 px-6 font-bold"
+                                                className="text-[10px] uppercase tracking-widest bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-md dark:rounded-none h-10 px-6 font-bold"
                                             >
                                                 proceed_to_payload <ChevronRight className="w-3.5 h-3.5 ml-2" />
                                             </Button>
@@ -190,20 +190,20 @@ export default function ContactPage() {
                                     transition={{ duration: 0.3 }}
                                     className="absolute inset-0 space-y-6"
                                 >
-                                    <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                                        <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/5 pb-2">
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-500 font-bold uppercase tracking-widest">
                                             [03] construct_payload
                                         </div>
-                                        <div className="text-[10px] text-zinc-600 font-mono">
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-600 font-mono">
                                             id: {formData.callsign}
                                         </div>
                                     </div>
 
-                                    <form onSubmit={handleSubmit} className="p-8 border border-white/10 bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-none relative">
+                                    <form onSubmit={handleSubmit} className="p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-xl dark:rounded-none relative shadow-sm dark:shadow-none">
                                         <div className="space-y-2">
-                                            <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest flex justify-between">
+                                            <label className="text-[9px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest flex justify-between">
                                                 <span>payload_content // message</span>
-                                                <span className="text-zinc-700">*required</span>
+                                                <span className="text-slate-400 dark:text-zinc-700">*required</span>
                                             </label>
                                             <textarea
                                                 rows={5}
@@ -211,7 +211,7 @@ export default function ContactPage() {
                                                 autoFocus
                                                 value={formData.message}
                                                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                className="w-full bg-black border border-white/10 focus:border-white outline-none px-4 py-3 text-sm text-white transition-colors resize-none rounded-none placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors resize-none rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder={
                                                     category === 'sales' ? "details on number of students and deployment timeline..." :
                                                     category === 'security' ? "describe vulnerability vector and proof of concept..." :
@@ -221,17 +221,17 @@ export default function ContactPage() {
                                         </div>
 
                                         {status === 'ERROR' && (
-                                            <p className="text-[9px] text-red-500 font-bold uppercase tracking-widest bg-red-950/30 p-2 border border-red-900/50">transmission failed. check uplink node.</p>
+                                            <p className="text-[9px] text-red-600 dark:text-red-500 font-bold uppercase tracking-widest bg-red-50 dark:bg-red-950/30 p-2 border border-red-200 dark:border-red-900/50 rounded-md dark:rounded-none">transmission failed. check uplink node.</p>
                                         )}
 
                                         <div className="flex items-center justify-between pt-4">
-                                            <Button type="button" variant="ghost" onClick={() => setStep(2)} className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white rounded-none">
+                                            <Button type="button" variant="ghost" onClick={() => setStep(2)} className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white rounded-md dark:rounded-none">
                                                 <ArrowLeft className="w-3.5 h-3.5 mr-2" /> back
                                             </Button>
                                             <Button
                                                 type="submit"
                                                 disabled={status === 'LOADING' || !formData.message}
-                                                className="font-bold tracking-widest text-[10px] uppercase bg-white text-black hover:bg-zinc-200 h-10 px-6 rounded-none gap-2"
+                                                className="font-bold tracking-widest text-[10px] uppercase bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 h-10 px-6 rounded-md dark:rounded-none gap-2"
                                             >
                                                 {status === 'LOADING' ? (
                                                     <>connecting_node... <Loader2 className="w-3.5 h-3.5 animate-spin" /></>
@@ -250,25 +250,25 @@ export default function ContactPage() {
                                     key="step4"
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-zinc-950/60 backdrop-blur-sm border border-white/10 h-full"
+                                    className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm border border-slate-200 dark:border-white/10 h-full rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
                                 >
                                     <div className="relative mb-6">
-                                        <div className="absolute inset-0 bg-white/20 blur-xl rounded-full animate-pulse" />
-                                        <CheckCircle2 className="w-16 h-16 text-white relative z-10" />
+                                        <div className="absolute inset-0 bg-emerald-100 dark:bg-white/20 blur-xl rounded-full animate-pulse" />
+                                        <CheckCircle2 className="w-16 h-16 text-emerald-500 dark:text-white relative z-10" />
                                     </div>
-                                    <h4 className="text-2xl font-bold uppercase text-white mb-2 tracking-tighter"><GlitchText>uplink_established</GlitchText></h4>
-                                    <div className="p-4 border border-white/5 bg-black text-left w-full max-w-sm mt-4 mb-6">
-                                        <div className="text-[10px] text-zinc-600 font-mono border-b border-white/5 pb-2 mb-2">transmission_receipt</div>
-                                        <div className="text-xs text-zinc-400 font-mono space-y-1">
-                                            <p><span className="text-zinc-600">callsign:</span> {formData.callsign}</p>
-                                            <p><span className="text-zinc-600">vector:</span> {category}</p>
-                                            <p><span className="text-zinc-600">status:</span> routed to hq</p>
+                                    <h4 className="text-2xl font-bold uppercase text-slate-900 dark:text-white mb-2 tracking-tighter"><GlitchText>uplink_established</GlitchText></h4>
+                                    <div className="p-4 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black text-left w-full max-w-sm mt-4 mb-6 rounded-lg dark:rounded-none">
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-600 font-mono border-b border-slate-200 dark:border-white/5 pb-2 mb-2">transmission_receipt</div>
+                                        <div className="text-xs text-slate-600 dark:text-zinc-400 font-mono space-y-1">
+                                            <p><span className="text-slate-400 dark:text-zinc-600">callsign:</span> {formData.callsign}</p>
+                                            <p><span className="text-slate-400 dark:text-zinc-600">vector:</span> {category}</p>
+                                            <p><span className="text-slate-400 dark:text-zinc-600">status:</span> routed to hq</p>
                                         </div>
                                     </div>
                                     <Button
                                         variant="outline"
                                         onClick={() => { setStatus('IDLE'); setFormData({ callsign: '', email: '', message: '' }); setStep(1); }}
-                                        className="border-white/20 text-zinc-400 hover:text-white font-bold uppercase text-[9px] tracking-widest rounded-none h-10 px-8"
+                                        className="border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-white/5 dark:hover:text-white font-bold uppercase text-[9px] tracking-widest rounded-md dark:rounded-none h-10 px-8"
                                     >
                                         new_transmission
                                     </Button>

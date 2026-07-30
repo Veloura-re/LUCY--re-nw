@@ -41,7 +41,7 @@ function PresentationConfetti({ trigger }: { trigger: boolean }) {
     };
     window.addEventListener("resize", handleResize);
 
-    const colors = ["#a1a1aa", "#d4d4d8", "#71717a", "#ffffff", "#52525b"];
+    const colors = ["#a1a1aa", "#d4d4d8", "#71717a", "#cbd5e1", "#52525b"];
     const particles: Array<{
       x: number; y: number; size: number; color: string;
       speedX: number; speedY: number; rotation: number; rotationSpeed: number;
@@ -126,11 +126,11 @@ function StatBlock({ label, value, prefix = "", suffix = "", delay = 0 }: { labe
       transition={{ delay, duration: 0.5 }}
       className="text-center space-y-1"
     >
-      <div className="text-3xl md:text-4xl font-bold text-white font-mono flex items-center justify-center">
+      <div className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white font-mono flex items-center justify-center">
         {prefix && <span>{prefix}</span>}
         <Counter from={0} to={value} suffix={suffix} duration={2} />
       </div>
-      <div className="text-[9px] text-zinc-500 uppercase tracking-widest">{label}</div>
+      <div className="text-[9px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold">{label}</div>
     </motion.div>
   );
 }
@@ -143,13 +143,13 @@ function FeatureItem({ icon: Icon, title, desc, delay = 0 }: { icon: any; title:
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: false }}
       transition={{ delay, duration: 0.4 }}
-      whileHover={{ x: 4, borderColor: "rgba(255,255,255,0.2)" }}
-      className="flex gap-4 items-start p-5 border border-white/10 bg-zinc-950/50 transition-all duration-300 group cursor-default"
+      whileHover={{ x: 4, borderColor: "rgba(100,116,139,0.5)" }}
+      className="flex gap-4 items-start p-5 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/50 transition-all duration-300 group cursor-default rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
     >
-      <Icon className="w-5 h-5 text-zinc-400 shrink-0 mt-0.5 group-hover:text-white transition-colors" />
+      <Icon className="w-5 h-5 text-slate-400 dark:text-zinc-400 shrink-0 mt-0.5 group-hover:text-emerald-500 dark:group-hover:text-white transition-colors" />
       <div className="space-y-1">
-        <div className="text-xs font-bold text-white uppercase tracking-tight">{title}</div>
-        <p className="text-[11px] text-zinc-500 leading-relaxed font-sans">{desc}</p>
+        <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-tight">{title}</div>
+        <p className="text-[11px] text-slate-500 dark:text-zinc-500 leading-relaxed font-sans">{desc}</p>
       </div>
     </motion.div>
   );
@@ -193,11 +193,11 @@ export default function PresentationDeck() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
                 transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="p-6 border border-white/10 bg-zinc-950/50 space-y-4"
+                className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 space-y-4 rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
               >
-                <div className="text-2xl font-bold text-white/20 font-mono">{item.num}</div>
-                <h3 className="text-lg font-bold text-white uppercase tracking-tighter">{item.title}</h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-sans">{item.desc}</p>
+                <div className="text-2xl font-bold text-slate-200 dark:text-white/20 font-mono">{item.num}</div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tighter">{item.title}</h3>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-sans">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -217,9 +217,9 @@ export default function PresentationDeck() {
       sub: "never manually cross-reference a bank slip again. automated ledgers via telebirr, cbe birr, or stripe.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">By eliminating manual ledger entry, finance teams reclaim up to 40 hours a week. This allows institutions to reallocate headcount from data entry to strategic financial planning.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">By eliminating manual ledger entry, finance teams reclaim up to 40 hours a week. This allows institutions to reallocate headcount from data entry to strategic financial planning.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="hours_saved_weekly" value={40} suffix="h" delay={0.1} />
@@ -239,9 +239,9 @@ export default function PresentationDeck() {
       sub: "transitioning to digital permission slips, assignments, and electronic records saves massive amounts of capital.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Mid-sized institutions historically spend thousands of dollars annually on physical supplies. Digitizing workflows boosts bottom-line profitability and positions the school as an ESG leader.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Mid-sized institutions historically spend thousands of dollars annually on physical supplies. Digitizing workflows boosts bottom-line profitability and positions the school as an ESG leader.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={FileText} title="digital documents" desc="visually stunning, legally compliant digital documents generated on the fly." delay={0.1} />
@@ -261,9 +261,9 @@ export default function PresentationDeck() {
       sub: "log daily expenses against incoming tuition revenue for a live view of the school's financial health.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Principals no longer wait for end-of-month reports. Immediate visibility prevents overspending and allows agile, data-driven campus management.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Principals no longer wait for end-of-month reports. Immediate visibility prevents overspending and allows agile, data-driven campus management.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Activity} title="live dashboard" desc="instant visual charts." delay={0.1} />
@@ -283,9 +283,9 @@ export default function PresentationDeck() {
       sub: "automated sms and push notification fee reminders drastically increase on-time payments.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Consistent cash flow is the lifeblood of any private institution. Automating collections avoids awkward phone calls and increases on-time payments by up to 25%.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Consistent cash flow is the lifeblood of any private institution. Automating collections avoids awkward phone calls and increases on-time payments by up to 25%.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="payment_increase" value={25} suffix="%" delay={0.1} />
@@ -307,9 +307,9 @@ export default function PresentationDeck() {
       sub: "built-in AI assistant automatically generates high-fidelity, curriculum-aligned exam questions.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Teacher burnout is the highest hidden cost in education. State-of-the-art AI tools improve retention rates, reduce hiring costs, and elevate instructional quality.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Teacher burnout is the highest hidden cost in education. State-of-the-art AI tools improve retention rates, reduce hiring costs, and elevate instructional quality.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Cpu} title="LLM integration" desc="generates pedagogy-aligned questions." delay={0.1} />
@@ -329,9 +329,9 @@ export default function PresentationDeck() {
       sub: "take attendance in seconds from any phone or laptop. instantly synced to central database.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Reclaiming just 10 minutes per class equates to hundreds of hours of recovered instructional time per year. Classes start faster; front office is never bottlenecked.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Reclaiming just 10 minutes per class equates to hundreds of hours of recovered instructional time per year. Classes start faster; front office is never bottlenecked.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="time_recovered_daily" value={10} suffix="m" delay={0.1} />
@@ -351,9 +351,9 @@ export default function PresentationDeck() {
       sub: "engine automatically calculates weighted averages, curves, and updates database in real-time.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Automating the underlying mathematics eliminates friction, removes human error, and empowers teachers to finalize class scores effortlessly.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Automating the underlying mathematics eliminates friction, removes human error, and empowers teachers to finalize class scores effortlessly.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={BarChart3} title="dynamic curves" desc="mathematical uniformity across classrooms." delay={0.1} />
@@ -373,9 +373,9 @@ export default function PresentationDeck() {
       sub: "strict row-level security and immutable audit logs prevent unauthorized tampering of grades.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Guaranteeing that grades cannot be maliciously altered builds immense trust with accreditation bodies and university admissions boards.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing that grades cannot be maliciously altered builds immense trust with accreditation bodies and university admissions boards.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Shield} title="row-level security" desc="blocked unauthorized queries." delay={0.1} />
@@ -397,9 +397,9 @@ export default function PresentationDeck() {
       sub: "proactive visibility into current grades, assignments, and attendance via parent portal.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Continuous feedback loops result in home-based encouragement, drastically improving school pass rates, student confidence, and prestige.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Continuous feedback loops result in home-based encouragement, drastically improving school pass rates, student confidence, and prestige.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Eye} title="live visibility" desc="grades pushed with zero delay." delay={0.1} />
@@ -419,9 +419,9 @@ export default function PresentationDeck() {
       sub: "secure internal messaging replaces chaotic WhatsApp groups, protecting teacher privacy.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Protecting off-hours peace of staff is crucial. Centralizing communication ensures professional, logged, and moderated interactions.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Protecting off-hours peace of staff is crucial. Centralizing communication ensures professional, logged, and moderated interactions.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={MessageSquare} title="secure chat" desc="end-to-end encrypted protocols." delay={0.1} />
@@ -441,9 +441,9 @@ export default function PresentationDeck() {
       sub: "automated push notifications immediately inform parents if a student is absent or late.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Student safety is the ultimate liability. Instant alerts provide peace of mind, cementing long-term institutional loyalty.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Student safety is the ultimate liability. Instant alerts provide peace of mind, cementing long-term institutional loyalty.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="delivery_speed" value={3} suffix="s" delay={0.1} />
@@ -463,9 +463,9 @@ export default function PresentationDeck() {
       sub: "legally sign field trip slips, medical waivers, and transport agreements directly via mobile.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Digital authorizations achieve 100% compliance in a fraction of the time, reducing legal and operational friction.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Digital authorizations achieve 100% compliance in a fraction of the time, reducing legal and operational friction.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Lock} title="binding signatures" desc="exact UTC timestamps and IP records." delay={0.1} />
@@ -487,9 +487,9 @@ export default function PresentationDeck() {
       sub: "beautifully designed dashboard for tracking gpa, assignments, and educational trajectory.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Gamification shifts the burden of motivation. App-like interfaces raise internal accountability and school-wide performance.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Gamification shifts the burden of motivation. App-like interfaces raise internal accountability and school-wide performance.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Palette} title="consumer UI" desc="fluid, engaging react/framer motion apps." delay={0.1} />
@@ -509,9 +509,9 @@ export default function PresentationDeck() {
       sub: "live timetables update instantly if a room changes or a substitute teacher is assigned.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Hallway confusion is eliminated. An informed student body moves efficiently, optimizing every minute of the school day.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Hallway confusion is eliminated. An informed student body moves efficiently, optimizing every minute of the school day.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Calendar} title="relational graph" desc="mutations propagate instantly." delay={0.1} />
@@ -533,9 +533,9 @@ export default function PresentationDeck() {
       sub: "standardized transcripts generated for the entire school instantly.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Eliminates three days of administrative overtime, wipes out transcription errors, and delivers flawless documents to parents.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates three days of administrative overtime, wipes out transcription errors, and delivers flawless documents to parents.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="generation_time" value={60} suffix="s" delay={0.1} />
@@ -555,9 +555,9 @@ export default function PresentationDeck() {
       sub: "modern cloud application runs flawlessly on any device with an internet connection.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">No need for expensive IT departments or server rooms. Capital expenditure on infrastructure drops to zero.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">No need for expensive IT departments or server rooms. Capital expenditure on infrastructure drops to zero.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <StatBlock label="infrastructure_cost" value={0} prefix="$" delay={0.1} />
@@ -577,9 +577,9 @@ export default function PresentationDeck() {
       sub: "microscopic visibility into staff performance, grading speeds, and attendance compliance.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Activity} title="telemetry data" desc="tracking exact API request timestamps." delay={0.1} />
@@ -599,9 +599,9 @@ export default function PresentationDeck() {
       sub: "heavily encrypted and backed up in real-time to enterprise-grade cloud databases.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Guaranteeing absolute permanence of decades of records protects the school from catastrophic liability and natural disasters.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing absolute permanence of decades of records protects the school from catastrophic liability and natural disasters.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Database} title="continuous PITR" desc="point-in-time recovery." delay={0.1} />
@@ -621,9 +621,9 @@ export default function PresentationDeck() {
       sub: "digital scheduling engine prevents double-booking teachers or assigning two classes to one room.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Eliminates weeks of trial and error, optimizes campus space, and guarantees balanced and fair teacher workloads.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates weeks of trial and error, optimizes campus space, and guarantees balanced and fair teacher workloads.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Calendar} title="constraint algorithm" desc="evaluates capacity and availability." delay={0.1} />
@@ -643,9 +643,9 @@ export default function PresentationDeck() {
       sub: "a state-of-the-art digital ecosystem elevates the status of the entire institution.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-white/10 bg-zinc-950/50">
-            <h3 className="text-sm font-bold text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-zinc-400">Technology is a massive differentiator. It justifies premium tuition rates and drives enrollment by signaling modern, secure excellence.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400">Technology is a massive differentiator. It justifies premium tuition rates and drives enrollment by signaling modern, secure excellence.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={Palette} title="premium UI/UX" desc="silicon valley design standards." delay={0.1} />
@@ -701,7 +701,7 @@ export default function PresentationDeck() {
   const slide = slides[currentSlide];
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-x-hidden overflow-y-auto relative">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white flex flex-col font-mono lowercase tracking-tight select-none overflow-x-hidden overflow-y-auto relative transition-colors duration-300">
       
       {/* ── Visual Overlays ── */}
       <ScanLines />
@@ -713,20 +713,20 @@ export default function PresentationDeck() {
       <PresentationConfetti trigger={showConfetti} />
 
       {/* ── Navbar ── */}
-      <nav className="border-b border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-black/85 backdrop-blur-md">
+      <nav className="border-b border-slate-200 dark:border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-white/85 dark:bg-black/85 backdrop-blur-md transition-colors">
         <Link href="/" className="flex items-center gap-2 group">
           <Logo className="w-8 h-8" />
-          <span className="font-bold text-lg tracking-tighter text-white">LUCY OS</span>
+          <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">LUCY OS</span>
         </Link>
         <div className="flex items-center gap-4">
-          <div className="text-[10px] text-zinc-500 uppercase tracking-widest hidden md:flex items-center gap-2">
+          <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest hidden md:flex items-center gap-2 font-bold">
             <Keyboard className="w-4 h-4" />
             use [arrow keys] to navigate
           </div>
           <motion.span
             animate={{ borderColor: ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.25)", "rgba(255,255,255,0.1)"] }}
             transition={{ repeat: Infinity, duration: 3 }}
-            className="px-3 py-1 border bg-zinc-950/50 text-[10px] text-zinc-400 uppercase font-bold font-mono"
+            className="px-3 py-1 border border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-zinc-950/50 text-[10px] text-slate-600 dark:text-zinc-400 uppercase font-bold font-mono rounded-md dark:rounded-none"
           >
             slide_{String(currentSlide + 1).padStart(2, "0")}/{String(slides.length).padStart(2, "0")}
           </motion.span>
@@ -734,11 +734,11 @@ export default function PresentationDeck() {
       </nav>
 
       {/* ── Slide Progress Bar ── */}
-      <div className="h-px bg-zinc-900 relative z-10">
+      <div className="h-px bg-slate-200 dark:bg-zinc-900 relative z-10">
         <motion.div
           animate={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="h-full bg-gradient-to-r from-white/20 via-white/40 to-white/20"
+          className="h-full bg-gradient-to-r from-slate-300 via-slate-500 to-slate-300 dark:from-white/20 dark:via-white/40 dark:to-white/20"
         />
       </div>
 
@@ -759,9 +759,9 @@ export default function PresentationDeck() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="flex items-center gap-3 text-zinc-500 text-[10px] font-mono tracking-widest"
+                className="flex items-center gap-3 text-slate-500 dark:text-zinc-500 text-[10px] font-mono tracking-widest font-bold"
               >
-                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-1.5 h-1.5 bg-white/50 rounded-full" />
+                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-1.5 h-1.5 bg-slate-400 dark:bg-white/50 rounded-full" />
                 {slide.tag}
               </motion.div>
               
@@ -769,7 +769,7 @@ export default function PresentationDeck() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.5 }}
-                className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white pb-3"
+                className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-slate-900 dark:text-white pb-3"
               >
                 {slide.title}
               </motion.h1>
@@ -778,7 +778,7 @@ export default function PresentationDeck() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.4 }}
-                className="text-sm text-zinc-400 leading-relaxed max-w-lg font-sans font-light"
+                className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-lg font-sans font-medium"
               >
                 {slide.sub}
               </motion.p>
@@ -788,7 +788,7 @@ export default function PresentationDeck() {
                 <Button 
                   onClick={() => setShowAppendix(!showAppendix)}
                   variant="ghost" 
-                  className="p-0 h-auto text-[10px] uppercase text-zinc-400 hover:text-white flex items-center gap-2 group tracking-widest font-bold"
+                  className="p-0 h-auto text-[10px] uppercase text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 group tracking-widest font-bold"
                 >
                   <Info className="w-3.5 h-3.5" />
                   {showAppendix ? "close_specifications" : "view_system_specifications"}
@@ -800,108 +800,98 @@ export default function PresentationDeck() {
               <AnimatePresence>
                 {showAppendix && (
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden bg-zinc-950/80 border border-white/5 p-6 mt-4 space-y-3 font-mono text-[11px] text-zinc-400"
+                    initial={{ opacity: 0, height: 0, y: -10 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    className="overflow-hidden"
                   >
-                    <div className="text-white/70 font-bold uppercase border-b border-white/5 pb-1">system_appendix // specifications</div>
-                    {slide.technicalAppendix.map((spec, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.08 }}
-                        className="flex items-start gap-2"
-                      >
-                        <span className="text-zinc-500 font-bold shrink-0">&gt;</span>
-                        <span className="leading-relaxed font-sans font-light">{spec}</span>
-                      </motion.div>
-                    ))}
+                    <div className="p-4 mt-2 border-l-2 border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-white/5 space-y-2 rounded-r-md dark:rounded-none">
+                      <div className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-white/40 font-bold mb-3">sys_specifications //</div>
+                      <ul className="space-y-2 text-xs font-mono text-slate-600 dark:text-zinc-400">
+                        {slide.technicalAppendix.map((line, i) => (
+                          <li key={i} className="flex gap-2 items-start">
+                            <span className="text-slate-400 dark:text-white/30">{">"}</span> {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Right Side: Content Card */}
-            <div className="lg:col-span-7 relative z-10">
-              <TiltCard className="w-full">
-                <div className="relative group transition-all duration-500">
-                  {/* Glow border effect */}
-                  <motion.div
-                    animate={{ opacity: [0.05, 0.15, 0.05] }}
-                    transition={{ repeat: Infinity, duration: 4 }}
-                    className="absolute -inset-0.5 bg-gradient-to-r from-white/10 to-white/5 rounded-none blur"
-                  />
-                  
-                  <div className="relative bg-zinc-950/40 backdrop-blur-md border border-white/10 rounded-none p-8 shadow-[0_15px_35px_rgba(0,0,0,0.8)] overflow-hidden min-h-[350px] flex flex-col justify-center">
-                    {slide.content}
-                  </div>
-                </div>
-              </TiltCard>
+            {/* Right Side: Dynamic Content */}
+            <div className="lg:col-span-7 relative z-20">
+              {slide.content}
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* ── Slide Controls ── */}
-      <footer className="border-t border-white/5 py-6 px-6 flex items-center justify-between relative z-10 bg-black/85 backdrop-blur-md">
-        <div className="flex items-center gap-2">
+      {/* ── Footer Controls ── */}
+      <footer className="border-t border-slate-200 dark:border-white/5 px-6 py-6 relative z-10 bg-white/50 dark:bg-black/50 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+        <div className="flex items-center gap-4">
           <Button
-            variant="ghost"
+            variant="outline"
+            size="icon"
+            onClick={handlePrev}
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+          <Button
+            variant="outline"
             size="icon"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="w-10 h-10 rounded-none hover:bg-white/5 text-zinc-500 hover:text-white transition-all"
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
           >
-            {isPlaying ? <Pause className="w-4 h-4 text-white/60" /> : <Play className="w-4 h-4 text-white" />}
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </Button>
-          <span className="text-[10px] text-zinc-600 font-mono hidden sm:inline">
-            {isPlaying ? "[loop_active]" : "[loop_paused]"}
-          </span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleNext}
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </Button>
         </div>
 
-        {/* 3D Hover Navigation */}
-        <div className="flex items-center gap-2 hidden lg:flex">
+        {/* Indicator dots */}
+        <div className="flex gap-1.5 overflow-x-auto max-w-[200px] md:max-w-md pb-2 md:pb-0 scrollbar-hide">
           {slides.map((_, i) => (
-            <div
+            <button
               key={i}
-              onMouseEnter={() => {
+              onClick={() => {
                 setCurrentSlide(i);
                 setShowAppendix(false);
-                setIsPlaying(false); // Pause auto-play on manual hover navigation
               }}
-              className="cursor-default"
-            >
-              <TiltCard className="w-8 h-12 xl:w-10 xl:h-14">
-                <div 
-                  className={`w-full h-full border flex flex-col justify-end p-1.5 transition-all duration-300 relative overflow-hidden group ${
-                    i === currentSlide 
-                      ? "border-white/50 bg-zinc-800" 
-                      : "border-white/10 bg-zinc-950/50 hover:bg-zinc-900/60"
-                  }`}
-                >
-                  <div className={`absolute top-0 left-0 right-0 h-px transition-all duration-300 ${i === currentSlide ? "bg-cyan-400" : "bg-transparent group-hover:bg-white/20"}`} />
-                  <span className={`text-[9px] font-mono font-bold leading-none transition-colors duration-300 ${i === currentSlide ? "text-white" : "text-zinc-600 group-hover:text-zinc-400"}`}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                </div>
-              </TiltCard>
-            </div>
+              className={`h-1 transition-all rounded-full ${
+                i === currentSlide 
+                  ? "w-8 bg-slate-900 dark:bg-white" 
+                  : "w-2 bg-slate-300 dark:bg-white/20 hover:bg-slate-400 dark:hover:bg-white/40"
+              }`}
+            />
           ))}
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="flex items-center gap-3">
-          <motion.div whileHover={{ x: -2 }} whileTap={{ scale: 0.95 }}>
-            <Button onClick={handlePrev} className="w-12 h-12 bg-zinc-900 border border-white/5 hover:border-white/15 text-white rounded-none flex items-center justify-center transition-all">
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ x: 2 }} whileTap={{ scale: 0.95 }}>
-            <Button onClick={handleNext} className="w-12 h-12 bg-zinc-900 border border-white/5 hover:border-white/15 text-white rounded-none flex items-center justify-center transition-all">
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </motion.div>
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => {
+              if (currentSlide === slides.length - 1) {
+                setShowConfetti(true);
+              } else {
+                handleNext();
+              }
+            }}
+            className="h-10 px-6 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
+          >
+            {currentSlide === slides.length - 1 ? (
+              <>deploy_system <ArrowUpRight className="w-3.5 h-3.5" /></>
+            ) : (
+              <>next_sequence <ChevronRight className="w-3.5 h-3.5" /></>
+            )}
+          </Button>
         </div>
       </footer>
     </div>

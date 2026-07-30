@@ -120,11 +120,11 @@ export function OperatingCostsView() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                         <Receipt className="w-8 h-8 text-eduGreen-500" />
                         Operating Costs
                     </h2>
-                    <p className="text-zinc-500 font-medium">Internal ledger for tracking institutional assets and expenses.</p>
+                    <p className="text-slate-500 dark:text-zinc-500 font-medium">Internal ledger for tracking institutional assets and expenses.</p>
                 </div>
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -134,30 +134,30 @@ export function OperatingCostsView() {
                             Log Expense
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="bg-zinc-950 border-zinc-800 text-white sm:max-w-[425px]">
+                    <DialogContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white sm:max-w-[425px]">
                         <DialogHeader>
                             <DialogTitle>Log New Expense</DialogTitle>
-                            <DialogDescription className="text-zinc-400">
+                            <DialogDescription className="text-slate-600 dark:text-zinc-400">
                                 Record a new institutional purchase or cost. This is only visible to directors and owners.
                             </DialogDescription>
                         </DialogHeader>
                         
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="space-y-2">
-                                <Label htmlFor="title" className="text-zinc-300">Title / Item Name</Label>
+                                <Label htmlFor="title" className="text-slate-700 dark:text-zinc-300">Title / Item Name</Label>
                                 <Input 
                                     id="title" 
                                     required 
                                     placeholder="e.g. 10x Dell Laptops"
                                     value={title}
                                     onChange={e => setTitle(e.target.value)}
-                                    className="bg-zinc-900 border-zinc-800 focus:border-eduGreen-500"
+                                    className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="amount" className="text-zinc-300">Amount (ZAR)</Label>
+                                    <Label htmlFor="amount" className="text-slate-700 dark:text-zinc-300">Amount (ZAR)</Label>
                                     <Input 
                                         id="amount" 
                                         type="number"
@@ -166,16 +166,16 @@ export function OperatingCostsView() {
                                         placeholder="0.00"
                                         value={amount}
                                         onChange={e => setAmount(e.target.value)}
-                                        className="bg-zinc-900 border-zinc-800 focus:border-eduGreen-500"
+                                        className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="category" className="text-zinc-300">Category</Label>
+                                    <Label htmlFor="category" className="text-slate-700 dark:text-zinc-300">Category</Label>
                                     <Select value={category} onValueChange={(val: any) => setCategory(val)}>
-                                        <SelectTrigger className="bg-zinc-900 border-zinc-800 text-white">
+                                        <SelectTrigger className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
                                             <SelectValue placeholder="Select..." />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-zinc-950 border-zinc-800">
+                                        <SelectContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800">
                                             <SelectItem value="EQUIPMENT">Equipment</SelectItem>
                                             <SelectItem value="BOOKS">Books & Media</SelectItem>
                                             <SelectItem value="SOFTWARE">Software</SelectItem>
@@ -188,13 +188,13 @@ export function OperatingCostsView() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-zinc-300">Description (Optional)</Label>
+                                <Label htmlFor="description" className="text-slate-700 dark:text-zinc-300">Description (Optional)</Label>
                                 <Input 
                                     id="description" 
                                     placeholder="Serial numbers, purpose, etc."
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}
-                                    className="bg-zinc-900 border-zinc-800 focus:border-eduGreen-500"
+                                    className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
                                 />
                             </div>
 
@@ -208,31 +208,31 @@ export function OperatingCostsView() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
+                <Card className="bg-slate-50 dark:bg-zinc-900/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-zinc-400">Total Operating Costs</CardTitle>
+                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-zinc-400">Total Operating Costs</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">
                             R {totalSpent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
+                <Card className="bg-slate-50 dark:bg-zinc-900/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-zinc-400">Total Items Logged</CardTitle>
+                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-zinc-400">Total Items Logged</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">{expenses.length}</div>
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{expenses.length}</div>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Expenses List */}
-            <Card className="bg-zinc-950/50 border-zinc-800 backdrop-blur-xl">
+            <Card className="bg-white dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
                 <CardHeader>
-                    <CardTitle className="text-lg font-medium text-white flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-zinc-400" />
+                    <CardTitle className="text-lg font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-slate-600 dark:text-zinc-400" />
                         Cost History
                     </CardTitle>
                 </CardHeader>
@@ -242,32 +242,32 @@ export function OperatingCostsView() {
                             <Loader2 className="w-8 h-8 text-eduGreen-500 animate-spin" />
                         </div>
                     ) : expenses.length === 0 ? (
-                        <div className="text-center py-12 text-zinc-500">
+                        <div className="text-center py-12 text-slate-500 dark:text-zinc-500">
                             <Receipt className="w-12 h-12 mx-auto mb-3 opacity-20" />
                             <p>No expenses logged yet.</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
                             {expenses.map((expense) => (
-                                <div key={expense.id} className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/50 hover:bg-zinc-900 transition-colors">
+                                <div key={expense.id} className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors">
                                     <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
                                             {CATEGORY_ICONS[expense.category]}
                                         </div>
                                         <div>
-                                            <p className="text-white font-medium">{expense.title}</p>
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-zinc-500 mt-1">
+                                            <p className="text-slate-900 dark:text-white font-medium">{expense.title}</p>
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-slate-500 dark:text-zinc-500 mt-1">
                                                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(new Date(expense.createdAt), 'MMM d, yyyy')}</span>
                                                 <span className="hidden sm:inline">•</span>
                                                 <span>Logged by {expense.loggedBy.name}</span>
                                             </div>
                                             {expense.description && (
-                                                <p className="text-xs text-zinc-400 mt-2 bg-zinc-950 p-2 rounded border border-zinc-900 inline-block">{expense.description}</p>
+                                                <p className="text-xs text-slate-600 dark:text-zinc-400 mt-2 bg-white dark:bg-zinc-950 p-2 rounded border border-slate-200 dark:border-zinc-900 inline-block">{expense.description}</p>
                                             )}
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-lg font-medium text-white">R {parseFloat(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                        <p className="text-lg font-medium text-slate-900 dark:text-white">R {parseFloat(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                                         <p className="text-[10px] uppercase tracking-wider font-semibold text-eduGreen-500 mt-1">{expense.category}</p>
                                     </div>
                                 </div>

@@ -2,6 +2,9 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+/* Enable class-based dark mode for next-themes (attribute="class") */
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --font-sans: 'Space Grotesk', sans-serif;
   --font-heading: 'Space Grotesk', sans-serif;
