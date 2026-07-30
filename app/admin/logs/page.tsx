@@ -417,7 +417,7 @@ export default function AdminLogsPage() {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedLog(null)}
                         className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-white dark:bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase mb-2", getActionColor(selectedLog.action))}>
@@ -448,7 +448,7 @@ export default function AdminLogsPage() {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedError(null)}
                         className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-white dark:bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[selectedError.type] || '')}>
                                     {ERROR_TYPE_ICONS[selectedError.type]}{selectedError.type.replace('_', ' ')}

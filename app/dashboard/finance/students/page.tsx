@@ -246,7 +246,7 @@ export default function StudentFinanceDossier() {
                             animate={{ scale: 1, y: 0 }} 
                             exit={{ scale: 0.95, y: 20 }} 
                             onClick={e => e.stopPropagation()}
-                            className="bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-3xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+                            className="bg-white dark:bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-3xl p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto"
                         >
                             <div className="flex justify-between items-start mb-8">
                                 <div className="flex items-center gap-5">
