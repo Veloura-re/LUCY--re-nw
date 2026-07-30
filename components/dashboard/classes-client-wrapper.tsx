@@ -224,8 +224,8 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 />
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <Button type="submit" isLoading={loading} className="bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
-                                                <Button variant="ghost" type="button" onClick={() => setIsAddingGrade(false)} className="text-zinc-600 hover:text-white font-medium uppercase tracking-[0.2em] text-[10px] h-14">Discard</Button>
+                                                <Button type="submit" isLoading={loading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
+                                                <Button variant="ghost" type="button" onClick={() => setIsAddingGrade(false)} className="text-zinc-500 hover:text-red-600 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-900/20 font-medium uppercase tracking-[0.2em] text-[10px] h-14">Discard</Button>
                                             </div>
                                         </form>
                                     )}
@@ -340,7 +340,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                 onChange={e => setNewClassName(e.target.value)}
                                                                 className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-900 dark:text-white focus:border-eduGreen-600 rounded-2xl font-medium px-6"
                                                             />
-                                                            <Button size="icon" type="submit" isLoading={loading} className="h-14 w-14 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-2xl shrink-0 active:scale-95 transition-all hover:bg-zinc-800 dark:hover:bg-zinc-200">
+                                                            <Button size="icon" type="submit" isLoading={loading} className="h-14 w-14 bg-eduGreen-600 text-white dark:bg-white dark:text-black rounded-2xl shrink-0 active:scale-95 transition-all hover:bg-eduGreen-500 dark:hover:bg-zinc-200">
                                                                 <ChevronRight className="w-5 h-5" />
                                                             </Button>
                                                         </form>
