@@ -199,7 +199,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                 </form>
 
                 {error && (
-                    <div className="mt-6 inline-flex items-center gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30 text-[11px] text-red-400 font-medium">
+                    <div className="mt-6 inline-flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-[11px] text-red-600 dark:text-red-400 font-medium">
                         {error}
                     </div>
                 )}
@@ -259,7 +259,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                     variant="ghost" 
                                                     size="sm"
                                                     onClick={() => setConfirmAction({ type: 'DEMOTE', id: p.id, name: p.name || p.email })}
-                                                    className="text-[10px] font-semibold uppercase tracking-widest text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 h-9"
+                                                    className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-500 hover:text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-9"
                                                 >
                                                     <ArrowDownCircle className="w-3.5 h-3.5 mr-1.5" /> Demote
                                                 </Button>
@@ -267,7 +267,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                     variant="ghost" 
                                                     size="sm"
                                                     onClick={() => setConfirmAction({ type: 'REMOVE', id: p.id, name: p.name || p.email })}
-                                                    className="text-[10px] font-semibold uppercase tracking-widest text-red-500 hover:text-red-400 hover:bg-red-500/10 h-9 px-2"
+                                                    className="text-[10px] font-semibold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-9 px-2"
                                                     title="Unlink User"
                                                 >
                                                     <UserX className="w-4 h-4" />
@@ -295,7 +295,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-zinc-900 dark:text-white">{inv.email}</p>
-                                                <p className="text-[9px] text-amber-500 uppercase tracking-widest mt-1">Pending Acceptance</p>
+                                                <p className="text-[9px] text-amber-600 dark:text-amber-500 uppercase tracking-widest mt-1">Pending Acceptance</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -312,7 +312,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 variant="ghost" 
                                                 size="sm"
                                                 onClick={() => setConfirmAction({ type: 'DELETE_INVITE', id: inv.id, name: inv.email })}
-                                                className="text-[10px] font-semibold uppercase tracking-widest text-red-500 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 p-0"
+                                                className="text-[10px] font-semibold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8 w-8 p-0"
                                             >
                                                 <UserX className="w-4 h-4" />
                                             </Button>

@@ -287,7 +287,7 @@ export default function StaffAuthorizationsPage() {
                                                             onClick={() => handleAction(auth.id, 'REJECTED')}
                                                             disabled={processingId === auth.id}
                                                             variant="ghost"
-                                                            className="h-12 w-12 rounded-xl bg-red-950/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-900/20 transition-all"
+                                                            className="h-12 w-12 rounded-xl bg-red-950/10 text-red-600 dark:text-red-500 hover:bg-red-500 hover:text-white border border-red-900/20 transition-all"
                                                         >
                                                             {processingId === auth.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <XCircle className="w-5 h-5" />}
                                                         </Button>
@@ -304,7 +304,7 @@ export default function StaffAuthorizationsPage() {
                                                         "h-10 px-6 rounded-xl border font-bold uppercase tracking-[0.2em] text-[8px]",
                                                         auth.status === 'APPROVED'
                                                             ? "bg-eduGreen-500/10 text-eduGreen-500 border-eduGreen-500/20"
-                                                            : "bg-red-500/10 text-red-500 border-red-500/20"
+                                                            : "bg-red-500/10 text-red-600 dark:text-red-500 border-red-200 dark:border-red-500/20"
                                                     )}>
                                                         {auth.status === 'APPROVED' ? <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> : <XCircle className="w-3.5 h-3.5 mr-1.5" />}
                                                         {auth.status}

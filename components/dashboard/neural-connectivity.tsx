@@ -49,7 +49,7 @@ export function NeuralConnectivity() {
                 <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                     <div>
                         <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
-                            <Activity className="w-5 h-5 text-amber-500" />
+                            <Activity className="w-5 h-5 text-amber-600 dark:text-amber-500" />
                             Neural Connectivity
                         </CardTitle>
                         <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 italic">Synchronization Diagnostic Gauge</p>
@@ -78,7 +78,7 @@ export function NeuralConnectivity() {
                                     label="Orphaned Faculty"
                                     count={data.orphanedTeachers.length}
                                     icon={UserMinus}
-                                    color="text-amber-500"
+                                    color="text-amber-600 dark:text-amber-500"
                                     desc="Teachers without school linkage"
                                 />
                             )}
@@ -87,7 +87,7 @@ export function NeuralConnectivity() {
                                     label="Unmapped Scholars"
                                     count={data.unmappedStudents.length}
                                     icon={Link2Off}
-                                    color="text-red-500"
+                                    color="text-red-600 dark:text-red-500"
                                     desc="Students missing parent nodes"
                                 />
                             )}

@@ -37,24 +37,24 @@ export function ConfirmationModal({
                 return {
                     icon: Trash2,
                     bgColor: "bg-red-950/30",
-                    borderColor: "border-red-900/50",
-                    iconColor: "text-red-500",
+                    borderColor: "border-red-200 dark:border-red-900/50",
+                    iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_40px_rgba(239,68,68,0.15)]"
                 };
             case "warning":
                 return {
                     icon: AlertTriangle,
                     bgColor: "bg-amber-950/30",
-                    borderColor: "border-amber-900/50",
-                    iconColor: "text-amber-500",
+                    borderColor: "border-amber-200 dark:border-amber-900/50",
+                    iconColor: "text-amber-600 dark:text-amber-500",
                     glowColor: "shadow-[0_0_40px_rgba(245,158,11,0.15)]"
                 };
             case "logout":
                 return {
                     icon: LogOut,
                     bgColor: "bg-red-950/30",
-                    borderColor: "border-red-900/50",
-                    iconColor: "text-red-500",
+                    borderColor: "border-red-200 dark:border-red-900/50",
+                    iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_40px_rgba(239,68,68,0.15)]"
                 };
             default:
@@ -168,8 +168,8 @@ export function AlertModal({
                 return {
                     icon: XCircle,
                     bgColor: "bg-red-950/30",
-                    borderColor: "border-red-900/50",
-                    iconColor: "text-red-500",
+                    borderColor: "border-red-200 dark:border-red-900/50",
+                    iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_60px_rgba(239,68,68,0.2)]",
                     buttonStyle: "bg-gradient-to-b from-zinc-700 to-zinc-800 hover:from-zinc-600 hover:to-zinc-700 text-zinc-900 dark:text-white shadow-lg shadow-zinc-950/50"
                 };
@@ -373,7 +373,7 @@ export function PaymentModal({
                 <DialogHeader>
                     <div className={cn(
                         "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 mx-auto",
-                        "border-2 transition-all duration-300 bg-amber-950/20 border-amber-900/30 text-amber-500"
+                        "border-2 transition-all duration-300 bg-amber-50 dark:bg-amber-950/20 border-amber-900/30 text-amber-600 dark:text-amber-500"
                     )}>
                         <CreditCard className="w-10 h-10" />
                     </div>
@@ -393,7 +393,7 @@ export function PaymentModal({
                         <div className="space-y-2">
                             <label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
                             <div className="relative">
-                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-amber-500 font-medium">$</span>
+                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-amber-600 dark:text-amber-500 font-medium">$</span>
                                 <input
                                     required
                                     type="number"

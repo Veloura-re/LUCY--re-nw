@@ -28,16 +28,16 @@ export function EdgeHealthIndicator() {
             label: "Neural Pulse Optimizing",
         },
         degraded: {
-            color: "text-amber-500",
+            color: "text-amber-600 dark:text-amber-500",
             bg: "bg-amber-500/10",
             border: "border-amber-500/20",
             icon: ShieldAlert,
             label: "Neural Synchronization Lag",
         },
         offline: {
-            color: "text-red-500",
+            color: "text-red-600 dark:text-red-500",
             bg: "bg-red-500/10",
-            border: "border-red-500/20",
+            border: "border-red-200 dark:border-red-500/20",
             icon: ShieldX,
             label: "Neural Link Disrupted",
         }

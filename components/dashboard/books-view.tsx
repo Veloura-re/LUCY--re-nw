@@ -390,7 +390,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     <Card className={cn(
                                         "group relative bg-white/60 dark:bg-zinc-950/60 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-500/40 transition-all duration-300 border-t-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full flex flex-col",
                                         isLocked ? "opacity-60 grayscale scale-[0.98]" : "hover:scale-[1.02]",
-                                        isExpired ? "border-red-900/30" : ""
+                                        isExpired ? "border-red-200 dark:border-red-900/30" : ""
                                     )}>
                                         {/* Magical Corner Accents */}
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-eduGreen-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -438,7 +438,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 {book.title}
                                             </CardTitle>
                                             {isLocked ? (
-                                                <div className="flex items-center gap-2 mt-4 text-red-500">
+                                                <div className="flex items-center gap-2 mt-4 text-red-600 dark:text-red-500">
                                                     <X className="w-3 h-3" />
                                                     <span className="text-[8px] font-medium uppercase tracking-widest">Locked: Complete Prerequisite</span>
                                                 </div>
@@ -517,7 +517,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => setDeleteId(book.id)}
-                                                    className="w-12 h-12 text-zinc-700 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all"
+                                                    className="w-12 h-12 text-zinc-700 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -603,7 +603,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         size="icon"
                                         onClick={() => handleDeleteUnit(unit.id)}
                                         isLoading={deletingUnit === unit.id}
-                                        className="absolute top-6 right-6 w-10 h-10 text-zinc-700 hover:text-red-500 hover:bg-red-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute top-6 right-6 w-10 h-10 text-zinc-700 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </Button>
@@ -654,9 +654,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             <Card key={req.id} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 space-y-4 relative overflow-hidden group">
                                 <div className={cn(
                                     "absolute top-0 right-0 px-4 py-2 text-[8px] font-medium uppercase tracking-widest rounded-bl-2xl border-l border-b border-zinc-200 dark:border-zinc-900",
-                                    req.status === 'PENDING' ? "bg-amber-500/10 text-amber-500" :
+                                    req.status === 'PENDING' ? "bg-amber-500/10 text-amber-600 dark:text-amber-500" :
                                         req.status === 'APPROVED' ? "bg-eduGreen-500/10 text-eduGreen-500" :
-                                            "bg-red-500/10 text-red-500"
+                                            "bg-red-500/10 text-red-600 dark:text-red-500"
                                 )}>
                                     {req.status}
                                 </div>
@@ -682,7 +682,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             variant="ghost"
                                             isLoading={statusLoading === req.id}
                                             disabled={statusLoading === req.id}
-                                            className="h-10 flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500/10 text-zinc-600 dark:text-zinc-500 hover:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
+                                            className="h-10 flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500/10 text-zinc-600 dark:text-zinc-500 hover:text-red-600 dark:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
                                         >
                                             Reject
                                         </Button>
@@ -1222,7 +1222,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             {/* Grade */}
                             <div>
                                 <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
-                                    Grade <span className="text-red-500">*</span>
+                                    Grade <span className="text-red-600 dark:text-red-500">*</span>
                                 </label>
                                 <Select
                                     value={formData.gradeId}
@@ -1242,7 +1242,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             {/* Section / Class — cascading */}
                             <div>
                                 <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
-                                    Section <span className="text-red-500">*</span>
+                                    Section <span className="text-red-600 dark:text-red-500">*</span>
                                     {loadingClasses && <span className="ml-2 inline-block w-3 h-3 border border-eduGreen-500 border-t-transparent rounded-full animate-spin" />}
                                 </label>
                                 <Select
@@ -1264,7 +1264,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             {/* Subject */}
                             <div>
                                 <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
-                                    Subject <span className="text-red-500">*</span>
+                                    Subject <span className="text-red-600 dark:text-red-500">*</span>
                                 </label>
                                 <Select
                                     value={formData.subjectId}

@@ -179,7 +179,7 @@ export function WelcomeAnnouncement() {
                 <a href="https://discord.gg/Kbm4XhzfMJ" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-indigo-500/20 bg-indigo-50 dark:bg-indigo-950/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all">
                   discord
                 </a>
-                <a href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-red-500/20 bg-red-50 dark:bg-red-950/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all">
+                <a href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-950/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all">
                   youtube
                 </a>
                 <a href="https://tiktok.com/@lucy.os" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-pink-500/20 bg-pink-50 dark:bg-pink-950/10 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-500/20 transition-all">

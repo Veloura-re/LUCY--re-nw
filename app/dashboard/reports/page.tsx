@@ -199,7 +199,7 @@ export default function ReportsPage() {
                     <CardContent className="p-8">
                         <div className="flex justify-between items-start mb-4">
                             <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-300 dark:border-zinc-800 group-hover:border-eduGreen-900/30 transition-all">
-                                <Users className="w-5 h-5 text-amber-500" />
+                                <Users className="w-5 h-5 text-amber-600 dark:text-amber-500" />
                             </div>
                         </div>
                         <div className="text-4xl font-medium text-zinc-900 dark:text-white mb-1 tracking-tighter">{data.summary?.activeReaders || "0"}</div>

@@ -224,7 +224,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 />
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <Button type="submit" isLoading={loading} className="bg-white hover:bg-zinc-200 text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
+                                                <Button type="submit" isLoading={loading} className="bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-200 dark:text-black h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">Deploy</Button>
                                                 <Button variant="ghost" type="button" onClick={() => setIsAddingGrade(false)} className="text-zinc-600 hover:text-white font-medium uppercase tracking-[0.2em] text-[10px] h-14">Discard</Button>
                                             </div>
                                         </form>
@@ -256,7 +256,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"
-                                                    className="h-9 w-9 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 border border-transparent hover:border-red-900/30 transition-all opacity-0 group-hover:opacity-100"
+                                                    className="h-9 w-9 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 hover:bg-red-50 dark:bg-red-950/20 border border-transparent hover:border-red-200 dark:border-red-900/30 transition-all opacity-0 group-hover:opacity-100"
                                                     onClick={(e) => { e.stopPropagation(); setDeleteConfig({ id: grade.id, type: 'GRADE' }); }}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -316,13 +316,13 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                                 {t.name}
                                                                             </SelectItem>
                                                                         ))}
-                                                                        <SelectItem value="null" className="focus:bg-red-900/20 focus:text-red-400 font-medium text-[10px] uppercase">No Staff</SelectItem>
+                                                                        <SelectItem value="null" className="focus:bg-red-900/20 focus:text-red-600 dark:text-red-400 font-medium text-[10px] uppercase">No Staff</SelectItem>
                                                                     </SelectContent>
                                                                 </Select>
                                                                 <Button
                                                                     size="icon"
                                                                     variant="ghost"
-                                                                    className="h-10 w-10 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 hover:border-red-900/30 border border-transparent transition-all"
+                                                                    className="h-10 w-10 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 hover:bg-red-50 dark:bg-red-950/20 hover:border-red-200 dark:border-red-900/30 border border-transparent transition-all"
                                                                     onClick={(e) => { e.stopPropagation(); setDeleteConfig({ id: cls.id, type: 'CLASS' }); }}
                                                                 >
                                                                     <Trash2 className="w-4 h-4" />
@@ -340,7 +340,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                 onChange={e => setNewClassName(e.target.value)}
                                                                 className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-900 dark:text-white focus:border-eduGreen-600 rounded-2xl font-medium px-6"
                                                             />
-                                                            <Button size="icon" type="submit" isLoading={loading} className="h-14 w-14 bg-white text-black rounded-2xl shrink-0 active:scale-95 transition-all">
+                                                            <Button size="icon" type="submit" isLoading={loading} className="h-14 w-14 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-2xl shrink-0 active:scale-95 transition-all hover:bg-zinc-800 dark:hover:bg-zinc-200">
                                                                 <ChevronRight className="w-5 h-5" />
                                                             </Button>
                                                         </form>
@@ -409,7 +409,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 onChange={e => setNewSubjectName(e.target.value)}
                                                 className="h-12 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-900 dark:text-white focus:border-sky-600 rounded-xl font-medium px-4"
                                             />
-                                            <Button size="icon" type="submit" className="h-12 w-12 bg-sky-600 hover:bg-sky-500 text-zinc-900 dark:text-white rounded-xl shrink-0 active:scale-95 transition-all shadow-lg shadow-sky-900/20">
+                                            <Button size="icon" type="submit" className="h-12 w-12 bg-sky-600 hover:bg-sky-500 text-white rounded-xl shrink-0 active:scale-95 transition-all shadow-lg shadow-sky-900/20">
                                                 <Check className="w-4 h-4" />
                                             </Button>
                                         </form>
@@ -426,7 +426,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                         <Button
                                             size="icon"
                                             variant="ghost"
-                                            className="h-9 w-9 rounded-lg text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 opacity-0 group-hover:opacity-100 transition-all"
+                                            className="h-9 w-9 rounded-lg text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 hover:bg-red-50 dark:bg-red-950/20 opacity-0 group-hover:opacity-100 transition-all"
                                             onClick={() => setDeleteConfig({ id: sub.id, type: 'SUBJECT' })}
                                         >
                                             <Trash2 className="w-3.5 h-3.5" />

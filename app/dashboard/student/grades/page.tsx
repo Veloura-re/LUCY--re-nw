@@ -88,7 +88,7 @@ function StudentGradesContent() {
 
                             <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 md:col-span-2">
                                 <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                    <Sparkles className="w-3 h-3 text-amber-500" /> Neural Verdict
+                                    <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-500" /> Neural Verdict
                                 </div>
                                 <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium italic leading-relaxed">
                                     {exam.remark || "Your assessment has been reviewed by the neural engine. Detailed question-level feedback is available below to help you improve."}
@@ -116,7 +116,7 @@ function StudentGradesContent() {
                                                 <div className="flex items-center gap-4">
                                                     <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Question {i + 1}</span>
                                                     {isPerfect ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> :
-                                                        isPartial ? <TrendingUp className="w-4 h-4 text-amber-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
+                                                        isPartial ? <TrendingUp className="w-4 h-4 text-amber-600 dark:text-amber-500" /> : <XCircle className="w-4 h-4 text-red-600 dark:text-red-500" />}
                                                 </div>
                                                 <div className="text-right">
                                                     <div className={cn("text-lg font-medium italic", isPerfect ? "text-eduGreen-500" : "text-zinc-600 dark:text-zinc-500")}>

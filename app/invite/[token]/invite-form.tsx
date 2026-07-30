@@ -177,7 +177,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                             exit={{ opacity: 0, y: -10, height: 0 }}
                             className="overflow-hidden"
                         >
-                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex gap-3 text-red-400 items-start shadow-inner">
+                            <div className="p-4 bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl flex gap-3 text-red-600 dark:text-red-400 items-start shadow-inner">
                                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                                 <p className="text-[13px] leading-relaxed font-medium">{error}</p>
                             </div>

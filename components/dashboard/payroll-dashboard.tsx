@@ -32,7 +32,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="bg-gradient-to-br from-amber-950/40 to-zinc-950/40 border-amber-900/30 rounded-[2.5rem] p-8 backdrop-blur-xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-[40px] -mr-10 -mt-10 transition-all duration-500 group-hover:bg-amber-500/20" />
-                    <h3 className="text-[10px] font-medium text-amber-500/80 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <h3 className="text-[10px] font-medium text-amber-600 dark:text-amber-500/80 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <Wallet className="w-3 h-3" /> Total Monthly Expenditure
                     </h3>
                     <p className="text-4xl font-semibold text-zinc-900 dark:text-white tracking-tight">
@@ -66,11 +66,11 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
 
             <div className="space-y-6">
                 <div className="flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-900 pb-6">
-                    <div className="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/20 text-amber-500 shadow-[0_0_20px_-5px_rgba(245,158,11,0.3)]">
+                    <div className="p-3 bg-amber-500/10 rounded-2xl border border-amber-500/20 text-amber-600 dark:text-amber-500 shadow-[0_0_20px_-5px_rgba(245,158,11,0.3)]">
                         <Wallet className="w-5 h-5" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight uppercase italic">Tactical <span className="text-amber-500 not-italic">Roster</span></h2>
+                        <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight uppercase italic">Tactical <span className="text-amber-600 dark:text-amber-500 not-italic">Roster</span></h2>
                         <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-1">Select node to authorize disbursement</p>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
                                 key={member.id} 
-                                className="bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden hover:border-amber-900/40 transition-all duration-300"
+                                className="bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden hover:border-amber-300 dark:hover:border-amber-900/40 transition-all duration-300"
                             >
                                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                     <div className="flex items-center gap-6">
@@ -147,7 +147,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                             className="border-t border-zinc-200 dark:border-zinc-900/50 bg-white/20 dark:bg-zinc-950/20"
                                         >
                                             <div className="p-6">
-                                                <h4 className="text-[10px] font-medium text-amber-500/70 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                <h4 className="text-[10px] font-medium text-amber-600 dark:text-amber-500/70 uppercase tracking-widest mb-4 flex items-center gap-2">
                                                     <History className="w-3 h-3" /> Historical Disbursements
                                                 </h4>
                                                 

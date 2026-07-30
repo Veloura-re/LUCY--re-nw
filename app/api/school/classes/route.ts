@@ -110,7 +110,8 @@ export async function PATCH(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { classId, homeroomTeacherId } = await request.json();
+        const body = await request.json() as { classId: string, homeroomTeacherId: string | null };
+        const { classId, homeroomTeacherId } = body;
 
         // Ensure the class belongs to this school
         const targetClass = await prisma.class.findUnique({
@@ -168,7 +169,7 @@ export async function PATCH(request: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
             }
@@ -183,24 +184,27 @@ export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await request.json();
+        const body = await request.json() as { type: string, name: string, level: string, gradeId: string, schoolId?: string };
         const { type, name, level, gradeId } = body;
 
         if (type === 'GRADE') {
+            // When SUPERADMIN deploys a grade, they should supply a schoolId in the body, otherwise fallback to their dbUser.schoolId
+            const targetSchoolId = dbUser.role === 'SUPERADMIN' && body.schoolId ? body.schoolId : dbUser.schoolId!;
+            
             const grade = await prisma.grade.create({
                 data: {
-                    schoolId: dbUser.schoolId!,
+                    schoolId: targetSchoolId,
                     name,
                     level: parseInt(level),
                 }
             });
-            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, dbUser.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, targetSchoolId), 'max');
             
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
             }
@@ -208,7 +212,7 @@ export async function POST(request: Request) {
 return NextResponse.json({ grade });
         } else if (type === 'CLASS') {
             const parentGrade = await prisma.grade.findUnique({ where: { id: gradeId } });
-            if (!parentGrade || parentGrade.schoolId !== dbUser.schoolId) {
+            if (!parentGrade || (parentGrade.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
                 return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
             }
 
@@ -231,11 +235,12 @@ export async function DELETE(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { id, type } = await request.json();
+        const body = await request.json() as { id: string, type: string };
+        const { id, type } = body;
 
         if (type === 'CLASS') {
             const targetClass = await prisma.class.findUnique({ where: { id }, include: { grade: true } });
-            if (!targetClass || targetClass.grade.schoolId !== dbUser.schoolId) {
+            if (!targetClass || (targetClass.grade.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
                 return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
             }
 
@@ -250,7 +255,7 @@ export async function DELETE(request: Request) {
             revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
         } else if (type === 'GRADE') {
             const targetGrade = await prisma.grade.findUnique({ where: { id } });
-            if (!targetGrade || targetGrade.schoolId !== dbUser.schoolId) {
+            if (!targetGrade || (targetGrade.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
                 return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
             }
 
@@ -274,7 +279,7 @@ export async function DELETE(request: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
             }

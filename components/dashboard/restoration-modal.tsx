@@ -51,7 +51,7 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
                             icon={UserMinus} 
                             label="Orphaned Faculty" 
                             count={data?.orphanedTeachers?.length || 0} 
-                            color="text-amber-500"
+                            color="text-amber-600 dark:text-amber-500"
                         />
                         <TabButton 
                             isActive={activeTab === 'scholars'} 
@@ -59,7 +59,7 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
                             icon={Link2Off} 
                             label="Unmapped Scholars" 
                             count={data?.unmappedStudents?.length || 0}
-                            color="text-red-500"
+                            color="text-red-600 dark:text-red-500"
                         />
                         <TabButton 
                             isActive={activeTab === 'parents'} 
@@ -91,7 +91,7 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
                                                     variant="ghost" 
                                                     onClick={() => handleAbsorbTeacher(t.id)}
                                                     disabled={absorbing === t.id}
-                                                    className="h-8 rounded-xl bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 hover:text-amber-400 text-xs font-medium"
+                                                    className="h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-500 hover:bg-amber-500/20 hover:text-amber-600 dark:text-amber-400 text-xs font-medium"
                                                 >
                                                     {absorbing === t.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : "Absorb"}
                                                 </Button>

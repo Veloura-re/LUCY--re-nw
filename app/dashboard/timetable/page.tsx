@@ -344,7 +344,7 @@ export default function TimetableManagementPage() {
                                                             </div>
                                                             <button
                                                                 onClick={() => removeSlot(entry.id)}
-                                                                className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity text-red-500/50 hover:text-red-500"
+                                                                className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity text-red-600 dark:text-red-500/50 hover:text-red-600 dark:text-red-500"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
@@ -435,7 +435,7 @@ export default function TimetableManagementPage() {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => setPeriods(periods.filter((_, i) => i !== idx))}
-                                                    className="text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20"
+                                                    className="text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 hover:bg-red-50 dark:bg-red-950/20"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>

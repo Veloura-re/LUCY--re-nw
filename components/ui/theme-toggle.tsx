@@ -48,7 +48,7 @@ export function ThemeToggle({ className }: { className?: string }) {
                         animate={{ rotate: 0, scale: 1, opacity: 1 }}
                         exit={{ rotate: 90, scale: 0.5, opacity: 0 }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                        className="relative z-10 text-amber-500"
+                        className="relative z-10 text-amber-600 dark:text-amber-500"
                     >
                         <Sun className="w-5 h-5 fill-amber-500/20" />
                     </motion.div>

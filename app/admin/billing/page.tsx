@@ -260,7 +260,7 @@ export default function BillingControlsPage() {
                                                         const reason = prompt('Rejection reason (optional):') || '';
                                                         handleResolveReceipt(receipt.id, 'REJECTED', reason);
                                                     }}
-                                                    className="px-2.5 py-1 rounded-md bg-red-950/20 border border-red-900/50 hover:bg-red-900/30 text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
+                                                    className="px-2.5 py-1 rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
                                                 >
                                                     Reject
                                                 </button>
@@ -270,7 +270,7 @@ export default function BillingControlsPage() {
                                                 "px-2.5 py-0.5 rounded text-[9px] font-bold uppercase border",
                                                 receipt.status === 'APPROVED' 
                                                     ? "border-emerald-900/30 text-emerald-500 bg-emerald-950/10" 
-                                                    : "border-red-900/30 text-red-500 bg-red-950/10"
+                                                    : "border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-500 bg-red-950/10"
                                             )}>
                                                 {receipt.status}
                                             </span>
@@ -368,7 +368,7 @@ export default function BillingControlsPage() {
                                             {activeSub ? (
                                                 <span className="text-emerald-500 font-bold">UNLIMITED</span>
                                             ) : expired ? (
-                                                <span className="text-red-500 font-bold">EXPIRED</span>
+                                                <span className="text-red-600 dark:text-red-500 font-bold">EXPIRED</span>
                                             ) : (
                                                 <span className="text-zinc-700 dark:text-zinc-300 font-semibold">{remainingDays} days</span>
                                             )}

@@ -311,7 +311,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     </div>
 
                                     {error && (
-                                        <div className="mt-6 p-4 bg-red-950/20 border border-red-900/30 rounded-2xl text-[10px] font-medium text-red-500 uppercase tracking-[0.1em] flex items-center gap-3">
+                                        <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl text-[10px] font-medium text-red-600 dark:text-red-500 uppercase tracking-[0.1em] flex items-center gap-3">
                                             <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                                         </div>
                                     )}
@@ -349,7 +349,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     </div>
 
                                     {error && (
-                                        <div className="p-4 bg-red-950/20 border border-red-900/30 rounded-2xl text-[10px] font-medium text-red-500 flex items-center justify-center gap-3">
+                                        <div className="p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-2xl text-[10px] font-medium text-red-600 dark:text-red-500 flex items-center justify-center gap-3">
                                             <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                                         </div>
                                     )}

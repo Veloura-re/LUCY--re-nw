@@ -534,7 +534,7 @@ function CreateExamContent() {
                             >
                                 <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 transition-all hover:border-amber-500/50 hover:bg-zinc-200 dark:hover:bg-zinc-900/60 h-full relative  flex flex-col justify-between">
                                     <div className="space-y-4">
-                                        <div className="w-12 h-12 bg-amber-950/20 border border-amber-900/30 rounded-2xl flex items-center justify-center text-amber-500">
+                                        <div className="w-12 h-12 bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-500">
                                             <AlignLeft className="w-6 h-6" />
                                         </div>
                                         <div>
@@ -542,7 +542,7 @@ function CreateExamContent() {
                                             <p className="text-zinc-600 font-medium text-[8px] mt-1 uppercase tracking-widest">Depth of Thought • Analysis</p>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-amber-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
+                                    <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-amber-600 dark:text-amber-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
                                         Begin Analysis <Plus className="ml-2 w-3 h-3" />
                                     </Button>
                                 </Card>
@@ -609,7 +609,7 @@ function CreateExamContent() {
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => removeQuestion(i)}
-                                            className="text-zinc-800 dark:text-zinc-200 hover:text-red-500 transition-colors h-8 w-8"
+                                            className="text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 transition-colors h-8 w-8"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
@@ -651,7 +651,7 @@ function CreateExamContent() {
                                                             {q.options.length > 2 && (
                                                                 <button
                                                                     onClick={() => removeOption(i, optIndex)}
-                                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-800 dark:text-zinc-200 hover:text-red-500 transition-colors opacity-0 group-hover/opt:opacity-100"
+                                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 transition-colors opacity-0 group-hover/opt:opacity-100"
                                                                 >
                                                                     <Trash2 className="w-3.5 h-3.5" />
                                                                 </button>
@@ -692,7 +692,7 @@ function CreateExamContent() {
                                     {q.type === "LONG" && (
                                         <div className="space-y-4">
                                             <div className="flex items-start gap-3">
-                                                <div className="w-6 h-6 mt-3 rounded-full bg-amber-950/20 border border-amber-900/30 flex items-center justify-center text-amber-500">
+                                                <div className="w-6 h-6 mt-3 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-500">
                                                     <AlignLeft className="w-3 h-3" />
                                                 </div>
                                                 <div className="flex-1 space-y-3">

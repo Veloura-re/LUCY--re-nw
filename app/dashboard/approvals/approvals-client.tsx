@@ -101,8 +101,8 @@ export default function ApprovalsClient() {
                             <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div className="space-y-4 flex-1">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-950/30 border border-amber-900/50 flex items-center justify-center">
-                                            <AlertCircle className="w-5 h-5 text-amber-500" />
+                                        <div className="w-10 h-10 rounded-xl bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 flex items-center justify-center">
+                                            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500" />
                                         </div>
                                         <div>
                                             <h3 className="text-xl font-medium tracking-tight text-zinc-900 dark:text-white">{formatActionType(request.actionType)}</h3>
@@ -121,7 +121,7 @@ export default function ApprovalsClient() {
                                     <Button
                                         onClick={() => handleResolve(request.id, 'REJECTED')}
                                         disabled={actionLoading === request.id}
-                                        className="flex-1 md:flex-none h-14 px-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-950/30 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 hover:border-red-900/50 hover:text-red-400 rounded-2xl font-medium text-xs uppercase tracking-widest transition-all"
+                                        className="flex-1 md:flex-none h-14 px-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-950/30 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 hover:border-red-200 dark:border-red-900/50 hover:text-red-600 dark:text-red-400 rounded-2xl font-medium text-xs uppercase tracking-widest transition-all"
                                     >
                                         {actionLoading === request.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4 mr-2" />}
                                         Reject

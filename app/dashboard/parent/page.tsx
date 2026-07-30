@@ -72,8 +72,8 @@ export default function ParentDashboard() {
                         const avgScore = parseFloat(student.stats?.averageScore || "0");
                         const outstanding = parseFloat(student.stats?.totalOutstanding || "0");
 
-                        const attendanceColor = attendancePct >= 90 ? "text-eduGreen-500" : attendancePct >= 75 ? "text-amber-400" : "text-red-400";
-                        const gradeColor = avgScore >= 80 ? "text-eduGreen-500" : avgScore >= 60 ? "text-blue-400" : avgScore >= 40 ? "text-amber-400" : "text-red-400";
+                        const attendanceColor = attendancePct >= 90 ? "text-eduGreen-500" : attendancePct >= 75 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400";
+                        const gradeColor = avgScore >= 80 ? "text-eduGreen-500" : avgScore >= 60 ? "text-blue-400" : avgScore >= 40 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400";
 
                         return (
                             <motion.div
@@ -133,7 +133,7 @@ export default function ParentDashboard() {
                                                         <div className="w-px bg-zinc-100 dark:bg-zinc-900 hidden md:block" />
                                                         <div className="text-center min-w-[80px]">
                                                             <p className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Outstanding</p>
-                                                            <p className="text-2xl font-black tracking-tighter text-amber-400">${outstanding.toFixed(0)}</p>
+                                                            <p className="text-2xl font-black tracking-tighter text-amber-600 dark:text-amber-400">${outstanding.toFixed(0)}</p>
                                                         </div>
                                                     </>
                                                 )}
@@ -163,8 +163,8 @@ export default function ParentDashboard() {
                                                     <Badge key={inv.studentId + inv.amount} className={cn(
                                                         "text-[9px] font-bold border",
                                                         inv.status === 'PAID' ? "bg-eduGreen-950/20 text-eduGreen-600 border-eduGreen-900/30" :
-                                                            inv.status === 'OVERDUE' ? "bg-red-950/20 text-red-500 border-red-900/30" :
-                                                                "bg-amber-950/20 text-amber-400 border-amber-900/30"
+                                                            inv.status === 'OVERDUE' ? "bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-900/30" :
+                                                                "bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border-amber-900/30"
                                                     )}>
                                                         ${parseFloat(inv.amount).toFixed(0)} · {inv.status}
                                                     </Badge>

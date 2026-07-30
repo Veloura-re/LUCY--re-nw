@@ -132,7 +132,7 @@ export default function DirectorAttendancePage() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-[#050505]/60 p-1.5 rounded-[1.5rem] border border-zinc-200 dark:border-white/5 backdrop-blur-3xl shadow-2xl w-fit">
+                    <div className="flex items-center gap-1 bg-white/60 dark:bg-[#050505]/60 p-1.5 rounded-[1.5rem] border border-zinc-200 dark:border-white/5 backdrop-blur-3xl shadow-2xl w-fit">
                         <button
                             onClick={() => setActiveTab('OVERVIEW')}
                             className={cn(
@@ -159,7 +159,7 @@ export default function DirectorAttendancePage() {
                 </div>
 
                 <div className="flex flex-col md:items-end gap-6">
-                    <div className="flex items-center gap-4 bg-[#050505]/60 border border-zinc-200 dark:border-white/5 p-2 rounded-[2rem] backdrop-blur-3xl shadow-2xl">
+                    <div className="flex items-center gap-4 bg-white/60 dark:bg-[#050505]/60 border border-zinc-200 dark:border-white/5 p-2 rounded-[2rem] backdrop-blur-3xl shadow-2xl">
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -228,7 +228,7 @@ export default function DirectorAttendancePage() {
                         </div>
 
                         {/* Teacher Compliance Redesign */}
-                        <Card className="bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                        <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl relative overflow-hidden group">
                             <div className="absolute inset-0 z-0 opacity-10 bg-gradient-to-br from-emerald-500/10 to-transparent pointer-events-none" />
 
                             <CardHeader className="p-12 border-b border-zinc-200 dark:border-white/5 flex flex-row items-center justify-between">
@@ -263,7 +263,7 @@ export default function DirectorAttendancePage() {
                                                 className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-white/[0.03] transition-all group/item"
                                             >
                                                 <div className="flex items-center gap-8">
-                                                    <div className="w-20 h-20 rounded-[2rem] bg-[#050505]/80 border border-zinc-300 dark:border-white/10 flex items-center justify-center font-black shadow-2xl relative overflow-hidden text-zinc-900 dark:text-white/40 group-hover/item:text-zinc-900 dark:text-white transition-all text-2xl italic">
+                                                    <div className="w-20 h-20 rounded-[2rem] bg-white/80 dark:bg-[#050505]/80 border border-zinc-300 dark:border-white/10 flex items-center justify-center font-black shadow-2xl relative overflow-hidden text-zinc-900/40 dark:text-white/40 group-hover/item:text-zinc-900 group-hover/item:dark:text-white transition-all text-2xl italic">
                                                         {teacher.name.charAt(0)}
                                                         <div className={cn(
                                                             "absolute inset-x-0 bottom-0 h-1.5 transition-all blur-[2px]",
@@ -304,7 +304,7 @@ export default function DirectorAttendancePage() {
                         exit={{ opacity: 0, x: -20 }}
                         className="space-y-12"
                     >
-                        <Card className="bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl relative z-20 overflow-hidden">
+                        <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl relative z-20 overflow-hidden">
                             <div className="absolute inset-0 z-0 opacity-10 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
 
                             <CardHeader className="p-12 border-b border-zinc-200 dark:border-white/5 flex flex-row items-center justify-between bg-gradient-to-b from-white/[0.02] to-transparent">
@@ -346,7 +346,7 @@ export default function DirectorAttendancePage() {
                                                 className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-10 hover:bg-white/[0.03] transition-all group/staff"
                                             >
                                                 <div className="flex items-center gap-10">
-                                                    <div className="w-24 h-24 rounded-[3rem] bg-[#050505]/80 border border-zinc-300 dark:border-white/10 flex items-center justify-center font-black shadow-2xl text-zinc-900 dark:text-white/40 group-hover/staff:text-zinc-900 dark:text-white transition-all relative overflow-hidden italic text-3xl">
+                                                    <div className="w-24 h-24 rounded-[3rem] bg-white/80 dark:bg-[#050505]/80 border border-zinc-300 dark:border-white/10 flex items-center justify-center font-black shadow-2xl text-zinc-900/40 dark:text-white/40 group-hover/staff:text-zinc-900 group-hover/staff:dark:text-white transition-all relative overflow-hidden italic text-3xl">
                                                         {record.name.charAt(0)}
                                                         <div className={cn(
                                                             "absolute inset-x-0 bottom-0 h-2 blur-[1px] transition-all",
@@ -371,14 +371,14 @@ export default function DirectorAttendancePage() {
                                                         value={record.status}
                                                         onValueChange={(val: string) => handleStaffStatusChange(record.teacherId, val)}
                                                     >
-                                                        <SelectTrigger className="h-20 bg-[#050505]/60 border-2 border-zinc-200 dark:border-white/5 rounded-[1.5rem] text-zinc-900 dark:text-white font-black uppercase tracking-[0.2em] shadow-2xl backdrop-blur-3xl px-8 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all font-mono italic text-[11px]">
+                                                        <SelectTrigger className="h-20 bg-white/60 dark:bg-[#050505]/60 border-2 border-zinc-200 dark:border-white/5 rounded-[1.5rem] text-zinc-900 dark:text-white font-black uppercase tracking-[0.2em] shadow-2xl backdrop-blur-3xl px-8 focus:ring-emerald-500/20 focus:border-emerald-500/40 transition-all font-mono italic text-[11px]">
                                                             <SelectValue placeholder="UNMARKED" />
                                                         </SelectTrigger>
-                                                        <SelectContent className="bg-[#050505] border-zinc-300 dark:border-white/10 rounded-[1.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] p-2">
+                                                        <SelectContent className="bg-white dark:bg-[#050505] border-zinc-300 dark:border-white/10 rounded-[1.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] p-2">
                                                             <SelectItem value="PENDING" className="text-zinc-900 dark:text-white/20 focus:bg-zinc-200 dark:bg-white/5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">UNMARKED</SelectItem>
                                                             <SelectItem value="PRESENT" className="text-emerald-500 focus:bg-emerald-500/10 focus:text-emerald-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">PRESENT</SelectItem>
                                                             <SelectItem value="ABSENT" className="text-rose-500 focus:bg-rose-500/10 focus:text-rose-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">ABSENT</SelectItem>
-                                                            <SelectItem value="LATE" className="text-amber-500 focus:bg-amber-500/10 focus:text-amber-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">LATE</SelectItem>
+                                                            <SelectItem value="LATE" className="text-amber-600 dark:text-amber-500 focus:bg-amber-500/10 focus:text-amber-600 dark:text-amber-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">LATE</SelectItem>
                                                             <SelectItem value="EXCUSED" className="text-blue-500 focus:bg-blue-500/10 focus:text-blue-400 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] p-4">EXCUSED</SelectItem>
                                                         </SelectContent>
                                                     </Select>
@@ -400,7 +400,7 @@ export default function DirectorAttendancePage() {
 function StatCard({ icon: Icon, label, value, color, glow, percentage }: any) {
     return (
         <Card className={cn(
-            "bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl overflow-hidden relative group transition-all hover:scale-[1.02] hover:border-zinc-300 dark:border-white/10",
+            "bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] shadow-2xl overflow-hidden relative group transition-all hover:scale-[1.02] hover:border-zinc-300 dark:border-white/10",
             color.includes('emerald') && "hover:border-emerald-500/30",
             color.includes('rose') && "hover:border-rose-500/30",
             color.includes('blue') && "hover:border-blue-500/30"

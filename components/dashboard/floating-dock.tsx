@@ -161,15 +161,15 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                 isActive
                     ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/40"
                     : variant === 'danger'
-                        ? "bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95"
+                        ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95"
                         : variant === 'toggle'
-                            ? "bg-white/[0.05] text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-zinc-200 dark:border-white/5 md:hover:border-white/20 md:hover:scale-105 active:scale-95"
-                            : "bg-white/[0.03] text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-white/[0.1] border border-white/[0.05] md:hover:border-zinc-300 dark:border-white/10 md:hover:scale-105 active:scale-95",
+                            ? "bg-ui-muted/10 text-eduGreen-600 dark:text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-ui-border md:hover:border-transparent md:hover:scale-105 active:scale-95"
+                            : "bg-ui-muted/5 text-ui-muted hover:text-ui-text hover:bg-ui-muted/20 border border-ui-border md:hover:border-ui-muted/40 md:hover:scale-105 active:scale-95",
                 isMobile ? "min-w-[42px] min-h-[42px]" : ""
             )}
         >
             {!isActive && (
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/5 dark:from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             )}
             {Icon && <Icon className="w-5 h-5" />}
             {isActive && (

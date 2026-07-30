@@ -389,7 +389,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         disabled={isGenerating}
                         className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white"
                     >
-                        <Zap className={cn("mr-2 h-4 w-4 text-amber-500", isGenerating && "animate-pulse")} />
+                        <Zap className={cn("mr-2 h-4 w-4 text-amber-600 dark:text-amber-500", isGenerating && "animate-pulse")} />
                         {isGenerating ? "Executing Cycle..." : "Launch Invoicing Cycle"}
                     </Button>
                     <Link href="/dashboard/finance/students">
@@ -466,7 +466,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] p-8 shadow-2xl border-t-zinc-800/20 group hover:border-amber-900/30 transition-all">
                         <div className="flex items-center justify-between mb-6">
                             <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Pending Liquidity</span>
-                            <DollarSign className="w-4 h-4 text-amber-500" />
+                            <DollarSign className="w-4 h-4 text-amber-600 dark:text-amber-500" />
                         </div>
                         <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
                             ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
@@ -617,21 +617,21 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     {pendingPayments.length > 0 && (
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-amber-950/20 rounded-xl border border-amber-900/30 text-amber-500">
+                                <div className="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-900/30 text-amber-600 dark:text-amber-500">
                                     <ShieldCheck className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Verification <span className="text-amber-500 not-italic">Nexus</span></h2>
+                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Verification <span className="text-amber-600 dark:text-amber-500 not-italic">Nexus</span></h2>
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Awaiting Institutional Reconciliation</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
                                 {pendingPayments.map((pay) => (
-                                    <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-900/20 rounded-3xl p-6 hover:border-amber-900/40 transition-all group overflow-hidden relative border-dashed">
+                                    <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-900/20 rounded-3xl p-6 hover:border-amber-300 dark:hover:border-amber-900/40 transition-all group overflow-hidden relative border-dashed">
                                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                             <div className="flex items-center gap-6">
-                                                <div className="w-12 h-12 rounded-2xl bg-amber-950/20 flex items-center justify-center border border-amber-900/30 font-medium text-amber-500">
+                                                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/20 flex items-center justify-center border border-amber-900/30 font-medium text-amber-600 dark:text-amber-500">
                                                     {pay.invoice.student.firstName[0]}
                                                 </div>
                                                 <div>
@@ -639,7 +639,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                     <div className="flex items-center gap-2 mt-0.5">
                                                         <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice.student.studentCode}</span>
                                                         <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-                                                        <span className="text-[10px] font-medium text-amber-500/80 uppercase tracking-widest">{pay.method.replace('_', ' ')}</span>
+                                                        <span className="text-[10px] font-medium text-amber-600 dark:text-amber-500/80 uppercase tracking-widest">{pay.method.replace('_', ' ')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -667,7 +667,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                         onClick={() => handleVerifyPayment(pay.id, 'FAILED')}
                                                         isLoading={verifyingPayment === pay.id}
                                                         disabled={verifyingPayment === pay.id}
-                                                        className="h-10 px-4 text-zinc-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[9px] uppercase tracking-widest border border-zinc-200 dark:border-zinc-900"
+                                                        className="h-10 px-4 text-zinc-600 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[9px] uppercase tracking-widest border border-zinc-200 dark:border-zinc-900"
                                                     >
                                                         Dispute
                                                     </Button>
@@ -754,8 +754,8 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                 <div className={cn(
                                                     "text-[9px] font-medium uppercase tracking-[0.2em] px-2.5 py-1 rounded-lg border inline-block italic",
                                                     inv.status === 'PAID' ? "bg-eduGreen-500/10 border-eduGreen-500/20 text-eduGreen-500" :
-                                                        inv.status === 'OVERDUE' ? "bg-red-500/10 border-red-500/20 text-red-500" :
-                                                            "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                                                        inv.status === 'OVERDUE' ? "bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500" :
+                                                            "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
                                                 )}>
                                                     {inv.status}
                                                 </div>
@@ -850,7 +850,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => handleDeleteFee(fee.id)}
-                                        className="h-10 px-4 text-zinc-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[10px] uppercase tracking-widest"
+                                        className="h-10 px-4 text-zinc-600 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[10px] uppercase tracking-widest"
                                     >
                                         <Trash2 className="w-4 h-4 mr-2" /> Decommission
                                     </Button>

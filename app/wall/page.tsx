@@ -143,7 +143,7 @@ export default function Wall() {
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                         <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest font-bold">message</div>
-                                        <div className={`text-[8px] uppercase tracking-widest transition-colors font-bold ${form.message.length > 250 ? "text-red-500" : "text-slate-500 dark:text-zinc-700"}`}>{form.message.length}/280</div>
+                                        <div className={`text-[8px] uppercase tracking-widest transition-colors font-bold ${form.message.length > 250 ? "text-red-600 dark:text-red-500" : "text-slate-500 dark:text-zinc-700"}`}>{form.message.length}/280</div>
                                     </div>
                                     <textarea
                                         rows={3}

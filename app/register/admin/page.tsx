@@ -147,7 +147,7 @@ export default function AdminRegister() {
                         </div>
 
                         {error && (
-                            <div className="p-3 bg-red-900/20 border border-red-900/50 rounded text-sm text-red-400 flex items-center gap-2">
+                            <div className="p-3 bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
                                 <AlertCircle className="w-4 h-4" /> {error}
                             </div>
                         )}

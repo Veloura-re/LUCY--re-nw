@@ -231,8 +231,8 @@ export default function HomeroomDashboard() {
                         <CardContent className="p-6 space-y-6">
                             <div className="space-y-4">
                                 <StatRow label="Present" count={stats.present} color="text-eduGreen-500" bgColor="bg-eduGreen-500/10" icon={CheckCircle2} />
-                                <StatRow label="Absent" count={stats.absent} color="text-red-500" bgColor="bg-red-500/10" icon={XCircle} />
-                                <StatRow label="Late" count={stats.late} color="text-amber-500" bgColor="bg-amber-500/10" icon={Clock} />
+                                <StatRow label="Absent" count={stats.absent} color="text-red-600 dark:text-red-500" bgColor="bg-red-500/10" icon={XCircle} />
+                                <StatRow label="Late" count={stats.late} color="text-amber-600 dark:text-amber-500" bgColor="bg-amber-500/10" icon={Clock} />
                                 <StatRow label="Excused" count={stats.excused} color="text-blue-500" bgColor="bg-blue-500/10" icon={AlertCircle} />
                             </div>
 
@@ -287,14 +287,14 @@ export default function HomeroomDashboard() {
                                             <StatusButton
                                                 active={attendance[student.id]?.status === 'ABSENT'}
                                                 onClick={() => updateStatus(student.id, 'ABSENT')}
-                                                color="text-red-500"
+                                                color="text-red-600 dark:text-red-500"
                                                 icon={XCircle}
                                                 label="Absent"
                                             />
                                             <StatusButton
                                                 active={attendance[student.id]?.status === 'LATE'}
                                                 onClick={() => updateStatus(student.id, 'LATE')}
-                                                color="text-amber-500"
+                                                color="text-amber-600 dark:text-amber-500"
                                                 icon={Clock}
                                                 label="Late"
                                             />
@@ -318,7 +318,7 @@ export default function HomeroomDashboard() {
                                                 )}
                                                 {student.parentLinks?.[0]?.parent && (
                                                     <Link href={`/dashboard/messages?userId=${student.parentLinks[0].parent.id}`}>
-                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-amber-500 hover:bg-amber-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
+                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-amber-600 dark:text-amber-500 hover:bg-amber-50 dark:bg-amber-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
                                                             <Shield className="w-4 h-4" />
                                                         </Button>
                                                     </Link>

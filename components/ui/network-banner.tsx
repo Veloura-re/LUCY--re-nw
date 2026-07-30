@@ -28,7 +28,7 @@ export function NetworkBanner() {
     return (
         <div
             className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold border shadow-2xl transition-all flex items-center gap-3 ${quality === "offline"
-                    ? "bg-red-950/90 border-red-800/50 text-red-300"
+                    ? "bg-red-950/90 border-red-800/50 text-red-700 dark:text-red-300"
                     : quality === "slow"
                         ? "bg-amber-950/90 border-amber-800/50 text-amber-300"
                         : "bg-zinc-100/90 dark:bg-zinc-900/90 border-eduGreen-800/50 text-eduGreen-400"
