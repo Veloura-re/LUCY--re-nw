@@ -411,7 +411,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                         );
                                                     }
                                                     return (
-                                                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-white/10 flex flex-col items-start p-4">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-zinc-300 dark:border-white/10 flex flex-col items-start p-4">
                                                             <div className="w-full h-1 bg-white/5 mb-4" />
                                                             <h4 className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
                                                         </div>
@@ -811,7 +811,7 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/95"
+            className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-white/95 dark:bg-black/95"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
@@ -933,7 +933,7 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/90"
+            className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-white/90 dark:bg-black/90"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
@@ -1093,7 +1093,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
     return (
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white/95 dark:bg-black/95 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
             <motion.div
@@ -1197,7 +1197,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                         />
                                         {formData.coverUrl ? (
                                             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${formData.coverUrl})` }}>
-                                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <span className="text-[8px] text-zinc-900 dark:text-white uppercase tracking-widest font-bold">Change Cover</span>
                                                 </div>
                                             </div>

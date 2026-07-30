@@ -263,11 +263,11 @@ function MarklistViewContent() {
     if (!config) return <div className="p-10 text-center text-red-500 font-medium">Configuration Missing</div>;
 
     return (
-        <div className="flex flex-col h-screen max-h-screen bg-zinc-950">
+        <div className="flex flex-col h-screen max-h-screen bg-white dark:bg-zinc-950">
             {/* Header */}
-            <div className=" border-b border-zinc-900/50 px-8 py-6 flex items-center justify-between bg-zinc-950/50 backdrop-blur-xl shrink-0">
+            <div className=" border-b border-zinc-200 dark:border-zinc-900/50 px-8 py-6 flex items-center justify-between bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl shrink-0">
                 <div>
-                    <h2 className="text-2xl font-medium uppercase tracking-tighter text-white">
+                    <h2 className="text-2xl font-medium uppercase tracking-tighter text-zinc-900 dark:text-white">
                         {config.class?.name} <span className="text-eduGreen-500 italic">::</span> {config.subject?.name}
                     </h2>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.3em] mt-1">Academic Performance Matrix</p>
@@ -294,8 +294,8 @@ function MarklistViewContent() {
                         className={cn(
                             "h-12 px-6 rounded-2xl font-medium uppercase tracking-[0.2em] text-[10px] transition-all",
                             unsavedChanges.size === 0
-                                ? "bg-zinc-900 hover:bg-zinc-800 text-eduGreen-500 border border-eduGreen-900/30 active:scale-95"
-                                : "bg-zinc-900 text-zinc-700 border border-zinc-900 pointer-events-none opacity-50"
+                                ? "bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-eduGreen-500 border border-eduGreen-900/30 active:scale-95"
+                                : "bg-zinc-100 dark:bg-zinc-900 text-zinc-700 border border-zinc-200 dark:border-zinc-900 pointer-events-none opacity-50"
                         )}
                     >
                         {isSyncing ? "Publishing..." : <><CheckCircle2 className="w-3.5 h-3.5 mr-2" /> Publish to Reports</>}
@@ -308,7 +308,7 @@ function MarklistViewContent() {
                             "h-12 px-10 rounded-2xl font-medium uppercase tracking-[0.2em] text-[10px] transition-all",
                             unsavedChanges.size > 0
                                 ? "bg-eduGreen-600 hover:bg-eduGreen-500 text-white shadow-2xl shadow-eduGreen-900/30 active:scale-95"
-                                : "bg-zinc-900 text-zinc-600 border border-zinc-800 pointer-events-none"
+                                : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 border border-zinc-300 dark:border-zinc-800 pointer-events-none"
                         )}
                     >
                         {isSaving ? "Syncing Logic..." : "Commit Changes"}
@@ -318,26 +318,26 @@ function MarklistViewContent() {
 
             {/* Grid Area */}
             <div className="flex-1 overflow-auto p-12 custom-scrollbar">
-                <div className="rounded-[2.5rem] border border-zinc-900/30 bg-zinc-950/30 shadow-2xl overflow-hidden backdrop-blur-sm">
+                <div className="rounded-[2.5rem] border border-zinc-200 dark:border-zinc-900/30 bg-white/30 dark:bg-zinc-950/30 shadow-2xl overflow-hidden backdrop-blur-sm">
                     <table className="w-full text-sm text-left border-collapse">
-                        <thead className="bg-zinc-900/20 text-[9px] uppercase font-medium tracking-[0.2em] text-zinc-600 sticky top-0 z-10 backdrop-blur-xl">
+                        <thead className="bg-zinc-100/20 dark:bg-zinc-900/20 text-[9px] uppercase font-medium tracking-[0.2em] text-zinc-600 sticky top-0 z-10 backdrop-blur-xl">
                             <tr>
                                 <th className="px-8 py-5 w-16 text-center">#</th>
                                 <th className="px-8 py-5 min-w-[220px]">Student Entity</th>
-                                <th className="px-8 py-5 w-32 border-r border-zinc-900/20">Access Code</th>
+                                <th className="px-8 py-5 w-32 border-r border-zinc-200 dark:border-zinc-900/20">Access Code</th>
 
                                 {config.columns.map((col: Column) => (
-                                    <th key={col.id} className="px-4 py-5 min-w-[130px] text-center border-r border-zinc-900/20 bg-zinc-900/10">
+                                    <th key={col.id} className="px-4 py-5 min-w-[130px] text-center border-r border-zinc-200 dark:border-zinc-900/20 bg-zinc-100/10 dark:bg-zinc-900/10">
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-zinc-300">{col.title}</span>
+                                            <span className="text-zinc-700 dark:text-zinc-300">{col.title}</span>
                                             <span className="text-[7px] text-zinc-600 opacity-70">MAX {col.maxMarks}</span>
                                         </div>
                                     </th>
                                 ))}
 
                                 <th className="px-8 py-5 w-24 text-center bg-eduGreen-950/10 text-eduGreen-600">Total</th>
-                                <th className="px-8 py-5 w-24 text-center bg-eduGreen-950/20 text-eduGreen-500 border-r border-zinc-900/20">%</th>
-                                <th className="px-8 py-5 w-20 text-center border-r border-zinc-900/20">Grade</th>
+                                <th className="px-8 py-5 w-24 text-center bg-eduGreen-950/20 text-eduGreen-500 border-r border-zinc-200 dark:border-zinc-900/20">%</th>
+                                <th className="px-8 py-5 w-20 text-center border-r border-zinc-200 dark:border-zinc-900/20">Grade</th>
                                 <th className="px-8 py-5 min-w-[200px]">Strategic Remarks</th>
                             </tr>
                         </thead>
@@ -351,7 +351,7 @@ function MarklistViewContent() {
                                             <span className="text-[7px] font-medium text-zinc-800 uppercase tracking-widest mt-1">Authorized Profile</span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 font-mono text-[9px] text-zinc-600 border-r border-zinc-900/20 tracking-tighter">
+                                    <td className="px-8 py-4 font-mono text-[9px] text-zinc-600 border-r border-zinc-200 dark:border-zinc-900/20 tracking-tighter">
                                         {entry.student.studentCode}
                                     </td>
 
@@ -360,7 +360,7 @@ function MarklistViewContent() {
                                         const score = mark ? mark.score : "";
 
                                         return (
-                                            <td key={col.id} className="p-2 border-r border-zinc-900/20 text-center">
+                                            <td key={col.id} className="p-2 border-r border-zinc-200 dark:border-zinc-900/20 text-center">
                                                 <input
                                                     type="number"
                                                     value={score}
@@ -382,12 +382,12 @@ function MarklistViewContent() {
                                         {entry.total}
                                     </td>
                                     <td className={cn(
-                                        "px-8 py-4 text-center font-medium text-lg bg-eduGreen-950/10 group-hover:bg-eduGreen-950/20 transition-all border-r border-zinc-900/20",
+                                        "px-8 py-4 text-center font-medium text-lg bg-eduGreen-950/10 group-hover:bg-eduGreen-950/20 transition-all border-r border-zinc-200 dark:border-zinc-900/20",
                                         getPerformanceColor(entry.percentage).text
                                     )}>
                                         {Math.round(entry.percentage)}
                                     </td>
-                                    <td className="px-8 py-4 text-center border-r border-zinc-900/20">
+                                    <td className="px-8 py-4 text-center border-r border-zinc-200 dark:border-zinc-900/20">
                                         <div className={cn(
                                             "inline-flex items-center justify-center w-10 h-10 rounded-xl font-medium text-[11px] shadow-2xl",
                                             getPerformanceColor(entry.percentage).bg,
@@ -402,7 +402,7 @@ function MarklistViewContent() {
                                             value={entry.remarks}
                                             onChange={(e) => handleRemarkChange(idx, e.target.value)}
                                             placeholder="Enter faculty observation..."
-                                            className="w-full bg-zinc-900/30 border border-zinc-900/50 rounded-xl px-4 py-2 text-[10px] font-medium text-zinc-400 focus:border-eduGreen-900/50 focus:bg-zinc-950 focus:text-white transition-all outline-none resize-none h-12"
+                                            className="w-full bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-900/50 rounded-xl px-4 py-2 text-[10px] font-medium text-zinc-600 dark:text-zinc-400 focus:border-eduGreen-900/50 focus:bg-white dark:bg-zinc-950 focus:text-zinc-900 dark:text-white transition-all outline-none resize-none h-12"
                                         />
                                     </td>
                                 </tr>

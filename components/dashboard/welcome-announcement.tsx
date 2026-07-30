@@ -103,7 +103,7 @@ export function WelcomeAnnouncement() {
   return (
     <AnimatePresence>
       {showV1Doc && (
-        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-white/85 dark:bg-black/85 backdrop-blur-md">
           <CanvasConfetti />
           
           <motion.div

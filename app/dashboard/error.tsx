@@ -19,7 +19,7 @@ export default function DashboardError({
             <div className="w-16 h-16 rounded-2xl bg-amber-950/20 border border-amber-900/30 flex items-center justify-center mb-6">
                 <AlertTriangle className="w-8 h-8 text-amber-500" />
             </div>
-            <h2 className="text-2xl font-medium text-white tracking-tight mb-2">
+            <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight mb-2">
                 Connection Interrupted
             </h2>
             <p className="text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">

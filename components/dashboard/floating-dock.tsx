@@ -164,7 +164,7 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                         ? "bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95"
                         : variant === 'toggle'
                             ? "bg-white/[0.05] text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-zinc-200 dark:border-white/5 md:hover:border-white/20 md:hover:scale-105 active:scale-95"
-                            : "bg-white/[0.03] text-zinc-500 hover:text-white hover:bg-white/[0.1] border border-white/[0.05] md:hover:border-white/10 md:hover:scale-105 active:scale-95",
+                            : "bg-white/[0.03] text-zinc-500 hover:text-white hover:bg-white/[0.1] border border-white/[0.05] md:hover:border-zinc-300 dark:border-white/10 md:hover:scale-105 active:scale-95",
                 isMobile ? "min-w-[42px] min-h-[42px]" : ""
             )}
         >

@@ -66,7 +66,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                 {/* Header Overlay */}
                 <div className="absolute top-0 left-0 w-full z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
                     <div className="flex items-center gap-4 pointer-events-auto">
-                        <div className="p-3 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 shadow-lg">
+                        <div className="p-3 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-xl border border-zinc-300 dark:border-white/10 shadow-lg">
                             <BookOpen className="w-5 h-5 text-eduGreen-500" />
                         </div>
                         <div>
@@ -75,7 +75,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 pointer-events-auto bg-black/40 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-lg">
+                    <div className="flex items-center gap-2 pointer-events-auto bg-white/40 dark:bg-black/40 backdrop-blur-md p-1.5 rounded-2xl border border-zinc-300 dark:border-white/10 shadow-lg">
                         <Button
                             variant="ghost"
                             size="icon"
@@ -131,13 +131,13 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
 
                     {/* Sliding Metadata Sidebar */}
                     <div className={cn(
-                        "h-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl border-l border-white/10 transition-all duration-500 ease-in-out z-20 flex flex-col relative",
+                        "h-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl border-l border-zinc-300 dark:border-white/10 transition-all duration-500 ease-in-out z-20 flex flex-col relative",
                         sidebarOpen ? "w-80 translate-x-0 opacity-100" : "w-0 translate-x-full opacity-0 overflow-hidden"
                     )}>
                         <div className="p-8 pt-28 space-y-8 overflow-y-auto h-full scrollbar-hide w-80">
                             {/* Visual Book Spine representation matching outer cover */}
                             {coverUrl ? (
-                                <div className="w-full h-48 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-white/10 shadow-2xl relative overflow-hidden group">
+                                <div className="w-full h-48 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-white/10 shadow-2xl relative overflow-hidden group">
                                     <img src={coverUrl} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent opacity-80" />
                                     <div className="absolute bottom-3 left-3 right-3">
@@ -145,7 +145,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="w-24 h-32 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border border-white/10 shadow-2xl flex flex-col justify-between p-3 relative overflow-hidden group">
+                                <div className="w-24 h-32 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-lg border border-zinc-300 dark:border-white/10 shadow-2xl flex flex-col justify-between p-3 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-16 h-16 bg-eduGreen-500/20 blur-xl group-hover:opacity-100 opacity-50 transition-all" />
                                     <ScrollText className="w-5 h-5 text-eduGreen-500" />
                                     <div className="text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest break-words leading-tight">{book.title.substring(0, 30)}</div>
@@ -177,7 +177,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                     </div>
                                 )}
 
-                                <div className="pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
+                                <div className="pt-6 border-t border-zinc-300 dark:border-white/10 grid grid-cols-2 gap-4">
                                     {book.edition && (
                                         <div>
                                             <div className="flex items-center gap-1.5 text-zinc-500 mb-1">

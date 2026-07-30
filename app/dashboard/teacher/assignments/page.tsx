@@ -43,13 +43,13 @@ function AssignmentsLoadingFallback() {
     return (
         <div className="min-h-[70vh] flex flex-col items-center justify-center gap-10">
             <div className="relative">
-                <div className="w-24 h-24 rounded-full border border-white/5 border-t-white animate-spin" />
+                <div className="w-24 h-24 rounded-full border border-zinc-200 dark:border-white/5 border-t-white animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <Activity className="w-8 h-8 text-white animate-pulse" />
+                    <Activity className="w-8 h-8 text-zinc-900 dark:text-white animate-pulse" />
                 </div>
             </div>
             <div className="text-center space-y-2">
-                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-white italic">Synchronizing Task Command</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-zinc-900 dark:text-white italic">Synchronizing Task Command</p>
                 <div className="flex items-center gap-3 justify-center">
                     <div className="h-[1px] w-6 bg-zinc-800" />
                     <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Neural Link Encryption Active</p>

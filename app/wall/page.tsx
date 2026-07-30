@@ -66,7 +66,7 @@ export default function Wall() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -75,7 +75,7 @@ export default function Wall() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
                         <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-slate-900 dark:bg-white flex items-center justify-center">
-                            <span className="text-white dark:text-black font-black text-xs">L</span>
+                            <span className="text-zinc-900 dark:text-white dark:text-black font-black text-xs">L</span>
                         </motion.div>
                         <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
@@ -159,7 +159,7 @@ export default function Wall() {
 
                             <div className="flex items-center gap-4">
                                 <MagneticButton>
-                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-slate-900 text-white dark:bg-white dark:text-black text-[10px] uppercase tracking-widest font-bold hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2 rounded-md dark:rounded-none">
+                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black text-[10px] uppercase tracking-widest font-bold hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2 rounded-md dark:rounded-none">
                                         {status === "loading" ? (
                                             <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} className="w-3 h-3 border border-white dark:border-black border-t-transparent rounded-full" />routing...</>
                                         ) : status === "success" ? (

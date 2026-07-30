@@ -64,7 +64,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                         SCHOLASTIC <span className="text-zinc-800 not-italic">REGISTRY</span>
                     </h2>
                     <div className="flex items-center gap-3 mt-4">
-                        <span className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{studentName}</span>
+                        <span className="px-4 py-1.5 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{studentName}</span>
                         <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">CODE: {studentCode}</span>
                     </div>
                 </motion.div>
@@ -110,20 +110,20 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }}
                             onClick={() => setShowDetailModal(false)}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-2xl"
+                            className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-2xl"
                         />
                         
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.9, y: 40 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 40 }}
-                            className="relative w-full max-w-4xl bg-[#09090b] border border-white/10 rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
+                            className="relative w-full max-w-4xl bg-[#09090b] border border-zinc-300 dark:border-white/10 rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
                         >
                             <div className="p-10 md:p-16 space-y-12">
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-4">
-                                            <span className="px-5 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
+                                            <span className="px-5 py-1.5 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
                                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{selectedAssignment.subject?.name}</span>
                                         </div>
                                         <h3 className="text-3xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase">{selectedAssignment.title}</h3>
@@ -268,7 +268,7 @@ function RegistryCard({ assignment, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-10 rounded-[3.5rem] border backdrop-blur-3xl transition-all cursor-pointer group relative overflow-hidden",
-                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5 shadow-none" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-white/10 hover:border-white/20 shadow-2xl"
+                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5 shadow-none" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-zinc-300 dark:border-white/10 hover:border-white/20 shadow-2xl"
             )}
         >
             {isLate && (

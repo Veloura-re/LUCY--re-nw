@@ -45,21 +45,21 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4 font-sans text-white relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 p-4 font-sans text-zinc-900 dark:text-white relative overflow-hidden">
             {/* Immersive Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-eduGreen-500/20 blur-[120px] rounded-full" />
                 <div className="absolute -bottom-[20%] left-[20%] w-[50%] h-[50%] rounded-full bg-emerald-500/10 blur-[120px]" />
             </div>
 
-            <Card className="w-full max-w-md bg-zinc-900/90 border-zinc-800 shadow-2xl relative z-10 overflow-hidden">
+            <Card className="w-full max-w-md bg-zinc-100/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-800 shadow-2xl relative z-10 overflow-hidden">
                 {!isSubmitted ? (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
                         <CardHeader className="space-y-2 items-center text-center pb-2 pt-8">
                             <div className="mx-auto flex justify-center mb-4">
                                 <Logo className="w-14 h-14" />
                             </div>
-                            <CardTitle className="text-2xl font-medium text-white tracking-tight">
+                            <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">
                                 Recover Access
                             </CardTitle>
                             <CardDescription className="text-zinc-500 font-medium text-sm">
@@ -101,10 +101,10 @@ export default function ForgotPasswordPage() {
                             <CheckCircle2 className="w-10 h-10 text-eduGreen-500" />
                         </div>
                         <div className="space-y-2">
-                            <CardTitle className="text-2xl font-medium text-white">Check your Inbox</CardTitle>
+                            <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white">Check your Inbox</CardTitle>
                             <p className="text-zinc-500 text-sm font-medium leading-relaxed">
                                 We've sent password reset instructions to <br />
-                                <span className="text-white font-medium">{email}</span>
+                                <span className="text-zinc-900 dark:text-white font-medium">{email}</span>
                             </p>
                         </div>
                         <Link href="/login" className="block w-full">
@@ -115,7 +115,7 @@ export default function ForgotPasswordPage() {
                     </div>
                 )}
 
-                <CardFooter className="flex flex-col gap-4 border-t border-zinc-800 py-6 justify-center bg-zinc-950/40">
+                <CardFooter className="flex flex-col gap-4 border-t border-zinc-300 dark:border-zinc-800 py-6 justify-center bg-white/40 dark:bg-zinc-950/40">
                     {!isSubmitted && (
                         <Link href="/login" className="flex items-center gap-2 text-xs text-zinc-500 font-medium hover:text-eduGreen-500 transition-colors uppercase tracking-widest">
                             <ArrowLeft className="w-3.5 h-3.5" />

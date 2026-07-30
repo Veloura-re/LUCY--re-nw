@@ -162,20 +162,20 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
     return (
         <div className="space-y-10 animate-in fade-in duration-300 max-w-5xl">
             <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center">
                     <Crown className="w-6 h-6 text-eduGreen-500" />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-semibold text-white tracking-tight">Principal Management</h1>
+                    <h1 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight">Principal Management</h1>
                     <p className="text-xs text-zinc-500 uppercase tracking-widest font-medium mt-1">Delegated Authority Control</p>
                 </div>
             </div>
 
             {/* Invite Form */}
-            <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-3xl p-6 md:p-8 relative overflow-hidden">
+            <div className="bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 rounded-3xl p-6 md:p-8 relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-eduGreen-500/20 to-transparent" />
                 
-                <h3 className="text-lg font-medium text-white mb-6 tracking-tight">Dispatch Invitation</h3>
+                <h3 className="text-lg font-medium text-zinc-900 dark:text-white mb-6 tracking-tight">Dispatch Invitation</h3>
                 
                 <form onSubmit={handleInvite} className="flex flex-col md:flex-row gap-4 items-end max-w-2xl">
                     <div className="flex-1 space-y-2 w-full">
@@ -186,7 +186,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                             value={newEmail}
                             onChange={e => setNewEmail(e.target.value)}
                             required
-                            className="bg-zinc-950 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
+                            className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 rounded-xl h-12 text-zinc-900 dark:text-white focus:border-eduGreen-600"
                         />
                     </div>
                     <Button
@@ -215,20 +215,20 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                     {/* Active Principals */}
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-white tracking-tight">Active Principals</h3>
-                            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest bg-zinc-900 px-3 py-1 rounded-full">{principals.length} Authorized</span>
+                            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white tracking-tight">Active Principals</h3>
+                            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full">{principals.length} Authorized</span>
                         </div>
                         
                         {principals.length === 0 ? (
-                            <div className="text-center py-16 bg-zinc-950/30 rounded-3xl border border-dashed border-zinc-800/50">
+                            <div className="text-center py-16 bg-white/30 dark:bg-zinc-950/30 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800/50">
                                 <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-medium">No active principals found.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 gap-4">
                                 {principals.map(p => (
-                                    <div key={p.id} className="flex flex-col md:flex-row md:items-center justify-between p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-3xl gap-6">
+                                    <div key={p.id} className="flex flex-col md:flex-row md:items-center justify-between p-6 bg-white/40 dark:bg-zinc-950/40 border border-zinc-300 dark:border-zinc-800/50 rounded-3xl gap-6">
                                         <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center overflow-hidden border border-zinc-800">
+                                            <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center overflow-hidden border border-zinc-300 dark:border-zinc-800">
                                                 {p.photoUrl ? (
                                                     <Image src={p.photoUrl} alt={p.name || ''} width={48} height={48} className="w-full h-full object-cover" />
                                                 ) : (
@@ -236,20 +236,20 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="text-base font-medium text-white">{p.name || 'Unnamed Principal'}</p>
+                                                <p className="text-base font-medium text-zinc-900 dark:text-white">{p.name || 'Unnamed Principal'}</p>
                                                 <p className="text-xs text-zinc-500 mt-0.5">{p.email}</p>
                                             </div>
                                         </div>
                                         
-                                        <div className="flex items-center gap-6 justify-between md:justify-end bg-zinc-900/30 p-3 rounded-2xl md:bg-transparent md:p-0">
-                                            <div className="flex items-center gap-3 pr-6 border-r border-zinc-800">
+                                        <div className="flex items-center gap-6 justify-between md:justify-end bg-zinc-100/30 dark:bg-zinc-900/30 p-3 rounded-2xl md:bg-transparent md:p-0">
+                                            <div className="flex items-center gap-3 pr-6 border-r border-zinc-300 dark:border-zinc-800">
                                                 <Switch 
                                                     checked={p.preferences?.fullAccess === true}
                                                     onCheckedChange={() => toggleFullAccess(p.id, p.preferences?.fullAccess === true)}
                                                     className="data-[state=checked]:bg-eduGreen-500"
                                                 />
                                                 <div>
-                                                    <p className="text-[11px] font-semibold text-white tracking-wide">Bypass Approvals</p>
+                                                    <p className="text-[11px] font-semibold text-zinc-900 dark:text-white tracking-wide">Bypass Approvals</p>
                                                     <p className="text-[9px] text-zinc-500 tracking-widest uppercase mt-0.5">Full System Access</p>
                                                 </div>
                                             </div>
@@ -282,19 +282,19 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
 
                     {/* Pending Invites */}
                     {invites.length > 0 && (
-                        <div className="pt-8 border-t border-zinc-900">
+                        <div className="pt-8 border-t border-zinc-200 dark:border-zinc-900">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-semibold text-white tracking-tight">Pending Dispatch</h3>
+                                <h3 className="text-sm font-semibold text-zinc-900 dark:text-white tracking-tight">Pending Dispatch</h3>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {invites.map(inv => (
-                                    <div key={inv.id} className="flex items-center justify-between p-5 bg-zinc-950/20 border border-zinc-800/50 rounded-3xl border-dashed">
+                                    <div key={inv.id} className="flex items-center justify-between p-5 bg-white/20 dark:bg-zinc-950/20 border border-zinc-300 dark:border-zinc-800/50 rounded-3xl border-dashed">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                                            <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
                                                 <Mail className="w-4 h-4 text-zinc-500" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-medium text-white">{inv.email}</p>
+                                                <p className="text-sm font-medium text-zinc-900 dark:text-white">{inv.email}</p>
                                                 <p className="text-[9px] text-amber-500 uppercase tracking-widest mt-1">Pending Acceptance</p>
                                             </div>
                                         </div>
@@ -303,7 +303,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 variant="ghost" 
                                                 size="sm"
                                                 onClick={() => copyToken(inv.token)}
-                                                className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 h-8 w-8 p-0"
+                                                className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5 h-8 w-8 p-0"
                                                 title="Copy Invite Link"
                                             >
                                                 {copiedToken === inv.token ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}

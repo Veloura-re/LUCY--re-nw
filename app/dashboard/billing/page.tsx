@@ -146,10 +146,10 @@ export default function BillingPage() {
 
     if (!schoolInfo) {
         return (
-            <div className="max-w-xl mx-auto mt-12 bg-zinc-900 border border-red-950/50 rounded-2xl p-8 text-center">
+            <div className="max-w-xl mx-auto mt-12 bg-zinc-100 dark:bg-zinc-900 border border-red-950/50 rounded-2xl p-8 text-center">
                 <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h1 className="text-xl font-bold uppercase tracking-tighter text-white mb-2">No Institution Linked</h1>
-                <p className="text-zinc-400 text-sm">
+                <h1 className="text-xl font-bold uppercase tracking-tighter text-zinc-900 dark:text-white mb-2">No Institution Linked</h1>
+                <p className="text-zinc-600 dark:text-zinc-400 text-sm">
                     This account is not currently linked to any active educational institution node.
                 </p>
             </div>
@@ -178,7 +178,7 @@ export default function BillingPage() {
         <div className="max-w-4xl mx-auto space-y-8 pb-12">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-black font-orbitron tracking-tight text-white flex items-center gap-3">
+                <h1 className="text-3xl font-black font-orbitron tracking-tight text-zinc-900 dark:text-white flex items-center gap-3">
                     <CreditCard className="w-8 h-8 text-eduGreen-500" />
                     BILLING & SUBSCRIPTION
                 </h1>
@@ -195,8 +195,8 @@ export default function BillingPage() {
                             <AlertCircle className="w-6 h-6 text-red-500" />
                         </div>
                         <div>
-                            <h3 className="text-white font-bold text-sm uppercase tracking-tighter">Trial Period Concluded</h3>
-                            <p className="text-zinc-400 text-xs mt-1">
+                            <h3 className="text-zinc-900 dark:text-white font-bold text-sm uppercase tracking-tighter">Trial Period Concluded</h3>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-xs mt-1">
                                 Access to your school dashboard has been restricted. Complete billing setup to reactivate services.
                             </p>
                         </div>
@@ -211,8 +211,8 @@ export default function BillingPage() {
                         <Loader2 className="w-6 h-6 text-amber-500 animate-spin" />
                     </div>
                     <div>
-                        <h3 className="text-white font-bold text-sm uppercase tracking-tighter">Receipt Review In Progress</h3>
-                        <p className="text-zinc-400 text-xs mt-1">
+                        <h3 className="text-zinc-900 dark:text-white font-bold text-sm uppercase tracking-tighter">Receipt Review In Progress</h3>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-xs mt-1">
                             Your uploaded bank transfer receipt is currently pending review by our administration. We will activate your license shortly.
                         </p>
                     </div>
@@ -226,15 +226,15 @@ export default function BillingPage() {
                 <div className="lg:col-span-2 space-y-6">
                     
                     {/* Status & Trial Card */}
-                    <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800 rounded-2xl p-6 space-y-6 relative overflow-hidden">
+                    <div className="bg-zinc-100/50 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 space-y-6 relative overflow-hidden">
                         <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.03)_2px,rgba(20,122,82,0.03)_4px)] mix-blend-screen pointer-events-none" />
                         
                         <div className="flex justify-between items-start">
                             <div>
-                                <span className="px-2.5 py-1 bg-zinc-800 text-[10px] font-black uppercase tracking-wider text-zinc-400 rounded-full">
+                                <span className="px-2.5 py-1 bg-zinc-800 text-[10px] font-black uppercase tracking-wider text-zinc-600 dark:text-zinc-400 rounded-full">
                                     Account License Node
                                 </span>
-                                <h2 className="text-xl font-bold text-white mt-3 font-orbitron">{schoolInfo.name}</h2>
+                                <h2 className="text-xl font-bold text-zinc-900 dark:text-white mt-3 font-orbitron">{schoolInfo.name}</h2>
                             </div>
                             <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-lg border ${
                                 isSubscribed 
@@ -243,7 +243,7 @@ export default function BillingPage() {
                                         ? 'bg-amber-950/20 border-amber-500/30 text-amber-500'
                                         : isExpired
                                             ? 'bg-red-950/20 border-red-500/30 text-red-500'
-                                            : 'bg-zinc-800/80 border-zinc-700 text-zinc-400'
+                                            : 'bg-zinc-800/80 border-zinc-700 text-zinc-600 dark:text-zinc-400'
                             }`}>
                                 {isSubscribed ? 'Active' : hasPendingReceipt ? 'Verification' : isExpired ? 'Expired' : 'Free Trial'}
                             </span>
@@ -251,11 +251,11 @@ export default function BillingPage() {
 
                         {!isSubscribed && (
                             <div className="space-y-3">
-                                <div className="flex justify-between text-xs font-semibold text-zinc-400">
+                                <div className="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                                     <span>120-Day Trial Progress</span>
                                     <span>{isExpired ? 'Expired' : `${daysRemaining} days remaining`}</span>
                                 </div>
-                                <div className="w-full bg-zinc-950 h-2.5 rounded-full overflow-hidden border border-zinc-800/50">
+                                <div className="w-full bg-white dark:bg-zinc-950 h-2.5 rounded-full overflow-hidden border border-zinc-300 dark:border-zinc-800/50">
                                     <div 
                                         className={`h-full transition-all duration-1000 ${
                                             isExpired ? 'bg-red-500' : daysRemaining < 10 ? 'bg-yellow-500' : 'bg-eduGreen-500'
@@ -279,13 +279,13 @@ export default function BillingPage() {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                    <div className="bg-zinc-950/40 p-3 rounded-xl border border-zinc-800">
+                                    <div className="bg-white/40 dark:bg-zinc-950/40 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800">
                                         <span className="text-zinc-500 block uppercase text-[10px] tracking-wider font-mono">Customer ID</span>
-                                        <code className="text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeCustomerId || 'cus_manual_ledger'}</code>
+                                        <code className="text-zinc-900 dark:text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeCustomerId || 'cus_manual_ledger'}</code>
                                     </div>
-                                    <div className="bg-zinc-950/40 p-3 rounded-xl border border-zinc-800">
+                                    <div className="bg-white/40 dark:bg-zinc-950/40 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800">
                                         <span className="text-zinc-500 block uppercase text-[10px] tracking-wider font-mono">Subscription ID</span>
-                                        <code className="text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeSubscriptionId || 'sub_manual_ledger'}</code>
+                                        <code className="text-zinc-900 dark:text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeSubscriptionId || 'sub_manual_ledger'}</code>
                                     </div>
                                 </div>
                             </div>
@@ -293,14 +293,14 @@ export default function BillingPage() {
                     </div>
 
                     {/* Subscription Setup Area */}
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden">
+                    <div className="bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-2xl overflow-hidden">
                             {/* Inner Tab Header */}
-                            <div className="flex border-b border-white/5">
+                            <div className="flex border-b border-zinc-200 dark:border-white/5">
                                 <button
                                     onClick={() => setPaymentMode('STRIPE')}
                                     className={`flex-1 py-4 text-xs font-black uppercase tracking-wider font-orbitron transition-all border-b-2 flex items-center justify-center gap-2 ${
                                         paymentMode === 'STRIPE'
-                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-white'
+                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-zinc-900 dark:text-white'
                                             : 'border-transparent text-zinc-500 hover:text-zinc-300'
                                     }`}
                                 >
@@ -311,7 +311,7 @@ export default function BillingPage() {
                                     onClick={() => setPaymentMode('CHAPA')}
                                     className={`flex-1 py-4 text-xs font-black uppercase tracking-wider font-orbitron transition-all border-b-2 flex items-center justify-center gap-2 ${
                                         paymentMode === 'CHAPA'
-                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-white'
+                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-zinc-900 dark:text-white'
                                             : 'border-transparent text-zinc-500 hover:text-zinc-300'
                                     }`}
                                 >
@@ -322,7 +322,7 @@ export default function BillingPage() {
                                     onClick={() => setPaymentMode('BANK')}
                                     className={`flex-1 py-4 text-xs font-black uppercase tracking-wider font-orbitron transition-all border-b-2 flex items-center justify-center gap-2 ${
                                         paymentMode === 'BANK'
-                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-white'
+                                            ? 'border-eduGreen-500 bg-eduGreen-950/5 text-zinc-900 dark:text-white'
                                             : 'border-transparent text-zinc-500 hover:text-zinc-300'
                                     }`}
                                 >
@@ -335,8 +335,8 @@ export default function BillingPage() {
                             {paymentMode === 'STRIPE' && (
                                 <div className="p-6 space-y-6 animate-in fade-in duration-300">
                                     <div className="space-y-2">
-                                        <h3 className="text-sm font-semibold text-white uppercase tracking-tight">Connect with Stripe Gateway</h3>
-                                        <p className="text-zinc-400 text-xs leading-relaxed">
+                                        <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Connect with Stripe Gateway</h3>
+                                        <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
                                             Authorize pre-approved credit card debits directly through Stripe's secure portal. You will be billed **$149.00 per month** to sustain platform operations.
                                         </p>
                                     </div>
@@ -359,15 +359,15 @@ export default function BillingPage() {
                             {paymentMode === 'CHAPA' && (
                                 <div className="p-6 space-y-6 animate-in fade-in duration-300">
                                     <div className="space-y-2">
-                                        <h3 className="text-sm font-semibold text-white uppercase tracking-tight">Pay via Telebirr or CBE</h3>
-                                        <p className="text-zinc-400 text-xs leading-relaxed">
+                                        <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Pay via Telebirr or CBE</h3>
+                                        <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
                                             Pay locally using Ethiopian Birr (ETB). Selecting this option will open the secure Chapa checkout portal where you can pay using Telebirr, CBE, or local bank cards. Your subscription activates immediately upon payment.
                                         </p>
                                     </div>
                                     <button
                                         onClick={handleChapaCheckout}
                                         disabled={submitting}
-                                        className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                        className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         {submitting ? (
                                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -383,22 +383,22 @@ export default function BillingPage() {
                             {paymentMode === 'BANK' && (
                                 <form onSubmit={handleManualReceiptSubmit} className="p-6 space-y-6 animate-in fade-in duration-300">
                                     {/* Bank Details */}
-                                    <div className="bg-zinc-950/60 border border-zinc-800 rounded-xl p-4 space-y-4 text-xs">
-                                        <h4 className="font-bold text-white uppercase tracking-tight text-[10px] text-eduGreen-500">Official Payment Methods</h4>
+                                    <div className="bg-white/60 dark:bg-zinc-950/60 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 space-y-4 text-xs">
+                                        <h4 className="font-bold text-zinc-900 dark:text-white uppercase tracking-tight text-[10px] text-eduGreen-500">Official Payment Methods</h4>
                                         
                                         <div className="space-y-3">
-                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-400">
-                                                <span>Method:</span> <span className="text-white font-semibold">Telebirr</span>
-                                                <span>Account / Phone:</span> <span className="text-white font-semibold">0997267373</span>
+                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400">
+                                                <span>Method:</span> <span className="text-zinc-900 dark:text-white font-semibold">Telebirr</span>
+                                                <span>Account / Phone:</span> <span className="text-zinc-900 dark:text-white font-semibold">0997267373</span>
                                             </div>
                                             
-                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-400">
-                                                <span>Method:</span> <span className="text-white font-semibold">Commercial Bank of Ethiopia (CBE)</span>
+                                            <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400">
+                                                <span>Method:</span> <span className="text-zinc-900 dark:text-white font-semibold">Commercial Bank of Ethiopia (CBE)</span>
                                                 <span>Account:</span> <span className="text-zinc-500 italic">...pending</span>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-400 pt-2 border-t border-zinc-800/50">
+                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400 pt-2 border-t border-zinc-300 dark:border-zinc-800/50">
                                             <span>Transfer Reason / Memo:</span> <span className="text-eduGreen-400 font-bold select-all">{schoolInfo.schoolCode}</span>
                                         </div>
                                     </div>
@@ -416,7 +416,7 @@ export default function BillingPage() {
                                                     required
                                                     min="0"
                                                     step="0.01"
-                                                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-11 pl-9 pr-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none"
+                                                    className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-11 pl-9 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -428,7 +428,7 @@ export default function BillingPage() {
                                                 value={reference}
                                                 onChange={e => setReference(e.target.value)}
                                                 required
-                                                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-11 px-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none"
+                                                className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-11 px-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none"
                                             />
                                         </div>
                                     </div>
@@ -440,7 +440,7 @@ export default function BillingPage() {
                                             value={notes}
                                             onChange={e => setNotes(e.target.value)}
                                             rows={2}
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-eduGreen-500 focus:outline-none"
+                                            className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl p-3 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none"
                                         />
                                     </div>
 
@@ -470,21 +470,21 @@ export default function BillingPage() {
                         </div>
                     {/* Receipt Submission Ledger */}
                     {pastReceipts.length > 0 && (
-                        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 space-y-4">
-                            <h3 className="text-xs font-black font-orbitron text-white uppercase tracking-widest flex items-center gap-2">
-                                <History className="w-4 h-4 text-zinc-400" />
+                        <div className="bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 space-y-4">
+                            <h3 className="text-xs font-black font-orbitron text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                                <History className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
                                 Payment Receipt History
                             </h3>
                             <div className="divide-y divide-zinc-800/60 overflow-hidden">
                                 {pastReceipts.map((receipt) => (
                                     <div key={receipt.id} className="py-4 first:pt-0 last:pb-0 flex items-center justify-between text-xs">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                                                 <FileText className="w-5 h-5 text-zinc-500" />
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="font-bold text-white select-all">{receipt.reference}</span>
+                                                    <span className="font-bold text-zinc-900 dark:text-white select-all">{receipt.reference}</span>
                                                     <span className="text-zinc-500 font-mono">•</span>
                                                     <span className="text-eduGreen-400 font-bold">${parseFloat(receipt.amount).toFixed(2)}</span>
                                                 </div>
@@ -498,7 +498,7 @@ export default function BillingPage() {
                                                 href={receipt.receiptUrl} 
                                                 target="_blank" 
                                                 rel="noreferrer" 
-                                                className="px-2.5 py-1 rounded bg-zinc-800 text-zinc-400 hover:text-white transition-all text-[10px] uppercase font-bold tracking-wider"
+                                                className="px-2.5 py-1 rounded bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white transition-all text-[10px] uppercase font-bold tracking-wider"
                                             >
                                                 View Receipt
                                             </a>
@@ -507,7 +507,7 @@ export default function BillingPage() {
                                                     ? 'bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400' 
                                                     : receipt.status === 'REJECTED'
                                                         ? 'bg-red-950/20 border-red-900/50 text-red-400'
-                                                        : 'bg-zinc-950 border-zinc-800 text-zinc-500'
+                                                        : 'bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-500'
                                             }`}>
                                                 {receipt.status}
                                             </span>
@@ -520,7 +520,7 @@ export default function BillingPage() {
                 </div>
 
                 {/* Right Columns - Details info */}
-                <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-fit relative overflow-hidden group">
+                <div className="bg-zinc-100/50 dark:bg-zinc-900/50 backdrop-blur-md border border-zinc-300 dark:border-zinc-800 rounded-2xl p-6 flex flex-col justify-between h-fit relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-3">
                         <Compass className="w-5 h-5 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
                     </div>
@@ -530,13 +530,13 @@ export default function BillingPage() {
                             Enterprise Node Tier
                         </span>
                         
-                        <div className="flex items-baseline gap-2 text-white">
+                        <div className="flex items-baseline gap-2 text-zinc-900 dark:text-white">
                             <span className="text-4xl font-extrabold tracking-tight font-orbitron text-eduGreen-500">$149</span>
                             <span className="text-lg line-through text-zinc-500 font-medium">$250</span>
-                            <span className="ml-1 text-sm font-semibold text-zinc-400">/month</span>
+                            <span className="ml-1 text-sm font-semibold text-zinc-600 dark:text-zinc-400">/month</span>
                         </div>
 
-                        <ul className="space-y-2 text-xs text-zinc-400 pt-2 border-t border-zinc-800/80">
+                        <ul className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 pt-2 border-t border-zinc-300 dark:border-zinc-800/80">
                             <li className="flex items-center gap-2">
                                 <CheckCircle className="w-4 h-4 text-eduGreen-500 flex-shrink-0" />
                                 Unlimited students & staff
@@ -556,7 +556,7 @@ export default function BillingPage() {
                         </ul>
                     </div>
 
-                    <div className="mt-8 pt-4 border-t border-zinc-800/80 text-[10px] text-zinc-500 leading-relaxed">
+                    <div className="mt-8 pt-4 border-t border-zinc-300 dark:border-zinc-800/80 text-[10px] text-zinc-500 leading-relaxed">
                         Need payment support? Direct bank wire confirmations can take up to 24 hours to review. Stripe subscriptions activate immediately.
                     </div>
                 </div>

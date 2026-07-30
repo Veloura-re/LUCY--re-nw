@@ -72,9 +72,9 @@ export default function ApprovalsClient() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Action <span className="text-eduGreen-500 italic">Approvals</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Review & Authorize Critical System Actions</p>
@@ -82,14 +82,14 @@ export default function ApprovalsClient() {
             </div>
 
             {loading ? (
-                <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-zinc-900 rounded-[3rem] bg-zinc-950/20">
+                <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem] bg-white/20 dark:bg-zinc-950/20">
                     <Loader2 className="w-10 h-10 animate-spin text-zinc-700 mb-6" />
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-[10px]">Loading Security Queue</p>
                 </div>
             ) : requests.length === 0 ? (
-                <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-zinc-900 rounded-[3rem] bg-zinc-950/20">
-                    <div className="w-20 h-20 rounded-full bg-zinc-900 flex items-center justify-center opacity-20 mb-8 border border-zinc-800">
-                        <ShieldAlert className="w-10 h-10 text-white" />
+                <div className="py-32 flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem] bg-white/20 dark:bg-zinc-950/20">
+                    <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center opacity-20 mb-8 border border-zinc-300 dark:border-zinc-800">
+                        <ShieldAlert className="w-10 h-10 text-zinc-900 dark:text-white" />
                     </div>
                     <p className="text-zinc-500 font-medium uppercase tracking-[0.4em] text-xs">Queue Clear</p>
                     <p className="text-zinc-700 text-[10px] font-medium uppercase tracking-widest mt-3">No pending actions require authorization.</p>
@@ -97,7 +97,7 @@ export default function ApprovalsClient() {
             ) : (
                 <div className="grid grid-cols-1 gap-6">
                     {requests.map((request: any) => (
-                        <Card key={request.id} className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl">
+                        <Card key={request.id} className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl">
                             <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                 <div className="space-y-4 flex-1">
                                     <div className="flex items-center gap-3">
@@ -105,12 +105,12 @@ export default function ApprovalsClient() {
                                             <AlertCircle className="w-5 h-5 text-amber-500" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-medium tracking-tight text-white">{formatActionType(request.actionType)}</h3>
+                                            <h3 className="text-xl font-medium tracking-tight text-zinc-900 dark:text-white">{formatActionType(request.actionType)}</h3>
                                             <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Requested by {request.requester?.name} ({request.requester?.role})</p>
                                         </div>
                                     </div>
-                                    <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800/50">
-                                        <p className="text-xs text-zinc-400 font-medium">
+                                    <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-300 dark:border-zinc-800/50">
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
                                             <span className="text-zinc-500 uppercase tracking-wider text-[9px] mr-2">Target Data:</span>
                                             {JSON.stringify(request.payload)}
                                         </p>
@@ -121,7 +121,7 @@ export default function ApprovalsClient() {
                                     <Button
                                         onClick={() => handleResolve(request.id, 'REJECTED')}
                                         disabled={actionLoading === request.id}
-                                        className="flex-1 md:flex-none h-14 px-8 bg-zinc-900 hover:bg-red-950/30 text-white border border-zinc-800 hover:border-red-900/50 hover:text-red-400 rounded-2xl font-medium text-xs uppercase tracking-widest transition-all"
+                                        className="flex-1 md:flex-none h-14 px-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-950/30 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 hover:border-red-900/50 hover:text-red-400 rounded-2xl font-medium text-xs uppercase tracking-widest transition-all"
                                     >
                                         {actionLoading === request.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4 mr-2" />}
                                         Reject

@@ -154,7 +154,7 @@ export default function BillingControlsPage() {
         <div className="space-y-10 animate-in fade-in duration-300">
             {/* Header section */}
             <div>
-                <h1 className="text-2xl font-bold font-orbitron tracking-tight text-white flex items-center gap-2">
+                <h1 className="text-2xl font-bold font-orbitron tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
                     <CreditCard className="w-6 h-6 text-eduGreen-500" />
                     BILLING & LICENSE CONTROL
                 </h1>
@@ -166,14 +166,14 @@ export default function BillingControlsPage() {
             {/* Manual Receipts verification section */}
             <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h2 className="text-lg font-semibold text-white tracking-tight flex items-center gap-2">
+                    <h2 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
                         <History className="w-5 h-5 text-emerald-500" />
                         Bank Wire Verifications
                     </h2>
                 </div>
 
                 {/* Receipts Filters */}
-                <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                         <input
@@ -181,7 +181,7 @@ export default function BillingControlsPage() {
                             placeholder="Search receipts by school, submitter, reference..."
                             value={receiptSearch}
                             onChange={e => setReceiptSearch(e.target.value)}
-                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
+                            className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
                         />
                     </div>
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
@@ -193,7 +193,7 @@ export default function BillingControlsPage() {
                                 className={cn(
                                     "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                     receiptFilter === status
-                                        ? "bg-zinc-800 text-white border-zinc-700"
+                                        ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
                                         : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
                                 )}
                             >
@@ -208,12 +208,12 @@ export default function BillingControlsPage() {
                         <Loader2 className="w-6 h-6 animate-spin text-emerald-500 opacity-60" />
                     </div>
                 ) : filteredReceipts.length === 0 ? (
-                    <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-900 text-zinc-600 text-xs">
+                    <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900 text-zinc-600 text-xs">
                         No billing receipts found matching filters.
                     </div>
                 ) : (
-                    <div className="rounded-2xl border border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                    <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
+                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
                             <div className="col-span-3">School Node</div>
                             <div className="col-span-2">Submitter</div>
                             <div className="col-span-2 text-center">Amount</div>
@@ -221,19 +221,19 @@ export default function BillingControlsPage() {
                             <div className="col-span-1 text-center">Receipt</div>
                             <div className="col-span-2 text-right">Actions</div>
                         </div>
-                        <div className="divide-y divide-white/5 bg-black">
+                        <div className="divide-y divide-white/5 bg-white dark:bg-black">
                             {filteredReceipts.map((receipt) => (
-                                <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-900/30 items-center transition-colors text-xs text-white">
+                                <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
                                     <div className="col-span-3 font-semibold">
                                         {receipt.school?.name || 'Unknown School'}
                                     </div>
-                                    <div className="col-span-2 text-zinc-400">
+                                    <div className="col-span-2 text-zinc-600 dark:text-zinc-400">
                                         {receipt.submittedBy?.name || 'Unknown User'}
                                     </div>
                                     <div className="col-span-2 text-center font-bold text-emerald-400">
                                         ${parseFloat(receipt.amount).toFixed(2)}
                                     </div>
-                                    <div className="col-span-2 font-mono text-zinc-300 truncate select-all">
+                                    <div className="col-span-2 font-mono text-zinc-700 dark:text-zinc-300 truncate select-all">
                                         {receipt.reference}
                                     </div>
                                     <div className="col-span-1 text-center">
@@ -241,7 +241,7 @@ export default function BillingControlsPage() {
                                             href={receipt.receiptUrl} 
                                             target="_blank" 
                                             rel="noreferrer" 
-                                            className="inline-flex text-[10px] text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
+                                            className="inline-flex text-[10px] text-zinc-600 dark:text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
                                         >
                                             View
                                         </a>
@@ -285,13 +285,13 @@ export default function BillingControlsPage() {
 
             {/* School License Ledger section */}
             <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-white tracking-tight flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
                     <School className="w-5 h-5 text-emerald-500" />
                     School License Ledger
                 </h2>
 
                 {/* School License Filters */}
-                <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                         <input
@@ -299,7 +299,7 @@ export default function BillingControlsPage() {
                             placeholder="Search schools by name or code..."
                             value={schoolSearch}
                             onChange={e => setSchoolSearch(e.target.value)}
-                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
+                            className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
                         />
                     </div>
                     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
@@ -311,7 +311,7 @@ export default function BillingControlsPage() {
                                 className={cn(
                                     "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                     schoolFilter === f
-                                        ? "bg-zinc-800 text-white border-zinc-700"
+                                        ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
                                         : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
                                 )}
                             >
@@ -326,19 +326,19 @@ export default function BillingControlsPage() {
                         <Loader2 className="w-6 h-6 animate-spin text-emerald-500 opacity-60" />
                     </div>
                 ) : filteredSchools.length === 0 ? (
-                    <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-900 text-zinc-600 text-xs">
+                    <div className="text-center py-12 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900 text-zinc-600 text-xs">
                         No schools discovered matching filters.
                     </div>
                 ) : (
-                    <div className="rounded-2xl border border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                    <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
+                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
                             <div className="col-span-3">School Name</div>
                             <div className="col-span-2">Trial Ends</div>
                             <div className="col-span-2 text-center">Remaining</div>
                             <div className="col-span-2 text-center">Billing State</div>
                             <div className="col-span-3 text-right">Billing Actions</div>
                         </div>
-                        <div className="divide-y divide-white/5 bg-black">
+                        <div className="divide-y divide-white/5 bg-white dark:bg-black">
                             {filteredSchools.map((school) => {
                                 const now = new Date();
                                 let trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
@@ -356,12 +356,12 @@ export default function BillingControlsPage() {
                                 const activeSub = school.subscriptionStatus === 'active';
 
                                 return (
-                                    <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-900/30 items-center transition-colors text-xs text-white">
+                                    <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
                                         <div className="col-span-3">
                                             <div className="font-semibold">{school.name}</div>
                                             <div className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
                                         </div>
-                                        <div className="col-span-2 font-mono text-zinc-400">
+                                        <div className="col-span-2 font-mono text-zinc-600 dark:text-zinc-400">
                                             {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (120d Default)'}
                                         </div>
                                         <div className="col-span-2 text-center font-mono">
@@ -370,7 +370,7 @@ export default function BillingControlsPage() {
                                             ) : expired ? (
                                                 <span className="text-red-500 font-bold">EXPIRED</span>
                                             ) : (
-                                                <span className="text-zinc-300 font-semibold">{remainingDays} days</span>
+                                                <span className="text-zinc-700 dark:text-zinc-300 font-semibold">{remainingDays} days</span>
                                             )}
                                         </div>
                                         <div className="col-span-2 text-center">
@@ -378,7 +378,7 @@ export default function BillingControlsPage() {
                                                 "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border",
                                                 activeSub 
                                                     ? "bg-emerald-950/20 border-emerald-900/50 text-emerald-400" 
-                                                    : "bg-zinc-950 border-zinc-800 text-zinc-500"
+                                                    : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-500"
                                             )}>
                                                 {activeSub ? 'Paying' : 'Non-paying'}
                                             </span>
@@ -386,13 +386,13 @@ export default function BillingControlsPage() {
                                         <div className="col-span-3 flex items-center justify-end gap-1.5">
                                             <button
                                                 onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
-                                                className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
                                             >
                                                 {activeSub ? 'Set Non-paying' : 'Set Paying'}
                                             </button>
                                             <button
                                                 onClick={() => handleExtendTrial(school.id, 30)}
-                                                className="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
                                             >
                                                 +30 Days
                                             </button>

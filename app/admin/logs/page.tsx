@@ -49,7 +49,7 @@ const ERROR_TYPE_COLORS: Record<string, string> = {
     route_404: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
     auth_failure: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
     unhandled_rejection: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
-    network_error: 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20',
+    network_error: 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20',
 };
 
 const ERROR_TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -66,7 +66,7 @@ function getActionColor(action: string) {
     for (const key of Object.keys(ACTION_COLORS)) {
         if (upper.startsWith(key)) return ACTION_COLORS[key];
     }
-    return 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
+    return 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
 }
 
 function getActionIcon(action: string) {
@@ -171,14 +171,14 @@ export default function AdminLogsPage() {
                         <Activity className="w-4 h-4 text-eduGreen-500" />
                         <span className="text-[10px] font-semibold text-eduGreen-500 uppercase tracking-[0.3em]">System Intelligence</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-white tracking-tight">Logs & Monitoring</h1>
+                    <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Logs & Monitoring</h1>
                     <p className="text-sm text-zinc-500 mt-0.5">Audit trail + error monitoring across all schools</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <LiveTracker />
                     <div className="w-px h-6 bg-white/10" />
                     <button onClick={() => { fetchLogs(); if (tab === 'errors') fetchErrors(); }}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-xs font-medium">
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-xs font-medium">
                         <RefreshCw className="w-3.5 h-3.5" /> Refresh
                     </button>
                     {tab === 'activity' && (
@@ -190,14 +190,14 @@ export default function AdminLogsPage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 p-1 bg-white/[0.02] border border-white/5 rounded-xl w-fit">
+            <div className="flex gap-1 p-1 bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-xl w-fit">
                 {([
                     { id: 'activity', label: 'Activity Logs', icon: Activity, count: total },
                     { id: 'errors', label: 'Error Logs', icon: Bug, count: errorTotal },
                 ] as const).map(t => (
                     <button key={t.id} onClick={() => setTab(t.id)}
                         className={cn("flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all",
-                            tab === t.id ? "bg-white/10 text-white" : "text-zinc-600 hover:text-zinc-400")}>
+                            tab === t.id ? "bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 hover:text-zinc-400")}>
                         <t.icon className="w-3.5 h-3.5" />
                         {t.label}
                         {t.count > 0 && <span className={cn("px-1.5 py-0.5 rounded-full text-[9px] font-bold", tab === t.id ? "bg-white/20" : "bg-white/5")}>{t.count}</span>}
@@ -218,7 +218,7 @@ export default function AdminLogsPage() {
                                 <div className="flex flex-wrap gap-2">
                                     <button onClick={() => setSchoolFilter('')}
                                         className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider transition-all",
-                                            !schoolFilter ? "bg-white/10 border-white/20 text-white" : "bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/10")}>
+                                            !schoolFilter ? "bg-white/10 border-white/20 text-zinc-900 dark:text-white" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-500 hover:border-zinc-300 dark:border-white/10")}>
                                         All Schools
                                     </button>
                                     {schoolStats.map((s: any) => {
@@ -226,7 +226,7 @@ export default function AdminLogsPage() {
                                         return (
                                             <button key={s.schoolId} onClick={() => setSchoolFilter(s.schoolId === schoolFilter ? '' : s.schoolId)}
                                                 className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider transition-all",
-                                                    schoolFilter === s.schoolId ? "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-400" : "bg-white/[0.02] border-white/5 text-zinc-500 hover:border-white/10 hover:text-zinc-300")}>
+                                                    schoolFilter === s.schoolId ? "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-400" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-500 hover:border-zinc-300 dark:border-white/10 hover:text-zinc-300")}>
                                                 <School className="w-3 h-3" />
                                                 {info?.name || info?.schoolCode || s.schoolId.slice(0, 8)}
                                                 <span className="opacity-60">{s._count.schoolId}</span>
@@ -242,11 +242,11 @@ export default function AdminLogsPage() {
                             <div className="grid grid-cols-3 md:grid-cols-7 gap-2">
                                 {actionStats.map((s: any, i: number) => (
                                     <motion.div key={s.action} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-                                        className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1 text-center">
+                                        className="bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-xl p-3 space-y-1 text-center">
                                         <div className={cn("inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[9px] font-bold uppercase", getActionColor(s.action))}>
                                             {getActionIcon(s.action)}{s.action.slice(0, 8)}
                                         </div>
-                                        <div className="text-xl font-black text-white">{s._count.action}</div>
+                                        <div className="text-xl font-black text-zinc-900 dark:text-white">{s._count.action}</div>
                                     </motion.div>
                                 ))}
                             </div>
@@ -257,17 +257,17 @@ export default function AdminLogsPage() {
                             <div className="relative flex-1 min-w-[200px]">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
                                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search user, action, resource…"
-                                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-eduGreen-500/40 transition-all" />
+                                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-900 dark:text-white placeholder-zinc-600 focus:outline-none focus:border-eduGreen-500/40 transition-all" />
                             </div>
                             <select value={resourceFilter} onChange={e => setResourceFilter(e.target.value)}
-                                className="px-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:border-eduGreen-500/40 appearance-none cursor-pointer">
+                                className="px-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none focus:border-eduGreen-500/40 appearance-none cursor-pointer">
                                 <option value="">All Resources</option>
                                 {['student','teacher','grade','exam','attendance','fee','payment','timetable','event','message','authorization','settings','billing','user'].map(r => (
                                     <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
                                 ))}
                             </select>
                             <select value={levelFilter} onChange={e => setLevelFilter(e.target.value)}
-                                className="px-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:border-eduGreen-500/40 appearance-none cursor-pointer">
+                                className="px-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none focus:border-eduGreen-500/40 appearance-none cursor-pointer">
                                 <option value="">All Levels</option>
                                 <option value="INFO">Info</option>
                                 <option value="WARN">Warn</option>
@@ -277,8 +277,8 @@ export default function AdminLogsPage() {
                         </div>
 
                         {/* Table */}
-                        <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden">
-                            <div className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 border-b border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
+                        <div className="bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden">
+                            <div className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
                                 <span>User</span><span>Action</span><span>Resource</span><span className="hidden md:block">IP</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
                             </div>
                             {loading ? (
@@ -292,9 +292,9 @@ export default function AdminLogsPage() {
                                             onClick={() => setSelectedLog(log)}
                                             className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] transition-all cursor-pointer group">
                                             <div className="flex items-center gap-2 min-w-0">
-                                                <div className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
+                                                <div className="w-6 h-6 rounded-full bg-white/5 border border-zinc-300 dark:border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
                                                 <div className="min-w-0">
-                                                    <div className="text-xs font-semibold text-white truncate">{log.user.name || '—'}</div>
+                                                    <div className="text-xs font-semibold text-zinc-900 dark:text-white truncate">{log.user.name || '—'}</div>
                                                     <div className="text-[10px] text-zinc-600 truncate">{log.user.email}</div>
                                                 </div>
                                             </div>
@@ -305,7 +305,7 @@ export default function AdminLogsPage() {
                                             </div>
                                             <div className="flex items-center gap-1.5 min-w-0">
                                                 <Database className="w-3 h-3 text-zinc-700 shrink-0" />
-                                                <span className="text-xs text-zinc-400 truncate">{log.resourceType}</span>
+                                                <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate">{log.resourceType}</span>
                                             </div>
                                             <div className="hidden md:flex items-center"><span className="text-[10px] text-zinc-700 font-mono">{log.ip || '—'}</span></div>
                                             <div className="flex items-center"><span className="text-[10px] text-zinc-500 whitespace-nowrap">{formatRelative(log.createdAt)}</span></div>
@@ -320,8 +320,8 @@ export default function AdminLogsPage() {
                             <div className="flex items-center justify-between">
                                 <span className="text-[11px] text-zinc-600">Page {page} of {totalActivityPages}</span>
                                 <div className="flex items-center gap-2">
-                                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
-                                    <button onClick={() => setPage(p => Math.min(totalActivityPages, p + 1))} disabled={page === totalActivityPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
+                                    <button onClick={() => setPage(p => Math.min(totalActivityPages, p + 1))} disabled={page === totalActivityPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
                                 </div>
                             </div>
                         )}
@@ -337,11 +337,11 @@ export default function AdminLogsPage() {
                                 {errorStats.map((s: any, i: number) => (
                                     <motion.div key={s.type} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                                         onClick={() => setErrorTypeFilter(s.type === errorTypeFilter ? '' : s.type)}
-                                        className={cn("bg-white/[0.02] border rounded-xl p-4 space-y-2 cursor-pointer transition-all hover:bg-white/[0.04]", errorTypeFilter === s.type ? "border-red-500/30" : "border-white/5")}>
-                                        <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase", ERROR_TYPE_COLORS[s.type] || 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
+                                        className={cn("bg-white/[0.02] border rounded-xl p-4 space-y-2 cursor-pointer transition-all hover:bg-white/[0.04]", errorTypeFilter === s.type ? "border-red-500/30" : "border-zinc-200 dark:border-white/5")}>
+                                        <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase", ERROR_TYPE_COLORS[s.type] || 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
                                             {ERROR_TYPE_ICONS[s.type]}{s.type.replace('_', ' ')}
                                         </div>
-                                        <div className="text-2xl font-black text-white">{s._count.type}</div>
+                                        <div className="text-2xl font-black text-zinc-900 dark:text-white">{s._count.type}</div>
                                     </motion.div>
                                 ))}
                             </div>
@@ -352,10 +352,10 @@ export default function AdminLogsPage() {
                             <div className="relative flex-1 min-w-[200px]">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
                                 <input value={errorSearch} onChange={e => setErrorSearch(e.target.value)} placeholder="Search message, path…"
-                                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-red-500/40 transition-all" />
+                                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-900 dark:text-white placeholder-zinc-600 focus:outline-none focus:border-red-500/40 transition-all" />
                             </div>
                             <select value={errorTypeFilter} onChange={e => setErrorTypeFilter(e.target.value)}
-                                className="px-4 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none appearance-none cursor-pointer">
+                                className="px-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none appearance-none cursor-pointer">
                                 <option value="">All Types</option>
                                 {['ui_crash','api_error','route_404','auth_failure','unhandled_rejection','network_error'].map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
                             </select>
@@ -363,8 +363,8 @@ export default function AdminLogsPage() {
                         </div>
 
                         {/* Error Table */}
-                        <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden">
-                            <div className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 border-b border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
+                        <div className="bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden">
+                            <div className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
                                 <span>Type</span><span>Message</span><span>Path</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
                             </div>
                             {errorLoading ? (
@@ -381,12 +381,12 @@ export default function AdminLogsPage() {
                                             onClick={() => setSelectedError(err)}
                                             className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
                                             <div className="flex items-center">
-                                                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[err.type] || 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
+                                                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[err.type] || 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
                                                     {ERROR_TYPE_ICONS[err.type]}{err.type.replace('_', ' ')}
                                                 </span>
                                             </div>
                                             <div className="flex items-center min-w-0">
-                                                <span className="text-xs text-zinc-300 truncate">{err.message}</span>
+                                                <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{err.message}</span>
                                             </div>
                                             <div className="flex items-center min-w-0">
                                                 <span className="text-[10px] text-zinc-600 font-mono truncate">{err.path || '—'}</span>
@@ -402,8 +402,8 @@ export default function AdminLogsPage() {
                             <div className="flex items-center justify-between">
                                 <span className="text-[11px] text-zinc-600">Page {errorPage} of {totalErrorPages}</span>
                                 <div className="flex items-center gap-2">
-                                    <button onClick={() => setErrorPage(p => Math.max(1, p - 1))} disabled={errorPage === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
-                                    <button onClick={() => setErrorPage(p => Math.min(totalErrorPages, p + 1))} disabled={errorPage === totalErrorPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => setErrorPage(p => Math.max(1, p - 1))} disabled={errorPage === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
+                                    <button onClick={() => setErrorPage(p => Math.min(totalErrorPages, p + 1))} disabled={errorPage === totalErrorPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
                                 </div>
                             </div>
                         )}
@@ -415,15 +415,15 @@ export default function AdminLogsPage() {
             <AnimatePresence>
                 {selectedLog && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedLog(null)}
-                        className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                        className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase mb-2", getActionColor(selectedLog.action))}>
                                         {getActionIcon(selectedLog.action)}{selectedLog.action}
                                     </span>
-                                    <h2 className="text-base font-bold text-white">{selectedLog.resourceType}</h2>
+                                    <h2 className="text-base font-bold text-zinc-900 dark:text-white">{selectedLog.resourceType}</h2>
                                 </div>
                                 <button onClick={() => setSelectedLog(null)} className="text-zinc-600 hover:text-white text-xl">×</button>
                             </div>
@@ -431,7 +431,7 @@ export default function AdminLogsPage() {
                                 {[['User', selectedLog.user.name || '—'],['Email', selectedLog.user.email],['Role', selectedLog.user.role],['IP', selectedLog.ip || '—'],['Path', selectedLog.path || '—'],['Resource ID', selectedLog.resourceId || '—'],['Level', selectedLog.level],['Timestamp', new Date(selectedLog.createdAt).toLocaleString('en-GB')]].map(([label, value]) => (
                                     <div key={label} className="space-y-0.5">
                                         <div className="text-[10px] text-zinc-600 uppercase tracking-widest">{label}</div>
-                                        <div className="text-white font-mono break-all text-[11px]">{value}</div>
+                                        <div className="text-zinc-900 dark:text-white font-mono break-all text-[11px]">{value}</div>
                                     </div>
                                 ))}
                             </div>
@@ -446,9 +446,9 @@ export default function AdminLogsPage() {
             <AnimatePresence>
                 {selectedError && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedError(null)}
-                        className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                        className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-[#0e0e0e] border border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[selectedError.type] || '')}>
                                     {ERROR_TYPE_ICONS[selectedError.type]}{selectedError.type.replace('_', ' ')}
@@ -462,14 +462,14 @@ export default function AdminLogsPage() {
                                 {[['School', selectedError.school?.name || '—'],['Path', selectedError.path || '—'],['Status', selectedError.statusCode?.toString() || '—'],['IP', selectedError.ip || '—'],['Level', selectedError.level],['Time', new Date(selectedError.createdAt).toLocaleString('en-GB')]].map(([l, v]) => (
                                     <div key={l} className="space-y-0.5">
                                         <div className="text-[10px] text-zinc-600 uppercase tracking-widest">{l}</div>
-                                        <div className="text-white font-mono text-[11px] break-all">{v}</div>
+                                        <div className="text-zinc-900 dark:text-white font-mono text-[11px] break-all">{v}</div>
                                     </div>
                                 ))}
                             </div>
                             {selectedError.stack && (
                                 <div>
                                     <div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Stack Trace</div>
-                                    <pre className="bg-black/60 border border-white/5 rounded-xl p-3 text-[10px] text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
+                                    <pre className="bg-white/60 dark:bg-black/60 border border-zinc-200 dark:border-white/5 rounded-xl p-3 text-[10px] text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
                                 </div>
                             )}
                             {selectedError.userAgent && (

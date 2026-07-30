@@ -87,12 +87,12 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                 {/* Footer */}
                 <div className="mt-20 grid grid-cols-2 gap-20">
                     <div className="space-y-4 text-center">
-                        <div className="h-px bg-black w-full mb-2" />
+                        <div className="h-px bg-white dark:bg-black w-full mb-2" />
                         <p className="text-[10px] font-black uppercase text-zinc-800">{exam.createdBy?.name || 'Faculty Member'}</p>
                         <p className="text-[8px] font-bold uppercase tracking-[0.3em]">Examiner Signature</p>
                     </div>
                     <div className="space-y-4">
-                        <div className="h-px bg-black w-full" />
+                        <div className="h-px bg-white dark:bg-black w-full" />
                         <p className="text-[8px] font-bold uppercase tracking-[0.3em] text-center">Academic Dean / Principal</p>
                     </div>
                 </div>

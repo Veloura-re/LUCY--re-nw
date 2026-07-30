@@ -262,7 +262,7 @@ function StudentProfileContent() {
                     {isDirector && (
                         <Button
                             onClick={() => { setIsEditing(true); fetchGradesData(); }}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
+                            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
                         >
                             Edit Profile
                         </Button>
@@ -289,44 +289,44 @@ function StudentProfileContent() {
             />
 
             <Dialog open={isEditing} onOpenChange={setIsEditing}>
-                <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-[95vw] md:max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem]">
+                <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white max-w-[95vw] md:max-w-2xl max-h-[85vh] overflow-y-auto rounded-[2.5rem]">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-black italic">Edit Student Profile</DialogTitle>
                         <DialogDescription className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Update registry information</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleUpdateStudent} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                        <div className="md:col-span-2 flex justify-center py-4 bg-zinc-900/30 rounded-2xl">
+                        <div className="md:col-span-2 flex justify-center py-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl">
                             <ImageUpload value={editForm.photoUrl} onChange={(url) => setEditForm({ ...editForm, photoUrl: url })} bucket="avatars" />
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">First Name</label>
-                            <Input value={editForm.firstName} onChange={e => setEditForm({ ...editForm, firstName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.firstName} onChange={e => setEditForm({ ...editForm, firstName: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Last Name</label>
-                            <Input value={editForm.lastName} onChange={e => setEditForm({ ...editForm, lastName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.lastName} onChange={e => setEditForm({ ...editForm, lastName: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Email</label>
-                            <Input value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Date of Birth</label>
-                            <Input type="date" value={editForm.dob} onChange={e => setEditForm({ ...editForm, dob: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input type="date" value={editForm.dob} onChange={e => setEditForm({ ...editForm, dob: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Guardian Name</label>
-                            <Input value={editForm.guardianName} onChange={e => setEditForm({ ...editForm, guardianName: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.guardianName} onChange={e => setEditForm({ ...editForm, guardianName: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Guardian Phone</label>
-                            <Input value={editForm.guardianPhone} onChange={e => setEditForm({ ...editForm, guardianPhone: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.guardianPhone} onChange={e => setEditForm({ ...editForm, guardianPhone: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Secondary Phone (Optional)</label>
-                            <Input value={editForm.secondaryPhone} onChange={e => setEditForm({ ...editForm, secondaryPhone: e.target.value })} className="bg-zinc-900 border-zinc-800 rounded-xl" />
+                            <Input value={editForm.secondaryPhone} onChange={e => setEditForm({ ...editForm, secondaryPhone: e.target.value })} className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl" />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Edit Age (Auto-calculates DOB)</label>
@@ -339,12 +339,12 @@ function StudentProfileContent() {
                                     setEditForm({ ...editForm, age, dob });
                                 }}
                                 placeholder="Enter Age"
-                                className="bg-zinc-900 border-zinc-800 rounded-xl"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl"
                             />
                         </div>
 
                         {/* Grade / Class Assignment */}
-                        <div className="md:col-span-2 border-t border-zinc-800 pt-4 space-y-2">
+                        <div className="md:col-span-2 border-t border-zinc-300 dark:border-zinc-800 pt-4 space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2">Class Assignment</label>
                             <div className="grid grid-cols-2 gap-4">
                                 <Select
@@ -354,10 +354,10 @@ function StudentProfileContent() {
                                         setEditForm({ ...editForm, gradeId, classId: "" });
                                     }}
                                 >
-                                    <SelectTrigger className="bg-zinc-900 border-zinc-800 rounded-xl h-11">
+                                    <SelectTrigger className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl h-11">
                                         <SelectValue placeholder="Select Grade" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                         {gradesData.map((g: any) => (
                                             <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                                         ))}
@@ -368,10 +368,10 @@ function StudentProfileContent() {
                                     onValueChange={(classId: string) => setEditForm({ ...editForm, classId })}
                                     disabled={!editSelectedGradeId}
                                 >
-                                    <SelectTrigger className="bg-zinc-900 border-zinc-800 rounded-xl h-11">
+                                    <SelectTrigger className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl h-11">
                                         <SelectValue placeholder="Select Class" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                         {gradesData.find((g: any) => g.id === editSelectedGradeId)?.classes.map((c: any) => (
                                             <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                                         ))}
@@ -389,10 +389,10 @@ function StudentProfileContent() {
             </Dialog>
 
             {/* Profile Info Card */}
-            <Card className="bg-zinc-950/40 backdrop-blur-2xl border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
+            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
                 <div className="p-10 flex flex-col md:flex-row items-center gap-10">
                     <div className="relative">
-                        <div className="w-32 h-32 rounded-[2.5rem] bg-zinc-950 border-2 border-eduGreen-900/30 flex items-center justify-center text-4xl font-black text-eduGreen-500 shadow-2xl relative overflow-hidden">
+                        <div className="w-32 h-32 rounded-[2.5rem] bg-white dark:bg-zinc-950 border-2 border-eduGreen-900/30 flex items-center justify-center text-4xl font-black text-eduGreen-500 shadow-2xl relative overflow-hidden">
                             {student.photoUrl ? (
                                 <Image src={student.photoUrl} alt="" fill sizes="128px" className="object-cover" />
                             ) : (
@@ -404,7 +404,7 @@ function StudentProfileContent() {
 
                     <div className="flex-1 text-center md:text-left">
                         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-2">
-                            <h1 className="text-4xl font-black text-white tracking-tight italic">
+                            <h1 className="text-4xl font-black text-zinc-900 dark:text-white tracking-tight italic">
                                 {student.firstName} <span className="text-zinc-700 not-italic ml-2">{student.lastName}</span>
                             </h1>
                             <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-eduGreen-950/20 border border-eduGreen-900/30 text-[10px] font-black text-eduGreen-500 uppercase tracking-[0.2em] shadow-lg shadow-eduGreen-950/10">
@@ -429,9 +429,9 @@ function StudentProfileContent() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="p-6 bg-zinc-900/40 rounded-3xl border border-zinc-800/80 text-center">
+                        <div className="p-6 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-3xl border border-zinc-300 dark:border-zinc-800/80 text-center">
                             <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">Attendance</div>
-                            <div className="text-2xl font-black text-white italic">
+                            <div className="text-2xl font-black text-zinc-900 dark:text-white italic">
                                 {attendance.total > 0 ? Math.round((attendance.present / attendance.total) * 100) : 0}%
                             </div>
                         </div>
@@ -446,14 +446,14 @@ function StudentProfileContent() {
                             Verified Guardians (Official Link)
                         </div>
                         {student.parentLinks.map((link: any, idx: number) => (
-                            <div key={idx} className="flex items-center gap-3 p-3 bg-zinc-900/30 border border-zinc-800 rounded-2xl group/parent hover:border-eduGreen-900/50 transition-all">
-                                <Avatar className="h-8 w-8 border border-zinc-800">
-                                    <AvatarFallback className="text-[10px] font-black bg-zinc-950 text-zinc-600">
+                            <div key={idx} className="flex items-center gap-3 p-3 bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800 rounded-2xl group/parent hover:border-eduGreen-900/50 transition-all">
+                                <Avatar className="h-8 w-8 border border-zinc-300 dark:border-zinc-800">
+                                    <AvatarFallback className="text-[10px] font-black bg-white dark:bg-zinc-950 text-zinc-600">
                                         {link.parent?.name?.[0] || 'G'}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <div className="text-[11px] font-black text-white uppercase tracking-tight group-hover/parent:text-eduGreen-400 transition-colors">
+                                    <div className="text-[11px] font-black text-zinc-900 dark:text-white uppercase tracking-tight group-hover/parent:text-eduGreen-400 transition-colors">
                                         {link.parent?.name}
                                     </div>
                                     <div className="text-[9px] font-bold text-zinc-700 uppercase tracking-widest">
@@ -461,7 +461,7 @@ function StudentProfileContent() {
                                     </div>
                                 </div>
                                 <Link href={`/dashboard/messages?userId=${link.parent?.id}`}>
-                                    <div className="ml-2 w-8 h-8 rounded-xl bg-zinc-950 flex items-center justify-center text-zinc-700 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 transition-all">
+                                    <div className="ml-2 w-8 h-8 rounded-xl bg-white dark:bg-zinc-950 flex items-center justify-center text-zinc-700 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 transition-all">
                                         <MessageSquare className="w-3.5 h-3.5" />
                                     </div>
                                 </Link>
@@ -472,22 +472,22 @@ function StudentProfileContent() {
             </Card>
 
             <Tabs defaultValue="academic" className="space-y-8" onValueChange={setActiveTab}>
-                <TabsList className="bg-zinc-950/50 border border-zinc-900 p-1.5 rounded-2xl h-auto flex-wrap justify-start">
-                    <TabsTrigger value="academic" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Academic DNA</TabsTrigger>
-                    <TabsTrigger value="terms" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Term Summary</TabsTrigger>
-                    <TabsTrigger value="attendance" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Biometric Log</TabsTrigger>
-                    <TabsTrigger value="remarks" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Institutional Remarks</TabsTrigger>
-                    <TabsTrigger value="notes" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-white">Faculty Notes (Secure)</TabsTrigger>
-                    <TabsTrigger value="ai" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-blue-600 data-[state=active]:text-white flex items-center gap-2"><Sparkles className="w-3 h-3"/> AI Insights</TabsTrigger>
+                <TabsList className="bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 p-1.5 rounded-2xl h-auto flex-wrap justify-start">
+                    <TabsTrigger value="academic" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-zinc-900 dark:text-white">Academic DNA</TabsTrigger>
+                    <TabsTrigger value="terms" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-zinc-900 dark:text-white">Term Summary</TabsTrigger>
+                    <TabsTrigger value="attendance" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-zinc-900 dark:text-white">Biometric Log</TabsTrigger>
+                    <TabsTrigger value="remarks" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-zinc-900 dark:text-white">Institutional Remarks</TabsTrigger>
+                    <TabsTrigger value="notes" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-eduGreen-600 data-[state=active]:text-zinc-900 dark:text-white">Faculty Notes (Secure)</TabsTrigger>
+                    <TabsTrigger value="ai" className="rounded-xl px-4 py-2 font-black uppercase tracking-widest text-[10px] data-[state=active]:bg-blue-600 data-[state=active]:text-zinc-900 dark:text-white flex items-center gap-2"><Sparkles className="w-3 h-3"/> AI Insights</TabsTrigger>
                 </TabsList>
 
                 {/* --- Academic Section --- */}
                 <TabsContent value="academic" className="animate-in slide-in-from-bottom-4 duration-300">
                     <div className="grid lg:grid-cols-12 gap-8">
-                        <Card className="lg:col-span-8 bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem] ">
-                            <CardHeader className="p-8 border-b border-zinc-800/50 flex flex-row items-center justify-between">
+                        <Card className="lg:col-span-8 bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] ">
+                            <CardHeader className="p-8 border-b border-zinc-300 dark:border-zinc-800/50 flex flex-row items-center justify-between">
                                 <div>
-                                    <CardTitle className="text-xl font-black text-white italic">Execution <span className="text-zinc-700 not-italic ml-1">Matrix</span></CardTitle>
+                                    <CardTitle className="text-xl font-black text-zinc-900 dark:text-white italic">Execution <span className="text-zinc-700 not-italic ml-1">Matrix</span></CardTitle>
                                     <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Validated academic grade records</CardDescription>
                                 </div>
                                 <div className="hidden md:flex gap-1.5 h-6">
@@ -497,7 +497,7 @@ function StudentProfileContent() {
                             <CardContent className="p-8 pb-4">
                                 {/* Grade Trend SVG Chart */}
                                 {grades.length > 1 && (
-                                    <div className="mb-10 p-6 bg-zinc-950/50 rounded-3xl border border-zinc-800/50 relative overflow-hidden group">
+                                    <div className="mb-10 p-6 bg-white/50 dark:bg-zinc-950/50 rounded-3xl border border-zinc-300 dark:border-zinc-800/50 relative overflow-hidden group">
                                         <div className="absolute inset-0 bg-gradient-to-r from-eduGreen-500/5 to-transparent opacity-50" />
                                         <div className="flex items-center gap-2 mb-6">
                                             <TrendingUp className="w-3.5 h-3.5 text-eduGreen-500" />
@@ -545,7 +545,7 @@ function StudentProfileContent() {
                                     </div>
                                 )}
 
-                                <div className="divide-y divide-zinc-950 border-t border-zinc-900/50 -mx-8">
+                                <div className="divide-y divide-zinc-950 border-t border-zinc-200 dark:border-zinc-900/50 -mx-8">
                                     {grades.length === 0 ? (
                                         <div className="p-20 text-center opacity-40">
                                             <TrendingUp className="w-12 h-12 mx-auto mb-4 text-zinc-800" />
@@ -555,24 +555,24 @@ function StudentProfileContent() {
                                         grades.map((grade: any, i: number) => (
                                             <div key={i} className="p-8 flex items-center justify-between hover:bg-eduGreen-900/5 transition-all group">
                                                 <div className="flex items-center gap-6">
-                                                    <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-900 flex items-center justify-center group-hover:border-eduGreen-900/30 transition-colors">
+                                                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center group-hover:border-eduGreen-900/30 transition-colors">
                                                         <BookOpen className="w-5 h-5 text-zinc-800 group-hover:text-eduGreen-500 transition-colors" />
                                                     </div>
                                                     <div>
-                                                        <div className="font-black text-white tracking-tight uppercase text-sm">{grade.subject?.name}</div>
+                                                        <div className="font-black text-zinc-900 dark:text-white tracking-tight uppercase text-sm">{grade.subject?.name}</div>
                                                         <div className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-1">{grade.exam?.title || "Class Assessment"}</div>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-8">
                                                     <div className="text-right">
                                                         <div className="text-[10px] font-black text-zinc-700 uppercase tracking-widest mb-1">{formatDate(grade.createdAt, 'MMM dd')}</div>
-                                                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-950 rounded-lg border border-zinc-900 text-[9px] font-black uppercase text-zinc-500">
+                                                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-900 text-[9px] font-black uppercase text-zinc-500">
                                                             {grade.status}
                                                         </div>
                                                     </div>
                                                     <div className={cn(
-                                                        "w-16 h-16 rounded-2xl bg-zinc-950 border flex flex-col items-center justify-center font-black italic shadow-inner",
-                                                        grade.exam?.totalMarks ? getPerformanceColor((parseFloat(grade.score) / grade.exam.totalMarks) * 100).border : "border-zinc-900"
+                                                        "w-16 h-16 rounded-2xl bg-white dark:bg-zinc-950 border flex flex-col items-center justify-center font-black italic shadow-inner",
+                                                        grade.exam?.totalMarks ? getPerformanceColor((parseFloat(grade.score) / grade.exam.totalMarks) * 100).border : "border-zinc-200 dark:border-zinc-900"
                                                     )}>
                                                         <span className={cn(
                                                             "text-xl",
@@ -589,7 +589,7 @@ function StudentProfileContent() {
                         </Card>
 
                         <div className="lg:col-span-4 space-y-8">
-                            <Card className="bg-zinc-900/30 border-zinc-900 rounded-[2.5rem] p-8">
+                            <Card className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                                 <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-6">Subject Variance</h4>
                                 <div className="space-y-6">
                                     {grades.length === 0 ? (
@@ -607,10 +607,10 @@ function StudentProfileContent() {
                                             return (
                                                 <div key={i} className="space-y-2">
                                                     <div className="flex justify-between text-[10px] font-black uppercase">
-                                                        <span className="text-zinc-400">{subjectName}</span>
-                                                        <span className={cn("text-white", getPerformanceColor(avg).text)}>{avg}%</span>
+                                                        <span className="text-zinc-600 dark:text-zinc-400">{subjectName}</span>
+                                                        <span className={cn("text-zinc-900 dark:text-white", getPerformanceColor(avg).text)}>{avg}%</span>
                                                     </div>
-                                                    <div className="h-1.5 w-full bg-zinc-950 rounded-full overflow-hidden border border-zinc-900/50">
+                                                    <div className="h-1.5 w-full bg-white dark:bg-zinc-950 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-900/50">
                                                         <div
                                                             className={cn("h-full rounded-full shadow-[0_0_8px_rgba(33,201,141,0.3)] transition-all duration-300", getPerformanceColor(avg).bg.replace('bg-', 'bg-').replace('/10', ''))}
                                                             style={{ width: `${avg}%` }}
@@ -634,20 +634,20 @@ function StudentProfileContent() {
                 <TabsContent value="attendance" className="animate-in slide-in-from-bottom-4 duration-300">
                     <div className="grid lg:grid-cols-4 gap-8">
                         <div className="lg:col-span-1 space-y-4">
-                            <Card className="p-8 bg-zinc-950/50 border-zinc-900 rounded-[2.5rem] text-center">
+                            <Card className="p-8 bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] text-center">
                                 <Clock className="w-8 h-8 text-eduGreen-500 mx-auto mb-4" />
-                                <div className="text-4xl font-black text-white italic">{attendance.present}</div>
+                                <div className="text-4xl font-black text-zinc-900 dark:text-white italic">{attendance.present}</div>
                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest mt-1">Days Present</div>
                             </Card>
-                            <Card className="p-8 bg-zinc-950/50 border-zinc-900 rounded-[2.5rem] text-center">
+                            <Card className="p-8 bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] text-center">
                                 <ShieldAlert className="w-8 h-8 text-red-500 mx-auto mb-4" />
-                                <div className="text-4xl font-black text-white italic">{attendance.absent}</div>
+                                <div className="text-4xl font-black text-zinc-900 dark:text-white italic">{attendance.absent}</div>
                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest mt-1">Unexcused Absence</div>
                             </Card>
                         </div>
-                        <Card className="lg:col-span-3 bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem]">
-                            <CardHeader className="p-8 border-b border-zinc-800/50">
-                                <CardTitle className="text-xl font-black text-white italic">Temporal <span className="text-zinc-700 not-italic ml-1">Flow</span></CardTitle>
+                        <Card className="lg:col-span-3 bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2.5rem]">
+                            <CardHeader className="p-8 border-b border-zinc-300 dark:border-zinc-800/50">
+                                <CardTitle className="text-xl font-black text-zinc-900 dark:text-white italic">Temporal <span className="text-zinc-700 not-italic ml-1">Flow</span></CardTitle>
                                 <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Historical attendance records</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0">
@@ -665,7 +665,7 @@ function StudentProfileContent() {
                                                         <Calendar className="w-4 h-4" />
                                                     </div>
                                                     <div>
-                                                        <div className="text-[11px] font-black text-white uppercase tracking-tight">
+                                                        <div className="text-[11px] font-black text-zinc-900 dark:text-white uppercase tracking-tight">
                                                             {new Date(record.date).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
                                                         </div>
                                                         <div className="text-[8px] font-bold text-zinc-600 uppercase tracking-[0.2em] mt-0.5">Verified Entry Node</div>
@@ -697,10 +697,10 @@ function StudentProfileContent() {
 
                 {/* --- Remarks Section --- */}
                 <TabsContent value="remarks" className="animate-in slide-in-from-bottom-4 duration-300">
-                    <Card className="bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem] ">
-                        <CardHeader className="p-8 border-b border-zinc-800/50 flex flex-row items-center justify-between">
+                    <Card className="bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] ">
+                        <CardHeader className="p-8 border-b border-zinc-300 dark:border-zinc-800/50 flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="text-xl font-black text-white tracking-tight">Institutional Narrative</CardTitle>
+                                <CardTitle className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Institutional Narrative</CardTitle>
                                 <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Formal term observations for parents & students</CardDescription>
                             </div>
                             {canAddRemark && (
@@ -714,12 +714,12 @@ function StudentProfileContent() {
                         </CardHeader>
                         <CardContent className="p-8">
                             {isAddingRemark && (
-                                <div className="mb-8 p-6 bg-zinc-950/40 border border-zinc-900 rounded-3xl animate-in slide-in-from-top-4 duration-300">
+                                <div className="mb-8 p-6 bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900 rounded-3xl animate-in slide-in-from-top-4 duration-300">
                                     <textarea
                                         value={newRemark}
                                         onChange={(e) => setNewRemark(e.target.value)}
                                         placeholder="Enter formal academic or behavioral observation..."
-                                        className="w-full bg-zinc-900/50 border-zinc-800 rounded-2xl p-4 text-sm font-bold text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
+                                        className="w-full bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-bold text-zinc-900 dark:text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
                                     />
                                     <div className="flex justify-end mt-4">
                                         <Button
@@ -740,11 +740,11 @@ function StudentProfileContent() {
                                     </div>
                                 ) : (
                                     remarks.map((r, i) => (
-                                        <div key={i} className="p-8 bg-zinc-950/40 border border-zinc-900/50 rounded-3xl relative">
+                                        <div key={i} className="p-8 bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 rounded-3xl relative">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar className="h-8 w-8 border border-zinc-800">
-                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-900 text-zinc-500">{(r.teacher?.name && r.teacher.name[0]) || 'T'}</AvatarFallback>
+                                                    <Avatar className="h-8 w-8 border border-zinc-300 dark:border-zinc-800">
+                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-100 dark:bg-zinc-900 text-zinc-500">{(r.teacher?.name && r.teacher.name[0]) || 'T'}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <div className="text-[10px] font-black text-zinc-100 uppercase tracking-tight">{r.teacher?.name}</div>
@@ -753,7 +753,7 @@ function StudentProfileContent() {
                                                 </div>
                                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">{formatDate(r.createdAt, 'MMM yyyy')}</div>
                                             </div>
-                                            <p className="text-sm font-bold text-zinc-400 leading-relaxed italic pr-12">"{r.content}"</p>
+                                            <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400 leading-relaxed italic pr-12">"{r.content}"</p>
                                             <div className="absolute bottom-6 right-8 text-[8px] font-black text-eduGreen-600/50 uppercase tracking-[0.2em]">Validated Node</div>
                                         </div>
                                     ))
@@ -772,7 +772,7 @@ function StudentProfileContent() {
                                     <ShieldAlert className="w-4 h-4 text-eduGreen-500" />
                                     <span className="text-[10px] font-black text-eduGreen-500 uppercase tracking-[0.3em]">Confidential Protocol</span>
                                 </div>
-                                <CardTitle className="text-xl font-black text-white">Faculty Internal Data</CardTitle>
+                                <CardTitle className="text-xl font-black text-zinc-900 dark:text-white">Faculty Internal Data</CardTitle>
                                 <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Privileged observations NOT visible to parents or students</CardDescription>
                             </div>
                             {canAddNote && (
@@ -786,12 +786,12 @@ function StudentProfileContent() {
                         </CardHeader>
                         <CardContent className="p-8">
                             {isAddingNote && (
-                                <div className="mb-8 p-6 bg-zinc-950/10 border border-eduGreen-900/20 rounded-3xl animate-in slide-in-from-top-4 duration-300">
+                                <div className="mb-8 p-6 bg-white/10 dark:bg-zinc-950/10 border border-eduGreen-900/20 rounded-3xl animate-in slide-in-from-top-4 duration-300">
                                     <textarea
                                         value={newNote}
                                         onChange={(e) => setNewNote(e.target.value)}
                                         placeholder="Record confidential disciplinary or behavioral data..."
-                                        className="w-full bg-zinc-900/50 border-zinc-800 rounded-2xl p-4 text-sm font-bold text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
+                                        className="w-full bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-bold text-zinc-900 dark:text-white focus:border-eduGreen-600 outline-none transition-all min-h-[120px]"
                                     />
                                     <div className="flex justify-end mt-4">
                                         <Button
@@ -812,11 +812,11 @@ function StudentProfileContent() {
                                     </div>
                                 ) : (
                                     data.internalNotes.map((n: any, i: number) => (
-                                        <div key={i} className="p-8 bg-zinc-950/40 border border-zinc-900/50 rounded-3xl relative">
+                                        <div key={i} className="p-8 bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 rounded-3xl relative">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar className="h-8 w-8 border border-zinc-800">
-                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-900 text-eduGreen-500">{(n.author?.name && n.author.name[0]) || 'A'}</AvatarFallback>
+                                                    <Avatar className="h-8 w-8 border border-zinc-300 dark:border-zinc-800">
+                                                        <AvatarFallback className="text-[9px] font-black bg-zinc-100 dark:bg-zinc-900 text-eduGreen-500">{(n.author?.name && n.author.name[0]) || 'A'}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <div className="text-[10px] font-black text-zinc-100 uppercase tracking-tight">{n.author?.name}</div>
@@ -825,7 +825,7 @@ function StudentProfileContent() {
                                                 </div>
                                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">{formatDate(n.createdAt, 'MMM dd, HH:mm')}</div>
                                             </div>
-                                            <p className="text-sm font-bold text-zinc-400 leading-relaxed italic pr-12">{n.content}</p>
+                                            <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400 leading-relaxed italic pr-12">{n.content}</p>
                                             <div className="absolute top-8 right-8 text-eduGreen-500/20">
                                                 <ShieldAlert className="w-6 h-6" />
                                             </div>
@@ -839,21 +839,21 @@ function StudentProfileContent() {
 
                 {/* --- AI Insights Section --- */}
                 <TabsContent value="ai" className="animate-in slide-in-from-bottom-4 duration-300">
-                    <Card className="bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[2.5rem] ">
-                        <CardHeader className="p-8 border-b border-zinc-800/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <Card className="bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] ">
+                        <CardHeader className="p-8 border-b border-zinc-300 dark:border-zinc-800/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
                                     <Sparkles className="w-4 h-4 text-blue-500" />
                                     <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em]">Predictive Analytics Engine</span>
                                 </div>
-                                <CardTitle className="text-xl font-black text-white italic">AI Risk <span className="text-zinc-500 not-italic ml-1">Assessment</span></CardTitle>
+                                <CardTitle className="text-xl font-black text-zinc-900 dark:text-white italic">AI Risk <span className="text-zinc-500 not-italic ml-1">Assessment</span></CardTitle>
                                 <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Synthesize academic and behavioral data into actionable insights</CardDescription>
                             </div>
                             {canAddNote && (
                                 <Button
                                     onClick={handleRunAiAnalysis}
                                     disabled={analyzing}
-                                    className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl h-12 px-6 font-black uppercase text-[10px] tracking-widest"
+                                    className="bg-blue-600 hover:bg-blue-500 text-zinc-900 dark:text-white rounded-xl h-12 px-6 font-black uppercase text-[10px] tracking-widest"
                                 >
                                     {analyzing ? <SpringingLoader message="Analyzing..." /> : "Generate Analysis"}
                                 </Button>
@@ -869,13 +869,13 @@ function StudentProfileContent() {
                             
                             {aiAnalysis && (
                                 <div className="space-y-8 animate-in fade-in duration-500">
-                                    <div className="flex items-center gap-4 p-6 rounded-3xl border bg-zinc-950/50" style={{
+                                    <div className="flex items-center gap-4 p-6 rounded-3xl border bg-white/50 dark:bg-zinc-950/50" style={{
                                         borderColor: aiAnalysis.riskLevel === 'Low' ? '#059669' : aiAnalysis.riskLevel === 'Medium' ? '#d97706' : '#e11d48'
                                     }}>
                                         <div className="flex-1">
                                             <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-1">Overall Risk Level</div>
-                                            <div className="text-2xl font-black text-white">{aiAnalysis.riskLevel}</div>
-                                            <p className="text-sm font-bold text-zinc-400 mt-2">{aiAnalysis.summary}</p>
+                                            <div className="text-2xl font-black text-zinc-900 dark:text-white">{aiAnalysis.riskLevel}</div>
+                                            <p className="text-sm font-bold text-zinc-600 dark:text-zinc-400 mt-2">{aiAnalysis.summary}</p>
                                         </div>
                                     </div>
 
@@ -884,7 +884,7 @@ function StudentProfileContent() {
                                             <h4 className="text-[10px] font-black uppercase tracking-widest text-blue-500">Key Observations</h4>
                                             <ul className="space-y-3">
                                                 {aiAnalysis.keyObservations?.map((obs: string, idx: number) => (
-                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-300">
+                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
                                                         <div className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
                                                         {obs}
                                                     </li>
@@ -895,7 +895,7 @@ function StudentProfileContent() {
                                             <h4 className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Recommended Interventions</h4>
                                             <ul className="space-y-3">
                                                 {aiAnalysis.recommendedInterventions?.map((int: string, idx: number) => (
-                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-300">
+                                                    <li key={idx} className="flex gap-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
                                                         <div className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
                                                         {int}
                                                     </li>

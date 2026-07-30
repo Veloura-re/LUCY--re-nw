@@ -59,18 +59,18 @@ export default async function DashboardLayout({
     if (!dbUser) {
         // Handle database uplink interruptions or missing profiles
         return (
-            <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+            <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-20 h-20 rounded-full bg-red-950/20 flex items-center justify-center mb-6">
                     <Shield className="w-10 h-10 text-red-500" />
                 </div>
-                <h1 className="text-2xl font-medium text-white mb-2 uppercase tracking-tighter">Connection Bad</h1>
+                <h1 className="text-2xl font-medium text-zinc-900 dark:text-white mb-2 uppercase tracking-tighter">Connection Bad</h1>
                 <p className="text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
                     The database connection is bad or your profile was not found.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                     <a href="/dashboard" className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-eduGreen-600 text-white text-[10px] font-medium uppercase tracking-widest">↻ Retry</a>
                     <form action="/auth/signout" method="post">
-                        <button type="submit" className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-zinc-900 text-white hover:bg-red-900/40 hover:text-red-400 text-[10px] font-medium uppercase tracking-widest transition-colors gap-2 w-full sm:w-auto h-full">
+                        <button type="submit" className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white hover:bg-red-900/40 hover:text-red-400 text-[10px] font-medium uppercase tracking-widest transition-colors gap-2 w-full sm:w-auto h-full">
                             <Shield className="w-3 h-3" />
                             Sign Out
                         </button>
@@ -132,7 +132,7 @@ export default async function DashboardLayout({
 
     return (
         <div className={cn(
-            "h-screen bg-zinc-950 flex font-sans text-white relative overflow-hidden",
+            "h-screen bg-white dark:bg-zinc-950 flex font-sans text-zinc-900 dark:text-white relative overflow-hidden",
             isSidebar ? "flex-col md:flex-row" : "flex-col"
         )}>
             <RealtimeRefresh schoolId={dbUser.schoolId} />
@@ -156,14 +156,14 @@ export default async function DashboardLayout({
                     <div className="hidden md:block w-32" /> {/* Spacer */}
                     <div className="flex items-center gap-4">
                         {dbUser.school?.logoUrl ? (
-                            <Image src={dbUser.school.logoUrl} alt="School Logo" width={48} height={48} className="w-12 h-12 object-contain rounded-xl bg-zinc-900/50 p-1" />
+                            <Image src={dbUser.school.logoUrl} alt="School Logo" width={48} height={48} className="w-12 h-12 object-contain rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
                         ) : (
                             <Logo className="w-12 h-12" />
                         )}
-                        <div className="relative flex items-center bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
+                        <div className="relative flex items-center bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
                             <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-white ml-2 md:ml-3">
+                            <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-2 md:ml-3">
                                 LUCY
                                 <span className="absolute -top-1 -right-2 text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
                             </span>

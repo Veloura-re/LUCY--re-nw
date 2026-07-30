@@ -15,7 +15,7 @@ export default async function ExamLayout({
     }
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-eduGreen-500/30">
+        <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-white selection:bg-eduGreen-500/30">
             {children}
         </div>
     );

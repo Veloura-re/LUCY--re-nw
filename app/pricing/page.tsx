@@ -18,7 +18,7 @@ const terminalLines = [
 
 export default function Pricing() {
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -114,7 +114,7 @@ export default function Pricing() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: false }}
                                 transition={{ delay: i * 0.1 }}
-                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 rounded-xl dark:rounded-none ${t.highlight ? "border-slate-300 dark:border-white/30 bg-slate-50 dark:bg-zinc-950/80 shadow-lg shadow-slate-200 dark:shadow-white/[0.02]" : "border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/30 hover:border-slate-300 dark:hover:border-white/20"}`}
+                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 rounded-xl dark:rounded-none ${t.highlight ? "border-slate-300 dark:border-white/30 bg-slate-50 dark:bg-zinc-950/80 shadow-lg shadow-slate-200 dark:shadow-white/[0.02]" : "border-slate-200 dark:border-white/10 bg-white/30 dark:bg-zinc-950/30 hover:border-slate-300 dark:hover:border-white/20"}`}
                             >
                                 {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-400 dark:via-white/30 to-transparent" />}
                                 
@@ -144,7 +144,7 @@ export default function Pricing() {
                                             boxShadow: ["0 0 0px rgba(0,0,0,0)", "0 0 12px rgba(0,0,0,0.1)", "0 0 0px rgba(0,0,0,0)"]
                                         }}
                                         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                        className="absolute top-4 right-4 bg-slate-900 text-white dark:bg-white dark:text-black px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 rounded-md dark:rounded-none"
+                                        className="absolute top-4 right-4 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 rounded-md dark:rounded-none"
                                     >
                                         40%_discount
                                     </motion.div>
@@ -178,7 +178,7 @@ export default function Pricing() {
 
                                 <div className="pt-4 relative z-10">
                                     <Link href={t.href} className="w-full">
-                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 rounded-md dark:rounded-none ${t.highlight ? "bg-slate-900 text-white border-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:border-white dark:hover:bg-zinc-200" : "border-slate-300 text-slate-600 bg-slate-50 hover:bg-slate-900 hover:text-white dark:border-white/20 dark:text-zinc-300 dark:bg-white/5 dark:hover:bg-white dark:hover:text-black"}`}>
+                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 rounded-md dark:rounded-none ${t.highlight ? "bg-slate-900 text-zinc-900 dark:text-white border-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:border-white dark:hover:bg-zinc-200" : "border-slate-300 text-slate-600 bg-slate-50 hover:bg-slate-900 hover:text-white dark:border-white/20 dark:text-zinc-300 dark:bg-white/5 dark:hover:bg-white dark:hover:text-black"}`}>
                                             {t.buttonText}
                                         </div>
                                     </Link>

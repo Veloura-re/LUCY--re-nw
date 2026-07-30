@@ -125,7 +125,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                                 type="email"
                                 value={email}
                                 disabled
-                                className="w-full h-12 bg-zinc-900/50 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-zinc-400 cursor-not-allowed"
+                                className="w-full h-12 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-zinc-600 dark:text-zinc-400 cursor-not-allowed"
                             />
                             <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                 <ShieldCheck className="h-4 w-4 text-eduGreen-500/70" />
@@ -134,7 +134,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-semibold text-zinc-300 uppercase tracking-widest ml-1">Full Legal Name</label>
+                        <label className="text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest ml-1">Full Legal Name</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <User className="h-4 w-4 text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
@@ -145,13 +145,13 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 required
-                                className="w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
+                                className="w-full h-12 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-semibold text-zinc-300 uppercase tracking-widest ml-1">Secure Password</label>
+                        <label className="text-[10px] font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest ml-1">Secure Password</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Lock className="h-4 w-4 text-zinc-500 group-focus-within:text-eduGreen-500 transition-colors" />
@@ -163,7 +163,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                                 onChange={e => setPassword(e.target.value)}
                                 required
                                 minLength={6}
-                                className="w-full h-12 bg-zinc-950 border border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
+                                className="w-full h-12 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-11 pr-4 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-500 focus:ring-1 focus:ring-eduGreen-500 transition-all outline-none"
                             />
                         </div>
                     </div>

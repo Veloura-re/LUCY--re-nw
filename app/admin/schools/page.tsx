@@ -167,7 +167,7 @@ export default function SchoolsLedgerPage() {
             {/* Header section */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold font-orbitron tracking-tight text-white flex items-center gap-2">
+                    <h1 className="text-2xl font-bold font-orbitron tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
                         <School className="w-6 h-6 text-eduGreen-500" />
                         INSTITUTION LEDGER
                     </h1>
@@ -194,11 +194,11 @@ export default function SchoolsLedgerPage() {
                                 <Plus className="w-4 h-4 text-eduGreen-400" />
                             </div>
                             <div>
-                                <h3 className="text-base font-semibold text-white">Provision New Institution</h3>
+                                <h3 className="text-base font-semibold text-zinc-900 dark:text-white">Provision New Institution</h3>
                                 <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mt-0.5">Deploy a new school environment</p>
                             </div>
                         </div>
-                        <button onClick={() => setShowForm(false)} className="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-colors">
+                        <button onClick={() => setShowForm(false)} className="w-8 h-8 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-colors">
                             <X className="w-4 h-4" />
                         </button>
                     </div>
@@ -211,7 +211,7 @@ export default function SchoolsLedgerPage() {
                                 value={newSchoolName}
                                 onChange={e => setNewSchoolName(e.target.value)}
                                 required
-                                className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
+                                className="bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl h-12 text-zinc-900 dark:text-white focus:border-eduGreen-600"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -222,7 +222,7 @@ export default function SchoolsLedgerPage() {
                                 value={ownerEmail}
                                 onChange={e => setOwnerEmail(e.target.value)}
                                 required
-                                className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
+                                className="bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl h-12 text-zinc-900 dark:text-white focus:border-eduGreen-600"
                             />
                         </div>
                         <Button
@@ -245,7 +245,7 @@ export default function SchoolsLedgerPage() {
 
             {/* Invite Token Result */}
             {inviteToken && (
-                <div className="relative rounded-2xl border border-eduGreen-500/20 bg-zinc-950 p-8 animate-in fade-in zoom-in-95 duration-400 shadow-2xl">
+                <div className="relative rounded-2xl border border-eduGreen-500/20 bg-white dark:bg-zinc-950 p-8 animate-in fade-in zoom-in-95 duration-400 shadow-2xl">
                     <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent" />
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
@@ -269,12 +269,12 @@ export default function SchoolsLedgerPage() {
                         <div className="space-y-2">
                             <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔑 Invite Token</label>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-3.5 font-mono text-xl text-eduGreen-400 tracking-[0.25em] text-center">
+                                <div className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-5 py-3.5 font-mono text-xl text-eduGreen-400 tracking-[0.25em] text-center">
                                     {inviteToken}
                                 </div>
                                 <button
                                     onClick={() => copyToClipboard(inviteToken, 'token')}
-                                    className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
+                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
                                 >
                                     {copied === 'token' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
                                 </button>
@@ -283,12 +283,12 @@ export default function SchoolsLedgerPage() {
                         <div className="space-y-2">
                             <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔗 Invite URL</label>
                             <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3.5 font-mono text-[10px] text-zinc-400 truncate">
+                                <div className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-3.5 font-mono text-[10px] text-zinc-600 dark:text-zinc-400 truncate">
                                     {inviteUrl}
                                 </div>
                                 <button
                                     onClick={() => copyToClipboard(inviteUrl || '', 'url')}
-                                    className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
+                                    className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/30 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 transition-all"
                                 >
                                     {copied === 'url' ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}
                                 </button>
@@ -298,7 +298,7 @@ export default function SchoolsLedgerPage() {
 
                     <Button
                         onClick={() => { setInviteToken(null); setInviteUrl(null); setShowForm(false); }}
-                        className="w-full h-11 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all"
+                        className="w-full h-11 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-xl font-semibold text-[10px] uppercase tracking-widest transition-all"
                     >
                         Done
                     </Button>
@@ -306,7 +306,7 @@ export default function SchoolsLedgerPage() {
             )}
 
             {/* Filtering Settings Panel */}
-            <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 relative">
                     <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                     <input
@@ -314,7 +314,7 @@ export default function SchoolsLedgerPage() {
                         placeholder="Search school name or code..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
+                        className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
                     />
                 </div>
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
@@ -326,7 +326,7 @@ export default function SchoolsLedgerPage() {
                             className={cn(
                                 "px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 statusFilter === status
-                                    ? "bg-zinc-800 text-white border-zinc-700"
+                                    ? "bg-zinc-800 text-zinc-900 dark:text-white border-zinc-700"
                                     : "bg-transparent text-zinc-500 border-transparent hover:text-zinc-400"
                             )}
                         >
@@ -343,15 +343,15 @@ export default function SchoolsLedgerPage() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Loading ledger...</p>
                 </div>
             ) : filteredSchools.length === 0 ? (
-                <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-900">
+                <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900">
                     <School className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
                     <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No schools discovered</p>
                     <p className="text-[10px] text-zinc-700 mt-1">Adjust filters or provision your first institution above</p>
                 </div>
             ) : (
-                <div className="rounded-2xl border border-white/5 overflow-hidden">
+                <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-white/5">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5">
                         <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Institution</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Staff</div>
                         <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Students</div>
@@ -360,11 +360,11 @@ export default function SchoolsLedgerPage() {
                     </div>
 
                     {/* Table Rows */}
-                    <div className="divide-y divide-white/5 bg-black">
+                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
                         {filteredSchools.map((school) => (
-                            <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-900/30 items-center transition-colors text-white">
+                            <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
                                 <div className="col-span-4 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                                    <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                                         <School className="w-4 h-4" />
                                     </div>
                                     <div>
@@ -372,8 +372,8 @@ export default function SchoolsLedgerPage() {
                                         <p className="text-[9px] text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
                                     </div>
                                 </div>
-                                <div className="col-span-2 text-center text-xs font-mono text-zinc-400">{school._count.users}</div>
-                                <div className="col-span-2 text-center text-xs font-mono text-zinc-400">{school._count.students}</div>
+                                <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.users}</div>
+                                <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.students}</div>
                                 <div className="col-span-2 text-center">
                                     <span className={cn(
                                         "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider",
@@ -390,7 +390,7 @@ export default function SchoolsLedgerPage() {
                                     {school.status === 'ACTIVE' ? (
                                         <button
                                             onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
                                             title="Suspend"
                                         >
                                             <PowerOff className="w-3 h-3" />
@@ -399,7 +399,7 @@ export default function SchoolsLedgerPage() {
                                     ) : (
                                         <button
                                             onClick={() => handleActivateSchool(school.id)}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
                                             title="Activate"
                                         >
                                             <Power className="w-3 h-3" />
@@ -408,21 +408,21 @@ export default function SchoolsLedgerPage() {
                                     )}
                                     <button
                                         onClick={() => setManageOwnersSchool({ id: school.id, name: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
+                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
                                         title="Manage Owners"
                                     >
                                         <ShieldCheck className="w-3.5 h-3.5" />
                                     </button>
                                     <button
                                         onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
+                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
                                         title="Manage Principals"
                                     >
                                         <Users className="w-3.5 h-3.5" />
                                     </button>
                                     <button
                                         onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-red-900/40 hover:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
+                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-red-900/40 hover:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
                                         title="Delete"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
