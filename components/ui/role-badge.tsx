@@ -8,12 +8,12 @@ interface RoleBadgeProps {
 
 export function RoleBadge({ role, className }: RoleBadgeProps) {
     const config = {
-        SUPERADMIN: { label: "Super Admin", color: "bg-purple-950/30 text-purple-400 border-purple-800/50" },
-        PRINCIPAL: { label: "Director", color: "bg-eduGreen-950/30 text-eduGreen-400 border-eduGreen-800/50" },
-        TEACHER: { label: "Teacher", color: "bg-sky-950/30 text-sky-400 border-sky-800/50" },
-        HOMEROOM: { label: "Homeroom", color: "bg-orange-950/30 text-orange-400 border-orange-800/50" },
-        PARENT: { label: "Parent", color: "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800" },
-        STUDENT: { label: "Student", color: "bg-blue-950/30 text-blue-400 border-blue-800/50" },
+        SUPERADMIN: { label: "Super Admin", color: "bg-purple-100 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-800/50" },
+        PRINCIPAL: { label: "Director", color: "bg-eduGreen-100 dark:bg-eduGreen-950/30 text-eduGreen-700 dark:text-eduGreen-400 border-eduGreen-300 dark:border-eduGreen-800/50" },
+        TEACHER: { label: "Teacher", color: "bg-sky-100 dark:bg-sky-950/30 text-sky-700 dark:text-sky-400 border-sky-300 dark:border-sky-800/50" },
+        HOMEROOM: { label: "Homeroom", color: "bg-orange-100 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 border-orange-300 dark:border-orange-800/50" },
+        PARENT: { label: "Parent", color: "bg-zinc-100 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800" },
+        STUDENT: { label: "Student", color: "bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-800/50" },
     };
 
     const { label, color } = config[role] || { label: role, color: "bg-gray-100 text-gray-700" };

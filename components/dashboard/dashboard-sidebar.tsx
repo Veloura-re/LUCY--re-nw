@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { Logo } from "@/components/ui/logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface DashboardSidebarProps {
     dbUser: any;
@@ -144,8 +145,8 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                     className={cn(
                                         "flex items-center gap-3 h-11 px-3 rounded-2xl transition-all group font-semibold text-sm cursor-pointer",
                                         isActive
-                                            ? "bg-eduGreen-900/20 text-eduGreen-400 border border-eduGreen-900/30"
-                                            : "text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 hover:border-eduGreen-900/20 border border-transparent",
+                                            ? "bg-eduGreen-900/20 text-eduGreen-600 dark:text-eduGreen-400 border border-eduGreen-900/30"
+                                            : "text-zinc-700 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 hover:border-eduGreen-900/20 border border-transparent",
                                         collapsed ? "justify-center px-0" : ""
                                     )}
                                     title={collapsed ? item.label : undefined}
@@ -184,14 +185,17 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {!collapsed && (
                         <div className="space-y-2">
                             <NavToggle mode="DOCK" />
-                            <Button
-                                variant="ghost"
-                                onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                                className="w-full justify-start gap-3 h-10 px-3 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
-                            >
-                                <Sparkles className="w-4 h-4" />
-                                Interactive Tour
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <ThemeToggle className="!w-[38px] !h-[38px] !rounded-xl shrink-0" />
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
+                                    className="flex-1 justify-start gap-3 h-10 px-3 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
+                                >
+                                    <Sparkles className="w-4 h-4" />
+                                    Interactive Tour
+                                </Button>
+                            </div>
                         </div>
                     )}
 
@@ -221,13 +225,16 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
 
                     {!collapsed && <SignOutButton />}
                     {collapsed && (
-                        <button
-                            onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                            className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
-                            title="Interactive Tour"
-                        >
-                            <Sparkles className="w-4 h-4" />
-                        </button>
+                        <>
+                            <ThemeToggle className="!w-9 !h-9 !rounded-xl" />
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
+                                className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
+                                title="Interactive Tour"
+                            >
+                                <Sparkles className="w-4 h-4" />
+                            </button>
+                        </>
                     )}
                 </div>
             </motion.aside>
