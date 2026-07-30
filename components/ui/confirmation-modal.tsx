@@ -98,7 +98,7 @@ export function ConfirmationModal({
                         <IconComponent className={cn("w-10 h-10", iconConfig.iconColor)} />
                     </div>
 
-                    <DialogTitle className="text-2xl font-medium tracking-tight text-white uppercase mb-3">
+                    <DialogTitle className="text-2xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
                     <DialogDescription className="text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
@@ -111,7 +111,7 @@ export function ConfirmationModal({
                         variant="ghost"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 h-14 rounded-2xl font-medium text-sm text-zinc-500 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 transition-all duration-200"
+                        className="flex-1 h-14 rounded-2xl font-medium text-sm text-slate-600 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-zinc-900/50 hover:bg-slate-200 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200"
                     >
                         {cancelText}
                     </Button>
@@ -202,7 +202,7 @@ export function AlertModal({
                         <IconComponent className={cn("w-10 h-10", config.iconColor)} />
                     </div>
 
-                    <DialogTitle className="text-xl font-medium tracking-tight text-white uppercase mb-3">
+                    <DialogTitle className="text-xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
                     <DialogDescription className="text-zinc-500 font-medium text-sm leading-relaxed max-w-xs mx-auto">
@@ -278,7 +278,7 @@ export function InputModal({
                         <Zap className="w-10 h-10 text-eduGreen-500" />
                     </div>
 
-                    <DialogTitle className="text-xl font-medium tracking-tight text-white uppercase mb-3">
+                    <DialogTitle className="text-xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
                     {description && (
@@ -294,7 +294,7 @@ export function InputModal({
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         placeholder={placeholder}
-                        className="w-full h-14 bg-zinc-900/80 border-2 border-zinc-800 rounded-2xl px-5 text-white font-medium text-sm focus:border-eduGreen-500 outline-none transition-all placeholder:text-zinc-600"
+                        className="w-full h-14 bg-white dark:bg-zinc-900/80 border-2 border-slate-200 dark:border-zinc-800 rounded-2xl px-5 text-slate-900 dark:text-white font-medium text-sm focus:border-eduGreen-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-zinc-600"
                         autoFocus
                     />
 
@@ -305,7 +305,7 @@ export function InputModal({
                             type="button"
                             variant="ghost"
                             onClick={onClose}
-                            className="flex-1 h-14 rounded-2xl font-medium text-sm text-zinc-500 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 transition-all duration-200"
+                            className="flex-1 h-14 rounded-2xl font-medium text-sm text-slate-600 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-zinc-900/50 hover:bg-slate-200 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 transition-all duration-200"
                         >
                             Cancel
                         </Button>
@@ -378,7 +378,7 @@ export function PaymentModal({
                         <CreditCard className="w-10 h-10" />
                     </div>
 
-                    <DialogTitle className="text-xl font-medium tracking-tight text-white uppercase mb-3">
+                    <DialogTitle className="text-xl font-medium tracking-tight text-slate-900 dark:text-white uppercase mb-3">
                         {title}
                     </DialogTitle>
                     {description && (
@@ -401,7 +401,7 @@ export function PaymentModal({
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full h-16 bg-zinc-900/80 border-2 border-zinc-800 rounded-2xl pl-10 pr-5 text-white font-medium text-xl focus:border-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    className="w-full h-16 bg-white dark:bg-zinc-900/80 border-2 border-slate-200 dark:border-zinc-800 rounded-2xl pl-10 pr-5 text-slate-900 dark:text-white font-medium text-xl focus:border-amber-500 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                     autoFocus
                                 />
                             </div>
@@ -412,7 +412,7 @@ export function PaymentModal({
                             <select
                                 value={method}
                                 onChange={(e) => setMethod(e.target.value)}
-                                className="w-full h-14 bg-zinc-900/80 border-2 border-zinc-800 rounded-2xl px-5 text-white font-medium text-sm focus:border-amber-500 outline-none appearance-none cursor-pointer"
+                                className="w-full h-14 bg-white dark:bg-zinc-900/80 border-2 border-slate-200 dark:border-zinc-800 rounded-2xl px-5 text-slate-900 dark:text-white font-medium text-sm focus:border-amber-500 outline-none appearance-none cursor-pointer"
                             >
                                 <option value="BANK_TRANSFER">Bank Transfer</option>
                                 <option value="CASH">Cash Deposit</option>
@@ -427,7 +427,7 @@ export function PaymentModal({
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
                                 placeholder="Optional transaction details..."
-                                className="w-full h-24 bg-zinc-900/80 border-2 border-zinc-800 rounded-2xl p-5 text-white font-medium text-sm focus:border-amber-500 outline-none transition-all resize-none placeholder:text-zinc-700"
+                                className="w-full h-24 bg-white dark:bg-zinc-900/80 border-2 border-slate-200 dark:border-zinc-800 rounded-2xl p-5 text-slate-900 dark:text-white font-medium text-sm focus:border-amber-500 outline-none transition-all resize-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                             />
                         </div>
                     </div>
@@ -438,7 +438,7 @@ export function PaymentModal({
                             variant="ghost"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="flex-1 h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700"
+                            className="flex-1 h-14 rounded-2xl font-medium text-[10px] uppercase tracking-widest text-slate-600 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-zinc-900/50 hover:bg-slate-200 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700"
                         >
                             Cancel
                         </Button>

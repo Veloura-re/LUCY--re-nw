@@ -65,15 +65,15 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-2xl rounded-[2.5rem]">
+            <DialogContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-900 text-slate-900 dark:text-white max-w-2xl rounded-[2.5rem]">
                 <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center">
-                            <UserCog className="w-5 h-5 text-zinc-500" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-zinc-900 flex items-center justify-center">
+                            <UserCog className="w-5 h-5 text-slate-400 dark:text-zinc-500" />
                         </div>
                         <div>
                             <DialogTitle className="text-xl font-medium italic">Configure Personnel</DialogTitle>
-                            <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
+                            <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
                                 Update profile for {teacher?.name}
                             </DialogDescription>
                         </div>
@@ -81,7 +81,7 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                    <div className="md:col-span-2 flex justify-center py-4 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
+                    <div className="md:col-span-2 flex justify-center py-4 bg-slate-50 dark:bg-zinc-900/30 rounded-2xl border border-slate-200 dark:border-zinc-800/50">
                         <ImageUpload
                             value={formData.photoUrl}
                             onChange={(url) => setFormData({ ...formData, photoUrl: url })}
@@ -90,42 +90,42 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Full Name</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Full Name</label>
                         <Input
                             value={formData.name}
                             onChange={e => setFormData({ ...formData, name: e.target.value })}
-                            className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl"
+                            className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all outline-none px-4"
                             required
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Email Address</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Email Address</label>
                         <Input
                             type="email"
                             value={formData.email}
                             onChange={e => setFormData({ ...formData, email: e.target.value })}
-                            className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl"
+                            className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all outline-none px-4"
                             required
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Phone</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Phone</label>
                         <Input
                             value={formData.phone}
                             onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                            className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl"
+                            className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all outline-none px-4"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Gender</label>
-                        <div className="flex bg-zinc-900 border-zinc-800 border rounded-xl h-12 items-center px-4">
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Gender</label>
+                        <div className="flex bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 border rounded-xl h-12 items-center px-4">
                             <div className="flex gap-4">
                                 {['MALE', 'FEMALE'].map((g) => (
                                     <button
                                         key={g}
                                         type="button"
                                         onClick={() => setFormData({ ...formData, gender: g })}
-                                        className={`text-[9px] font-medium uppercase tracking-widest px-3 py-1 rounded-lg transition-all ${formData.gender === g ? 'bg-eduGreen-600 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                                        className={`text-[9px] font-medium uppercase tracking-widest px-3 py-1 rounded-lg transition-all ${formData.gender === g ? 'bg-eduGreen-600 text-white' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-zinc-300'}`}
                                     >
                                         {g}
                                     </button>
@@ -134,20 +134,20 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Qualification</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Qualification</label>
                         <Input
                             value={formData.qualification}
                             onChange={e => setFormData({ ...formData, qualification: e.target.value })}
-                            className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl"
+                            className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl focus:border-eduGreen-600 transition-all outline-none px-4"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Role / Designation</label>
+                        <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Role / Designation</label>
                         <select
                             value={formData.role}
                             onChange={e => setFormData({ ...formData, role: e.target.value })}
-                            className="w-full bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl px-4 outline-none focus:border-eduGreen-600 transition-all border appearance-none"
+                            className="w-full bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl px-4 outline-none focus:border-eduGreen-600 transition-all border appearance-none"
                         >
                             <option value="TEACHER">TEACHER</option>
                             <option value="HOMEROOM">HOMEROOM ADVISOR</option>
@@ -155,8 +155,8 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                         </select>
                     </div>
 
-                    <div className="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-zinc-900/50 mt-2">
-                        <Button type="button" variant="ghost" onClick={onClose} className="text-zinc-500 hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
+                    <div className="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-slate-200 dark:border-zinc-900/50 mt-2">
+                        <Button type="button" variant="ghost" onClick={onClose} className="text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
                         <Button type="submit" disabled={loading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
                             {loading ? (
                                 <><span className="w-4 h-4 mr-2 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Saving...</>

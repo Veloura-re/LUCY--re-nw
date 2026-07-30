@@ -18,18 +18,18 @@ const terminalLines = [
 
 export default function Pricing() {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -37,37 +37,37 @@ export default function Pricing() {
                 <div className="max-w-5xl w-full space-y-16 text-center">
 
                     {/* Animated terminal */}
-                    <div className="relative overflow-hidden border border-white/5 bg-zinc-950/80 p-8 text-left max-w-2xl mx-auto">
-                        <div className="absolute inset-0 opacity-20"><MatrixRain cols={10} /></div>
+                    <div className="relative overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-950/80 p-8 text-left max-w-2xl mx-auto rounded-xl dark:rounded-none">
+                        <div className="absolute inset-0 opacity-10 dark:opacity-20"><MatrixRain cols={10} /></div>
                         <div className="relative z-10 font-mono">
                             <div className="flex items-center gap-2 mb-6">
-                                <div className="w-2 h-2 bg-white/30 rounded-full" />
-                                <div className="w-2 h-2 bg-white/15 rounded-full" />
-                                <div className="w-2 h-2 bg-white/5 rounded-full" />
-                                <span className="text-[8px] text-zinc-500 uppercase tracking-widest ml-2">pricing_engine_v3.0 // operational</span>
+                                <div className="w-2 h-2 bg-slate-300 dark:bg-white/30 rounded-full" />
+                                <div className="w-2 h-2 bg-slate-200 dark:bg-white/15 rounded-full" />
+                                <div className="w-2 h-2 bg-slate-100 dark:bg-white/5 rounded-full" />
+                                <span className="text-[8px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest ml-2">pricing_engine_v3.0 // operational</span>
                             </div>
-                            <Typewriter lines={terminalLines} className="space-y-1.5" />
+                            <Typewriter lines={terminalLines} className="space-y-1.5 text-slate-600 dark:text-white" />
                         </div>
                     </div>
 
                     {/* Headline */}
                     <div className="space-y-6">
                         <Reveal>
-                            <div className="flex items-center justify-center gap-3 text-zinc-400">
-                                <Clock className="w-4 h-4 text-white/40" />
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
-                                <span className="text-[10px] uppercase tracking-[0.4em] text-white">active_tariffs // pricing_matrix</span>
-                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
-                                <Clock className="w-4 h-4 text-white/40" />
+                            <div className="flex items-center justify-center gap-3 text-slate-400 dark:text-zinc-400">
+                                <Clock className="w-4 h-4 text-slate-300 dark:text-white/40" />
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
+                                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-white">active_tariffs // pricing_matrix</span>
+                                <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
+                                <Clock className="w-4 h-4 text-slate-300 dark:text-white/40" />
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
-                                pricing<br /><span className="text-zinc-600">plans.</span>
+                            <h1 className="text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                                pricing<br /><span className="text-slate-400 dark:text-zinc-600">plans.</span>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
+                            <p className="text-slate-500 dark:text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
                                 select a node tier to provision your school instance. all plans begin with a 120-day trial evaluation period.
                             </p>
                         </Reveal>
@@ -114,18 +114,26 @@ export default function Pricing() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: false }}
                                 transition={{ delay: i * 0.1 }}
-                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 ${t.highlight ? "border-white/30 bg-zinc-950/80 shadow-lg shadow-white/[0.02]" : "border-white/10 bg-zinc-950/30 hover:border-white/20"}`}
+                                className={`relative border p-8 space-y-6 overflow-hidden transition-all duration-300 rounded-xl dark:rounded-none ${t.highlight ? "border-slate-300 dark:border-white/30 bg-slate-50 dark:bg-zinc-950/80 shadow-lg shadow-slate-200 dark:shadow-white/[0.02]" : "border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/30 hover:border-slate-300 dark:hover:border-white/20"}`}
                             >
-                                {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />}
+                                {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-400 dark:via-white/30 to-transparent" />}
                                 
                                 {/* Glowing radial pulse behind Core Matrix card */}
                                 {t.tier === "Core Matrix" && (
-                                    <motion.div 
-                                        animate={{ opacity: [0.1, 0.3, 0.1] }} 
-                                        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
-                                        className="absolute inset-0 pointer-events-none" 
-                                        style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)" }} 
-                                    />
+                                    <>
+                                        <motion.div 
+                                            animate={{ opacity: [0.1, 0.3, 0.1] }} 
+                                            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
+                                            className="absolute inset-0 pointer-events-none hidden dark:block" 
+                                            style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%)" }} 
+                                        />
+                                        <motion.div 
+                                            animate={{ opacity: [0.1, 0.2, 0.1] }} 
+                                            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} 
+                                            className="absolute inset-0 pointer-events-none dark:hidden" 
+                                            style={{ background: "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.03) 0%, transparent 60%)" }} 
+                                        />
+                                    </>
                                 )}
 
                                 {/* Pulsing discount burst badge */}
@@ -133,44 +141,44 @@ export default function Pricing() {
                                     <motion.div 
                                         animate={{ 
                                             scale: [1, 1.08, 1],
-                                            boxShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 12px rgba(255,255,255,0.25)", "0 0 0px rgba(255,255,255,0)"]
+                                            boxShadow: ["0 0 0px rgba(0,0,0,0)", "0 0 12px rgba(0,0,0,0.1)", "0 0 0px rgba(0,0,0,0)"]
                                         }}
                                         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                        className="absolute top-4 right-4 bg-white text-black px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10"
+                                        className="absolute top-4 right-4 bg-slate-900 text-white dark:bg-white dark:text-black px-2.5 py-1 text-[8px] font-bold uppercase tracking-widest z-10 rounded-md dark:rounded-none"
                                     >
                                         40%_discount
                                     </motion.div>
                                 )}
                                 
-                                <div className="space-y-1">
-                                    <span className="text-[8px] uppercase tracking-widest text-zinc-500">{t.highlight ? "recommended" : `tier_0${i + 1}`}</span>
-                                    <h3 className="text-xl font-bold uppercase tracking-tight text-white font-orbitron">{t.tier}</h3>
+                                <div className="space-y-1 relative z-10">
+                                    <span className="text-[8px] uppercase tracking-widest text-slate-500 dark:text-zinc-500">{t.highlight ? "recommended" : `tier_0${i + 1}`}</span>
+                                    <h3 className="text-xl font-bold uppercase tracking-tight text-slate-900 dark:text-white font-orbitron">{t.tier}</h3>
                                 </div>
 
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-3xl font-bold text-white font-orbitron">{t.price}</span>
+                                <div className="flex items-baseline gap-2 relative z-10">
+                                    <span className="text-3xl font-bold text-slate-900 dark:text-white font-orbitron">{t.price}</span>
                                     {t.originalPrice && (
-                                        <span className="text-sm line-through text-zinc-500 font-medium">{t.originalPrice}</span>
+                                        <span className="text-sm line-through text-slate-400 dark:text-zinc-500 font-medium">{t.originalPrice}</span>
                                     )}
-                                    <span className="text-zinc-500 text-xs">{t.period}</span>
+                                    <span className="text-slate-500 dark:text-zinc-500 text-xs">{t.period}</span>
                                 </div>
 
-                                <p className="text-zinc-400 text-xs leading-relaxed h-12">{t.desc}</p>
+                                <p className="text-slate-500 dark:text-zinc-400 text-xs leading-relaxed h-12 relative z-10">{t.desc}</p>
 
-                                <div className="w-full h-px bg-white/10" />
+                                <div className="w-full h-px bg-slate-200 dark:bg-white/10 relative z-10" />
 
-                                <ul className="space-y-2.5 text-xs text-zinc-300">
+                                <ul className="space-y-2.5 text-xs text-slate-600 dark:text-zinc-300 relative z-10">
                                     {t.features.map((feat, j) => (
                                         <li key={j} className="flex gap-2.5 items-start">
-                                            <span className="text-zinc-400 font-bold shrink-0">+</span>
+                                            <span className="text-slate-900 dark:text-zinc-400 font-bold shrink-0">+</span>
                                             <span>{feat}</span>
                                         </li>
                                     ))}
                                 </ul>
 
-                                <div className="pt-4">
+                                <div className="pt-4 relative z-10">
                                     <Link href={t.href} className="w-full">
-                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 ${t.highlight ? "bg-white text-black border-white hover:bg-zinc-200" : "border-white/20 text-zinc-300 bg-white/5 hover:bg-white hover:text-black"}`}>
+                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 rounded-md dark:rounded-none ${t.highlight ? "bg-slate-900 text-white border-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:border-white dark:hover:bg-zinc-200" : "border-slate-300 text-slate-600 bg-slate-50 hover:bg-slate-900 hover:text-white dark:border-white/20 dark:text-zinc-300 dark:bg-white/5 dark:hover:bg-white dark:hover:text-black"}`}>
                                             {t.buttonText}
                                         </div>
                                     </Link>

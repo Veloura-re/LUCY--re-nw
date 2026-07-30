@@ -29,18 +29,18 @@ const logLines = [
 
 export default function Features() {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -49,18 +49,18 @@ export default function Features() {
 
                     <section className="space-y-8 text-center relative overflow-hidden">
                         <ParticleField count={40} />
-                        <Reveal className="flex items-center justify-center gap-4 text-zinc-500">
-                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">technical_specifications // v1.0</span>
-                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity, delay: 1 }} className="h-px bg-zinc-700" />
+                        <Reveal className="flex items-center justify-center gap-4 text-slate-400 dark:text-zinc-500">
+                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">technical_specifications // v1.0</span>
+                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity, delay: 1 }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                system<br /><GlitchText className="text-zinc-800">capabilities.</GlitchText>
+                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                                system<br /><GlitchText className="text-slate-400 dark:text-zinc-800">capabilities.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-2xl mx-auto">
-                            <p className="text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
                                 granular breakdown of the lucy neural matrix. engineered for resilience and high-throughput academic coordination.
                             </p>
                         </Reveal>
@@ -68,7 +68,7 @@ export default function Features() {
                     </section>
 
                     {/* Feature Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-white/10 border border-white/10 overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-slate-200 dark:bg-white/10 border border-slate-200 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
                         {specs.map((spec, i) => (
                             <TiltCard key={i}>
                                 <motion.div
@@ -76,21 +76,22 @@ export default function Features() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.06 }}
-                                    className="bg-black p-10 space-y-6 group cursor-default h-full relative overflow-hidden"
+                                    className="bg-white dark:bg-black p-10 space-y-6 group cursor-default h-full relative overflow-hidden"
                                 >
-                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
-                                    <div className="flex justify-between items-start">
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none hidden dark:block" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none dark:hidden" style={{ background: "radial-gradient(circle at 20% 20%, rgba(0,0,0,0.03) 0%, transparent 70%)" }} />
+                                    <div className="flex justify-between items-start relative z-10">
                                         <motion.div whileHover={{ rotate: 12, scale: 1.2 }} transition={{ type: "spring", stiffness: 400 }}>
-                                            <spec.icon className="w-6 h-6 text-zinc-600 group-hover:text-white transition-colors duration-300" />
+                                            <spec.icon className="w-6 h-6 text-slate-400 dark:text-zinc-600 group-hover:text-emerald-500 dark:group-hover:text-white transition-colors duration-300" />
                                         </motion.div>
-                                        <motion.div animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: 2.3, repeat: Infinity, delay: i * 0.3 }} className="text-[8px] text-zinc-800 font-bold">{spec.id}</motion.div>
+                                        <motion.div animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: 2.3, repeat: Infinity, delay: i * 0.3 }} className="text-[8px] text-slate-400 dark:text-zinc-800 font-bold">{spec.id}</motion.div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <h3 className="text-base font-bold uppercase tracking-tight">{spec.title}</h3>
-                                        <p className="text-zinc-500 text-xs leading-relaxed">{spec.desc}</p>
+                                    <div className="space-y-3 relative z-10">
+                                        <h3 className="text-base font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-white transition-colors">{spec.title}</h3>
+                                        <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed">{spec.desc}</p>
                                     </div>
-                                    <div className="h-px bg-zinc-900 overflow-hidden">
-                                        <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.08 }} className="h-full bg-white/10" />
+                                    <div className="h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden relative z-10">
+                                        <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.08 }} className="h-full bg-slate-400 dark:bg-white/10" />
                                     </div>
                                 </motion.div>
                             </TiltCard>
@@ -99,32 +100,32 @@ export default function Features() {
 
                     {/* Audit Panel */}
                     <Reveal>
-                        <div className="p-10 border border-white/10 bg-zinc-900/5 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div className="p-10 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/5 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center rounded-xl dark:rounded-none">
                             <div className="space-y-6">
-                                <h2 className="text-3xl font-bold uppercase tracking-tighter">Cryptographic Transparency</h2>
-                                <p className="text-zinc-500 text-sm leading-relaxed">
+                                <h2 className="text-3xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white">Cryptographic Transparency</h2>
+                                <p className="text-slate-500 dark:text-zinc-500 text-sm leading-relaxed">
                                     every action within lucy_os is recorded on a cryptographically verifiable ledger. audits can be performed in real-time without compromising the integrity of the scholar vault.
                                 </p>
                                 <div className="space-y-3">
                                     {["audit_integrity", "encryption_coverage", "api_uptime"].map((label, i) => (
                                         <div key={i} className="space-y-1">
-                                            <div className="flex justify-between text-[9px] text-zinc-600 uppercase tracking-widest">
-                                                <span>{label}</span><span className="text-white">verified</span>
+                                            <div className="flex justify-between text-[9px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest font-bold">
+                                                <span>{label}</span><span className="text-emerald-600 dark:text-white">verified</span>
                                             </div>
-                                            <div className="h-px bg-zinc-900 overflow-hidden">
-                                                <motion.div initial={{ width: 0 }} whileInView={{ width: ["98%", "100%", "98%"][i] }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.2 }} className="h-full bg-white/30" />
+                                            <div className="h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden">
+                                                <motion.div initial={{ width: 0 }} whileInView={{ width: ["98%", "100%", "98%"][i] }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.2 }} className="h-full bg-emerald-500 dark:bg-white/30" />
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="bg-black border border-white/5 p-6 font-mono text-[9px] space-y-1.5">
+                            <div className="bg-white dark:bg-black border border-slate-200 dark:border-white/5 p-6 font-mono text-[9px] space-y-1.5 rounded-xl dark:rounded-none shadow-inner dark:shadow-none">
                                 {logLines.map((line, i) => (
-                                    <motion.div key={i} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className={i === logLines.length - 1 ? "text-white" : "text-zinc-600"}>
+                                    <motion.div key={i} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className={i === logLines.length - 1 ? "text-slate-900 dark:text-white font-bold" : "text-slate-500 dark:text-zinc-600"}>
                                         {line}
                                     </motion.div>
                                 ))}
-                                <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.7 }} className="inline-block text-zinc-600">_</motion.span>
+                                <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.7 }} className="inline-block text-slate-500 dark:text-zinc-600">_</motion.span>
                             </div>
                         </div>
                     </Reveal>

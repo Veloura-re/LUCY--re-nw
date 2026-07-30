@@ -26,20 +26,20 @@ export default function Support() {
     const [open, setOpen] = useState<number | null>(null);
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
-                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
-                            <span className="text-black font-black text-xs">L</span>
+                        <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-slate-900 dark:bg-white flex items-center justify-center">
+                            <span className="text-white dark:text-black font-black text-xs">L</span>
                         </motion.div>
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -47,18 +47,18 @@ export default function Support() {
                 <div className="max-w-4xl mx-auto space-y-24">
 
                     <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <HelpCircle className="w-4 h-4" />
-                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[10px] uppercase tracking-[0.4em] font-bold">support_protocol // knowledge_base</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                support<br /><GlitchText className="text-zinc-800">node.</GlitchText>
+                                support<br /><GlitchText className="text-slate-300 dark:text-zinc-800">node.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
-                            <p className="text-zinc-500 text-lg leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
                                 answers to the most common queries. for urgent incidents, use the emergency uplink channel below.
                             </p>
                         </Reveal>
@@ -66,8 +66,8 @@ export default function Support() {
 
                     {/* Support Channels */}
                     <section className="space-y-6">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
-                            <div className="h-px w-12 bg-zinc-800" />
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
+                            <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">uplink_channels</span>
                         </Reveal>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -78,18 +78,19 @@ export default function Support() {
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="h-full p-8 border border-white/5 bg-zinc-900/5 space-y-6 group cursor-default relative overflow-hidden"
+                                        className="h-full p-8 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-900/5 space-y-6 group cursor-default relative overflow-hidden rounded-xl dark:rounded-none"
                                     >
-                                        <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
-                                        <motion.div whileHover={{ rotate: 10, scale: 1.2 }} transition={{ type: "spring", stiffness: 400 }}>
-                                            <ch.icon className="w-6 h-6 text-zinc-600 group-hover:text-white transition-colors" />
+                                        <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none hidden dark:block" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
+                                        <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none dark:hidden" style={{ background: "radial-gradient(circle at 20% 20%, rgba(0,0,0,0.03) 0%, transparent 70%)" }} />
+                                        <motion.div whileHover={{ rotate: 10, scale: 1.2 }} transition={{ type: "spring", stiffness: 400 }} className="relative z-10">
+                                            <ch.icon className="w-6 h-6 text-slate-400 dark:text-zinc-600 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
                                         </motion.div>
-                                        <div className="space-y-2">
-                                            <h3 className="font-bold uppercase tracking-tight">{ch.name}</h3>
-                                            <p className="text-zinc-500 text-xs leading-relaxed">{ch.desc}</p>
+                                        <div className="space-y-2 relative z-10">
+                                            <h3 className="font-bold uppercase tracking-tight text-slate-900 dark:text-white">{ch.name}</h3>
+                                            <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed">{ch.desc}</p>
                                         </div>
                                         <Link href={ch.link}>
-                                            <motion.div whileHover={{ x: 4 }} className="text-[9px] uppercase tracking-widest text-zinc-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer">
+                                            <motion.div whileHover={{ x: 4 }} className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-zinc-600 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-2 cursor-pointer relative z-10">
                                                 {ch.label} →
                                             </motion.div>
                                         </Link>
@@ -101,21 +102,21 @@ export default function Support() {
 
                     {/* FAQ Accordion */}
                     <section className="space-y-6">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
-                            <div className="h-px w-12 bg-zinc-800" />
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
+                            <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">knowledge_base // faq</span>
                         </Reveal>
-                        <div className="space-y-px border border-white/5 overflow-hidden">
+                        <div className="space-y-px border border-slate-200 dark:border-white/5 overflow-hidden rounded-xl dark:rounded-none">
                             {faqs.map((faq, i) => (
                                 <motion.div key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
                                     <motion.button
                                         onClick={() => setOpen(open === i ? null : i)}
-                                        whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-                                        className="w-full p-6 flex justify-between items-start gap-4 text-left bg-black border-b border-white/5 last:border-b-0 transition-colors"
+                                        whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
+                                        className="w-full p-6 flex justify-between items-start gap-4 text-left bg-white dark:bg-black border-b border-slate-200 dark:border-white/5 last:border-b-0 transition-colors dark:hover:!bg-[rgba(255,255,255,0.02)]"
                                     >
-                                        <span className="text-sm text-zinc-300 font-bold uppercase tracking-tight pr-4">{faq.q}</span>
+                                        <span className="text-sm text-slate-700 dark:text-zinc-300 font-bold uppercase tracking-tight pr-4">{faq.q}</span>
                                         <motion.div animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.1 }} className="shrink-0 mt-1">
-                                            <ChevronDown className="w-4 h-4 text-zinc-600" />
+                                            <ChevronDown className="w-4 h-4 text-slate-400 dark:text-zinc-600" />
                                         </motion.div>
                                     </motion.button>
                                     <AnimatePresence>
@@ -125,9 +126,9 @@ export default function Support() {
                                                 animate={{ height: "auto", opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
                                                 transition={{ duration: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                                                className="overflow-hidden bg-zinc-900/10 border-b border-white/5"
+                                                className="overflow-hidden bg-slate-50 dark:bg-zinc-900/10 border-b border-slate-200 dark:border-white/5"
                                             >
-                                                <p className="p-6 text-sm text-zinc-500 leading-relaxed">{faq.a}</p>
+                                                <p className="p-6 text-sm text-slate-500 dark:text-zinc-500 leading-relaxed">{faq.a}</p>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>

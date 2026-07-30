@@ -38,7 +38,7 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
         try {
             // Fetch exams for this student's class
             const res = await fetch(`/api/school/marklists?classId=${student.classId}`);
-            const data = await res.json();
+            const data = await res.json() as { exams?: any[] };
             if (data.exams) {
                 // Filter out locked exams if necessary, though backend handles submission rejection
                 setExams(data.exams);
@@ -83,15 +83,15 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-md rounded-[2.5rem]">
+            <DialogContent className="max-w-md rounded-[2.5rem]">
                 <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-xl bg-eduGreen-900/20 flex items-center justify-center">
-                            <GraduationCap className="w-5 h-5 text-eduGreen-500" />
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-eduGreen-900/20 flex items-center justify-center border border-slate-200 dark:border-zinc-800">
+                            <GraduationCap className="w-5 h-5 text-emerald-600 dark:text-eduGreen-500" />
                         </div>
                         <div>
-                            <DialogTitle className="text-xl font-medium italic">Grade Student</DialogTitle>
-                            <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
+                            <DialogTitle className="text-xl font-medium italic text-slate-900 dark:text-white">Grade Student</DialogTitle>
+                            <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
                                 {student?.firstName} {student?.lastName}
                             </DialogDescription>
                         </div>
@@ -101,19 +101,19 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
                 <form onSubmit={handleSubmit} className="space-y-6 mt-4">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Select Assessment</label>
+                            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Select Assessment</label>
                             <Select onValueChange={setSelectedExamId} value={selectedExamId} disabled={fetchingExams}>
-                                <SelectTrigger className="h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white">
+                                <SelectTrigger className="h-12 rounded-xl bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
                                     <SelectValue placeholder={fetchingExams ? "Loading assessments..." : "Choose Exam..."} />
                                 </SelectTrigger>
-                                <SelectContent className="bg-zinc-950 border-zinc-800 text-white max-h-[300px]">
+                                <SelectContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white max-h-[300px]">
                                     {exams.map(exam => (
                                         <SelectItem key={exam.id} value={exam.id}>
                                             <span className="font-medium">{exam.subject.name}</span> - {exam.title}
                                         </SelectItem>
                                     ))}
                                     {exams.length === 0 && !fetchingExams && (
-                                        <div className="p-2 text-[10px] text-zinc-500 text-center uppercase font-medium">No active assessments found</div>
+                                        <div className="p-2 text-[10px] text-slate-500 dark:text-zinc-500 text-center uppercase font-medium">No active assessments found</div>
                                     )}
                                 </SelectContent>
                             </Select>
@@ -121,7 +121,7 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Score Attained</label>
+                                <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Score Attained</label>
                                 <div className="relative">
                                     <Input
                                         type="number"
@@ -129,20 +129,20 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
                                         placeholder="0"
                                         value={score}
                                         onChange={e => setScore(e.target.value)}
-                                        className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl text-lg font-medium pl-4"
+                                        className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl text-lg font-medium pl-4"
                                     />
                                     {selectedExam && (
-                                        <div className="absolute right-3 top-3 text-[10px] font-medium text-zinc-600">
+                                        <div className="absolute right-3 top-3 text-[10px] font-medium text-slate-400 dark:text-zinc-600">
                                             / {selectedExam.totalMarks}
                                         </div>
                                     )}
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Percentage</label>
+                                <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Percentage</label>
                                 <div className={cn(
-                                    "h-12 flex items-center px-4 bg-zinc-900/50 border border-zinc-800 rounded-xl font-mono text-sm",
-                                    score && selectedExam ? getPerformanceColor((parseFloat(score) / selectedExam.totalMarks) * 100) : "text-zinc-500"
+                                    "h-12 flex items-center px-4 bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 rounded-xl font-mono text-sm",
+                                    score && selectedExam ? getPerformanceColor((parseFloat(score) / selectedExam.totalMarks) * 100) : "text-slate-500 dark:text-zinc-500"
                                 )}>
                                     {score && selectedExam ? Math.round((parseFloat(score) / selectedExam.totalMarks) * 100) + '%' : '-'}
                                 </div>
@@ -150,19 +150,19 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-medium uppercase tracking-widest text-zinc-500 ml-2">Instructor Remark (Optional)</label>
+                            <label className="text-[10px] font-medium uppercase tracking-widest text-slate-500 dark:text-zinc-500 ml-2">Instructor Remark (Optional)</label>
                             <Input
                                 placeholder="Brief observation..."
                                 value={remark}
                                 onChange={e => setRemark(e.target.value)}
-                                className="bg-zinc-900 border-zinc-800 text-white h-12 rounded-xl"
+                                className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white h-12 rounded-xl"
                             />
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-zinc-900/50">
-                        <Button type="button" variant="ghost" onClick={onClose} className="text-zinc-500 hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
-                        <Button type="submit" isLoading={loading} disabled={!selectedExamId || !score} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-200/80 dark:border-zinc-900/50">
+                        <Button type="button" variant="ghost" onClick={onClose} className="text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
+                        <Button type="submit" isLoading={loading} disabled={!selectedExamId || !score} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
                             {!loading && <Save className="w-4 h-4 mr-2" />} Save Mark
                         </Button>
                     </div>

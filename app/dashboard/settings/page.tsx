@@ -564,20 +564,52 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'preferences' && (
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                        <Card className="bg-white/90 dark:bg-zinc-950/40 backdrop-blur-xl border-slate-200/80 dark:border-zinc-900/50 hover:border-emerald-500/30 dark:hover:border-eduGreen-900/30 transition-all rounded-[2.5rem] group shadow-xl dark:shadow-2xl border-t-slate-200 dark:border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">App Experience</CardTitle>
-                                <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Personalization and interface protocols</CardDescription>
+                                <CardTitle className="text-2xl font-medium text-slate-900 dark:text-zinc-100 tracking-tight leading-tight">App Experience</CardTitle>
+                                <CardDescription className="text-slate-500 dark:text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Personalization and interface protocols</CardDescription>
                             </CardHeader>
                             <CardContent className="p-8 pt-6 space-y-8">
                                 <div className="space-y-6">
-                                    <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                    {/* Theme Protocol Selector */}
+                                    <div className="p-6 bg-slate-50 dark:bg-zinc-900/20 border border-slate-200 dark:border-zinc-900 rounded-[2rem] space-y-4">
+                                        <div className="space-y-1">
+                                            <h4 className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Interface Theme Protocol</h4>
+                                            <p className="text-[10px] text-slate-500 dark:text-zinc-600 font-medium uppercase tracking-widest">Select your preferred system color aesthetics</p>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4 pt-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    document.documentElement.classList.remove('dark');
+                                                    localStorage.setItem('theme', 'light');
+                                                }}
+                                                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-zinc-400 hover:border-emerald-500 transition-all font-medium text-xs uppercase tracking-widest shadow-sm"
+                                            >
+                                                <span className="w-3 h-3 rounded-full bg-amber-500" />
+                                                White Mode (Light)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    document.documentElement.classList.add('dark');
+                                                    localStorage.setItem('theme', 'dark');
+                                                }}
+                                                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-zinc-950 border-2 border-zinc-800 text-white hover:border-emerald-500 transition-all font-medium text-xs uppercase tracking-widest shadow-sm"
+                                            >
+                                                <span className="w-3 h-3 rounded-full bg-emerald-500" />
+                                                Cyber Mode (Dark)
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-zinc-900/20 border border-slate-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-slate-100 dark:hover:bg-zinc-900/40">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
-                                                <LayoutGrid className="w-4 h-4 text-eduGreen-500" />
-                                                <h4 className="text-xs font-medium text-white uppercase tracking-wider">Immersive Visuals</h4>
+                                                <LayoutGrid className="w-4 h-4 text-emerald-600 dark:text-eduGreen-500" />
+                                                <h4 className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Immersive Visuals</h4>
                                             </div>
-                                            <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Enable vibrant background effects and glassmorphism</p>
+                                            <p className="text-[10px] text-slate-500 dark:text-zinc-600 font-medium uppercase tracking-widest">Enable vibrant background effects and glassmorphism</p>
                                         </div>
                                         <Switch
                                             checked={formData.preferences.immersiveVisuals}

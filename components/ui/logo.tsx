@@ -8,7 +8,7 @@ export function Logo({ className }: { className?: string }) {
         <motion.div 
             whileHover={{ scale: 1.15, rotateY: 180 }} 
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={cn("flex items-center justify-center text-white", className)}
+            className={cn("flex items-center justify-center text-slate-900 dark:text-white transition-colors", className)}
         >
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full stroke-[1.5]">
                 <path d="M7 3C7 3 13 8 13 12C13 16 7 21 7 21" stroke="currentColor" strokeLinecap="round"/>
