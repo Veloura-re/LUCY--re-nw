@@ -164,7 +164,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <DashboardGreeting name={user?.name || 'Guardian'} role={user?.role} gender={user?.gender} />
 
                 {students.length > 0 && !isAdding && (
@@ -173,15 +173,15 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                             <DialogTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="border-zinc-800 text-zinc-500 hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
+                                    className="border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
                                 >
                                     <MessageSquare className="mr-2 h-4 w-4 text-eduGreen-500" /> Contact Staff
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-zinc-950 border-zinc-900 rounded-[2.5rem] p-0 overflow-hidden max-w-lg shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+                            <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-0 overflow-hidden max-w-lg shadow-[0_0_100px_rgba(0,0,0,0.8)]">
                                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent" />
                                 <DialogHeader className="p-8 pb-4">
-                                    <DialogTitle className="text-2xl font-medium text-white uppercase tracking-tight italic">Staff <span className="text-eduGreen-500">Discovery</span></DialogTitle>
+                                    <DialogTitle className="text-2xl font-medium text-zinc-900 dark:text-white uppercase tracking-tight italic">Staff <span className="text-eduGreen-500">Discovery</span></DialogTitle>
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-2 leading-relaxed">Initiate neural link with institutional educators and directors.</p>
                                 </DialogHeader>
                                 <div className="p-8 pt-0 space-y-6">
@@ -189,7 +189,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-eduGreen-500 transition-all" />
                                         <Input
                                             placeholder="Search Teacher or Director Name..."
-                                            className="pl-14 h-16 bg-zinc-900/50 border-zinc-900 rounded-2xl text-white font-medium text-xs focus:border-eduGreen-900 focus:bg-zinc-900 transition-all"
+                                            className="pl-14 h-16 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl text-zinc-900 dark:text-white font-medium text-xs focus:border-eduGreen-900 focus:bg-zinc-100 dark:bg-zinc-900 transition-all"
                                             value={staffSearchQuery}
                                             onChange={(e) => searchStaff(e.target.value)}
                                         />
@@ -205,13 +205,13 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                                 <button
                                                     key={staff.id}
                                                     onClick={() => startStaffChat(staff.id)}
-                                                    className="w-full flex items-center gap-4 p-4 bg-zinc-900/40 rounded-2xl border border-transparent hover:border-eduGreen-900/30 hover:bg-zinc-900 transition-all text-left group"
+                                                    className="w-full flex items-center gap-4 p-4 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-2xl border border-transparent hover:border-eduGreen-900/30 hover:bg-zinc-200 dark:hover:bg-zinc-900 transition-all text-left group"
                                                 >
-                                                    <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center font-medium text-xs text-zinc-500 group-hover:text-eduGreen-500 transition-all">
+                                                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center font-medium text-xs text-zinc-500 group-hover:text-eduGreen-500 transition-all">
                                                         {staff.name[0]}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="font-medium text-sm text-white uppercase tracking-tight truncate">{staff.name}</div>
+                                                        <div className="font-medium text-sm text-zinc-900 dark:text-white uppercase tracking-tight truncate">{staff.name}</div>
                                                         <div className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest mt-1 flex items-center gap-2">
                                                             <div className={cn("w-1.5 h-1.5 rounded-full", staff.role === 'PRINCIPAL' ? "bg-amber-500" : "bg-eduGreen-500")} />
                                                             {staff.role}
@@ -251,7 +251,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 </div>
             ) : isAdding ? (
                 <div className="max-w-2xl mx-auto py-12">
-                    <Card className="relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[3rem] overflow-hidden shadow-2xl border-t-zinc-800/20">
+                    <Card className="relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem] overflow-hidden shadow-2xl border-t-zinc-800/20">
                         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent" />
 
                         <CardHeader className="p-12 pb-6">
@@ -262,17 +262,17 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     className="p-0 h-auto hover:bg-transparent text-zinc-700 hover:text-white transition-colors group/back"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover/back:border-eduGreen-500 transition-all">
+                                        <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center group-hover/back:border-eduGreen-500 transition-all">
                                             <ArrowLeft className="w-4 h-4" />
                                         </div>
                                         <span className="text-[10px] font-medium uppercase tracking-widest mt-0.5">Abort Sink</span>
                                     </div>
                                 </Button>
-                                <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-800 shadow-xl">
+                                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-300 dark:border-zinc-800 shadow-xl">
                                     <GraduationCap className="h-8 w-8 text-eduGreen-500" />
                                 </div>
                             </div>
-                            <CardTitle className="text-2xl md:text-4xl font-medium text-white tracking-tight">Student Authentication</CardTitle>
+                            <CardTitle className="text-2xl md:text-4xl font-medium text-zinc-900 dark:text-white tracking-tight">Student Authentication</CardTitle>
                             <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-3">
                                 Enter the tactical student identifier provided by the institution
                             </CardDescription>
@@ -284,28 +284,28 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     <div className="w-20 h-20 bg-eduGreen-950/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-eduGreen-900/50">
                                         <CheckCircle2 className="w-10 h-10 text-eduGreen-500" />
                                     </div>
-                                    <h3 className="text-2xl font-medium text-white uppercase tracking-tight">Protocol Established</h3>
+                                    <h3 className="text-2xl font-medium text-zinc-900 dark:text-white uppercase tracking-tight">Protocol Established</h3>
                                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] mt-3">Synchronizing family dashboard...</p>
                                 </div>
                             ) : (status === 'CONFIRMING' || status === 'LINKING') && foundStudent ? (
-                                <div className="bg-zinc-900/20 rounded-[2rem] p-8 border border-zinc-900 animate-in fade-in slide-in-from-bottom-8">
+                                <div className="bg-zinc-100/20 dark:bg-zinc-900/20 rounded-[2rem] p-8 border border-zinc-200 dark:border-zinc-900 animate-in fade-in slide-in-from-bottom-8">
                                     <div className="grid gap-4">
-                                        <div className="flex items-center gap-5 p-6 bg-zinc-950/50 rounded-2xl border border-zinc-900">
-                                            <div className="w-14 h-14 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                                        <div className="flex items-center gap-5 p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
+                                            <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
                                                 <User className="h-7 w-7 text-zinc-500" />
                                             </div>
                                             <div>
                                                 <p className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest">Full Name</p>
-                                                <p className="text-xl font-medium text-white tracking-tight">{foundStudent.firstName} {foundStudent.lastName}</p>
+                                                <p className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">{foundStudent.firstName} {foundStudent.lastName}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-5 p-6 bg-zinc-950/50 rounded-2xl border border-zinc-900">
-                                            <div className="w-14 h-14 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                                        <div className="flex items-center gap-5 p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900">
+                                            <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
                                                 <SchoolIcon className="h-7 w-7 text-zinc-500" />
                                             </div>
                                             <div>
                                                 <p className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest">Institutional Context</p>
-                                                <p className="text-xl font-medium text-white tracking-tight">{foundStudent.schoolName} • Grade {foundStudent.gradeLevel}</p>
+                                                <p className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">{foundStudent.schoolName} • Grade {foundStudent.gradeLevel}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -320,7 +320,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <Button
                                             variant="ghost"
                                             onClick={() => { setStatus('IDLE'); setFoundStudent(null); }}
-                                            className="flex-1 h-16 bg-zinc-900/50 hover:bg-zinc-900 text-zinc-600 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em]"
+                                            className="flex-1 h-16 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em]"
                                         >
                                             Decline
                                         </Button>
@@ -341,7 +341,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             placeholder="ST-XXXXXX-2026"
                                             value={code}
                                             onChange={e => setCode(e.target.value.toUpperCase())}
-                                            className="text-center text-4xl font-medium tracking-[0.3em] uppercase h-28 bg-zinc-900/30 border-zinc-900 text-white focus:border-eduGreen-600 transition-all border-2 rounded-[2.5rem]"
+                                            className="text-center text-4xl font-medium tracking-[0.3em] uppercase h-28 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all border-2 rounded-[2.5rem]"
                                             maxLength={20}
                                             required
                                             disabled={status === 'VERIFYING'}
@@ -372,16 +372,16 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 <>
                     <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
                         {students.map((child) => (
-                            <Card key={child.id} className="group relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl">
+                            <Card key={child.id} className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl">
                                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                 <CardHeader className="p-6 pb-4">
                                     <div className="flex items-start justify-between gap-6 mb-4">
-                                        <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-800 shadow-xl group-hover:border-eduGreen-900/20 transition-all">
+                                        <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-300 dark:border-zinc-800 shadow-xl group-hover:border-eduGreen-900/20 transition-all">
                                             <span className="text-xl font-medium text-eduGreen-500">{child.firstName[0]}</span>
                                         </div>
                                         <div className="flex flex-col items-end gap-2">
-                                            <div className="px-3 py-1 rounded-xl bg-zinc-900/50 border border-zinc-900 text-[9px] font-medium text-zinc-500 uppercase tracking-widest group-hover:text-eduGreen-600 group-hover:border-eduGreen-900/20 transition-all">
+                                            <div className="px-3 py-1 rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900 text-[9px] font-medium text-zinc-500 uppercase tracking-widest group-hover:text-eduGreen-600 group-hover:border-eduGreen-900/20 transition-all">
                                                 Active Profile
                                             </div>
                                             <span className="text-[8px] font-mono text-zinc-700 font-medium uppercase tracking-wider">
@@ -389,44 +389,44 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             </span>
                                         </div>
                                     </div>
-                                    <CardTitle className="text-xl md:text-2xl font-medium text-white transition-colors tracking-tight leading-tight">{child.firstName} {child.lastName}</CardTitle>
+                                    <CardTitle className="text-xl md:text-2xl font-medium text-zinc-900 dark:text-white transition-colors tracking-tight leading-tight">{child.firstName} {child.lastName}</CardTitle>
                                     <div className="flex items-center gap-4 mt-2">
                                         <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Grade {child.grade?.level || "N/A"}</span>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900" />
                                         <span className="text-[9px] font-medium text-eduGreen-800 uppercase tracking-tighter truncate max-w-[140px]">{child.school?.name}</span>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="p-6 pt-2 space-y-4">
                                     <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900">
+                                        <div className="p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Attendance</p>
                                             <div className="flex items-center gap-2">
                                                 <div className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_10px_rgba(33,201,141,0.5)]" />
-                                                <span className="text-lg font-medium text-white">{child.stats?.attendancePct || "100.0"}%</span>
+                                                <span className="text-lg font-medium text-zinc-900 dark:text-white">{child.stats?.attendancePct || "100.0"}%</span>
                                             </div>
                                         </div>
-                                        <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900">
+                                        <div className="p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Academic AVG</p>
                                             <div className="flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-eduGreen-500" />
-                                                <span className="text-lg font-medium text-white">{child.stats?.averageScore || "0.0"}%</span>
+                                                <span className="text-lg font-medium text-zinc-900 dark:text-white">{child.stats?.averageScore || "0.0"}%</span>
                                             </div>
                                         </div>
-                                        <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900">
+                                        <div className="p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2">Unpaid Invoices</p>
                                             <div className="flex items-center gap-2">
                                                 <div className={cn("w-2 h-2 rounded-full", Number(child.stats?.invoiceCount) > 0 ? "bg-amber-500 animate-pulse" : "bg-zinc-800")} />
-                                                <span className="text-lg font-medium text-white">{child.stats?.invoiceCount || "0"}</span>
+                                                <span className="text-lg font-medium text-zinc-900 dark:text-white">{child.stats?.invoiceCount || "0"}</span>
                                             </div>
                                         </div>
                                         <Link 
                                             href={`/dashboard/parent/homework?studentId=${child.id}`}
-                                            className="block p-4 bg-zinc-900/30 rounded-2xl border border-zinc-900 hover:border-eduGreen-500/30 hover:bg-eduGreen-500/5 transition-all group/hw"
+                                            className="block p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900 hover:border-eduGreen-500/30 hover:bg-eduGreen-500/5 transition-all group/hw"
                                         >
                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest mb-2 group-hover/hw:text-eduGreen-500 transition-colors">Homework</p>
                                             <div className="flex items-center gap-2">
                                                 <ClipboardCheck className="w-4 h-4 text-eduGreen-500" />
-                                                <span className="text-lg font-medium text-white">
+                                                <span className="text-lg font-medium text-zinc-900 dark:text-white">
                                                     {child.stats?.assignmentStats?.completed || 0}/{child.stats?.assignmentStats?.total || 0}
                                                 </span>
                                             </div>
@@ -437,22 +437,22 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <div className="pt-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                             <div className="flex items-center justify-between mb-3 px-1">
                                                 <h4 className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Recent Invoices</h4>
-                                                <div className="h-px flex-1 bg-zinc-900/50 mx-4" />
+                                                <div className="h-px flex-1 bg-zinc-100/50 dark:bg-zinc-900/50 mx-4" />
                                             </div>
                                             <div className="space-y-2">
                                                 {child.recentInvoices?.map((inv: any) => (
-                                                    <div key={inv.id} className="group/inv flex items-center justify-between p-3 bg-zinc-950/50 border border-zinc-900 rounded-xl hover:border-eduGreen-900/20 transition-all">
+                                                    <div key={inv.id} className="group/inv flex items-center justify-between p-3 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-xl hover:border-eduGreen-900/20 transition-all">
                                                         <div className="flex items-center gap-3">
                                                             <div className={cn(
                                                                 "w-1.5 h-1.5 rounded-full",
                                                                 inv.status === 'PAID' ? "bg-eduGreen-500" : "bg-amber-500 animate-pulse"
                                                             )} />
                                                             <div>
-                                                                <div className="text-[10px] font-medium text-white uppercase tracking-tight">Invoice #{inv.id.slice(-6).toUpperCase()}</div>
+                                                                <div className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-tight">Invoice #{inv.id.slice(-6).toUpperCase()}</div>
                                                                 <div className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest">{mounted ? new Date(inv.createdAt).toLocaleDateString() : "---"}</div>
                                                             </div>
                                                         </div>
-                                                        <div className="text-[11px] font-medium text-white italic">${Number(inv.amount).toFixed(2)}</div>
+                                                        <div className="text-[11px] font-medium text-zinc-900 dark:text-white italic">${Number(inv.amount).toFixed(2)}</div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -461,12 +461,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
 
                                     <div className="grid grid-cols-3 gap-3">
                                         <Link href={`/dashboard/reports/${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Performance
                                             </Button>
                                         </Link>
                                         <Link href={`/dashboard/books?studentId=${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Bookshelf
                                             </Button>
                                         </Link>
@@ -482,21 +482,21 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             <div className="grid grid-cols-2 gap-3">
                                                 {child.userId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.userId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> {child.firstName}
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                                 {child.class?.homeroomTeacherId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.class.homeroomTeacherId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> Teacher
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                             </div>
                                             <Link href={`/dashboard/parent/authorizations?studentId=${child.id}`}>
-                                                <Button className="w-full h-12 bg-zinc-950 hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
+                                                <Button className="w-full h-12 bg-white dark:bg-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
                                                     <FileText className="w-4 h-4 mr-2" /> Request Leave Authorization
                                                 </Button>
                                             </Link>
@@ -512,12 +512,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                     </div>
                 </>
             ) : (
-                <div className="py-20 text-center bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-900/60 max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-800 mx-auto shadow-2xl">
+                <div className="py-20 text-center bg-white/20 dark:bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-200 dark:border-zinc-900/60 max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-300 dark:border-zinc-800 mx-auto shadow-2xl">
                         <GraduationCap className="w-8 h-8 text-eduGreen-500" />
                     </div>
                     <div className="space-y-2">
-                        <h3 className="text-xl font-medium text-white tracking-tight">No Linked Students</h3>
+                        <h3 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">No Linked Students</h3>
                         <p className="text-zinc-500 font-medium text-[10px] uppercase tracking-widest leading-relaxed max-w-sm mx-auto">
                             To view homework assignments, attendance, billing, and report cards, please link a student profile to this guardian node.
                         </p>

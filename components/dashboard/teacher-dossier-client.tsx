@@ -77,7 +77,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
 
             {/* Profile Header */}
             <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="w-32 h-32 rounded-3xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shrink-0">
+                <div className="w-32 h-32 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center shrink-0">
                     <User className="w-12 h-12 text-zinc-700" />
                 </div>
                 <div>
@@ -85,7 +85,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                         <Shield className="w-3 h-3" />
                         <span>{teacher.role} Clearance</span>
                     </div>
-                    <h1 className="text-4xl font-medium tracking-tight text-white">{teacher.name || "Awaiting Setup"}</h1>
+                    <h1 className="text-4xl font-medium tracking-tight text-zinc-900 dark:text-white">{teacher.name || "Awaiting Setup"}</h1>
                     <p className="text-zinc-500 text-xs font-mono mt-2">{teacher.email}</p>
                 </div>
             </div>
@@ -93,18 +93,18 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Form Section */}
                 <div className="md:col-span-1 space-y-6">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900 rounded-3xl overflow-hidden">
-                        <CardHeader className="border-b border-zinc-900/50 pb-6">
-                            <CardTitle className="text-lg font-medium text-white">New Entry</CardTitle>
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 rounded-3xl overflow-hidden">
+                        <CardHeader className="border-b border-zinc-200 dark:border-zinc-900/50 pb-6">
+                            <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white">New Entry</CardTitle>
                         </CardHeader>
                         <CardContent className="p-6">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Entry Type</label>
                                     <div className="grid grid-cols-3 gap-2">
-                                        <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:text-white")}>Good</button>
-                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:text-white")}>Infraction</button>
-                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:text-white")}>Review</button>
+                                        <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Good</button>
+                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Infraction</button>
+                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white")}>Review</button>
                                     </div>
                                 </div>
 
@@ -113,7 +113,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                         <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Rating (1-5)</label>
                                         <div className="flex gap-2">
                                             {[1,2,3,4,5].map(num => (
-                                                <button key={num} type="button" onClick={() => setRating(num)} className={cn("flex-1 py-2 rounded-xl transition-all border", rating === num ? "bg-amber-500/20 border-amber-500 text-amber-400" : "bg-zinc-900/50 border-zinc-800 text-zinc-600 hover:border-zinc-600")}>
+                                                <button key={num} type="button" onClick={() => setRating(num)} className={cn("flex-1 py-2 rounded-xl transition-all border", rating === num ? "bg-amber-500/20 border-amber-500 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:border-zinc-600")}>
                                                     <Star className={cn("w-4 h-4 mx-auto", rating === num ? "fill-amber-400" : "")} />
                                                 </button>
                                             ))}
@@ -127,7 +127,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                         value={content}
                                         onChange={e => setContent(e.target.value)}
                                         placeholder="Enter details..."
-                                        className="bg-zinc-900/50 border-zinc-800 rounded-xl resize-none h-32 focus:border-eduGreen-500 text-xs"
+                                        className="bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl resize-none h-32 focus:border-eduGreen-500 text-xs"
                                     />
                                 </div>
 
@@ -141,36 +141,36 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
 
                 {/* Timeline Section */}
                 <div className="md:col-span-2 space-y-6">
-                    <h2 className="text-xl font-medium text-white tracking-tight px-2">Dossier Timeline</h2>
+                    <h2 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight px-2">Dossier Timeline</h2>
                     <div className="space-y-4">
                         {remarks.length === 0 ? (
-                            <div className="p-12 text-center rounded-3xl border border-dashed border-zinc-800 bg-zinc-950/20">
+                            <div className="p-12 text-center rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/20 dark:bg-zinc-950/20">
                                 <p className="text-xs text-zinc-500 font-mono">No entries found in registry.</p>
                             </div>
                         ) : (
                             remarks.map((remark) => (
-                                <div key={remark.id} className="p-6 rounded-3xl bg-zinc-950/40 border border-zinc-900 backdrop-blur-md relative overflow-hidden group">
+                                <div key={remark.id} className="p-6 rounded-3xl bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900 backdrop-blur-md relative overflow-hidden group">
                                     <div className={cn("absolute left-0 top-0 bottom-0 w-1", 
                                         remark.type === 'POSITIVE' ? "bg-emerald-500" :
                                         remark.type === 'NEGATIVE' ? "bg-rose-500" : "bg-amber-500"
                                     )} />
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className={cn("p-2 rounded-xl bg-zinc-900 border",
+                                            <div className={cn("p-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border",
                                                 remark.type === 'POSITIVE' ? "border-emerald-900/50" :
                                                 remark.type === 'NEGATIVE' ? "border-rose-900/50" : "border-amber-900/50"
                                             )}>
                                                 {getIconForType(remark.type)}
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-300">
+                                                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300">
                                                     {remark.type} {remark.rating ? `- ${remark.rating}/5 STARS` : ''}
                                                 </p>
                                                 <p className="text-[9px] text-zinc-600 uppercase tracking-widest">{format(new Date(remark.createdAt), 'MMM dd, yyyy - HH:mm')}</p>
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-sm text-zinc-300 leading-relaxed font-medium">
+                                    <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
                                         "{remark.content}"
                                     </p>
                                 </div>

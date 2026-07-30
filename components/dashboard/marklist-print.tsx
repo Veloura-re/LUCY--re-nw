@@ -29,14 +29,14 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                 {/* Header */}
                 <div className="flex justify-between items-start border-b-2 border-black pb-6 mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-400 not-italic">Academic Records</span></h1>
+                        <h1 className="text-3xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Academic Records</span></h1>
                         <div className="flex gap-4 mt-2">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-black text-white px-2 py-1">Class: {config.class?.name}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-black text-zinc-900 dark:text-white px-2 py-1">Class: {config.class?.name}</p>
                             <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-zinc-100 text-zinc-800 px-2 py-1">Subject: {config.subject?.name}</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">Registry Reference</p>
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Registry Reference</p>
                         <p className="text-xs font-mono font-bold">MK-{config.id.slice(0, 8).toUpperCase()}</p>
                         <p className="text-[10px] font-medium text-zinc-500 mt-1">{new Date().toLocaleDateString()}</p>
                     </div>
@@ -52,7 +52,7 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                                 <th key={col.id} className="border border-zinc-200 p-2 text-center">
                                     <div className="flex flex-col">
                                         <span>{col.title}</span>
-                                        <span className="text-[7px] text-zinc-400">MAX {col.maxMarks}</span>
+                                        <span className="text-[7px] text-zinc-600 dark:text-zinc-400">MAX {col.maxMarks}</span>
                                     </div>
                                 </th>
                             ))}
@@ -64,10 +64,10 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                     <tbody>
                         {entries.map((entry, idx) => (
                             <tr key={entry.id} className="text-[10px] border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
-                                <td className="border border-zinc-200 p-2 text-center font-mono text-zinc-400">{idx + 1}</td>
+                                <td className="border border-zinc-200 p-2 text-center font-mono text-zinc-600 dark:text-zinc-400">{idx + 1}</td>
                                 <td className="border border-zinc-200 p-2 font-bold uppercase">
                                     {entry.student.firstName} {entry.student.lastName}
-                                    <div className="text-[7px] text-zinc-400 font-mono tracking-tighter">{entry.student.studentCode}</div>
+                                    <div className="text-[7px] text-zinc-600 dark:text-zinc-400 font-mono tracking-tighter">{entry.student.studentCode}</div>
                                 </td>
                                 {config.columns.map((col: Column) => {
                                     const mark = entry.marks.find((m: any) => m.columnId === col.id);
@@ -96,12 +96,12 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                         <div className="w-48 h-px bg-zinc-300" />
                         <div className="flex flex-col">
                             <p className="text-[10px] font-black uppercase text-zinc-800">{config.teacher?.name || 'Faculty Member'}</p>
-                            <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 mt-1">Subject Faculty Signature</p>
+                            <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mt-1">Subject Faculty Signature</p>
                         </div>
                     </div>
                     <div className="space-y-4">
                         <div className="w-48 h-px bg-zinc-300" />
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">Head of Department / Director</p>
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Head of Department / Director</p>
                     </div>
                     <div className="text-right">
                         <p className="text-[7px] font-black text-zinc-200 uppercase tracking-[0.6em]">AUTHENTICATED BY LUCY CORE</p>

@@ -18,20 +18,20 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
     return (
         <div ref={ref} className="p-16 bg-white text-black font-sans min-h-screen">
             {/* Header */}
-            <div className="text-center border-b-4 border-zinc-900 pb-10 mb-10">
+            <div className="text-center border-b-4 border-zinc-200 dark:border-zinc-900 pb-10 mb-10">
                 <h1 className="text-5xl font-bold tracking-tighter text-zinc-900 uppercase italic mb-2">
-                    LUCY <span className="text-zinc-400 not-italic">Academics</span>
+                    LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Academics</span>
                 </h1>
                 <h2 className="text-2xl font-bold uppercase tracking-[0.3em] text-zinc-500 mb-6">Official Academic Report Card</h2>
 
                 <div className="flex justify-between items-end mt-12 bg-zinc-50 p-8 rounded-[2rem] border border-zinc-100">
                     <div className="text-left">
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Student Individual</p>
+                        <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Student Individual</p>
                         <p className="text-3xl font-bold text-zinc-900 tracking-tight">{studentName}</p>
                         <p className="text-xs font-medium text-zinc-500 uppercase tracking-widest mt-2 italic">ID: {studentId.slice(-8).toUpperCase()}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Institutional Context</p>
+                        <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Institutional Context</p>
                         <p className="text-xl font-bold text-zinc-900 uppercase tracking-tight">{school?.name || "Educational Nexus"}</p>
                         <p className="text-xs font-medium text-zinc-500 uppercase tracking-widest mt-1">Generated: {format(new Date(), 'PPP')}</p>
                     </div>
@@ -40,11 +40,11 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
 
             {/* Performance Summary Grid */}
             <div className="grid grid-cols-3 gap-8 mb-12">
-                <div className="p-6 bg-zinc-900 text-white rounded-[2rem] text-center">
+                <div className="p-6 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-[2rem] text-center">
                     <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.3em] mb-2">Cumulative GPA</p>
                     <p className="text-4xl font-bold italic tracking-tighter">{(overallAverage / 20).toFixed(2)}</p>
                 </div>
-                <div className="p-6 border-2 border-zinc-900 rounded-[2rem] text-center">
+                <div className="p-6 border-2 border-zinc-200 dark:border-zinc-900 rounded-[2rem] text-center">
                     <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.3em] mb-2">Average Score</p>
                     <p className="text-4xl font-bold italic tracking-tighter">{overallAverage.toFixed(1)}%</p>
                 </div>
@@ -56,10 +56,10 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
 
             {/* Subjects Table */}
             <div className="space-y-6">
-                <h3 className="text-xs font-bold text-zinc-900 uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-900">Academic Breakdown</h3>
+                <h3 className="text-xs font-bold text-zinc-900 uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-200 dark:border-zinc-900">Academic Breakdown</h3>
                 <table className="w-full border-collapse">
                     <thead>
-                        <tr className="bg-zinc-950 text-white">
+                        <tr className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white">
                             <th className="p-4 text-left text-[10px] font-bold uppercase tracking-widest rounded-tl-2xl">Subject Entity</th>
                             <th className="p-4 text-center text-[10px] font-bold uppercase tracking-widest">Base Points</th>
                             <th className="p-4 text-center text-[10px] font-bold uppercase tracking-widest">Max Points</th>
@@ -71,7 +71,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
                             <tr key={idx} className="group hover:bg-zinc-50 transition-colors">
                                 <td className="p-5">
                                     <p className="font-bold text-zinc-900 uppercase tracking-tight">{sub.subjectName}</p>
-                                    <p className="text-[8px] font-medium text-zinc-400 uppercase tracking-widest mt-1">Core Requirement</p>
+                                    <p className="text-[8px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mt-1">Core Requirement</p>
                                 </td>
                                 <td className="p-5 text-center font-bold text-zinc-500">
                                     {sub.exams.reduce((acc: number, e: any) => acc + (e.score || 0), 0)}
@@ -90,7 +90,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
 
             {/* Assessment Details Breakdown */}
             <div className="mt-16 space-y-8">
-                <h3 className="text-xs font-bold text-zinc-900 uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-900">Neural Assessment Log</h3>
+                <h3 className="text-xs font-bold text-zinc-900 uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-200 dark:border-zinc-900">Neural Assessment Log</h3>
                 <div className="grid grid-cols-2 gap-8">
                     {subjects.map((sub: any, idx: number) => (
                         <div key={idx} className="border border-zinc-100 rounded-[2rem] overflow-hidden">
@@ -102,7 +102,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
                                     <div key={eIdx} className="flex justify-between items-center bg-white border border-zinc-50 p-3 rounded-xl shadow-sm">
                                         <div>
                                             <p className="text-[10px] font-medium text-zinc-800 uppercase tracking-tight">{exam.title}</p>
-                                            <p className="text-[8px] text-zinc-400 italic">{new Date(exam.date).toLocaleDateString()}</p>
+                                            <p className="text-[8px] text-zinc-600 dark:text-zinc-400 italic">{new Date(exam.date).toLocaleDateString()}</p>
                                         </div>
                                         <div className="font-bold text-zinc-900">{exam.score} / {exam.maxScore}</div>
                                     </div>
@@ -117,19 +117,19 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
             <div className="mt-24 pt-12 border-t-2 border-zinc-200">
                 <div className="flex justify-between items-start">
                     <div className="w-1/3">
-                        <div className="h-px bg-zinc-900 mb-4" />
+                        <div className="h-px bg-zinc-100 dark:bg-zinc-900 mb-4" />
                         <p className="text-[8px] font-bold text-zinc-900 uppercase tracking-widest text-center">Institutional Registrar</p>
                     </div>
                     <div className="w-1/3 text-center">
                         <div className="w-20 h-20 bg-zinc-50 border border-zinc-100 rounded-full mx-auto flex items-center justify-center mb-4">
-                            <span className="text-[8px] font-bold text-zinc-300 uppercase italic">Seal</span>
+                            <span className="text-[8px] font-bold text-zinc-700 dark:text-zinc-300 uppercase italic">Seal</span>
                         </div>
                     </div>
                     <div className="w-1/3 text-right">
-                        <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest mb-2 leading-relaxed italic">
+                        <p className="text-[8px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-2 leading-relaxed italic">
                             Official Academic Record for {studentName}
                         </p>
-                        <p className="text-[8px] text-zinc-300 uppercase tracking-widest">
+                        <p className="text-[8px] text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">
                             Verified via LUCY Neural Protocol
                         </p>
                     </div>

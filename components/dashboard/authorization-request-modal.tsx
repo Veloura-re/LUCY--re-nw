@@ -211,12 +211,12 @@ export function AuthorizationRequestModal({ isOpen, onClose, studentId: initialS
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full h-20 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-[2rem] font-medium text-[10px] uppercase tracking-[0.4em] transition-all relative overflow-hidden group shadow-2xl active:scale-95"
+                            className="w-full h-20 bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-[2rem] font-medium text-[10px] uppercase tracking-[0.4em] transition-all relative overflow-hidden group shadow-2xl active:scale-95"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
                             {isSubmitting ? (
                                 <div className="flex items-center gap-3">
-                                    <Loader2 className="w-5 h-5 animate-spin text-white dark:text-black" />
+                                    <Loader2 className="w-5 h-5 animate-spin text-zinc-900 dark:text-white dark:text-black" />
                                     Synchronizing...
                                 </div>
                             ) : (

@@ -57,7 +57,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     variant="outline"
                     size="icon"
                     onClick={() => setMobileOpen(!mobileOpen)}
-                    className="bg-zinc-950/80 backdrop-blur-md border-zinc-800 text-white shadow-2xl"
+                    className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white shadow-2xl"
                 >
                     {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </Button>
@@ -81,7 +81,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                 animate={{ width: collapsed ? 68 : 288 }}
                 transition={{ duration: 0.1, ease: [0.4, 0, 0.2, 1] }}
                 className={cn(
-                    "fixed inset-y-0 left-0 z-[55] bg-zinc-950/40 backdrop-blur-2xl border-r border-zinc-900/50 flex flex-col overflow-hidden shrink-0",
+                    "fixed inset-y-0 left-0 z-[55] bg-white/40 dark:bg-zinc-950/40 backdrop-blur-2xl border-r border-zinc-200 dark:border-zinc-900/50 flex flex-col overflow-hidden shrink-0",
                     "md:relative md:translate-x-0 md:h-screen",
                     mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
                     "transition-transform duration-300"
@@ -105,7 +105,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 className="flex flex-col gap-1"
                             >
                                 {dbUser.school?.logoUrl ? (
-                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-10 h-10 object-contain rounded-lg bg-zinc-900/50 p-1" />
+                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-10 h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
                                 ) : (
                                     <Logo className="w-10 h-10" />
                                 )}
@@ -120,7 +120,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     <button
                         onClick={() => setCollapsed(!collapsed)}
                         className={cn(
-                            "hidden md:flex items-center justify-center w-8 h-8 rounded-xl border border-zinc-800 bg-zinc-900/60 text-zinc-500 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/60 transition-all shrink-0",
+                            "hidden md:flex items-center justify-center w-8 h-8 rounded-xl border border-zinc-300 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-900/60 text-zinc-500 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/60 transition-all shrink-0",
                             collapsed && "mx-auto"
                         )}
                         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -180,7 +180,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                 </nav>
 
                 {/* ── Bottom Section ── */}
-                <div className={cn("border-t border-zinc-900/50 mt-auto space-y-3 p-3", collapsed ? "items-center flex flex-col" : "")}>
+                <div className={cn("border-t border-zinc-200 dark:border-zinc-900/50 mt-auto space-y-3 p-3", collapsed ? "items-center flex flex-col" : "")}>
                     {!collapsed && (
                         <div className="space-y-2">
                             <NavToggle mode="DOCK" />
@@ -198,7 +198,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {/* User profile row */}
                     <div className={cn("flex items-center gap-3", collapsed ? "flex-col gap-2" : "")}>
                         <div
-                            className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 font-black text-sm shadow-2xl shrink-0"
+                            className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 font-black text-sm shadow-2xl shrink-0"
                             title={collapsed ? (dbUser.name || dbUser.email) : undefined}
                         >
                             {dbUser.name?.[0]?.toUpperCase() || dbUser.email?.[0]?.toUpperCase()}
@@ -223,7 +223,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {collapsed && (
                         <button
                             onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                            className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
+                            className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
                             title="Interactive Tour"
                         >
                             <Sparkles className="w-4 h-4" />

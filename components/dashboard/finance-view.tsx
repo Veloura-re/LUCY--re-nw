@@ -374,9 +374,9 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white uppercase italic">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Financial <span className="text-eduGreen-500 not-italic">Nexus</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Autonomous Resource Controller & Billing Terminal</p>
@@ -387,7 +387,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         variant="ghost"
                         onClick={() => setShowInvoiceModal(true)}
                         disabled={isGenerating}
-                        className="rounded-2xl border border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
+                        className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
                     >
                         <Zap className={cn("mr-2 h-4 w-4 text-amber-500", isGenerating && "animate-pulse")} />
                         {isGenerating ? "Executing Cycle..." : "Launch Invoicing Cycle"}
@@ -395,7 +395,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <Link href="/dashboard/finance/students">
                         <Button
                             variant="ghost"
-                            className="rounded-2xl border border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
+                            className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white"
                         >
                             <Users className="mr-2 h-4 w-4 text-eduGreen-500" /> Student Dossiers
                         </Button>
@@ -414,11 +414,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             {/* Financial Intelligence Dashboard */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Revenue Trend Graph */}
-                <Card className="lg:col-span-8 bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] overflow-hidden shadow-2xl border-t-zinc-800/20">
+                <Card className="lg:col-span-8 bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden shadow-2xl border-t-zinc-800/20">
                     <CardHeader className="p-10 pb-2">
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="text-2xl font-medium text-white uppercase italic">Revenue <span className="text-eduGreen-500 not-italic">Temporal Shift</span></CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white uppercase italic">Revenue <span className="text-eduGreen-500 not-italic">Temporal Shift</span></CardTitle>
                                 <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">12-Month Liquidity Flux</p>
                             </div>
                             <div className="px-3 py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-lg">
@@ -433,14 +433,14 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
                 {/* Efficiency & Liquidity */}
                 <div className="lg:col-span-4 space-y-8">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] p-8 shadow-2xl border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] p-8 shadow-2xl border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
                         <div className="flex items-center justify-between mb-6">
                             <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Efficiency Index</span>
                             <Zap className="w-4 h-4 text-eduGreen-500" />
                         </div>
                         <div className="flex items-end justify-between">
                             <div>
-                                <div className="text-5xl font-medium text-white tracking-tighter">{financialAnalytics?.summary?.efficiency || 0}%</div>
+                                <div className="text-5xl font-medium text-zinc-900 dark:text-white tracking-tighter">{financialAnalytics?.summary?.efficiency || 0}%</div>
                                 <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mt-2 flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse" />
                                     Collection Yield
@@ -463,16 +463,16 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         </div>
                     </Card>
 
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] p-8 shadow-2xl border-t-zinc-800/20 group hover:border-amber-900/30 transition-all">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] p-8 shadow-2xl border-t-zinc-800/20 group hover:border-amber-900/30 transition-all">
                         <div className="flex items-center justify-between mb-6">
                             <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Pending Liquidity</span>
                             <DollarSign className="w-4 h-4 text-amber-500" />
                         </div>
-                        <div className="text-4xl font-medium text-white tracking-tighter italic">
+                        <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
                             ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
                         </div>
                         <p className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mt-3">Uncollected Institutional Assets</p>
-                        <div className="mt-6 h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                        <div className="mt-6 h-1 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: "60%" }}
@@ -484,15 +484,15 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             </div>
 
             {isCreating && (
-                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900 animate-in slide-in-from-top-4 duration-300 rounded-[2.5rem] overflow-hidden">
-                    <CardHeader className="p-10 border-b border-zinc-900/50">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300 rounded-[2.5rem] overflow-hidden">
+                    <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/50">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-eduGreen-950/20 rounded-xl border border-eduGreen-900/30 text-eduGreen-500">
                                     <Settings2 className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-medium text-white tracking-tight">Fee Configuration</CardTitle>
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Fee Configuration</CardTitle>
                                     <CardDescription className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 mt-1">Establishing new billing protocol</CardDescription>
                                 </div>
                             </div>
@@ -511,7 +511,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g. Annual Tuition Fee"
-                                        className="h-14 bg-zinc-900/50 border-zinc-800 rounded-xl focus:border-eduGreen-500 transition-all font-medium"
+                                        className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl focus:border-eduGreen-500 transition-all font-medium"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -519,7 +519,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <select
                                         value={formData.gradeId}
                                         onChange={e => setFormData({ ...formData, gradeId: e.target.value })}
-                                        className="w-full h-14 bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 text-white font-medium text-sm focus:border-eduGreen-500 outline-none appearance-none"
+                                        className="w-full h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-zinc-900 dark:text-white font-medium text-sm focus:border-eduGreen-500 outline-none appearance-none"
                                     >
                                         <option value="ALL">Institutional Universal (All Grades)</option>
                                         {grades.map(grade => (
@@ -540,7 +540,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                             value={formData.amount}
                                             onChange={e => setFormData({ ...formData, amount: e.target.value })}
                                             placeholder="0.00"
-                                            className="h-14 pl-12 bg-zinc-900/50 border-zinc-800 rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xl text-white"
+                                            className="h-14 pl-12 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xl text-zinc-900 dark:text-white"
                                         />
                                     </div>
                                 </div>
@@ -550,7 +550,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         <select
                                             value={formData.frequency}
                                             onChange={e => setFormData({ ...formData, frequency: e.target.value })}
-                                            className="w-full h-14 bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 text-white font-medium text-sm focus:border-eduGreen-500 outline-none"
+                                            className="w-full h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-zinc-900 dark:text-white font-medium text-sm focus:border-eduGreen-500 outline-none"
                                         >
                                             <option value="TERM">Per Term</option>
                                             <option value="MONTHLY">Monthly</option>
@@ -563,7 +563,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         <select
                                             value={formData.category}
                                             onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full h-14 bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 text-white font-medium text-sm focus:border-eduGreen-500 outline-none"
+                                            className="w-full h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-zinc-900 dark:text-white font-medium text-sm focus:border-eduGreen-500 outline-none"
                                         >
                                             <option value="TUITION">Tuition</option>
                                             <option value="TRANSPORT">Transport</option>
@@ -590,7 +590,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             )}
 
             {/* Tab Controller */}
-            <div className="flex items-center gap-2 p-1 bg-zinc-950 rounded-2xl border border-zinc-900 w-fit mx-auto">
+            <div className="flex items-center gap-2 p-1 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-900 w-fit mx-auto">
                 <button
                     onClick={() => setActiveTab("REVENUE")}
                     className={cn(
@@ -604,7 +604,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     onClick={() => setActiveTab("EXPENSES")}
                     className={cn(
                         "px-8 py-3 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
-                        activeTab === "EXPENSES" ? "bg-amber-600 text-white shadow-lg" : "text-zinc-500 hover:text-zinc-300"
+                        activeTab === "EXPENSES" ? "bg-amber-600 text-zinc-900 dark:text-white shadow-lg" : "text-zinc-500 hover:text-zinc-300"
                     )}
                 >
                     Expense Nexus (Payroll)
@@ -621,21 +621,21 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <ShieldCheck className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-medium text-white tracking-tight uppercase italic">Verification <span className="text-amber-500 not-italic">Nexus</span></h2>
+                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Verification <span className="text-amber-500 not-italic">Nexus</span></h2>
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Awaiting Institutional Reconciliation</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
                                 {pendingPayments.map((pay) => (
-                                    <Card key={pay.id} className="bg-zinc-950 border-amber-900/20 rounded-3xl p-6 hover:border-amber-900/40 transition-all group overflow-hidden relative border-dashed">
+                                    <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-900/20 rounded-3xl p-6 hover:border-amber-900/40 transition-all group overflow-hidden relative border-dashed">
                                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                             <div className="flex items-center gap-6">
                                                 <div className="w-12 h-12 rounded-2xl bg-amber-950/20 flex items-center justify-center border border-amber-900/30 font-medium text-amber-500">
                                                     {pay.invoice.student.firstName[0]}
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-medium text-white uppercase tracking-tight">{pay.invoice.student.firstName} {pay.invoice.student.lastName}</div>
+                                                    <div className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{pay.invoice.student.firstName} {pay.invoice.student.lastName}</div>
                                                     <div className="flex items-center gap-2 mt-0.5">
                                                         <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice.student.studentCode}</span>
                                                         <span className="w-1 h-1 rounded-full bg-zinc-800" />
@@ -647,11 +647,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                             <div className="grid grid-cols-2 md:flex items-center gap-12">
                                                 <div>
                                                     <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Reference</div>
-                                                    <div className="text-[11px] font-medium text-zinc-400 font-mono tracking-tighter">{pay.reference || "NO_REF"}</div>
+                                                    <div className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400 font-mono tracking-tighter">{pay.reference || "NO_REF"}</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Quantum</div>
-                                                    <div className="text-[11px] font-medium text-white">${parseFloat(pay.amount).toLocaleString()}</div>
+                                                    <div className="text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(pay.amount).toLocaleString()}</div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
                                                     <Button
@@ -667,7 +667,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                         onClick={() => handleVerifyPayment(pay.id, 'FAILED')}
                                                         isLoading={verifyingPayment === pay.id}
                                                         disabled={verifyingPayment === pay.id}
-                                                        className="h-10 px-4 text-zinc-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[9px] uppercase tracking-widest border border-zinc-900"
+                                                        className="h-10 px-4 text-zinc-600 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-medium text-[9px] uppercase tracking-widest border border-zinc-200 dark:border-zinc-900"
                                                     >
                                                         Dispute
                                                     </Button>
@@ -684,11 +684,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <div className="space-y-8">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-zinc-900 rounded-xl border border-zinc-800">
-                                    <Briefcase className="w-5 h-5 text-white" />
+                                <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-300 dark:border-zinc-800">
+                                    <Briefcase className="w-5 h-5 text-zinc-900 dark:text-white" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-medium text-white tracking-tight uppercase">Institutional Ledger</h2>
+                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">Institutional Ledger</h2>
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Automated Reconciliation Registry</p>
                                 </div>
                             </div>
@@ -697,7 +697,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                 <div className="relative group/export">
                                     <Button
                                         variant="outline"
-                                        className="h-12 px-6 rounded-xl border-eduGreen-600 bg-zinc-950 text-white transition-all font-medium text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-eduGreen-900/20"
+                                        className="h-12 px-6 rounded-xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white transition-all font-medium text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-eduGreen-900/20"
                                     >
                                         <Printer className="w-4 h-4 text-eduGreen-500" /> Print Ledger
                                     </Button>
@@ -708,13 +708,13 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         placeholder="Search Scholar..."
                                         value={searchQuery}
                                         onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
-                                        className="h-12 w-64 pl-12 bg-zinc-950 border-zinc-900 rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xs"
+                                        className="h-12 w-64 pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xs"
                                     />
                                 </div>
                                 <select
                                     value={statusFilter}
                                     onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                                    className="h-12 bg-zinc-950 border border-zinc-900 rounded-xl px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-widest focus:border-eduGreen-500 outline-none hover:border-zinc-800 transition-all appearance-none cursor-pointer"
+                                    className="h-12 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl px-4 text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest focus:border-eduGreen-500 outline-none hover:border-zinc-800 transition-all appearance-none cursor-pointer"
                                 >
                                     <option value="ALL">All Statuses</option>
                                     <option value="PAID">Confirmed</option>
@@ -726,16 +726,16 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
                         <div className="grid grid-cols-1 gap-4">
                             {invoices.map((inv, i) => (
-                                <Card key={inv.id} className="bg-zinc-950/20 border-zinc-900/50 rounded-3xl p-6 hover:border-zinc-800 transition-all group overflow-hidden relative">
+                                <Card key={inv.id} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900/50 rounded-3xl p-6 hover:border-zinc-800 transition-all group overflow-hidden relative">
                                     <div className="absolute inset-0 bg-gradient-to-r from-eduGreen-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                         <div className="flex items-center gap-6">
-                                            <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center border border-zinc-800 font-medium text-zinc-600 group-hover:text-eduGreen-500 transition-colors">
+                                            <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-zinc-600 group-hover:text-eduGreen-500 transition-colors">
                                                 {inv.student.firstName[0]}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-medium text-white uppercase tracking-tight">{inv.student.firstName} {inv.student.lastName}</div>
+                                                <div className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{inv.student.firstName} {inv.student.lastName}</div>
                                                 <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{inv.student.studentCode}</div>
                                             </div>
                                         </div>
@@ -743,11 +743,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         <div className="grid grid-cols-2 md:flex items-center gap-12">
                                             <div>
                                                 <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Due Date</div>
-                                                <div className="text-[11px] font-medium text-zinc-400">{new Date(inv.dueDate).toLocaleDateString()}</div>
+                                                <div className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400">{new Date(inv.dueDate).toLocaleDateString()}</div>
                                             </div>
                                             <div>
                                                 <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Quantum</div>
-                                                <div className="text-[11px] font-medium text-white">${parseFloat(inv.amount).toLocaleString()}</div>
+                                                <div className="text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(inv.amount).toLocaleString()}</div>
                                             </div>
                                             <div>
                                                 <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Status</div>
@@ -765,7 +765,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => triggerPrint(inv)}
-                                                    className="h-10 w-10 bg-zinc-900 border border-zinc-800 text-zinc-600 hover:text-eduGreen-500 rounded-xl transition-all"
+                                                    className="h-10 w-10 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:text-eduGreen-500 rounded-xl transition-all"
                                                 >
                                                     <Printer className="w-4 h-4" />
                                                 </Button>
@@ -773,7 +773,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                     size="sm"
                                                     isLoading={simulatingPay === inv.id}
                                                     onClick={() => handleRecordManualPayment(inv)}
-                                                    className="h-10 px-4 bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+                                                    className="h-10 px-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
                                                 >
                                                     Record Payment
                                                 </Button>
@@ -785,7 +785,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         </div>
 
                         {totalPages > 1 && (
-                            <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
+                            <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
                                 <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
                                     Page {page} of {totalPages}
                                 </p>
@@ -795,7 +795,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                                     >
                                         Previous
                                     </Button>
@@ -804,7 +804,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                                     >
                                         Next
                                     </Button>
@@ -814,15 +814,15 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {fees.map((fee) => (
-                            <Card key={fee.id} className="group relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-2xl">
+                            <Card key={fee.id} className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-2xl">
                                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <CardHeader className="p-8 pb-4">
                                     <div className="flex justify-between items-start">
-                                        <div className="p-3 bg-zinc-900/50 rounded-xl border border-zinc-800 text-eduGreen-500 group-hover:border-eduGreen-900/30 transition-all">
+                                        <div className="p-3 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl border border-zinc-300 dark:border-zinc-800 text-eduGreen-500 group-hover:border-eduGreen-900/30 transition-all">
                                             <Calculator className="w-5 h-5" />
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-3xl font-medium text-white tracking-tighter">
+                                            <div className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter">
                                                 ${parseFloat(fee.amount).toLocaleString()}
                                             </div>
                                             <div className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1">
@@ -830,11 +830,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                             </div>
                                         </div>
                                     </div>
-                                    <CardTitle className="text-xl font-medium text-white mt-6 tracking-tight group-hover:text-eduGreen-500 transition-colors">
+                                    <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white mt-6 tracking-tight group-hover:text-eduGreen-500 transition-colors">
                                         {fee.name}
                                     </CardTitle>
                                     <div className="flex items-center gap-3 mt-2">
-                                        <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-900 rounded-lg border border-zinc-800 group-hover:border-eduGreen-900/20 transition-all">
+                                        <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-zinc-800 group-hover:border-eduGreen-900/20 transition-all">
                                             {fee.category}
                                         </span>
                                         <span className="text-[9px] font-medium text-eduGreen-900 uppercase tracking-tighter">
@@ -842,7 +842,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         </span>
                                     </div>
                                 </CardHeader>
-                                <CardFooter className="px-8 pb-8 pt-6 flex justify-between items-center bg-zinc-900/20">
+                                <CardFooter className="px-8 pb-8 pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
                                     <span className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">
                                         ID: {fee.id.slice(0, 8)}...
                                     </span>
@@ -860,7 +860,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
                         {fees.length === 0 && !isCreating && (
                             <div className="md:col-span-2 py-32 text-center">
-                                <div className="w-20 h-20 bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-900 mx-auto mb-6 opacity-30">
+                                <div className="w-20 h-20 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6 opacity-30">
                                     <CreditCard className="w-10 h-10 text-zinc-500" />
                                 </div>
                                 <p className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">No Fee Protocols Active</p>
@@ -947,7 +947,7 @@ function RevenueFluxChart({ data }: { data: any }) {
                                 initial={{ height: 0 }}
                                 animate={{ height: `${penHeight}%` }}
                                 transition={{ duration: 0.8, delay: i * 0.05 }}
-                                className="w-full bg-zinc-900/80 rounded-t-sm border-x border-t border-zinc-800 group-hover/bar:bg-zinc-800 transition-colors"
+                                className="w-full bg-zinc-100/80 dark:bg-zinc-900/80 rounded-t-sm border-x border-t border-zinc-300 dark:border-zinc-800 group-hover/bar:bg-zinc-800 transition-colors"
                             />
                             {/* Revenue Bar */}
                             <motion.div

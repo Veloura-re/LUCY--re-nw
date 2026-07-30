@@ -241,9 +241,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     return (
         <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white uppercase italic">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Learning <span className="text-eduGreen-500 not-italic">Nexus</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Centralized Academic Resource Repository</p>
@@ -259,7 +259,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     onClick={() => setSelectedStudentId(null)}
                                     className={cn(
                                         "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
-                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-zinc-950 border-zinc-900 text-zinc-500 hover:text-white"
+                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-500 hover:text-white"
                                     )}
                                 >
                                     All Library
@@ -271,7 +271,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         onClick={() => setSelectedStudentId(child.id)}
                                         className={cn(
                                             "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
-                                            selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-zinc-950 border-zinc-900 text-zinc-500 hover:text-white"
+                                            selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-500 hover:text-white"
                                         )}
                                     >
                                         {child.firstName}
@@ -284,7 +284,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         <Button
                             onClick={() => handlePrint()}
                             variant="outline"
-                            className="h-14 px-6 rounded-2xl border-eduGreen-600 bg-zinc-950 text-white hover:text-white transition-all font-medium text-[10px] uppercase tracking-widest hidden md:flex shadow-lg shadow-eduGreen-900/20"
+                            className="h-14 px-6 rounded-2xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white hover:text-white transition-all font-medium text-[10px] uppercase tracking-widest hidden md:flex shadow-lg shadow-eduGreen-900/20"
                         >
                             <Printer className="mr-2 h-4 w-4 text-eduGreen-500" /> Export PDF Registry
                         </Button>
@@ -294,7 +294,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 placeholder="Find Resources..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="h-14 w-64 pl-12 bg-zinc-950 border-zinc-900 rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-xs"
+                                className="h-14 w-64 pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-xs"
                             />
                         </div>
                         {isDirector ? (
@@ -307,7 +307,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         ) : (
                             <Button
                                 onClick={() => setRequestModal(true)}
-                                className="bg-zinc-900 hover:bg-zinc-800 text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
+                                className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
                             >
                                 <Zap className="mr-2 h-4 w-4 text-eduGreen-500" /> Request Resource
                             </Button>
@@ -317,7 +317,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
             </div>
 
             {/* Sub-Hub Navigation */}
-            <div className="flex items-center gap-8 border-b border-zinc-900/50 pb-6">
+            <div className="flex items-center gap-8 border-b border-zinc-200 dark:border-zinc-900/50 pb-6">
                 {[
                     { id: 'library', label: 'Institutional Library', icon: Book },
                     { id: 'units', label: 'Unit Bundles', icon: Layers },
@@ -328,7 +328,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         onClick={() => setActiveTab(tab.id as any)}
                         className={cn(
                             "flex items-center gap-3 transition-all relative group",
-                            activeTab === tab.id ? "text-white" : "text-zinc-600 hover:text-zinc-400"
+                            activeTab === tab.id ? "text-zinc-900 dark:text-white" : "text-zinc-600 hover:text-zinc-400"
                         )}
                     >
                         <tab.icon className={cn("w-4 h-4", activeTab === tab.id ? "text-eduGreen-500" : "")} />
@@ -348,7 +348,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         onClick={() => setGradeFilter("ALL")}
                         className={cn(
                             "rounded-xl h-10 px-6 font-medium text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
-                            gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-900 text-zinc-600 hover:text-white"
+                            gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
                         )}
                     >
                         All Grades
@@ -360,7 +360,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             onClick={() => setGradeFilter(grade.id)}
                             className={cn(
                                 "rounded-xl h-10 px-6 font-medium text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
-                                gradeFilter === grade.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-900 text-zinc-600 hover:text-white"
+                                gradeFilter === grade.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
                             )}
                         >
                             Grade {grade.level}
@@ -388,7 +388,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     transition={{ duration: 0.2, delay: i * 0.05 }}
                                 >
                                     <Card className={cn(
-                                        "group relative bg-zinc-950/60 backdrop-blur-3xl border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-500/40 transition-all duration-300 border-t-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full flex flex-col",
+                                        "group relative bg-white/60 dark:bg-zinc-950/60 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-500/40 transition-all duration-300 border-t-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full flex flex-col",
                                         isLocked ? "opacity-60 grayscale scale-[0.98]" : "hover:scale-[1.02]",
                                         isExpired ? "border-red-900/30" : ""
                                     )}>
@@ -413,7 +413,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                     return (
                                                         <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-white/10 flex flex-col items-start p-4">
                                                             <div className="w-full h-1 bg-white/5 mb-4" />
-                                                            <h4 className="text-[10px] font-bold text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
+                                                            <h4 className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
                                                         </div>
                                                     );
                                                 })()}
@@ -424,7 +424,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className={cn(
                                                     "p-3 rounded-xl border transition-all",
-                                                    isCompleted ? "bg-eduGreen-500/10 border-eduGreen-500/20 text-eduGreen-500" : "bg-zinc-900/50 border-zinc-800 text-eduGreen-500"
+                                                    isCompleted ? "bg-eduGreen-500/10 border-eduGreen-500/20 text-eduGreen-500" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-eduGreen-500"
                                                 )}>
                                                     {isLocked ? <Zap className="w-6 h-6 text-zinc-700" /> : <BookOpen className="w-6 h-6" />}
                                                 </div>
@@ -434,7 +434,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <CardTitle className="text-xl font-medium text-white leading-tight tracking-tight group-hover:text-eduGreen-500 transition-colors">
+                                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white leading-tight tracking-tight group-hover:text-eduGreen-500 transition-colors">
                                                 {book.title}
                                             </CardTitle>
                                             {isLocked ? (
@@ -449,7 +449,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-3 mt-4">
-                                                    <span className="text-[8px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-900 rounded-md border border-zinc-800">
+                                                    <span className="text-[8px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-300 dark:border-zinc-800">
                                                         Grade {book.grade.level}
                                                     </span>
                                                     <span className="text-[8px] font-medium text-eduGreen-900 uppercase tracking-tighter">
@@ -460,7 +460,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         </CardHeader>
 
                                         <CardContent className="px-8 flex-1 relative z-10">
-                                            <p className="text-xs text-zinc-400 font-medium line-clamp-2 leading-relaxed">
+                                            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium line-clamp-2 leading-relaxed">
                                                 {parseBookMeta(book.description).text || "Comprehensive academic resource for institutional mastery."}
                                             </p>
 
@@ -468,7 +468,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 <div className="mt-6 p-4 bg-eduGreen-500/5 border border-eduGreen-500/10 rounded-2xl relative overflow-hidden group/note">
                                                     <div className="absolute top-0 right-0 p-2 opacity-20"><Zap className="w-3 h-3 text-eduGreen-500" /></div>
                                                     <p className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</p>
-                                                    <p className="text-[10px] text-zinc-400 font-medium leading-relaxed">{book.teacherNote}</p>
+                                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{book.teacherNote}</p>
                                                 </div>
                                             )}
 
@@ -488,12 +488,12 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             </div>
                                         </CardContent>
 
-                                        <CardFooter className="px-8 pb-8 pt-6 flex justify-between items-center bg-zinc-900/20">
+                                        <CardFooter className="px-8 pb-8 pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
                                             <div className="flex gap-2">
                                                 <Button
                                                     disabled={isLocked || isExpired}
                                                     onClick={() => window.open(book.fileUrl, '_blank')}
-                                                    className="h-12 px-6 bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                                                    className="h-12 px-6 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                                                 >
                                                     <BookOpen className="w-4 h-4" /> Start Reading
                                                 </Button>
@@ -504,7 +504,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                         isLoading={togglingProgress === book.id}
                                                         className={cn(
                                                             "h-12 w-12 p-0 rounded-xl transition-all",
-                                                            isCompleted ? "bg-eduGreen-500 text-white" : "bg-zinc-950 text-zinc-600 hover:text-white border border-zinc-900"
+                                                            isCompleted ? "bg-eduGreen-500 text-white" : "bg-white dark:bg-zinc-950 text-zinc-600 hover:text-white border border-zinc-200 dark:border-zinc-900"
                                                         )}
                                                     >
                                                         <Zap className="w-4 h-4" />
@@ -541,7 +541,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
 
                     {filteredBooks.length === 0 && (
                         <div className="col-span-full py-32 text-center">
-                            <div className="w-24 h-24 bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-900 mx-auto mb-6 opacity-30">
+                            <div className="w-24 h-24 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6 opacity-30">
                                 <Book className="w-12 h-12 text-zinc-500" />
                             </div>
                             <h3 className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">Library records not found</h3>
@@ -552,7 +552,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md mt-8">
+                    <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-8">
                         <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
                             Page {page} of {totalPages}
                         </p>
@@ -562,7 +562,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                             >
                                 Previous
                             </Button>
@@ -571,7 +571,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                             >
                                 Next
                             </Button>
@@ -596,7 +596,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {units.map((unit) => (
-                            <Card key={unit.id} className="bg-zinc-950/40 border-zinc-900 rounded-[3rem] overflow-hidden p-8 flex flex-col gap-6 group hover:border-eduGreen-900/30 transition-all shadow-2xl relative">
+                            <Card key={unit.id} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[3rem] overflow-hidden p-8 flex flex-col gap-6 group hover:border-eduGreen-900/30 transition-all shadow-2xl relative">
                                 {isDirector && (
                                     <Button
                                         variant="ghost"
@@ -610,25 +610,25 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 )}
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-zinc-900 rounded-2xl border border-zinc-800 text-eduGreen-500">
+                                        <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-300 dark:border-zinc-800 text-eduGreen-500">
                                             <Layers className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-medium text-white group-hover:text-eduGreen-500 transition-colors uppercase">{unit.title}</h3>
+                                            <h3 className="text-xl font-medium text-zinc-900 dark:text-white group-hover:text-eduGreen-500 transition-colors uppercase">{unit.title}</h3>
                                             <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1">Institutional Learning Bundle</p>
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-medium text-zinc-800 uppercase px-3 py-1 bg-zinc-900 rounded-lg">{unit.resources.length} Materials</span>
+                                    <span className="text-[8px] font-medium text-zinc-800 uppercase px-3 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg">{unit.resources.length} Materials</span>
                                 </div>
 
                                 <p className="text-xs text-zinc-500 font-medium leading-relaxed italic">{unit.description || "Synthesized academic pathway for streamlined mastery."}</p>
 
                                 <div className="space-y-3">
                                     {unit.resources.map((res: any, idx: number) => (
-                                        <div key={res.id} className="flex items-center justify-between p-4 bg-zinc-900/50 border border-zinc-900 rounded-2xl group/item hover:bg-zinc-900 transition-all">
+                                        <div key={res.id} className="flex items-center justify-between p-4 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl group/item hover:bg-zinc-200 dark:hover:bg-zinc-900 transition-all">
                                             <div className="flex items-center gap-4">
                                                 <span className="text-[10px] font-medium text-zinc-700 uppercase">#{idx + 1}</span>
-                                                <span className="text-xs font-medium text-zinc-400 group-hover/item:text-white transition-colors">{res.book.title}</span>
+                                                <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 group-hover/item:text-zinc-900 dark:text-white transition-colors">{res.book.title}</span>
                                             </div>
                                             <Button variant="ghost" size="icon" onClick={() => window.open(res.book.fileUrl, '_blank')} className="text-zinc-700 hover:text-eduGreen-500"><Zap className="w-4 h-4" /></Button>
                                         </div>
@@ -637,7 +637,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             </Card>
                         ))}
                         {units.length === 0 && (
-                            <div className="col-span-full py-32 text-center border-2 border-dashed border-zinc-900 rounded-[3rem]">
+                            <div className="col-span-full py-32 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                                 <Layers className="w-12 h-12 text-zinc-800 mx-auto mb-4" />
                                 <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">No integrated unit packs detected in local cloud</p>
                             </div>
@@ -651,19 +651,19 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {requests.map((req) => (
-                            <Card key={req.id} className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-8 space-y-4 relative overflow-hidden group">
+                            <Card key={req.id} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 space-y-4 relative overflow-hidden group">
                                 <div className={cn(
-                                    "absolute top-0 right-0 px-4 py-2 text-[8px] font-medium uppercase tracking-widest rounded-bl-2xl border-l border-b border-zinc-900",
+                                    "absolute top-0 right-0 px-4 py-2 text-[8px] font-medium uppercase tracking-widest rounded-bl-2xl border-l border-b border-zinc-200 dark:border-zinc-900",
                                     req.status === 'PENDING' ? "bg-amber-500/10 text-amber-500" :
                                         req.status === 'APPROVED' ? "bg-eduGreen-500/10 text-eduGreen-500" :
                                             "bg-red-500/10 text-red-500"
                                 )}>
                                     {req.status}
                                 </div>
-                                <h4 className="text-lg font-medium text-white uppercase pr-16">{req.title}</h4>
+                                <h4 className="text-lg font-medium text-zinc-900 dark:text-white uppercase pr-16">{req.title}</h4>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-900 rounded">{req.subject || "General"}</span>
-                                    <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-900 rounded">{req.grade || "All"}</span>
+                                    <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded">{req.subject || "General"}</span>
+                                    <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded">{req.grade || "All"}</span>
                                 </div>
                                 <p className="text-[10px] text-zinc-500 font-medium leading-relaxed">{req.reason || "No context provided."}</p>
 
@@ -682,14 +682,14 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             variant="ghost"
                                             isLoading={statusLoading === req.id}
                                             disabled={statusLoading === req.id}
-                                            className="h-10 flex-1 bg-zinc-900 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
+                                            className="h-10 flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
                                         >
                                             Reject
                                         </Button>
                                     </div>
                                 )}
 
-                                <div className="pt-4 border-t border-zinc-900 flex justify-between items-center text-[8px] font-medium text-zinc-700 uppercase">
+                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900 flex justify-between items-center text-[8px] font-medium text-zinc-700 uppercase">
                                     <span>Requested By: {req.user.name}</span>
                                     <span>{new Date(req.createdAt).toLocaleDateString()}</span>
                                 </div>
@@ -817,11 +817,11 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="w-full max-w-2xl bg-zinc-950 border border-zinc-900 rounded-[3.5rem] overflow-hidden shadow-2xl"
+                className="w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-[3.5rem] overflow-hidden shadow-2xl"
             >
-                <div className="p-10 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/20">
+                <div className="p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
                     <div>
-                        <h2 className="text-3xl font-medium text-white tracking-tighter uppercase">Unit Synthesizer</h2>
+                        <h2 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Unit Synthesizer</h2>
                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Bundling institutional intelligence packs</p>
                     </div>
                     <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-white rounded-full">
@@ -836,13 +836,13 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                             required
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            className="h-16 bg-zinc-900 border-zinc-800 rounded-2xl font-medium text-lg"
+                            className="h-16 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-lg"
                         />
                         <textarea
                             placeholder="Unit Description / Objectives..."
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full h-24 bg-zinc-900 border border-zinc-800 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-white resize-none"
+                            className="w-full h-24 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white resize-none"
                         />
                     </div>
 
@@ -857,8 +857,8 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                                     className={cn(
                                         "flex items-center justify-between p-4 rounded-2xl border transition-all text-left",
                                         formData.resourceIds.includes(book.id)
-                                            ? "bg-eduGreen-500/10 border-eduGreen-500 text-white"
-                                            : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700"
+                                            ? "bg-eduGreen-500/10 border-eduGreen-500 text-zinc-900 dark:text-white"
+                                            : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
@@ -939,11 +939,11 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="w-full max-w-lg bg-zinc-950 border border-zinc-900 rounded-[3rem] overflow-hidden shadow-2xl"
+                className="w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-[3rem] overflow-hidden shadow-2xl"
             >
-                <div className="p-10 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/40">
+                <div className="p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-100/40 dark:bg-zinc-900/40">
                     <div>
-                        <h2 className="text-2xl font-medium text-white tracking-tight uppercase">Request Resource</h2>
+                        <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">Request Resource</h2>
                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Submit requirements</p>
                     </div>
                     <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-white rounded-full">
@@ -957,27 +957,27 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                         required
                         value={formData.title}
                         onChange={e => setFormData({ ...formData, title: e.target.value })}
-                        className="h-14 bg-zinc-900 border-zinc-900 rounded-2xl font-medium"
+                        className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
                     />
                     <div className="grid grid-cols-2 gap-4">
                         <Input
                             placeholder="Subject"
                             value={formData.subject}
                             onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                            className="h-14 bg-zinc-900 border-zinc-900 rounded-2xl font-medium"
+                            className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
                         />
                         <Input
                             placeholder="Grade Level"
                             value={formData.grade}
                             onChange={e => setFormData({ ...formData, grade: e.target.value })}
-                            className="h-14 bg-zinc-900 border-zinc-900 rounded-2xl font-medium"
+                            className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
                         />
                     </div>
                     <textarea
                         placeholder="Reason for request / Context..."
                         value={formData.reason}
                         onChange={e => setFormData({ ...formData, reason: e.target.value })}
-                        className="w-full h-32 bg-zinc-900 border border-zinc-900 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-white resize-none"
+                        className="w-full h-32 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white resize-none"
                     />
                     <Button
                         type="submit"
@@ -1101,16 +1101,16 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.92, y: 24, opacity: 0 }}
                 transition={{ type: 'spring', damping: 28, stiffness: 350 }}
-                className="w-full max-w-3xl bg-zinc-950 border border-zinc-800/60 rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)] flex flex-col max-h-[92vh]"
+                className="w-full max-w-3xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800/60 rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)] flex flex-col max-h-[92vh]"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-900 bg-gradient-to-r from-zinc-950 to-zinc-900/50 shrink-0">
+                <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-900 bg-gradient-to-r from-zinc-950 to-zinc-900/50 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
                             <Book className="w-5 h-5 text-eduGreen-500" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-semibold text-white tracking-tight">Add New Book</h2>
+                            <h2 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight">Add New Book</h2>
                             <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Deploy to institutional library</p>
                         </div>
                     </div>
@@ -1130,18 +1130,18 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                     required placeholder="e.g. Mathematics Grade 10"
                                     value={formData.title}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all"
+                                    className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-5 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all"
                                 />
                             </div>
 
                             {/* Source toggle */}
                             <div>
                                 <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">File Source</label>
-                                <div className="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800 gap-1 mb-4">
+                                <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-300 dark:border-zinc-800 gap-1 mb-4">
                                     {(['file', 'link'] as const).map(mode => (
                                         <button key={mode} type="button" onClick={() => setPayloadSource(mode)}
                                             className={cn('flex-1 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all',
-                                                payloadSource === mode ? 'bg-zinc-800 text-white shadow' : 'text-zinc-600 hover:text-zinc-400'
+                                                payloadSource === mode ? 'bg-zinc-800 text-zinc-900 dark:text-white shadow' : 'text-zinc-600 hover:text-zinc-400'
                                             )}>
                                             {mode === 'file' ? 'Upload File' : 'External Link'}
                                         </button>
@@ -1153,7 +1153,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                         className={cn('relative flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-3xl transition-all cursor-pointer group',
                                             dragOver ? 'border-eduGreen-500 bg-eduGreen-500/5' :
                                                 fileReady ? 'border-eduGreen-600/50 bg-eduGreen-500/5' :
-                                                    'border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 hover:bg-zinc-900/70'
+                                                    'border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 bg-zinc-100/40 dark:bg-zinc-900/40 hover:bg-zinc-200 dark:hover:bg-zinc-900/70'
                                         )}>
                                         <input type="file" accept=".pdf,.epub,.docx,.txt"
                                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
@@ -1183,14 +1183,14 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                 ) : (
                                     <input placeholder="https://drive.google.com/..." value={formData.fileUrl}
                                         onChange={e => setFormData({ ...formData, fileUrl: e.target.value })}
-                                        className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
+                                        className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-5 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
                                 )}
                             </div>
 
                             <div className="flex gap-4">
                                 <div className="flex-1">
                                     <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Cover Image <span className="text-zinc-700">(optional)</span></label>
-                                    <div className="relative flex flex-col items-center justify-center h-20 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-eduGreen-500 transition-colors cursor-pointer group">
+                                    <div className="relative flex flex-col items-center justify-center h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-eduGreen-500 transition-colors cursor-pointer group">
                                         <input type="file" accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                                             onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, 'cover'); }}
@@ -1198,7 +1198,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                         {formData.coverUrl ? (
                                             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${formData.coverUrl})` }}>
                                                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <span className="text-[8px] text-white uppercase tracking-widest font-bold">Change Cover</span>
+                                                    <span className="text-[8px] text-zinc-900 dark:text-white uppercase tracking-widest font-bold">Change Cover</span>
                                                 </div>
                                             </div>
                                         ) : (
@@ -1212,7 +1212,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                 <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Description <span className="text-zinc-700">(optional)</span></label>
                                 <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Brief description of this book..."
-                                    className="w-full h-20 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
+                                    className="w-full h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
                             </div>
                         </div>
 
@@ -1287,13 +1287,13 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                     <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Author</label>
                                     <input placeholder="Author name" value={formData.author}
                                         onChange={e => setFormData({ ...formData, author: e.target.value })}
-                                        className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
+                                        className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
                                 </div>
                                 <div>
                                     <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Year</label>
                                     <input placeholder="2024" value={formData.academicYear}
                                         onChange={e => setFormData({ ...formData, academicYear: e.target.value })}
-                                        className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
+                                        className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
                                 </div>
                             </div>
 
@@ -1302,7 +1302,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                 <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Teacher Note <span className="text-zinc-700">(optional)</span></label>
                                 <textarea value={formData.teacherNote} onChange={e => setFormData({ ...formData, teacherNote: e.target.value })}
                                     placeholder="Instructions visible to students..."
-                                    className="w-full h-20 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-sm font-medium text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
+                                    className="w-full h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
                             </div>
 
                             {/* Expiry */}
@@ -1310,13 +1310,13 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                 <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Expiry Date <span className="text-zinc-700">(optional)</span></label>
                                 <input type="date" value={formData.expiresAt}
                                     onChange={e => setFormData({ ...formData, expiresAt: e.target.value })}
-                                    className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 text-sm font-medium text-white focus:border-eduGreen-600 focus:outline-none transition-all" />
+                                    className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-5 text-sm font-medium text-zinc-900 dark:text-white focus:border-eduGreen-600 focus:outline-none transition-all" />
                             </div>
                         </div>
                     </div>
 
                     {/* Footer CTA */}
-                    <div className="px-8 py-6 border-t border-zinc-900 bg-zinc-950/80 shrink-0">
+                    <div className="px-8 py-6 border-t border-zinc-200 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 shrink-0">
                         <div className="flex items-center gap-4">
                             {/* Live validation dots */}
                             <div className="flex-1 flex items-center gap-3 flex-wrap">

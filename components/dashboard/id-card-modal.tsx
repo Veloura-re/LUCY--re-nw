@@ -63,7 +63,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                         <div className="absolute inset-0 w-full h-full backface-hidden" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
                             <div className="w-full h-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 rounded-[20px] overflow-hidden relative shadow-2xl flex flex-col">
                                 {/* Header */}
-                                <div className="px-6 py-4 bg-gradient-to-r from-eduGreen-950/30 to-transparent flex items-center justify-between border-b border-zinc-900/50">
+                                <div className="px-6 py-4 bg-gradient-to-r from-eduGreen-950/30 to-transparent flex items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                                     <div className="flex items-center gap-2">
                                         {schoolLogo ? (
                                             <div className="w-6 h-6 rounded-lg overflow-hidden bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 shadow-[0_0_10px_rgba(59,214,141,0.3)] relative">
@@ -71,10 +71,10 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                             </div>
                                         ) : (
                                             <div className="w-6 h-6 rounded-lg bg-eduGreen-600 flex items-center justify-center shadow-[0_0_10px_rgba(59,214,141,0.3)]">
-                                                <Sparkles className="w-4 h-4 text-white" />
+                                                <Sparkles className="w-4 h-4 text-zinc-900 dark:text-white" />
                                             </div>
                                         )}
-                                        <span className="text-[10px] font-medium tracking-[0.2em] text-white uppercase italic">{schoolName}</span>
+                                        <span className="text-[10px] font-medium tracking-[0.2em] text-zinc-900 dark:text-white uppercase italic">{schoolName}</span>
                                     </div>
                                     <div className="px-3 py-0.5 rounded-full bg-eduGreen-950/20 border border-eduGreen-900/20 text-[8px] font-medium text-eduGreen-500 uppercase tracking-widest">
                                         {roleTitle}
@@ -246,7 +246,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                             </div>
                                         ) : (
                                             <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-eduGreen-600 flex items-center justify-center">
-                                                <Sparkles className="w-[2.5mm] h-[2.5mm] text-white" />
+                                                <Sparkles className="w-[2.5mm] h-[2.5mm] text-zinc-900 dark:text-white" />
                                             </div>
                                         )}
                                         <span className="text-[7pt] font-medium uppercase tracking-[0.2em] italic">{schoolName}</span>
@@ -353,7 +353,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
 
                 {/* Actions */}
                 <div className="flex gap-4 mt-12 mb-8">
-                    <Button onClick={handlePrint} className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-12 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-2xl">
+                    <Button onClick={handlePrint} className="bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-12 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-2xl">
                         <Printer className="w-4 h-4 mr-2" /> Print Credentials
                     </Button>
                     <Button variant="outline" onClick={onClose} className="border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white h-12 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest">

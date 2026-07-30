@@ -164,9 +164,9 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-500 relative z-10 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Academic <span className="text-eduGreen-500 italic">Architecture</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Institutional Cohorts & Curriculum Registry</p>
@@ -175,14 +175,14 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
 
             <div className="grid lg:grid-cols-1 gap-12 items-start">
                 <div className="space-y-8">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl overflow-hidden">
-                        <CardHeader className="p-10 border-b border-zinc-900/80 flex flex-row items-center justify-between">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl overflow-hidden">
+                        <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/80 flex flex-row items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-eduGreen-950/20 rounded-2xl border border-eduGreen-900/30">
                                     <Layers className="w-5 h-5 text-eduGreen-500" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-medium text-white tracking-tight">Grade Levels</CardTitle>
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Grade Levels</CardTitle>
                                     <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Hierarchical academic structure</CardDescription>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                         </CardHeader>
                         <CardContent className="p-0">
                             {isAddingGrade && (
-                                <div className="p-10 bg-zinc-950/50 border-b border-zinc-900 animate-in slide-in-from-top-4 duration-300">
+                                <div className="p-10 bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                     {loading ? (
                                         <div className="py-4 flex justify-center items-center scale-75">
                                             <SpringingLoader message="Deploying Academic Layer" />
@@ -209,7 +209,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     value={newGradeName}
                                                     onChange={e => setNewGradeName(e.target.value)}
                                                     required
-                                                    className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
+                                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
                                                 />
                                             </div>
                                             <div className="w-full sm:w-28 space-y-3">
@@ -220,7 +220,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     value={newGradeLevel}
                                                     onChange={e => setNewGradeLevel(e.target.value)}
                                                     required
-                                                    className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 text-center font-mono no-spinner"
+                                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 text-center font-mono no-spinner"
                                                 />
                                             </div>
                                             <div className="flex items-center gap-3">
@@ -240,7 +240,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                             onClick={() => setExpandedGrade(expandedGrade === grade.id ? null : grade.id)}
                                         >
                                             <div className="flex items-center gap-8">
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-medium text-lg transition-all border-2 ${expandedGrade === grade.id ? 'bg-eduGreen-950/40 border-eduGreen-500/50 text-eduGreen-400' : 'bg-zinc-950 border-zinc-800 text-zinc-600 group-hover:border-zinc-700'}`}>
+                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-medium text-lg transition-all border-2 ${expandedGrade === grade.id ? 'bg-eduGreen-950/40 border-eduGreen-500/50 text-eduGreen-400' : 'bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-600 group-hover:border-zinc-700'}`}>
                                                     {grade.level}
                                                 </div>
                                                 <div>
@@ -261,20 +261,20 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
-                                                <div className={`p-2 rounded-xl border transition-all ${expandedGrade === grade.id ? 'bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500 rotate-180' : 'bg-zinc-950 border-zinc-900 text-zinc-800 group-hover:text-zinc-600'}`}>
+                                                <div className={`p-2 rounded-xl border transition-all ${expandedGrade === grade.id ? 'bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500 rotate-180' : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800 group-hover:text-zinc-600'}`}>
                                                     <ChevronDown className="w-5 h-5" />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {expandedGrade === grade.id && (
-                                            <div className="bg-zinc-950/80 p-10 pt-2 border-t border-zinc-900 animate-in slide-in-from-top-4 duration-300">
+                                            <div className="bg-white/80 dark:bg-zinc-950/80 p-10 pt-2 border-t border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                                                     {grade.classes?.map((cls: any) => (
-                                                        <div key={cls.id} className="p-6 bg-zinc-900 rounded-[1.5rem] border border-zinc-800 flex items-center justify-between group/cls hover:border-eduGreen-500/30 hover:bg-eduGreen-900/5 transition-all relative overflow-hidden">
+                                                        <div key={cls.id} className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] border border-zinc-300 dark:border-zinc-800 flex items-center justify-between group/cls hover:border-eduGreen-500/30 hover:bg-eduGreen-900/5 transition-all relative overflow-hidden">
                                                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/cls:opacity-100 transition-opacity" />
                                                             <div className="relative z-10 flex-1">
-                                                                <span className="font-medium text-zinc-100 group-hover/cls:text-white transition-colors tracking-tight block">{cls.name}</span>
+                                                                <span className="font-medium text-zinc-100 group-hover/cls:text-zinc-900 dark:text-white transition-colors tracking-tight block">{cls.name}</span>
                                                                   <div className="flex items-center gap-3 mt-1.5">
                                                                       <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest block">{cls._count?.students || 0} Students</span>
                                                                       <div className="w-1 h-1 rounded-full bg-zinc-800" />
@@ -307,10 +307,10 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                     onValueChange={(teacherId: string) => handleAssignHomeroom(cls.id, teacherId === "null" ? null : teacherId)}
                                                                     defaultValue={cls.homeroomTeacherId || "null"}
                                                                 >
-                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-950/50 border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-all">
+                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-all">
                                                                         <SelectValue placeholder="Staff" />
                                                                     </SelectTrigger>
-                                                                    <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                                                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                                                         {allTeachers?.map((t: any) => (
                                                                             <SelectItem key={t.id} value={t.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
                                                                                 {t.name}
@@ -338,7 +338,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                 placeholder="e.g. 10A"
                                                                 value={newClassName}
                                                                 onChange={e => setNewClassName(e.target.value)}
-                                                                className="h-14 bg-zinc-900/50 border-zinc-800 border-2 text-white focus:border-eduGreen-600 rounded-2xl font-medium px-6"
+                                                                className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-900 dark:text-white focus:border-eduGreen-600 rounded-2xl font-medium px-6"
                                                             />
                                                             <Button size="icon" type="submit" isLoading={loading} className="h-14 w-14 bg-white text-black rounded-2xl shrink-0 active:scale-95 transition-all">
                                                                 <ChevronRight className="w-5 h-5" />
@@ -347,7 +347,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     ) : (
                                                         <Button
                                                             variant="outline"
-                                                            className="h-full min-h-[5.5rem] rounded-[1.5rem] border-dashed border-2 border-zinc-800 hover:border-eduGreen-900/50 hover:bg-eduGreen-900/5 text-zinc-700 hover:text-eduGreen-500 flex flex-col gap-2 transition-all group/add"
+                                                            className="h-full min-h-[5.5rem] rounded-[1.5rem] border-dashed border-2 border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/50 hover:bg-eduGreen-900/5 text-zinc-700 hover:text-eduGreen-500 flex flex-col gap-2 transition-all group/add"
                                                             onClick={() => setIsAddingClass(grade.id)}
                                                         >
                                                             <Plus className="w-5 h-5 group-hover/add:scale-110 transition-transform" />
@@ -361,8 +361,8 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                 ))}
                                 {(!grades || grades.length === 0) && !isAddingGrade && (
                                     <div className="p-20 text-center flex flex-col items-center gap-4">
-                                        <div className="w-16 h-16 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center opacity-20">
-                                            <Layers className="w-8 h-8 text-white" />
+                                        <div className="w-16 h-16 rounded-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center opacity-20">
+                                            <Layers className="w-8 h-8 text-zinc-900 dark:text-white" />
                                         </div>
                                         <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No academic layers configured</p>
                                     </div>
@@ -373,20 +373,20 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                 </div>
 
                 <div className="space-y-8">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl overflow-hidden">
-                        <CardHeader className="p-8 border-b border-zinc-900/80">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl overflow-hidden">
+                        <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/80">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-sky-950/20 rounded-xl border border-sky-900/30">
                                         <BookOpen className="w-4 h-4 text-sky-500" />
                                     </div>
-                                    <CardTitle className="text-lg font-medium text-white tracking-tight">Core Disciplines</CardTitle>
+                                    <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight">Core Disciplines</CardTitle>
                                 </div>
                                 <Button
                                     size="icon"
                                     variant="ghost"
                                     onClick={() => setIsAddingSubject(true)}
-                                    className="h-10 w-10 rounded-xl bg-zinc-950/50 border border-zinc-900 text-zinc-600 hover:text-sky-500 hover:border-sky-900/30 transition-all"
+                                    className="h-10 w-10 rounded-xl bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-sky-500 hover:border-sky-900/30 transition-all"
                                 >
                                     <Plus className="w-4 h-4" />
                                 </Button>
@@ -395,7 +395,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                         </CardHeader>
                         <CardContent className="p-0">
                             {isAddingSubject && (
-                                <div className="p-6 bg-zinc-950/50 border-b border-zinc-900 animate-in slide-in-from-top-4 duration-300">
+                                <div className="p-6 bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                     {loading ? (
                                         <div className="py-2 flex justify-center items-center scale-75">
                                             <SpringingLoader message="Deploying Academic Subject" />
@@ -407,9 +407,9 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 placeholder="e.g. Mathematics"
                                                 value={newSubjectName}
                                                 onChange={e => setNewSubjectName(e.target.value)}
-                                                className="h-12 bg-zinc-900/30 border-zinc-800 border-2 text-white focus:border-sky-600 rounded-xl font-medium px-4"
+                                                className="h-12 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-900 dark:text-white focus:border-sky-600 rounded-xl font-medium px-4"
                                             />
-                                            <Button size="icon" type="submit" className="h-12 w-12 bg-sky-600 hover:bg-sky-500 text-white rounded-xl shrink-0 active:scale-95 transition-all shadow-lg shadow-sky-900/20">
+                                            <Button size="icon" type="submit" className="h-12 w-12 bg-sky-600 hover:bg-sky-500 text-zinc-900 dark:text-white rounded-xl shrink-0 active:scale-95 transition-all shadow-lg shadow-sky-900/20">
                                                 <Check className="w-4 h-4" />
                                             </Button>
                                         </form>
@@ -421,7 +421,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                     <div key={sub.id} className="p-5 flex items-center justify-between hover:bg-sky-900/5 transition-all group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-800 group-hover:bg-sky-500 group-hover:shadow-[0_0_8px_rgba(14,165,233,0.5)] transition-all" />
-                                            <span className="font-medium text-sm text-zinc-400 group-hover:text-zinc-100 transition-colors tracking-tight">{sub.name}</span>
+                                            <span className="font-medium text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-100 transition-colors tracking-tight">{sub.name}</span>
                                         </div>
                                         <Button
                                             size="icon"
@@ -435,7 +435,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                 ))}
                                 {(!subjects || subjects.length === 0) && !isAddingSubject && (
                                     <div className="p-16 text-center flex flex-col items-center gap-4 opacity-40">
-                                        <BookOpen className="w-10 h-10 text-zinc-400" />
+                                        <BookOpen className="w-10 h-10 text-zinc-600 dark:text-zinc-400" />
                                         <p className="text-zinc-600 font-medium uppercase tracking-widest text-[9px]">No subjects registered</p>
                                     </div>
                                 )}
