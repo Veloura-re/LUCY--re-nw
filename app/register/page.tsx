@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
                             <Card className={cn(
                                 "relative h-full bg-white/90 dark:bg-zinc-900/30 backdrop-blur-2xl border-slate-200/80 dark:border-zinc-800 transition-all duration-300 rounded-[2.5rem] overflow-hidden p-8 flex flex-col items-center text-center shadow-lg dark:shadow-none",
-                                "group-hover:border-emerald-500/40 group-hover:bg-white dark:group-hover:bg-zinc-900/50 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
+                                "group-hover:border-emerald-500/40 group-hover:bg-white dark:group-hover:bg-zinc-200 dark:hover:bg-zinc-900/50 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
                             )}>
                                 {/* Holographic Scanline */}
                                 <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,rgba(20,122,82,0.05)_50%,transparent_100%)] bg-[length:100%_4px] group-hover:animate-scan opacity-0 group-hover:opacity-100" />

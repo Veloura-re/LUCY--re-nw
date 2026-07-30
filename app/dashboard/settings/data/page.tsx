@@ -392,22 +392,22 @@ export default function DataSecuritySettings() {
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300 pb-20">
             <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">Data & Security</h1>
+                <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Data & Security</h1>
                 <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">Manage system backups and disaster recovery</p>
             </div>
 
             {/* Backup Generation Panel */}
-            <div className="bg-zinc-950 border border-zinc-900 rounded-[2rem] p-8 relative overflow-hidden">
+            <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
                     <Database className="w-48 h-48 text-eduGreen-500" />
                 </div>
                 
                 <div className="relative z-10 max-w-xl">
-                    <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                    <h2 className="text-lg font-medium text-zinc-900 dark:text-white flex items-center gap-2">
                         <HardDrive className="w-5 h-5 text-eduGreen-500" />
                         System Snapshots
                     </h2>
-                    <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
                         Generate a complete snapshot of your school's database. This includes all students, staff, classes, grades, and financial records. Snapshots are stored securely and can be downloaded for your records.
                     </p>
                     
@@ -423,7 +423,7 @@ export default function DataSecuritySettings() {
                         <Button 
                             onClick={handleGenerateArchive}
                             isLoading={isArchiving}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
+                            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
                         >
                             <FileArchive className={`w-4 h-4 mr-2 ${isArchiving ? 'animate-bounce' : ''}`} />
                             Download Global Archive (ZIP/PDF)
@@ -433,27 +433,27 @@ export default function DataSecuritySettings() {
             </div>
 
             {/* Restore Points History */}
-            <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-[2rem] p-8">
-                <h2 className="text-base font-medium text-white mb-6">Recent Restore Points</h2>
+            <div className="bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 rounded-[2rem] p-8">
+                <h2 className="text-base font-medium text-zinc-900 dark:text-white mb-6">Recent Restore Points</h2>
                 
                 {isLoading ? (
                     <div className="py-12 flex justify-center">
                         <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
                     </div>
                 ) : restorePoints.length === 0 ? (
-                    <div className="text-center py-12 border border-dashed border-zinc-800 rounded-2xl">
+                    <div className="text-center py-12 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-2xl">
                         <p className="text-[11px] font-medium uppercase tracking-widest text-zinc-500">No snapshots found</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
                         {restorePoints.map((rp) => (
-                            <div key={rp.id} className="flex items-center justify-between p-4 bg-zinc-900 border border-zinc-800 rounded-2xl">
+                            <div key={rp.id} className="flex items-center justify-between p-4 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 bg-eduGreen-500/10 rounded-xl flex items-center justify-center border border-eduGreen-500/20">
                                         <Database className="w-5 h-5 text-eduGreen-500" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-white">
+                                        <p className="text-sm font-medium text-zinc-900 dark:text-white">
                                             Restore Point - {new Date(rp.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </p>
                                         <div className="flex items-center gap-3 mt-1">
@@ -465,7 +465,7 @@ export default function DataSecuritySettings() {
                                 </div>
                                 <Button
                                     onClick={() => forceDownload(rp.fileUrl, `LUCY_Snapshot_${rp.createdAt.split('T')[0]}.json`)}
-                                    className="h-10 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
+                                    className="h-10 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
                                 >
                                     <Download className="w-4 h-4" /> Download
                                 </Button>
@@ -482,8 +482,8 @@ export default function DataSecuritySettings() {
                         <ShieldAlert className="w-6 h-6 text-red-500" />
                     </div>
                     <div>
-                        <h2 className="text-lg font-medium text-white">Disaster Recovery (Restore)</h2>
-                        <p className="text-sm text-zinc-400 mt-2 leading-relaxed max-w-2xl">
+                        <h2 className="text-lg font-medium text-zinc-900 dark:text-white">Disaster Recovery (Restore)</h2>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed max-w-2xl">
                             Upload a downloaded snapshot file (.json) to restore missing data. This will recreate deleted students, staff, classes, and grades. 
                             <strong> Warning:</strong> Restoring will also send password-reset emails to any staff members whose accounts were permanently deleted.
                         </p>
@@ -496,7 +496,7 @@ export default function DataSecuritySettings() {
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                                 />
-                                <div className={`flex items-center gap-3 px-4 h-12 rounded-xl border border-dashed transition-all ${uploadFile ? 'bg-eduGreen-950/20 border-eduGreen-500/50 text-eduGreen-400' : 'bg-zinc-900/50 border-zinc-700 text-zinc-400 hover:border-zinc-500'}`}>
+                                <div className={`flex items-center gap-3 px-4 h-12 rounded-xl border border-dashed transition-all ${uploadFile ? 'bg-eduGreen-950/20 border-eduGreen-500/50 text-eduGreen-400' : 'bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-500'}`}>
                                     {uploadFile ? <CheckCircle2 className="w-5 h-5" /> : <Upload className="w-5 h-5" />}
                                     <span className="text-[11px] font-medium uppercase tracking-widest truncate">
                                         {uploadFile ? uploadFile.name : "Select Snapshot File (.json)"}
@@ -508,7 +508,7 @@ export default function DataSecuritySettings() {
                                 disabled={!uploadFile}
                                 onClick={() => setConfirmRestore(true)}
                                 isLoading={isRestoring}
-                                className="h-12 px-6 bg-red-600 hover:bg-red-500 text-white rounded-xl font-semibold uppercase tracking-widest text-[11px] shadow-lg shadow-red-900/20 shrink-0"
+                                className="h-12 px-6 bg-red-600 hover:bg-red-500 text-zinc-900 dark:text-white rounded-xl font-semibold uppercase tracking-widest text-[11px] shadow-lg shadow-red-900/20 shrink-0"
                             >
                                 Apply Restore Point
                             </Button>

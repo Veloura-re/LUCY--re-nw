@@ -10,8 +10,8 @@ export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
     const isTrialExpired = params.reason === 'trial_expired';
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-zinc-900 border border-red-900/50 rounded-2xl p-8 text-center space-y-6 shadow-2xl shadow-red-900/20">
+        <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-zinc-100 dark:bg-zinc-900 border border-red-900/50 rounded-2xl p-8 text-center space-y-6 shadow-2xl shadow-red-900/20">
                 <div className="w-20 h-20 bg-red-950/30 rounded-full flex items-center justify-center mx-auto border border-red-500/30">
                     <svg
                         className="w-10 h-10 text-red-500"
@@ -29,10 +29,10 @@ export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-medium text-white">
+                    <h1 className="text-2xl font-medium text-zinc-900 dark:text-white">
                         {isTrialExpired ? "Trial Expired" : "Access Restricted"}
                     </h1>
-                    <p className="text-zinc-400">
+                    <p className="text-zinc-600 dark:text-zinc-400">
                         {isTrialExpired 
                             ? "Your institution's free trial of the LUCY platform has expired."
                             : "Your institution's access to the LUCY platform has been suspended."
@@ -50,7 +50,7 @@ export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
                 <div className="pt-4">
                     <Link
                         href="/login"
-                        className="inline-flex items-center text-zinc-400 hover:text-white transition-colors"
+                        className="inline-flex items-center text-zinc-600 dark:text-zinc-400 hover:text-white transition-colors"
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

@@ -109,14 +109,14 @@ export default function TeacherSchedulePage() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300">
             {/* Context Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Teaching <span className="text-eduGreen-500 italic">Duty</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Personal Institutional Registry</p>
                 </div>
-                <div className="flex bg-zinc-950 p-1.5 rounded-2xl border border-zinc-900 shadow-2xl">
+                <div className="flex bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
                     {DAYS.map(day => (
                         <button
                             key={day.value}
@@ -137,15 +137,15 @@ export default function TeacherSchedulePage() {
             {/* Daily View */}
             <div className="grid grid-cols-1 gap-8">
                 {daySchedule.length === 0 ? (
-                    <div className="p-32 rounded-[3rem] border-4 border-dashed border-zinc-900 flex flex-col items-center justify-center text-zinc-800 gap-4">
+                    <div className="p-32 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900 flex flex-col items-center justify-center text-zinc-800 gap-4">
                         <Calendar className="w-12 h-12 opacity-20" />
                         <p className="font-medium uppercase tracking-[0.3em] text-sm italic">No Scheduled Engagements</p>
                     </div>
                 ) : (
                     daySchedule.map((slot, i) => (
-                        <Card key={i} className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
+                        <Card key={i} className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
                             <CardContent className="p-0 flex flex-col md:flex-row items-stretch">
-                                <div className="p-8 bg-zinc-900/20 md:w-64 border-b md:border-b-0 md:border-r border-zinc-900 flex flex-col justify-center">
+                                <div className="p-8 bg-zinc-100/20 dark:bg-zinc-900/20 md:w-64 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-900 flex flex-col justify-center">
                                     <div className="flex items-center gap-3 text-eduGreen-500 mb-3">
                                         <Clock className="w-5 h-5" />
                                         <span className="font-medium text-lg tracking-tighter">{slot.period?.startTime} - {slot.period?.endTime}</span>
@@ -156,7 +156,7 @@ export default function TeacherSchedulePage() {
                                 </div>
                                 <div className="p-8 flex-1 flex flex-col md:flex-row md:items-center justify-between gap-6">
                                     <div>
-                                        <h3 className="text-3xl font-medium text-white tracking-tight mb-2 group-hover:text-eduGreen-500 transition-colors">
+                                        <h3 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight mb-2 group-hover:text-eduGreen-500 transition-colors">
                                             {slot.subject?.name}
                                         </h3>
                                         <div className="flex items-center gap-4 text-zinc-500 font-medium text-xs uppercase tracking-widest">
@@ -164,14 +164,14 @@ export default function TeacherSchedulePage() {
                                                 <Users className="w-4 h-4 text-zinc-800" />
                                                 Cohort {slot.class?.name}
                                             </div>
-                                            <div className="w-1 h-1 rounded-full bg-zinc-900" />
+                                            <div className="w-1 h-1 rounded-full bg-zinc-100 dark:bg-zinc-900" />
                                             <span>Institutional Primary Instructor</span>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <button
                                             onClick={() => openSyncModal(slot)}
-                                            className="h-12 px-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all hover:border-eduGreen-500/50 hover:text-eduGreen-500"
+                                            className="h-12 px-6 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all hover:border-eduGreen-500/50 hover:text-eduGreen-500"
                                         >
                                             Access Lesson Sync
                                         </button>
@@ -191,25 +191,25 @@ export default function TeacherSchedulePage() {
 
             {/* Sidebar Stats? */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Card className="bg-zinc-950/20 border-zinc-900 rounded-2xl p-6">
+                <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Weekly Load</p>
-                    <p className="text-3xl font-medium text-white">{timetable.length} <span className="text-sm text-zinc-800 uppercase">Periods</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{timetable.length} <span className="text-sm text-zinc-800 uppercase">Periods</span></p>
                 </Card>
-                <Card className="bg-zinc-950/20 border-zinc-900 rounded-2xl p-6">
+                <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Subject Reach</p>
-                    <p className="text-3xl font-medium text-white">{new Set(timetable.map(t => t.subjectId)).size} <span className="text-sm text-zinc-800 uppercase">Focus Areas</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.subjectId)).size} <span className="text-sm text-zinc-800 uppercase">Focus Areas</span></p>
                 </Card>
-                <Card className="bg-zinc-950/20 border-zinc-900 rounded-2xl p-6">
+                <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-2xl p-6">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Active Cohorts</p>
-                    <p className="text-3xl font-medium text-white">{new Set(timetable.map(t => t.classId)).size} <span className="text-sm text-zinc-800 uppercase">Groups</span></p>
+                    <p className="text-3xl font-medium text-zinc-900 dark:text-white">{new Set(timetable.map(t => t.classId)).size} <span className="text-sm text-zinc-800 uppercase">Groups</span></p>
                 </Card>
             </div>
 
             {/* Sync Modal */}
             <Dialog open={syncModalOpen} onOpenChange={setSyncModalOpen}>
-                <DialogContent className="max-w-[95vw] md:max-w-lg max-h-[85vh] bg-zinc-950/95 backdrop-blur-3xl border-zinc-900 rounded-[2rem] p-0 overflow-y-auto">
-                    <DialogHeader className="p-8 border-b border-zinc-900">
-                        <DialogTitle className="text-2xl font-medium text-white tracking-tighter uppercase">
+                <DialogContent className="max-w-[95vw] md:max-w-lg max-h-[85vh] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-0 overflow-y-auto">
+                    <DialogHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900">
+                        <DialogTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">
                             Lesson <span className="text-eduGreen-500">Sync</span>
                         </DialogTitle>
                         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-600">
@@ -229,7 +229,7 @@ export default function TeacherSchedulePage() {
                                     onChange={e => setLessonData({ ...lessonData, topic: e.target.value })}
                                     required
                                     placeholder="e.g. Introduction to Quantum Physics"
-                                    className="bg-zinc-900/50 border-zinc-800 rounded-xl font-medium"
+                                    className="bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl font-medium"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -239,7 +239,7 @@ export default function TeacherSchedulePage() {
                                     onChange={e => setLessonData({ ...lessonData, objectives: e.target.value })}
                                     placeholder="• Understand wave-particle duality..."
                                     rows={4}
-                                    className="bg-zinc-900/50 border-zinc-800 rounded-xl font-medium resize-none"
+                                    className="bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl font-medium resize-none"
                                 />
                             </div>
                             <Button type="submit" disabled={isSubmitting} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase tracking-widest h-12 rounded-xl shadow-lg shadow-eduGreen-900/20">

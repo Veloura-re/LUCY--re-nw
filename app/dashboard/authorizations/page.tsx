@@ -131,9 +131,9 @@ export default function StaffAuthorizationsPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-10 animate-in fade-in duration-300">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Review <span className="text-eduGreen-500 italic">Authorizations</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">
@@ -142,7 +142,7 @@ export default function StaffAuthorizationsPage() {
                 </div>
 
                 {/* Status Filter */}
-                <div className="flex bg-zinc-950 p-1 rounded-2xl border border-zinc-900 shadow-2xl">
+                <div className="flex bg-white dark:bg-zinc-950 p-1 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
                     {['PENDING', 'APPROVED', 'REJECTED'].map((s) => (
                         <Button
                             key={s}
@@ -150,7 +150,7 @@ export default function StaffAuthorizationsPage() {
                             onClick={() => setStatusFilter(s)}
                             className={cn(
                                 "h-12 px-6 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all",
-                                statusFilter === s ? "bg-zinc-900 text-white border border-zinc-800 shadow-xl" : "text-zinc-600 hover:text-zinc-300"
+                                statusFilter === s ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 shadow-xl" : "text-zinc-600 hover:text-zinc-300"
                             )}
                         >
                             {s}
@@ -168,12 +168,12 @@ export default function StaffAuthorizationsPage() {
                             placeholder="Search by name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="h-14 bg-zinc-950 border-zinc-900 pl-12 rounded-2xl text-white font-medium text-xs focus:ring-1 focus:ring-eduGreen-500 transition-all"
+                            className="h-14 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 pl-12 rounded-2xl text-zinc-900 dark:text-white font-medium text-xs focus:ring-1 focus:ring-eduGreen-500 transition-all"
                         />
                     </div>
 
                     {/* Type Toggle */}
-                    <div className="flex bg-zinc-950 p-1 rounded-2xl border border-zinc-900 gap-1">
+                    <div className="flex bg-white dark:bg-zinc-950 p-1 rounded-2xl border border-zinc-200 dark:border-zinc-900 gap-1">
                         {[
                             { label: "All", value: "ALL" },
                             { label: "Staff", value: "STAFF" },
@@ -185,7 +185,7 @@ export default function StaffAuthorizationsPage() {
                                 onClick={() => setTypeFilter(value)}
                                 className={cn(
                                     "flex-1 h-10 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all",
-                                    typeFilter === value ? "bg-zinc-900 text-white border border-zinc-800" : "text-zinc-600 hover:text-zinc-300"
+                                    typeFilter === value ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800" : "text-zinc-600 hover:text-zinc-300"
                                 )}
                             >
                                 {label}
@@ -194,7 +194,7 @@ export default function StaffAuthorizationsPage() {
                     </div>
 
                     {/* Stats */}
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900 rounded-[2rem] shadow-2xl">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 rounded-[2rem] shadow-2xl">
                         <CardHeader className="p-5 pb-2">
                             <CardTitle className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest flex items-center gap-2">
                                 <Shield className="w-4 h-4 text-eduGreen-500" /> Queue Summary
@@ -203,20 +203,20 @@ export default function StaffAuthorizationsPage() {
                         <CardContent className="p-5 space-y-3">
                             <div className="flex justify-between items-center text-[11px]">
                                 <span className="text-zinc-500 flex items-center gap-2"><UserCheck className="w-3.5 h-3.5 text-blue-400" /> Staff Leave</span>
-                                <span className="font-bold text-white">{authorizations.filter(a => isStaffLeave(a)).length}</span>
+                                <span className="font-bold text-zinc-900 dark:text-white">{authorizations.filter(a => isStaffLeave(a)).length}</span>
                             </div>
                             <div className="flex justify-between items-center text-[11px]">
                                 <span className="text-zinc-500 flex items-center gap-2"><GraduationCap className="w-3.5 h-3.5 text-eduGreen-500" /> Student Absence</span>
-                                <span className="font-bold text-white">{authorizations.filter(a => !isStaffLeave(a)).length}</span>
+                                <span className="font-bold text-zinc-900 dark:text-white">{authorizations.filter(a => !isStaffLeave(a)).length}</span>
                             </div>
-                            <div className="pt-2 border-t border-zinc-900 flex justify-between items-center text-[11px]">
+                            <div className="pt-2 border-t border-zinc-200 dark:border-zinc-900 flex justify-between items-center text-[11px]">
                                 <span className="text-zinc-500">Total</span>
-                                <span className="font-bold text-white">{authorizations.length}</span>
+                                <span className="font-bold text-zinc-900 dark:text-white">{authorizations.length}</span>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900 rounded-[2rem] shadow-2xl">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 rounded-[2rem] shadow-2xl">
                         <CardContent className="p-5 italic text-[11px] leading-relaxed text-zinc-500">
                             Approved permits sync automatically with the daily attendance registries. Teachers will see a "Verified Permit" indicator.
                         </CardContent>
@@ -232,7 +232,7 @@ export default function StaffAuthorizationsPage() {
                             return (
                                 <Card
                                     key={auth.id}
-                                    className="group relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-zinc-800 transition-all shadow-2xl"
+                                    className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-zinc-800 transition-all shadow-2xl"
                                 >
                                     <CardContent className="p-7">
                                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -247,7 +247,7 @@ export default function StaffAuthorizationsPage() {
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-3 flex-wrap">
-                                                        <h3 className="text-xl font-semibold text-white tracking-tight">{info.name}</h3>
+                                                        <h3 className="text-xl font-semibold text-zinc-900 dark:text-white tracking-tight">{info.name}</h3>
                                                         <Badge className={cn(
                                                             "font-mono text-[8px] uppercase tracking-widest border",
                                                             info.bgColor, info.color, info.borderColor
@@ -255,7 +255,7 @@ export default function StaffAuthorizationsPage() {
                                                             {info.type}
                                                         </Badge>
                                                         {info.code && (
-                                                            <Badge className="bg-zinc-900 text-zinc-500 border-zinc-800 font-mono text-[8px] uppercase tracking-widest">
+                                                            <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-zinc-300 dark:border-zinc-800 font-mono text-[8px] uppercase tracking-widest">
                                                                 {info.code}
                                                             </Badge>
                                                         )}
@@ -275,7 +275,7 @@ export default function StaffAuthorizationsPage() {
                                             </div>
 
                                             {/* Reason */}
-                                            <div className="flex-1 max-w-xs p-4 bg-zinc-900/40 rounded-2xl border border-zinc-900 text-xs font-medium text-zinc-400 italic">
+                                            <div className="flex-1 max-w-xs p-4 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-xs font-medium text-zinc-600 dark:text-zinc-400 italic">
                                                 "{auth.reason || 'No reason provided'}"
                                             </div>
 
@@ -324,7 +324,7 @@ export default function StaffAuthorizationsPage() {
                             );
                         })
                     ) : (
-                        <div className="text-center py-20 border-2 border-dashed border-zinc-900 rounded-[3rem]">
+                        <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                             <Clock className="w-12 h-12 text-zinc-900 mx-auto mb-6" />
                             <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Queue Synced</div>
                             <p className="text-zinc-800 mt-2 text-xs font-medium uppercase tracking-widest">
@@ -335,7 +335,7 @@ export default function StaffAuthorizationsPage() {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md mt-8">
+                        <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-8">
                             <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
                                 Page {page} of {totalPages}
                             </p>
@@ -345,7 +345,7 @@ export default function StaffAuthorizationsPage() {
                                     size="sm"
                                     onClick={() => setPage(p => Math.max(1, p - 1))}
                                     disabled={page === 1}
-                                    className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                                 >
                                     Previous
                                 </Button>
@@ -354,7 +354,7 @@ export default function StaffAuthorizationsPage() {
                                     size="sm"
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                     disabled={page === totalPages}
-                                    className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                                 >
                                     Next
                                 </Button>

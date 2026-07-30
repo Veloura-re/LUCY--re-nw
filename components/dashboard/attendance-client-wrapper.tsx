@@ -218,10 +218,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
                     <ConfigField label="Cohort Identifier" icon={Brain}>
                         <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Select Class" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 {classes.map((cls) => (
                                     <SelectItem key={cls.classId} value={cls.classId} className="focus:bg-white focus:text-black py-4">
                                         {cls.className}
@@ -233,10 +233,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
                     <ConfigField label="Temporal Slot" icon={Clock}>
                         <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Day Cycle" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="full" className="focus:bg-white focus:text-black py-4">Full Cycle</SelectItem>
                                 {periods.map((p: any) => (
                                     <SelectItem key={p.id} value={p.id} className="focus:bg-white focus:text-black py-4">{p.name}</SelectItem>
@@ -247,10 +247,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
                     <ConfigField label="Neural Path" icon={Zap}>
                         <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="All Streams" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="none" className="focus:bg-white focus:text-black py-4">Unified Stream</SelectItem>
                                 {availableSubjects.map((sub: any) => (
                                     <SelectItem key={sub.id} value={sub.id} className="focus:bg-white focus:text-black py-4">{sub.name}</SelectItem>
@@ -264,7 +264,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                             type="date"
                             value={date}
                             onChange={e => setDate(e.target.value)}
-                            className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-[0.2em] px-6 appearance-none"
+                            className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-[0.2em] px-6 appearance-none"
                         />
                     </ConfigField>
                 </div>
@@ -282,7 +282,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                     <div>
                         <span className="text-2xl font-black text-zinc-900 dark:text-white italic">{students.length} <span className="text-zinc-800 not-italic text-lg">DATAPOINTS REGISTERED</span></span>
                     </div>
-                    <div className="flex items-center gap-4 bg-black/40 p-2 rounded-[2rem] border border-zinc-200 dark:border-white/5">
+                    <div className="flex items-center gap-4 bg-white/40 dark:bg-black/40 p-2 rounded-[2rem] border border-zinc-200 dark:border-white/5">
                         <button onClick={() => !isLocked && setAll('PRESENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-emerald-500 hover:bg-emerald-500/10 transition-all">SYNCHRONIZE ALL</button>
                         <button onClick={() => !isLocked && setAll('ABSENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-rose-500 hover:bg-rose-500/10 transition-all">VOID ALL</button>
                     </div>
@@ -368,11 +368,11 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
                         value={reasons[student.id] || ""}
                         disabled={isLocked}
                         onChange={(e) => setReasons({ ...reasons, [student.id]: e.target.value })}
-                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 text-xs italic font-black text-zinc-900 dark:text-white w-full md:w-80"
+                        className="h-14 bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl px-6 text-xs italic font-black text-zinc-900 dark:text-white w-full md:w-80"
                     />
                 )}
 
-                <div className="flex gap-2 bg-black/40 p-2 rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
+                <div className="flex gap-2 bg-white/40 dark:bg-black/40 p-2 rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
                     <StatusBtn status="PRESENT" icon={CheckCircle} active={currentStatus === 'PRESENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'PRESENT' })} activeColor="text-emerald-500 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]" disabled={isLocked} />
                     <StatusBtn status="LATE" icon={Clock} active={currentStatus === 'LATE'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'LATE' })} activeColor="text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.1)]" disabled={isLocked} />
                     <StatusBtn status="ABSENT" icon={XCircle} active={currentStatus === 'ABSENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'ABSENT' })} activeColor="text-rose-500 bg-rose-500/10 border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.1)]" disabled={isLocked} />

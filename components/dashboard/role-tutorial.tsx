@@ -258,7 +258,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/80 backdrop-blur-2xl"
+                className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-white/80 dark:bg-black/80 backdrop-blur-2xl"
             >
                 {/* Background Ambient Glows */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -285,7 +285,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="relative w-full max-w-2xl bg-white/40 dark:bg-zinc-950/40 border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group"
+                    className="relative w-full max-w-2xl bg-white/40 dark:bg-zinc-950/40 border border-zinc-300 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group"
                 >
                     {/* Glass Surface Scanline */}
                     <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,transparent_45%,rgba(255,255,255,0.05)_50%,transparent_55%,transparent)] bg-[length:200%_200%] animate-[shimmer_5s_infinite] pointer-events-none" />
@@ -294,7 +294,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                         {/* Header Area */}
                         <div className="flex items-center justify-between mb-12">
                             <div className="flex items-center gap-4">
-                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 shadow-2xl")}>
+                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-zinc-300 dark:border-white/10 shadow-2xl")}>
                                     <Sparkles className={cn("w-6 h-6", steps[currentStep].color.replace('bg-', 'text-'))} />
                                 </div>
                                 <div>
@@ -345,11 +345,11 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     <motion.div
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 19.8, repeat: Infinity, ease: "linear" }}
-                                        className="absolute -inset-10 border border-dashed border-white/10 rounded-full opacity-30"
+                                        className="absolute -inset-10 border border-dashed border-zinc-300 dark:border-white/10 rounded-full opacity-30"
                                     />
 
                                     <div className={cn(
-                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-black/40 border border-white/10 backdrop-blur-md shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
+                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-white/40 dark:bg-black/40 border border-zinc-300 dark:border-white/10 backdrop-blur-md shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
                                     )}>
                                         <div className={cn("absolute inset-0 opacity-10", steps[currentStep].color)} />
                                         <AnimatePresence mode="wait">

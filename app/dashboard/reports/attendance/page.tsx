@@ -56,14 +56,14 @@ export default function AttendanceIntelligencePage() {
                     >
                         <ArrowLeft className="w-4 h-4" /> Return to Intelligence
                     </Button>
-                    <h1 className="text-4xl font-medium text-white tracking-tight italic">Temporal <span className="text-zinc-700 not-italic ml-2">Attendance</span></h1>
+                    <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tight italic">Temporal <span className="text-zinc-700 not-italic ml-2">Attendance</span></h1>
                     <p className="text-zinc-500 mt-2 font-medium text-sm leading-relaxed max-w-2xl uppercase tracking-wider">
                         High-fidelity monitoring of institutional presence and engagement thresholds.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="rounded-2xl border-zinc-900 bg-zinc-950/50 hover:border-zinc-700 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500">
+                    <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-zinc-700 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500">
                         <Calendar className="mr-2 h-4 w-4" /> Past 30 Days
                     </Button>
                     <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl">
@@ -74,42 +74,42 @@ export default function AttendanceIntelligencePage() {
 
             {/* Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-8">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
                         <UserCheck className="w-6 h-6 text-eduGreen-500" />
                         <span className="text-[10px] font-medium text-eduGreen-500 bg-eduGreen-900/10 px-2 py-1 rounded-lg">Target: 95%</span>
                     </div>
-                    <div className="text-4xl font-medium text-white tracking-tighter mb-1">{summary.avgAttendance}</div>
+                    <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">{summary.avgAttendance}</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Global Presence Rate</p>
                 </Card>
-                <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-8">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
                         <UserX className="w-6 h-6 text-red-500" />
                     </div>
-                    <div className="text-4xl font-medium text-white tracking-tighter mb-1">2.4%</div>
+                    <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">2.4%</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Unexcused Absence Mean</p>
                 </Card>
-                <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-8">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
                         <Clock className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div className="text-4xl font-medium text-white tracking-tighter mb-1">4.8%</div>
+                    <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">4.8%</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Latency Variance (Late)</p>
                 </Card>
-                <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2.5rem] p-8">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
                         <Activity className="w-6 h-6 text-cyan-500" />
                     </div>
-                    <div className="text-4xl font-medium text-white tracking-tighter mb-1">0.92</div>
+                    <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">0.92</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Stability Coefficient</p>
                 </Card>
             </div>
 
             {/* Charts Section */}
             <div className="grid lg:grid-cols-12 gap-8">
-                <Card className="lg:col-span-8 bg-zinc-900/30 backdrop-blur-md border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
-                    <CardHeader className="p-6 md:p-10 border-b border-zinc-800/50">
-                        <CardTitle className="text-2xl font-medium text-white italic">Neural <span className="text-zinc-700 not-italic ml-2">Presence Trend</span></CardTitle>
+                <Card className="lg:col-span-8 bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
+                    <CardHeader className="p-6 md:p-10 border-b border-zinc-300 dark:border-zinc-800/50">
+                        <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white italic">Neural <span className="text-zinc-700 not-italic ml-2">Presence Trend</span></CardTitle>
                         <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Institutional presence over time duration</CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 md:p-10">
@@ -121,7 +121,7 @@ export default function AttendanceIntelligencePage() {
                                             className="w-full bg-eduGreen-600/20 border-t-2 border-eduGreen-500 rounded-t-xl transition-all duration-300 group-hover:bg-eduGreen-500/40 shadow-[0_-5px_15px_rgba(33,201,141,0.1)]"
                                             style={{ height: `${d.rate}%` }}
                                         />
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-950 border border-zinc-800 px-2 py-1 rounded text-[8px] font-medium text-white">
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 px-2 py-1 rounded text-[8px] font-medium text-zinc-900 dark:text-white">
                                             {Math.round(d.rate)}%
                                         </div>
                                     </div>
@@ -133,14 +133,14 @@ export default function AttendanceIntelligencePage() {
                 </Card>
 
                 <div className="lg:col-span-4 space-y-8">
-                    <Card className="bg-zinc-900/40 border-zinc-900 rounded-[3.5rem]  flex flex-col items-center justify-center p-8 md:p-10 text-center relative">
+                    <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-[3.5rem]  flex flex-col items-center justify-center p-8 md:p-10 text-center relative">
                         <div className="absolute inset-0 bg-gradient-to-b from-eduGreen-500/5 to-transparent pointer-events-none" />
-                        <div className="w-24 h-24 rounded-full border-4 border-zinc-900 border-t-eduGreen-500 animate-spin mb-6" />
-                        <h4 className="text-lg font-medium text-white italic uppercase tracking-tighter">Class <span className="text-zinc-600">Density</span></h4>
+                        <div className="w-24 h-24 rounded-full border-4 border-zinc-200 dark:border-zinc-900 border-t-eduGreen-500 animate-spin mb-6" />
+                        <h4 className="text-lg font-medium text-zinc-900 dark:text-white italic uppercase tracking-tighter">Class <span className="text-zinc-600">Density</span></h4>
                         <p className="text-[9px] font-medium text-zinc-600 mt-2 uppercase tracking-widest">Analyzing cluster variances...</p>
                     </Card>
 
-                    <Card className="bg-zinc-950/50 border-zinc-900 rounded-[2.5rem] p-8">
+                    <Card className="bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                         <h4 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-6">Top Outliers (Absences)</h4>
                         <div className="space-y-4">
                             {[
@@ -148,8 +148,8 @@ export default function AttendanceIntelligencePage() {
                                 { name: "Class 12-C", rate: "9 Absences" },
                                 { name: "Class 9-B", rate: "7 Absences" }
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 bg-zinc-900/30 rounded-2xl border border-zinc-800">
-                                    <span className="text-[11px] font-medium text-white uppercase">{item.name}</span>
+                                <div key={i} className="flex items-center justify-between p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-300 dark:border-zinc-800">
+                                    <span className="text-[11px] font-medium text-zinc-900 dark:text-white uppercase">{item.name}</span>
                                     <span className="text-[10px] font-medium text-red-500">{item.rate}</span>
                                 </div>
                             ))}

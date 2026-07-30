@@ -74,29 +74,29 @@ export default function AdminRegister() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4 font-sans text-white">
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 p-4 font-sans text-zinc-900 dark:text-white">
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-eduGreen-500/20 blur-[120px] rounded-full" />
             </div>
 
-            <Card className="w-full max-w-md bg-zinc-900/90 border-zinc-800 shadow-2xl relative z-10">
+            <Card className="w-full max-w-md bg-zinc-100/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-800 shadow-2xl relative z-10">
                 <CardHeader className="text-center pb-2">
                     <div className="mx-auto flex justify-center mb-4">
                         {/* Cyberpunk Mark Wrapper */}
-                        <div className="relative flex items-center bg-zinc-950 border-r-2 border-eduGreen-500 pr-3 overflow-hidden group">
+                        <div className="relative flex items-center bg-white dark:bg-zinc-950 border-r-2 border-eduGreen-500 pr-3 overflow-hidden group">
                             {/* Glitch Overlay Effect */}
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
 
                             <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-3xl font-black tracking-[0.2em] font-orbitron text-white ml-2">
+                            <span className="relative text-3xl font-black tracking-[0.2em] font-orbitron text-zinc-900 dark:text-white ml-2">
                                 LUCY
                                 <span className="absolute -top-1 -right-2 text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
                             </span>
                             <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-medium text-white">Super Admin Access</CardTitle>
-                    <CardDescription className="text-zinc-400">
+                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white">Super Admin Access</CardTitle>
+                    <CardDescription className="text-zinc-600 dark:text-zinc-400">
                         Restricted registration. Requires Master Key.
                     </CardDescription>
                 </CardHeader>
@@ -110,7 +110,7 @@ export default function AdminRegister() {
                                 onChange={e => setName(e.target.value)}
                                 required
                                 placeholder="System Administrator"
-                                className="bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <Input
                                 label="Email"
@@ -120,7 +120,7 @@ export default function AdminRegister() {
                                 onChange={e => setEmail(e.target.value)}
                                 required
                                 placeholder="admin@lucy.edu"
-                                className="bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <Input
                                 label="Password"
@@ -130,7 +130,7 @@ export default function AdminRegister() {
                                 onChange={e => setPassword(e.target.value)}
                                 required
                                 placeholder="••••••••"
-                                className="bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
                             />
                             <div className="pt-2">
                                 <Input
@@ -158,9 +158,9 @@ export default function AdminRegister() {
                                 id="terms"
                                 checked={agreedToTerms}
                                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                             />
-                            <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                            <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                 I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
                             </label>
                         </div>
@@ -170,7 +170,7 @@ export default function AdminRegister() {
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="justify-center border-t border-zinc-800 py-4">
+                <CardFooter className="justify-center border-t border-zinc-300 dark:border-zinc-800 py-4">
                     <Link href="/login" className="text-zinc-500 hover:text-white text-sm transition-colors">
                         Return to Login
                     </Link>

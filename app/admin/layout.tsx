@@ -75,7 +75,7 @@ export default async function AdminLayout({
     const honorific = dbUser.gender === 'MALE' ? ', Sir' : dbUser.gender === 'FEMALE' ? ", Ma'am" : "";
 
     return (
-        <div className="min-h-screen bg-[#080808] flex flex-col font-sans text-white">
+        <div className="min-h-screen bg-[#080808] flex flex-col font-sans text-zinc-900 dark:text-white">
             {/* Background */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-eduGreen-500/5 rounded-full blur-[150px]" />
@@ -83,14 +83,14 @@ export default async function AdminLayout({
             </div>
 
             {/* Top Nav */}
-            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl flex items-center px-8 gap-6">
+            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-zinc-200 dark:border-white/5 bg-[#080808]/80 backdrop-blur-xl flex items-center px-8 gap-6">
                 {/* Logo */}
                 <div className="flex items-center gap-3 mr-auto">
                     <div className="w-8 h-8 rounded-lg bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
                         <Zap className="w-4 h-4 text-eduGreen-500" />
                     </div>
                     <div>
-                        <span className="text-white font-black tracking-[0.15em] text-sm font-orbitron">LUCY</span>
+                        <span className="text-zinc-900 dark:text-white font-black tracking-[0.15em] text-sm font-orbitron">LUCY</span>
                         <span className="text-eduGreen-500 font-black tracking-[0.15em] text-sm font-orbitron"> OS</span>
                     </div>
                     <div className="w-px h-5 bg-white/10 mx-1" />
@@ -111,12 +111,12 @@ export default async function AdminLayout({
                     </div>
 
                     {/* User Info */}
-                    <div className="flex items-center gap-3 pl-4 border-l border-white/5">
+                    <div className="flex items-center gap-3 pl-4 border-l border-zinc-200 dark:border-white/5">
                         <div className="w-8 h-8 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
                             <Shield className="w-4 h-4 text-eduGreen-500" />
                         </div>
                         <div className="hidden md:block">
-                            <div className="text-[10px] font-black text-white uppercase tracking-widest leading-none">
+                            <div className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-widest leading-none">
                                 {dbUser.name?.split(' ')[0] || 'Admin'}
                             </div>
                             <div className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest mt-0.5">Superadmin</div>
@@ -130,11 +130,11 @@ export default async function AdminLayout({
             {/* Main Content */}
             <main className="relative z-10 flex-1 pt-16">
                 {/* Greeting Banner */}
-                <div className="border-b border-white/5 bg-gradient-to-r from-white/[0.02] to-transparent px-8 py-8">
+                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-white/[0.02] to-transparent px-8 py-8">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.4em] mb-1">Infrastructure Control</p>
-                            <h1 className="text-3xl font-medium tracking-tight text-white">
+                            <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white">
                                 {greeting}<span className="text-zinc-500">{honorific}</span>
                             </h1>
                         </div>

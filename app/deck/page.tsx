@@ -193,7 +193,7 @@ export default function PresentationDeck() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
                 transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 space-y-4 rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
+                className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 space-y-4 rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
               >
                 <div className="text-2xl font-bold text-slate-200 dark:text-white/20 font-mono">{item.num}</div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tighter">{item.title}</h3>
@@ -217,7 +217,7 @@ export default function PresentationDeck() {
       sub: "never manually cross-reference a bank slip again. automated ledgers via telebirr, cbe birr, or stripe.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">By eliminating manual ledger entry, finance teams reclaim up to 40 hours a week. This allows institutions to reallocate headcount from data entry to strategic financial planning.</p>
           </motion.div>
@@ -239,7 +239,7 @@ export default function PresentationDeck() {
       sub: "transitioning to digital permission slips, assignments, and electronic records saves massive amounts of capital.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Mid-sized institutions historically spend thousands of dollars annually on physical supplies. Digitizing workflows boosts bottom-line profitability and positions the school as an ESG leader.</p>
           </motion.div>
@@ -261,7 +261,7 @@ export default function PresentationDeck() {
       sub: "log daily expenses against incoming tuition revenue for a live view of the school's financial health.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Principals no longer wait for end-of-month reports. Immediate visibility prevents overspending and allows agile, data-driven campus management.</p>
           </motion.div>
@@ -283,7 +283,7 @@ export default function PresentationDeck() {
       sub: "automated sms and push notification fee reminders drastically increase on-time payments.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Consistent cash flow is the lifeblood of any private institution. Automating collections avoids awkward phone calls and increases on-time payments by up to 25%.</p>
           </motion.div>
@@ -307,7 +307,7 @@ export default function PresentationDeck() {
       sub: "built-in AI assistant automatically generates high-fidelity, curriculum-aligned exam questions.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Teacher burnout is the highest hidden cost in education. State-of-the-art AI tools improve retention rates, reduce hiring costs, and elevate instructional quality.</p>
           </motion.div>
@@ -329,7 +329,7 @@ export default function PresentationDeck() {
       sub: "take attendance in seconds from any phone or laptop. instantly synced to central database.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Reclaiming just 10 minutes per class equates to hundreds of hours of recovered instructional time per year. Classes start faster; front office is never bottlenecked.</p>
           </motion.div>
@@ -351,7 +351,7 @@ export default function PresentationDeck() {
       sub: "engine automatically calculates weighted averages, curves, and updates database in real-time.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Automating the underlying mathematics eliminates friction, removes human error, and empowers teachers to finalize class scores effortlessly.</p>
           </motion.div>
@@ -373,7 +373,7 @@ export default function PresentationDeck() {
       sub: "strict row-level security and immutable audit logs prevent unauthorized tampering of grades.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing that grades cannot be maliciously altered builds immense trust with accreditation bodies and university admissions boards.</p>
           </motion.div>
@@ -397,7 +397,7 @@ export default function PresentationDeck() {
       sub: "proactive visibility into current grades, assignments, and attendance via parent portal.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Continuous feedback loops result in home-based encouragement, drastically improving school pass rates, student confidence, and prestige.</p>
           </motion.div>
@@ -419,7 +419,7 @@ export default function PresentationDeck() {
       sub: "secure internal messaging replaces chaotic WhatsApp groups, protecting teacher privacy.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Protecting off-hours peace of staff is crucial. Centralizing communication ensures professional, logged, and moderated interactions.</p>
           </motion.div>
@@ -441,7 +441,7 @@ export default function PresentationDeck() {
       sub: "automated push notifications immediately inform parents if a student is absent or late.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Student safety is the ultimate liability. Instant alerts provide peace of mind, cementing long-term institutional loyalty.</p>
           </motion.div>
@@ -463,7 +463,7 @@ export default function PresentationDeck() {
       sub: "legally sign field trip slips, medical waivers, and transport agreements directly via mobile.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Digital authorizations achieve 100% compliance in a fraction of the time, reducing legal and operational friction.</p>
           </motion.div>
@@ -487,7 +487,7 @@ export default function PresentationDeck() {
       sub: "beautifully designed dashboard for tracking gpa, assignments, and educational trajectory.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Gamification shifts the burden of motivation. App-like interfaces raise internal accountability and school-wide performance.</p>
           </motion.div>
@@ -509,7 +509,7 @@ export default function PresentationDeck() {
       sub: "live timetables update instantly if a room changes or a substitute teacher is assigned.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Hallway confusion is eliminated. An informed student body moves efficiently, optimizing every minute of the school day.</p>
           </motion.div>
@@ -533,7 +533,7 @@ export default function PresentationDeck() {
       sub: "standardized transcripts generated for the entire school instantly.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates three days of administrative overtime, wipes out transcription errors, and delivers flawless documents to parents.</p>
           </motion.div>
@@ -555,7 +555,7 @@ export default function PresentationDeck() {
       sub: "modern cloud application runs flawlessly on any device with an internet connection.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">No need for expensive IT departments or server rooms. Capital expenditure on infrastructure drops to zero.</p>
           </motion.div>
@@ -577,7 +577,7 @@ export default function PresentationDeck() {
       sub: "microscopic visibility into staff performance, grading speeds, and attendance compliance.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
           </motion.div>
@@ -599,7 +599,7 @@ export default function PresentationDeck() {
       sub: "heavily encrypted and backed up in real-time to enterprise-grade cloud databases.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing absolute permanence of decades of records protects the school from catastrophic liability and natural disasters.</p>
           </motion.div>
@@ -621,7 +621,7 @@ export default function PresentationDeck() {
       sub: "digital scheduling engine prevents double-booking teachers or assigning two classes to one room.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates weeks of trial and error, optimizes campus space, and guarantees balanced and fair teacher workloads.</p>
           </motion.div>
@@ -643,7 +643,7 @@ export default function PresentationDeck() {
       sub: "a state-of-the-art digital ecosystem elevates the status of the entire institution.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
             <p className="text-xs text-slate-600 dark:text-zinc-400">Technology is a massive differentiator. It justifies premium tuition rates and drives enrollment by signaling modern, secure excellence.</p>
           </motion.div>
@@ -884,7 +884,7 @@ export default function PresentationDeck() {
                 handleNext();
               }
             }}
-            className="h-10 px-6 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
+            className="h-10 px-6 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
           >
             {currentSlide === slides.length - 1 ? (
               <>deploy_system <ArrowUpRight className="w-3.5 h-3.5" /></>

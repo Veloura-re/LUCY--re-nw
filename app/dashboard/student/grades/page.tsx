@@ -60,14 +60,14 @@ function StudentGradesContent() {
 
         return (
             <Dialog open={isInsightOpen} onOpenChange={setIsInsightOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-zinc-950 border-zinc-900 rounded-[2.5rem] p-10 border-t-eduGreen-500/20">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-10 border-t-eduGreen-500/20">
                     <DialogHeader>
                         <div className="flex items-center gap-4 mb-4">
                             <div className="w-14 h-14 bg-eduGreen-500/10 rounded-2xl flex items-center justify-center border border-eduGreen-500/20 shadow-[0_0_20px_rgba(20,184,115,0.1)]">
                                 <Brain className="w-7 h-7 text-eduGreen-500" />
                             </div>
                             <div>
-                                <DialogTitle className="text-3xl font-medium text-white italic uppercase">{exam.title} Insights</DialogTitle>
+                                <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white italic uppercase">{exam.title} Insights</DialogTitle>
                                 <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">AI-Powered Performance Feedback</DialogDescription>
                             </div>
                         </div>
@@ -76,7 +76,7 @@ function StudentGradesContent() {
                     <div className="space-y-8 mt-6">
                         {/* Summary Card */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Card className="bg-zinc-900/40 border-zinc-900 rounded-3xl p-6 group transition-all hover:border-eduGreen-500/30">
+                            <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 group transition-all hover:border-eduGreen-500/30">
                                 <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                     <Award className="w-3 h-3" /> Final Score
                                 </div>
@@ -86,11 +86,11 @@ function StudentGradesContent() {
                                 <div className="text-[10px] font-medium text-zinc-600 mt-1 uppercase italic">{exam.score} / {exam.maxScore} Base Points</div>
                             </Card>
 
-                            <Card className="bg-zinc-900/40 border-zinc-900 rounded-3xl p-6 md:col-span-2">
+                            <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 md:col-span-2">
                                 <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                     <Sparkles className="w-3 h-3 text-amber-500" /> Neural Verdict
                                 </div>
-                                <p className="text-sm text-zinc-300 font-medium italic leading-relaxed">
+                                <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium italic leading-relaxed">
                                     {exam.remark || "Your assessment has been reviewed by the neural engine. Detailed question-level feedback is available below to help you improve."}
                                 </p>
                             </Card>
@@ -98,7 +98,7 @@ function StudentGradesContent() {
 
                         {/* Questions Review */}
                         <div className="space-y-6">
-                            <h3 className="text-xs font-medium text-zinc-700 uppercase tracking-[0.3em] pl-2 border-l-2 border-zinc-800">Knowledge Audit</h3>
+                            <h3 className="text-xs font-medium text-zinc-700 uppercase tracking-[0.3em] pl-2 border-l-2 border-zinc-300 dark:border-zinc-800">Knowledge Audit</h3>
                             {questions.map((q: any, i: number) => {
                                 const ans = attempt.answers[q.id];
                                 const grading = gradingDetails.find((d: any) => d.id === q.id);
@@ -108,9 +108,9 @@ function StudentGradesContent() {
                                 return (
                                     <div key={q.id} className="relative group/q">
                                         <div className={cn(
-                                            "bg-zinc-900/20 border rounded-[2rem] p-8 transition-all hover:bg-zinc-900/30",
+                                            "bg-zinc-100/20 dark:bg-zinc-900/20 border rounded-[2rem] p-8 transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/30",
                                             isPerfect ? "border-eduGreen-500/20 hover:border-eduGreen-500/40" :
-                                                isPartial ? "border-amber-500/20 hover:border-amber-500/40" : "border-zinc-800 hover:border-zinc-700"
+                                                isPartial ? "border-amber-500/20 hover:border-amber-500/40" : "border-zinc-300 dark:border-zinc-800 hover:border-zinc-700"
                                         )}>
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-4">
@@ -129,11 +129,11 @@ function StudentGradesContent() {
 
                                             <div className="grid md:grid-cols-2 gap-6">
                                                 {/* Student Answer */}
-                                                <div className="bg-zinc-950/40 rounded-2xl p-4 border border-zinc-900">
+                                                <div className="bg-white/40 dark:bg-zinc-950/40 rounded-2xl p-4 border border-zinc-200 dark:border-zinc-900">
                                                     <div className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <History className="w-3 h-3" /> Your Response
                                                     </div>
-                                                    <p className="text-xs text-zinc-400 font-medium italic">
+                                                    <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium italic">
                                                         {ans || "No response recorded."}
                                                     </p>
                                                 </div>
@@ -143,7 +143,7 @@ function StudentGradesContent() {
                                                     <div className="text-[9px] font-medium text-eduGreen-500/50 uppercase tracking-widest mb-2 flex items-center gap-2">
                                                         <Zap className="w-3 h-3 text-eduGreen-500" /> Improvement Insight
                                                     </div>
-                                                    <p className="text-xs text-zinc-300 font-medium italic">
+                                                    <p className="text-xs text-zinc-700 dark:text-zinc-300 font-medium italic">
                                                         {grading?.feedback || "System validated your response according to institutional criteria."}
                                                     </p>
                                                 </div>
@@ -154,8 +154,8 @@ function StudentGradesContent() {
                             })}
                         </div>
 
-                        <div className="pt-6 border-t border-zinc-900 flex justify-end">
-                            <Button onClick={() => setIsInsightOpen(false)} className="bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-medium uppercase tracking-widest px-10 rounded-2xl h-14">
+                        <div className="pt-6 border-t border-zinc-200 dark:border-zinc-900 flex justify-end">
+                            <Button onClick={() => setIsInsightOpen(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-medium uppercase tracking-widest px-10 rounded-2xl h-14">
                                 Close Portal
                             </Button>
                         </div>
@@ -175,7 +175,7 @@ function StudentGradesContent() {
         <div className="space-y-12 animate-in fade-in pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-5xl font-medium tracking-tighter text-white italic uppercase">Academic Matrix</h2>
+                    <h2 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white italic uppercase">Academic Matrix</h2>
                     <div className="flex items-center gap-3 mt-2">
                         <div className="h-0.5 w-12 bg-eduGreen-500" />
                         <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs">
@@ -187,7 +187,7 @@ function StudentGradesContent() {
                 {subjects.length > 0 && (
                     <Button
                         onClick={() => handlePrint()}
-                        className="h-14 px-8 bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-2xl font-medium text-[10px] uppercase tracking-widest border border-zinc-800 transition-all flex items-center gap-3 active:scale-95"
+                        className="h-14 px-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-2xl font-medium text-[10px] uppercase tracking-widest border border-zinc-300 dark:border-zinc-800 transition-all flex items-center gap-3 active:scale-95"
                     >
                         <Printer className="w-4 h-4" /> Print Official Report
                     </Button>
@@ -196,12 +196,12 @@ function StudentGradesContent() {
 
             <div className="grid gap-8 md:grid-cols-2">
                 {subjects.map((sub: any) => (
-                    <Card key={sub.subjectId} className=" border-zinc-900 bg-zinc-950/20 backdrop-blur-3xl rounded-[3rem] transition-all hover:bg-zinc-950/40 border group">
-                        <CardHeader className="bg-zinc-900/10 p-10 pb-6">
+                    <Card key={sub.subjectId} className=" border-zinc-200 dark:border-zinc-900 bg-white/20 dark:bg-zinc-950/20 backdrop-blur-3xl rounded-[3rem] transition-all hover:bg-white/40 dark:bg-zinc-950/40 border group">
+                        <CardHeader className="bg-zinc-100/10 dark:bg-zinc-900/10 p-10 pb-6">
                             <div className="flex justify-between items-center">
                                 <div>
                                     <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em] mb-1">Subject Entity</div>
-                                    <CardTitle className="text-3xl font-medium text-white italic uppercase tracking-tight">{sub.subjectName}</CardTitle>
+                                    <CardTitle className="text-3xl font-medium text-zinc-900 dark:text-white italic uppercase tracking-tight">{sub.subjectName}</CardTitle>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em] mb-1">Cumulative</div>
@@ -225,18 +225,18 @@ function StudentGradesContent() {
                                         <div className="flex items-center gap-6">
                                             <div className={cn(
                                                 "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border",
-                                                exam.attempt ? "bg-zinc-900 border-zinc-800 text-zinc-600 group-hover/exam:border-eduGreen-500 group-hover/exam:text-eduGreen-500" : "bg-zinc-950 border-zinc-900 text-zinc-800"
+                                                exam.attempt ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 group-hover/exam:border-eduGreen-500 group-hover/exam:text-eduGreen-500" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800"
                                             )}>
                                                 {exam.attempt ? <Brain className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
                                             </div>
                                             <div>
-                                                <div className="font-medium text-zinc-200 uppercase italic tracking-tight group-hover/exam:text-white transition-colors">{exam.title}</div>
+                                                <div className="font-medium text-zinc-200 uppercase italic tracking-tight group-hover/exam:text-zinc-900 dark:text-white transition-colors">{exam.title}</div>
                                                 <div className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest">{new Date(exam.date).toLocaleDateString()}</div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-6">
                                             <div className="text-right">
-                                                <div className="text-2xl font-medium text-white italic">{exam.score} <span className="text-zinc-800 text-xs not-italic">/ {exam.maxScore}</span></div>
+                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white italic">{exam.score} <span className="text-zinc-800 text-xs not-italic">/ {exam.maxScore}</span></div>
                                                 {exam.attempt && (
                                                     <div className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest flex items-center gap-2">
                                                         <Button
@@ -263,7 +263,7 @@ function StudentGradesContent() {
             </div>
 
             {subjects.length === 0 && (
-                <div className="text-center py-20 border-2 border-dashed border-zinc-900 rounded-[3rem]">
+                <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                     <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Terminal Data Vacancy</div>
                     <p className="text-zinc-800 mt-2 text-xs font-medium uppercase tracking-widest">No academic signatures detected in the matrix.</p>
                 </div>

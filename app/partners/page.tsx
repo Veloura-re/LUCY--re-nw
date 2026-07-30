@@ -23,7 +23,7 @@ const tiers = [
 
 export default function Partners() {
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -33,7 +33,7 @@ export default function Partners() {
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
                         <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-slate-900 dark:bg-white flex items-center justify-center">
-                            <span className="text-white dark:text-black font-black text-xs">L</span>
+                            <span className="text-zinc-900 dark:text-white dark:text-black font-black text-xs">L</span>
                         </motion.div>
                         <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
@@ -154,7 +154,7 @@ export default function Partners() {
                         </div>
                         <MagneticButton>
                             <Link href="/contact">
-                                <Button className="h-14 px-10 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">
+                                <Button className="h-14 px-10 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">
                                     establish_uplink
                                 </Button>
                             </Link>

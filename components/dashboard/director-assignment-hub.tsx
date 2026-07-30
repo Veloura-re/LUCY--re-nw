@@ -136,7 +136,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="p-12 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-[50px] border border-white/10 rounded-[4rem] space-y-10 relative overflow-hidden"
+                        className="p-12 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[4rem] space-y-10 relative overflow-hidden"
                     >
                         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-eduGreen-500/20 to-transparent" />
                         

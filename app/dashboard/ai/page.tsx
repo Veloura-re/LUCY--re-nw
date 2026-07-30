@@ -45,21 +45,21 @@ export default function NeuralPage() {
                         <Sparkles className="w-3 h-3 animate-pulse" />
                         <span>Institutional Neural Link</span>
                     </div>
-                    <h1 className="text-2xl md:text-4xl font-medium text-white tracking-tighter uppercase italic">
+                    <h1 className="text-2xl md:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase italic">
                         Neural <span className="text-eduGreen-500 not-italic">Interface</span>
                     </h1>
                 </div>
 
                 <div className="hidden md:flex flex-col items-end gap-1">
                     <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Core Synchronized</div>
-                    <div className="flex items-center gap-3 px-4 py-2 bg-zinc-950/50 border border-zinc-900 rounded-2xl backdrop-blur-xl">
+                    <div className="flex items-center gap-3 px-4 py-2 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl backdrop-blur-xl">
                         <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.6)]" />
-                        <span className="text-[10px] font-medium text-white uppercase tracking-tighter">Standby Mode</span>
+                        <span className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-tighter">Standby Mode</span>
                     </div>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-hidden bg-zinc-950/40 backdrop-blur-3xl border border-zinc-900/50 rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] relative z-10 w-full min-w-0 flex items-center justify-center">
+            <div className="flex-1 overflow-hidden bg-white/40 dark:bg-zinc-950/40 backdrop-blur-3xl border border-zinc-200 dark:border-zinc-900/50 rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] relative z-10 w-full min-w-0 flex items-center justify-center">
                 <div className="relative flex flex-col items-center justify-center text-center p-8 md:p-12">
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -68,7 +68,7 @@ export default function NeuralPage() {
                         className="mb-8 relative"
                     >
                         <div className="absolute inset-0 bg-eduGreen-500/20 blur-[80px] rounded-full" />
-                        <div className="w-24 h-24 rounded-full bg-zinc-900/80 border border-zinc-800 flex items-center justify-center relative z-10 shadow-2xl backdrop-blur-xl">
+                        <div className="w-24 h-24 rounded-full bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center relative z-10 shadow-2xl backdrop-blur-xl">
                             <Sparkles className="w-10 h-10 text-eduGreen-500 animate-pulse" />
                         </div>
                     </motion.div>
@@ -77,7 +77,7 @@ export default function NeuralPage() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.3, duration: 0.8 }}
-                        className="text-3xl md:text-5xl font-medium text-white uppercase tracking-[0.1em] mb-4"
+                        className="text-3xl md:text-5xl font-medium text-zinc-900 dark:text-white uppercase tracking-[0.1em] mb-4"
                     >
                         Neural Core <span className="text-eduGreen-500 italic">Initializing</span>
                     </motion.h2>
@@ -95,10 +95,10 @@ export default function NeuralPage() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 1, duration: 0.5 }}
-                        className="mt-12 flex items-center gap-3 px-6 py-3 rounded-full border border-zinc-800/80 bg-zinc-900/50 backdrop-blur-md shadow-2xl"
+                        className="mt-12 flex items-center gap-3 px-6 py-3 rounded-full border border-zinc-300 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-900/50 backdrop-blur-md shadow-2xl"
                     >
                         <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                        <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">Deployment Incoming</span>
+                        <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">Deployment Incoming</span>
                     </motion.div>
                 </div>
             </div>

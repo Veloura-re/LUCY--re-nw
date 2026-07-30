@@ -32,7 +32,7 @@ function LogoutContent() {
     }, [router, reason, supabase.auth]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
             <SpringingLoader message="Terminating secure session..." />
         </div>
     );
@@ -40,7 +40,7 @@ function LogoutContent() {
 
 export default function LogoutPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+        <Suspense fallback={<div className="min-h-screen bg-white dark:bg-black" />}>
             <LogoutContent />
         </Suspense>
     );

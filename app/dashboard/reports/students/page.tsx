@@ -44,9 +44,9 @@ export default function StudentReportsPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Student <span className="text-eduGreen-500 italic">Reports</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Individual Academic Synthesis</p>
@@ -55,7 +55,7 @@ export default function StudentReportsPage() {
 
             {/* Student Report Drilldown */}
             <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-900 pb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-900 pb-6">
                     <div className="flex items-center gap-2">
                         <Filter className="w-4 h-4 text-zinc-500" />
                         <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Filter Stream</span>
@@ -63,7 +63,7 @@ export default function StudentReportsPage() {
                     <div className="flex flex-col sm:flex-row items-center gap-4">
                         <div className="flex items-center gap-2">
                             <Select value={selectedGrade} onValueChange={(val) => { setSelectedGrade(val); setSelectedClass("ALL"); }}>
-                                <SelectTrigger className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl text-xs w-32 text-zinc-400 focus:ring-1 focus:ring-eduGreen-500">
+                                <SelectTrigger className="h-11 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-2xl text-xs w-32 text-zinc-600 dark:text-zinc-400 focus:ring-1 focus:ring-eduGreen-500">
                                     <SelectValue placeholder="Grade" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -74,7 +74,7 @@ export default function StudentReportsPage() {
                                 </SelectContent>
                             </Select>
                             <Select value={selectedClass} onValueChange={setSelectedClass} disabled={selectedGrade === "ALL"}>
-                                <SelectTrigger className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl text-xs w-32 text-zinc-400 focus:ring-1 focus:ring-eduGreen-500">
+                                <SelectTrigger className="h-11 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-2xl text-xs w-32 text-zinc-600 dark:text-zinc-400 focus:ring-1 focus:ring-eduGreen-500">
                                     <SelectValue placeholder="Class" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -92,7 +92,7 @@ export default function StudentReportsPage() {
                                 placeholder="Search scholars..."
                                 value={studentSearch}
                                 onChange={e => setStudentSearch(e.target.value)}
-                                className="h-11 bg-zinc-950 border border-zinc-900 rounded-2xl pl-10 pr-4 text-white text-xs focus:outline-none focus:ring-1 focus:ring-eduGreen-500 w-full md:w-64 transition-all"
+                                className="h-11 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-2xl pl-10 pr-4 text-zinc-900 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-eduGreen-500 w-full md:w-64 transition-all"
                             />
                         </div>
                     </div>
@@ -109,13 +109,13 @@ export default function StudentReportsPage() {
                         })
                         .map((s: any) => (
                             <Link key={s.id} href={`/dashboard/reports/${s.id}`} className="group">
-                                <Card className="bg-zinc-950/40 border-zinc-900 rounded-3xl hover:border-eduGreen-900/40 transition-all">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-3xl hover:border-eduGreen-900/40 transition-all">
                                     <CardContent className="p-5 flex items-center gap-4">
                                         <div className="w-11 h-11 rounded-2xl bg-eduGreen-950/30 border border-eduGreen-900/30 flex items-center justify-center text-lg font-black text-eduGreen-500 shrink-0 group-hover:border-eduGreen-700/50 transition-colors">
                                             {s.firstName?.[0]}
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="text-white font-medium text-sm truncate">{s.firstName} {s.lastName}</p>
+                                            <p className="text-zinc-900 dark:text-white font-medium text-sm truncate">{s.firstName} {s.lastName}</p>
                                             <p className="text-zinc-600 text-[9px] uppercase tracking-widest font-mono mt-0.5">{s.studentCode}</p>
                                             <p className="text-zinc-700 text-[9px] mt-0.5 truncate">{s.class?.name || "Unassigned"} · {s.grade?.name || "Unassigned"}</p>
                                         </div>

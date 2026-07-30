@@ -361,29 +361,29 @@ export default function SettingsPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div className="flex items-center gap-6 group">
-                    <label className={`w-16 h-16 shrink-0 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
+                    <label className={`w-16 h-16 shrink-0 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
                         {schoolData?.logoUrl ? (
                             <Image src={schoolData.logoUrl} alt="School Logo" width={64} height={64} className="w-full h-full object-contain" />
                         ) : (
-                            <div className="w-full h-full bg-zinc-900 rounded-xl flex items-center justify-center">
+                            <div className="w-full h-full bg-zinc-100 dark:bg-zinc-900 rounded-xl flex items-center justify-center">
                                 <Zap className="w-6 h-6 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
                             </div>
                         )}
                         {isPrincipal && (
                             <>
                                 <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
-                                <div className="absolute -bottom-2 -right-2 bg-zinc-950 border border-zinc-800 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute -bottom-2 -right-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <div className="bg-eduGreen-600 rounded-full w-5 h-5 flex items-center justify-center">
-                                        <span className="text-[10px] text-white font-bold">+</span>
+                                        <span className="text-[10px] text-zinc-900 dark:text-white font-bold">+</span>
                                     </div>
                                 </div>
                             </>
                         )}
                     </label>
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white flex items-center gap-4">
+                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center gap-4">
                             System <span className="text-eduGreen-500 italic">Configuration</span>
                         </h1>
                         <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Protocols</p>
@@ -414,7 +414,7 @@ export default function SettingsPage() {
                         <button
                             key={item.id}
                             onClick={() => setActiveTab(item.id as any)}
-                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-medium text-[10px] uppercase tracking-widest ${activeTab === item.id ? 'bg-zinc-900 text-white border border-zinc-800 shadow-xl' : 'text-zinc-600 hover:text-zinc-400 hover:bg-zinc-950/50'}`}
+                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-medium text-[10px] uppercase tracking-widest ${activeTab === item.id ? 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 shadow-xl' : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/50 dark:bg-zinc-950/50'}`}
                         >
                             <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-eduGreen-500' : 'text-zinc-800'}`} />
                             {item.label}
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                 {/* Settings Form */}
                 <div className="lg:col-span-9 space-y-8">
                     {activeTab === 'profile' && (
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
                                 <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Profile Overview</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Global administrative parameters</CardDescription>
@@ -449,7 +449,7 @@ export default function SettingsPage() {
                                         <Input
                                             value={formData.name}
                                             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                            className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
+                                            className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                         />
                                     </div>
                                     <div className="space-y-3">
@@ -457,14 +457,14 @@ export default function SettingsPage() {
                                         <Input
                                             disabled
                                             value={userData?.email || ""}
-                                            className="bg-zinc-900/30 border-zinc-800 text-white/50 h-14 rounded-2xl border-2 font-medium cursor-not-allowed"
+                                            className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white/50 h-14 rounded-2xl border-2 font-medium cursor-not-allowed"
                                         />
                                     </div>
                                 </div>
                                     <div className="space-y-3">
                                         <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Professional Summary</Label>
                                         <textarea
-                                            className="w-full bg-zinc-900/30 border-zinc-800 text-white p-6 rounded-[2rem] focus:border-eduGreen-600 transition-all border-2 font-medium text-sm min-h-[120px] resize-none outline-none"
+                                            className="w-full bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white p-6 rounded-[2rem] focus:border-eduGreen-600 transition-all border-2 font-medium text-sm min-h-[120px] resize-none outline-none"
                                             value={formData.bio}
                                             onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
                                             placeholder="Enter your professional summary..."
@@ -472,23 +472,23 @@ export default function SettingsPage() {
                                     </div>
 
                                     {isPrincipal && (
-                                        <div className="space-y-3 pt-6 border-t border-zinc-900/50">
+                                        <div className="space-y-3 pt-6 border-t border-zinc-200 dark:border-zinc-900/50">
                                             <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Brand Logo</Label>
-                                            <div className="flex items-center gap-6 p-6 bg-zinc-950/50 border border-zinc-900 rounded-2xl">
+                                            <div className="flex items-center gap-6 p-6 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl">
                                                 {schoolForm.logoUrl ? (
-                                                    <div className="w-16 h-16 rounded-xl bg-zinc-900 overflow-hidden border border-zinc-800 p-2">
+                                                    <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-300 dark:border-zinc-800 p-2">
                                                         <Image src={schoolForm.logoUrl} alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
                                                     </div>
                                                 ) : (
-                                                    <div className="w-16 h-16 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                                                    <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
                                                         <Zap className="w-6 h-6 text-zinc-700" />
                                                     </div>
                                                 )}
                                                 <div className="flex-1 space-y-1">
-                                                    <h4 className="text-sm font-medium text-white tracking-tight">School Logo</h4>
+                                                    <h4 className="text-sm font-medium text-zinc-900 dark:text-white tracking-tight">School Logo</h4>
                                                     <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Supports PNG, JPG, WebP</p>
                                                 </div>
-                                                <label className="cursor-pointer bg-zinc-900 hover:bg-zinc-800 text-white px-6 py-3 rounded-xl border border-zinc-800 transition-all font-medium text-[10px] uppercase tracking-widest text-center flex items-center justify-center">
+                                                <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-xl border border-zinc-300 dark:border-zinc-800 transition-all font-medium text-[10px] uppercase tracking-widest text-center flex items-center justify-center">
                                                     Upload Image
                                                     <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
                                                 </label>
@@ -500,7 +500,7 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'security' && (
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
                                 <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Security</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Password and access</CardDescription>
@@ -514,7 +514,7 @@ export default function SettingsPage() {
                                                 type="password"
                                                 value={passwordData.current}
                                                 onChange={e => setPasswordData(prev => ({ ...prev, current: e.target.value }))}
-                                                className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
+                                                className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
                                         </div>
                                     )}
@@ -525,7 +525,7 @@ export default function SettingsPage() {
                                                 type="password"
                                                 value={passwordData.new}
                                                 onChange={e => setPasswordData(prev => ({ ...prev, new: e.target.value }))}
-                                                className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
+                                                className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
                                         </div>
                                         <div className="space-y-3">
@@ -534,26 +534,26 @@ export default function SettingsPage() {
                                                 type="password"
                                                 value={passwordData.confirm}
                                                 onChange={e => setPasswordData(prev => ({ ...prev, confirm: e.target.value }))}
-                                                className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
+                                                className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
                                         </div>
                                     </div>
                                     <Button
                                         type="submit"
                                         isLoading={saving}
-                                        className="w-full bg-zinc-900 hover:bg-eduGreen-600 text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-800 transition-all"
+                                        className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white h-14 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-zinc-800 transition-all"
                                     >
                                         Update Password
                                     </Button>
                                 </form>
 
-                                <div className="pt-6 border-t border-zinc-900">
+                                <div className="pt-6 border-t border-zinc-200 dark:border-zinc-900">
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mb-4">Active Session Logs</p>
                                     <div className="space-y-3">
-                                        <div className="flex items-center justify-between p-4 bg-zinc-900/20 border border-zinc-900 rounded-xl">
+                                        <div className="flex items-center justify-between p-4 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-xl">
                                             <div className="flex items-center gap-3">
                                                 <Zap className="w-4 h-4 text-eduGreen-500" />
-                                                <div className="text-[11px] font-medium text-zinc-300">Windows PC • Chrome</div>
+                                                <div className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300">Windows PC • Chrome</div>
                                             </div>
                                             <div className="text-[9px] font-medium text-eduGreen-500 uppercase">Current Node</div>
                                         </div>
@@ -595,7 +595,7 @@ export default function SettingsPage() {
                                                     document.documentElement.classList.add('dark');
                                                     localStorage.setItem('theme', 'dark');
                                                 }}
-                                                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-zinc-950 border-2 border-zinc-800 text-white hover:border-emerald-500 transition-all font-medium text-xs uppercase tracking-widest shadow-sm"
+                                                className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-white dark:bg-zinc-950 border-2 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white hover:border-emerald-500 transition-all font-medium text-xs uppercase tracking-widest shadow-sm"
                                             >
                                                 <span className="w-3 h-3 rounded-full bg-emerald-500" />
                                                 Cyber Mode (Dark)
@@ -617,11 +617,11 @@ export default function SettingsPage() {
                                         />
                                     </div>
 
-                                    <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                    <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <Zap className="w-4 h-4 text-eduGreen-500" />
-                                                <h4 className="text-xs font-medium text-white uppercase tracking-wider">Neural Sync</h4>
+                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Neural Sync</h4>
                                             </div>
                                             <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Enable high-performance micro-animations and transitions</p>
                                         </div>
@@ -632,11 +632,11 @@ export default function SettingsPage() {
                                     </div>
 
                                     <div className="grid md:grid-cols-2 gap-6">
-                                        <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                        <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2">
                                                     <Bell className="w-4 h-4 text-eduGreen-500" />
-                                                    <h4 className="text-xs font-medium text-white uppercase tracking-wider">Email Alerts</h4>
+                                                    <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Email Alerts</h4>
                                                 </div>
                                             </div>
                                             <Switch
@@ -644,11 +644,11 @@ export default function SettingsPage() {
                                                 onCheckedChange={() => handlePrefToggle('emailAlerts')}
                                             />
                                         </div>
-                                        <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                        <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2">
                                                     <Volume2 className="w-4 h-4 text-eduGreen-500" />
-                                                    <h4 className="text-xs font-medium text-white uppercase tracking-wider">Chat Sounds</h4>
+                                                    <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Chat Sounds</h4>
                                                 </div>
                                             </div>
                                             <Switch
@@ -663,7 +663,7 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'family' && (
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
                                 <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Family Hub</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Student links and lineage verification</CardDescription>
@@ -675,21 +675,21 @@ export default function SettingsPage() {
                                     <div className="grid gap-4">
                                         {userData?.parentLinks?.length > 0 ? (
                                             userData.parentLinks.map((link: any) => (
-                                                <div key={link.id} className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem]">
+                                                <div key={link.id} className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem]">
                                                     <div className="flex items-center gap-4">
                                                         <div className="w-12 h-12 rounded-2xl bg-eduGreen-950/30 border border-eduGreen-900/50 flex items-center justify-center">
                                                             <User className="w-6 h-6 text-eduGreen-500" />
                                                         </div>
                                                         <div>
-                                                            <h5 className="text-sm font-medium text-white">{link.student.firstName} {link.student.lastName}</h5>
+                                                            <h5 className="text-sm font-medium text-zinc-900 dark:text-white">{link.student.firstName} {link.student.lastName}</h5>
                                                             <p className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest">{link.student.grade?.name} • {link.student.class?.name}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="text-[9px] font-mono text-zinc-500 p-2 bg-zinc-950 rounded-lg">{link.student.studentCode}</div>
+                                                    <div className="text-[9px] font-mono text-zinc-500 p-2 bg-white dark:bg-zinc-950 rounded-lg">{link.student.studentCode}</div>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-900">
+                                            <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                                                 <Search className="w-8 h-8 mb-4 opacity-20" />
                                                 <p className="text-[10px] font-medium uppercase tracking-widest">No active student links detected</p>
                                             </div>
@@ -698,7 +698,7 @@ export default function SettingsPage() {
                                 </div>
 
                                 {/* Link New Student */}
-                                <div className="p-8 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] space-y-6">
+                                <div className="p-8 bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800 rounded-[2rem] space-y-6">
                                     <h4 className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Initialize New Link</h4>
                                     {!verifiedStudent ? (
                                         <div className="flex gap-4">
@@ -706,23 +706,23 @@ export default function SettingsPage() {
                                                 placeholder="ENTER STUDENT CODE (e.g. STU-12345)"
                                                 value={studentCode}
                                                 onChange={(e) => setStudentCode(e.target.value.toUpperCase())}
-                                                className="bg-zinc-950 border-zinc-800 text-white h-14 rounded-2xl font-mono tracking-widest flex-1 pl-6"
+                                                className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl font-mono tracking-widest flex-1 pl-6"
                                             />
                                             <Button
                                                 onClick={handleVerifyStudent}
                                                 isLoading={linkingStudent}
                                                 disabled={linkingStudent || !studentCode}
-                                                className="h-14 px-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-eduGreen-600 text-white transition-all uppercase text-[10px] tracking-widest"
+                                                className="h-14 px-8 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-eduGreen-600 text-white transition-all uppercase text-[10px] tracking-widest"
                                             >
                                                 Verify Code
                                             </Button>
                                         </div>
                                     ) : (
                                         <div className="space-y-6 animate-in slide-in-from-bottom-4">
-                                            <div className="p-6 bg-zinc-950 border border-eduGreen-900/30 rounded-2xl flex items-center justify-between">
+                                            <div className="p-6 bg-white dark:bg-zinc-950 border border-eduGreen-900/30 rounded-2xl flex items-center justify-between">
                                                 <div>
                                                     <p className="text-[8px] text-eduGreen-500 font-medium uppercase tracking-widest mb-1">Student Identified</p>
-                                                    <h5 className="text-lg font-medium text-white">{verifiedStudent.firstName} {verifiedStudent.lastName}</h5>
+                                                    <h5 className="text-lg font-medium text-zinc-900 dark:text-white">{verifiedStudent.firstName} {verifiedStudent.lastName}</h5>
                                                     <p className="text-[10px] text-zinc-600">{verifiedStudent.schoolName} • {verifiedStudent.gradeLevel}</p>
                                                 </div>
                                                 <div className="flex gap-2">
@@ -750,7 +750,7 @@ export default function SettingsPage() {
                     )}
 
                     {activeTab === 'workload' && (
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
                                 <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Teaching Load</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Academic assignments and workload sync</CardDescription>
@@ -759,21 +759,21 @@ export default function SettingsPage() {
                                 <div className="grid gap-4">
                                     {userData?.teacherAssignments?.length > 0 ? (
                                         userData.teacherAssignments.map((assignment: any) => (
-                                            <div key={assignment.id} className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] hover:bg-zinc-900/40 transition-all">
+                                            <div key={assignment.id} className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] hover:bg-zinc-200 dark:hover:bg-zinc-900/40 transition-all">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                                                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center">
                                                         <Briefcase className="w-5 h-5 text-eduGreen-500" />
                                                     </div>
                                                     <div>
-                                                        <h5 className="text-sm font-medium text-white">{assignment.subject.name}</h5>
+                                                        <h5 className="text-sm font-medium text-zinc-900 dark:text-white">{assignment.subject.name}</h5>
                                                         <p className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest">{assignment.class.grade?.name} • Class {assignment.class.name}</p>
                                                     </div>
                                                 </div>
-                                                <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest bg-zinc-950 px-4 py-2 rounded-xl">Authorized Educator</div>
+                                                <div className="text-[9px] font-medium text-zinc-700 uppercase tracking-widest bg-white dark:bg-zinc-950 px-4 py-2 rounded-xl">Authorized Educator</div>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-900">
+                                        <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                                             <Briefcase className="w-8 h-8 mb-4 opacity-20" />
                                             <p className="text-[10px] font-medium uppercase tracking-widest">No active academic assignments detected</p>
                                         </div>
@@ -784,7 +784,7 @@ export default function SettingsPage() {
                     )}
                     {activeTab === 'school' && (
                         <div className="space-y-8">
-                            <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                                 <CardHeader className="p-8 pb-4">
                                     <div className="flex items-center gap-3 mb-2">
                                         <Zap className="w-4 h-4 text-eduGreen-500" />
@@ -801,7 +801,7 @@ export default function SettingsPage() {
                                                 disabled={!isPrincipal}
                                                 value={schoolForm.name}
                                                 onChange={(e) => setSchoolForm(prev => ({ ...prev, name: e.target.value }))}
-                                                className={`bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl transition-all border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
+                                                className={`bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl transition-all border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
                                             />
                                         </div>
                                         <div className="space-y-3">
@@ -810,10 +810,10 @@ export default function SettingsPage() {
                                                 <Input
                                                     disabled
                                                     value={schoolForm.schoolCode}
-                                                    className="bg-zinc-950/50 border-zinc-800 text-eduGreen-500 h-14 rounded-2xl border-2 font-mono tracking-[0.2em] font-medium cursor-not-allowed opacity-60 pl-12"
+                                                    className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-eduGreen-500 h-14 rounded-2xl border-2 font-mono tracking-[0.2em] font-medium cursor-not-allowed opacity-60 pl-12"
                                                 />
                                                 <Lock className="w-4 h-4 text-zinc-700 absolute left-4 top-1/2 -translate-y-1/2 group-hover:text-eduGreen-500 transition-colors" />
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-medium text-zinc-800 uppercase tracking-widest bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-800">
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-medium text-zinc-800 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-300 dark:border-zinc-800">
                                                     Immutable
                                                 </div>
                                             </div>
@@ -840,14 +840,14 @@ export default function SettingsPage() {
                                                 </div>
                                                 <textarea
                                                     disabled={!isPrincipal}
-                                                    className={`w-full bg-zinc-900/30 border-zinc-800 text-white p-6 rounded-[2rem] transition-all border-2 font-medium text-sm min-h-[100px] resize-none outline-none ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
+                                                    className={`w-full bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white p-6 rounded-[2rem] transition-all border-2 font-medium text-sm min-h-[100px] resize-none outline-none ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
                                                     value={schoolForm.address}
                                                     onChange={(e) => setSchoolForm(prev => ({ ...prev, address: e.target.value }))}
                                                     placeholder={isPrincipal ? "Enter institutional address or coordinates..." : "No institutional address configured"}
                                                 ></textarea>
                                             </div>
 
-                                            <div className="w-full h-72 rounded-[2rem] overflow-hidden border-2 border-zinc-800 bg-zinc-950 relative shadow-2xl group transition-all hover:border-eduGreen-900/30">
+                                            <div className="w-full h-72 rounded-[2rem] overflow-hidden border-2 border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 relative shadow-2xl group transition-all hover:border-eduGreen-900/30">
                                                 {schoolForm.address ? (
                                                     <>
                                                         <iframe
@@ -861,7 +861,7 @@ export default function SettingsPage() {
                                                             src={`https://maps.google.com/maps?q=${encodeURIComponent(schoolForm.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                                                         ></iframe>
                                                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80 pointer-events-none" />
-                                                        <div className="absolute top-4 right-4 bg-zinc-950/90 backdrop-blur-md px-4 py-2 rounded-xl border border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-eduGreen-500 shadow-xl pointer-events-none flex items-center gap-2 z-10">
+                                                        <div className="absolute top-4 right-4 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-eduGreen-500 shadow-xl pointer-events-none flex items-center gap-2 z-10">
                                                             <span className="relative flex h-2 w-2">
                                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-eduGreen-400 opacity-75"></span>
                                                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-eduGreen-500"></span>
@@ -869,20 +869,20 @@ export default function SettingsPage() {
                                                             Live Feed
                                                         </div>
                                                         <div className="absolute bottom-6 left-6 z-10">
-                                                            <div className="flex items-center gap-3 bg-zinc-950/90 backdrop-blur-md px-5 py-3 rounded-2xl border border-zinc-800 shadow-xl">
+                                                            <div className="flex items-center gap-3 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md px-5 py-3 rounded-2xl border border-zinc-300 dark:border-zinc-800 shadow-xl">
                                                                 <div className="w-10 h-10 rounded-xl bg-eduGreen-950/30 border border-eduGreen-900/50 flex items-center justify-center">
                                                                     <MapPin className="w-5 h-5 text-eduGreen-500" />
                                                                 </div>
                                                                 <div>
                                                                     <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest mb-0.5">Verified Location</p>
-                                                                    <p className="text-xs font-medium text-white tracking-tight max-w-[200px] truncate">{schoolForm.address}</p>
+                                                                    <p className="text-xs font-medium text-zinc-900 dark:text-white tracking-tight max-w-[200px] truncate">{schoolForm.address}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </>
                                                 ) : (
                                                     <div className="w-full h-full flex flex-col items-center justify-center text-zinc-800 space-y-4">
-                                                        <div className="w-16 h-16 rounded-full bg-zinc-900/50 flex items-center justify-center animate-pulse">
+                                                        <div className="w-16 h-16 rounded-full bg-zinc-100/50 dark:bg-zinc-900/50 flex items-center justify-center animate-pulse">
                                                             <MapPin className="w-8 h-8 text-zinc-800" />
                                                         </div>
                                                         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700">Awaiting Geo-Coordinates</p>
@@ -892,7 +892,7 @@ export default function SettingsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-6 mt-12 pt-10 border-t border-zinc-900/50">
+                                    <div className="space-y-6 mt-12 pt-10 border-t border-zinc-200 dark:border-zinc-900/50">
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <h3 className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Nodes</h3>
@@ -905,7 +905,7 @@ export default function SettingsPage() {
                                                         locations: [...prev.locations, { name: "", address: "" }]
                                                     }))}
                                                     variant="outline"
-                                                    className="h-10 px-6 rounded-xl border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
+                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
                                                 >
                                                     <Plus className="w-3.5 h-3.5 mr-2" /> Link New Node
                                                 </Button>
@@ -914,13 +914,13 @@ export default function SettingsPage() {
 
                                         <div className="grid gap-6">
                                             {schoolForm.locations.map((loc, idx) => (
-                                                <div key={idx} className="p-8 bg-zinc-900/20 border border-zinc-900 rounded-[2.5rem] space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                                <div key={idx} className="p-8 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-2xl bg-zinc-950 border border-zinc-900 flex items-center justify-center">
+                                                            <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center">
                                                                 <MapPin className="w-5 h-5 text-eduGreen-500" />
                                                             </div>
-                                                            <h5 className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest whitespace-nowrap">Node Vector {idx + 1}</h5>
+                                                            <h5 className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest whitespace-nowrap">Node Vector {idx + 1}</h5>
                                                         </div>
                                                         {isPrincipal && (
                                                             <Button
@@ -948,7 +948,7 @@ export default function SettingsPage() {
                                                                     return { ...prev, locations: newLocs };
                                                                 })}
                                                                 placeholder="e.g. Science Wing, South Campus"
-                                                                className={`bg-zinc-900/30 border-zinc-800 text-white h-12 rounded-xl border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
+                                                                className={`bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-12 rounded-xl border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
                                                             />
                                                         </div>
                                                         <div className="space-y-3">
@@ -962,13 +962,13 @@ export default function SettingsPage() {
                                                                     return { ...prev, locations: newLocs };
                                                                 })}
                                                                 placeholder="Enter address or coordinates"
-                                                                className={`bg-zinc-900/30 border-zinc-800 text-white h-12 rounded-xl border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
+                                                                className={`bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-12 rounded-xl border-2 font-medium ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
                                                             />
                                                         </div>
                                                     </div>
 
                                                     {loc.address && (
-                                                        <div className="w-full h-48 rounded-[1.5rem] overflow-hidden border border-zinc-900 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                                                        <div className="w-full h-48 rounded-[1.5rem] overflow-hidden border border-zinc-200 dark:border-zinc-900 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
                                                             <iframe
                                                                 width="100%"
                                                                 height="100%"
@@ -981,7 +981,7 @@ export default function SettingsPage() {
                                             ))}
 
                                             {schoolForm.locations.length === 0 && (
-                                                <div className="py-12 bg-zinc-900/10 border border-dashed border-zinc-900 rounded-[2.5rem] flex flex-col items-center justify-center text-zinc-800">
+                                                <div className="py-12 bg-zinc-100/10 dark:bg-zinc-900/10 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] flex flex-col items-center justify-center text-zinc-800">
                                                     <MapPin className="w-8 h-8 mb-4 opacity-10" />
                                                     <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-700">No secondary institutional nodes integrated</p>
                                                 </div>
@@ -989,26 +989,26 @@ export default function SettingsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="p-8 bg-zinc-900/30 border border-zinc-800 rounded-[2rem] space-y-6">
+                                    <div className="p-8 bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800 rounded-[2rem] space-y-6">
                                         <h4 className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Digital Footprint</h4>
                                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                            <div className="p-6 bg-zinc-950/50 rounded-2xl border border-zinc-900 text-center">
-                                                <div className="text-2xl font-medium text-white">{schoolData?._count?.students || 0}</div>
+                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.students || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Active Learners</div>
                                             </div>
-                                            <div className="p-6 bg-zinc-950/50 rounded-2xl border border-zinc-900 text-center">
-                                                <div className="text-2xl font-medium text-white">{schoolData?._count?.users || 0}</div>
+                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.users || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Authorized Staff</div>
                                             </div>
-                                            <div className="p-6 bg-zinc-950/50 rounded-2xl border border-zinc-900 text-center">
-                                                <div className="text-2xl font-medium text-white">{schoolData?._count?.grades || 0}</div>
+                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.grades || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Grade Tiers</div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {isPrincipal && (
-                                        <div className="p-8 bg-zinc-900/10 border border-zinc-900 border-dashed rounded-[2rem] space-y-6">
+                                        <div className="p-8 bg-zinc-100/10 dark:bg-zinc-900/10 border border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2rem] space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
                                                     <h4 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-1">Advanced Maintenance</h4>
@@ -1018,7 +1018,7 @@ export default function SettingsPage() {
                                                     onClick={runDiagnostics}
                                                     isLoading={diagnosing}
                                                     variant="outline"
-                                                    className="h-10 px-6 rounded-xl border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
+                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
                                                 >
                                                     <Zap className="w-3.5 h-3.5 mr-2" /> Run Diagnostic Protocol
                                                 </Button>
@@ -1028,9 +1028,9 @@ export default function SettingsPage() {
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
-                                                    className="p-4 bg-black rounded-xl border border-zinc-800 font-mono text-[9px] text-eduGreen-500 overflow-x-auto"
+                                                    className="p-4 bg-white dark:bg-black rounded-xl border border-zinc-300 dark:border-zinc-800 font-mono text-[9px] text-eduGreen-500 overflow-x-auto"
                                                 >
-                                                    <div className="flex items-center gap-2 mb-2 border-b border-zinc-900 pb-2">
+                                                    <div className="flex items-center gap-2 mb-2 border-b border-zinc-200 dark:border-zinc-900 pb-2">
                                                         <span className="w-2 h-2 rounded-full bg-eduGreen-500 animate-pulse" />
                                                         <span>SYSTEM_LOG::DIAGNOSTIC_RESULT</span>
                                                     </div>
@@ -1042,22 +1042,22 @@ export default function SettingsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-zinc-950/10 border border-zinc-900 rounded-[2.5rem] p-8 border-dashed group relative ">
+                            <Card className="bg-white/10 dark:bg-zinc-950/10 border border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 border-dashed group relative ">
                                 <div className="flex flex-col items-center justify-center py-10 text-center">
                                     {schoolForm.logoUrl ? (
                                         <div className="relative mb-6 group">
-                                            <div className="w-32 h-32 rounded-3xl bg-zinc-900 overflow-hidden border-2 border-eduGreen-600/50 flex items-center justify-center relative">
+                                            <div className="w-32 h-32 rounded-3xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border-2 border-eduGreen-600/50 flex items-center justify-center relative">
                                                 <Image src={schoolForm.logoUrl} alt="School Logo" className="object-contain" fill sizes="128px" />
                                             </div>
                                             {isPrincipal && (
-                                                <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-zinc-950 border border-zinc-800 rounded-full flex items-center justify-center cursor-pointer hover:border-eduGreen-500 transition-all shadow-xl">
+                                                <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-full flex items-center justify-center cursor-pointer hover:border-eduGreen-500 transition-all shadow-xl">
                                                     <Zap className="w-4 h-4 text-eduGreen-500" />
                                                     <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
                                                 </label>
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="w-16 h-16 rounded-2xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center mb-6 transition-all group-hover:border-eduGreen-900/50">
+                                        <div className="w-16 h-16 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center mb-6 transition-all group-hover:border-eduGreen-900/50">
                                             <Zap className="w-8 h-8 text-zinc-800 group-hover:text-eduGreen-500 transition-colors" />
                                         </div>
                                     )}
@@ -1067,7 +1067,7 @@ export default function SettingsPage() {
 
                                     {isPrincipal && !schoolForm.logoUrl && (
                                         <label className="mt-6">
-                                            <div className="cursor-pointer px-8 py-3 bg-zinc-950 border border-zinc-900 rounded-xl text-[9px] font-medium uppercase tracking-widest hover:border-eduGreen-500 hover:text-white transition-all">
+                                            <div className="cursor-pointer px-8 py-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl text-[9px] font-medium uppercase tracking-widest hover:border-eduGreen-500 hover:text-white transition-all">
                                                 Initialize Brand Map
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
@@ -1080,7 +1080,7 @@ export default function SettingsPage() {
 
                     {activeTab === 'communications' && isPrincipal && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                            <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
+                            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                                 <CardHeader className="p-8 pb-4">
                                     <div className="flex items-center gap-3 mb-2">
                                         <Bell className="w-4 h-4 text-eduGreen-500" />
@@ -1091,9 +1091,9 @@ export default function SettingsPage() {
                                 </CardHeader>
                                 <CardContent className="p-8 pt-6 space-y-10">
                                     <div className="space-y-6">
-                                        <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                        <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                             <div className="space-y-1">
-                                                <h4 className="text-xs font-medium text-white uppercase tracking-wider">Invitation Protocols</h4>
+                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Invitation Protocols</h4>
                                                 <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Send automated registration keys to new staff and teachers</p>
                                             </div>
                                             <Switch
@@ -1105,9 +1105,9 @@ export default function SettingsPage() {
                                             />
                                         </div>
 
-                                        <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                        <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                             <div className="space-y-1">
-                                                <h4 className="text-xs font-medium text-white uppercase tracking-wider">Academic Reporting</h4>
+                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Academic Reporting</h4>
                                                 <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Broadcast assessment results and grade reports to parents</p>
                                             </div>
                                             <Switch
@@ -1119,9 +1119,9 @@ export default function SettingsPage() {
                                             />
                                         </div>
 
-                                        <div className="flex items-center justify-between p-6 bg-zinc-900/20 border border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-900/40">
+                                        <div className="flex items-center justify-between p-6 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-[2rem] transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40">
                                             <div className="space-y-1">
-                                                <h4 className="text-xs font-medium text-white uppercase tracking-wider">Financial Transactions</h4>
+                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Financial Transactions</h4>
                                                 <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Issue digital invoices and payment confirmation tokens</p>
                                             </div>
                                             <Switch
@@ -1134,7 +1134,7 @@ export default function SettingsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="pt-8 border-t border-zinc-900/50 space-y-4">
+                                    <div className="pt-8 border-t border-zinc-200 dark:border-zinc-900/50 space-y-4">
                                         <div className="space-y-3">
                                             <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Reply-To Hub</Label>
                                             <Input
@@ -1144,7 +1144,7 @@ export default function SettingsPage() {
                                                     ...prev,
                                                     communicationsConfig: { ...prev.communicationsConfig, replyTo: e.target.value }
                                                 }))}
-                                                className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
+                                                className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
                                             <p className="text-[9px] text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this communication node.</p>
                                         </div>
@@ -1161,7 +1161,7 @@ export default function SettingsPage() {
                                         <Shield className="w-6 h-6 text-eduGreen-500" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-medium text-zinc-300 uppercase tracking-widest">Encrypted Transmission Node</h4>
+                                        <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">Encrypted Transmission Node</h4>
                                         <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest mt-1 max-w-sm">All institutional broadcasts are routed through a secured SMTP uplink (Gmail Service Active).</p>
                                     </div>
                                 </div>

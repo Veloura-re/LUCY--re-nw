@@ -51,7 +51,7 @@ export default function AccessRequestsPage() {
         <div className="space-y-6 animate-in fade-in duration-300">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold font-orbitron tracking-tight text-white flex items-center gap-2">
+                <h1 className="text-2xl font-bold font-orbitron tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
                     <Users className="w-6 h-6 text-sky-500" />
                     ACCESS REQUESTS
                 </h1>
@@ -61,7 +61,7 @@ export default function AccessRequestsPage() {
             </div>
 
             {/* Filter Panel */}
-            <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-5">
+            <div className="bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl p-5">
                 <div className="relative">
                     <Search className="absolute left-3 top-3 w-4 h-4 text-zinc-500" />
                     <input
@@ -69,7 +69,7 @@ export default function AccessRequestsPage() {
                         placeholder="Search requests by callsign, email, payload..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
+                        className="w-full bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl h-10 pl-9 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-500 focus:outline-none placeholder-zinc-600"
                     />
                 </div>
             </div>
@@ -81,15 +81,15 @@ export default function AccessRequestsPage() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-zinc-700">Loading requests...</p>
                 </div>
             ) : filteredRequests.length === 0 ? (
-                <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-900">
+                <div className="text-center py-24 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-900">
                     <Users className="w-10 h-10 text-zinc-800 mx-auto mb-4" />
                     <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No requests discovered</p>
                     <p className="text-[10px] text-zinc-700 mt-1">Adjust filters or search parameters</p>
                 </div>
             ) : (
-                <div className="rounded-2xl border border-white/5 overflow-hidden">
+                <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-white/5">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-white/5 border-b border-zinc-200 dark:border-white/5">
                         <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Callsign / Identifier</div>
                         <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Direct Comm Link</div>
                         <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Payload Content</div>
@@ -97,12 +97,12 @@ export default function AccessRequestsPage() {
                     </div>
                     
                     {/* Table Rows */}
-                    <div className="divide-y divide-white/5 bg-black">
+                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
                         {filteredRequests.map((req) => (
-                            <div key={req.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-900/30 items-center transition-colors text-white">
+                            <div key={req.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
                                 <div className="col-span-3 font-mono text-xs select-all truncate">{req.callsign}</div>
-                                <div className="col-span-3 font-mono text-xs text-zinc-400 select-all truncate">{req.email}</div>
-                                <div className="col-span-4 text-xs text-zinc-300 leading-relaxed font-mono select-all pr-2">
+                                <div className="col-span-3 font-mono text-xs text-zinc-600 dark:text-zinc-400 select-all truncate">{req.email}</div>
+                                <div className="col-span-4 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-mono select-all pr-2">
                                     {req.message}
                                 </div>
                                 <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">

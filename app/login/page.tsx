@@ -130,9 +130,9 @@ function LoginContent() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                 />
-                                <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                     I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
                                 </label>
                             </div>
@@ -170,7 +170,7 @@ function LoginContent() {
 export default function LoginPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-zinc-950 font-sans text-white">
+            <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 font-sans text-zinc-900 dark:text-white">
                 <Loader2 className="w-8 h-8 animate-spin text-eduGreen-500" />
             </div>
         }>

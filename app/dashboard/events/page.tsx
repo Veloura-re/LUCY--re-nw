@@ -86,7 +86,7 @@ export default function EventsPage() {
                         <Calendar className="w-3 h-3 text-eduGreen-500" />
                         <span>Institutional Timeline</span>
                     </div>
-                    <h1 className="text-4xl font-medium text-white tracking-tight">Institutional Events</h1>
+                    <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tight">Institutional Events</h1>
                     <p className="text-zinc-500 mt-2 font-medium text-sm leading-relaxed max-w-2xl">
                         Orchestrate school activities, academic deadlines, and community engagements in a unified timeline.
                     </p>
@@ -105,14 +105,14 @@ export default function EventsPage() {
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {events.map((event) => (
-                    <Card key={event.id} className="group relative bg-zinc-950/50 backdrop-blur-2xl border-zinc-900 rounded-[2.5rem]  hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl h-full flex flex-col">
+                    <Card key={event.id} className="group relative bg-white/50 dark:bg-zinc-950/50 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900 rounded-[2.5rem]  hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl h-full flex flex-col">
                         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-eduGreen-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <CardHeader className="p-8 pb-4">
                             <div className="flex items-start justify-between gap-4 mb-4">
-                                <div className="p-3 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-xl group-hover:border-eduGreen-900/30 transition-colors">
+                                <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-300 dark:border-zinc-800 shadow-xl group-hover:border-eduGreen-900/30 transition-colors">
                                     <Calendar className="w-5 h-5 text-zinc-500 group-hover:text-eduGreen-500 transition-colors" />
                                 </div>
-                                <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.2em] bg-zinc-950/50 px-3 py-1.5 rounded-lg border border-zinc-900 group-hover:text-eduGreen-500 group-hover:border-eduGreen-900/20 transition-all">
+                                <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.2em] bg-white/50 dark:bg-zinc-950/50 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-900 group-hover:text-eduGreen-500 group-hover:border-eduGreen-900/20 transition-all">
                                     {new Date(event.eventDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ export default function EventsPage() {
                         <CardContent className="p-8 pt-0 mt-auto">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2 px-3 py-2 bg-zinc-900/50 rounded-xl text-[10px] font-medium text-zinc-500 uppercase tracking-widest border border-zinc-900 group-hover:border-zinc-800 transition-all">
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl text-[10px] font-medium text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-900 group-hover:border-zinc-800 transition-all">
                                         <Clock className="w-3.5 h-3.5 text-zinc-700 group-hover:text-eduGreen-600 transition-colors" />
                                         {new Date(event.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
@@ -144,9 +144,9 @@ export default function EventsPage() {
             </div>
 
             {events.length === 0 && !loading && (
-                <div className="p-24 text-center flex flex-col items-center gap-6 bg-zinc-950/30 rounded-[3rem] border-2 border-dashed border-zinc-900">
-                    <div className="w-20 h-20 rounded-full bg-zinc-900 flex items-center justify-center opacity-20">
-                        <Calendar className="w-10 h-10 text-white" />
+                <div className="p-24 text-center flex flex-col items-center gap-6 bg-white/30 dark:bg-zinc-950/30 rounded-[3rem] border-2 border-dashed border-zinc-200 dark:border-zinc-900">
+                    <div className="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center opacity-20">
+                        <Calendar className="w-10 h-10 text-zinc-900 dark:text-white" />
                     </div>
                     <div>
                         <p className="text-zinc-700 font-medium uppercase tracking-[0.4em] text-xs">No Scheduled Operations</p>
@@ -157,7 +157,7 @@ export default function EventsPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between bg-zinc-950/40 p-4 rounded-2xl border border-zinc-900/50 backdrop-blur-md">
+                <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
                     <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
                         Page {page} of {totalPages}
                     </p>
@@ -167,7 +167,7 @@ export default function EventsPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                         >
                             Previous
                         </Button>
@@ -176,7 +176,7 @@ export default function EventsPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                         >
                             Next
                         </Button>
@@ -185,9 +185,9 @@ export default function EventsPage() {
             )}
 
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
-                <DialogContent className="bg-zinc-950 border-zinc-900 rounded-[2.5rem] p-6 md:p-10 max-w-[95vw] md:max-w-xl max-h-[85vh] overflow-y-auto shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+                <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-6 md:p-10 max-w-[95vw] md:max-w-xl max-h-[85vh] overflow-y-auto shadow-[0_0_100px_rgba(0,0,0,0.8)]">
                     <DialogHeader className="mb-8">
-                        <DialogTitle className="text-3xl font-medium text-white tracking-tight">Event Matrix</DialogTitle>
+                        <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight">Event Matrix</DialogTitle>
                         <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Initialize new institutional event sequence</CardDescription>
                     </DialogHeader>
                     {createLoading ? (
@@ -203,7 +203,7 @@ export default function EventsPage() {
                                     value={newEvent.title}
                                     onChange={e => setNewEvent({ ...newEvent, title: e.target.value })}
                                     required
-                                    className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 text-lg font-medium"
+                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 text-lg font-medium"
                                 />
                             </div>
                             <div className="space-y-4">
@@ -212,7 +212,7 @@ export default function EventsPage() {
                                     placeholder="Contextual details (Optional)"
                                     value={newEvent.description}
                                     onChange={e => setNewEvent({ ...newEvent, description: e.target.value })}
-                                    className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
+                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                             </div>
                             <div className="space-y-4">
@@ -222,10 +222,10 @@ export default function EventsPage() {
                                     value={newEvent.date}
                                     onChange={e => setNewEvent({ ...newEvent, date: e.target.value })}
                                     required
-                                    className="bg-zinc-900/30 border-zinc-800 text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-mono"
+                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-mono"
                                 />
                             </div>
-                            <div className="flex justify-end gap-3 pt-6 border-t border-zinc-900/50">
+                            <div className="flex justify-end gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-900/50">
                                 <Button type="button" variant="ghost" disabled={createLoading} onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-white font-medium uppercase tracking-[0.2em] text-[10px] h-14 px-8">Abort</Button>
                                 <Button type="submit" isLoading={createLoading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-10 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20">Confirm Deployment</Button>
                             </div>
