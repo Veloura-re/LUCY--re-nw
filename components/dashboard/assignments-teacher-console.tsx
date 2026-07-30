@@ -156,7 +156,7 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-zinc-900 dark:text-white transition-colors" />
                         <Input 
                             placeholder="FILTER DISPATCHES..." 
-                            className="bg-[#050505]/40 backdrop-blur-xl border-zinc-200 dark:border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white ring-0"
+                            className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border-zinc-200 dark:border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white ring-0"
                         />
                     </div>
 
@@ -186,7 +186,7 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                                 loading={loading}
                             />
                         ) : detailsLoading ? (
-                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#050505]/20 backdrop-blur-sm border border-zinc-200 dark:border-white/5 rounded-[3.5rem] p-20 text-center">
+                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white/40 dark:bg-[#050505]/20 backdrop-blur-sm border border-zinc-200 dark:border-white/5 rounded-[3.5rem] p-20 text-center">
                                 <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-6" />
                                 <h3 className="text-xl font-black text-zinc-600 dark:text-zinc-400 italic uppercase">SYNCHRONIZING SECURE DISPATCH</h3>
                                 <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-2">Retrieving cohort submission logs and materials...</p>
@@ -228,7 +228,7 @@ export default function AssignmentsTeacherConsole({ initialAssignments, classes,
                                 onSelectSubmission={setSelectedSubmissionId}
                             />
                         ) : (
-                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#050505]/20 backdrop-blur-sm border border-zinc-200 dark:border-white/5 rounded-[3.5rem] p-20 text-center">
+                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-white/40 dark:bg-[#050505]/20 backdrop-blur-sm border border-zinc-200 dark:border-white/5 rounded-[3.5rem] p-20 text-center">
                                 <Brain className="w-16 h-16 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
                                 <h3 className="text-2xl font-black text-zinc-700 italic uppercase">Operational Selection Required</h3>
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">Select a dispatch to review student submissions or manage parameters.</p>
@@ -248,7 +248,7 @@ function AssignmentCard({ assignment, active, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-8 rounded-[2.5rem] border transition-all cursor-pointer relative overflow-hidden group",
-                active ? "bg-white border-white" : "bg-[#050505]/40 backdrop-blur-md border-zinc-200 dark:border-white/5 hover:border-white/20"
+                active ? "bg-white border-white" : "bg-white/40 dark:bg-[#050505]/40 backdrop-blur-md border-zinc-200 dark:border-white/5 hover:border-white/20"
             )}
         >
             <div className="relative z-10 space-y-4">
@@ -340,7 +340,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
     };
 
     return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 dark:bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
             <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex justify-between items-center bg-gradient-to-r from-zinc-900/40 to-transparent">
                 <div className="space-y-1">
                     <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.3em]">Initialize Dispatch</span>
@@ -445,7 +445,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                                         });
                                     }
                                 }}
-                                className="h-10 px-6 rounded-xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                                className="h-10 px-6 rounded-xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-300 dark:hover:bg-white dark:hover:text-black transition-all flex items-center gap-2"
                             >
                                 <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
                                 <span className="text-[8px] font-black uppercase tracking-widest">Neural Draft</span>
@@ -511,7 +511,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
 function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmission }: any) {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
-            <Card className="bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden">
+            <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden">
                 <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <div className="space-y-2">
                         <div className="flex items-center gap-4">
@@ -522,7 +522,7 @@ function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmiss
                         <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 max-w-2xl leading-relaxed">{assignment.description}</p>
                     </div>
                     <div className="flex gap-4">
-                        <Button variant="outline" className="h-14 px-8 rounded-2xl border-zinc-300 dark:border-white/10 bg-zinc-200 dark:bg-white/5 text-zinc-900 dark:text-white font-black text-[10px] uppercase hover:bg-white hover:text-black transition-all">EDIT</Button>
+                        <Button variant="outline" className="h-14 px-8 rounded-2xl border-zinc-300 dark:border-white/10 bg-zinc-200 dark:bg-white/5 text-zinc-900 dark:text-white font-black text-[10px] uppercase hover:bg-zinc-300 dark:hover:bg-white dark:hover:text-black transition-all">EDIT</Button>
                         <Button variant="outline" className="h-14 px-8 rounded-2xl border-rose-500/20 bg-rose-500/5 text-rose-500 font-black text-[10px] uppercase hover:bg-rose-500 hover:text-white transition-all">TERMINATE</Button>
                     </div>
                 </div>
@@ -546,7 +546,7 @@ function AssignmentDetailsView({ assignment, classStudents = [], onSelectSubmiss
                     <h3 className="text-[11px] font-black text-zinc-900 dark:text-white uppercase tracking-[0.4em] italic">SUBMISSION REGISTRY</h3>
                 </div>
 
-                <Card className="bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden">
+                <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden">
                     <div className="divide-y divide-white/5">
                         {classStudents.length === 0 ? (
                             <div className="p-24 text-center space-y-4">
@@ -627,7 +627,7 @@ function SubmissionRow({ submission, idx, onClick }: any) {
                     <div className={cn(
                         "px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest",
                         submission.status === 'GRADED' ? "bg-emerald-500/10 text-emerald-500" : 
-                        submission.status === 'SUBMITTED' ? "bg-amber-500/10 text-amber-500" :
+                        submission.status === 'SUBMITTED' ? "bg-amber-500/10 text-amber-600 dark:text-amber-500" :
                         "bg-zinc-500/10 text-zinc-600"
                     )}>
                         {submission.status}
@@ -635,7 +635,7 @@ function SubmissionRow({ submission, idx, onClick }: any) {
                 </div>
                 
                 {hasSubmitted ? (
-                    <Button className="w-14 h-14 rounded-2xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white flex items-center justify-center hover:bg-white hover:text-black transition-all group-hover:scale-105 active:scale-95">
+                    <Button className="w-14 h-14 rounded-2xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white flex items-center justify-center hover:bg-zinc-300 dark:hover:bg-white dark:hover:text-black transition-all group-hover:scale-105 active:scale-95">
                         <ChevronRight className="w-5 h-5" />
                     </Button>
                 ) : (
@@ -673,7 +673,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
     };
 
     return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 dark:bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
             <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex justify-between items-center bg-gradient-to-r from-emerald-900/40 to-transparent">
                 <div className="space-y-1">
                     <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Evaluation Node</span>
@@ -823,7 +823,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     <Button 
                         onClick={handleSave}
                         isLoading={loading}
-                        className="h-20 px-20 rounded-[2rem] bg-emerald-500 text-black font-black text-[11px] uppercase tracking-[0.4em] hover:bg-white transition-all shadow-2xl"
+                        className="h-20 px-20 rounded-[2rem] bg-emerald-500 text-white dark:text-black font-black text-[11px] uppercase tracking-[0.4em] hover:bg-emerald-600 dark:hover:bg-white transition-all shadow-2xl"
                     >
                         SYNC EVALUATION
                     </Button>

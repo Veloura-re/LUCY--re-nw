@@ -38,7 +38,8 @@ export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { name } = await request.json();
+        const body = await request.json() as { name: string };
+        const { name } = body;
 
         const { prisma } = require('@/lib/prisma');
         if (!prisma) {
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'subject', ip: _ip || undefined });
             }
@@ -89,7 +90,8 @@ export async function DELETE(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { id } = await request.json();
+        const body = await request.json() as { id: string };
+        const { id } = body;
 
         const { prisma } = require('@/lib/prisma');
         if (!prisma) {
@@ -120,7 +122,7 @@ export async function DELETE(request: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'subject', ip: _ip || undefined });
             }

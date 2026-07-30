@@ -351,8 +351,8 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
         <div className={cn(
             "relative group/metric overflow-hidden transition-all duration-300 rounded-3xl",
             featured
-                ? "p-8 md:p-10 bg-gradient-to-br from-zinc-900/80 to-zinc-950 hover:shadow-[0_0_40px_-10px_rgba(20,184,115,0.2)]"
-                : "p-5 bg-white/40 dark:bg-zinc-950/40 hover:bg-zinc-200 dark:hover:bg-zinc-900/60"
+                ? "p-8 md:p-10 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900/80 dark:to-zinc-950 hover:shadow-[0_0_40px_-10px_rgba(20,184,115,0.2)] border border-zinc-200 dark:border-zinc-800/50"
+                : "p-5 bg-white/40 dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
         )}>
             {/* Background Glow */}
             {featured && (
@@ -368,19 +368,19 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                         <div className={cn(
                             "flex items-center justify-center rounded-2xl shadow-inner transition-colors duration-300",
                             featured
-                                ? "w-12 h-12 bg-eduGreen-500/20 text-eduGreen-400 group-hover/metric:bg-eduGreen-500/30 group-hover/metric:text-eduGreen-300"
-                                : "w-10 h-10 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 group-hover/metric:text-zinc-900 dark:text-white"
+                                ? "w-12 h-12 bg-eduGreen-500/10 dark:bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 group-hover/metric:bg-eduGreen-500/20 dark:group-hover/metric:bg-eduGreen-500/30 group-hover/metric:text-eduGreen-700 dark:group-hover/metric:text-eduGreen-300"
+                                : "w-10 h-10 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-white"
                         )}>
                             {icon}
                         </div>
                         <span className={cn(
                             "font-medium uppercase tracking-[0.2em]",
-                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-600 dark:text-zinc-500 group-hover/metric:text-zinc-600 dark:text-zinc-400 transition-colors"
+                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-600 dark:text-zinc-500 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-zinc-400 transition-colors"
                         )}>{label}</span>
                     </div>
 
                     {trend && (
-                        <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1">
+                        <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1">
                             <Activity className="w-3 h-3" />
                             {trend}
                         </div>
@@ -391,12 +391,12 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                     <div>
                         <div className={cn(
                             "font-semibold tracking-tighter mb-2 mt-4",
-                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-900 dark:text-white dark:text-zinc-100"
+                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-900 dark:text-white"
                         )}>
                             {value}
                         </div>
 
-                        <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest italic flex items-center gap-2">
+                        <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-600 uppercase tracking-widest italic flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_8px_rgba(20,184,115,0.8)]" />
                             Live Telemetry
                         </div>
@@ -407,7 +407,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                             <span className={cn("font-medium text-zinc-600 dark:text-zinc-400 leading-none", featured ? "text-xl" : "text-sm")}>
                                 {Math.round(percentage)}%
                             </span>
-                            <span className={cn("font-medium text-zinc-600 uppercase mt-1", featured ? "text-[8px]" : "text-[6px]")}>Index</span>
+                            <span className={cn("font-medium text-zinc-400 dark:text-zinc-600 uppercase mt-1", featured ? "text-[8px]" : "text-[6px]")}>Index</span>
                         </div>
                     )}
                 </div>
@@ -423,8 +423,9 @@ function AttendanceWaveform({ data }: { data: any[] }) {
     if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Neural Link...</div>;
 
     const points = data.map((d, i) => {
-        const x = (i / (data.length - 1)) * 100;
-        const y = 100 - d.percentage;
+        const x = data.length > 1 ? (i / (data.length - 1)) * 100 : 50;
+        const percentage = typeof d.percentage === 'number' && !isNaN(d.percentage) ? d.percentage : 0;
+        const y = 100 - percentage;
         return `${x},${y}`;
     }).join(" ");
 

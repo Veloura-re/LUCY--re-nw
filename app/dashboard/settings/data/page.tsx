@@ -476,10 +476,10 @@ export default function DataSecuritySettings() {
             </div>
 
             {/* Danger Zone: Restore */}
-            <div className="bg-red-950/10 border border-red-900/30 rounded-[2rem] p-8">
+            <div className="bg-red-950/10 border border-red-200 dark:border-red-900/30 rounded-[2rem] p-8">
                 <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-red-950/50 rounded-xl border border-red-900/50 flex items-center justify-center shrink-0">
-                        <ShieldAlert className="w-6 h-6 text-red-500" />
+                    <div className="w-12 h-12 bg-red-950/50 rounded-xl border border-red-200 dark:border-red-900/50 flex items-center justify-center shrink-0">
+                        <ShieldAlert className="w-6 h-6 text-red-600 dark:text-red-500" />
                     </div>
                     <div>
                         <h2 className="text-lg font-medium text-zinc-900 dark:text-white">Disaster Recovery (Restore)</h2>

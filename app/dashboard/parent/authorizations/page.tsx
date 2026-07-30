@@ -43,8 +43,8 @@ export default function ParentAuthorizationsPage() {
                 fetch('/api/parent/authorizations'),
                 fetch('/api/user/settings')
             ]);
-            const authData = await authRes.json();
-            const userData = await userRes.json();
+            const authData = (await authRes.json()) as any;
+            const userData = (await userRes.json()) as any;
 
             setAuthorizations(authData.authorizations || []);
             setUser(userData.user);
@@ -112,7 +112,7 @@ export default function ParentAuthorizationsPage() {
                                 transition={{ delay: idx * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             >
                                 <Card className={cn(
-                                    "bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-zinc-300 dark:border-white/10 group relative",
+                                    "bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-zinc-300 dark:border-white/10 group relative",
                                     auth.status === 'APPROVED' && "hover:border-emerald-500/30",
                                     auth.status === 'REJECTED' && "hover:border-rose-500/30",
                                     auth.status === 'PENDING' && "hover:border-blue-500/30"
@@ -169,7 +169,7 @@ export default function ParentAuthorizationsPage() {
                                                             <Fingerprint className="w-4 h-4 text-zinc-700" />
                                                             <span className={cn(
                                                                 "px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 text-[9px]",
-                                                                auth.requestorId === user?.id ? "text-eduGreen-500" : "text-amber-500"
+                                                                auth.requestorId === user?.id ? "text-eduGreen-500" : "text-amber-600 dark:text-amber-500"
                                                             )}>
                                                                 {auth.requestorId === user?.id ? "Parent Synchronized" : "Student Requested"}
                                                             </span>

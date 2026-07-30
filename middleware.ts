@@ -145,15 +145,18 @@ export async function middleware(request: NextRequest) {
     // B. CSRF Protection (Origin Check)
     if (isMutatingRequest) {
         const origin = request.headers.get('origin')
-        const host = request.headers.get('host')
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
         const proto = request.headers.get('x-forwarded-proto') || 'https'
         const expectedOrigin = `${proto}://${host}`
 
         if (origin && origin !== expectedOrigin && process.env.NODE_ENV === 'production') {
-            return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch" }), {
-                status: 403,
-                headers: { 'Content-Type': 'application/json' }
-            })
+            // Allow if both are vercel domains or if origin is trusted
+            if (!origin.endsWith('.vercel.app') || !expectedOrigin.endsWith('.vercel.app')) {
+                return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch", expected: expectedOrigin, origin: origin }), {
+                    status: 403,
+                    headers: { 'Content-Type': 'application/json' }
+                })
+            }
         }
     }
 

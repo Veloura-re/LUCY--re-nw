@@ -133,9 +133,9 @@ export default function SecurityDisclosuresPage() {
                                 <div className="col-span-2 text-center">
                                     <span className={cn(
                                         "px-2 py-0.5 rounded-full border text-[9px] font-bold",
-                                        report.severity === 'CRITICAL' && "bg-red-950/20 border-red-900/50 text-red-400",
+                                        report.severity === 'CRITICAL' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400",
                                         report.severity === 'HIGH' && "bg-orange-950/20 border-orange-900/50 text-orange-400",
-                                        report.severity === 'MEDIUM' && "bg-amber-950/20 border-amber-900/50 text-amber-400",
+                                        report.severity === 'MEDIUM' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
                                         report.severity === 'LOW' && "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
                                     )}>
                                         {report.severity}

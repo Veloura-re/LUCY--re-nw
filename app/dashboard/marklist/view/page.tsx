@@ -110,7 +110,7 @@ function MarklistViewContent() {
     const getPerformanceColor = (pct: number) => {
         if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10", raw: "emerald" };
         if (pct >= 60) return { text: "text-blue-500", border: "border-blue-900/30", bg: "bg-blue-900/10", raw: "blue" };
-        if (pct >= 40) return { text: "text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10", raw: "amber" };
+        if (pct >= 40) return { text: "text-amber-600 dark:text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10", raw: "amber" };
         return { text: "text-rose-500", border: "border-rose-900/30", bg: "bg-rose-900/10", raw: "rose" };
     };
 
@@ -260,7 +260,7 @@ function MarklistViewContent() {
     };
 
     if (loading) return <div className="p-10 text-center animate-pulse text-zinc-600 font-medium uppercase tracking-widest text-[10px]">Accessing Central Ledger...</div>;
-    if (!config) return <div className="p-10 text-center text-red-500 font-medium">Configuration Missing</div>;
+    if (!config) return <div className="p-10 text-center text-red-600 dark:text-red-500 font-medium">Configuration Missing</div>;
 
     return (
         <div className="flex flex-col h-screen max-h-screen bg-white dark:bg-zinc-950">
@@ -275,9 +275,9 @@ function MarklistViewContent() {
 
                 <div className="flex items-center gap-6">
                     {unsavedChanges.size > 0 && (
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-950/20 border border-amber-900/30 animate-in fade-in zoom-in duration-300">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 animate-in fade-in zoom-in duration-300">
                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
-                            <span className="text-[9px] font-medium text-amber-500 uppercase tracking-widest leading-none">Buffers Out of Sync</span>
+                            <span className="text-[9px] font-medium text-amber-600 dark:text-amber-500 uppercase tracking-widest leading-none">Buffers Out of Sync</span>
                         </div>
                     )}
 

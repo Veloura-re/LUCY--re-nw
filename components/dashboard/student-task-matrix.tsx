@@ -148,7 +148,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                         ))}
 
                         {assignments.length === 0 && (
-                            <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
+                            <div className="col-span-full py-32 flex flex-col items-center justify-center bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
                                 <Activity className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
                                 <h3 className="text-xl font-black text-zinc-700 italic uppercase">Neural Buffer Clear</h3>
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">No active assignments discovered in your current registry.</p>
@@ -380,7 +380,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-3">
                                                                         <Activity className={cn("w-4 h-4", 
-                                                                            preEval.status === 'Ready' ? "text-emerald-500" : "text-amber-500"
+                                                                            preEval.status === 'Ready' ? "text-emerald-500" : "text-amber-600 dark:text-amber-500"
                                                                         )} />
                                                                         <span className="text-[10px] font-black uppercase tracking-widest italic">Neural Readiness: {preEval.status}</span>
                                                                     </div>
@@ -498,7 +498,7 @@ function TaskCard({ assignment, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-10 rounded-[3.5rem] border backdrop-blur-3xl transition-all cursor-pointer group relative overflow-hidden",
-                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-zinc-300 dark:border-white/10 hover:border-white/20 shadow-2xl"
+                assignment.submission ? "bg-white/40 dark:bg-[#050505]/40 border-zinc-200 dark:border-white/5" : "bg-gradient-to-br from-white to-zinc-50 dark:from-[#0c0c0c] dark:to-[#050505] border-zinc-300 dark:border-white/10 hover:border-white/20 shadow-2xl"
             )}
         >
             {/* Visual indicator for late tasks */}
@@ -545,7 +545,7 @@ function TaskCard({ assignment, onClick }: any) {
                             <CheckCircle className="w-3.5 h-3.5" /> ARCHIVED
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2 text-amber-500/60 font-black text-[8px] uppercase tracking-widest">
+                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500/60 font-black text-[8px] uppercase tracking-widest">
                             <ChevronRight className="w-3.5 h-3.5" /> EXECUTE SUBMISSION
                         </div>
                     )}
@@ -562,7 +562,7 @@ function TaskCard({ assignment, onClick }: any) {
 
 function MiniMetric({ label, value }: any) {
     return (
-        <div className="px-8 py-4 bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-3xl flex flex-col justify-center">
+        <div className="px-8 py-4 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-3xl flex flex-col justify-center">
             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.3em] italic mb-1">{label}</span>
             <div className="text-2xl font-black text-zinc-900 dark:text-white italic leading-none">{value}</div>
         </div>

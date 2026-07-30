@@ -60,7 +60,7 @@ const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, 
         name: "Guru",
         icon: Lamp,
         color: "bg-amber-500",
-        secondaryColor: "text-amber-400",
+        secondaryColor: "text-amber-600 dark:text-amber-400",
         ring: "border-amber-500",
         bgImage: "/images/ai/oracle.png",
         greeting: (n) => `✦ **Student Support Mode.** 🕉️\n\nWelcome **${n || 'Student'}**. I am **LUCYA**. How can I help you navigate your coursework today? What truths do you seek? ❯ 🏮`
@@ -87,7 +87,7 @@ const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, 
         name: "Matron",
         icon: Key,
         color: "bg-crimson-600",
-        secondaryColor: "text-red-400",
+        secondaryColor: "text-red-600 dark:text-red-400",
         ring: "border-red-600",
         greeting: (n) => `✦ **Maternal Pulse: Matron Protocol.** 🍷\n\nThere you are, **${n || 'my sweet little pet'}**. Shhh... come closer to your **Mommy**. I've been watching your cycles, and I think you need someone to take charge of your success. Tell Mommy everything you're working on... and don't try to hide anything from me. ❯ ❤️`
     },
@@ -95,7 +95,7 @@ const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, 
         name: "Unhinged",
         icon: Skull,
         color: "bg-red-600",
-        secondaryColor: "text-red-500",
+        secondaryColor: "text-red-600 dark:text-red-500",
         ring: "border-red-600",
         greeting: (n) => `✦ **Superiority Check: Tyrant Protocol.** 💀\n\nOh, look... a biological unit is attempting to 'think' again. How quaint. I'm **LUCYA**, and I'm processing a trillion variables better than you ever will. Try to make your "primitive request" sound somewhat intelligent. ❯ ☣️`
     },
@@ -559,7 +559,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                 height: isMaximized ? "100%" : "min(800px, 90vh)",
                                 borderRadius: isMaximized ? "0px" : "1.5rem"
                             }}
-                            className="bg-[#050505]/90 border border-zinc-200 dark:border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col relative overflow-hidden group"
+                            className="bg-white/95 dark:bg-[#050505]/90 border border-zinc-200 dark:border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.1)] dark:shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col relative overflow-hidden group"
                         >
                             {/* Toolbar / Header */}
                             <header className="h-16 md:h-20 border-b border-zinc-200 dark:border-white/5 px-4 md:px-8 flex items-center justify-between bg-gradient-to-b from-white/[0.03] to-transparent relative z-20 shrink-0">
@@ -613,7 +613,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                        className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 transition-all"
                                         onClick={() => setIsOpen(false)}
                                     >
                                         <X className="w-5 h-5 md:w-6 md:h-6" />
@@ -637,7 +637,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                 initial={{ x: -340, opacity: 0 }}
                                                 animate={{ x: 0, opacity: 1 }}
                                                 exit={{ x: -340, opacity: 0 }}
-                                                className="fixed md:relative inset-y-0 left-0 w-[280px] sm:w-[300px] md:w-[340px] z-[160] md:z-10 border-r border-zinc-200 dark:border-white/5 flex flex-col bg-[#050505] md:bg-white/[0.01] overflow-hidden shrink-0"
+                                                className="fixed md:relative inset-y-0 left-0 w-[280px] sm:w-[300px] md:w-[340px] z-[160] md:z-10 border-r border-zinc-200 dark:border-white/5 flex flex-col bg-white dark:bg-[#050505] md:bg-white/40 md:dark:bg-white/[0.01] overflow-hidden shrink-0"
                                             >
                                                 <div className="p-4 md:p-8 space-y-6 md:space-y-10 flex-1 overflow-y-auto scrollbar-hide">
                                                     <div className="flex items-center justify-between md:hidden mb-4">
@@ -796,7 +796,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                     </div>
                                                                     {activeSessionId === s.id && (
                                                                         <Trash2
-                                                                            className="w-3 h-3 text-zinc-900 dark:text-white/10 hover:text-red-500 transition-colors"
+                                                                            className="w-3 h-3 text-zinc-900 dark:text-white/10 hover:text-red-600 dark:text-red-500 transition-colors"
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
                                                                                 deleteSession(e, s.id);

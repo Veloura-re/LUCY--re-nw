@@ -64,7 +64,7 @@ export default function CommunityPage() {
             icon: Youtube,
             glowClass: "shadow-[0_0_30px_rgba(239,68,68,0.04)] hover:shadow-[0_0_50px_rgba(239,68,68,0.25)]",
             hoverBorder: "hover:border-red-500/40",
-            iconColor: "text-red-500",
+            iconColor: "text-red-600 dark:text-red-500",
             label: "youtube",
             desc: "watch system walk-throughs, updates, features, and platform setup guidelines."
         },

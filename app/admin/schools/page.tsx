@@ -235,7 +235,7 @@ export default function SchoolsLedgerPage() {
                     </form>
 
                     {error && (
-                        <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30 text-[11px] text-red-400 font-medium">
+                        <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-[11px] text-red-600 dark:text-red-400 font-medium">
                             <AlertCircle className="w-4 h-4 shrink-0" />
                             {error}
                         </div>
@@ -258,7 +258,7 @@ export default function SchoolsLedgerPage() {
                                     <CheckCircle2 className="w-3 h-3" /> Email Sent
                                 </span>
                             ) : (
-                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/30 border border-amber-900/30 text-[9px] font-semibold text-amber-500 uppercase tracking-widest">
+                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-950/30 border border-amber-900/30 text-[9px] font-semibold text-amber-600 dark:text-amber-500 uppercase tracking-widest">
                                     <AlertCircle className="w-3 h-3" /> Manual Delivery
                                 </span>
                             )}
@@ -378,8 +378,8 @@ export default function SchoolsLedgerPage() {
                                     <span className={cn(
                                         "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider",
                                         school.status === 'ACTIVE' && "bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400",
-                                        school.status === 'PENDING' && "bg-amber-950/20 border-amber-900/50 text-amber-400",
-                                        school.status === 'SUSPENDED' && "bg-red-950/20 border-red-900/50 text-red-400"
+                                        school.status === 'PENDING' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
+                                        school.status === 'SUSPENDED' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400"
                                     )}>
                                         {school.status}
                                     </span>
@@ -390,7 +390,7 @@ export default function SchoolsLedgerPage() {
                                     {school.status === 'ACTIVE' ? (
                                         <button
                                             onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-900/40 hover:text-amber-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-300 dark:hover:border-amber-900/40 hover:text-amber-600 dark:text-amber-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
                                             title="Suspend"
                                         >
                                             <PowerOff className="w-3 h-3" />
@@ -422,7 +422,7 @@ export default function SchoolsLedgerPage() {
                                     </button>
                                     <button
                                         onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-red-900/40 hover:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
+                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-red-300 dark:hover:border-red-900/40 hover:text-red-600 dark:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
                                         title="Delete"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />

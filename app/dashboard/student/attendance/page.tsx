@@ -43,7 +43,7 @@ export default function StudentAttendancePage() {
                     <StatCard label="Attendance Rate" value={stats.percentage.toFixed(1) + "%"} color="text-eduGreen-600" />
                     <StatCard label="Present" value={stats.present} color="text-green-600" />
                     <StatCard label="Late" value={stats.late} color="text-orange-500" />
-                    <StatCard label="Absent" value={stats.absent} color="text-red-500" />
+                    <StatCard label="Absent" value={stats.absent} color="text-red-600 dark:text-red-500" />
                 </div>
             )}
 

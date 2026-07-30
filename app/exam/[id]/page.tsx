@@ -113,8 +113,8 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
 
                 <div className="flex items-center gap-4 md:gap-8">
                     <div className="px-4 py-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-300 dark:border-zinc-800 flex items-center gap-3">
-                        <Timer className={cn("w-4 h-4", timeLeft < 300 ? "text-red-500 animate-pulse" : "text-zinc-600 dark:text-zinc-400")} />
-                        <span className={cn("font-mono font-black text-lg", timeLeft < 300 ? "text-red-500" : "text-zinc-900 dark:text-white")}>
+                        <Timer className={cn("w-4 h-4", timeLeft < 300 ? "text-red-600 dark:text-red-500 animate-pulse" : "text-zinc-600 dark:text-zinc-400")} />
+                        <span className={cn("font-mono font-black text-lg", timeLeft < 300 ? "text-red-600 dark:text-red-500" : "text-zinc-900 dark:text-white")}>
                             {formatTime(timeLeft)}
                         </span>
                     </div>

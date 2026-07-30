@@ -86,7 +86,7 @@ export function TeacherView({ user, initialData }: {
                         const missingCount = data.missingCount || 0;
                         setAttendanceSummary([
                             { label: "Attendance Rate", value: attendanceRate, trend: "Institutional Avg", color: "text-eduGreen-500" },
-                            { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-500" : "text-zinc-600 dark:text-zinc-500" }
+                            { label: "Missing Records", value: missingCount.toString(), trend: "Today", color: missingCount > 0 ? "text-red-600 dark:text-red-500" : "text-zinc-600 dark:text-zinc-500" }
                         ]);
                         setPendingEvaluations(data.pendingEvaluations || 0);
                         setRecentSubmissions(data.recentSubmissions || []);
@@ -139,7 +139,7 @@ export function TeacherView({ user, initialData }: {
                             "h-12 px-8 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all border w-full md:w-auto",
                             isClockedIn
                                 ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 cursor-not-allowed"
-                                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-zinc-900 dark:text-white border-zinc-300 dark:border-white/10 hover:scale-105 active:scale-95"
+                                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white border-zinc-300 dark:border-white/10 hover:scale-105 active:scale-95"
                         )}
                     >
                         {clockingIn ? (
@@ -159,12 +159,12 @@ export function TeacherView({ user, initialData }: {
                             </Button>
                         </Link>
                         <Link href="/dashboard/teacher/assignments" className="w-full sm:w-auto">
-                            <Button className="w-full sm:w-auto bg-white hover:bg-zinc-200 text-black h-12 px-10 rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 border-none">
+                            <Button className="w-full sm:w-auto bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black h-12 px-10 rounded-xl font-bold text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 border-none">
                                 <Zap className="mr-3 h-5 w-5" /> Task Command
                             </Button>
                         </Link>
                         <Link href="/dashboard/teacher/exams" className="w-full sm:w-auto">
-                            <Button className="w-full sm:w-auto bg-gradient-to-r from-eduGreen-600 to-emerald-700 hover:from-eduGreen-500 hover:to-emerald-600 text-zinc-900 dark:text-white h-12 px-10 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-950/40 transition-all hover:scale-105 active:scale-95 border border-zinc-300 dark:border-white/10">
+                            <Button className="w-full sm:w-auto bg-gradient-to-r from-eduGreen-600 to-emerald-700 hover:from-eduGreen-500 hover:to-emerald-600 text-white h-12 px-10 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-950/40 transition-all hover:scale-105 active:scale-95 border border-zinc-300 dark:border-white/10">
                                 <Plus className="mr-3 h-5 w-5" /> Exam Registry
                             </Button>
                         </Link>
@@ -188,17 +188,17 @@ export function TeacherView({ user, initialData }: {
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
                                         <div>
                                             <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-zinc-300 dark:border-white/20">
-                                                    <Plus className="w-6 h-6 text-zinc-900 dark:text-white" />
+                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
+                                                    <Plus className="w-6 h-6 text-white" />
                                                 </div>
-                                                <span className="text-[10px] font-medium text-zinc-900 dark:text-white/50 uppercase tracking-[0.3em]">Module Registry</span>
+                                                <span className="text-[10px] font-medium text-white/50 uppercase tracking-[0.3em]">Module Registry</span>
                                             </div>
-                                            <h3 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight">EXAM BUILDER</h3>
+                                            <h3 className="text-3xl font-medium text-white tracking-tight">EXAM BUILDER</h3>
                                             <p className="text-eduGreen-100/70 text-sm font-medium mt-3">Construct custom assessments with full control.</p>
                                         </div>
 
                                         <div className="mt-8 flex items-center justify-between">
-                                            <span className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                                            <span className="text-[10px] font-medium text-white uppercase tracking-widest flex items-center gap-2">
                                                 Initialize Schema <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                                             </span>
                                         </div>
@@ -218,17 +218,17 @@ export function TeacherView({ user, initialData }: {
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
                                         <div>
                                             <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-zinc-300 dark:border-white/20">
+                                                <div className="p-4 bg-white/15 rounded-2xl backdrop-blur-md border border-white/20">
                                                     <Zap className="w-6 h-6 text-indigo-200" />
                                                 </div>
-                                                <span className="text-[10px] font-medium text-zinc-900 dark:text-white/50 uppercase tracking-[0.3em]">AI Generation</span>
+                                                <span className="text-[10px] font-medium text-white/50 uppercase tracking-[0.3em]">AI Generation</span>
                                             </div>
-                                            <h3 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">AI GENERATOR</h3>
+                                            <h3 className="text-3xl font-medium text-white tracking-tight uppercase">AI GENERATOR</h3>
                                             <p className="text-indigo-100/70 text-sm font-medium mt-3">Leverage semantic drafting to generate elite-tier content.</p>
                                         </div>
 
                                         <div className="mt-8 flex items-center justify-between">
-                                            <span className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                                            <span className="text-[10px] font-medium text-white uppercase tracking-widest flex items-center gap-2">
                                                 Start Synthesis <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                                             </span>
                                         </div>
@@ -281,28 +281,28 @@ export function TeacherView({ user, initialData }: {
 
                                         <CardHeader className="p-10 pb-4 relative z-10">
                                             <div className="flex items-start justify-between gap-4 mb-6">
-                                                <div className="px-4 py-2 rounded-xl bg-white/15 border border-white/25 text-[9px] font-medium text-zinc-900 dark:text-white uppercase tracking-[0.2em] backdrop-blur-md">
+                                                <div className="px-4 py-2 rounded-xl bg-white/15 border border-white/25 text-[9px] font-medium text-white uppercase tracking-[0.2em] backdrop-blur-md">
                                                     Active Authority
                                                 </div>
-                                                <div className="p-4 bg-zinc-300 dark:bg-white/10 rounded-2x border border-zinc-300 dark:border-white/20 shadow-xl backdrop-blur-md">
-                                                    <Users className="w-6 h-6 text-zinc-900 dark:text-white" />
+                                                <div className="p-4 bg-white/10 rounded-2x border border-white/20 shadow-xl backdrop-blur-md">
+                                                    <Users className="w-6 h-6 text-white" />
                                                 </div>
                                             </div>
-                                            <CardTitle className="text-2xl md:text-4xl font-medium text-zinc-900 dark:text-white tracking-tight leading-none italic uppercase">
+                                            <CardTitle className="text-2xl md:text-4xl font-medium text-white tracking-tight leading-none italic uppercase">
                                                 Homeroom<br />Authority
                                             </CardTitle>
                                             <p className="text-eduGreen-100/60 font-medium text-[10px] mt-4 uppercase tracking-[0.3em]">Institutional Presence Registry</p>
                                         </CardHeader>
 
                                         <CardContent className="p-10 pt-4 relative z-10 flex-1">
-                                            <p className="text-zinc-900 dark:text-white/80 text-sm font-medium leading-relaxed">
+                                            <p className="text-white/80 text-sm font-medium leading-relaxed">
                                                 Execute daily attendance protocols and manage human capital for your assigned cohort.
                                             </p>
                                         </CardContent>
 
                                         <CardFooter className="p-10 pt-0 relative z-10 mt-auto">
                                             <Link href="/dashboard/homeroom" className="w-full">
-                                                <Button className="w-full h-12 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
+                                                <Button className="w-full h-12 bg-zinc-200 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-zinc-900 dark:text-white group-hover/btn:text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
                                                     Launch Console <ArrowRight className="ml-3 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </Button>
                                             </Link>

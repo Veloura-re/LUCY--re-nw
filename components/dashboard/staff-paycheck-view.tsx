@@ -97,7 +97,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
                                                 <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mb-1">Status</p>
                                                 <div className={cn(
                                                     "px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest flex items-center gap-2",
-                                                    pay.status === 'COMPLETED' ? "bg-eduGreen-900/20 text-eduGreen-500" : "bg-amber-900/20 text-amber-500"
+                                                    pay.status === 'COMPLETED' ? "bg-eduGreen-900/20 text-eduGreen-500" : "bg-amber-900/20 text-amber-600 dark:text-amber-500"
                                                 )}>
                                                     {pay.status === 'COMPLETED' ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                                                     {pay.status}

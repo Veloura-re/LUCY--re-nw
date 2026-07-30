@@ -153,7 +153,7 @@ export function SettingsAcademicTerms() {
             </div>
 
             {/* Structure Settings */}
-            <Card className="bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl relative overflow-hidden">
+            <Card className="bg-white dark:bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl relative overflow-hidden">
                 {school?.termStructureLocked && (
                     <div className="absolute top-0 right-0 p-4 flex items-center gap-2 text-eduGreen-500">
                         <Lock className="w-4 h-4" />
@@ -244,7 +244,7 @@ export function SettingsAcademicTerms() {
             <div className="h-4"></div>
 
             {/* Manual Term Creation */}
-            <Card className="bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl">
+            <Card className="bg-white dark:bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">Periods Timeline</CardTitle>
@@ -311,7 +311,7 @@ export function SettingsAcademicTerms() {
                 {loading ? (
                     <div className="h-20 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl animate-pulse" />
                 ) : terms.map((t: any) => (
-                    <div key={t.id} className="flex items-center justify-between p-4 bg-[#050505] border border-zinc-200 dark:border-white/5 rounded-2xl group">
+                    <div key={t.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#050505] border border-zinc-200 dark:border-white/5 rounded-2xl group">
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center">
                                 <Calendar className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
@@ -333,7 +333,7 @@ export function SettingsAcademicTerms() {
                                 <p className="text-zinc-900 dark:text-white text-xs font-medium">{t._count?.marklists || 0}</p>
                                 <p className="text-[9px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Marklists</p>
                             </div>
-                            <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">
+                            <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>

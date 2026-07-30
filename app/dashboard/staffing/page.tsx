@@ -358,7 +358,7 @@ export default function StaffingPage() {
                                                             {teacher.name}
                                                         </SelectItem>
                                                     ))}
-                                                    <SelectItem value="null" className="focus:bg-red-900/20 focus:text-red-400 font-medium text-[10px] uppercase">Revoke Authority</SelectItem>
+                                                    <SelectItem value="null" className="focus:bg-red-900/20 focus:text-red-600 dark:text-red-400 font-medium text-[10px] uppercase">Revoke Authority</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>

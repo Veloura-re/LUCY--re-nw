@@ -80,8 +80,8 @@ export default function StudentFinanceDossier() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'PAID': return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
-            case 'OVERDUE': return 'text-red-500 bg-red-500/10 border-red-500/20';
-            case 'PENDING': return 'text-amber-500 bg-amber-500/10 border-amber-500/20';
+            case 'OVERDUE': return 'text-red-600 dark:text-red-500 bg-red-500/10 border-red-200 dark:border-red-500/20';
+            case 'PENDING': return 'text-amber-600 dark:text-amber-500 bg-amber-500/10 border-amber-500/20';
             default: return 'text-zinc-600 dark:text-zinc-500 bg-zinc-500/10 border-zinc-500/20';
         }
     };
@@ -276,7 +276,7 @@ export default function StudentFinanceDossier() {
                                 </div>
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
                                     <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Overdue</div>
-                                    <div className="text-lg font-bold text-red-500">${selectedStudent.financials.totalOverdue.toLocaleString()}</div>
+                                    <div className="text-lg font-bold text-red-600 dark:text-red-500">${selectedStudent.financials.totalOverdue.toLocaleString()}</div>
                                 </div>
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
                                     <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Total Invoices</div>
@@ -296,7 +296,7 @@ export default function StudentFinanceDossier() {
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">${selectedStudent.financials.latestInvoice.amount.toLocaleString()}</div>
                                             <div className={cn("text-[9px] font-bold uppercase tracking-widest mt-1", 
                                                 selectedStudent.financials.latestInvoice.status === 'PAID' ? 'text-emerald-500' : 
-                                                selectedStudent.financials.latestInvoice.status === 'OVERDUE' ? 'text-red-500' : 'text-amber-500'
+                                                selectedStudent.financials.latestInvoice.status === 'OVERDUE' ? 'text-red-600 dark:text-red-500' : 'text-amber-600 dark:text-amber-500'
                                             )}>
                                                 {selectedStudent.financials.latestInvoice.status}
                                             </div>

@@ -175,7 +175,7 @@ export default function ParentRegister() {
                                     maxLength={20}
                                     required
                                 />
-                                {error && <p className="text-red-400 text-sm text-center mt-2 flex justify-center items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</p>}
+                                {error && <p className="text-red-600 dark:text-red-400 text-sm text-center mt-2 flex justify-center items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</p>}
 
                                 <Button className="w-full mt-6 h-12 text-lg bg-eduGreen-600 hover:bg-eduGreen-500 text-white" type="submit" isLoading={isLoading}>
                                     Verify Code
@@ -237,7 +237,7 @@ export default function ParentRegister() {
                                 <Input label="Create Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
                             </div>
 
-                            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+                            {error && <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>}
 
                             <div className="flex items-start space-x-3 pt-2 pb-2">
                                 <input

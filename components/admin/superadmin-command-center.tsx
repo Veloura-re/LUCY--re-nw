@@ -218,7 +218,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                 { label: "Registered Tenants", value: schools.length, sub: `${activeSchools} Active Nodes`, icon: Globe, accent: "emerald", text: "text-emerald-400" },
                                 { label: "Platform Staff", value: totalStaff, sub: "Faculty & Directors", icon: Users, accent: "cyan", text: "text-cyan-400" },
                                 { label: "Active Learners", value: totalStudents, sub: "Student Profiles", icon: GraduationCap, accent: "purple", text: "text-purple-400" },
-                                { label: "Grade Structures", value: schools.reduce((sum, s) => sum + (s._count?.grades || 0), 0), sub: "Configured Levels", icon: BookOpen, accent: "amber", text: "text-amber-400" },
+                                { label: "Grade Structures", value: schools.reduce((sum, s) => sum + (s._count?.grades || 0), 0), sub: "Configured Levels", icon: BookOpen, accent: "amber", text: "text-amber-600 dark:text-amber-400" },
                             ].map((stat, i) => (
                                 <motion.div key={i} variants={cardVariants}>
                                     <div className="relative overflow-hidden bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 p-6 rounded-3xl group hover:border-zinc-700 transition-all">
