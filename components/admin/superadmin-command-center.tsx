@@ -136,7 +136,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10B981]" />
                                 NODE OPERATIONAL // RLS ACTIVE
                             </span>
-                            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest hidden sm:inline">
+                            <span className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500 uppercase tracking-widest hidden sm:inline">
                                 LATENCY: 12ms
                             </span>
                         </div>
@@ -152,7 +152,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         <button
                             onClick={handleRefresh}
                             disabled={isRefreshing}
-                            className="h-12 px-5 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-2 transition-all active:scale-95"
+                            className="h-12 px-5 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-2 transition-all active:scale-95"
                         >
                             <RefreshCw className={cn("w-4 h-4 text-emerald-400", isRefreshing && "animate-spin")} />
                             Sync Matrix
@@ -160,7 +160,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
 
                         <Link
                             href="/admin/schools"
-                            className="h-12 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95"
+                            className="h-12 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95"
                         >
                             <Zap className="w-4 h-4" />
                             Provision Tenant
@@ -180,7 +180,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
                                 "relative px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2.5 whitespace-nowrap",
-                                isActive ? "text-zinc-900 dark:text-white" : "text-zinc-500 hover:text-zinc-300"
+                                isActive ? "text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
                             )}
                         >
                             {isActive && (
@@ -190,7 +190,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                                 />
                             )}
-                            <Icon className={cn("w-4 h-4 relative z-10", isActive ? "text-emerald-400" : "text-zinc-500")} />
+                            <Icon className={cn("w-4 h-4 relative z-10", isActive ? "text-emerald-400" : "text-zinc-600 dark:text-zinc-500")} />
                             <span className="relative z-10">{tab.label}</span>
                             
                             {(tab as any).alert && (
@@ -223,7 +223,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                 <motion.div key={i} variants={cardVariants}>
                                     <div className="relative overflow-hidden bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 p-6 rounded-3xl group hover:border-zinc-700 transition-all">
                                         <div className="flex items-center justify-between mb-4">
-                                            <span className="text-[10px] font-mono font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+                                            <span className="text-[10px] font-mono font-bold tracking-widest text-zinc-600 dark:text-zinc-500 uppercase flex items-center gap-2">
                                                 <stat.icon className={cn("w-4 h-4", stat.text)} />
                                                 {stat.label}
                                             </span>
@@ -234,7 +234,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         <div className={cn("text-3xl font-black font-mono tracking-tight mb-1", stat.text)}>
                                             {isLoading ? "..." : stat.value.toLocaleString()}
                                         </div>
-                                        <div className="text-[10px] text-zinc-500 font-mono font-semibold uppercase tracking-wider">
+                                        <div className="text-[10px] text-zinc-600 dark:text-zinc-500 font-mono font-semibold uppercase tracking-wider">
                                             {stat.sub}
                                         </div>
                                     </div>
@@ -264,7 +264,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         </div>
                                         <div>
                                             <h4 className="text-zinc-900 dark:text-white font-black text-sm uppercase tracking-wider font-orbitron">Schools Ledger</h4>
-                                            <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{schools.length} active tenant databases</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{schools.length} active tenant databases</p>
                                         </div>
                                     </Link>
 
@@ -287,7 +287,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         </div>
                                         <div>
                                             <h4 className="text-zinc-900 dark:text-white font-black text-sm uppercase tracking-wider font-orbitron">Billing Verification</h4>
-                                            <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">Tuition fee wire verification</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">Tuition fee wire verification</p>
                                         </div>
                                     </Link>
 
@@ -303,7 +303,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         </div>
                                         <div>
                                             <h4 className="text-zinc-900 dark:text-white font-black text-sm uppercase tracking-wider font-orbitron">Security Vault</h4>
-                                            <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{securityCount} disclosure reports logged</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{securityCount} disclosure reports logged</p>
                                         </div>
                                     </Link>
 
@@ -319,7 +319,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         </div>
                                         <div>
                                             <h4 className="text-zinc-900 dark:text-white font-black text-sm uppercase tracking-wider font-orbitron">Access Requests</h4>
-                                            <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{requestCount} inbound sign-ups</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{requestCount} inbound sign-ups</p>
                                         </div>
                                     </Link>
                                 </div>
@@ -363,7 +363,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         )}
                                     </div>
 
-                                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center justify-between text-[10px] font-mono text-zinc-600 dark:text-zinc-500">
                                         <span>ZDR POLICY: STRICT</span>
                                         <span className="text-emerald-400 font-bold">100% HEALTHY</span>
                                     </div>
@@ -384,11 +384,11 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Institutional Tenants</h3>
-                                <p className="text-xs text-zinc-500 font-mono mt-1">Cryptographically isolated school PostgreSQL schemas</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Cryptographically isolated school PostgreSQL schemas</p>
                             </div>
                             <Link
                                 href="/admin/schools"
-                                className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-xs font-mono text-zinc-900 dark:text-white flex items-center gap-2"
+                                className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-xs font-mono text-zinc-900 dark:text-white flex items-center gap-2"
                             >
                                 Manage All Nodes <ExternalLink className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
                             </Link>
@@ -401,13 +401,13 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                         <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10B981]" />
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{school.name}</div>
-                                            <div className="text-[10px] font-mono text-zinc-500">CODE: {school.schoolCode}</div>
+                                            <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">CODE: {school.schoolCode}</div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-6 font-mono text-xs">
                                         <div className="text-right">
                                             <div className="text-zinc-700 dark:text-zinc-300 font-bold">{school._count?.users || 0} Staff</div>
-                                            <div className="text-[10px] text-zinc-500">{school._count?.students || 0} Students</div>
+                                            <div className="text-[10px] text-zinc-600 dark:text-zinc-500">{school._count?.students || 0} Students</div>
                                         </div>
                                         <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">
                                             RLS PROTECTED
@@ -430,7 +430,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Inbound Wants-Access Ledger</h3>
-                                <p className="text-xs text-zinc-500 font-mono mt-1">Pending school registrations awaiting owner invite token dispatches</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Pending school registrations awaiting owner invite token dispatches</p>
                             </div>
                             <Link
                                 href="/admin/requests"
@@ -441,14 +441,14 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         </div>
 
                         {wantsAccessRequests.length === 0 ? (
-                            <div className="py-12 text-center text-zinc-500 text-xs font-mono">No pending inbound access requests logged.</div>
+                            <div className="py-12 text-center text-zinc-600 dark:text-zinc-500 text-xs font-mono">No pending inbound access requests logged.</div>
                         ) : (
                             <div className="space-y-3">
                                 {wantsAccessRequests.slice(0, 5).map((req, i) => (
                                     <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex items-center justify-between">
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{req.name || req.email}</div>
-                                            <div className="text-[10px] font-mono text-zinc-500">{req.email} • {req.schoolName || 'Institution'}</div>
+                                            <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">{req.email} • {req.schoolName || 'Institution'}</div>
                                         </div>
                                         <Link
                                             href="/admin/requests"
@@ -474,7 +474,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Vulnerability Disclosure Vault</h3>
-                                <p className="text-xs text-zinc-500 font-mono mt-1">Real-time white-hat security logs</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Real-time white-hat security logs</p>
                             </div>
                             <Link
                                 href="/admin/security"
@@ -485,7 +485,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         </div>
 
                         {securityReports.length === 0 ? (
-                            <div className="py-12 text-center text-zinc-500 text-xs font-mono">No vulnerabilities logged. System clean.</div>
+                            <div className="py-12 text-center text-zinc-600 dark:text-zinc-500 text-xs font-mono">No vulnerabilities logged. System clean.</div>
                         ) : (
                             <div className="space-y-3">
                                 {securityReports.map((rep, i) => (
@@ -515,7 +515,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Billing & Wire Receipts</h3>
-                                <p className="text-xs text-zinc-500 font-mono mt-1">Manual bank transfer verifications</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Manual bank transfer verifications</p>
                             </div>
                             <Link
                                 href="/admin/billing"
@@ -526,14 +526,14 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         </div>
 
                         {receipts.length === 0 ? (
-                            <div className="py-12 text-center text-zinc-500 text-xs font-mono">No wire transfer receipts in queue.</div>
+                            <div className="py-12 text-center text-zinc-600 dark:text-zinc-500 text-xs font-mono">No wire transfer receipts in queue.</div>
                         ) : (
                             <div className="space-y-3">
                                 {receipts.map((rcpt, i) => (
                                     <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex items-center justify-between">
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{rcpt.schoolName || 'School Node'}</div>
-                                            <div className="text-[10px] font-mono text-zinc-500">Amount: ${rcpt.amount || '0.00'} • Ref: {rcpt.reference || 'N/A'}</div>
+                                            <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">Amount: ${rcpt.amount || '0.00'} • Ref: {rcpt.reference || 'N/A'}</div>
                                         </div>
                                         <span className={cn(
                                             "px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase",

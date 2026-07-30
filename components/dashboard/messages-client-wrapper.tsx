@@ -317,7 +317,7 @@ export default function MessagesClientWrapper({
                                     <Avatar className="h-10 w-10 border border-zinc-300 dark:border-zinc-800"><AvatarFallback>{user.name[0]}</AvatarFallback></Avatar>
                                     <div>
                                         <div className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-tight">{user.name}</div>
-                                        <div className="text-[8px] text-zinc-500 uppercase tracking-widest">{user.role}</div>
+                                        <div className="text-[8px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{user.role}</div>
                                     </div>
                                 </button>
                             ))

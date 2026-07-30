@@ -416,7 +416,7 @@ export default function SettingsPage() {
                             onClick={() => setActiveTab(item.id as any)}
                             className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-medium text-[10px] uppercase tracking-widest ${activeTab === item.id ? 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 shadow-xl' : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/50 dark:bg-zinc-950/50'}`}
                         >
-                            <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-eduGreen-500' : 'text-zinc-800'}`} />
+                            <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-eduGreen-500' : 'text-zinc-800 dark:text-zinc-200'}`} />
                             {item.label}
                         </button>
                     ))}
@@ -439,7 +439,7 @@ export default function SettingsPage() {
                     {activeTab === 'profile' && (
                         <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Profile Overview</CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Profile Overview</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Global administrative parameters</CardDescription>
                             </CardHeader>
                             <CardContent className="p-6 md:p-8 pt-6 space-y-10">
@@ -474,7 +474,7 @@ export default function SettingsPage() {
                                     {isPrincipal && (
                                         <div className="space-y-3 pt-6 border-t border-zinc-200 dark:border-zinc-900/50">
                                             <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Institutional Brand Logo</Label>
-                                            <div className="flex items-center gap-6 p-6 bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl">
+                                            <div className="flex items-center gap-6 p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl">
                                                 {schoolForm.logoUrl ? (
                                                     <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-300 dark:border-zinc-800 p-2">
                                                         <Image src={schoolForm.logoUrl} alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
@@ -486,9 +486,9 @@ export default function SettingsPage() {
                                                 )}
                                                 <div className="flex-1 space-y-1">
                                                     <h4 className="text-sm font-medium text-zinc-900 dark:text-white tracking-tight">School Logo</h4>
-                                                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Supports PNG, JPG, WebP</p>
+                                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Supports PNG, JPG, WebP</p>
                                                 </div>
-                                                <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-xl border border-zinc-300 dark:border-zinc-800 transition-all font-medium text-[10px] uppercase tracking-widest text-center flex items-center justify-center">
+                                                <label className="cursor-pointer bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-xl border border-zinc-300 dark:border-zinc-800 transition-all font-medium text-[10px] uppercase tracking-widest text-center flex items-center justify-center">
                                                     Upload Image
                                                     <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
                                                 </label>
@@ -502,7 +502,7 @@ export default function SettingsPage() {
                     {activeTab === 'security' && (
                         <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Security</CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Security</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Password and access</CardDescription>
                             </CardHeader>
                             <CardContent className="p-8 pt-6 space-y-8">
@@ -665,7 +665,7 @@ export default function SettingsPage() {
                     {activeTab === 'family' && (
                         <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Family Hub</CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Family Hub</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Student links and lineage verification</CardDescription>
                             </CardHeader>
                             <CardContent className="p-8 pt-6 space-y-10">
@@ -685,11 +685,11 @@ export default function SettingsPage() {
                                                             <p className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest">{link.student.grade?.name} • {link.student.class?.name}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="text-[9px] font-mono text-zinc-500 p-2 bg-white dark:bg-zinc-950 rounded-lg">{link.student.studentCode}</div>
+                                                    <div className="text-[9px] font-mono text-zinc-600 dark:text-zinc-500 p-2 bg-white dark:bg-zinc-950 rounded-lg">{link.student.studentCode}</div>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
+                                            <div className="py-12 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                                                 <Search className="w-8 h-8 mb-4 opacity-20" />
                                                 <p className="text-[10px] font-medium uppercase tracking-widest">No active student links detected</p>
                                             </div>
@@ -752,7 +752,7 @@ export default function SettingsPage() {
                     {activeTab === 'workload' && (
                         <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl border-t-zinc-800/20">
                             <CardHeader className="p-8 pb-4">
-                                <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Teaching Load</CardTitle>
+                                <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Teaching Load</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Academic assignments and workload sync</CardDescription>
                             </CardHeader>
                             <CardContent className="p-8 pt-6">
@@ -773,7 +773,7 @@ export default function SettingsPage() {
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="py-12 flex flex-col items-center justify-center text-zinc-800 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
+                                        <div className="py-12 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2.5rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                                             <Briefcase className="w-8 h-8 mb-4 opacity-20" />
                                             <p className="text-[10px] font-medium uppercase tracking-widest">No active academic assignments detected</p>
                                         </div>
@@ -790,7 +790,7 @@ export default function SettingsPage() {
                                         <Zap className="w-4 h-4 text-eduGreen-500" />
                                         <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.3em]">Institutional Core</span>
                                     </div>
-                                    <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Workspace Identity</CardTitle>
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Workspace Identity</CardTitle>
                                     <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Foundational parameters for {schoolData?.name}</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-8 pt-6 space-y-10">
@@ -810,10 +810,10 @@ export default function SettingsPage() {
                                                 <Input
                                                     disabled
                                                     value={schoolForm.schoolCode}
-                                                    className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-eduGreen-500 h-14 rounded-2xl border-2 font-mono tracking-[0.2em] font-medium cursor-not-allowed opacity-60 pl-12"
+                                                    className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-eduGreen-500 h-14 rounded-2xl border-2 font-mono tracking-[0.2em] font-medium cursor-not-allowed opacity-60 pl-12"
                                                 />
                                                 <Lock className="w-4 h-4 text-zinc-700 absolute left-4 top-1/2 -translate-y-1/2 group-hover:text-eduGreen-500 transition-colors" />
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-medium text-zinc-800 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-300 dark:border-zinc-800">
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-300 dark:border-zinc-800">
                                                     Immutable
                                                 </div>
                                             </div>
@@ -825,7 +825,7 @@ export default function SettingsPage() {
                                         <div className="space-y-4">
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-center">
-                                                    <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest">Supports Address or GPS Coordinates (Lat,Lng)</p>
+                                                    <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Supports Address or GPS Coordinates (Lat,Lng)</p>
                                                     {schoolForm.address && (
                                                         <a
                                                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolForm.address)}`}
@@ -874,16 +874,16 @@ export default function SettingsPage() {
                                                                     <MapPin className="w-5 h-5 text-eduGreen-500" />
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest mb-0.5">Verified Location</p>
+                                                                    <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Verified Location</p>
                                                                     <p className="text-xs font-medium text-zinc-900 dark:text-white tracking-tight max-w-[200px] truncate">{schoolForm.address}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </>
                                                 ) : (
-                                                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-800 space-y-4">
+                                                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 space-y-4">
                                                         <div className="w-16 h-16 rounded-full bg-zinc-100/50 dark:bg-zinc-900/50 flex items-center justify-center animate-pulse">
-                                                            <MapPin className="w-8 h-8 text-zinc-800" />
+                                                            <MapPin className="w-8 h-8 text-zinc-800 dark:text-zinc-200" />
                                                         </div>
                                                         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700">Awaiting Geo-Coordinates</p>
                                                     </div>
@@ -905,7 +905,7 @@ export default function SettingsPage() {
                                                         locations: [...prev.locations, { name: "", address: "" }]
                                                     }))}
                                                     variant="outline"
-                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
+                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
                                                 >
                                                     <Plus className="w-3.5 h-3.5 mr-2" /> Link New Node
                                                 </Button>
@@ -981,7 +981,7 @@ export default function SettingsPage() {
                                             ))}
 
                                             {schoolForm.locations.length === 0 && (
-                                                <div className="py-12 bg-zinc-100/10 dark:bg-zinc-900/10 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] flex flex-col items-center justify-center text-zinc-800">
+                                                <div className="py-12 bg-zinc-100/10 dark:bg-zinc-900/10 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200">
                                                     <MapPin className="w-8 h-8 mb-4 opacity-10" />
                                                     <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-700">No secondary institutional nodes integrated</p>
                                                 </div>
@@ -992,15 +992,15 @@ export default function SettingsPage() {
                                     <div className="p-8 bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800 rounded-[2rem] space-y-6">
                                         <h4 className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Digital Footprint</h4>
                                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                            <div className="p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
                                                 <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.students || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Active Learners</div>
                                             </div>
-                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                            <div className="p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
                                                 <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.users || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Authorized Staff</div>
                                             </div>
-                                            <div className="p-6 bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
+                                            <div className="p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-2xl border border-zinc-200 dark:border-zinc-900 text-center">
                                                 <div className="text-2xl font-medium text-zinc-900 dark:text-white">{schoolData?._count?.grades || 0}</div>
                                                 <div className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Grade Tiers</div>
                                             </div>
@@ -1011,14 +1011,14 @@ export default function SettingsPage() {
                                         <div className="p-8 bg-zinc-100/10 dark:bg-zinc-900/10 border border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2rem] space-y-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <h4 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-1">Advanced Maintenance</h4>
+                                                    <h4 className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1">Advanced Maintenance</h4>
                                                     <p className="text-[9px] text-zinc-700 font-medium uppercase tracking-widest">Verify database integrity & auth protocols</p>
                                                 </div>
                                                 <Button
                                                     onClick={runDiagnostics}
                                                     isLoading={diagnosing}
                                                     variant="outline"
-                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
+                                                    className="h-10 px-6 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-950/10 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 uppercase text-[8px] tracking-[0.2em] font-bold"
                                                 >
                                                     <Zap className="w-3.5 h-3.5 mr-2" /> Run Diagnostic Protocol
                                                 </Button>
@@ -1042,7 +1042,7 @@ export default function SettingsPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-white/10 dark:bg-zinc-950/10 border border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 border-dashed group relative ">
+                            <Card className="bg-zinc-300 dark:bg-white/10 dark:bg-zinc-950/10 border border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8 border-dashed group relative ">
                                 <div className="flex flex-col items-center justify-center py-10 text-center">
                                     {schoolForm.logoUrl ? (
                                         <div className="relative mb-6 group">
@@ -1058,11 +1058,11 @@ export default function SettingsPage() {
                                         </div>
                                     ) : (
                                         <div className="w-16 h-16 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center mb-6 transition-all group-hover:border-eduGreen-900/50">
-                                            <Zap className="w-8 h-8 text-zinc-800 group-hover:text-eduGreen-500 transition-colors" />
+                                            <Zap className="w-8 h-8 text-zinc-800 dark:text-zinc-200 group-hover:text-eduGreen-500 transition-colors" />
                                         </div>
                                     )}
 
-                                    <h4 className="text-sm font-medium text-zinc-500 uppercase tracking-widest">Institutional Branding Engine</h4>
+                                    <h4 className="text-sm font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Institutional Branding Engine</h4>
                                     <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mt-2">{schoolForm.logoUrl ? "Organizational identity verified" : "Vectorized organizational branding enabled"}</p>
 
                                     {isPrincipal && !schoolForm.logoUrl && (
@@ -1086,7 +1086,7 @@ export default function SettingsPage() {
                                         <Bell className="w-4 h-4 text-eduGreen-500" />
                                         <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.3em]">Institutional Communications</span>
                                     </div>
-                                    <CardTitle className="text-2xl font-medium text-zinc-100 tracking-tight leading-tight">Digital Broadcast Protocols</CardTitle>
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight leading-tight">Digital Broadcast Protocols</CardTitle>
                                     <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Manage institutional automated messaging layers</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-8 pt-6 space-y-10">
@@ -1146,7 +1146,7 @@ export default function SettingsPage() {
                                                 }))}
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
-                                            <p className="text-[9px] text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this communication node.</p>
+                                            <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this communication node.</p>
                                         </div>
                                     </div>
                                 </CardContent>

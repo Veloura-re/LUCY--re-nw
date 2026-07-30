@@ -172,13 +172,13 @@ export default function AdminLogsPage() {
                         <span className="text-[10px] font-semibold text-eduGreen-500 uppercase tracking-[0.3em]">System Intelligence</span>
                     </div>
                     <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Logs & Monitoring</h1>
-                    <p className="text-sm text-zinc-500 mt-0.5">Audit trail + error monitoring across all schools</p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-0.5">Audit trail + error monitoring across all schools</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <LiveTracker />
-                    <div className="w-px h-6 bg-white/10" />
+                    <div className="w-px h-6 bg-zinc-300 dark:bg-white/10" />
                     <button onClick={() => { fetchLogs(); if (tab === 'errors') fetchErrors(); }}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-xs font-medium">
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-xs font-medium">
                         <RefreshCw className="w-3.5 h-3.5" /> Refresh
                     </button>
                     {tab === 'activity' && (
@@ -197,10 +197,10 @@ export default function AdminLogsPage() {
                 ] as const).map(t => (
                     <button key={t.id} onClick={() => setTab(t.id)}
                         className={cn("flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all",
-                            tab === t.id ? "bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 hover:text-zinc-400")}>
+                            tab === t.id ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 hover:text-zinc-400")}>
                         <t.icon className="w-3.5 h-3.5" />
                         {t.label}
-                        {t.count > 0 && <span className={cn("px-1.5 py-0.5 rounded-full text-[9px] font-bold", tab === t.id ? "bg-white/20" : "bg-white/5")}>{t.count}</span>}
+                        {t.count > 0 && <span className={cn("px-1.5 py-0.5 rounded-full text-[9px] font-bold", tab === t.id ? "bg-white/20" : "bg-zinc-200 dark:bg-white/5")}>{t.count}</span>}
                     </button>
                 ))}
             </div>
@@ -218,7 +218,7 @@ export default function AdminLogsPage() {
                                 <div className="flex flex-wrap gap-2">
                                     <button onClick={() => setSchoolFilter('')}
                                         className={cn("px-3 py-1.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider transition-all",
-                                            !schoolFilter ? "bg-white/10 border-white/20 text-zinc-900 dark:text-white" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-500 hover:border-zinc-300 dark:border-white/10")}>
+                                            !schoolFilter ? "bg-zinc-300 dark:bg-white/10 border-zinc-300 dark:border-white/20 text-zinc-900 dark:text-white" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-500 hover:border-zinc-300 dark:border-white/10")}>
                                         All Schools
                                     </button>
                                     {schoolStats.map((s: any) => {
@@ -226,7 +226,7 @@ export default function AdminLogsPage() {
                                         return (
                                             <button key={s.schoolId} onClick={() => setSchoolFilter(s.schoolId === schoolFilter ? '' : s.schoolId)}
                                                 className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider transition-all",
-                                                    schoolFilter === s.schoolId ? "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-400" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-500 hover:border-zinc-300 dark:border-white/10 hover:text-zinc-300")}>
+                                                    schoolFilter === s.schoolId ? "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-400" : "bg-white/[0.02] border-zinc-200 dark:border-white/5 text-zinc-600 dark:text-zinc-500 hover:border-zinc-300 dark:border-white/10 hover:text-zinc-300")}>
                                                 <School className="w-3 h-3" />
                                                 {info?.name || info?.schoolCode || s.schoolId.slice(0, 8)}
                                                 <span className="opacity-60">{s._count.schoolId}</span>
@@ -284,7 +284,7 @@ export default function AdminLogsPage() {
                             {loading ? (
                                 <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
                             ) : logs.length === 0 ? (
-                                <div className="text-center py-16"><Activity className="w-8 h-8 text-zinc-800 mx-auto mb-2" /><p className="text-sm text-zinc-700">No logs found</p></div>
+                                <div className="text-center py-16"><Activity className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mx-auto mb-2" /><p className="text-sm text-zinc-700">No logs found</p></div>
                             ) : (
                                 <div className="divide-y divide-white/[0.03]">
                                     {logs.map((log, i) => (
@@ -292,7 +292,7 @@ export default function AdminLogsPage() {
                                             onClick={() => setSelectedLog(log)}
                                             className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] transition-all cursor-pointer group">
                                             <div className="flex items-center gap-2 min-w-0">
-                                                <div className="w-6 h-6 rounded-full bg-white/5 border border-zinc-300 dark:border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
+                                                <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
                                                 <div className="min-w-0">
                                                     <div className="text-xs font-semibold text-zinc-900 dark:text-white truncate">{log.user.name || '—'}</div>
                                                     <div className="text-[10px] text-zinc-600 truncate">{log.user.email}</div>
@@ -308,7 +308,7 @@ export default function AdminLogsPage() {
                                                 <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate">{log.resourceType}</span>
                                             </div>
                                             <div className="hidden md:flex items-center"><span className="text-[10px] text-zinc-700 font-mono">{log.ip || '—'}</span></div>
-                                            <div className="flex items-center"><span className="text-[10px] text-zinc-500 whitespace-nowrap">{formatRelative(log.createdAt)}</span></div>
+                                            <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(log.createdAt)}</span></div>
                                         </motion.div>
                                     ))}
                                 </div>
@@ -320,8 +320,8 @@ export default function AdminLogsPage() {
                             <div className="flex items-center justify-between">
                                 <span className="text-[11px] text-zinc-600">Page {page} of {totalActivityPages}</span>
                                 <div className="flex items-center gap-2">
-                                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
-                                    <button onClick={() => setPage(p => Math.min(totalActivityPages, p + 1))} disabled={page === totalActivityPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
+                                    <button onClick={() => setPage(p => Math.min(totalActivityPages, p + 1))} disabled={page === totalActivityPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
                                 </div>
                             </div>
                         )}
@@ -391,7 +391,7 @@ export default function AdminLogsPage() {
                                             <div className="flex items-center min-w-0">
                                                 <span className="text-[10px] text-zinc-600 font-mono truncate">{err.path || '—'}</span>
                                             </div>
-                                            <div className="flex items-center"><span className="text-[10px] text-zinc-500 whitespace-nowrap">{formatRelative(err.createdAt)}</span></div>
+                                            <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(err.createdAt)}</span></div>
                                         </motion.div>
                                     ))}
                                 </div>
@@ -402,8 +402,8 @@ export default function AdminLogsPage() {
                             <div className="flex items-center justify-between">
                                 <span className="text-[11px] text-zinc-600">Page {errorPage} of {totalErrorPages}</span>
                                 <div className="flex items-center gap-2">
-                                    <button onClick={() => setErrorPage(p => Math.max(1, p - 1))} disabled={errorPage === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
-                                    <button onClick={() => setErrorPage(p => Math.min(totalErrorPages, p + 1))} disabled={errorPage === totalErrorPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => setErrorPage(p => Math.max(1, p - 1))} disabled={errorPage === 1} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all"><ChevronLeft className="w-3.5 h-3.5" />Prev</button>
+                                    <button onClick={() => setErrorPage(p => Math.min(totalErrorPages, p + 1))} disabled={errorPage === totalErrorPages} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 text-xs text-zinc-600 dark:text-zinc-400 hover:text-white disabled:opacity-30 transition-all">Next<ChevronRight className="w-3.5 h-3.5" /></button>
                                 </div>
                             </div>
                         )}
@@ -469,7 +469,7 @@ export default function AdminLogsPage() {
                             {selectedError.stack && (
                                 <div>
                                     <div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Stack Trace</div>
-                                    <pre className="bg-white/60 dark:bg-black/60 border border-zinc-200 dark:border-white/5 rounded-xl p-3 text-[10px] text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
+                                    <pre className="bg-white/60 dark:bg-black/60 border border-zinc-200 dark:border-white/5 rounded-xl p-3 text-[10px] text-zinc-600 dark:text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
                                 </div>
                             )}
                             {selectedError.userAgent && (

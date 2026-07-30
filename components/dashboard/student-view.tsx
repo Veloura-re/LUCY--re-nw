@@ -78,7 +78,7 @@ export function StudentView({ user }: StudentProps) {
 
                 <div className="flex items-center gap-3 mb-1">
                     <Link href="/dashboard/messages">
-                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
                             <MessageSquare className="mr-2 h-4 w-4" /> Secure Comms
                         </Button>
                     </Link>
@@ -91,7 +91,7 @@ export function StudentView({ user }: StudentProps) {
                     <Card key={i} className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-500/30 transition-all duration-300 overflow-hidden group border-t-zinc-800/10 shadow-2xl rounded-[2.5rem]">
                         <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0 relative z-10 px-8 pt-8">
-                            <CardTitle className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
+                            <CardTitle className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
                                 {stat.label}
                             </CardTitle>
                             <stat.icon className={cn("h-4 w-4 transition-all group-hover:scale-110", stat.color)} />
@@ -153,7 +153,7 @@ export function StudentView({ user }: StudentProps) {
                                                 <p className="text-xl font-medium text-zinc-900 dark:text-white">{Math.round(subject.avgGrade)}%</p>
                                             </div>
                                             <Link href="/dashboard/student/grades">
-                                                <Button size="icon" variant="ghost" className="text-zinc-800 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-xl transition-all">
+                                                <Button size="icon" variant="ghost" className="text-zinc-800 dark:text-zinc-200 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-xl transition-all">
                                                     <ArrowRight className="w-5 h-5" />
                                                 </Button>
                                             </Link>
@@ -161,7 +161,7 @@ export function StudentView({ user }: StudentProps) {
                                     </div>
                                 ))}
                                 {(studentData?.subjectStats?.length || 0) === 0 && (
-                                    <div className="text-center py-20 text-zinc-800 font-medium uppercase tracking-[0.3em]">No Academic Units Linked</div>
+                                    <div className="text-center py-20 text-zinc-800 dark:text-zinc-200 font-medium uppercase tracking-[0.3em]">No Academic Units Linked</div>
                                 )}
                             </div>
                         </CardContent>
@@ -181,7 +181,7 @@ export function StudentView({ user }: StudentProps) {
                         <CardContent className="px-10 pb-10">
                             {studentData?.nextSession ? (
                                 <div className="p-6 bg-eduGreen-600 rounded-[2rem] border border-eduGreen-500/50 shadow-2xl relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-300" />
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-300 dark:bg-white/10 blur-[40px] rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-300" />
                                     <div className="relative z-10">
                                         <div className="text-[9px] font-medium text-eduGreen-200 uppercase tracking-[0.2em] mb-4 leading-none">
                                             {studentData.nextSession.startsIn < 60

@@ -188,9 +188,9 @@ const NeuralAction = ({ type }: { type: string }) => {
             whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
             whileTap={{ scale: 0.98 }}
             onClick={() => window.location.href = action.href}
-            className="flex items-center gap-4 px-5 py-3 bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all my-4 group shadow-xl backdrop-blur-md"
+            className="flex items-center gap-4 px-5 py-3 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all my-4 group shadow-xl backdrop-blur-md"
         >
-            <div className={cn("w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-zinc-200 dark:border-white/5", action.color)}>
+            <div className={cn("w-8 h-8 rounded-lg bg-zinc-200 dark:bg-white/5 flex items-center justify-center border border-zinc-200 dark:border-white/5", action.color)}>
                 <action.icon className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             </div>
             {action.label}
@@ -413,8 +413,8 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
             <div className={cn(
                 "max-w-[92%] md:max-w-[85%] px-4 py-3 md:px-6 md:py-4 rounded-2xl md:rounded-[1.5rem] text-[12px] md:text-sm leading-relaxed shadow-lg relative border transition-all",
                 m.role === "user"
-                    ? "bg-white text-black font-black uppercase italic tracking-wider rounded-tr-none border-white/20"
-                    : "bg-white/5 text-zinc-900 dark:text-white/90 font-medium rounded-tl-none border-zinc-300 dark:border-white/10 backdrop-blur-md"
+                    ? "bg-white text-black font-black uppercase italic tracking-wider rounded-tr-none border-zinc-300 dark:border-white/20"
+                    : "bg-zinc-200 dark:bg-white/5 text-zinc-900 dark:text-white/90 font-medium rounded-tl-none border-zinc-300 dark:border-white/10 backdrop-blur-md"
             )}>
                 {m.role === "ai" && (
                     <div className={cn("absolute top-0 left-0 w-1 h-full opacity-60 rounded-full", activeB.color)} />
@@ -435,7 +435,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                         p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
                                         ul: ({ children }) => <ul className="list-disc ml-5 mb-4 space-y-1">{children}</ul>,
                                         h1: ({ children }) => <h1 className="text-base font-black uppercase tracking-[0.2em] mb-4 text-zinc-900 dark:text-white/90">{children}</h1>,
-                                        code: ({ children }) => <code className="bg-white/10 px-1.5 py-0.5 rounded font-mono text-[11px] font-normal">{children}</code>,
+                                        code: ({ children }) => <code className="bg-zinc-300 dark:bg-white/10 px-1.5 py-0.5 rounded font-mono text-[11px] font-normal">{children}</code>,
                                         strong: ({ children }) => <strong className={cn("font-black tracking-wide", activeB.secondaryColor)}>{children}</strong>
                                     }}
                                 >
@@ -485,7 +485,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                             <div className={cn(
                                 "relative w-12 h-12 rounded-xl flex items-center justify-center border shadow-2xl transition-all duration-300 shrink-0",
                                 activeB.color,
-                                "border-white/20 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]"
+                                "border-zinc-300 dark:border-white/20 group-hover:scale-110 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]"
                             )}>
                                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 to-transparent" />
                                 <IconB className="w-6 h-6 text-black relative z-10 transition-transform duration-300 group-hover:rotate-12" />
@@ -537,7 +537,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                     transition={{ duration: 14.8 + i * 3, repeat: Infinity, ease: "easeInOut" }}
                                     className={cn(
                                         "absolute w-[400px] h-[400px] rounded-full blur-[100px]",
-                                        i % 2 === 0 ? activeB.color : "bg-white/5"
+                                        i % 2 === 0 ? activeB.color : "bg-zinc-200 dark:bg-white/5"
                                     )}
                                     style={{
                                         top: `${Math.random() * 100}%`,
@@ -670,7 +670,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                 onClick={() => setIsProtocolOpen(!isProtocolOpen)}
                                                                 className={cn(
                                                                     "w-full flex items-center p-3 md:p-4 rounded-xl md:rounded-2xl border transition-all gap-3 md:gap-4 group relative overflow-hidden bg-white/[0.03]",
-                                                                    isProtocolOpen ? "border-white/20 shadow-2xl" : "border-zinc-200 dark:border-white/5 hover:border-zinc-300 dark:border-white/10"
+                                                                    isProtocolOpen ? "border-zinc-300 dark:border-white/20 shadow-2xl" : "border-zinc-200 dark:border-white/5 hover:border-zinc-300 dark:border-white/10"
                                                                 )}
                                                             >
                                                                 <div className={cn(
@@ -697,9 +697,9 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                         initial={{ opacity: 0, y: -10 }}
                                                                         animate={{ opacity: 1, y: 0 }}
                                                                         exit={{ opacity: 0, y: -10 }}
-                                                                        className="absolute top-full left-0 right-0 mt-2 z-[200] p-4 bg-[#0a0a0a] border border-zinc-300 dark:border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,1)] flex flex-col gap-4 max-h-[400px] overflow-y-auto scrollbar-hide backdrop-blur-3xl"
+                                                                        className="absolute top-full left-0 right-0 mt-2 z-[200] p-4 bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-300 dark:border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,1)] flex flex-col gap-4 max-h-[400px] overflow-y-auto scrollbar-hide backdrop-blur-3xl"
                                                                     >
-                                                                        <div className="flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-zinc-300 dark:border-white/10">
+                                                                        <div className="flex items-center gap-2 p-1 bg-zinc-200 dark:bg-white/5 rounded-xl border border-zinc-300 dark:border-white/10">
                                                                             {(['TEACHER', 'CORE'] as const).map((cat) => {
                                                                                 if (cat === 'CORE' && !showHiddenCore) return null;
                                                                                 return (
@@ -718,7 +718,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                                         className={cn(
                                                                                             "flex-1 py-1.5 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                                                                                             activeCategory === cat
-                                                                                                ? "bg-white/10 text-zinc-900 dark:text-white shadow-lg"
+                                                                                                ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white shadow-lg"
                                                                                                 : "text-zinc-900 dark:text-white/40 hover:text-white/60"
                                                                                         )}
                                                                                     >
@@ -747,13 +747,13 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                                         className={cn(
                                                                                             "group p-3 rounded-xl border transition-all flex flex-col items-center gap-2 text-center",
                                                                                             isActive
-                                                                                                ? "border-white/20 bg-white/[0.08] shadow-xl"
-                                                                                                : "border-zinc-200 dark:border-white/5 bg-white/5 hover:bg-white/[0.05] hover:border-zinc-300 dark:border-white/10"
+                                                                                                ? "border-zinc-300 dark:border-white/20 bg-white/[0.08] shadow-xl"
+                                                                                                : "border-zinc-200 dark:border-white/5 bg-zinc-200 dark:bg-white/5 hover:bg-white/[0.05] hover:border-zinc-300 dark:border-white/10"
                                                                                         )}
                                                                                     >
                                                                                         <div className={cn(
                                                                                             "w-8 h-8 rounded-lg flex items-center justify-center border border-zinc-300 dark:border-white/10 shadow-inner group-hover:scale-110 transition-transform text-zinc-900 dark:text-white",
-                                                                                            isActive ? b.color : "bg-white/5"
+                                                                                            isActive ? b.color : "bg-zinc-200 dark:bg-white/5"
                                                                                         )}>
                                                                                             <BIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-zinc-900 dark:text-white/40")} />
                                                                                         </div>
@@ -787,7 +787,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                     }}
                                                                     className={cn(
                                                                         "w-full flex items-center justify-between p-4 rounded-2xl border transition-all group relative overflow-hidden",
-                                                                        activeSessionId === s.id ? "bg-white/5 border-white/20 text-zinc-900 dark:text-white shadow-xl" : "border-transparent text-zinc-900 dark:text-white/30 hover:bg-white/[0.02]"
+                                                                        activeSessionId === s.id ? "bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/20 text-zinc-900 dark:text-white shadow-xl" : "border-transparent text-zinc-900 dark:text-white/30 hover:bg-white/[0.02]"
                                                                     )}
                                                                 >
                                                                     <div className="flex items-center gap-3 truncate">
@@ -847,7 +847,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                         onClick={() => setActiveSessionId(s.id)}
                                                         className={cn(
                                                             "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shrink-0 border transition-all truncate max-w-[140px] italic italic",
-                                                            activeSessionId === s.id ? "bg-white/5 border-white/20 text-zinc-900 dark:text-white shadow-lg" : "border-transparent text-zinc-900 dark:text-white/30"
+                                                            activeSessionId === s.id ? "bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/20 text-zinc-900 dark:text-white shadow-lg" : "border-transparent text-zinc-900 dark:text-white/30"
                                                         )}
                                                     >
                                                         {s.title}
@@ -867,7 +867,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 5 }}
                                                     animate={{ opacity: 1, y: 0 }}
-                                                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full bg-white/5 border border-zinc-300 dark:border-white/10 w-fit"
+                                                    className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 w-fit"
                                                 >
                                                     <div className="flex gap-1.5">
                                                         {[0, 1, 2].map((i) => (
@@ -910,7 +910,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                         name="msg"
                                                         placeholder="INITIALIZE COMMAND..."
                                                         autoComplete="off"
-                                                        className="w-full h-14 md:h-20 bg-white/[0.04] border border-zinc-300 dark:border-white/10 rounded-2xl md:rounded-[2.5rem] px-5 md:px-10 py-4 md:py-6 text-xs md:text-base text-zinc-900 dark:text-white placeholder:text-zinc-900 dark:text-white/10 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all font-black italic tracking-widest uppercase"
+                                                        className="w-full h-14 md:h-20 bg-white/[0.04] border border-zinc-300 dark:border-white/10 rounded-2xl md:rounded-[2.5rem] px-5 md:px-10 py-4 md:py-6 text-xs md:text-base text-zinc-900 dark:text-white placeholder:text-zinc-900 dark:text-white/10 focus:outline-none focus:border-zinc-300 dark:border-white/20 focus:bg-white/[0.06] transition-all font-black italic tracking-widest uppercase"
                                                     />
                                                 </div>
                                                 <button

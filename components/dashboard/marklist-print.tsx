@@ -32,13 +32,13 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                         <h1 className="text-3xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Academic Records</span></h1>
                         <div className="flex gap-4 mt-2">
                             <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-white dark:bg-black text-zinc-900 dark:text-white px-2 py-1">Class: {config.class?.name}</p>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-zinc-100 text-zinc-800 px-2 py-1">Subject: {config.subject?.name}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] bg-zinc-100 text-zinc-800 dark:text-zinc-200 px-2 py-1">Subject: {config.subject?.name}</p>
                         </div>
                     </div>
                     <div className="text-right">
                         <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Registry Reference</p>
                         <p className="text-xs font-mono font-bold">MK-{config.id.slice(0, 8).toUpperCase()}</p>
-                        <p className="text-[10px] font-medium text-zinc-500 mt-1">{new Date().toLocaleDateString()}</p>
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 mt-1">{new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
 
@@ -95,7 +95,7 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                     <div className="space-y-4">
                         <div className="w-48 h-px bg-zinc-300" />
                         <div className="flex flex-col">
-                            <p className="text-[10px] font-black uppercase text-zinc-800">{config.teacher?.name || 'Faculty Member'}</p>
+                            <p className="text-[10px] font-black uppercase text-zinc-800 dark:text-zinc-200">{config.teacher?.name || 'Faculty Member'}</p>
                             <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mt-1">Subject Faculty Signature</p>
                         </div>
                     </div>
@@ -104,7 +104,7 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                         <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Head of Department / Director</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-[7px] font-black text-zinc-200 uppercase tracking-[0.6em]">AUTHENTICATED BY LUCY CORE</p>
+                        <p className="text-[7px] font-black text-zinc-800 dark:text-zinc-200 uppercase tracking-[0.6em]">AUTHENTICATED BY LUCY CORE</p>
                     </div>
                 </div>
             </div>

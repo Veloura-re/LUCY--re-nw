@@ -207,7 +207,7 @@ export default function GradebookPage() {
             <SpringingLoader message="Querying Assessment Registry..." />
         </div>
     );
-    if (!exam) return <div className="p-20 text-center text-zinc-500 uppercase tracking-widest font-black">Exam Not Discovered</div>;
+    if (!exam) return <div className="p-20 text-center text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-black">Exam Not Discovered</div>;
 
     const isLocked = exam.isLocked;
     const maxScore = exam.totalMarks || exam.config?.maxScore || 100;
@@ -289,7 +289,7 @@ export default function GradebookPage() {
                             </div>
                             <div>
                                 <DialogTitle className="text-3xl font-black text-zinc-900 dark:text-white italic uppercase">{student.firstName}'s Audit</DialogTitle>
-                                <DialogDescription className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Neural Assessment Breakdown</DialogDescription>
+                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Neural Assessment Breakdown</DialogDescription>
                             </div>
                         </div>
                     </DialogHeader>
@@ -300,9 +300,9 @@ export default function GradebookPage() {
                         <div className="space-y-8">
                             <div className="grid grid-cols-3 gap-6">
                                 <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 relative group overflow-hidden">
-                                    <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Auto-Score</div>
+                                    <div className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2">Auto-Score</div>
                                     <div className="text-4xl font-black text-zinc-900 dark:text-white italic">
-                                        {aiScore} <span className="text-lg text-zinc-500">/ {maxScore}</span>
+                                        {aiScore} <span className="text-lg text-zinc-600 dark:text-zinc-500">/ {maxScore}</span>
                                         <span className="ml-3 text-sm text-emerald-500 font-medium">({((parseFloat(aiScore) / maxScore) * 100).toFixed(0)}%)</span>
                                     </div>
                                     <div className="absolute inset-0 bg-eduGreen-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
@@ -312,11 +312,11 @@ export default function GradebookPage() {
                                     </div>
                                 </Card>
                                 <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6">
-                                    <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Submitted</div>
+                                    <div className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2">Submitted</div>
                                     <div className="text-xl font-bold text-zinc-700 dark:text-zinc-300">{new Date(attempt.submittedAt).toLocaleTimeString()}</div>
                                 </Card>
                                 <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6">
-                                    <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Verdict</div>
+                                    <div className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2">Verdict</div>
                                     <div className="text-xl font-bold text-zinc-700 dark:text-zinc-300">VALIDATED</div>
                                 </Card>
                             </div>
@@ -331,7 +331,7 @@ export default function GradebookPage() {
                                             <div className="flex items-start justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-600 font-black">Q{i + 1}</Badge>
-                                                    <h4 className="font-bold text-zinc-200">{q.text}</h4>
+                                                    <h4 className="font-bold text-zinc-800 dark:text-zinc-200">{q.text}</h4>
                                                 </div>
                                                 <div className="text-right">
                                                     <div className="text-lg font-black text-eduGreen-500 italic">{grading?.score || 0}/{q.points}</div>
@@ -362,7 +362,7 @@ export default function GradebookPage() {
                                 <Button onClick={applyAiScore} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black uppercase tracking-widest px-8 rounded-2xl h-14 gap-2">
                                     <Save className="w-4 h-4" /> Authorize AI Score
                                 </Button>
-                                <Button onClick={() => setIsReviewOpen(false)} variant="ghost" className="text-zinc-500 hover:text-white font-black uppercase tracking-widest px-10 rounded-2xl h-14">
+                                <Button onClick={() => setIsReviewOpen(false)} variant="ghost" className="text-zinc-600 dark:text-zinc-500 hover:text-white font-black uppercase tracking-widest px-10 rounded-2xl h-14">
                                     Exit Audit
                                 </Button>
                             </div>
@@ -393,10 +393,10 @@ export default function GradebookPage() {
                             ) : exam.isLocked ? (
                                 <Badge className="bg-amber-600 text-zinc-900 dark:text-white border-0 uppercase text-[9px] font-black tracking-widest px-3 py-1 rounded-lg">Finalized</Badge>
                             ) : (
-                                <Badge className="bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-0 uppercase text-[9px] font-black tracking-widest px-3 py-1 rounded-lg">Draft Mode</Badge>
+                                <Badge className="bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-0 uppercase text-[9px] font-black tracking-widest px-3 py-1 rounded-lg">Draft Mode</Badge>
                             )}
                         </div>
-                        <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-1">
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-1">
                             {exam.subject?.name} • Class {exam.class?.name}
                         </p>
                     </div>
@@ -414,14 +414,14 @@ export default function GradebookPage() {
                         <Button
                             variant="outline"
                             onClick={handleBulkReview}
-                            className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 text-zinc-500 hover:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] transition-all"
+                            className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] transition-all"
                         >
                             Secure All
                         </Button>
                         <Button
                             onClick={handleSave}
                             isLoading={saving}
-                            className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] gap-2 transition-all"
+                            className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] gap-2 transition-all"
                         >
                             <History className="w-4 h-4 text-zinc-600 dark:text-zinc-400" /> Log Draft
                         </Button>
@@ -441,7 +441,7 @@ export default function GradebookPage() {
                 <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-6 flex flex-col justify-between group hover:border-zinc-800 transition-all">
                     <div>
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
-                            <CheckCircle className="w-3.5 h-3.5 text-zinc-500" /> Grading Progress
+                            <CheckCircle className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-500" /> Grading Progress
                         </span>
                         <div className="text-3xl font-black text-zinc-900 dark:text-white italic tracking-tight mt-2">
                             {gradedCount} <span className="text-zinc-600 text-lg">/ {totalCount}</span>
@@ -458,7 +458,7 @@ export default function GradebookPage() {
                 <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-6 flex flex-col justify-between group hover:border-zinc-800 transition-all">
                     <div>
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
-                            <Award className="w-3.5 h-3.5 text-zinc-500" /> Class Average
+                            <Award className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-500" /> Class Average
                         </span>
                         <div className="text-3xl font-black text-zinc-900 dark:text-white italic tracking-tight mt-2">
                             {classAverage} <span className="text-zinc-600 text-lg">/ {maxScore}</span>
@@ -475,7 +475,7 @@ export default function GradebookPage() {
                 <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-6 flex flex-col justify-between group hover:border-zinc-800 transition-all">
                     <div>
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
-                            <Zap className="w-3.5 h-3.5 text-zinc-500" /> Participation
+                            <Zap className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-500" /> Participation
                         </span>
                         <div className="text-3xl font-black text-zinc-900 dark:text-white italic tracking-tight mt-2">
                             {attendanceRate}%
@@ -492,7 +492,7 @@ export default function GradebookPage() {
                 <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2rem] p-6 flex flex-col justify-between group hover:border-zinc-800 transition-all">
                     <div>
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
-                            <Brain className="w-3.5 h-3.5 text-zinc-500" /> MCQ Attempts
+                            <Brain className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-500" /> MCQ Attempts
                         </span>
                         <div className="text-3xl font-black text-zinc-900 dark:text-white italic tracking-tight mt-2">
                             {attempts.length} <span className="text-zinc-600 text-lg">Synced</span>
@@ -525,7 +525,7 @@ export default function GradebookPage() {
 
                 <div className="flex gap-2 w-full md:w-auto">
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="h-12 bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest text-zinc-500 w-full md:w-48">
+                        <SelectTrigger className="h-12 bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 w-full md:w-48">
                             <div className="flex items-center gap-2">
                                 <Filter className="w-3.5 h-3.5" />
                                 <SelectValue placeholder="FILTER" />
@@ -553,8 +553,8 @@ export default function GradebookPage() {
                         const pct = score ? Math.min(100, Math.max(0, (parseFloat(score) / maxScore) * 100)) : 0;
 
                         let cardBorderClass = "border-l-zinc-900";
-                        let textColor = "text-zinc-500";
-                        let barColor = "bg-zinc-800";
+                        let textColor = "text-zinc-600 dark:text-zinc-500";
+                        let barColor = "bg-zinc-200 dark:bg-zinc-800";
 
                         if (!isAbsent && score) {
                             cardBorderClass = getPerformanceBorder(pct);
@@ -580,7 +580,7 @@ export default function GradebookPage() {
                                 )}
                             >
                                 <div className="flex items-center gap-5">
-                                    <div className="w-10 h-10 rounded-xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800/80 flex items-center justify-center font-black text-zinc-500 text-xs italic">
+                                    <div className="w-10 h-10 rounded-xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800/80 flex items-center justify-center font-black text-zinc-600 dark:text-zinc-500 text-xs italic">
                                         #{String(idx + 1).padStart(2, '0')}
                                     </div>
                                     <div>
@@ -659,7 +659,7 @@ export default function GradebookPage() {
                                                 placeholder="—"
                                                 className={cn(
                                                     "text-right font-black font-mono h-11 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 w-24 rounded-xl focus:border-eduGreen-500 text-sm",
-                                                    !isAbsent && grades[student.id] ? textColor : "text-zinc-500"
+                                                    !isAbsent && grades[student.id] ? textColor : "text-zinc-600 dark:text-zinc-500"
                                                 )}
                                                 value={isAbsent ? "" : (grades[student.id] || "")}
                                                 onChange={(e) => {
@@ -686,7 +686,7 @@ export default function GradebookPage() {
                                         placeholder="Observation remark..."
                                         value={remarks[student.id] || ""}
                                         onChange={(e) => setRemarks({ ...remarks, [student.id]: e.target.value })}
-                                        className="h-11 bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-xl placeholder:italic text-xs text-zinc-600 dark:text-zinc-400 w-full lg:w-48"
+                                        className="h-11 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-xl placeholder:italic text-xs text-zinc-600 dark:text-zinc-400 w-full lg:w-48"
                                     />
                                 </div>
                             </motion.div>
@@ -697,7 +697,7 @@ export default function GradebookPage() {
                 {filteredStudents.length === 0 && (
                     <div className="py-24 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem] text-center bg-white/20 dark:bg-zinc-950/20">
                         <div className="text-zinc-700 font-bold uppercase tracking-[0.4em] text-xs italic">Matrix Query Vacant</div>
-                        <p className="text-zinc-800 mt-2 text-[10px] font-bold uppercase tracking-widest">No matching students found in this scope.</p>
+                        <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-[10px] font-bold uppercase tracking-widest">No matching students found in this scope.</p>
                     </div>
                 )}
             </div>

@@ -49,7 +49,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Institutional Volume</p>
                     <p className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">{analytics.totalAssignments}</p>
-                    <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2 flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-eduGreen-500" />
                         Active Tasks Dispatched
                     </p>
@@ -58,7 +58,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">Submissions Pulse</p>
                     <p className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">{analytics.totalSubmissions}</p>
-                    <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2 flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-blue-500" />
                         Total Knowledge Units Received
                     </p>
@@ -67,7 +67,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                 <Card className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20">
                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">7-Day Flux</p>
                     <p className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">+{analytics.recentCount}</p>
-                    <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2 flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-amber-500" />
                         New Tasks Established
                     </p>
@@ -78,7 +78,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                     <p className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">
                         {completionIndex}%
                     </p>
-                    <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2 flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-emerald-500" />
                         Institutional Fulfillment
                     </p>
@@ -162,9 +162,9 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                 </div>
                             </div>
                             
-                            <div className="space-y-8 bg-white/5 p-10 rounded-[3rem] border border-zinc-200 dark:border-white/5">
+                            <div className="space-y-8 bg-zinc-200 dark:bg-white/5 p-10 rounded-[3rem] border border-zinc-200 dark:border-white/5">
                                 <div className="space-y-4">
-                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Strategic Recommendations</span>
+                                    <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Strategic Recommendations</span>
                                     <div className="space-y-3">
                                         {insight.strategicRecommendations.map((rec: string, i: number) => (
                                             <div key={i} className="flex items-center gap-4">
@@ -175,7 +175,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                     </div>
                                 </div>
                                 <div className="space-y-4 pt-8 border-t border-zinc-200 dark:border-white/5">
-                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Friction Analysis</span>
+                                    <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Friction Analysis</span>
                                     <div className="space-y-3">
                                         {insight.frictionPoints.map((point: string, i: number) => (
                                             <div key={i} className="flex items-center justify-between">
@@ -233,7 +233,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                 <MapIcon className="w-5 h-5 text-eduGreen-500" />
                                 Institutional Task Dashboard
                             </CardTitle>
-                            <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.2em] mt-1">Real-time Global Sync</p>
+                            <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1">Real-time Global Sync</p>
                         </div>
                         <Button variant="ghost" size="icon" className="text-zinc-600 hover:text-white">
                             <Filter className="w-4 h-4" />
@@ -270,7 +270,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                                 {task.teacher.name}
                                             </td>
                                             <td className="py-6 px-8 text-right">
-                                                <div className="text-[11px] font-medium text-zinc-500 group-hover:text-white transition-colors">
+                                                <div className="text-[11px] font-medium text-zinc-600 dark:text-zinc-500 group-hover:text-white transition-colors">
                                                     {new Date(task.dueDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
                                                 </div>
                                             </td>

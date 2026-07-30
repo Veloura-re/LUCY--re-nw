@@ -249,7 +249,7 @@ export default function MarklistConfigPage() {
                                 <SelectValue placeholder="Select Term (Optional)" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="none" className="text-zinc-500 italic">No Term (General)</SelectItem>
+                                <SelectItem value="none" className="text-zinc-600 dark:text-zinc-500 italic">No Term (General)</SelectItem>
                                 {terms.map(t => <SelectItem key={t.id} value={t.id}>{t.name} {t.isActive && "(Active)"}</SelectItem>)}
                             </SelectContent>
                         </Select>

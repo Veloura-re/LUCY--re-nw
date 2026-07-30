@@ -32,7 +32,7 @@ export default async function AttendancePage() {
             <div className="min-h-[60vh] flex flex-col items-center justify-center gap-6">
                 <Activity className="w-12 h-12 text-zinc-900 dark:text-white animate-pulse" />
                 <div className="space-y-1 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Establishing Authority Link</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600 dark:text-zinc-500">Establishing Authority Link</p>
                     <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest animate-pulse italic">Neural Presence Synchronization Active</p>
                 </div>
             </div>

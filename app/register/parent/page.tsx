@@ -134,7 +134,7 @@ export default function ParentRegister() {
             <Card className="w-full max-w-lg relative z-10 bg-zinc-100/90 dark:bg-zinc-900/90 backdrop-blur-xl border-zinc-300 dark:border-zinc-800 shadow-2xl overflow-hidden transition-all duration-300">
 
                 {/* Progress Bar - Green Theme */}
-                <div className="absolute top-0 left-0 h-1 bg-zinc-800 w-full">
+                <div className="absolute top-0 left-0 h-1 bg-zinc-200 dark:bg-zinc-800 w-full">
                     <div
                         className="h-full bg-eduGreen-600 transition-all duration-300 ease-out"
                         style={{ width: step === 'CODE' ? '25%' : step === 'CONFIRM' ? '50%' : step === 'DETAILS' ? '75%' : '100%' }}
@@ -144,11 +144,11 @@ export default function ParentRegister() {
                 {step !== 'SUCCESS' && (
                     <div className="absolute left-6 top-6 z-20">
                         {step === 'CODE' ? (
-                            <Link href="/register" className="flex items-center text-sm text-zinc-500 hover:text-white transition-colors">
+                            <Link href="/register" className="flex items-center text-sm text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors">
                                 <ArrowLeft className="w-4 h-4 mr-1" /> Back
                             </Link>
                         ) : (
-                            <button onClick={() => setStep(prev => prev === 'DETAILS' ? 'CONFIRM' : 'CODE')} className="flex items-center text-sm text-zinc-500 hover:text-white transition-colors">
+                            <button onClick={() => setStep(prev => prev === 'DETAILS' ? 'CONFIRM' : 'CODE')} className="flex items-center text-sm text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors">
                                 <ArrowLeft className="w-4 h-4 mr-1" /> Back
                             </button>
                         )}
@@ -159,7 +159,7 @@ export default function ParentRegister() {
                 {step === 'CODE' && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-300">
                         <CardHeader className="space-y-2 items-center text-center pb-2 pt-16">
-                            <div className="w-16 h-16 bg-zinc-800 rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-zinc-700">
+                            <div className="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-zinc-400 dark:border-zinc-700">
                                 <ShieldCheck className="w-8 h-8 text-eduGreen-500" />
                             </div>
                             <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white">Let's find your child</CardTitle>
@@ -169,7 +169,7 @@ export default function ParentRegister() {
                             <form onSubmit={verifyCode}>
                                 <Input
                                     placeholder="ST-A1B2C3-2024"
-                                    className="text-center text-2xl tracking-widest uppercase h-14 font-mono bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600"
+                                    className="text-center text-2xl tracking-widest uppercase h-14 font-mono bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600"
                                     value={studentCode}
                                     onChange={e => setStudentCode(e.target.value.toUpperCase())}
                                     maxLength={20}
@@ -196,19 +196,19 @@ export default function ParentRegister() {
                             <CardDescription className="text-zinc-600 dark:text-zinc-400">Confirm the details below to proceed.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6 pb-12 px-8">
-                            <div className="bg-white/50 dark:bg-zinc-950/50 rounded-xl p-6 border border-zinc-300 dark:border-zinc-800 space-y-4">
+                            <div className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl p-6 border border-zinc-300 dark:border-zinc-800 space-y-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shadow-sm border border-zinc-700"><User className="w-5 h-5" /></div>
+                                    <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shadow-sm border border-zinc-400 dark:border-zinc-700"><User className="w-5 h-5" /></div>
                                     <div>
-                                        <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Student Name</p>
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-500 uppercase tracking-wider font-semibold">Student Name</p>
                                         <p className="text-lg font-medium text-zinc-900 dark:text-white">{studentDetails.firstName} {studentDetails.lastName}</p>
                                     </div>
                                 </div>
-                                <div className="w-full h-px bg-zinc-800" />
+                                <div className="w-full h-px bg-zinc-200 dark:bg-zinc-800" />
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shadow-sm border border-zinc-700"><School className="w-5 h-5" /></div>
+                                    <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 shadow-sm border border-zinc-400 dark:border-zinc-700"><School className="w-5 h-5" /></div>
                                     <div>
-                                        <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">School</p>
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-500 uppercase tracking-wider font-semibold">School</p>
                                         <p className="text-zinc-700 dark:text-zinc-300">{studentDetails.schoolName}</p>
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@ export default function ParentRegister() {
                             <Button className="w-full h-12 text-lg bg-eduGreen-600 hover:bg-eduGreen-500 text-white" onClick={() => setStep('DETAILS')}>
                                 Yes, That's My Child
                             </Button>
-                            <Button variant="ghost" className="w-full text-zinc-500 hover:text-white hover:bg-zinc-800" onClick={() => setStep('CODE')}>
+                            <Button variant="ghost" className="w-full text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800" onClick={() => setStep('CODE')}>
                                 No, enter different code
                             </Button>
                         </CardContent>
@@ -232,9 +232,9 @@ export default function ParentRegister() {
                         </CardHeader>
                         <CardContent className="space-y-4 pb-8">
                             <div className="space-y-4">
-                                <Input label="Your Full Name" value={name} onChange={e => setName(e.target.value)} required placeholder="Jane Doe" className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
-                                <Input label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="parent@example.com" className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
-                                <Input label="Create Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" className="bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
+                                <Input label="Your Full Name" value={name} onChange={e => setName(e.target.value)} required placeholder="Jane Doe" className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
+                                <Input label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="parent@example.com" className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
+                                <Input label="Create Password" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600" />
                             </div>
 
                             {error && <p className="text-red-400 text-sm text-center">{error}</p>}
@@ -245,7 +245,7 @@ export default function ParentRegister() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                 />
                                 <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                     I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.

@@ -33,7 +33,7 @@ export default function SuperAdminDashboard() {
         return (
             <div className="flex flex-col items-center justify-center py-32 gap-4">
                 <Loader2 className="w-8 h-8 animate-spin text-emerald-500 opacity-80" />
-                <p className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-zinc-500">
+                <p className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-zinc-600 dark:text-zinc-500">
                     CALIBRATING TELEMETRY MATRIX...
                 </p>
             </div>

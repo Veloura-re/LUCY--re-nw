@@ -64,7 +64,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
             )}>
                 <DialogTitle className="sr-only">Reading {book.title}</DialogTitle>
                 {/* Header Overlay */}
-                <div className="absolute top-0 left-0 w-full z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+                <div className="absolute top-0 left-0 w-full z-10 flex items-center justify-between px-6 py-4 bg-gradient-to-b from-white dark:from-black/80 to-transparent pointer-events-none">
                     <div className="flex items-center gap-4 pointer-events-auto">
                         <div className="p-3 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-xl border border-zinc-300 dark:border-white/10 shadow-lg">
                             <BookOpen className="w-5 h-5 text-eduGreen-500" />
@@ -80,7 +80,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className={cn("rounded-xl transition-all", sidebarOpen ? "bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5")}
+                            className={cn("rounded-xl transition-all", sidebarOpen ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5")}
                             title="Toggle Info Panel"
                         >
                             <Info className="w-5 h-5" />
@@ -102,7 +102,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                         >
                             <Download className="w-5 h-5" />
                         </a>
-                        <div className="w-[1px] h-6 bg-white/10 mx-1" />
+                        <div className="w-[1px] h-6 bg-zinc-300 dark:bg-white/10 mx-1" />
                         <DialogClose asChild>
                             <Button
                                 variant="ghost"
@@ -154,12 +154,12 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
 
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.2em] mb-2">Subject Mastery</h3>
+                                    <h3 className="text-xs font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mb-2">Subject Mastery</h3>
                                     <p className="text-sm font-medium text-zinc-900 dark:text-white">{book.subject?.name || "General Curriculum"}</p>
                                 </div>
                                 
                                 <div>
-                                    <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.2em] mb-2">Academic Level</h3>
+                                    <h3 className="text-xs font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mb-2">Academic Level</h3>
                                     <div className="flex gap-2">
                                         <span className="px-3 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-white/5 text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest">
                                             Grade {book.grade?.level || "N/A"}
@@ -172,7 +172,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
 
                                 {cleanDescription && (
                                     <div>
-                                        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.2em] mb-2">Synopsis</h3>
+                                        <h3 className="text-xs font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mb-2">Synopsis</h3>
                                         <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">{cleanDescription}</p>
                                     </div>
                                 )}
@@ -180,7 +180,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                 <div className="pt-6 border-t border-zinc-300 dark:border-white/10 grid grid-cols-2 gap-4">
                                     {book.edition && (
                                         <div>
-                                            <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
+                                            <div className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-500 mb-1">
                                                 <Layers className="w-3 h-3" />
                                                 <span className="text-[9px] uppercase tracking-widest font-semibold">Edition</span>
                                             </div>
@@ -189,7 +189,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                     )}
                                     {book.academicYear && (
                                         <div>
-                                            <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
+                                            <div className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-500 mb-1">
                                                 <Calendar className="w-3 h-3" />
                                                 <span className="text-[9px] uppercase tracking-widest font-semibold">Year</span>
                                             </div>

@@ -259,7 +259,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     onClick={() => setSelectedStudentId(null)}
                                     className={cn(
                                         "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
-                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-500 hover:text-white"
+                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
                                     )}
                                 >
                                     All Library
@@ -271,7 +271,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         onClick={() => setSelectedStudentId(child.id)}
                                         className={cn(
                                             "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
-                                            selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-500 hover:text-white"
+                                            selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
                                         )}
                                     >
                                         {child.firstName}
@@ -307,7 +307,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         ) : (
                             <Button
                                 onClick={() => setRequestModal(true)}
-                                className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
+                                className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
                             >
                                 <Zap className="mr-2 h-4 w-4 text-eduGreen-500" /> Request Resource
                             </Button>
@@ -403,16 +403,16 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                     if (meta.coverUrl) {
                                                         return (
                                                             <div 
-                                                                className="absolute inset-0 rounded-l-md shadow-2xl border-l border-zinc-700/50"
+                                                                className="absolute inset-0 rounded-l-md shadow-2xl border-l border-zinc-400 dark:border-zinc-700/50"
                                                                 style={{ backgroundImage: `url(${meta.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                                                             >
-                                                                <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-white dark:from-black/60 to-transparent" />
                                                             </div>
                                                         );
                                                     }
                                                     return (
                                                         <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-zinc-300 dark:border-white/10 flex flex-col items-start p-4">
-                                                            <div className="w-full h-1 bg-white/5 mb-4" />
+                                                            <div className="w-full h-1 bg-zinc-200 dark:bg-white/5 mb-4" />
                                                             <h4 className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
                                                         </div>
                                                     );
@@ -449,7 +449,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-3 mt-4">
-                                                    <span className="text-[8px] font-medium text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-300 dark:border-zinc-800">
+                                                    <span className="text-[8px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-300 dark:border-zinc-800">
                                                         Grade {book.grade.level}
                                                     </span>
                                                     <span className="text-[8px] font-medium text-eduGreen-900 uppercase tracking-tighter">
@@ -542,10 +542,10 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                     {filteredBooks.length === 0 && (
                         <div className="col-span-full py-32 text-center">
                             <div className="w-24 h-24 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6 opacity-30">
-                                <Book className="w-12 h-12 text-zinc-500" />
+                                <Book className="w-12 h-12 text-zinc-600 dark:text-zinc-500" />
                             </div>
                             <h3 className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">Library records not found</h3>
-                            <p className="text-zinc-800 text-[10px] font-medium uppercase mt-2">No scholarly resources available for selected parameters</p>
+                            <p className="text-zinc-800 dark:text-zinc-200 text-[10px] font-medium uppercase mt-2">No scholarly resources available for selected parameters</p>
                         </div>
                     )}
                 </div>
@@ -553,7 +553,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
                     <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-8">
-                        <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                             Page {page} of {totalPages}
                         </p>
                         <div className="flex items-center gap-2">
@@ -562,7 +562,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                             >
                                 Previous
                             </Button>
@@ -571,7 +571,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                             >
                                 Next
                             </Button>
@@ -618,10 +618,10 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1">Institutional Learning Bundle</p>
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-medium text-zinc-800 uppercase px-3 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg">{unit.resources.length} Materials</span>
+                                    <span className="text-[8px] font-medium text-zinc-800 dark:text-zinc-200 uppercase px-3 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg">{unit.resources.length} Materials</span>
                                 </div>
 
-                                <p className="text-xs text-zinc-500 font-medium leading-relaxed italic">{unit.description || "Synthesized academic pathway for streamlined mastery."}</p>
+                                <p className="text-xs text-zinc-600 dark:text-zinc-500 font-medium leading-relaxed italic">{unit.description || "Synthesized academic pathway for streamlined mastery."}</p>
 
                                 <div className="space-y-3">
                                     {unit.resources.map((res: any, idx: number) => (
@@ -638,7 +638,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         ))}
                         {units.length === 0 && (
                             <div className="col-span-full py-32 text-center border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
-                                <Layers className="w-12 h-12 text-zinc-800 mx-auto mb-4" />
+                                <Layers className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mx-auto mb-4" />
                                 <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">No integrated unit packs detected in local cloud</p>
                             </div>
                         )}
@@ -665,7 +665,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded">{req.subject || "General"}</span>
                                     <span className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded">{req.grade || "All"}</span>
                                 </div>
-                                <p className="text-[10px] text-zinc-500 font-medium leading-relaxed">{req.reason || "No context provided."}</p>
+                                <p className="text-[10px] text-zinc-600 dark:text-zinc-500 font-medium leading-relaxed">{req.reason || "No context provided."}</p>
 
                                 {isDirector && req.status === 'PENDING' && (
                                     <div className="flex gap-2 pt-4">
@@ -682,7 +682,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             variant="ghost"
                                             isLoading={statusLoading === req.id}
                                             disabled={statusLoading === req.id}
-                                            className="h-10 flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
+                                            className="h-10 flex-1 bg-zinc-100 dark:bg-zinc-900 hover:bg-red-500/10 text-zinc-600 dark:text-zinc-500 hover:text-red-500 rounded-xl font-medium text-[9px] uppercase tracking-widest"
                                         >
                                             Reject
                                         </Button>
@@ -847,7 +847,7 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                     </div>
 
                     <div className="space-y-4">
-                        <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Select Instructional Resources</label>
+                        <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Select Instructional Resources</label>
                         <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto pr-2 scrollbar-hide">
                             {books.map((book: any) => (
                                 <button
@@ -858,13 +858,13 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                                         "flex items-center justify-between p-4 rounded-2xl border transition-all text-left",
                                         formData.resourceIds.includes(book.id)
                                             ? "bg-eduGreen-500/10 border-eduGreen-500 text-zinc-900 dark:text-white"
-                                            : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700"
+                                            : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:border-zinc-700"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className={cn(
                                             "w-4 h-4 rounded border flex items-center justify-center transition-all",
-                                            formData.resourceIds.includes(book.id) ? "bg-eduGreen-500 border-eduGreen-500" : "border-zinc-700"
+                                            formData.resourceIds.includes(book.id) ? "bg-eduGreen-500 border-eduGreen-500" : "border-zinc-400 dark:border-zinc-700"
                                         )}>
                                             {formData.resourceIds.includes(book.id) && <Zap className="w-3 h-3 text-black" />}
                                         </div>
@@ -873,7 +873,7 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                                             <p className="text-[8px] font-medium uppercase tracking-widest text-zinc-600 mt-1">{book.subject.name} • Grade {book.grade.level}</p>
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-medium uppercase text-zinc-800 italic">{book.author || "Institutional"}</span>
+                                    <span className="text-[8px] font-medium uppercase text-zinc-800 dark:text-zinc-200 italic">{book.author || "Institutional"}</span>
                                 </button>
                             ))}
                         </div>
@@ -1114,7 +1114,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Deploy to institutional library</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl text-zinc-600 hover:text-white hover:bg-zinc-800 transition-all">
+                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl text-zinc-600 hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -1125,7 +1125,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                         {/* Left Panel — File + Title + Description */}
                         <div className="p-8 space-y-5">
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Book Title</label>
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Book Title</label>
                                 <input
                                     required placeholder="e.g. Mathematics Grade 10"
                                     value={formData.title}
@@ -1136,12 +1136,12 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Source toggle */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">File Source</label>
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">File Source</label>
                                 <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-300 dark:border-zinc-800 gap-1 mb-4">
                                     {(['file', 'link'] as const).map(mode => (
                                         <button key={mode} type="button" onClick={() => setPayloadSource(mode)}
                                             className={cn('flex-1 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all',
-                                                payloadSource === mode ? 'bg-zinc-800 text-zinc-900 dark:text-white shadow' : 'text-zinc-600 hover:text-zinc-400'
+                                                payloadSource === mode ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow' : 'text-zinc-600 hover:text-zinc-400'
                                             )}>
                                             {mode === 'file' ? 'Upload File' : 'External Link'}
                                         </button>
@@ -1189,7 +1189,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             <div className="flex gap-4">
                                 <div className="flex-1">
-                                    <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Cover Image <span className="text-zinc-700">(optional)</span></label>
+                                    <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Cover Image <span className="text-zinc-700">(optional)</span></label>
                                     <div className="relative flex flex-col items-center justify-center h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-eduGreen-500 transition-colors cursor-pointer group">
                                         <input type="file" accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
@@ -1202,14 +1202,14 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-semibold">Upload Cover</span>
+                                            <span className="text-[9px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-semibold">Upload Cover</span>
                                         )}
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Description <span className="text-zinc-700">(optional)</span></label>
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Description <span className="text-zinc-700">(optional)</span></label>
                                 <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Brief description of this book..."
                                     className="w-full h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
@@ -1221,7 +1221,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Grade */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
                                     Grade <span className="text-red-500">*</span>
                                 </label>
                                 <Select
@@ -1241,7 +1241,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Section / Class — cascading */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
                                     Section <span className="text-red-500">*</span>
                                     {loadingClasses && <span className="ml-2 inline-block w-3 h-3 border border-eduGreen-500 border-t-transparent rounded-full animate-spin" />}
                                 </label>
@@ -1263,7 +1263,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Subject */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">
                                     Subject <span className="text-red-500">*</span>
                                 </label>
                                 <Select
@@ -1284,13 +1284,13 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             {/* Author + Year */}
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Author</label>
+                                    <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Author</label>
                                     <input placeholder="Author name" value={formData.author}
                                         onChange={e => setFormData({ ...formData, author: e.target.value })}
                                         className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
                                 </div>
                                 <div>
-                                    <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Year</label>
+                                    <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Year</label>
                                     <input placeholder="2024" value={formData.academicYear}
                                         onChange={e => setFormData({ ...formData, academicYear: e.target.value })}
                                         className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none transition-all" />
@@ -1299,7 +1299,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Teacher Note */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Teacher Note <span className="text-zinc-700">(optional)</span></label>
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Teacher Note <span className="text-zinc-700">(optional)</span></label>
                                 <textarea value={formData.teacherNote} onChange={e => setFormData({ ...formData, teacherNote: e.target.value })}
                                     placeholder="Instructions visible to students..."
                                     className="w-full h-20 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl p-4 text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-700 focus:border-eduGreen-600 focus:outline-none resize-none transition-all" />
@@ -1307,7 +1307,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
 
                             {/* Expiry */}
                             <div>
-                                <label className="text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.25em] block mb-3">Expiry Date <span className="text-zinc-700">(optional)</span></label>
+                                <label className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.25em] block mb-3">Expiry Date <span className="text-zinc-700">(optional)</span></label>
                                 <input type="date" value={formData.expiresAt}
                                     onChange={e => setFormData({ ...formData, expiresAt: e.target.value })}
                                     className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl px-5 text-sm font-medium text-zinc-900 dark:text-white focus:border-eduGreen-600 focus:outline-none transition-all" />
@@ -1328,7 +1328,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                                     { done: !!formData.subjectId, label: 'Subject' },
                                 ].map(({ done, label }) => (
                                     <div key={label} className={cn('flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-widest transition-all', done ? 'text-eduGreen-500' : 'text-zinc-700')}>
-                                        <div className={cn('w-1.5 h-1.5 rounded-full transition-all', done ? 'bg-eduGreen-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]' : 'bg-zinc-800')} />
+                                        <div className={cn('w-1.5 h-1.5 rounded-full transition-all', done ? 'bg-eduGreen-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]' : 'bg-zinc-200 dark:bg-zinc-800')} />
                                         {label}
                                     </div>
                                 ))}

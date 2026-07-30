@@ -195,7 +195,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                         </CardHeader>
                         <CardContent className="p-0">
                             {isAddingGrade && (
-                                <div className="p-10 bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
+                                <div className="p-10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                     {loading ? (
                                         <div className="py-4 flex justify-center items-center scale-75">
                                             <SpringingLoader message="Deploying Academic Layer" />
@@ -244,10 +244,10 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     {grade.level}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-medium text-xl text-zinc-100 group-hover:text-white transition-colors tracking-tight">{grade.name}</h4>
+                                                    <h4 className="font-medium text-xl text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-white transition-colors tracking-tight">{grade.name}</h4>
                                                     <div className="flex items-center gap-3 mt-1">
                                                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Academic Tier</p>
-                                                        <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                        <div className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                                         <span className="text-[9px] font-medium text-eduGreen-700 uppercase tracking-tighter">{grade.classes?.length || 0} Class Nodes</span>
                                                     </div>
                                                 </div>
@@ -256,12 +256,12 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"
-                                                    className="h-9 w-9 rounded-xl text-zinc-800 hover:text-red-500 hover:bg-red-950/20 border border-transparent hover:border-red-900/30 transition-all opacity-0 group-hover:opacity-100"
+                                                    className="h-9 w-9 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 border border-transparent hover:border-red-900/30 transition-all opacity-0 group-hover:opacity-100"
                                                     onClick={(e) => { e.stopPropagation(); setDeleteConfig({ id: grade.id, type: 'GRADE' }); }}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
-                                                <div className={`p-2 rounded-xl border transition-all ${expandedGrade === grade.id ? 'bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500 rotate-180' : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800 group-hover:text-zinc-600'}`}>
+                                                <div className={`p-2 rounded-xl border transition-all ${expandedGrade === grade.id ? 'bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500 rotate-180' : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800 dark:text-zinc-200 group-hover:text-zinc-600'}`}>
                                                     <ChevronDown className="w-5 h-5" />
                                                 </div>
                                             </div>
@@ -274,10 +274,10 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                         <div key={cls.id} className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-[1.5rem] border border-zinc-300 dark:border-zinc-800 flex items-center justify-between group/cls hover:border-eduGreen-500/30 hover:bg-eduGreen-900/5 transition-all relative overflow-hidden">
                                                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/cls:opacity-100 transition-opacity" />
                                                             <div className="relative z-10 flex-1">
-                                                                <span className="font-medium text-zinc-100 group-hover/cls:text-zinc-900 dark:text-white transition-colors tracking-tight block">{cls.name}</span>
+                                                                <span className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover/cls:text-zinc-900 dark:text-white transition-colors tracking-tight block">{cls.name}</span>
                                                                   <div className="flex items-center gap-3 mt-1.5">
                                                                       <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest block">{cls._count?.students || 0} Students</span>
-                                                                      <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                                      <div className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                                                       <div className="flex items-center gap-1.5">
                                                                           <span className={cn(
                                                                               "text-[9px] font-bold uppercase tracking-widest",
@@ -294,7 +294,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                       </div>
                                                                       {cls.homeroomTeacher && (
                                                                           <>
-                                                                              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                                              <div className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                                                               <span className="text-[9px] font-medium text-sky-500 uppercase tracking-widest block">
                                                                                   {cls.homeroomTeacher.name}
                                                                               </span>
@@ -307,7 +307,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                     onValueChange={(teacherId: string) => handleAssignHomeroom(cls.id, teacherId === "null" ? null : teacherId)}
                                                                     defaultValue={cls.homeroomTeacherId || "null"}
                                                                 >
-                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-all">
+                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white transition-all">
                                                                         <SelectValue placeholder="Staff" />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
@@ -322,7 +322,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                 <Button
                                                                     size="icon"
                                                                     variant="ghost"
-                                                                    className="h-10 w-10 rounded-xl text-zinc-800 hover:text-red-500 hover:bg-red-950/20 hover:border-red-900/30 border border-transparent transition-all"
+                                                                    className="h-10 w-10 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 hover:border-red-900/30 border border-transparent transition-all"
                                                                     onClick={(e) => { e.stopPropagation(); setDeleteConfig({ id: cls.id, type: 'CLASS' }); }}
                                                                 >
                                                                     <Trash2 className="w-4 h-4" />
@@ -386,7 +386,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                     size="icon"
                                     variant="ghost"
                                     onClick={() => setIsAddingSubject(true)}
-                                    className="h-10 w-10 rounded-xl bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-sky-500 hover:border-sky-900/30 transition-all"
+                                    className="h-10 w-10 rounded-xl bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-sky-500 hover:border-sky-900/30 transition-all"
                                 >
                                     <Plus className="w-4 h-4" />
                                 </Button>
@@ -395,7 +395,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                         </CardHeader>
                         <CardContent className="p-0">
                             {isAddingSubject && (
-                                <div className="p-6 bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
+                                <div className="p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-b border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300">
                                     {loading ? (
                                         <div className="py-2 flex justify-center items-center scale-75">
                                             <SpringingLoader message="Deploying Academic Subject" />
@@ -420,13 +420,13 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                 {subjects?.map((sub) => (
                                     <div key={sub.id} className="p-5 flex items-center justify-between hover:bg-sky-900/5 transition-all group">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-800 group-hover:bg-sky-500 group-hover:shadow-[0_0_8px_rgba(14,165,233,0.5)] transition-all" />
+                                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800 group-hover:bg-sky-500 group-hover:shadow-[0_0_8px_rgba(14,165,233,0.5)] transition-all" />
                                             <span className="font-medium text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-100 transition-colors tracking-tight">{sub.name}</span>
                                         </div>
                                         <Button
                                             size="icon"
                                             variant="ghost"
-                                            className="h-9 w-9 rounded-lg text-zinc-800 hover:text-red-500 hover:bg-red-950/20 opacity-0 group-hover:opacity-100 transition-all"
+                                            className="h-9 w-9 rounded-lg text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 opacity-0 group-hover:opacity-100 transition-all"
                                             onClick={() => setDeleteConfig({ id: sub.id, type: 'SUBJECT' })}
                                         >
                                             <Trash2 className="w-3.5 h-3.5" />

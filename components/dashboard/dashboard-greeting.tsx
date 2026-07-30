@@ -73,24 +73,24 @@ export function DashboardGreeting({ name, role, gender }: DashboardGreetingProps
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.1 }}
-                    className="inline-flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 text-zinc-500 text-[9px] md:text-[10px] font-medium uppercase tracking-widest min-w-[120px] md:min-w-[140px]"
+                    className="inline-flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-500 text-[9px] md:text-[10px] font-medium uppercase tracking-widest min-w-[120px] md:min-w-[140px]"
                 >
                     <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 text-zinc-600" />
-                    {mounted ? currentDate : <span className="animate-pulse bg-zinc-800 h-2.5 w-20 md:w-24 rounded"></span>}
+                    {mounted ? currentDate : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2.5 w-20 md:w-24 rounded"></span>}
                 </motion.div>
             </div>
 
             <h1 className="text-xl sm:text-2xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center flex-wrap gap-1.5 md:gap-2">
                 <span className="lowercase text-zinc-600 dark:text-zinc-400 capitalize">
-                    {mounted ? greeting : <span className="animate-pulse bg-zinc-800 h-8 md:h-10 w-32 md:w-48 rounded inline-block"></span>}
+                    {mounted ? greeting : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-8 md:h-10 w-32 md:w-48 rounded inline-block"></span>}
                 </span>
                 <span>
                     {mounted && ","} <span className="text-eduGreen-500 italic">{displayName}</span>
                 </span>
             </h1>
 
-            <p className="text-zinc-500 font-medium tracking-[0.05em] md:tracking-[0.1em] text-sm md:text-lg mt-2 md:mt-3 min-h-[14px] md:min-h-[16px] flex items-center italic">
-                {mounted ? `"${quote}"` : <span className="animate-pulse bg-zinc-800 h-2.5 md:h-3 w-48 md:w-64 rounded inline-block"></span>}
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium tracking-[0.05em] md:tracking-[0.1em] text-sm md:text-lg mt-2 md:mt-3 min-h-[14px] md:min-h-[16px] flex items-center italic">
+                {mounted ? `"${quote}"` : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2.5 md:h-3 w-48 md:w-64 rounded inline-block"></span>}
             </p>
 
             {/* Mobile-only beauty hint */}

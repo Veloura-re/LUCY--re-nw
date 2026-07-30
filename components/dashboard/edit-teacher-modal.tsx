@@ -159,7 +159,7 @@ export function EditTeacherModal({ isOpen, onClose, onSuccess, teacher }: EditTe
                         <Button type="button" variant="ghost" onClick={onClose} className="text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
                         <Button type="submit" disabled={loading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
                             {loading ? (
-                                <><span className="w-4 h-4 mr-2 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Saving...</>
+                                <><span className="w-4 h-4 mr-2 border-2 border-zinc-300 dark:border-white/20 border-t-white rounded-full animate-spin" /> Saving...</>
                             ) : (
                                 <><Save className="w-4 h-4 mr-2" /> Save Changes</>
                             )}

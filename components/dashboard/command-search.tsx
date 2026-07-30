@@ -113,7 +113,7 @@ export function CommandSearch() {
                                         className="w-full flex items-center justify-between p-4 bg-zinc-100/40 dark:bg-zinc-900/40 hover:bg-eduGreen-500/10 border border-transparent hover:border-eduGreen-900/30 rounded-2xl transition-all group text-left"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-300 dark:border-zinc-800 text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
+                                            <div className="p-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
                                                 <Book className="w-4 h-4" />
                                             </div>
                                             <div>
@@ -127,7 +127,7 @@ export function CommandSearch() {
                                             <span className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest px-2 py-1 bg-white dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-900">
                                                 {book.class.name}
                                             </span>
-                                            <Zap className="w-3 h-3 text-zinc-800 group-hover:text-eduGreen-500" />
+                                            <Zap className="w-3 h-3 text-zinc-800 dark:text-zinc-200 group-hover:text-eduGreen-500" />
                                         </div>
                                     </button>
                                 ))}
@@ -152,7 +152,7 @@ export function CommandSearch() {
                                     ].map((sh) => (
                                         <div key={sh.label} className="flex items-center gap-3 p-4 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900/40 transition-all cursor-pointer">
                                             <sh.icon className="w-4 h-4 text-zinc-600" />
-                                            <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">{sh.label}</span>
+                                            <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{sh.label}</span>
                                         </div>
                                     ))}
                                 </div>

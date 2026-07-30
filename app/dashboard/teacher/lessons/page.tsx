@@ -149,7 +149,7 @@ export default function TeacherLessonsPage() {
                                                     <Badge className="bg-zinc-100 dark:bg-zinc-900 text-eduGreen-500 border-zinc-300 dark:border-zinc-800 text-[8px] tracking-widest">{lesson.class?.name}</Badge>
                                                 </div>
                                                 {lesson.objectives && (
-                                                    <p className="text-zinc-500 text-xs mt-2 italic leading-relaxed max-w-xl">{lesson.objectives}</p>
+                                                    <p className="text-zinc-600 dark:text-zinc-500 text-xs mt-2 italic leading-relaxed max-w-xl">{lesson.objectives}</p>
                                                 )}
                                                 <div className="flex items-center gap-4 mt-3 text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
                                                     <span className="flex items-center gap-1.5">
@@ -172,9 +172,9 @@ export default function TeacherLessonsPage() {
                         </motion.div>
                     )) : (
                         <div className="text-center py-24 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
-                            <FileText className="w-12 h-12 text-zinc-900 mx-auto mb-6" />
+                            <FileText className="w-12 h-12 text-zinc-900 dark:text-white mx-auto mb-6" />
                             <div className="text-zinc-700 font-bold uppercase tracking-[0.5em] text-sm">No Entries Found</div>
-                            <p className="text-zinc-800 mt-2 text-xs uppercase tracking-widest">Log a lesson to begin populating the ledger.</p>
+                            <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs uppercase tracking-widest">Log a lesson to begin populating the ledger.</p>
                             <Button onClick={() => setShowModal(true)} variant="ghost" className="mt-8 text-eduGreen-500 hover:text-eduGreen-400 hover:bg-eduGreen-500/5 font-bold uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl border border-eduGreen-500/20">
                                 Log First Lesson
                             </Button>
@@ -188,7 +188,7 @@ export default function TeacherLessonsPage() {
                 <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white max-w-md rounded-[2.5rem]">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-black italic tracking-tighter">Log Lesson</DialogTitle>
-                        <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Record today's teaching session</DialogDescription>
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Record today's teaching session</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
                         <div>

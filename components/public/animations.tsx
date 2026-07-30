@@ -43,7 +43,7 @@ export function CustomCursor() {
     return (
         <>
             <motion.div style={{ x: cursorX, y: cursorY }} className="fixed top-0 left-0 z-[900] pointer-events-none w-2 h-2 -ml-1 -mt-1 bg-white rounded-full mix-blend-difference will-change-transform" />
-            <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-7 h-7 -ml-[14px] -mt-[14px] border border-white/20 rounded-full mix-blend-difference will-change-transform" />
+            <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-7 h-7 -ml-[14px] -mt-[14px] border border-zinc-300 dark:border-white/20 rounded-full mix-blend-difference will-change-transform" />
         </>
     );
 }
@@ -421,7 +421,7 @@ export function Counter({ from = 0, to, suffix = "", duration = 1.8 }: { from?: 
 // ─── Animated Scan Bar ────────────────────────────────────────────────────────
 export function ScanBar() {
     return (
-        <div className="h-px bg-zinc-900 w-full overflow-hidden relative">
+        <div className="h-px bg-zinc-100 dark:bg-zinc-900 w-full overflow-hidden relative">
             <motion.div animate={{ x: ["-100%", "500%"] }} transition={{ repeat: Infinity, duration: 2.3, ease: "easeInOut", repeatDelay: 1 }} className="h-full bg-gradient-to-r from-transparent via-white to-transparent w-1/4 will-change-transform" />
         </div>
     );
@@ -473,7 +473,7 @@ export function Typewriter({ lines, className }: { lines: string[]; className?: 
     return (
         <div className={className}>
             {displayed.split("\n").map((line, i) => (
-                <div key={i} className="text-[10px] font-mono text-zinc-500 leading-relaxed">
+                <div key={i} className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500 leading-relaxed">
                     {line}
                     {i === displayed.split("\n").length - 1 && lineIdx < lines.length && (
                         <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.5 }} className="inline-block w-1.5 h-3 bg-white ml-0.5 align-middle" />
@@ -489,7 +489,7 @@ export function OrbitRing({ nodeCount = 5, radius = 60, duration = 8 }: { nodeCo
     const prefersReduced = useReducedMotion();
     return (
         <div className="relative pointer-events-none" style={{ width: radius * 2 + 32, height: radius * 2 + 32 }}>
-            <div className="absolute inset-4 border border-white/5 rounded-full" />
+            <div className="absolute inset-4 border border-zinc-200 dark:border-white/5 rounded-full" />
             {Array.from({ length: nodeCount }, (_, i) => (
                 <motion.div
                     key={i}
@@ -515,13 +515,13 @@ import { ArrowLeft } from "lucide-react";
 
 export function PageNav() {
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-300 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4">
             <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
                     <motion.div whileHover={{ scale: 1.12, rotate: 5 }} className="w-6 h-6 bg-white flex items-center justify-center">
                         <span className="text-black font-black text-xs">L</span>
                     </motion.div>
-                    <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                    <span className="font-bold text-lg tracking-tighter text-zinc-900 dark:text-white">lucy_os</span>
                 </Link>
                 <Link href="/">
                     <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">
@@ -537,15 +537,15 @@ export function PageNav() {
 // ─── Page Shared Footer ────────────────────────────────────────────────────────
 export function PageFooter({ id, links }: { id: string; links: { href: string; label: string }[] }) {
     return (
-        <footer className="border-t border-white/5 py-12 px-6 text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+        <footer className="border-t border-zinc-200 dark:border-white/5 py-12 px-6 text-[10px] uppercase tracking-[0.2em] text-zinc-700">
             <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                 <p>© 2026 LUCY_SYS // {id}</p>
                 <div className="flex items-center gap-8 flex-wrap justify-center md:justify-end">
                     {links.map(l => <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>)}
-                    <Link href="/community" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">community</Link>
-                    <Link href="https://discord.gg/Kbm4XhzfMJ" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">discord</Link>
-                    <Link href="https://t.me/+ElIFqzvGBlYzMDBk" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">telegram</Link>
-                    <Link href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-400 hover:text-white font-bold">youtube</Link>
+                    <Link href="/community" className="hover:text-white transition-colors text-zinc-600 dark:text-zinc-400 hover:text-white font-bold">community</Link>
+                    <Link href="https://discord.gg/Kbm4XhzfMJ" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-600 dark:text-zinc-400 hover:text-white font-bold">discord</Link>
+                    <Link href="https://t.me/+ElIFqzvGBlYzMDBk" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-600 dark:text-zinc-400 hover:text-white font-bold">telegram</Link>
+                    <Link href="https://www.youtube.com/@LucyAcademics" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-zinc-600 dark:text-zinc-400 hover:text-white font-bold">youtube</Link>
                 </div>
             </div>
         </footer>

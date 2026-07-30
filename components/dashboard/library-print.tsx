@@ -16,7 +16,7 @@ export const LibraryPrint = React.forwardRef<HTMLDivElement, LibraryPrintProps>(
                 <div className="flex justify-between items-start border-b-2 border-black pb-8 mb-10">
                     <div>
                         <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Institutional Library</span></h1>
-                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-500">{title}</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-600 dark:text-zinc-500">{title}</p>
                     </div>
                     <div className="text-right">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Inventory Sync Date</p>
@@ -44,8 +44,8 @@ export const LibraryPrint = React.forwardRef<HTMLDivElement, LibraryPrintProps>(
                                     {book.title}
                                     <div className="text-[8px] font-medium text-zinc-600 dark:text-zinc-400 normal-case tracking-normal">Author: {book.author || 'Institutional'}</div>
                                 </td>
-                                <td className="py-4 px-2 text-zinc-500 font-medium">{book.subject || '-'}</td>
-                                <td className="py-4 px-2 text-zinc-500 font-medium uppercase tracking-widest">{book.category || '-'}</td>
+                                <td className="py-4 px-2 text-zinc-600 dark:text-zinc-500 font-medium">{book.subject || '-'}</td>
+                                <td className="py-4 px-2 text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest">{book.category || '-'}</td>
                                 <td className="py-4 px-2 text-right font-mono font-bold">{book.totalCopies}</td>
                             </tr>
                         ))}

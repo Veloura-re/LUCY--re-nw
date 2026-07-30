@@ -115,9 +115,9 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                 </div>
 
                 <div className="flex items-center gap-3 mb-1">
-                    <div className="px-5 py-3 rounded-2xl bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 flex items-center gap-3">
+                    <div className="px-5 py-3 rounded-2xl bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 flex items-center gap-3">
                         <ShieldCheck className="w-4 h-4 text-eduGreen-500" />
-                        <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-500">Secure Link Established</span>
+                        <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Secure Link Established</span>
                     </div>
                 </div>
             </div>
@@ -126,7 +126,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                 // ... Empty State ...
                 <div className="py-32 text-center bg-white/20 dark:bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                     <div className="w-16 h-16 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6">
-                        <User className="w-8 h-8 text-zinc-800" />
+                        <User className="w-8 h-8 text-zinc-800 dark:text-zinc-200" />
                     </div>
                     <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Terminal</p>
                     <Link href="/dashboard">
@@ -150,7 +150,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {student.invoices?.length === 0 ? (
                                     <Card className="md:col-span-3 bg-white/30 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2.5rem] py-16 text-center">
-                                        <p className="text-zinc-800 font-medium uppercase tracking-[0.4em] text-[10px]">No Active Invoices Detectable</p>
+                                        <p className="text-zinc-800 dark:text-zinc-200 font-medium uppercase tracking-[0.4em] text-[10px]">No Active Invoices Detectable</p>
                                     </Card>
                                 ) : (
                                     student.invoices.map((invoice: any) => {
@@ -159,14 +159,14 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                             <Card key={invoice.id} className="group bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-2xl relative">
                                                 <div className={cn(
                                                     "absolute top-0 left-0 w-full h-[2px] transition-opacity",
-                                                    invoice.status === 'PAID' ? "bg-eduGreen-500" : (hasPendingPayment ? "bg-amber-400" : "bg-zinc-800 opacity-60 group-hover:opacity-100")
+                                                    invoice.status === 'PAID' ? "bg-eduGreen-500" : (hasPendingPayment ? "bg-amber-400" : "bg-zinc-200 dark:bg-zinc-800 opacity-60 group-hover:opacity-100")
                                                 )} />
 
                                                 <CardHeader className="p-8 pb-4">
                                                     <div className="flex justify-between items-start mb-6">
                                                         <div className={cn(
                                                             "p-3 rounded-xl border transition-all",
-                                                            invoice.status === 'PAID' ? "bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950/20 border-amber-900/30 text-amber-500" : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-500")
+                                                            invoice.status === 'PAID' ? "bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950/20 border-amber-900/30 text-amber-500" : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500")
                                                         )}>
                                                             {invoice.status === 'PAID' ? <CheckCircle2 className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
                                                         </div>
@@ -176,7 +176,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                                     variant="ghost"
                                                                     size="icon"
                                                                     onClick={() => triggerPrint(invoice, student)}
-                                                                    className="h-8 w-8 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-eduGreen-500 rounded-lg"
+                                                                    className="h-8 w-8 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 rounded-lg"
                                                                 >
                                                                     <Printer className="w-4 h-4" />
                                                                 </Button>
@@ -184,7 +184,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                             <div className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">${Number(invoice.amount).toLocaleString()}</div>
                                                             <div className={cn(
                                                                 "text-[8px] font-medium uppercase tracking-widest mt-1 px-2 py-0.5 rounded-full inline-block",
-                                                                invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-500")
+                                                                invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500")
                                                             )}>
                                                                 {hasPendingPayment ? "Pending Verification" : invoice.status}
                                                             </div>
@@ -196,7 +196,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                         {invoice.items.slice(0, 3).map((item: any, idx: number) => (
                                                             <div key={idx} className="flex justify-between items-center text-[10px] font-medium text-zinc-600">
                                                                 <span className="uppercase tracking-widest truncate mr-2">{item.name}</span>
-                                                                <span className="text-zinc-500 flex-shrink-0">${Number(item.amount).toLocaleString()}</span>
+                                                                <span className="text-zinc-600 dark:text-zinc-500 flex-shrink-0">${Number(item.amount).toLocaleString()}</span>
                                                             </div>
                                                         ))}
                                                         {invoice.items.length > 3 && (
@@ -260,7 +260,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                 onClick={() => setPaymentMethod("BANK_TRANSFER")}
                                 className={cn(
                                     "h-14 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                    paymentMethod === "BANK_TRANSFER" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-500"
+                                    paymentMethod === "BANK_TRANSFER" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500"
                                 )}
                             >
                                 Bank Transfer
@@ -270,7 +270,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                 onClick={() => setPaymentMethod("MOBILE_MONEY")}
                                 className={cn(
                                     "h-14 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                    paymentMethod === "MOBILE_MONEY" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-500"
+                                    paymentMethod === "MOBILE_MONEY" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500"
                                 )}
                             >
                                 Mobile Money
@@ -284,7 +284,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                     type="file" 
                                     accept="image/*"
                                     onChange={handleImageUpload}
-                                    className="h-12 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs file:bg-zinc-800 file:text-zinc-700 dark:text-zinc-300 file:border-0 file:mr-4 file:px-4 file:rounded-lg hover:file:bg-zinc-700 cursor-pointer"
+                                    className="h-12 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs file:bg-zinc-200 dark:bg-zinc-800 file:text-zinc-700 dark:text-zinc-300 file:border-0 file:mr-4 file:px-4 file:rounded-lg hover:file:bg-zinc-700 cursor-pointer"
                                 />
                                 {receiptImage && (
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -292,7 +292,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-[8px] text-zinc-500 uppercase tracking-widest">Our AI will automatically verify your receipt if provided.</p>
+                            <p className="text-[8px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Our AI will automatically verify your receipt if provided.</p>
                         </div>
                     </div>
                 }

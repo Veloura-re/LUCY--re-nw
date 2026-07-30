@@ -94,7 +94,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
     if (loading) return (
         <div className="min-h-screen flex flex-col items-center justify-center space-y-4 bg-white dark:bg-zinc-950">
             <Loader2Icon className="w-12 h-12 text-eduGreen-500 animate-spin" />
-            <p className="text-zinc-500 font-black uppercase tracking-[0.4em] text-xs">Establishing Protocol Uplink...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-black uppercase tracking-[0.4em] text-xs">Establishing Protocol Uplink...</p>
         </div>
     );
 
@@ -107,7 +107,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                     <ShieldAlert className="w-5 h-5 text-eduGreen-500" />
                     <div>
                         <h1 className="text-lg font-black text-zinc-900 dark:text-white tracking-tight uppercase italic">{examData.title}</h1>
-                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Assessment Matrix</p>
+                        <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Assessment Matrix</p>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                     <div className="space-y-4">
                         <h2 className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter uppercase italic">{examData.title}</h2>
                         <div className="flex flex-wrap gap-4 pt-2">
-                            <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-500 py-1.5 px-4 font-black uppercase tracking-widest text-[9px]">
+                            <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 py-1.5 px-4 font-black uppercase tracking-widest text-[9px]">
                                 {examData.subject?.name}
                             </Badge>
                             <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-eduGreen-500 py-1.5 px-4 font-black uppercase tracking-widest text-[9px]">

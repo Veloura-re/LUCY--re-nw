@@ -36,7 +36,7 @@ export default function StudentExamsPage() {
         <div className="space-y-8 max-w-5xl mx-auto animate-in fade-in duration-300">
             <div>
                 <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">Assessment <span className="text-eduGreen-500">Center</span></h1>
-                <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Active Exams & Performance History</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Active Exams & Performance History</p>
             </div>
 
             <div className="grid gap-6">
@@ -65,7 +65,7 @@ export default function StudentExamsPage() {
                                     <div className={cn(
                                         "w-16 h-16 rounded-2xl flex items-center justify-center border shadow-xl flex-shrink-0",
                                         exam.status === "ACTIVE" ? "bg-eduGreen-500 text-black border-eduGreen-400" :
-                                            exam.status === "COMPLETED" ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-zinc-300 dark:border-zinc-800" :
+                                            exam.status === "COMPLETED" ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500 border-zinc-300 dark:border-zinc-800" :
                                                 "bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800"
                                     )}>
                                         {exam.status === "ACTIVE" ? <Timer className="w-8 h-8 animate-spin-slow" /> :
@@ -75,7 +75,7 @@ export default function StudentExamsPage() {
 
                                     <div>
                                         <div className="flex items-center gap-3 mb-2">
-                                            <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-500 text-[10px] font-medium uppercase tracking-widest">
+                                            <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">
                                                 {exam.subject}
                                             </Badge>
                                             <span className="text-zinc-600 font-medium text-[10px] uppercase tracking-widest">
@@ -83,7 +83,7 @@ export default function StudentExamsPage() {
                                             </span>
                                         </div>
                                         <h3 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">{exam.title}</h3>
-                                        <div className="flex items-center gap-4 mt-2 text-xs font-medium text-zinc-500 uppercase tracking-wide">
+                                        <div className="flex items-center gap-4 mt-2 text-xs font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-wide">
                                             <span className="flex items-center gap-1.5"><Timer className="w-3.5 h-3.5" /> {exam.duration} Mins</span>
                                             {exam.score !== undefined && (
                                                 <span className="text-eduGreen-500">Score: {exam.score}%</span>
@@ -100,7 +100,7 @@ export default function StudentExamsPage() {
                                             </Button>
                                         </Link>
                                     ) : exam.status === "UPCOMING" ? (
-                                        <Button disabled className="h-14 bg-zinc-100 dark:bg-zinc-900 text-zinc-500 font-medium uppercase tracking-widest px-8 rounded-xl border border-zinc-300 dark:border-zinc-800 opacity-50 cursor-not-allowed">
+                                        <Button disabled className="h-14 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest px-8 rounded-xl border border-zinc-300 dark:border-zinc-800 opacity-50 cursor-not-allowed">
                                             <Lock className="w-4 h-4 mr-2" /> Locked
                                         </Button>
                                     ) : exam.status === "COMPLETED" ? (
@@ -114,7 +114,7 @@ export default function StudentExamsPage() {
                                     ) : (
                                         <div className="flex items-center gap-3">
                                             <Link href="/dashboard/student/grades">
-                                                <Button variant="outline" className="h-14 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
+                                                <Button variant="outline" className="h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
                                                     <Lock className="w-4 h-4 mr-2" /> Missed
                                                 </Button>
                                             </Link>

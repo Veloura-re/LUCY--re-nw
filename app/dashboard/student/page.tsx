@@ -98,7 +98,7 @@ export default function StudentDashboard() {
                 <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white max-w-sm rounded-[2.5rem]">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-black italic">Update ID Photo</DialogTitle>
-                        <DialogDescription className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">This photo will appear on your ID card</DialogDescription>
+                        <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">This photo will appear on your ID card</DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col items-center gap-6 py-6">
                         <ImageUpload value={photoUrl} onChange={setPhotoUrl} bucket="avatars" />
@@ -141,7 +141,7 @@ export default function StudentDashboard() {
                     </button>
                     <Button
                         onClick={() => setShowIDCard(true)}
-                        className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest gap-2"
+                        className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest gap-2"
                     >
                         <CreditCard className="w-4 h-4" /> My Digital ID
                     </Button>
@@ -156,7 +156,7 @@ export default function StudentDashboard() {
             {activeLesson ? (
                 <Card className="relative  bg-eduGreen-600 border-eduGreen-500 rounded-[3rem] shadow-2xl shadow-eduGreen-900/40 border-t-white/10 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
-                    <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-300" />
+                    <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-zinc-300 dark:bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-300" />
 
                     <CardContent className="p-12 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
                         <div className="space-y-6">
@@ -188,10 +188,10 @@ export default function StudentDashboard() {
                 <Card className="relative  bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-[3rem] shadow-2xl border-t-zinc-700/20 group backdrop-blur-3xl">
                     <CardContent className="p-12 text-center space-y-6">
                         <div className="w-20 h-20 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-[2rem] flex items-center justify-center mx-auto mb-4 group-hover:border-eduGreen-500 transition-colors">
-                            <Clock className="w-10 h-10 text-zinc-800 group-hover:text-eduGreen-500 transition-colors" />
+                            <Clock className="w-10 h-10 text-zinc-800 dark:text-zinc-200 group-hover:text-eduGreen-500 transition-colors" />
                         </div>
                         <h2 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Transit Interval</h2>
-                        <p className="text-zinc-500 font-medium text-xs uppercase tracking-[0.4em]">Next Class Begins Soon</p>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-medium text-xs uppercase tracking-[0.4em]">Next Class Begins Soon</p>
                     </CardContent>
                 </Card>
             )}
@@ -228,7 +228,7 @@ export default function StudentDashboard() {
                                 <BrainCircuit className="w-5 h-5 text-eduGreen-500" />
                             </div>
                             <div>
-                                <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Cognitive Feed</p>
+                                <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Cognitive Feed</p>
                                 <h4 className="text-zinc-900 dark:text-white font-medium text-lg">Neural Insights</h4>
                                 <p className="text-eduGreen-500 text-[10px] font-medium mt-1 uppercase tracking-widest flex items-center gap-1">
                                     Check AI Feedback <ArrowRight className="w-3 h-3" />
@@ -244,9 +244,9 @@ export default function StudentDashboard() {
                             <CheckCircle2 className="w-5 h-5 text-zinc-600 dark:text-zinc-400 group-hover:text-eduGreen-400" />
                         </div>
                         <div>
-                            <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Attendance</p>
+                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Attendance</p>
                             <h4 className="text-zinc-900 dark:text-white font-medium text-lg">{stats?.attendance ? stats.attendance.toFixed(1) : "100"}%</h4>
-                            <p className="text-zinc-500 text-xs font-medium mt-1 uppercase tracking-widest">Elite Standing</p>
+                            <p className="text-zinc-600 dark:text-zinc-500 text-xs font-medium mt-1 uppercase tracking-widest">Elite Standing</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -257,7 +257,7 @@ export default function StudentDashboard() {
                             <Calendar className="w-5 h-5 text-zinc-600 dark:text-zinc-400 group-hover:text-eduGreen-400" />
                         </div>
                         <div>
-                            <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Next Exam</p>
+                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Next Exam</p>
                             <h4 className="text-zinc-900 dark:text-white font-medium text-lg">{data?.nextExam ? data.nextExam.subject : "Standby"}</h4>
                             <div className="text-eduGreen-500 text-[10px] font-medium mt-1 uppercase tracking-widest flex items-center gap-1">
                                 {data?.nextExam ? `${data.nextExam.title} • ${format(new Date(data.nextExam.date), 'MMM dd')}` : "All Clear"}

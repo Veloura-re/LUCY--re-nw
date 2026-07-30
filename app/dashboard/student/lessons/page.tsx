@@ -180,7 +180,7 @@ export default function StudentLessonsPage() {
                                             {/* Materials Section (if any materials are attached) */}
                                             {materialsList.length > 0 && (
                                                 <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900/50 space-y-3">
-                                                    <h4 className="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">Learning Resources</h4>
+                                                    <h4 className="text-[9px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Learning Resources</h4>
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                         {materialsList.map((m: any, i: number) => (
                                                             <div 
@@ -192,7 +192,7 @@ export default function StudentLessonsPage() {
                                                                     <FileText className="w-4 h-4 text-eduGreen-500" />
                                                                     <span className="text-[10px] font-bold text-zinc-900 dark:text-white tracking-widest uppercase truncate max-w-[200px]">{m.name || 'Resource file'}</span>
                                                                 </div>
-                                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-zinc-500 group-hover/file:text-zinc-900 dark:text-white">
+                                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-zinc-600 dark:text-zinc-500 group-hover/file:text-zinc-900 dark:text-white">
                                                                     <ExternalLink className="w-3.5 h-3.5" />
                                                                 </Button>
                                                             </div>
@@ -207,9 +207,9 @@ export default function StudentLessonsPage() {
                         })
                     ) : (
                         <div className="text-center py-32 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3.5rem] bg-[#050505]/10">
-                            <FileText className="w-12 h-12 text-zinc-800 mx-auto mb-6 animate-pulse" />
+                            <FileText className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mx-auto mb-6 animate-pulse" />
                             <div className="text-zinc-600 font-black uppercase tracking-[0.5em] text-sm">Registry Empty</div>
-                            <p className="text-zinc-500 mt-2 text-[10px] font-bold uppercase tracking-widest">No lessons have been logged for your cohort class yet.</p>
+                            <p className="text-zinc-600 dark:text-zinc-500 mt-2 text-[10px] font-bold uppercase tracking-widest">No lessons have been logged for your cohort class yet.</p>
                         </div>
                     )}
                 </AnimatePresence>

@@ -120,7 +120,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     <button
                         onClick={() => setCollapsed(!collapsed)}
                         className={cn(
-                            "hidden md:flex items-center justify-center w-8 h-8 rounded-xl border border-zinc-300 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-900/60 text-zinc-500 hover:text-white hover:border-zinc-700 hover:bg-zinc-800/60 transition-all shrink-0",
+                            "hidden md:flex items-center justify-center w-8 h-8 rounded-xl border border-zinc-300 dark:border-zinc-800 bg-zinc-100/60 dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-500 hover:text-white hover:border-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-800/60 transition-all shrink-0",
                             collapsed && "mx-auto"
                         )}
                         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -145,7 +145,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                         "flex items-center gap-3 h-11 px-3 rounded-2xl transition-all group font-semibold text-sm cursor-pointer",
                                         isActive
                                             ? "bg-eduGreen-900/20 text-eduGreen-400 border border-eduGreen-900/30"
-                                            : "text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 hover:border-eduGreen-900/20 border border-transparent",
+                                            : "text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 hover:border-eduGreen-900/20 border border-transparent",
                                         collapsed ? "justify-center px-0" : ""
                                     )}
                                     title={collapsed ? item.label : undefined}
@@ -187,7 +187,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                             <Button
                                 variant="ghost"
                                 onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                                className="w-full justify-start gap-3 h-10 px-3 rounded-xl text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
+                                className="w-full justify-start gap-3 h-10 px-3 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
                             >
                                 <Sparkles className="w-4 h-4" />
                                 Interactive Tour
@@ -212,7 +212,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                     transition={{ duration: 0.1 }}
                                     className="overflow-hidden min-w-0"
                                 >
-                                    <p className="text-xs font-semibold truncate text-zinc-100 tracking-tight">{dbUser.name || "—"}</p>
+                                    <p className="text-xs font-semibold truncate text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight">{dbUser.name || "—"}</p>
                                     <p className="text-[9px] text-zinc-600 truncate">{dbUser.email}</p>
                                 </motion.div>
                             )}
@@ -223,7 +223,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {collapsed && (
                         <button
                             onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                            className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
+                            className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
                             title="Interactive Tour"
                         >
                             <Sparkles className="w-4 h-4" />

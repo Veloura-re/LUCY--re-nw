@@ -124,7 +124,7 @@ export default function StaffAuthorizationsPage() {
     if (loading && authorizations.length === 0) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
             <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin mb-4" />
-            <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Filtering Authorization Signals...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Filtering Authorization Signals...</p>
         </div>
     );
 
@@ -196,28 +196,28 @@ export default function StaffAuthorizationsPage() {
                     {/* Stats */}
                     <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 rounded-[2rem] shadow-2xl">
                         <CardHeader className="p-5 pb-2">
-                            <CardTitle className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                            <CardTitle className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest flex items-center gap-2">
                                 <Shield className="w-4 h-4 text-eduGreen-500" /> Queue Summary
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-5 space-y-3">
                             <div className="flex justify-between items-center text-[11px]">
-                                <span className="text-zinc-500 flex items-center gap-2"><UserCheck className="w-3.5 h-3.5 text-blue-400" /> Staff Leave</span>
+                                <span className="text-zinc-600 dark:text-zinc-500 flex items-center gap-2"><UserCheck className="w-3.5 h-3.5 text-blue-400" /> Staff Leave</span>
                                 <span className="font-bold text-zinc-900 dark:text-white">{authorizations.filter(a => isStaffLeave(a)).length}</span>
                             </div>
                             <div className="flex justify-between items-center text-[11px]">
-                                <span className="text-zinc-500 flex items-center gap-2"><GraduationCap className="w-3.5 h-3.5 text-eduGreen-500" /> Student Absence</span>
+                                <span className="text-zinc-600 dark:text-zinc-500 flex items-center gap-2"><GraduationCap className="w-3.5 h-3.5 text-eduGreen-500" /> Student Absence</span>
                                 <span className="font-bold text-zinc-900 dark:text-white">{authorizations.filter(a => !isStaffLeave(a)).length}</span>
                             </div>
                             <div className="pt-2 border-t border-zinc-200 dark:border-zinc-900 flex justify-between items-center text-[11px]">
-                                <span className="text-zinc-500">Total</span>
+                                <span className="text-zinc-600 dark:text-zinc-500">Total</span>
                                 <span className="font-bold text-zinc-900 dark:text-white">{authorizations.length}</span>
                             </div>
                         </CardContent>
                     </Card>
 
                     <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 rounded-[2rem] shadow-2xl">
-                        <CardContent className="p-5 italic text-[11px] leading-relaxed text-zinc-500">
+                        <CardContent className="p-5 italic text-[11px] leading-relaxed text-zinc-600 dark:text-zinc-500">
                             Approved permits sync automatically with the daily attendance registries. Teachers will see a "Verified Permit" indicator.
                         </CardContent>
                     </Card>
@@ -255,7 +255,7 @@ export default function StaffAuthorizationsPage() {
                                                             {info.type}
                                                         </Badge>
                                                         {info.code && (
-                                                            <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-zinc-300 dark:border-zinc-800 font-mono text-[8px] uppercase tracking-widest">
+                                                            <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500 border-zinc-300 dark:border-zinc-800 font-mono text-[8px] uppercase tracking-widest">
                                                                 {info.code}
                                                             </Badge>
                                                         )}
@@ -263,12 +263,12 @@ export default function StaffAuthorizationsPage() {
                                                     <div className="flex items-center gap-3 mt-2 text-[10px] font-medium text-zinc-600 uppercase tracking-widest">
                                                         <Calendar className="w-3.5 h-3.5 text-zinc-700" />
                                                         {new Date(auth.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                        <ArrowRight className="w-3 h-3 text-zinc-800" />
+                                                        <ArrowRight className="w-3 h-3 text-zinc-800 dark:text-zinc-200" />
                                                         {new Date(auth.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </div>
                                                     {auth.requestor && (
                                                         <p className="text-[9px] text-zinc-700 mt-1 uppercase tracking-widest">
-                                                            Submitted by: <span className="text-zinc-500">{auth.requestor.name}</span>
+                                                            Submitted by: <span className="text-zinc-600 dark:text-zinc-500">{auth.requestor.name}</span>
                                                         </p>
                                                     )}
                                                 </div>
@@ -325,9 +325,9 @@ export default function StaffAuthorizationsPage() {
                         })
                     ) : (
                         <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
-                            <Clock className="w-12 h-12 text-zinc-900 mx-auto mb-6" />
+                            <Clock className="w-12 h-12 text-zinc-900 dark:text-white mx-auto mb-6" />
                             <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Queue Synced</div>
-                            <p className="text-zinc-800 mt-2 text-xs font-medium uppercase tracking-widest">
+                            <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs font-medium uppercase tracking-widest">
                                 No signals in the {statusFilter} {typeFilter !== 'ALL' ? typeFilter.toLowerCase() + ' ' : ''}nexus.
                             </p>
                         </div>
@@ -336,7 +336,7 @@ export default function StaffAuthorizationsPage() {
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-8">
-                            <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                            <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                                 Page {page} of {totalPages}
                             </p>
                             <div className="flex items-center gap-2">
@@ -345,7 +345,7 @@ export default function StaffAuthorizationsPage() {
                                     size="sm"
                                     onClick={() => setPage(p => Math.max(1, p - 1))}
                                     disabled={page === 1}
-                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                                 >
                                     Previous
                                 </Button>
@@ -354,7 +354,7 @@ export default function StaffAuthorizationsPage() {
                                     size="sm"
                                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                     disabled={page === totalPages}
-                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                                 >
                                     Next
                                 </Button>

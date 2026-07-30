@@ -82,7 +82,7 @@ export default function StudentFinanceDossier() {
             case 'PAID': return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
             case 'OVERDUE': return 'text-red-500 bg-red-500/10 border-red-500/20';
             case 'PENDING': return 'text-amber-500 bg-amber-500/10 border-amber-500/20';
-            default: return 'text-zinc-500 bg-zinc-500/10 border-zinc-500/20';
+            default: return 'text-zinc-600 dark:text-zinc-500 bg-zinc-500/10 border-zinc-500/20';
         }
     };
 
@@ -95,7 +95,7 @@ export default function StudentFinanceDossier() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div>
-                    <button onClick={() => router.push('/dashboard/finance')} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors mb-4">
+                    <button onClick={() => router.push('/dashboard/finance')} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors mb-4">
                         <ArrowLeft className="w-3 h-3" /> Back to Finance Nexus
                     </button>
                     <h1 className="text-4xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
@@ -160,12 +160,12 @@ export default function StudentFinanceDossier() {
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-zinc-500 group-hover:text-eduGreen-500 group-hover:border-eduGreen-900/50 transition-colors">
+                                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 group-hover:border-eduGreen-900/50 transition-colors">
                                         {student.firstName[0]}
                                     </div>
                                     <div>
                                         <div className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">{student.firstName} {student.lastName}</div>
-                                        <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mt-1">
+                                        <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-1">
                                             {student.studentCode} • {student.class?.name || student.grade?.name}
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@ export default function StudentFinanceDossier() {
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
-                    <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
+                    <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                         Page {page} of {totalPages}
                     </p>
                     <div className="flex items-center gap-2">
@@ -214,7 +214,7 @@ export default function StudentFinanceDossier() {
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                         >
                             Previous
                         </Button>
@@ -223,7 +223,7 @@ export default function StudentFinanceDossier() {
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
                         >
                             Next
                         </Button>
@@ -250,47 +250,47 @@ export default function StudentFinanceDossier() {
                         >
                             <div className="flex justify-between items-start mb-8">
                                 <div className="flex items-center gap-5">
-                                    <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-xl text-zinc-500">
+                                    <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-xl text-zinc-600 dark:text-zinc-500">
                                         {selectedStudent.firstName[0]}
                                     </div>
                                     <div>
                                         <h2 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">{selectedStudent.firstName} {selectedStudent.lastName}</h2>
                                         <div className="flex items-center gap-3 mt-1.5">
-                                            <span className="text-xs font-medium text-zinc-500 uppercase tracking-widest">{selectedStudent.studentCode}</span>
-                                            <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                            <span className="text-xs font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">{selectedStudent.studentCode}</span>
+                                            <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
                                             <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{selectedStudent.class?.name || selectedStudent.grade?.name}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <button onClick={() => setSelectedStudent(null)} className="text-zinc-500 hover:text-white text-2xl leading-none">&times;</button>
+                                <button onClick={() => setSelectedStudent(null)} className="text-zinc-600 dark:text-zinc-500 hover:text-white text-2xl leading-none">&times;</button>
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
-                                    <div className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Total Billed</div>
+                                    <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Total Billed</div>
                                     <div className="text-lg font-bold text-zinc-900 dark:text-white">${selectedStudent.financials.totalBilled.toLocaleString()}</div>
                                 </div>
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
-                                    <div className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Total Paid</div>
+                                    <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Total Paid</div>
                                     <div className="text-lg font-bold text-emerald-500">${selectedStudent.financials.totalPaid.toLocaleString()}</div>
                                 </div>
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
-                                    <div className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Overdue</div>
+                                    <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Overdue</div>
                                     <div className="text-lg font-bold text-red-500">${selectedStudent.financials.totalOverdue.toLocaleString()}</div>
                                 </div>
                                 <div className="bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-300 dark:border-zinc-800/50">
-                                    <div className="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Total Invoices</div>
+                                    <div className="text-[9px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-1.5">Total Invoices</div>
                                     <div className="text-lg font-bold text-zinc-900 dark:text-white">{selectedStudent.financials.invoiceCount}</div>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-200 dark:border-zinc-900 pb-2">Latest Invoice Summary</h3>
+                                <h3 className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest border-b border-zinc-200 dark:border-zinc-900 pb-2">Latest Invoice Summary</h3>
                                 {selectedStudent.financials.latestInvoice ? (
                                     <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 flex items-center justify-between">
                                         <div>
                                             <div className="text-sm font-medium text-zinc-900 dark:text-white">Invoice #{selectedStudent.financials.latestInvoice.id.slice(0, 8).toUpperCase()}</div>
-                                            <div className="text-xs text-zinc-500 mt-1">Created: {new Date(selectedStudent.financials.latestInvoice.createdAt).toLocaleDateString()}</div>
+                                            <div className="text-xs text-zinc-600 dark:text-zinc-500 mt-1">Created: {new Date(selectedStudent.financials.latestInvoice.createdAt).toLocaleDateString()}</div>
                                         </div>
                                         <div className="text-right">
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">${selectedStudent.financials.latestInvoice.amount.toLocaleString()}</div>

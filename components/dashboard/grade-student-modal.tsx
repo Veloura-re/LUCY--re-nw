@@ -162,7 +162,7 @@ export function GradeStudentModal({ isOpen, onClose, student }: GradeStudentModa
 
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-200/80 dark:border-zinc-900/50">
                         <Button type="button" variant="ghost" onClick={onClose} className="text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white font-medium uppercase text-[10px] tracking-widest">Cancel</Button>
-                        <Button type="submit" isLoading={loading} disabled={!selectedExamId || !score} className="bg-emerald-600 hover:bg-emerald-500 text-zinc-900 dark:text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
+                        <Button type="submit" isLoading={loading} disabled={!selectedExamId || !score} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium uppercase text-[10px] tracking-widest rounded-xl px-8 min-w-[140px]">
                             {!loading && <Save className="w-4 h-4 mr-2" />} Save Mark
                         </Button>
                     </div>

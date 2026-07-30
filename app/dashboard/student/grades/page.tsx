@@ -68,7 +68,7 @@ function StudentGradesContent() {
                             </div>
                             <div>
                                 <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white italic uppercase">{exam.title} Insights</DialogTitle>
-                                <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">AI-Powered Performance Feedback</DialogDescription>
+                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px]">AI-Powered Performance Feedback</DialogDescription>
                             </div>
                         </div>
                     </DialogHeader>
@@ -77,7 +77,7 @@ function StudentGradesContent() {
                         {/* Summary Card */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 group transition-all hover:border-eduGreen-500/30">
-                                <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                     <Award className="w-3 h-3" /> Final Score
                                 </div>
                                 <div className="text-4xl font-medium text-eduGreen-500 italic">
@@ -87,7 +87,7 @@ function StudentGradesContent() {
                             </Card>
 
                             <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 md:col-span-2">
-                                <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                                     <Sparkles className="w-3 h-3 text-amber-500" /> Neural Verdict
                                 </div>
                                 <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium italic leading-relaxed">
@@ -119,13 +119,13 @@ function StudentGradesContent() {
                                                         isPartial ? <TrendingUp className="w-4 h-4 text-amber-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className={cn("text-lg font-medium italic", isPerfect ? "text-eduGreen-500" : "text-zinc-500")}>
+                                                    <div className={cn("text-lg font-medium italic", isPerfect ? "text-eduGreen-500" : "text-zinc-600 dark:text-zinc-500")}>
                                                         {grading?.score || 0} <span className="text-zinc-700 text-xs">/ {q.points}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <p className="text-base font-medium text-zinc-100 mb-6">{q.text}</p>
+                                            <p className="text-base font-medium text-zinc-900 dark:text-white dark:text-zinc-100 mb-6">{q.text}</p>
 
                                             <div className="grid md:grid-cols-2 gap-6">
                                                 {/* Student Answer */}
@@ -155,7 +155,7 @@ function StudentGradesContent() {
                         </div>
 
                         <div className="pt-6 border-t border-zinc-200 dark:border-zinc-900 flex justify-end">
-                            <Button onClick={() => setIsInsightOpen(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-medium uppercase tracking-widest px-10 rounded-2xl h-14">
+                            <Button onClick={() => setIsInsightOpen(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-medium uppercase tracking-widest px-10 rounded-2xl h-14">
                                 Close Portal
                             </Button>
                         </div>
@@ -178,7 +178,7 @@ function StudentGradesContent() {
                     <h2 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white italic uppercase">Academic Matrix</h2>
                     <div className="flex items-center gap-3 mt-2">
                         <div className="h-0.5 w-12 bg-eduGreen-500" />
-                        <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs">
+                        <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs">
                             {studentName ? `Viewing ${studentName}'s Performance` : "Performance Intelligence Center"}
                         </p>
                     </div>
@@ -205,7 +205,7 @@ function StudentGradesContent() {
                                 </div>
                                 <div className="text-right">
                                     <div className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em] mb-1">Cumulative</div>
-                                    <span className={`text-4xl font-medium italic tracking-tighter ${sub.average >= 90 ? "text-eduGreen-500" : "text-zinc-500"}`}>
+                                    <span className={`text-4xl font-medium italic tracking-tighter ${sub.average >= 90 ? "text-eduGreen-500" : "text-zinc-600 dark:text-zinc-500"}`}>
                                         {sub.average > 0 ? sub.average.toFixed(1) + "%" : "--"}
                                     </span>
                                 </div>
@@ -225,18 +225,18 @@ function StudentGradesContent() {
                                         <div className="flex items-center gap-6">
                                             <div className={cn(
                                                 "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border",
-                                                exam.attempt ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 group-hover/exam:border-eduGreen-500 group-hover/exam:text-eduGreen-500" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800"
+                                                exam.attempt ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 group-hover/exam:border-eduGreen-500 group-hover/exam:text-eduGreen-500" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-800 dark:text-zinc-200"
                                             )}>
                                                 {exam.attempt ? <Brain className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
                                             </div>
                                             <div>
-                                                <div className="font-medium text-zinc-200 uppercase italic tracking-tight group-hover/exam:text-zinc-900 dark:text-white transition-colors">{exam.title}</div>
+                                                <div className="font-medium text-zinc-800 dark:text-zinc-200 uppercase italic tracking-tight group-hover/exam:text-zinc-900 dark:text-white transition-colors">{exam.title}</div>
                                                 <div className="text-[9px] text-zinc-600 font-medium uppercase tracking-widest">{new Date(exam.date).toLocaleDateString()}</div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-6">
                                             <div className="text-right">
-                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white italic">{exam.score} <span className="text-zinc-800 text-xs not-italic">/ {exam.maxScore}</span></div>
+                                                <div className="text-2xl font-medium text-zinc-900 dark:text-white italic">{exam.score} <span className="text-zinc-800 dark:text-zinc-200 text-xs not-italic">/ {exam.maxScore}</span></div>
                                                 {exam.attempt && (
                                                     <div className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest flex items-center gap-2">
                                                         <Button
@@ -265,7 +265,7 @@ function StudentGradesContent() {
             {subjects.length === 0 && (
                 <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                     <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Terminal Data Vacancy</div>
-                    <p className="text-zinc-800 mt-2 text-xs font-medium uppercase tracking-widest">No academic signatures detected in the matrix.</p>
+                    <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs font-medium uppercase tracking-widest">No academic signatures detected in the matrix.</p>
                 </div>
             )}
 

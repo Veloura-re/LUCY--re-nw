@@ -57,13 +57,13 @@ export default function AttendanceIntelligencePage() {
                         <ArrowLeft className="w-4 h-4" /> Return to Intelligence
                     </Button>
                     <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tight italic">Temporal <span className="text-zinc-700 not-italic ml-2">Attendance</span></h1>
-                    <p className="text-zinc-500 mt-2 font-medium text-sm leading-relaxed max-w-2xl uppercase tracking-wider">
+                    <p className="text-zinc-600 dark:text-zinc-500 mt-2 font-medium text-sm leading-relaxed max-w-2xl uppercase tracking-wider">
                         High-fidelity monitoring of institutional presence and engagement thresholds.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-zinc-700 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-500">
+                    <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-zinc-700 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">
                         <Calendar className="mr-2 h-4 w-4" /> Past 30 Days
                     </Button>
                     <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl">
@@ -125,7 +125,7 @@ export default function AttendanceIntelligencePage() {
                                             {Math.round(d.rate)}%
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-medium text-zinc-800 uppercase tracking-tighter rotate-[-45deg] origin-top-left mt-2">{d.date}</span>
+                                    <span className="text-[8px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tighter rotate-[-45deg] origin-top-left mt-2">{d.date}</span>
                                 </div>
                             ))}
                         </div>
@@ -140,8 +140,8 @@ export default function AttendanceIntelligencePage() {
                         <p className="text-[9px] font-medium text-zinc-600 mt-2 uppercase tracking-widest">Analyzing cluster variances...</p>
                     </Card>
 
-                    <Card className="bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
-                        <h4 className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mb-6">Top Outliers (Absences)</h4>
+                    <Card className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
+                        <h4 className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-6">Top Outliers (Absences)</h4>
                         <div className="space-y-4">
                             {[
                                 { name: "Class 10-A", rate: "12 Absences" },

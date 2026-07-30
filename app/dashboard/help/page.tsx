@@ -153,7 +153,7 @@ export default async function HelpCenterPage() {
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-zinc-300 dark:border-white/10 mb-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 mb-6">
                             <HelpCircle className="w-4 h-4 text-eduGreen-400" />
                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-700 dark:text-zinc-300">Official Documentation</span>
                         </div>
@@ -164,7 +164,7 @@ export default async function HelpCenterPage() {
                             Comprehensive operational protocols tailored for your clearance level: <strong className="text-eduGreen-400 uppercase tracking-widest text-[10px] bg-eduGreen-900/30 px-2 py-1 rounded-md ml-1">{dbUser.role}</strong>
                         </p>
                     </div>
-                    <div className="hidden md:flex w-32 h-32 rounded-3xl bg-white/[0.05] border border-white/20 items-center justify-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rotate-3 group-hover:rotate-6 transition-transform duration-700">
+                    <div className="hidden md:flex w-32 h-32 rounded-3xl bg-white/[0.05] border border-zinc-300 dark:border-white/20 items-center justify-center backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] rotate-3 group-hover:rotate-6 transition-transform duration-700">
                         <BookOpen className="w-16 h-16 text-eduGreen-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
                     </div>
                 </div>
@@ -190,14 +190,14 @@ export default async function HelpCenterPage() {
                                         <Icon className="w-6 h-6 text-zinc-600 dark:text-zinc-400 group-open:text-eduGreen-400 transition-colors duration-500" />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">
+                                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 mb-1">
                                             Chapter 0{index + 1}
                                         </div>
                                         <h3 className="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-eduGreen-400 group-open:text-eduGreen-300 transition-colors duration-300 drop-shadow-sm">
                                             {section.title}
                                         </h3>
                                     </div>
-                                    <div className="w-8 h-8 rounded-full bg-white/[0.05] border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-500 group-open:rotate-90 group-open:text-eduGreen-400 group-open:border-eduGreen-500/30 transition-all duration-500 shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-white/[0.05] border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-600 dark:text-zinc-500 group-open:rotate-90 group-open:text-eduGreen-400 group-open:border-eduGreen-500/30 transition-all duration-500 shrink-0">
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                 </summary>

@@ -72,7 +72,7 @@ export default function StudentTimetablePage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">Temporal <span className="text-eduGreen-500">Matrix</span></h1>
-                    <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Class Schedule & Learning Objectives</p>
+                    <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Class Schedule & Learning Objectives</p>
                 </div>
 
                 <div className="flex bg-white dark:bg-zinc-950 p-1 rounded-xl border border-zinc-200 dark:border-zinc-900">
@@ -103,7 +103,7 @@ export default function StudentTimetablePage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedDate(new Date())}
-                        className="rounded-xl border-zinc-200 dark:border-zinc-900 text-[10px] font-medium uppercase tracking-widest px-4 h-9 bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900"
+                        className="rounded-xl border-zinc-200 dark:border-zinc-900 text-[10px] font-medium uppercase tracking-widest px-4 h-9 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900"
                     >
                         Today
                     </Button>
@@ -145,7 +145,7 @@ export default function StudentTimetablePage() {
                                     {/* Date Column */}
                                     <div className={cn(
                                         "w-full md:w-32 p-6 flex items-center md:flex-col md:justify-center gap-2 border-b md:border-b-0 md:border-r border-zinc-300 dark:border-zinc-800/50",
-                                        isToday ? "bg-eduGreen-950/10 text-eduGreen-500" : "bg-zinc-100/20 dark:bg-zinc-900/20 text-zinc-500"
+                                        isToday ? "bg-eduGreen-950/10 text-eduGreen-500" : "bg-zinc-100/20 dark:bg-zinc-900/20 text-zinc-600 dark:text-zinc-500"
                                     )}>
                                         <span className="text-2xl font-medium uppercase tracking-tighter">{format(date, "EEE")}</span>
                                         <span className="text-[10px] font-medium uppercase tracking-widest">{format(date, "MMM d")}</span>
@@ -171,7 +171,7 @@ export default function StudentTimetablePage() {
                                                             <div className="flex items-center gap-3 mb-1">
                                                                 <h4 className={cn(
                                                                     "font-medium tracking-tight transition-colors",
-                                                                    period.isBreak ? "text-zinc-500 text-sm" : "text-zinc-900 dark:text-white text-lg group-hover:text-eduGreen-400"
+                                                                    period.isBreak ? "text-zinc-600 dark:text-zinc-500 text-sm" : "text-zinc-900 dark:text-white text-lg group-hover:text-eduGreen-400"
                                                                 )}>
                                                                     {period.subject}
                                                                 </h4>
@@ -182,7 +182,7 @@ export default function StudentTimetablePage() {
                                                                 )}
                                                             </div>
                                                             {!period.isBreak && (
-                                                                <div className="flex items-center gap-2 text-zinc-500 text-xs font-medium uppercase tracking-wider">
+                                                                <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-500 text-xs font-medium uppercase tracking-wider">
                                                                     <span>{period.teacher}</span>
                                                                     {period.topic && (
                                                                         <>

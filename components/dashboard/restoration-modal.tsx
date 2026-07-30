@@ -31,7 +31,7 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-3xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-900 p-0 overflow-hidden rounded-[2rem]">
-                <div className="p-8 border-b border-slate-200/50 dark:border-zinc-900/50 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl relative">
+                <div className="p-8 border-b border-slate-200/50 dark:border-zinc-900/50 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl relative">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-medium tracking-tighter text-slate-900 dark:text-white">
                             Restoration Protocols

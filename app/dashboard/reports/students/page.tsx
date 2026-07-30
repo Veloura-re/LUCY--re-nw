@@ -57,8 +57,8 @@ export default function StudentReportsPage() {
             <div className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-900 pb-6">
                     <div className="flex items-center gap-2">
-                        <Filter className="w-4 h-4 text-zinc-500" />
-                        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Filter Stream</span>
+                        <Filter className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />
+                        <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Filter Stream</span>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4">
                         <div className="flex items-center gap-2">

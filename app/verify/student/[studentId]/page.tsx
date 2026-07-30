@@ -46,7 +46,7 @@ export default function StudentVerificationPage() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-zinc-900 dark:text-white italic uppercase">Access Denied</h1>
-                        <p className="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "Neural Link Severed"}</p>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "Neural Link Severed"}</p>
                     </div>
                 </Card>
             </div>
@@ -70,7 +70,7 @@ export default function StudentVerificationPage() {
                         <h1 className="text-4xl font-black text-zinc-900 dark:text-white italic tracking-tighter uppercase whitespace-nowrap">
                             Identity <span className="text-eduGreen-500">Verified</span>
                         </h1>
-                        <p className="text-zinc-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">{student.school?.name}</p>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">{student.school?.name}</p>
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@ export default function StudentVerificationPage() {
                             {student.photoUrl ? (
                                 <Image src={student.photoUrl} fill sizes="128px" className="object-cover" alt="Verification Photo" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-800">
+                                <div className="w-full h-full flex items-center justify-center text-4xl font-black text-zinc-800 dark:text-zinc-200">
                                     {student.firstName[0]}{student.lastName[0]}
                                 </div>
                             )}
@@ -94,7 +94,7 @@ export default function StudentVerificationPage() {
                         <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight uppercase leading-tight mb-1">
                             {student.firstName} {student.lastName}
                         </h2>
-                        <div className="text-zinc-500 font-mono text-sm mb-8 tracking-tighter">
+                        <div className="text-zinc-600 dark:text-zinc-500 font-mono text-sm mb-8 tracking-tighter">
                             ID: {student.studentCode}
                         </div>
 
@@ -124,7 +124,7 @@ export default function StudentVerificationPage() {
                             </div>
                             <div>
                                 <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest">Attendance Metric</h3>
-                                <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Session Engagement Rate</p>
+                                <p className="text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Session Engagement Rate</p>
                             </div>
                         </div>
                         <div className="flex items-end justify-between gap-4">
@@ -147,7 +147,7 @@ export default function StudentVerificationPage() {
                             </div>
                             <div>
                                 <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest">Emergency Contact</h3>
-                                <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Primary Guardian Uplink</p>
+                                <p className="text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Primary Guardian Uplink</p>
                             </div>
                         </div>
                         <div className="space-y-4">

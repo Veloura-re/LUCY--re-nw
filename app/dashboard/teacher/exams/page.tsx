@@ -282,14 +282,14 @@ function ExamsPageContent() {
                                             Pending Grades
                                         </span>
                                     ) : (
-                                        <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest">
+                                        <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 rounded-lg uppercase tracking-widest">
                                             Active / Upcoming
                                         </span>
                                     )}
                                 </div>
 
                                 <div className="absolute top-6 right-8">
-                                    <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest group-hover:border-eduGreen-900/30 transition-all">
+                                    <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 rounded-lg uppercase tracking-widest group-hover:border-eduGreen-900/30 transition-all">
                                         {exam.subject?.name}
                                     </span>
                                 </div>
@@ -302,19 +302,19 @@ function ExamsPageContent() {
 
                                 <CardContent className="p-10 pt-0 space-y-8">
                                     <div className="space-y-3">
-                                        <div className="flex items-center gap-3 text-zinc-500 font-medium text-[10px] uppercase tracking-[0.2em]">
-                                            <CalendarIcon className="w-4 h-4 text-zinc-800" />
+                                        <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-500 font-medium text-[10px] uppercase tracking-[0.2em]">
+                                            <CalendarIcon className="w-4 h-4 text-zinc-800 dark:text-zinc-200" />
                                             {exam.dueAt ? new Date(exam.dueAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }) : 'Pending Assignment'}
                                         </div>
-                                        <div className="flex items-center gap-3 text-zinc-500 font-medium text-[10px] uppercase tracking-[0.2em]">
-                                            <BarChart className="w-4 h-4 text-zinc-800" />
+                                        <div className="flex items-center gap-3 text-zinc-600 dark:text-zinc-500 font-medium text-[10px] uppercase tracking-[0.2em]">
+                                            <BarChart className="w-4 h-4 text-zinc-800 dark:text-zinc-200" />
                                             Max Quantum: {exam.totalMarks || exam.config?.maxScore || 100}
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <Link href={`/dashboard/teacher/exams/${exam.id}/editor`} passHref>
-                                            <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
+                                            <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
                                                 <div className="absolute inset-0 bg-purple-500/5 group-hover/edit:bg-purple-500/10 transition-colors" />
                                                 <span className="relative z-10 flex items-center gap-2">
                                                     <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Neural Editor
@@ -322,7 +322,7 @@ function ExamsPageContent() {
                                             </Button>
                                         </Link>
                                         <Link href={`/dashboard/teacher/gradebook/${exam.id}`} passHref>
-                                            <Button className="w-full h-14 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all rounded-2xl group-hover:border-eduGreen-900/20 group-hover:bg-white dark:bg-zinc-950">
+                                            <Button className="w-full h-14 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all rounded-2xl group-hover:border-eduGreen-900/20 group-hover:bg-white dark:bg-zinc-950">
                                                 Registry Hub <Brain className="ml-2 w-3.5 h-3.5 text-eduGreen-500" />
                                             </Button>
                                         </Link>
@@ -332,7 +332,7 @@ function ExamsPageContent() {
                         ))}
 
                         {exams.length === 0 && (
-                            <div className="col-span-full py-40 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                            <div className="col-span-full py-40 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 gap-6">
                                 <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                     <FileText className="w-12 h-12" />
                                 </div>
@@ -349,7 +349,7 @@ function ExamsPageContent() {
                         <div className="flex flex-wrap items-center gap-4">
                             {selectedClassSubjects.length > 1 ? (
                                 <div className="flex items-center gap-3">
-                                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Subject:</span>
+                                    <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Subject:</span>
                                     <Select value={dossierSubjectId} onValueChange={setDossierSubjectId}>
                                         <SelectTrigger className="h-11 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-xl px-4 font-medium text-xs text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all w-48">
                                             <SelectValue placeholder="Select Subject" />
@@ -372,7 +372,7 @@ function ExamsPageContent() {
                                     Subject Focus: <span className="text-zinc-900 dark:text-white font-semibold">{selectedClassSubjects[0].name}</span>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-2 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-500 font-medium uppercase tracking-wider text-[10px]">
+                                <div className="flex items-center gap-2 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-wider text-[10px]">
                                     No Subject Focus Assigned
                                 </div>
                             )}
@@ -406,14 +406,14 @@ function ExamsPageContent() {
                             <SpringingLoader message="Synthesizing Class Dossier" />
                         </div>
                     ) : dossierStudents.length === 0 ? (
-                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 gap-6">
                             <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                 <FileText className="w-12 h-12" />
                             </div>
                             <p className="font-medium uppercase tracking-[0.4em] text-xs italic">No Enrolled Students Harvested</p>
                         </div>
                     ) : sortedSubjectExams.length === 0 ? (
-                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200 gap-6">
                             <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                 <FileText className="w-12 h-12" />
                             </div>
@@ -425,10 +425,10 @@ function ExamsPageContent() {
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="border-b border-zinc-200 dark:border-zinc-900/80 bg-white/60 dark:bg-zinc-950/60">
-                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[220px]">Student Name</th>
-                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[140px]">Student Code</th>
+                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 min-w-[220px]">Student Name</th>
+                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 min-w-[140px]">Student Code</th>
                                             {sortedSubjectExams.map(exam => (
-                                                <th key={exam.id} className="py-5 px-6 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[170px] text-center border-l border-zinc-200 dark:border-zinc-900/40">
+                                                <th key={exam.id} className="py-5 px-6 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 min-w-[170px] text-center border-l border-zinc-200 dark:border-zinc-900/40">
                                                     <Link href={`/dashboard/teacher/gradebook/${exam.id}`} className="hover:text-eduGreen-500 transition-colors block">
                                                         <div className="truncate max-w-[150px] font-semibold">{exam.title}</div>
                                                         <div className="text-[8px] text-zinc-600 mt-1.5 font-normal tracking-widest uppercase">
@@ -437,7 +437,7 @@ function ExamsPageContent() {
                                                     </Link>
                                                 </th>
                                             ))}
-                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[160px] text-center border-l border-zinc-200 dark:border-zinc-900/40 bg-white/50 dark:bg-zinc-950/50">
+                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 min-w-[160px] text-center border-l border-zinc-200 dark:border-zinc-900/40 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50">
                                                 Subject Average
                                             </th>
                                         </tr>
@@ -455,7 +455,7 @@ function ExamsPageContent() {
                                                             <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-eduGreen-500" />
                                                         </Link>
                                                     </td>
-                                                    <td className="py-5 px-8 text-xs text-zinc-500 font-mono tracking-wider">
+                                                    <td className="py-5 px-8 text-xs text-zinc-600 dark:text-zinc-500 font-mono tracking-wider">
                                                         {student.studentCode}
                                                     </td>
                                                     {sortedSubjectExams.map(exam => {
@@ -567,7 +567,7 @@ function ExamsPageContent() {
                     ) : (
                         <form onSubmit={handleCreateExam} className="p-12 space-y-10">
                             <div className="space-y-3">
-                                <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Assessment Label</label>
+                                <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Assessment Label</label>
                                 <Input
                                     placeholder="e.g. Neural Networks Midterm"
                                     value={newExam.title}
@@ -579,7 +579,7 @@ function ExamsPageContent() {
 
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Subject Focus</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Subject Focus</label>
                                     <Select onValueChange={(val: string) => setNewExam({ ...newExam, subjectId: val })}>
                                         <SelectTrigger className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl px-6 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
                                             <SelectValue placeholder="Select Target Subject" />
@@ -598,7 +598,7 @@ function ExamsPageContent() {
                                     </Select>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Deadline Date</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Deadline Date</label>
                                     <div className="relative">
                                         <CalendarIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-eduGreen-600" />
                                         <Input
@@ -614,7 +614,7 @@ function ExamsPageContent() {
 
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Time Limit (Minutes)</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Time Limit (Minutes)</label>
                                     <Input
                                         type="number"
                                         placeholder="e.g. 45"
@@ -625,7 +625,7 @@ function ExamsPageContent() {
                                     <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Leave empty for untimed exams</p>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Lock Status</label>
+                                    <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Lock Status</label>
                                     <button
                                         type="button"
                                         onClick={() => setNewExam({ ...newExam, isLocked: !newExam.isLocked })}

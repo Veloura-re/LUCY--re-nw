@@ -167,7 +167,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                 </div>
                 <div>
                     <h1 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight">Principal Management</h1>
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest font-medium mt-1">Delegated Authority Control</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium mt-1">Delegated Authority Control</p>
                 </div>
             </div>
 
@@ -179,7 +179,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                 
                 <form onSubmit={handleInvite} className="flex flex-col md:flex-row gap-4 items-end max-w-2xl">
                     <div className="flex-1 space-y-2 w-full">
-                        <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Principal Email Address</label>
+                        <label className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Principal Email Address</label>
                         <Input
                             type="email"
                             placeholder="principal@institution.edu"
@@ -216,12 +216,12 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-semibold text-zinc-900 dark:text-white tracking-tight">Active Principals</h3>
-                            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full">{principals.length} Authorized</span>
+                            <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full">{principals.length} Authorized</span>
                         </div>
                         
                         {principals.length === 0 ? (
                             <div className="text-center py-16 bg-white/30 dark:bg-zinc-950/30 rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-800/50">
-                                <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-medium">No active principals found.</p>
+                                <p className="text-[11px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest font-medium">No active principals found.</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 gap-4">
@@ -232,12 +232,12 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 {p.photoUrl ? (
                                                     <Image src={p.photoUrl} alt={p.name || ''} width={48} height={48} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <User className="w-5 h-5 text-zinc-500" />
+                                                    <User className="w-5 h-5 text-zinc-600 dark:text-zinc-500" />
                                                 )}
                                             </div>
                                             <div>
                                                 <p className="text-base font-medium text-zinc-900 dark:text-white">{p.name || 'Unnamed Principal'}</p>
-                                                <p className="text-xs text-zinc-500 mt-0.5">{p.email}</p>
+                                                <p className="text-xs text-zinc-600 dark:text-zinc-500 mt-0.5">{p.email}</p>
                                             </div>
                                         </div>
                                         
@@ -250,7 +250,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 />
                                                 <div>
                                                     <p className="text-[11px] font-semibold text-zinc-900 dark:text-white tracking-wide">Bypass Approvals</p>
-                                                    <p className="text-[9px] text-zinc-500 tracking-widest uppercase mt-0.5">Full System Access</p>
+                                                    <p className="text-[9px] text-zinc-600 dark:text-zinc-500 tracking-widest uppercase mt-0.5">Full System Access</p>
                                                 </div>
                                             </div>
 
@@ -291,7 +291,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                     <div key={inv.id} className="flex items-center justify-between p-5 bg-white/20 dark:bg-zinc-950/20 border border-zinc-300 dark:border-zinc-800/50 rounded-3xl border-dashed">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
-                                                <Mail className="w-4 h-4 text-zinc-500" />
+                                                <Mail className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium text-zinc-900 dark:text-white">{inv.email}</p>

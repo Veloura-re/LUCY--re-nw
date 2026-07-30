@@ -64,7 +64,7 @@ export default async function DashboardLayout({
                     <Shield className="w-10 h-10 text-red-500" />
                 </div>
                 <h1 className="text-2xl font-medium text-zinc-900 dark:text-white mb-2 uppercase tracking-tighter">Connection Bad</h1>
-                <p className="text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
+                <p className="text-zinc-600 dark:text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
                     The database connection is bad or your profile was not found.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -160,7 +160,7 @@ export default async function DashboardLayout({
                         ) : (
                             <Logo className="w-12 h-12" />
                         )}
-                        <div className="relative flex items-center bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
+                        <div className="relative flex items-center bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
                             <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
                             <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-2 md:ml-3">

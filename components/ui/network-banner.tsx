@@ -31,7 +31,7 @@ export function NetworkBanner() {
                     ? "bg-red-950/90 border-red-800/50 text-red-300"
                     : quality === "slow"
                         ? "bg-amber-950/90 border-amber-800/50 text-amber-300"
-                        : "bg-zinc-900/90 border-eduGreen-800/50 text-eduGreen-400"
+                        : "bg-zinc-100/90 dark:bg-zinc-900/90 border-eduGreen-800/50 text-eduGreen-400"
                 }`}
         >
             <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${quality === "offline" ? "bg-red-400" : quality === "slow" ? "bg-amber-400" : "bg-eduGreen-400"
