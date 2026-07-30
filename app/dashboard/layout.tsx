@@ -132,8 +132,8 @@ export default async function DashboardLayout({
 
     return (
         <div className={cn(
-            "h-screen bg-white dark:bg-zinc-950 flex font-sans text-zinc-900 dark:text-white relative overflow-hidden",
-            isSidebar ? "flex-col md:flex-row" : "flex-col"
+        "min-h-screen bg-white dark:bg-zinc-950 flex font-sans text-zinc-900 dark:text-white relative",
+            isSidebar ? "flex-col md:flex-row overflow-hidden h-screen" : "flex-col"
         )}>
             <RealtimeRefresh schoolId={dbUser.schoolId} />
 
@@ -160,7 +160,7 @@ export default async function DashboardLayout({
                         ) : (
                             <Logo className="w-12 h-12" />
                         )}
-                        <div className="relative flex items-center bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
+                        <div className="relative flex items-center bg-zinc-100 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
                             <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
                             <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-2 md:ml-3">
@@ -177,8 +177,10 @@ export default async function DashboardLayout({
 
             {/* Main Content Area */}
             <main className={cn(
-                "flex-1 w-full relative z-10 overflow-y-auto scrollbar-hide",
-                isSidebar ? "p-4 pt-20 md:pt-8 md:p-8" : "max-w-5xl mx-auto px-4 md:px-8 pb-40"
+                "flex-1 w-full relative z-10",
+                isSidebar
+                    ? "overflow-y-auto scrollbar-hide p-4 pt-20 md:pt-8 md:p-8"
+                    : "overflow-y-auto scrollbar-hide max-w-5xl mx-auto px-4 md:px-8 pb-40"
             )}>
                 {children}
             </main>

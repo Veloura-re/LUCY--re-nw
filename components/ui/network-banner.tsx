@@ -28,10 +28,10 @@ export function NetworkBanner() {
     return (
         <div
             className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-5 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold border shadow-2xl transition-all flex items-center gap-3 ${quality === "offline"
-                    ? "bg-red-950/90 border-red-800/50 text-red-700 dark:text-red-300"
+                    ? "bg-red-100 dark:bg-red-950/90 border-red-300 dark:border-red-800/50 text-red-700 dark:text-red-300"
                     : quality === "slow"
-                        ? "bg-amber-950/90 border-amber-800/50 text-amber-300"
-                        : "bg-zinc-100/90 dark:bg-zinc-900/90 border-eduGreen-800/50 text-eduGreen-400"
+                        ? "bg-amber-100 dark:bg-amber-950/90 border-amber-300 dark:border-amber-800/50 text-amber-700 dark:text-amber-300"
+                        : "bg-zinc-100/90 dark:bg-zinc-900/90 border-eduGreen-300 dark:border-eduGreen-800/50 text-eduGreen-700 dark:text-eduGreen-400"
                 }`}
         >
             <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${quality === "offline" ? "bg-red-400" : quality === "slow" ? "bg-amber-400" : "bg-eduGreen-400"

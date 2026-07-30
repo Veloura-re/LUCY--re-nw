@@ -30,7 +30,7 @@ export function SignOutButton({ className, variant = "ghost", fullWidth = true }
                     type="button"
                     onClick={() => setShowConfirm(true)}
                     variant={variant}
-                    className={`gap-3 ${variant === 'ghost' ? 'text-red-600 dark:text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-900/20' : ''} ${fullWidth ? "w-full justify-start" : ""} ${className}`}
+                    className={`gap-3 ${variant === 'ghost' ? 'text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20' : ''} ${fullWidth ? "w-full justify-start" : ""} ${className}`}
                 >
                     <LogOut className="w-5 h-5" />
                     Sign Out

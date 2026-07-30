@@ -36,7 +36,7 @@ export function ConfirmationModal({
             case "danger":
                 return {
                     icon: Trash2,
-                    bgColor: "bg-red-950/30",
+                    bgColor: "bg-red-50 dark:bg-red-950/30",
                     borderColor: "border-red-200 dark:border-red-900/50",
                     iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_40px_rgba(239,68,68,0.15)]"
@@ -44,7 +44,7 @@ export function ConfirmationModal({
             case "warning":
                 return {
                     icon: AlertTriangle,
-                    bgColor: "bg-amber-950/30",
+                    bgColor: "bg-amber-50 dark:bg-amber-950/30",
                     borderColor: "border-amber-200 dark:border-amber-900/50",
                     iconColor: "text-amber-600 dark:text-amber-500",
                     glowColor: "shadow-[0_0_40px_rgba(245,158,11,0.15)]"
@@ -52,7 +52,7 @@ export function ConfirmationModal({
             case "logout":
                 return {
                     icon: LogOut,
-                    bgColor: "bg-red-950/30",
+                    bgColor: "bg-red-50 dark:bg-red-950/30",
                     borderColor: "border-red-200 dark:border-red-900/50",
                     iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_40px_rgba(239,68,68,0.15)]"
@@ -60,9 +60,9 @@ export function ConfirmationModal({
             default:
                 return {
                     icon: ShieldAlert,
-                    bgColor: "bg-eduGreen-950/30",
-                    borderColor: "border-eduGreen-900/50",
-                    iconColor: "text-eduGreen-500",
+                    bgColor: "bg-eduGreen-50 dark:bg-eduGreen-950/30",
+                    borderColor: "border-eduGreen-200 dark:border-eduGreen-900/50",
+                    iconColor: "text-eduGreen-600 dark:text-eduGreen-500",
                     glowColor: "shadow-[0_0_40px_rgba(20,184,115,0.15)]"
                 };
         }
@@ -71,13 +71,13 @@ export function ConfirmationModal({
     const getConfirmButtonStyle = () => {
         switch (variant) {
             case "danger":
-                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-zinc-900 dark:text-white shadow-lg shadow-red-950/50";
+                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white shadow-lg shadow-red-950/50";
             case "warning":
-                return "bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black shadow-lg shadow-amber-950/50";
+                return "bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white shadow-lg shadow-amber-950/50";
             case "logout":
-                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-zinc-900 dark:text-white shadow-lg shadow-red-950/50";
+                return "bg-gradient-to-b from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white shadow-lg shadow-red-950/50";
             default:
-                return "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-zinc-900 dark:text-white shadow-lg shadow-eduGreen-950/50";
+                return "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-white shadow-lg shadow-eduGreen-950/50";
         }
     };
 
@@ -158,29 +158,29 @@ export function AlertModal({
             case "success":
                 return {
                     icon: CheckCircle2,
-                    bgColor: "bg-eduGreen-950/30",
-                    borderColor: "border-eduGreen-900/50",
-                    iconColor: "text-eduGreen-500",
+                    bgColor: "bg-eduGreen-50 dark:bg-eduGreen-950/30",
+                    borderColor: "border-eduGreen-200 dark:border-eduGreen-900/50",
+                    iconColor: "text-eduGreen-600 dark:text-eduGreen-500",
                     glowColor: "shadow-[0_0_60px_rgba(20,184,115,0.2)]",
-                    buttonStyle: "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-zinc-900 dark:text-white shadow-lg shadow-eduGreen-950/50"
+                    buttonStyle: "bg-gradient-to-b from-eduGreen-500 to-eduGreen-600 hover:from-eduGreen-400 hover:to-eduGreen-500 text-white shadow-lg shadow-eduGreen-950/50"
                 };
             case "error":
                 return {
                     icon: XCircle,
-                    bgColor: "bg-red-950/30",
+                    bgColor: "bg-red-50 dark:bg-red-950/30",
                     borderColor: "border-red-200 dark:border-red-900/50",
                     iconColor: "text-red-600 dark:text-red-500",
                     glowColor: "shadow-[0_0_60px_rgba(239,68,68,0.2)]",
-                    buttonStyle: "bg-gradient-to-b from-zinc-700 to-zinc-800 hover:from-zinc-600 hover:to-zinc-700 text-zinc-900 dark:text-white shadow-lg shadow-zinc-950/50"
+                    buttonStyle: "bg-gradient-to-b from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-800 hover:from-zinc-300 hover:to-zinc-400 dark:hover:from-zinc-600 dark:hover:to-zinc-700 text-zinc-900 dark:text-white shadow-lg shadow-zinc-950/50"
                 };
             default:
                 return {
                     icon: Info,
-                    bgColor: "bg-blue-950/30",
-                    borderColor: "border-blue-900/50",
-                    iconColor: "text-blue-500",
+                    bgColor: "bg-blue-50 dark:bg-blue-950/30",
+                    borderColor: "border-blue-200 dark:border-blue-900/50",
+                    iconColor: "text-blue-600 dark:text-blue-500",
                     glowColor: "shadow-[0_0_60px_rgba(59,130,246,0.2)]",
-                    buttonStyle: "bg-gradient-to-b from-zinc-200 to-white hover:from-white hover:to-zinc-100 text-black shadow-lg"
+                    buttonStyle: "bg-gradient-to-b from-zinc-800 to-zinc-900 dark:from-zinc-200 dark:to-white hover:from-zinc-700 hover:to-zinc-800 dark:hover:from-white dark:hover:to-zinc-100 text-white dark:text-black shadow-lg"
                 };
         }
     };
@@ -273,7 +273,7 @@ export function InputModal({
                     <div className={cn(
                         "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 mx-auto",
                         "border-2 transition-all duration-300",
-                        "bg-eduGreen-950/30 border-eduGreen-900/50"
+                        "bg-eduGreen-50 dark:bg-eduGreen-950/30 border-eduGreen-900/50"
                     )}>
                         <Zap className="w-10 h-10 text-eduGreen-500" />
                     </div>
