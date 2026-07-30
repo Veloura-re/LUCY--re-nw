@@ -292,19 +292,19 @@ export default function MessagesClientWrapper({
                         <Sparkles className="w-3 h-3" />
                         <span>Institutional Neural Link</span>
                     </div>
-                    <h1 className="text-4xl font-medium text-white tracking-tighter uppercase italic">
+                    <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase italic">
                         Message <span className="text-eduGreen-500 not-italic">Hub</span>
                     </h1>
                 </div>
             </div>
 
-            <div className="flex-1 flex overflow-hidden bg-zinc-950/40 backdrop-blur-3xl border border-zinc-900/50 rounded-[2rem] relative z-10 w-full min-w-0">
+            <div className="flex-1 flex overflow-hidden bg-white/40 dark:bg-zinc-950/40 backdrop-blur-3xl border border-zinc-200 dark:border-zinc-900/50 rounded-[2rem] relative z-10 w-full min-w-0">
                 {/* Sidebar */}
-                <div className={cn("w-full md:w-80 border-r border-zinc-900/50 flex flex-col bg-zinc-950/20 relative shrink-0", activeRoom ? "hidden md:flex" : "flex")}>
-                    <div className="p-4 border-b border-zinc-900/50 bg-zinc-950/40">
+                <div className={cn("w-full md:w-80 border-r border-zinc-200 dark:border-zinc-900/50 flex flex-col bg-white/20 dark:bg-zinc-950/20 relative shrink-0", activeRoom ? "hidden md:flex" : "flex")}>
+                    <div className="p-4 border-b border-zinc-200 dark:border-zinc-900/50 bg-white/40 dark:bg-zinc-950/40">
                         <Input
                             placeholder="Identify node..."
-                            className="bg-zinc-900/40 border-zinc-800/50 h-12 rounded-xl text-xs"
+                            className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-300 dark:border-zinc-800/50 h-12 rounded-xl text-xs"
                             value={searchQuery}
                             onChange={(e) => handleSearch(e.target.value)}
                         />
@@ -314,9 +314,9 @@ export default function MessagesClientWrapper({
                         {searchQuery.length > 0 ? (
                             searchResults.map(user => (
                                 <button key={user.id} onClick={() => startChat(user)} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-eduGreen-950/20 text-left group transition-all">
-                                    <Avatar className="h-10 w-10 border border-zinc-800"><AvatarFallback>{user.name[0]}</AvatarFallback></Avatar>
+                                    <Avatar className="h-10 w-10 border border-zinc-300 dark:border-zinc-800"><AvatarFallback>{user.name[0]}</AvatarFallback></Avatar>
                                     <div>
-                                        <div className="text-[10px] font-bold text-white uppercase tracking-tight">{user.name}</div>
+                                        <div className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-tight">{user.name}</div>
                                         <div className="text-[8px] text-zinc-500 uppercase tracking-widest">{user.role}</div>
                                     </div>
                                 </button>
@@ -328,15 +328,15 @@ export default function MessagesClientWrapper({
                                     onClick={() => { setActiveRoom(room); setMessages([]); fetchMessages(room.id); }}
                                     className={cn(
                                         "w-full flex items-center gap-3 p-3 rounded-2xl transition-all border text-left group relative",
-                                        activeRoom?.id === room.id ? "bg-eduGreen-600/10 border-eduGreen-900/40" : "bg-transparent border-transparent hover:bg-zinc-900/30"
+                                        activeRoom?.id === room.id ? "bg-eduGreen-600/10 border-eduGreen-900/40" : "bg-transparent border-transparent hover:bg-zinc-200 dark:hover:bg-zinc-900/30"
                                     )}
                                 >
-                                    <Avatar className="h-10 w-10 border border-zinc-800">
+                                    <Avatar className="h-10 w-10 border border-zinc-300 dark:border-zinc-800">
                                         <AvatarFallback>{room.type === 'GROUP' ? 'G' : room.partner?.name[0]}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1 overflow-hidden">
                                         <div className="flex justify-between items-center mb-1">
-                                            <span className="font-bold text-[10px] text-white uppercase tracking-tight truncate">{room.type === 'GROUP' ? room.name : room.partner?.name}</span>
+                                            <span className="font-bold text-[10px] text-zinc-900 dark:text-white uppercase tracking-tight truncate">{room.type === 'GROUP' ? room.name : room.partner?.name}</span>
                                             {room.unreadCount > 0 && <div className="w-2 h-2 rounded-full bg-eduGreen-500 shadow-[0_0_10px_rgba(33,201,141,0.6)]" />}
                                         </div>
                                         <p className="text-[9px] text-zinc-600 truncate">{room.messages?.[0]?.content || "No records"}</p>
@@ -348,15 +348,15 @@ export default function MessagesClientWrapper({
                 </div>
 
                 {/* Chat Window */}
-                <div className={cn("flex-1 flex flex-col bg-zinc-950/20 relative min-w-0", !activeRoom ? "hidden md:flex" : "flex")}>
+                <div className={cn("flex-1 flex flex-col bg-white/20 dark:bg-zinc-950/20 relative min-w-0", !activeRoom ? "hidden md:flex" : "flex")}>
                     {activeRoom ? (
                         <>
-                            <div className="h-16 px-6 border-b border-zinc-900/50 flex items-center justify-between bg-zinc-950/60 backdrop-blur-3xl shrink-0">
+                            <div className="h-16 px-6 border-b border-zinc-200 dark:border-zinc-900/50 flex items-center justify-between bg-white/60 dark:bg-zinc-950/60 backdrop-blur-3xl shrink-0">
                                 <div className="flex items-center gap-4">
                                     <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setActiveRoom(null)}><ArrowLeft className="w-5 h-5" /></Button>
                                     <Avatar className="h-10 w-10 border border-eduGreen-500/50"><AvatarFallback>{activeRoom.type === 'GROUP' ? 'G' : activeRoom.partner?.name[0]}</AvatarFallback></Avatar>
                                     <div>
-                                        <div className="font-bold text-[10px] text-white uppercase tracking-widest">{activeRoom.type === 'GROUP' ? activeRoom.name : activeRoom.partner?.name}</div>
+                                        <div className="font-bold text-[10px] text-zinc-900 dark:text-white uppercase tracking-widest">{activeRoom.type === 'GROUP' ? activeRoom.name : activeRoom.partner?.name}</div>
                                         <div className="text-[8px] text-eduGreen-500/80 uppercase tracking-widest">Neural Link Established</div>
                                     </div>
                                 </div>
@@ -379,7 +379,7 @@ export default function MessagesClientWrapper({
                                         <div className={cn("space-y-2", msg.fromUserId === me.id ? "items-end" : "items-start")}>
                                             <div className={cn(
                                                 "p-4 rounded-2xl text-xs leading-relaxed border shadow-2xl",
-                                                msg.fromUserId === me.id ? "bg-eduGreen-600/10 border-eduGreen-900/50 text-white" : "bg-zinc-900/50 border-zinc-800 text-zinc-300"
+                                                msg.fromUserId === me.id ? "bg-eduGreen-600/10 border-eduGreen-900/50 text-zinc-900 dark:text-white" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300"
                                             )}>
                                                 {msg.content}
                                             </div>
@@ -392,13 +392,13 @@ export default function MessagesClientWrapper({
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            <form onSubmit={handleSendMessage} className="p-6 border-t border-zinc-900/50 bg-zinc-950/60 shrink-0">
+                            <form onSubmit={handleSendMessage} className="p-6 border-t border-zinc-200 dark:border-zinc-900/50 bg-white/60 dark:bg-zinc-950/60 shrink-0">
                                 <div className="flex gap-4">
                                     <Input
                                         placeholder="Transmit signal..."
                                         value={newMessage}
                                         onChange={e => setNewMessage(e.target.value)}
-                                        className="h-14 bg-zinc-900/40 border-zinc-800 border-2 rounded-2xl text-xs px-6 focus:border-eduGreen-600 transition-all font-medium"
+                                        className="h-14 bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-300 dark:border-zinc-800 border-2 rounded-2xl text-xs px-6 focus:border-eduGreen-600 transition-all font-medium"
                                     />
                                     <Button type="submit" className="h-14 w-14 rounded-2xl bg-white hover:bg-zinc-200 text-black shrink-0 shadow-lg active:scale-95 transition-all">
                                         <Send className="w-5 h-5" />

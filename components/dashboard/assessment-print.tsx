@@ -28,11 +28,11 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                 {/* Header */}
                 <div className="flex justify-between items-start border-b-2 border-black pb-8 mb-10">
                     <div>
-                        <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-400 not-italic">Grading Sheet</span></h1>
+                        <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Grading Sheet</span></h1>
                         <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-500">{exam.title}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Assessment Category</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Assessment Category</p>
                         <p className="text-sm font-bold uppercase">{exam.category?.replace('_', ' ')}</p>
                         <p className="text-[10px] font-medium text-zinc-500 mt-1">{exam.className} • {exam.subjectName}</p>
                     </div>
@@ -40,17 +40,17 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
 
                 <div className="grid grid-cols-3 gap-8 mb-10">
                     <div className="bg-zinc-50 p-4 border border-zinc-100 italic">
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Total Marks</p>
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-1">Total Marks</p>
                         <p className="text-xl font-bold">{exam.totalMarks}</p>
                     </div>
                     <div className="bg-zinc-50 p-4 border border-zinc-100 italic">
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Class Average</p>
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-1">Class Average</p>
                         <p className="text-xl font-bold">
                             {(students.reduce((acc, s) => acc + (parseFloat(s.score) || 0), 0) / (students.filter(s => s.score !== null).length || 1)).toFixed(1)}
                         </p>
                     </div>
                     <div className="bg-zinc-50 p-4 border border-zinc-100 italic text-right">
-                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Date Generated</p>
+                        <p className="text-[8px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-1">Date Generated</p>
                         <p className="text-sm font-bold">{new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
@@ -70,10 +70,10 @@ export const AssessmentPrint = React.forwardRef<HTMLDivElement, AssessmentPrintP
                             const grade = calculateGrade(student.score, exam.totalMarks);
                             return (
                                 <tr key={student.id} className="border-b border-zinc-100 text-xs">
-                                    <td className="py-4 px-2 text-zinc-400 font-mono">{idx + 1}</td>
+                                    <td className="py-4 px-2 text-zinc-600 dark:text-zinc-400 font-mono">{idx + 1}</td>
                                     <td className="py-4 px-2 font-bold uppercase">
-                                        {student.firstName} <span className="text-zinc-400">{student.lastName}</span>
-                                        <div className="text-[8px] font-mono text-zinc-300">{student.studentCode}</div>
+                                        {student.firstName} <span className="text-zinc-600 dark:text-zinc-400">{student.lastName}</span>
+                                        <div className="text-[8px] font-mono text-zinc-700 dark:text-zinc-300">{student.studentCode}</div>
                                     </td>
                                     <td className="py-4 px-2 text-center font-bold text-lg">{student.score ?? '-'}</td>
                                     <td className="py-4 px-2 text-center font-bold">{grade}</td>

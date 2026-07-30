@@ -229,7 +229,7 @@ export function OperatingCostsView() {
             </div>
 
             {/* Expenses List */}
-            <Card className="bg-white dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
+            <Card className="bg-white/50 dark:bg-zinc-950/50 border-slate-200 dark:border-zinc-800 backdrop-blur-xl">
                 <CardHeader>
                     <CardTitle className="text-lg font-medium text-slate-900 dark:text-white flex items-center gap-2">
                         <FileText className="w-5 h-5 text-slate-600 dark:text-zinc-400" />

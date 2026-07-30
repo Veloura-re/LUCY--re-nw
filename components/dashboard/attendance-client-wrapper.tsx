@@ -195,7 +195,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                         <div className="h-[1px] w-8 bg-zinc-800" />
                         <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em]">Neural Link Protocol 0.2</span>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white italic leading-none">
+                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
                         AUTHORITY <span className="text-zinc-800 not-italic">LOG</span>
                     </h2>
                 </motion.div>
@@ -205,7 +205,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                     disabled={isLocked || loading || saving}
                     className={cn(
                         "h-20 px-12 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl relative overflow-hidden group active:scale-95",
-                        isLocked ? "bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black"
+                        isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black"
                     )}
                 >
                     <div className="flex items-center gap-4 relative z-10">
@@ -214,14 +214,14 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 </Button>
             </div>
 
-            <Card className="p-10 bg-[#050505]/40 backdrop-blur-[40px] border-white/5 rounded-[3rem] relative shadow-2xl overflow-hidden group">
+            <Card className="p-10 bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] relative shadow-2xl overflow-hidden group">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
                     <ConfigField label="Cohort Identifier" icon={Brain}>
                         <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Select Class" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 {classes.map((cls) => (
                                     <SelectItem key={cls.classId} value={cls.classId} className="focus:bg-white focus:text-black py-4">
                                         {cls.className}
@@ -233,10 +233,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
                     <ConfigField label="Temporal Slot" icon={Clock}>
                         <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Day Cycle" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="full" className="focus:bg-white focus:text-black py-4">Full Cycle</SelectItem>
                                 {periods.map((p: any) => (
                                     <SelectItem key={p.id} value={p.id} className="focus:bg-white focus:text-black py-4">{p.name}</SelectItem>
@@ -247,10 +247,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
                     <ConfigField label="Neural Path" icon={Zap}>
                         <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="All Streams" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-white rounded-2xl">
+                            <SelectContent className="bg-[#0a0a0a] border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="none" className="focus:bg-white focus:text-black py-4">Unified Stream</SelectItem>
                                 {availableSubjects.map((sub: any) => (
                                     <SelectItem key={sub.id} value={sub.id} className="focus:bg-white focus:text-black py-4">{sub.name}</SelectItem>
@@ -264,7 +264,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                             type="date"
                             value={date}
                             onChange={e => setDate(e.target.value)}
-                            className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-bold text-xs uppercase tracking-[0.2em] px-6 appearance-none"
+                            className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-[0.2em] px-6 appearance-none"
                         />
                     </ConfigField>
                 </div>
@@ -277,12 +277,12 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 <MiniStat label="LATENCY" value={stats.late} color="amber" percentage={(stats.late / (stats.total || 1)) * 100} />
             </div>
 
-            <Card className="bg-[#050505]/40 backdrop-blur-[40px] border-white/5 rounded-[3.5rem] overflow-hidden shadow-2xl relative">
-                <div className="p-10 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <Card className="bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden shadow-2xl relative">
+                <div className="p-10 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div>
-                        <span className="text-2xl font-black text-white italic">{students.length} <span className="text-zinc-800 not-italic text-lg">DATAPOINTS REGISTERED</span></span>
+                        <span className="text-2xl font-black text-zinc-900 dark:text-white italic">{students.length} <span className="text-zinc-800 not-italic text-lg">DATAPOINTS REGISTERED</span></span>
                     </div>
-                    <div className="flex items-center gap-4 bg-black/40 p-2 rounded-[2rem] border border-white/5">
+                    <div className="flex items-center gap-4 bg-black/40 p-2 rounded-[2rem] border border-zinc-200 dark:border-white/5">
                         <button onClick={() => !isLocked && setAll('PRESENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-emerald-500 hover:bg-emerald-500/10 transition-all">SYNCHRONIZE ALL</button>
                         <button onClick={() => !isLocked && setAll('ABSENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-rose-500 hover:bg-rose-500/10 transition-all">VOID ALL</button>
                     </div>
@@ -291,7 +291,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 <div className="divide-y divide-white/5 min-h-[400px]">
                     {loading ? (
                         <div className="p-32 flex justify-center flex-col items-center gap-6">
-                            <Activity className="w-12 h-12 text-white animate-pulse" />
+                            <Activity className="w-12 h-12 text-zinc-900 dark:text-white animate-pulse" />
                             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Querying Institutional Records...</p>
                         </div>
                     ) : (
@@ -331,10 +331,10 @@ function ConfigField({ label, icon: Icon, children }: any) {
 
 function MiniStat({ label, value, color, percentage }: any) {
     return (
-        <Card className="p-6 bg-[#050505]/40 backdrop-blur-[40px] border-white/5 rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative">
+        <Card className="p-6 bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative">
             <div className="space-y-1 relative z-10">
                 <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em] italic">{label}</span>
-                <div className="text-4xl font-black text-white tracking-tighter italic">{value}</div>
+                <div className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter italic">{value}</div>
             </div>
             {percentage !== undefined && (
                 <div className="mt-4 relative z-10 h-1 w-full bg-white/5 rounded-full overflow-hidden">
@@ -352,11 +352,11 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8 hover:bg-white/[0.02] transition-all group/row relative">
             <div className="flex items-center gap-8 relative z-10">
-                <div className="w-20 h-20 rounded-[2rem] bg-[#0a0a0a] border border-white/5 flex items-center justify-center font-black text-zinc-800 text-2xl relative overflow-hidden italic shadow-inner">
+                <div className="w-20 h-20 rounded-[2rem] bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center font-black text-zinc-800 text-2xl relative overflow-hidden italic shadow-inner">
                     {student.firstName[0]}{student.lastName[0]}
                 </div>
                 <div className="space-y-1">
-                    <div className="font-black text-3xl text-zinc-100 group-hover/row:text-white transition-colors tracking-tight italic uppercase">{student.firstName} <span className="text-zinc-700">{student.lastName}</span></div>
+                    <div className="font-black text-3xl text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight italic uppercase">{student.firstName} <span className="text-zinc-700">{student.lastName}</span></div>
                     <div className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em] font-mono">{student.studentCode}</div>
                 </div>
             </div>
@@ -368,11 +368,11 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
                         value={reasons[student.id] || ""}
                         disabled={isLocked}
                         onChange={(e) => setReasons({ ...reasons, [student.id]: e.target.value })}
-                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 text-xs italic font-black text-white w-full md:w-80"
+                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 text-xs italic font-black text-zinc-900 dark:text-white w-full md:w-80"
                     />
                 )}
 
-                <div className="flex gap-2 bg-black/40 p-2 rounded-[2.25rem] border border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
+                <div className="flex gap-2 bg-black/40 p-2 rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
                     <StatusBtn status="PRESENT" icon={CheckCircle} active={currentStatus === 'PRESENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'PRESENT' })} activeColor="text-emerald-500 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]" disabled={isLocked} />
                     <StatusBtn status="LATE" icon={Clock} active={currentStatus === 'LATE'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'LATE' })} activeColor="text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.1)]" disabled={isLocked} />
                     <StatusBtn status="ABSENT" icon={XCircle} active={currentStatus === 'ABSENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'ABSENT' })} activeColor="text-rose-500 bg-rose-500/10 border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.1)]" disabled={isLocked} />

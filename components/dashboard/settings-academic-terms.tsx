@@ -147,13 +147,13 @@ export function SettingsAcademicTerms() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-xl font-medium text-white tracking-tight">Academic & Financial Cycles</h2>
+                    <h2 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Academic & Financial Cycles</h2>
                     <p className="text-xs text-zinc-500 mt-1 uppercase tracking-widest">Manage quarters, semesters, and billing periods</p>
                 </div>
             </div>
 
             {/* Structure Settings */}
-            <Card className="bg-[#050505] border-white/5 shadow-2xl relative overflow-hidden">
+            <Card className="bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl relative overflow-hidden">
                 {school?.termStructureLocked && (
                     <div className="absolute top-0 right-0 p-4 flex items-center gap-2 text-eduGreen-500">
                         <Lock className="w-4 h-4" />
@@ -162,7 +162,7 @@ export function SettingsAcademicTerms() {
                 )}
                 
                 <CardHeader>
-                    <CardTitle className="text-sm font-medium text-white">System Architecture</CardTitle>
+                    <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">System Architecture</CardTitle>
                     <CardDescription className="text-xs text-zinc-500 max-w-2xl">
                         Define the primary structure for your academic year. This controls how report cards and student rankings are generated.
                     </CardDescription>
@@ -190,10 +190,10 @@ export function SettingsAcademicTerms() {
                                 onValueChange={v => setSettingsData({...settingsData, termStructure: v})}
                                 disabled={school?.termStructureLocked}
                             >
-                                <SelectTrigger className="w-full bg-zinc-900 border-white/5 text-white h-12 rounded-xl">
+                                <SelectTrigger className="w-full bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl">
                                     <SelectValue placeholder="Select Structure" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                <SelectContent className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                     <SelectItem value="QUARTERS">Quarterly (4 Terms)</SelectItem>
                                     <SelectItem value="SEMESTERS">Semesterly (2 Terms)</SelectItem>
                                     <SelectItem value="TRIMESTERS">Trimesters (3 Terms)</SelectItem>
@@ -208,10 +208,10 @@ export function SettingsAcademicTerms() {
                                 value={settingsData.defaultBillingCycle} 
                                 onValueChange={v => setSettingsData({...settingsData, defaultBillingCycle: v})}
                             >
-                                <SelectTrigger className="w-full bg-zinc-900 border-white/5 text-white h-12 rounded-xl">
+                                <SelectTrigger className="w-full bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl">
                                     <SelectValue placeholder="Select Cycle" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                                <SelectContent className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                     <SelectItem value="MONTHLY">Monthly</SelectItem>
                                     <SelectItem value="QUARTERLY">Quarterly</SelectItem>
                                     <SelectItem value="SEMESTERLY">Semesterly</SelectItem>
@@ -221,13 +221,13 @@ export function SettingsAcademicTerms() {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-white/5">
                         <div className="flex items-center gap-4">
                             <Switch 
                                 checked={settingsData.termStructureLocked} 
                                 onCheckedChange={c => setSettingsData({...settingsData, termStructureLocked: c})}
                             />
-                            <Label className="text-xs text-zinc-400">Lock Structural Settings</Label>
+                            <Label className="text-xs text-zinc-600 dark:text-zinc-400">Lock Structural Settings</Label>
                         </div>
                         
                         <Button 
@@ -244,10 +244,10 @@ export function SettingsAcademicTerms() {
             <div className="h-4"></div>
 
             {/* Manual Term Creation */}
-            <Card className="bg-[#050505] border-white/5 shadow-2xl">
+            <Card className="bg-[#050505] border-zinc-200 dark:border-white/5 shadow-2xl">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-sm font-medium text-white">Periods Timeline</CardTitle>
+                        <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">Periods Timeline</CardTitle>
                         <CardDescription className="text-xs text-zinc-500">Define the actual dates for your grading periods.</CardDescription>
                     </div>
                     {terms.length === 0 && (
@@ -268,10 +268,10 @@ export function SettingsAcademicTerms() {
                                 placeholder="e.g. Q1 2026, Semester 1"
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                className="bg-zinc-900 border-white/5 text-white h-12 rounded-xl"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl"
                             />
                         </div>
-                        <div className="flex items-center justify-between px-4 bg-zinc-900 border border-white/5 rounded-xl h-12 mt-6">
+                        <div className="flex items-center justify-between px-4 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 rounded-xl h-12 mt-6">
                             <Label className="text-[10px] uppercase tracking-widest text-zinc-500">Set as Active Term</Label>
                             <Switch checked={formData.isActive} onCheckedChange={c => setFormData({ ...formData, isActive: c })} />
                         </div>
@@ -283,7 +283,7 @@ export function SettingsAcademicTerms() {
                                 type="date"
                                 value={formData.startDate}
                                 onChange={e => setFormData({ ...formData, startDate: e.target.value })}
-                                className="bg-zinc-900 border-white/5 text-white h-12 rounded-xl"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl"
                             />
                         </div>
                         <div className="space-y-2">
@@ -292,7 +292,7 @@ export function SettingsAcademicTerms() {
                                 type="date"
                                 value={formData.endDate}
                                 onChange={e => setFormData({ ...formData, endDate: e.target.value })}
-                                className="bg-zinc-900 border-white/5 text-white h-12 rounded-xl"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl"
                             />
                         </div>
                     </div>
@@ -300,7 +300,7 @@ export function SettingsAcademicTerms() {
                     <Button 
                         onClick={handleCreateTerm}
                         disabled={creating || !formData.name || !formData.startDate || !formData.endDate}
-                        className="w-full bg-eduGreen-600 hover:bg-eduGreen-700 text-white h-12 rounded-xl text-xs font-bold uppercase tracking-widest mt-4"
+                        className="w-full bg-eduGreen-600 hover:bg-eduGreen-700 text-zinc-900 dark:text-white h-12 rounded-xl text-xs font-bold uppercase tracking-widest mt-4"
                     >
                         {creating ? "Processing..." : "Register Period"}
                     </Button>
@@ -309,15 +309,15 @@ export function SettingsAcademicTerms() {
 
             <div className="space-y-3">
                 {loading ? (
-                    <div className="h-20 bg-zinc-900/50 rounded-xl animate-pulse" />
+                    <div className="h-20 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl animate-pulse" />
                 ) : terms.map((t: any) => (
-                    <div key={t.id} className="flex items-center justify-between p-4 bg-[#050505] border border-white/5 rounded-2xl group">
+                    <div key={t.id} className="flex items-center justify-between p-4 bg-[#050505] border border-zinc-200 dark:border-white/5 rounded-2xl group">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center">
-                                <Calendar className="w-4 h-4 text-zinc-400" />
+                            <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center">
+                                <Calendar className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-medium text-white flex items-center gap-2">
+                                <h3 className="text-sm font-medium text-zinc-900 dark:text-white flex items-center gap-2">
                                     {t.name}
                                     {t.isActive && (
                                         <span className="px-2 py-0.5 rounded-full bg-eduGreen-500/20 text-eduGreen-400 text-[9px] uppercase tracking-widest">Active</span>
@@ -330,7 +330,7 @@ export function SettingsAcademicTerms() {
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="text-right mr-4">
-                                <p className="text-white text-xs font-medium">{t._count?.marklists || 0}</p>
+                                <p className="text-zinc-900 dark:text-white text-xs font-medium">{t._count?.marklists || 0}</p>
                                 <p className="text-[9px] text-zinc-500 uppercase tracking-widest">Marklists</p>
                             </div>
                             <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">

@@ -85,7 +85,7 @@ export function CommandSearch() {
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-2xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-900 shadow-xl dark:shadow-2xl p-0 overflow-hidden rounded-[2.5rem] top-[20%] translate-y-0">
-                    <div className="p-6 border-b border-zinc-900 flex items-center gap-4">
+                    <div className="p-6 border-b border-zinc-200 dark:border-zinc-900 flex items-center gap-4">
                         <Search className="w-5 h-5 text-slate-400 dark:text-zinc-500" />
                         <input 
                             value={query}
@@ -110,21 +110,21 @@ export function CommandSearch() {
                                     <button
                                         key={book.id}
                                         onClick={() => handleSelect(book)}
-                                        className="w-full flex items-center justify-between p-4 bg-zinc-900/40 hover:bg-eduGreen-500/10 border border-transparent hover:border-eduGreen-900/30 rounded-2xl transition-all group text-left"
+                                        className="w-full flex items-center justify-between p-4 bg-zinc-100/40 dark:bg-zinc-900/40 hover:bg-eduGreen-500/10 border border-transparent hover:border-eduGreen-900/30 rounded-2xl transition-all group text-left"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-zinc-900 rounded-xl border border-zinc-800 text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
+                                            <div className="p-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-300 dark:border-zinc-800 text-zinc-500 group-hover:text-eduGreen-500 transition-colors">
                                                 <Book className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <h4 className="text-sm font-medium text-white group-hover:text-eduGreen-500 transition-colors">{book.title}</h4>
+                                                <h4 className="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-eduGreen-500 transition-colors">{book.title}</h4>
                                                 <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-tighter mt-1">
                                                     {book.subject.name} • Grade {book.grade.level}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest px-2 py-1 bg-zinc-950 rounded border border-zinc-900">
+                                            <span className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest px-2 py-1 bg-white dark:bg-zinc-950 rounded border border-zinc-200 dark:border-zinc-900">
                                                 {book.class.name}
                                             </span>
                                             <Zap className="w-3 h-3 text-zinc-800 group-hover:text-eduGreen-500" />
@@ -150,7 +150,7 @@ export function CommandSearch() {
                                         { icon: FileText, label: "Unit Packs", cmd: "U" },
                                         { icon: ExternalLink, label: "External Links", cmd: "L" }
                                     ].map((sh) => (
-                                        <div key={sh.label} className="flex items-center gap-3 p-4 bg-zinc-900/20 border border-zinc-900 rounded-2xl hover:bg-zinc-900/40 transition-all cursor-pointer">
+                                        <div key={sh.label} className="flex items-center gap-3 p-4 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 rounded-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900/40 transition-all cursor-pointer">
                                             <sh.icon className="w-4 h-4 text-zinc-600" />
                                             <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">{sh.label}</span>
                                         </div>

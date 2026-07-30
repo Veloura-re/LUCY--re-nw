@@ -60,22 +60,22 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                         <div className="h-[1px] w-8 bg-zinc-800" />
                         <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em]">Academic Observatory v1.0</span>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white italic leading-none uppercase">
+                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none uppercase">
                         SCHOLASTIC <span className="text-zinc-800 not-italic">REGISTRY</span>
                     </h2>
                     <div className="flex items-center gap-3 mt-4">
-                        <span className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-400 tracking-widest">{studentName}</span>
+                        <span className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{studentName}</span>
                         <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">CODE: {studentCode}</span>
                     </div>
                 </motion.div>
 
                 <div className="relative group w-full md:w-80">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-white transition-colors" />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-zinc-900 dark:text-white transition-colors" />
                     <input 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="FILTER REGISTRY..." 
-                        className="w-full bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-white ring-0 focus:border-white/20 transition-all placeholder:text-zinc-800 outline-none"
+                        className="w-full bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white ring-0 focus:border-white/20 transition-all placeholder:text-zinc-800 outline-none"
                     />
                 </div>
             </div>
@@ -93,7 +93,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                 ))}
 
                 {filteredAssignments.length === 0 && (
-                    <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-[3.5rem] text-center">
+                    <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
                         <Activity className="w-12 h-12 text-zinc-800 mb-6 animate-pulse" />
                         <h3 className="text-xl font-black text-zinc-700 italic uppercase">Registry Buffer Empty</h3>
                         <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">No synchronized dispatches found for the current filter parameters.</p>
@@ -123,10 +123,10 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-4">
-                                            <span className="px-5 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
+                                            <span className="px-5 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
                                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{selectedAssignment.subject?.name}</span>
                                         </div>
-                                        <h3 className="text-3xl md:text-5xl font-black italic text-white uppercase">{selectedAssignment.title}</h3>
+                                        <h3 className="text-3xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase">{selectedAssignment.title}</h3>
                                         <div className="flex items-center gap-3 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
                                             <Calendar className="w-4 h-4" /> DEADLINE: {format(new Date(selectedAssignment.dueDate), "PPP")}
                                         </div>
@@ -138,12 +138,12 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                     <div className="space-y-8">
                                         <div className="space-y-4">
                                             <label className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">DISPATCH SPECIFICATIONS</label>
-                                            <p className="text-zinc-400 text-sm leading-relaxed font-medium">
+                                            <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed font-medium">
                                                 {selectedAssignment.description || "No additional parameters provided for this dispatch."}
                                             </p>
                                         </div>
                                         
-                                        <div className="p-8 bg-zinc-950/60 rounded-[2.5rem] border border-white/5 space-y-4">
+                                        <div className="p-8 bg-white/60 dark:bg-zinc-950/60 rounded-[2.5rem] border border-zinc-200 dark:border-white/5 space-y-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Zap className="w-4 h-4 text-zinc-700" />
@@ -180,7 +180,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                     <span className="text-[8px] font-black uppercase tracking-widest">Neural Support</span>
                                                 </Button>
                                             </div>
-                                            <p className="text-white font-black italic uppercase text-lg">{selectedAssignment.teacher?.name}</p>
+                                            <p className="text-zinc-900 dark:text-white font-black italic uppercase text-lg">{selectedAssignment.teacher?.name}</p>
                                         </div>
 
                                         <AnimatePresence>
@@ -194,7 +194,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                         <Brain className="w-4 h-4 text-emerald-500" />
                                                         <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest italic">{parentAnalysis.difficultyLevel} Difficulty Synthesis</span>
                                                     </div>
-                                                    <p className="text-zinc-300 text-xs font-medium italic leading-relaxed">
+                                                    <p className="text-zinc-700 dark:text-zinc-300 text-xs font-medium italic leading-relaxed">
                                                         &ldquo;{parentAnalysis.parentSummary}&rdquo;
                                                     </p>
                                                     <div className="space-y-4 pt-4 border-t border-emerald-500/10">
@@ -203,7 +203,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                             {parentAnalysis.supportTips.map((tip: string, i: number) => (
                                                                 <div key={i} className="flex items-center gap-3">
                                                                     <div className="w-1 h-1 rounded-full bg-emerald-500" />
-                                                                    <span className="text-[10px] font-bold text-white uppercase italic">{tip}</span>
+                                                                    <span className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase italic">{tip}</span>
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -230,7 +230,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                         <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-widest flex items-center gap-2">
                                                             <MessageSquare className="w-3 h-3" /> TEACHER FEEDBACK
                                                         </span>
-                                                        <p className="text-zinc-400 text-sm font-medium italic leading-relaxed">&ldquo;{selectedAssignment.submission.feedback || "The student has demonstrated standard concept alignment."}&rdquo;</p>
+                                                        <p className="text-zinc-600 dark:text-zinc-400 text-sm font-medium italic leading-relaxed">&ldquo;{selectedAssignment.submission.feedback || "The student has demonstrated standard concept alignment."}&rdquo;</p>
                                                     </div>
                                                 </div>
                                             ) : selectedAssignment.submission ? (
@@ -240,7 +240,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                     <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Submission detected. Pending educator evaluation.</p>
                                                 </div>
                                             ) : (
-                                                <div className="p-10 bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] space-y-4 text-center">
+                                                <div className="p-10 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-[2.5rem] space-y-4 text-center">
                                                     <AlertCircle className="w-10 h-10 text-zinc-700 mx-auto" />
                                                     <h4 className="text-xl font-black text-zinc-600 italic uppercase">Dispatch Pending Submission</h4>
                                                     <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest">No coursework detected in registry for this task.</p>
@@ -268,7 +268,7 @@ function RegistryCard({ assignment, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-10 rounded-[3.5rem] border backdrop-blur-3xl transition-all cursor-pointer group relative overflow-hidden",
-                assignment.submission ? "bg-[#050505]/40 border-white/5 shadow-none" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-white/10 hover:border-white/20 shadow-2xl"
+                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5 shadow-none" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-white/10 hover:border-white/20 shadow-2xl"
             )}
         >
             {isLate && (
@@ -281,11 +281,11 @@ function RegistryCard({ assignment, onClick }: any) {
             <div className="space-y-8 relative z-10">
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-[#0a0a0a] border border-white/5 flex items-center justify-center overflow-hidden">
+                        <div className="w-12 h-12 rounded-2xl bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center overflow-hidden">
                              <span className="text-zinc-700 font-black text-[10px] uppercase italic">{assignment.subject?.name?.[0]}</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.1em] italic">{assignment.subject?.name}</span>
+                            <span className="text-[10px] font-black text-zinc-900 dark:text-white/50 uppercase tracking-[0.1em] italic">{assignment.subject?.name}</span>
                             <span className="text-[8px] font-bold text-zinc-700 uppercase tracking-widest">{assignment.type}</span>
                         </div>
                     </div>
@@ -297,10 +297,10 @@ function RegistryCard({ assignment, onClick }: any) {
                 </div>
 
                 <div className="space-y-2">
-                    <h4 className="text-3xl font-black italic text-white uppercase leading-none tracking-tight group-hover:text-eduGreen-500 transition-colors line-clamp-2">{assignment.title}</h4>
+                    <h4 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase leading-none tracking-tight group-hover:text-eduGreen-500 transition-colors line-clamp-2">{assignment.title}</h4>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-white/5">
                     <div className="flex items-center gap-2">
                         <Calendar className="w-3.5 h-3.5 text-zinc-700" />
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">

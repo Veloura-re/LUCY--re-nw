@@ -25,11 +25,11 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                 {/* Branding / Header */}
                 <div className="flex justify-between items-start border-b-2 border-black pb-8 mb-10">
                     <div>
-                        <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-400 not-italic">Institutional Network</span></h1>
+                        <h1 className="text-4xl font-bold tracking-tighter uppercase italic">LUCY <span className="text-zinc-600 dark:text-zinc-400 not-italic">Institutional Network</span></h1>
                         <p className="text-xs font-bold uppercase tracking-[0.3em] mt-2 text-zinc-500">{title}</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Generated On</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Generated On</p>
                         <p className="text-sm font-bold">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     </div>
                 </div>
@@ -40,7 +40,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                             <div className="h-10 w-1 bg-black" />
                             <h2 className="text-2xl font-bold uppercase tracking-tight italic">Class: {className}</h2>
                             <div className="flex-1 h-px bg-zinc-100" />
-                            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{groupedStudents[className].length} Entities</span>
+                            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{groupedStudents[className].length} Entities</span>
                         </div>
 
                         <table className="w-full border-collapse">
@@ -59,10 +59,10 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                                     `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
                                 ).map((student: any, idx: number) => (
                                     <tr key={student.id} className="border-b border-zinc-100 text-xs hover:bg-zinc-50 transition-colors">
-                                        <td className="py-4 px-2 text-zinc-400 font-mono">{idx + 1}</td>
+                                        <td className="py-4 px-2 text-zinc-600 dark:text-zinc-400 font-mono">{idx + 1}</td>
                                         <td className="py-4 px-2 font-bold tracking-tight">{student.studentCode}</td>
                                         <td className="py-4 px-2 font-bold uppercase tracking-tight">
-                                            {student.firstName} <span className="text-zinc-400">{student.lastName}</span>
+                                            {student.firstName} <span className="text-zinc-600 dark:text-zinc-400">{student.lastName}</span>
                                         </td>
                                         <td className="py-4 px-2 text-zinc-500 font-medium">{student.gender?.[0] || 'U'}</td>
                                         <td className="py-4 px-2 text-zinc-500 font-medium">
@@ -71,7 +71,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                                         <td className="py-4 px-2">
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest border",
-                                                student.enrollmentStatus === 'ACTIVE' ? "bg-zinc-100 border-zinc-200 text-zinc-800" : "bg-zinc-50 border-zinc-100 text-zinc-300"
+                                                student.enrollmentStatus === 'ACTIVE' ? "bg-zinc-100 border-zinc-200 text-zinc-800" : "bg-zinc-50 border-zinc-100 text-zinc-700 dark:text-zinc-300"
                                             )}>
                                                 {student.enrollmentStatus}
                                             </span>
@@ -82,7 +82,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                         </table>
 
                         {/* Footer for the page */}
-                        <div className="mt-8 flex justify-between items-center text-[8px] font-bold text-zinc-300 uppercase tracking-[0.4em]">
+                        <div className="mt-8 flex justify-between items-center text-[8px] font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-[0.4em]">
                             <span>LUCY System Protocol :: Registry Export</span>
                             <span>Institutional Verification Required</span>
                         </div>
