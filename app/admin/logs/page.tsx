@@ -417,7 +417,7 @@ export default function AdminLogsPage() {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedLog(null)}
                         className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-white dark:bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-lg space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase mb-2", getActionColor(selectedLog.action))}>
@@ -425,7 +425,7 @@ export default function AdminLogsPage() {
                                     </span>
                                     <h2 className="text-base font-bold text-zinc-900 dark:text-white">{selectedLog.resourceType}</h2>
                                 </div>
-                                <button onClick={() => setSelectedLog(null)} className="text-zinc-600 hover:text-white text-xl">×</button>
+                                <button onClick={() => setSelectedLog(null)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white text-xl">×</button>
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-xs">
                                 {[['User', selectedLog.user.name || '—'],['Email', selectedLog.user.email],['Role', selectedLog.user.role],['IP', selectedLog.ip || '—'],['Path', selectedLog.path || '—'],['Resource ID', selectedLog.resourceId || '—'],['Level', selectedLog.level],['Timestamp', new Date(selectedLog.createdAt).toLocaleString('en-GB')]].map(([label, value]) => (
@@ -448,12 +448,12 @@ export default function AdminLogsPage() {
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedError(null)}
                         className="fixed inset-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} onClick={e => e.stopPropagation()}
-                            className="bg-white dark:bg-[#0e0e0e] border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
+                            className="bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-white/10 rounded-2xl p-6 w-full max-w-2xl space-y-5 max-h-[80vh] overflow-y-auto">
                             <div className="flex items-center justify-between">
                                 <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[selectedError.type] || '')}>
                                     {ERROR_TYPE_ICONS[selectedError.type]}{selectedError.type.replace('_', ' ')}
                                 </span>
-                                <button onClick={() => setSelectedError(null)} className="text-zinc-600 hover:text-white text-xl">×</button>
+                                <button onClick={() => setSelectedError(null)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white text-xl">×</button>
                             </div>
                             <div className="p-4 bg-red-950/20 border border-red-500/10 rounded-xl">
                                 <p className="text-sm text-red-300 font-medium">{selectedError.message}</p>
@@ -469,7 +469,7 @@ export default function AdminLogsPage() {
                             {selectedError.stack && (
                                 <div>
                                     <div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Stack Trace</div>
-                                    <pre className="bg-white/60 dark:bg-black/60 border border-zinc-200 dark:border-white/5 rounded-xl p-3 text-[10px] text-zinc-600 dark:text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
+                                    <pre className="bg-zinc-100 dark:bg-black/60 border border-zinc-200 dark:border-white/5 rounded-xl p-3 text-[10px] text-zinc-600 dark:text-zinc-500 overflow-x-auto whitespace-pre-wrap">{selectedError.stack}</pre>
                                 </div>
                             )}
                             {selectedError.userAgent && (
