@@ -35,7 +35,7 @@ export default function StudentExamsPage() {
     return (
         <div className="space-y-8 max-w-5xl mx-auto animate-in fade-in duration-300">
             <div>
-                <h1 className="text-4xl font-medium text-white tracking-tighter">Assessment <span className="text-eduGreen-500">Center</span></h1>
+                <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">Assessment <span className="text-eduGreen-500">Center</span></h1>
                 <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Active Exams & Performance History</p>
             </div>
 
@@ -48,8 +48,8 @@ export default function StudentExamsPage() {
                         className="group"
                     >
                         <Card className={cn(
-                            "border-zinc-900 overflow-hidden relative transition-all duration-300",
-                            exam.status === "ACTIVE" ? "bg-eduGreen-950/10 border-eduGreen-500/30 hover:shadow-[0_0_30px_rgba(20,184,115,0.1)]" : "bg-zinc-950/40 hover:border-zinc-700"
+                            "border-zinc-200 dark:border-zinc-900 overflow-hidden relative transition-all duration-300",
+                            exam.status === "ACTIVE" ? "bg-eduGreen-950/10 border-eduGreen-500/30 hover:shadow-[0_0_30px_rgba(20,184,115,0.1)]" : "bg-white/40 dark:bg-zinc-950/40 hover:border-zinc-700"
                         )}>
                             {exam.status === "ACTIVE" && (
                                 <div className="absolute top-0 right-0 p-4">
@@ -65,8 +65,8 @@ export default function StudentExamsPage() {
                                     <div className={cn(
                                         "w-16 h-16 rounded-2xl flex items-center justify-center border shadow-xl flex-shrink-0",
                                         exam.status === "ACTIVE" ? "bg-eduGreen-500 text-black border-eduGreen-400" :
-                                            exam.status === "COMPLETED" ? "bg-zinc-900 text-zinc-500 border-zinc-800" :
-                                                "bg-zinc-950 text-white border-zinc-800"
+                                            exam.status === "COMPLETED" ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-zinc-300 dark:border-zinc-800" :
+                                                "bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800"
                                     )}>
                                         {exam.status === "ACTIVE" ? <Timer className="w-8 h-8 animate-spin-slow" /> :
                                             exam.status === "COMPLETED" ? <CheckCircle2 className="w-8 h-8" /> :
@@ -75,14 +75,14 @@ export default function StudentExamsPage() {
 
                                     <div>
                                         <div className="flex items-center gap-3 mb-2">
-                                            <Badge variant="outline" className="border-zinc-800 text-zinc-500 text-[10px] font-medium uppercase tracking-widest">
+                                            <Badge variant="outline" className="border-zinc-300 dark:border-zinc-800 text-zinc-500 text-[10px] font-medium uppercase tracking-widest">
                                                 {exam.subject}
                                             </Badge>
                                             <span className="text-zinc-600 font-medium text-[10px] uppercase tracking-widest">
                                                 {format(exam.date, "MMM dd, yyyy • HH:mm a")}
                                             </span>
                                         </div>
-                                        <h3 className="text-2xl font-medium text-white tracking-tight">{exam.title}</h3>
+                                        <h3 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">{exam.title}</h3>
                                         <div className="flex items-center gap-4 mt-2 text-xs font-medium text-zinc-500 uppercase tracking-wide">
                                             <span className="flex items-center gap-1.5"><Timer className="w-3.5 h-3.5" /> {exam.duration} Mins</span>
                                             {exam.score !== undefined && (
@@ -100,7 +100,7 @@ export default function StudentExamsPage() {
                                             </Button>
                                         </Link>
                                     ) : exam.status === "UPCOMING" ? (
-                                        <Button disabled className="h-14 bg-zinc-900 text-zinc-500 font-medium uppercase tracking-widest px-8 rounded-xl border border-zinc-800 opacity-50 cursor-not-allowed">
+                                        <Button disabled className="h-14 bg-zinc-100 dark:bg-zinc-900 text-zinc-500 font-medium uppercase tracking-widest px-8 rounded-xl border border-zinc-300 dark:border-zinc-800 opacity-50 cursor-not-allowed">
                                             <Lock className="w-4 h-4 mr-2" /> Locked
                                         </Button>
                                     ) : exam.status === "COMPLETED" ? (
@@ -114,7 +114,7 @@ export default function StudentExamsPage() {
                                     ) : (
                                         <div className="flex items-center gap-3">
                                             <Link href="/dashboard/student/grades">
-                                                <Button variant="outline" className="h-14 border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
+                                                <Button variant="outline" className="h-14 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
                                                     <Lock className="w-4 h-4 mr-2" /> Missed
                                                 </Button>
                                             </Link>

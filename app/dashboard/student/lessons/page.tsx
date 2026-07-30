@@ -65,9 +65,9 @@ export default function StudentLessonsPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-300 pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white uppercase italic">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Lesson <span className="text-eduGreen-500 not-italic">Ledger</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">
@@ -82,7 +82,7 @@ export default function StudentLessonsPage() {
                             placeholder="Search topics or teachers..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="h-12 w-64 pl-12 bg-zinc-950 border-zinc-900 rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-xs text-white"
+                            className="h-12 w-64 pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-xs text-zinc-900 dark:text-white"
                         />
                     </div>
                 </div>
@@ -95,7 +95,7 @@ export default function StudentLessonsPage() {
                     onClick={() => setSubjectFilter("ALL")}
                     className={cn(
                         "rounded-xl h-10 px-5 text-[10px] font-medium uppercase tracking-widest border transition-all whitespace-nowrap",
-                        subjectFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-900 text-zinc-600 hover:text-white"
+                        subjectFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
                     )}
                 >
                     All Subjects
@@ -107,7 +107,7 @@ export default function StudentLessonsPage() {
                         onClick={() => setSubjectFilter(sub.id)}
                         className={cn(
                             "rounded-xl h-10 px-5 text-[10px] font-medium uppercase tracking-widest border transition-all whitespace-nowrap",
-                            subjectFilter === sub.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-900 text-zinc-600 hover:text-white"
+                            subjectFilter === sub.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
                         )}
                     >
                         {sub.name}
@@ -134,7 +134,7 @@ export default function StudentLessonsPage() {
                                     exit={{ opacity: 0 }}
                                     transition={{ delay: idx * 0.03, duration: 0.2 }}
                                 >
-                                    <Card className="bg-zinc-950/40 border-zinc-900/50 rounded-[2.5rem] hover:border-zinc-800 transition-all group overflow-hidden">
+                                    <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] hover:border-zinc-800 transition-all group overflow-hidden">
                                         <CardContent className="p-8 space-y-6">
                                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                                                 <div className="flex items-start gap-6">
@@ -143,16 +143,16 @@ export default function StudentLessonsPage() {
                                                     </div>
                                                     <div className="space-y-2">
                                                         <div className="flex items-center gap-3 flex-wrap">
-                                                            <h3 className="text-xl font-bold text-white tracking-tight leading-none group-hover:text-eduGreen-500 transition-colors">
+                                                            <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight leading-none group-hover:text-eduGreen-500 transition-colors">
                                                                 {lesson.topic}
                                                             </h3>
-                                                            <Badge className="bg-zinc-900 text-zinc-400 border-zinc-800 text-[8px] font-mono tracking-widest uppercase">
+                                                            <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 text-[8px] font-mono tracking-widest uppercase">
                                                                 {lesson.subject?.name}
                                                             </Badge>
                                                         </div>
 
                                                         {lesson.objectives && (
-                                                            <p className="text-zinc-400 text-xs leading-relaxed max-w-2xl font-medium">
+                                                            <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed max-w-2xl font-medium">
                                                                 {lesson.objectives}
                                                             </p>
                                                         )}
@@ -179,20 +179,20 @@ export default function StudentLessonsPage() {
 
                                             {/* Materials Section (if any materials are attached) */}
                                             {materialsList.length > 0 && (
-                                                <div className="pt-4 border-t border-zinc-900/50 space-y-3">
+                                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900/50 space-y-3">
                                                     <h4 className="text-[9px] font-black text-zinc-500 uppercase tracking-widest ml-1">Learning Resources</h4>
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                         {materialsList.map((m: any, i: number) => (
                                                             <div 
                                                                 key={i} 
                                                                 onClick={() => window.open(m.url, '_blank')}
-                                                                className="p-4 bg-zinc-900/20 border border-zinc-900 hover:border-zinc-800 rounded-2xl flex items-center justify-between group/file cursor-pointer transition-all hover:bg-zinc-900/40"
+                                                                className="p-4 bg-zinc-100/20 dark:bg-zinc-900/20 border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 rounded-2xl flex items-center justify-between group/file cursor-pointer transition-all hover:bg-zinc-200 dark:hover:bg-zinc-900/40"
                                                             >
                                                                 <div className="flex items-center gap-3">
                                                                     <FileText className="w-4 h-4 text-eduGreen-500" />
-                                                                    <span className="text-[10px] font-bold text-white tracking-widest uppercase truncate max-w-[200px]">{m.name || 'Resource file'}</span>
+                                                                    <span className="text-[10px] font-bold text-zinc-900 dark:text-white tracking-widest uppercase truncate max-w-[200px]">{m.name || 'Resource file'}</span>
                                                                 </div>
-                                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-zinc-500 group-hover/file:text-white">
+                                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-zinc-500 group-hover/file:text-zinc-900 dark:text-white">
                                                                     <ExternalLink className="w-3.5 h-3.5" />
                                                                 </Button>
                                                             </div>
@@ -206,7 +206,7 @@ export default function StudentLessonsPage() {
                             );
                         })
                     ) : (
-                        <div className="text-center py-32 border-2 border-dashed border-zinc-900 rounded-[3.5rem] bg-[#050505]/10">
+                        <div className="text-center py-32 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3.5rem] bg-[#050505]/10">
                             <FileText className="w-12 h-12 text-zinc-800 mx-auto mb-6 animate-pulse" />
                             <div className="text-zinc-600 font-black uppercase tracking-[0.5em] text-sm">Registry Empty</div>
                             <p className="text-zinc-500 mt-2 text-[10px] font-bold uppercase tracking-widest">No lessons have been logged for your cohort class yet.</p>

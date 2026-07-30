@@ -83,7 +83,7 @@ export default function Security() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-orange-500 selection:text-white font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-orange-500 selection:text-zinc-900 dark:text-white font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -198,7 +198,7 @@ export default function Security() {
                                             your transmission has been sealed and cataloged. our security operations center (soc) response team will evaluate the payload within 24 hours. thank you for protecting the lucy network.
                                         </p>
                                     </div>
-                                    <div className="p-6 bg-white dark:bg-zinc-950/80 border border-emerald-100 dark:border-zinc-900 font-mono text-xs space-y-3 rounded-xl max-w-2xl relative z-10">
+                                    <div className="p-6 bg-white/80 dark:bg-zinc-950/80 border border-emerald-100 dark:border-zinc-900 font-mono text-xs space-y-3 rounded-xl max-w-2xl relative z-10">
                                         <div className="flex justify-between border-b border-emerald-100 dark:border-zinc-900 pb-2 text-emerald-600 dark:text-zinc-500 text-[10px]">
                                             <span>METADATA</span>
                                             <span>VALUES</span>
@@ -214,7 +214,7 @@ export default function Security() {
                                     </div>
                                     <Button 
                                         onClick={resetForm}
-                                        className="bg-emerald-900 hover:bg-emerald-800 text-white dark:bg-zinc-900 dark:hover:bg-zinc-800 font-black uppercase text-[10px] tracking-widest border border-emerald-800 dark:border-zinc-800 rounded-xl px-6 h-11 relative z-10"
+                                        className="bg-emerald-900 hover:bg-emerald-800 text-zinc-900 dark:text-white dark:bg-zinc-900 dark:hover:bg-zinc-800 font-black uppercase text-[10px] tracking-widest border border-emerald-800 dark:border-zinc-800 rounded-xl px-6 h-11 relative z-10"
                                     >
                                         Transmit New Report
                                     </Button>
@@ -328,7 +328,7 @@ export default function Security() {
 
                                             <Button 
                                                 type="submit"
-                                                className="bg-orange-500 hover:bg-orange-600 text-white font-black uppercase text-[10px] tracking-widest rounded-xl px-8 h-12 w-full sm:w-auto"
+                                                className="bg-orange-500 hover:bg-orange-600 text-zinc-900 dark:text-white font-black uppercase text-[10px] tracking-widest rounded-xl px-8 h-12 w-full sm:w-auto"
                                             >
                                                 Transmit Disclosure Payload
                                             </Button>

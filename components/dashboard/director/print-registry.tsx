@@ -22,7 +22,7 @@ export function PrintRegistryButton({ configs }: { configs: any[] }) {
         <>
             <Button
                 onClick={triggerPrint}
-                className="bg-eduGreen-600 border-eduGreen-500 text-white hover:bg-eduGreen-500 h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-xl shadow-eduGreen-900/20 transition-all active:scale-95"
+                className="bg-eduGreen-600 border-eduGreen-500 text-zinc-900 dark:text-white hover:bg-eduGreen-500 h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-xl shadow-eduGreen-900/20 transition-all active:scale-95"
             >
                 <Printer className="w-4 h-4 mr-2" /> Export PDF Registry
             </Button>

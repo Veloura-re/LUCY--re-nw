@@ -71,9 +71,9 @@ export default function AttendanceSettingsPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Attendance <span className="text-eduGreen-500 italic">Logic</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Presence Verification</p>
@@ -90,14 +90,14 @@ export default function AttendanceSettingsPage() {
 
             <div className="grid gap-8">
                 {/* Tracking Mode */}
-                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
-                    <CardHeader className="p-8 border-b border-zinc-900/50">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
+                    <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-zinc-900 rounded-2xl border border-zinc-800">
+                            <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-300 dark:border-zinc-800">
                                 <Settings className="w-5 h-5 text-eduGreen-500" />
                             </div>
                             <div>
-                                <CardTitle className="text-xl font-medium text-white tracking-tight">Tracking Architecture</CardTitle>
+                                <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Tracking Architecture</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Define the granularity of presence monitoring</CardDescription>
                             </div>
                         </div>
@@ -134,14 +134,14 @@ export default function AttendanceSettingsPage() {
                 </Card>
 
                 {/* Locking & Time Constraints */}
-                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
-                    <CardHeader className="p-8 border-b border-zinc-900/50">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  group shadow-2xl">
+                    <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 bg-zinc-900 rounded-2xl border border-zinc-800">
+                            <div className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-300 dark:border-zinc-800">
                                 <Clock className="w-5 h-5 text-eduGreen-500" />
                             </div>
                             <div>
-                                <CardTitle className="text-xl font-medium text-white tracking-tight">Temporal Constraints</CardTitle>
+                                <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Temporal Constraints</CardTitle>
                                 <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Enforce record integrity with automatic locking</CardDescription>
                             </div>
                         </div>
@@ -154,7 +154,7 @@ export default function AttendanceSettingsPage() {
                                     type="number"
                                     value={config.lockAfterMinutes}
                                     onChange={(e) => setConfig({ ...config, lockAfterMinutes: parseInt(e.target.value) })}
-                                    className="h-14 bg-zinc-900/50 border-zinc-800 text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
+                                    className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                                 <p className="text-[9px] text-zinc-600 font-medium uppercase">Records become immutable after this duration.</p>
                             </div>
@@ -165,13 +165,13 @@ export default function AttendanceSettingsPage() {
                                     type="number"
                                     value={config.autoAbsentAfterMinutes}
                                     onChange={(e) => setConfig({ ...config, autoAbsentAfterMinutes: parseInt(e.target.value) })}
-                                    className="h-14 bg-zinc-900/50 border-zinc-800 text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
+                                    className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                                 <p className="text-[9px] text-zinc-600 font-medium uppercase">Mark students absent if not verified within this time.</p>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between gap-8 pt-6 border-t border-zinc-900">
+                        <div className="flex items-center justify-between gap-8 pt-6 border-t border-zinc-200 dark:border-zinc-900">
                             <div className="space-y-1">
                                 <h4 className="font-medium text-zinc-100 uppercase tracking-widest text-sm">Late Marking Capability</h4>
                                 <p className="text-xs text-zinc-600 font-medium uppercase tracking-wider leading-relaxed max-w-sm">
@@ -189,10 +189,10 @@ export default function AttendanceSettingsPage() {
 
                 <div className="p-10 bg-eduGreen-950/10 border border-eduGreen-900/20 rounded-[2.5rem] flex items-center gap-6">
                     <div className="w-16 h-16 rounded-3xl bg-eduGreen-600 flex items-center justify-center shrink-0 shadow-2xl shadow-eduGreen-900/40">
-                        <AlertCircle className="w-8 h-8 text-white" />
+                        <AlertCircle className="w-8 h-8 text-zinc-900 dark:text-white" />
                     </div>
                     <div>
-                        <h4 className="text-sm font-medium text-white uppercase tracking-widest">Protocol Warning</h4>
+                        <h4 className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-widest">Protocol Warning</h4>
                         <p className="text-[10px] font-medium text-zinc-600 leading-relaxed uppercase mt-1">
                             Shifting tracking architecture mid-term may result in historical data fragmentation. Ensure all faculty members are briefed on new locking thresholds to prevent synchronization errors.
                         </p>

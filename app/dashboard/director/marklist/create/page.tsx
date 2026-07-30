@@ -210,10 +210,10 @@ export default function MarklistConfigPage() {
                 )}
             </div>
 
-            <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem]  shadow-none">
-                <CardHeader className="p-10 border-b border-zinc-900/30 flex flex-row items-center justify-between">
+            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem]  shadow-none">
+                <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/30 flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-2xl font-medium text-white tracking-tight leading-tight">Context Selection</CardTitle>
+                        <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight leading-tight">Context Selection</CardTitle>
                         <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Define Academic Parameters</p>
                     </div>
                 </CardHeader>
@@ -270,8 +270,8 @@ export default function MarklistConfigPage() {
 
                     <div className="grid gap-4">
                         {columns.map((col, idx) => (
-                            <Card key={idx} className="group relative  border-zinc-900/50 bg-zinc-950/20 hover:bg-zinc-900/10 transition-all rounded-[1.5rem] shadow-none">
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-zinc-900 group-hover:bg-eduGreen-600 transition-colors" />
+                            <Card key={idx} className="group relative  border-zinc-200 dark:border-zinc-900/50 bg-white/20 dark:bg-zinc-950/20 hover:bg-zinc-200 dark:hover:bg-zinc-900/10 transition-all rounded-[1.5rem] shadow-none">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-zinc-100 dark:bg-zinc-900 group-hover:bg-eduGreen-600 transition-colors" />
                                 <CardContent className="p-6 flex items-center gap-6">
                                     <div className="text-muted-foreground cursor-grab active:cursor-grabbing">
                                         <GripVertical className="w-5 h-5" />

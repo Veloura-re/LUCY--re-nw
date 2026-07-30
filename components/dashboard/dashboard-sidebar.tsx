@@ -71,7 +71,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setMobileOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[50] md:hidden"
+                        className="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm z-[50] md:hidden"
                     />
                 )}
             </AnimatePresence>

@@ -171,13 +171,13 @@ export default function HomeroomDashboard() {
     if (!myClass) {
         return (
             <div className="max-w-4xl mx-auto py-20 text-center">
-                <div className="w-20 h-20 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center mx-auto mb-6 opacity-40">
+                <div className="w-20 h-20 rounded-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center mx-auto mb-6 opacity-40">
                     <Shield className="w-10 h-10 text-eduGreen-500" />
                 </div>
-                <h1 className="text-3xl font-medium text-white mb-2 uppercase tracking-tighter">Access Restricted</h1>
+                <h1 className="text-3xl font-medium text-zinc-900 dark:text-white mb-2 uppercase tracking-tighter">Access Restricted</h1>
                 <p className="text-zinc-500 font-medium uppercase tracking-widest text-xs">No Homeroom assignment detected for this identity.</p>
                 <Link href="/dashboard">
-                    <Button className="mt-8 bg-zinc-900 hover:bg-zinc-800 text-white font-medium uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl">Return to Core</Button>
+                    <Button className="mt-8 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest text-[10px] h-12 px-8 rounded-xl">Return to Core</Button>
                 </Link>
             </div>
         );
@@ -193,7 +193,7 @@ export default function HomeroomDashboard() {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-eduGreen-950 border border-eduGreen-500/20 text-[10px] font-medium text-eduGreen-500 uppercase tracking-widest mb-4">
                             <CheckCircle2 className="w-3 h-3" /> Secure Homeroom Console
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-medium text-white tracking-tighter leading-none">
+                        <h1 className="text-4xl md:text-5xl font-medium text-zinc-900 dark:text-white tracking-tighter leading-none">
                             Class <span className="text-eduGreen-500 italic">{myClass.name}</span>
                         </h1>
                         <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-4 opacity-80">
@@ -202,11 +202,11 @@ export default function HomeroomDashboard() {
                     </div>
 
                     <div className="flex flex-col items-end gap-6">
-                        <div className="flex bg-zinc-950 p-2 rounded-2xl border border-zinc-900 shadow-2xl items-center gap-2">
+                        <div className="flex bg-white dark:bg-zinc-950 p-2 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl items-center gap-2">
                             <Button variant="ghost" size="icon" onClick={() => setDate(subDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-white rounded-xl">
                                 <ChevronLeft className="w-5 h-5" />
                             </Button>
-                            <div className="px-4 py-2 flex items-center gap-3 border-x border-zinc-900">
+                            <div className="px-4 py-2 flex items-center gap-3 border-x border-zinc-200 dark:border-zinc-900">
                                 <Calendar className="w-4 h-4 text-eduGreen-500" />
                                 <span className="font-medium text-zinc-100 text-[10px] uppercase tracking-widest">{format(date, 'MMMM dd, yyyy')}</span>
                             </div>
@@ -222,9 +222,9 @@ export default function HomeroomDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Stats Sidebar */}
                 <div className="space-y-4">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2rem] border-t-zinc-800/20 shadow-2xl ">
-                        <CardHeader className="border-b border-zinc-900/50 p-6">
-                            <CardTitle className="text-sm font-medium text-white uppercase tracking-widest flex items-center gap-2">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2rem] border-t-zinc-800/20 shadow-2xl ">
+                        <CardHeader className="border-b border-zinc-200 dark:border-zinc-900/50 p-6">
+                            <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
                                 <Users className="w-4 h-4 text-eduGreen-500" /> Presence Stats
                             </CardTitle>
                         </CardHeader>
@@ -249,9 +249,9 @@ export default function HomeroomDashboard() {
 
                 {/* Main Registry */}
                 <div className="lg:col-span-3">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl ">
-                        <CardHeader className="p-8 border-b border-zinc-900/80">
-                            <CardTitle className="text-xl font-medium text-white tracking-tight leading-tight">Student Presence Matrix</CardTitle>
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl ">
+                        <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/80">
+                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight leading-tight">Student Presence Matrix</CardTitle>
                             <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Daily mark status for active learners</p>
                         </CardHeader>
                         <CardContent className="p-0">
@@ -259,7 +259,7 @@ export default function HomeroomDashboard() {
                                 {myClass.students.map((student: any) => (
                                     <div key={student.id} className="p-6 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
                                         <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-900 flex items-center justify-center font-medium text-zinc-600 group-hover:border-eduGreen-900/30 transition-colors shadow-xl overflow-hidden relative">
+                                            <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center font-medium text-zinc-600 group-hover:border-eduGreen-900/30 transition-colors shadow-xl overflow-hidden relative">
                                                 {student.firstName[0]}
                                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
                                             </div>
@@ -306,19 +306,19 @@ export default function HomeroomDashboard() {
                                                 label="Excused"
                                             />
 
-                                            <div className="w-px h-8 bg-zinc-900 mx-2" />
+                                            <div className="w-px h-8 bg-zinc-100 dark:bg-zinc-900 mx-2" />
 
                                             <div className="flex items-center gap-2">
                                                 {student.userId && (
                                                     <Link href={`/dashboard/messages?userId=${student.userId}`}>
-                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 border-zinc-900 border transition-all">
+                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-eduGreen-500 hover:bg-eduGreen-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
                                                             <MessageSquare className="w-4 h-4" />
                                                         </Button>
                                                     </Link>
                                                 )}
                                                 {student.parentLinks?.[0]?.parent && (
                                                     <Link href={`/dashboard/messages?userId=${student.parentLinks[0].parent.id}`}>
-                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-amber-500 hover:bg-amber-950/20 border-zinc-900 border transition-all">
+                                                        <Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-500 hover:text-amber-500 hover:bg-amber-950/20 border-zinc-200 dark:border-zinc-900 border transition-all">
                                                             <Shield className="w-4 h-4" />
                                                         </Button>
                                                     </Link>
@@ -346,7 +346,7 @@ export default function HomeroomDashboard() {
 
 function StatRow({ label, count, color, bgColor, icon: Icon }: any) {
     return (
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-900 group">
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-900 group">
             <div className="flex items-center gap-3">
                 <div className={cn("p-2 rounded-xl transition-all", bgColor)}>
                     <Icon className={cn("w-4 h-4", color)} />
@@ -368,7 +368,7 @@ function StatusButton({ active, onClick, color, icon: Icon, label }: any) {
             className={cn(
                 "w-11 h-11 rounded-2xl transition-all border p-0",
                 active
-                    ? cn("bg-zinc-950 border-zinc-800 shadow-xl", color)
+                    ? cn("bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 shadow-xl", color)
                     : "bg-transparent border-transparent text-zinc-800 hover:text-zinc-600 hover:border-zinc-900"
             )}
         >

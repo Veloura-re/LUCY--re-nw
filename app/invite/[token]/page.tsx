@@ -33,18 +33,18 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
 
                 <div className="relative z-10 w-full max-w-md">
                     <div className="mb-8 text-center">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-zinc-900/80 border border-zinc-800 shadow-2xl mb-6 backdrop-blur-xl relative overflow-hidden">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800 shadow-2xl mb-6 backdrop-blur-xl relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent" />
                             <AlertCircle className="w-8 h-8 text-red-500 relative z-10" />
                         </div>
-                        <h1 className="text-3xl font-medium tracking-tight text-white mb-2">Access Denied</h1>
+                        <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white mb-2">Access Denied</h1>
                         <p className="text-sm font-medium text-zinc-500 uppercase tracking-widest">Token Invalid or Expired</p>
                     </div>
 
-                    <Card className="bg-zinc-950/40 backdrop-blur-2xl border-zinc-900/50 shadow-2xl overflow-hidden rounded-3xl border-t-zinc-800/30">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900/50 shadow-2xl overflow-hidden rounded-3xl border-t-zinc-800/30">
                         <CardContent className="p-8 text-center space-y-6">
-                            <div className="p-4 bg-zinc-900/30 rounded-2xl border border-zinc-800/50">
-                                <p className="text-sm text-zinc-400 leading-relaxed">
+                            <div className="p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-300 dark:border-zinc-800/50">
+                                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                                     The secure invitation link you clicked is no longer valid. It may have been used already, or the 7-day expiration window has passed.
                                 </p>
                             </div>
@@ -94,7 +94,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
 
             <div className="relative z-10 w-full max-w-lg mt-12 mb-12">
                 <div className="mb-10 text-center flex flex-col items-center">
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-zinc-900/80 border border-zinc-800 shadow-2xl mb-8 backdrop-blur-xl relative overflow-hidden group">
+                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800 shadow-2xl mb-8 backdrop-blur-xl relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-eduGreen-500/20 to-transparent opacity-50" />
                         {school?.logoUrl ? (
                             <Image src={school.logoUrl} alt="School Logo" width={64} height={64} className="w-16 h-16 object-contain relative z-10" />
@@ -102,20 +102,20 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                             <ShieldCheck className="w-10 h-10 text-eduGreen-500 relative z-10 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]" />
                         )}
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-white mb-3">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-zinc-900 dark:text-white mb-3">
                         Welcome, {formattedRole === 'Principal' ? 'Director' : formattedRole}
                     </h1>
-                    <div className="flex items-center gap-2 text-zinc-400 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800/80 backdrop-blur-md">
+                    <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 bg-zinc-100/50 dark:bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-300 dark:border-zinc-800/80 backdrop-blur-md">
                         <Building2 className="w-4 h-4 text-eduGreen-500" />
                         <span className="text-sm font-medium">{school?.name || "New Institution"}</span>
                     </div>
                 </div>
 
-                <Card className="bg-zinc-950/40 backdrop-blur-3xl border-zinc-900 shadow-2xl overflow-hidden rounded-[2.5rem] border-t-zinc-800/50 relative">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900 shadow-2xl overflow-hidden rounded-[2.5rem] border-t-zinc-800/50 relative">
                     <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-eduGreen-500/30 to-transparent" />
                     
                     <CardHeader className="text-center pb-2 pt-10 px-8">
-                        <CardTitle className="text-xl font-medium text-white flex items-center justify-center gap-2">
+                        <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white flex items-center justify-center gap-2">
                             <UserCircle2 className="w-5 h-5 text-zinc-500" />
                             Account Provisioning
                         </CardTitle>

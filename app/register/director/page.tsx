@@ -179,7 +179,7 @@ export default function DirectorRegister() {
                                     onChange={e => setKey(e.target.value)}
                                     required
                                     placeholder="inv_xxxxxxxxxxxx"
-                                    className="bg-slate-50 dark:bg-zinc-900/30 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-eduGreen-400 placeholder:text-slate-400 dark:placeholder:text-zinc-700 font-mono h-16 rounded-[1.25rem] focus:border-emerald-600 focus:bg-slate-100 dark:focus:bg-zinc-900/50 transition-all border-2"
+                                    className="bg-slate-50 dark:bg-zinc-900/30 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-eduGreen-400 placeholder:text-slate-400 dark:placeholder:text-zinc-700 font-mono h-16 rounded-[1.25rem] focus:border-emerald-600 focus:bg-slate-100 dark:focus:bg-zinc-100/50 dark:bg-zinc-900/50 transition-all border-2"
                                 />
                             </div>
 
@@ -192,7 +192,7 @@ export default function DirectorRegister() {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-16 rounded-[1.25rem] font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 group border-t border-white/5"
+                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-16 rounded-[1.25rem] font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 group border-t border-zinc-200 dark:border-white/5"
                                 disabled={isLoading}
                             >
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
@@ -214,7 +214,7 @@ export default function DirectorRegister() {
                                         onChange={e => setName(e.target.value)}
                                         required
                                         placeholder="Enter full name"
-                                        className="bg-zinc-900/30 border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
+                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
                                     />
                                 </div>
 
@@ -225,7 +225,7 @@ export default function DirectorRegister() {
                                         icon={<Mail className="w-4 h-4 text-zinc-600" />}
                                         value={email}
                                         disabled
-                                        className="bg-zinc-950/50 border-zinc-900 text-zinc-700 h-16 rounded-[1.25rem] cursor-not-allowed opacity-50 font-medium"
+                                        className="bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 text-zinc-700 h-16 rounded-[1.25rem] cursor-not-allowed opacity-50 font-medium"
                                     />
                                 </div>
 
@@ -238,7 +238,7 @@ export default function DirectorRegister() {
                                         onChange={e => setPassword(e.target.value)}
                                         required
                                         placeholder="••••••••"
-                                        className="bg-zinc-900/30 border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
+                                        className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-100 h-16 rounded-[1.25rem] focus:border-eduGreen-600 transition-all border-2"
                                     />
                                 </div>
                             </div>
@@ -256,16 +256,16 @@ export default function DirectorRegister() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                 />
-                                <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                     I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
                                 </label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-16 rounded-[1.25rem] font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 border-t border-white/5"
+                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-16 rounded-[1.25rem] font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 border-t border-zinc-200 dark:border-white/5"
                                 disabled={isLoading || !agreedToTerms}
                             >
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Complete Deployment"}
@@ -282,7 +282,7 @@ export default function DirectorRegister() {
                     )}
                 </CardContent>
 
-                <CardFooter className="justify-center border-t border-zinc-900 py-8 bg-zinc-950/20">
+                <CardFooter className="justify-center border-t border-zinc-200 dark:border-zinc-900 py-8 bg-white/20 dark:bg-zinc-950/20">
                     <Link href="/login" className="text-zinc-800 hover:text-zinc-500 text-[9px] font-medium uppercase tracking-[0.4em] transition-all">
                         Return to Portal
                     </Link>

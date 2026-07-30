@@ -63,7 +63,7 @@ export default function StudentRegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background Ambience */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black" />
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent opacity-50" />
@@ -79,15 +79,15 @@ export default function StudentRegisterPage() {
                     <div className="w-16 h-16 bg-eduGreen-900/20 rounded-2xl border border-eduGreen-500/30 flex items-center justify-center mx-auto mb-4 backdrop-blur-xl shadow-[0_0_40px_rgba(20,184,115,0.1)]">
                         <ShieldCheck className="w-8 h-8 text-eduGreen-500" />
                     </div>
-                    <h1 className="text-3xl font-medium text-white tracking-tighter uppercase">Student Portal</h1>
+                    <h1 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Student Portal</h1>
                     <p className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Secure Institutional Access</p>
                 </div>
 
-                <Card className="bg-zinc-950/50 backdrop-blur-xl border-zinc-900 shadow-2xl overflow-hidden">
+                <Card className="bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 shadow-2xl overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-eduGreen-600 to-eduGreen-400" />
 
-                    <CardHeader className="p-8 border-b border-zinc-900/50">
-                        <CardTitle className="text-xl font-medium text-white uppercase tracking-wide">
+                    <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
+                        <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white uppercase tracking-wide">
                             Activation Protocol
                         </CardTitle>
                         <CardDescription className="text-zinc-600 font-medium text-xs uppercase tracking-widest mt-1">
@@ -114,7 +114,7 @@ export default function StudentRegisterPage() {
                                                     value={formData.studentCode}
                                                     onChange={(e) => setFormData({ ...formData, studentCode: e.target.value.toUpperCase() })}
                                                     placeholder="STU-XXXX-XXXX"
-                                                    className="pl-12 h-14 bg-zinc-900/50 border-zinc-800 text-white font-mono font-medium text-lg tracking-widest uppercase focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
+                                                    className="pl-12 h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-mono font-medium text-lg tracking-widest uppercase focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
                                                     required
                                                 />
                                             </div>
@@ -154,7 +154,7 @@ export default function StudentRegisterPage() {
                                                     value={formData.email}
                                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                     placeholder="student@school.edu"
-                                                    className="pl-12 h-14 bg-zinc-900/50 border-zinc-800 text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
+                                                    className="pl-12 h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
                                                 />
                                             </div>
                                         </div>
@@ -169,7 +169,7 @@ export default function StudentRegisterPage() {
                                                         value={formData.password}
                                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                         placeholder="••••••••"
-                                                        className="pl-12 h-14 bg-zinc-900/50 border-zinc-800 text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
+                                                        className="pl-12 h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
                                                         required
                                                     />
                                                 </div>
@@ -184,7 +184,7 @@ export default function StudentRegisterPage() {
                                                         value={formData.confirmPassword}
                                                         onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                                         placeholder="••••••••"
-                                                        className="pl-12 h-14 bg-zinc-900/50 border-zinc-800 text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
+                                                        className="pl-12 h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
                                                         required
                                                     />
                                                 </div>
@@ -197,9 +197,9 @@ export default function StudentRegisterPage() {
                                                 id="terms"
                                                 checked={agreedToTerms}
                                                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                                className="mt-1 w-4 h-4 rounded border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                                             />
-                                            <label htmlFor="terms" className="text-xs text-zinc-400 leading-tight">
+                                            <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
                                                 I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
                                             </label>
                                         </div>
@@ -231,7 +231,7 @@ export default function StudentRegisterPage() {
                         </form>
                     </CardContent>
 
-                    <div className="p-6 border-t border-zinc-900/50 bg-black/20 text-center">
+                    <div className="p-6 border-t border-zinc-200 dark:border-zinc-900/50 bg-white/20 dark:bg-black/20 text-center">
                         <Link href="/login" className="text-xs font-medium uppercase tracking-widest text-zinc-600 hover:text-eduGreen-500 transition-colors">
                             Already activated? Secure Login →
                         </Link>

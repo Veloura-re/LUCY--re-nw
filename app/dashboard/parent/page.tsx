@@ -36,9 +36,9 @@ export default function ParentDashboard() {
     return (
         <div className="space-y-12 animate-in fade-in duration-300">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Family <span className="text-eduGreen-500 italic">Command</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">
@@ -47,12 +47,12 @@ export default function ParentDashboard() {
                 </div>
                 <div className="flex gap-3">
                     <Link href="/dashboard/parent/authorizations">
-                        <Button variant="outline" className="rounded-2xl border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white">
                             <ClipboardCheck className="w-4 h-4 mr-2" /> Absence Permits
                         </Button>
                     </Link>
                     <Link href="/dashboard/finance">
-                        <Button variant="outline" className="rounded-2xl border-zinc-900 bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-500 hover:text-white">
                             <CreditCard className="w-4 h-4 mr-2" /> Billing
                         </Button>
                     </Link>
@@ -60,7 +60,7 @@ export default function ParentDashboard() {
             </div>
 
             {students.length === 0 ? (
-                <div className="text-center py-32 border-2 border-dashed border-zinc-900 rounded-[3rem]">
+                <div className="text-center py-32 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                     <Users className="w-16 h-16 text-zinc-900 mx-auto mb-6" />
                     <h3 className="text-zinc-600 font-black uppercase tracking-[0.5em] text-lg italic">No Nodes Linked</h3>
                     <p className="text-zinc-800 mt-4 text-[10px] font-bold uppercase tracking-[0.4em]">Contact your school to link your children to this account.</p>
@@ -82,14 +82,14 @@ export default function ParentDashboard() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.08, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             >
-                                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-zinc-800 transition-all shadow-2xl group">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-zinc-800 transition-all shadow-2xl group">
                                     <CardContent className="p-7 md:p-10">
                                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                                             {/* Identity */}
                                             <div className="flex items-center gap-6">
                                                 <div className="relative shrink-0">
                                                     {student.photoUrl ? (
-                                                        <div className="relative w-20 h-20 overflow-hidden rounded-[1.5rem] border-2 border-zinc-800">
+                                                        <div className="relative w-20 h-20 overflow-hidden rounded-[1.5rem] border-2 border-zinc-300 dark:border-zinc-800">
                                                             <Image src={student.photoUrl} alt="" fill sizes="80px" className="object-cover" />
                                                         </div>
                                                     ) : (
@@ -97,12 +97,12 @@ export default function ParentDashboard() {
                                                             {student.firstName[0]}
                                                         </div>
                                                     )}
-                                                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-eduGreen-500 border-2 border-zinc-950 shadow-sm" />
+                                                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-eduGreen-500 border-2 border-zinc-300 dark:border-zinc-950 shadow-sm" />
                                                 </div>
                                                 <div>
-                                                    <h2 className="text-2xl font-semibold text-white tracking-tight">{student.firstName} {student.lastName}</h2>
+                                                    <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white tracking-tight">{student.firstName} {student.lastName}</h2>
                                                     <div className="flex items-center gap-3 mt-2 flex-wrap">
-                                                        <Badge className="bg-zinc-900 text-zinc-400 border-zinc-800 font-mono text-[8px] tracking-widest">{student.studentCode}</Badge>
+                                                        <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 font-mono text-[8px] tracking-widest">{student.studentCode}</Badge>
                                                         {student.class && (
                                                             <Badge className="bg-eduGreen-950/30 text-eduGreen-500 border-eduGreen-900/30 text-[8px] tracking-widest">
                                                                 {student.grade?.name} · {student.class?.name}
@@ -123,14 +123,14 @@ export default function ParentDashboard() {
                                                     <p className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Attendance</p>
                                                     <p className={cn("text-2xl font-black tracking-tighter", attendanceColor)}>{attendancePct.toFixed(0)}%</p>
                                                 </div>
-                                                <div className="w-px bg-zinc-900 hidden md:block" />
+                                                <div className="w-px bg-zinc-100 dark:bg-zinc-900 hidden md:block" />
                                                 <div className="text-center min-w-[80px]">
                                                     <p className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Avg Grade</p>
                                                     <p className={cn("text-2xl font-black tracking-tighter", gradeColor)}>{avgScore.toFixed(0)}%</p>
                                                 </div>
                                                 {outstanding > 0 && (
                                                     <>
-                                                        <div className="w-px bg-zinc-900 hidden md:block" />
+                                                        <div className="w-px bg-zinc-100 dark:bg-zinc-900 hidden md:block" />
                                                         <div className="text-center min-w-[80px]">
                                                             <p className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Outstanding</p>
                                                             <p className="text-2xl font-black tracking-tighter text-amber-400">${outstanding.toFixed(0)}</p>
@@ -147,7 +147,7 @@ export default function ParentDashboard() {
                                                     </Button>
                                                 </Link>
                                                 <Link href={`/dashboard/parent/authorizations?studentId=${student.id}`}>
-                                                    <Button variant="ghost" className="w-full h-11 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 text-[10px] uppercase tracking-widest">
+                                                    <Button variant="ghost" className="w-full h-11 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[10px] uppercase tracking-widest">
                                                         <ClipboardCheck className="w-4 h-4 mr-2" /> Absence Permit
                                                         <ChevronRight className="w-3 h-3 ml-auto" />
                                                     </Button>
@@ -157,7 +157,7 @@ export default function ParentDashboard() {
 
                                         {/* Recent Invoices strip */}
                                         {student.recentInvoices?.length > 0 && (
-                                            <div className="mt-8 pt-6 border-t border-zinc-900/50 flex items-center gap-3 flex-wrap">
+                                            <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-900/50 flex items-center gap-3 flex-wrap">
                                                 <span className="text-[9px] font-bold text-zinc-700 uppercase tracking-widest">Recent Bills:</span>
                                                 {student.recentInvoices.map((inv: any) => (
                                                     <Badge key={inv.studentId + inv.amount} className={cn(
@@ -195,7 +195,7 @@ export default function ParentDashboard() {
                     { label: "Absence Permits", href: "/dashboard/parent/authorizations", icon: "📋" },
                 ].map(({ label, href, icon }) => (
                     <Link key={href} href={href}>
-                        <Card className="bg-zinc-950/40 border-zinc-900 rounded-[2rem] hover:border-zinc-800 transition-all cursor-pointer group">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2rem] hover:border-zinc-800 transition-all cursor-pointer group">
                             <CardContent className="p-6 flex flex-col items-center gap-3 text-center">
                                 <span className="text-2xl">{icon}</span>
                                 <p className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest transition-colors">{label}</p>

@@ -205,9 +205,9 @@ function ExamsPageContent() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-40">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-white uppercase italic">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Academic <span className="text-eduGreen-500 not-italic">Progress</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] mt-3">Institutional Examination & Assessment Terminal</p>
@@ -216,7 +216,7 @@ function ExamsPageContent() {
                     <Link href="/dashboard/teacher/exams/create?mode=ai" passHref>
                         <Button
                             variant="outline"
-                            className="border-zinc-800 text-purple-400 hover:text-white hover:bg-zinc-900 h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all mb-1 gap-2"
+                            className="border-zinc-300 dark:border-zinc-800 text-purple-400 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all mb-1 gap-2"
                         >
                             <Sparkles className="h-4 w-4" /> Start Writing
                         </Button>
@@ -232,9 +232,9 @@ function ExamsPageContent() {
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b border-zinc-900/60 pb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900/60 pb-6">
                     {/* Class Selector Tab/Filter */}
-                    <div className="flex bg-zinc-950 p-1.5 rounded-2xl border border-zinc-900 shadow-2xl w-fit">
+                    <div className="flex bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl w-fit">
                         {classes.filter((c, i, a) => a.findIndex(t => t.classId === c.classId) === i).map((cls) => (
                             <button
                                 key={cls.classId}
@@ -251,7 +251,7 @@ function ExamsPageContent() {
                         ))}
                     </div>
 
-                    <TabsList className="bg-zinc-950 p-1.5 rounded-2xl border border-zinc-900 shadow-2xl">
+                    <TabsList className="bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
                         <TabsTrigger value="registry">Exam Registry</TabsTrigger>
                         <TabsTrigger value="dossier">Class Dossier</TabsTrigger>
                     </TabsList>
@@ -265,7 +265,7 @@ function ExamsPageContent() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {exams.map((exam) => (
-                            <Card key={exam.id} className="group relative bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  shadow-2xl border-t-zinc-800/10">
+                            <Card key={exam.id} className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 hover:border-eduGreen-900/30 transition-all rounded-[2.5rem]  shadow-2xl border-t-zinc-800/10">
                                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                 <div className="absolute top-6 left-10">
@@ -282,20 +282,20 @@ function ExamsPageContent() {
                                             Pending Grades
                                         </span>
                                     ) : (
-                                        <span className="text-[8px] font-medium px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest">
+                                        <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest">
                                             Active / Upcoming
                                         </span>
                                     )}
                                 </div>
 
                                 <div className="absolute top-6 right-8">
-                                    <span className="text-[8px] font-medium px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest group-hover:border-eduGreen-900/30 transition-all">
+                                    <span className="text-[8px] font-medium px-3 py-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-500 rounded-lg uppercase tracking-widest group-hover:border-eduGreen-900/30 transition-all">
                                         {exam.subject?.name}
                                     </span>
                                 </div>
 
                                 <CardHeader className="p-10 pb-4">
-                                    <CardTitle className="text-2xl font-medium text-white tracking-tight leading-tight group-hover:text-eduGreen-500 transition-colors pt-4">
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight leading-tight group-hover:text-eduGreen-500 transition-colors pt-4">
                                         {exam.title}
                                     </CardTitle>
                                 </CardHeader>
@@ -314,7 +314,7 @@ function ExamsPageContent() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <Link href={`/dashboard/teacher/exams/${exam.id}/editor`} passHref>
-                                            <Button variant="outline" className="w-full h-14 border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
+                                            <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
                                                 <div className="absolute inset-0 bg-purple-500/5 group-hover/edit:bg-purple-500/10 transition-colors" />
                                                 <span className="relative z-10 flex items-center gap-2">
                                                     <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Neural Editor
@@ -322,7 +322,7 @@ function ExamsPageContent() {
                                             </Button>
                                         </Link>
                                         <Link href={`/dashboard/teacher/gradebook/${exam.id}`} passHref>
-                                            <Button className="w-full h-14 bg-zinc-900 border border-zinc-800 text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all rounded-2xl group-hover:border-eduGreen-900/20 group-hover:bg-zinc-950">
+                                            <Button className="w-full h-14 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all rounded-2xl group-hover:border-eduGreen-900/20 group-hover:bg-white dark:bg-zinc-950">
                                                 Registry Hub <Brain className="ml-2 w-3.5 h-3.5 text-eduGreen-500" />
                                             </Button>
                                         </Link>
@@ -332,8 +332,8 @@ function ExamsPageContent() {
                         ))}
 
                         {exams.length === 0 && (
-                            <div className="col-span-full py-40 rounded-[3rem] border-4 border-dashed border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
-                                <div className="p-6 bg-zinc-950 rounded-full border border-zinc-900 opacity-20">
+                            <div className="col-span-full py-40 rounded-[3rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                                <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                     <FileText className="w-12 h-12" />
                                 </div>
                                 <p className="font-medium uppercase tracking-[0.4em] text-xs italic">No Institutional Assessments Harvested</p>
@@ -345,21 +345,21 @@ function ExamsPageContent() {
 
                 <TabsContent value="dossier" className="space-y-8">
                     {/* Controls */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-zinc-950/40 border border-zinc-900/60 p-6 rounded-3xl backdrop-blur-xl">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/60 p-6 rounded-3xl backdrop-blur-xl">
                         <div className="flex flex-wrap items-center gap-4">
                             {selectedClassSubjects.length > 1 ? (
                                 <div className="flex items-center gap-3">
                                     <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Subject:</span>
                                     <Select value={dossierSubjectId} onValueChange={setDossierSubjectId}>
-                                        <SelectTrigger className="h-11 bg-zinc-900/50 border-zinc-900 rounded-xl px-4 font-medium text-xs text-white focus:ring-0 focus:border-eduGreen-600 transition-all w-48">
+                                        <SelectTrigger className="h-11 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-xl px-4 font-medium text-xs text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all w-48">
                                             <SelectValue placeholder="Select Subject" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-zinc-950 border-zinc-900 rounded-2xl shadow-3xl">
+                                        <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl shadow-3xl">
                                             {selectedClassSubjects.map((s: any) => (
                                                 <SelectItem
                                                     key={s.id}
                                                     value={s.id}
-                                                    className="hover:bg-zinc-900 focus:bg-zinc-900 rounded-xl m-1 py-2 text-zinc-400 focus:text-white transition-all font-medium uppercase tracking-widest text-[9px]"
+                                                    className="hover:bg-zinc-200 dark:hover:bg-zinc-900 focus:bg-zinc-100 dark:bg-zinc-900 rounded-xl m-1 py-2 text-zinc-600 dark:text-zinc-400 focus:text-zinc-900 dark:text-white transition-all font-medium uppercase tracking-widest text-[9px]"
                                                 >
                                                     {s.name}
                                                 </SelectItem>
@@ -368,11 +368,11 @@ function ExamsPageContent() {
                                     </Select>
                                 </div>
                             ) : selectedClassSubjects.length === 1 ? (
-                                <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-400 font-medium uppercase tracking-wider text-[10px]">
-                                    Subject Focus: <span className="text-white font-semibold">{selectedClassSubjects[0].name}</span>
+                                <div className="flex items-center gap-2 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 font-medium uppercase tracking-wider text-[10px]">
+                                    Subject Focus: <span className="text-zinc-900 dark:text-white font-semibold">{selectedClassSubjects[0].name}</span>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-2 bg-zinc-900/40 border border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-500 font-medium uppercase tracking-wider text-[10px]">
+                                <div className="flex items-center gap-2 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-800/60 px-4 py-2.5 rounded-xl text-zinc-500 font-medium uppercase tracking-wider text-[10px]">
                                     No Subject Focus Assigned
                                 </div>
                             )}
@@ -385,7 +385,7 @@ function ExamsPageContent() {
                                     placeholder="Search student..."
                                     value={dossierSearch}
                                     onChange={e => setDossierSearch(e.target.value)}
-                                    className="h-11 pl-11 w-64 bg-zinc-900/50 border-zinc-900 rounded-xl focus:border-eduGreen-600 transition-all font-medium text-xs text-white placeholder:text-zinc-700"
+                                    className="h-11 pl-11 w-64 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-xl focus:border-eduGreen-600 transition-all font-medium text-xs text-zinc-900 dark:text-white placeholder:text-zinc-700"
                                 />
                             </div>
 
@@ -393,7 +393,7 @@ function ExamsPageContent() {
                                 onClick={handleExportCSV}
                                 disabled={dossierStudents.length === 0}
                                 variant="outline"
-                                className="border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-900 h-11 px-5 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
+                                className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-11 px-5 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
                             >
                                 <FileSpreadsheet className="h-4 w-4 text-emerald-500" /> Export CSV
                             </Button>
@@ -406,29 +406,29 @@ function ExamsPageContent() {
                             <SpringingLoader message="Synthesizing Class Dossier" />
                         </div>
                     ) : dossierStudents.length === 0 ? (
-                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
-                            <div className="p-6 bg-zinc-950 rounded-full border border-zinc-900 opacity-20">
+                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                            <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                 <FileText className="w-12 h-12" />
                             </div>
                             <p className="font-medium uppercase tracking-[0.4em] text-xs italic">No Enrolled Students Harvested</p>
                         </div>
                     ) : sortedSubjectExams.length === 0 ? (
-                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
-                            <div className="p-6 bg-zinc-950 rounded-full border border-zinc-900 opacity-20">
+                        <div className="py-32 rounded-[2.5rem] border-4 border-dashed border-zinc-200 dark:border-zinc-900/50 flex flex-col items-center justify-center text-zinc-800 gap-6">
+                            <div className="p-6 bg-white dark:bg-zinc-950 rounded-full border border-zinc-200 dark:border-zinc-900 opacity-20">
                                 <FileText className="w-12 h-12" />
                             </div>
                             <p className="font-medium uppercase tracking-[0.4em] text-xs italic">No Exams Configured for Selected Subject</p>
                         </div>
                     ) : (
-                        <div className="rounded-[2.5rem] border border-zinc-900/50 bg-zinc-950/40 backdrop-blur-xl overflow-hidden shadow-2xl">
+                        <div className="rounded-[2.5rem] border border-zinc-200 dark:border-zinc-900/50 bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl overflow-hidden shadow-2xl">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b border-zinc-900/80 bg-zinc-950/60">
+                                        <tr className="border-b border-zinc-200 dark:border-zinc-900/80 bg-white/60 dark:bg-zinc-950/60">
                                             <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[220px]">Student Name</th>
                                             <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[140px]">Student Code</th>
                                             {sortedSubjectExams.map(exam => (
-                                                <th key={exam.id} className="py-5 px-6 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[170px] text-center border-l border-zinc-900/40">
+                                                <th key={exam.id} className="py-5 px-6 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[170px] text-center border-l border-zinc-200 dark:border-zinc-900/40">
                                                     <Link href={`/dashboard/teacher/gradebook/${exam.id}`} className="hover:text-eduGreen-500 transition-colors block">
                                                         <div className="truncate max-w-[150px] font-semibold">{exam.title}</div>
                                                         <div className="text-[8px] text-zinc-600 mt-1.5 font-normal tracking-widest uppercase">
@@ -437,7 +437,7 @@ function ExamsPageContent() {
                                                     </Link>
                                                 </th>
                                             ))}
-                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[160px] text-center border-l border-zinc-900/40 bg-zinc-950/50">
+                                            <th className="py-5 px-8 font-medium text-[10px] uppercase tracking-[0.2em] text-zinc-500 min-w-[160px] text-center border-l border-zinc-200 dark:border-zinc-900/40 bg-white/50 dark:bg-zinc-950/50">
                                                 Subject Average
                                             </th>
                                         </tr>
@@ -448,8 +448,8 @@ function ExamsPageContent() {
                                             let totalMax = 0;
                                             
                                             return (
-                                                <tr key={student.id} className="hover:bg-zinc-900/10 transition-colors group">
-                                                    <td className="py-5 px-8 font-medium text-sm text-zinc-300">
+                                                <tr key={student.id} className="hover:bg-zinc-200 dark:hover:bg-zinc-900/10 transition-colors group">
+                                                    <td className="py-5 px-8 font-medium text-sm text-zinc-700 dark:text-zinc-300">
                                                         <Link href={`/dashboard/students/${student.id}`} className="hover:text-eduGreen-500 transition-colors flex items-center gap-2">
                                                             {student.firstName} {student.lastName}
                                                             <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-eduGreen-500" />
@@ -466,7 +466,7 @@ function ExamsPageContent() {
                                                         
                                                         let cellText = "-";
                                                         let pct = 0;
-                                                        let colorClass = "text-zinc-600 bg-zinc-900/10 border-zinc-900/30";
+                                                        let colorClass = "text-zinc-600 bg-zinc-100/10 dark:bg-zinc-900/10 border-zinc-200 dark:border-zinc-900/30";
                                                         
                                                         if (record) {
                                                             pct = (record.score / max) * 100;
@@ -490,7 +490,7 @@ function ExamsPageContent() {
                                                         }
                                                         
                                                         return (
-                                                            <td key={exam.id} className="py-4 px-6 border-l border-zinc-900/40 text-center">
+                                                            <td key={exam.id} className="py-4 px-6 border-l border-zinc-200 dark:border-zinc-900/40 text-center">
                                                                 <div className={cn(
                                                                     "inline-flex items-center justify-center px-3 py-1.5 rounded-lg border text-xs font-medium tracking-wide min-w-[75px]",
                                                                     colorClass
@@ -508,7 +508,7 @@ function ExamsPageContent() {
                                                     {/* Running Average */}
                                                     {(() => {
                                                         const average = totalMax > 0 ? (totalScore / totalMax) * 100 : null;
-                                                        let colorClass = "text-zinc-600 bg-zinc-900/10 border-zinc-900/30";
+                                                        let colorClass = "text-zinc-600 bg-zinc-100/10 dark:bg-zinc-900/10 border-zinc-200 dark:border-zinc-900/30";
                                                         if (average !== null) {
                                                             if (average >= 80) {
                                                                 colorClass = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_-3px_rgba(16,185,129,0.15)]";
@@ -521,7 +521,7 @@ function ExamsPageContent() {
                                                             }
                                                         }
                                                         return (
-                                                            <td className="py-4 px-8 border-l border-zinc-900/40 text-center bg-zinc-950/30 font-semibold">
+                                                            <td className="py-4 px-8 border-l border-zinc-200 dark:border-zinc-900/40 text-center bg-white/30 dark:bg-zinc-950/30 font-semibold">
                                                                 <div className={cn(
                                                                     "inline-flex items-center justify-center px-4 py-2 rounded-xl border text-sm font-bold tracking-tight min-w-[90px]",
                                                                     colorClass
@@ -543,16 +543,16 @@ function ExamsPageContent() {
             </Tabs>
 
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
-                <DialogContent className="max-w-[95vw] md:max-w-2xl max-h-[85vh] bg-zinc-950/95 backdrop-blur-3xl border-zinc-900 rounded-[3rem] p-0 overflow-y-auto shadow-[0_0_100px_-20px_rgba(31,210,135,0.1)]">
+                <DialogContent className="max-w-[95vw] md:max-w-2xl max-h-[85vh] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900 rounded-[3rem] p-0 overflow-y-auto shadow-[0_0_100px_-20px_rgba(31,210,135,0.1)]">
                     <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-eduGreen-600 to-transparent opacity-50" />
 
-                    <DialogHeader className="p-12 pb-8 border-b border-zinc-900/50">
+                    <DialogHeader className="p-12 pb-8 border-b border-zinc-200 dark:border-zinc-900/50">
                         <div className="flex items-center gap-4">
                             <div className="p-3 bg-eduGreen-950/20 rounded-xl border border-eduGreen-900/30 text-eduGreen-500">
                                 <Plus className="w-6 h-6" />
                             </div>
                             <div>
-                                <DialogTitle className="text-3xl font-medium text-white tracking-tighter uppercase italic">
+                                <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase italic">
                                     New <span className="text-eduGreen-500 not-italic">Assessment</span>
                                 </DialogTitle>
                                 <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 mt-1">Establishing academic measuring protocol</p>
@@ -573,7 +573,7 @@ function ExamsPageContent() {
                                     value={newExam.title}
                                     onChange={e => setNewExam({ ...newExam, title: e.target.value })}
                                     required
-                                    className="h-14 bg-zinc-900/50 border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium text-lg text-white placeholder:text-zinc-700"
+                                    className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium text-lg text-zinc-900 dark:text-white placeholder:text-zinc-700"
                                 />
                             </div>
 
@@ -581,15 +581,15 @@ function ExamsPageContent() {
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest ml-1">Subject Focus</label>
                                     <Select onValueChange={(val: string) => setNewExam({ ...newExam, subjectId: val })}>
-                                        <SelectTrigger className="h-14 bg-zinc-900/50 border-zinc-900 rounded-2xl px-6 font-medium text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
+                                        <SelectTrigger className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl px-6 font-medium text-zinc-900 dark:text-white focus:ring-0 focus:border-eduGreen-600 transition-all">
                                             <SelectValue placeholder="Select Target Subject" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-zinc-950 border-zinc-900 rounded-2xl shadow-3xl">
+                                        <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl shadow-3xl">
                                             {selectedClassSubjects.map((s: any) => (
                                                 <SelectItem
                                                     key={s.id}
                                                     value={s.id}
-                                                    className="hover:bg-zinc-900 focus:bg-zinc-900 rounded-xl m-1 py-3 text-zinc-400 focus:text-white transition-all font-medium uppercase tracking-widest text-[10px]"
+                                                    className="hover:bg-zinc-200 dark:hover:bg-zinc-900 focus:bg-zinc-100 dark:bg-zinc-900 rounded-xl m-1 py-3 text-zinc-600 dark:text-zinc-400 focus:text-zinc-900 dark:text-white transition-all font-medium uppercase tracking-widest text-[10px]"
                                                 >
                                                     {s.name}
                                                 </SelectItem>
@@ -606,7 +606,7 @@ function ExamsPageContent() {
                                             value={newExam.date}
                                             onChange={e => setNewExam({ ...newExam, date: e.target.value })}
                                             required
-                                            className="h-14 pl-14 bg-zinc-900/50 border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium uppercase text-xs tracking-widest text-white"
+                                            className="h-14 pl-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium uppercase text-xs tracking-widest text-zinc-900 dark:text-white"
                                         />
                                     </div>
                                 </div>
@@ -620,7 +620,7 @@ function ExamsPageContent() {
                                         placeholder="e.g. 45"
                                         value={newExam.duration}
                                         onChange={e => setNewExam({ ...newExam, duration: e.target.value })}
-                                        className="h-14 bg-zinc-900/50 border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium text-lg text-white placeholder:text-zinc-700"
+                                        className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-600 transition-all font-medium text-lg text-zinc-900 dark:text-white placeholder:text-zinc-700"
                                     />
                                     <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Leave empty for untimed exams</p>
                                 </div>
@@ -648,7 +648,7 @@ function ExamsPageContent() {
                                     variant="ghost"
                                     disabled={createLoading}
                                     onClick={() => setIsCreating(false)}
-                                    className="h-16 flex-1 border border-zinc-900 text-zinc-600 hover:text-white hover:bg-zinc-900 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] transition-all"
+                                    className="h-16 flex-1 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] transition-all"
                                 >
                                     Abort Protocol
                                 </Button>

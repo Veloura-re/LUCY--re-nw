@@ -37,7 +37,7 @@ export const StudentRegistryPrint = React.forwardRef<HTMLDivElement, StudentRegi
                 {classNames.map((className, index) => (
                     <div key={className} className={cn("mb-16", index > 0 && "print:break-before-page")}>
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="h-10 w-1 bg-black" />
+                            <div className="h-10 w-1 bg-white dark:bg-black" />
                             <h2 className="text-2xl font-bold uppercase tracking-tight italic">Class: {className}</h2>
                             <div className="flex-1 h-px bg-zinc-100" />
                             <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{groupedStudents[className].length} Entities</span>

@@ -62,14 +62,14 @@ export default function FacultyAuthorizationsPage() {
             />
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-12 relative">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-200 dark:border-white/5 pb-12 relative">
                 <div className="absolute -left-12 -top-12 w-64 h-64 bg-eduGreen-500/5 blur-[100px] pointer-events-none" />
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <div className="h-[1px] w-8 bg-eduGreen-500" />
                         <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.5em]">Neural Link Status: Active</span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase italic leading-none">
+                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white uppercase italic leading-none">
                         LEAVE <span className="text-eduGreen-500">AUTHORIZATIONS</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.3em] text-[10px] mt-4 flex items-center gap-3">
@@ -98,7 +98,7 @@ export default function FacultyAuthorizationsPage() {
                                 transition={{ delay: idx * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             >
                                 <Card className={cn(
-                                    "bg-[#050505]/40 backdrop-blur-[40px] border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-white/10 group relative",
+                                    "bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-zinc-300 dark:border-white/10 group relative",
                                     auth.status === 'APPROVED' && "hover:border-emerald-500/30",
                                     auth.status === 'REJECTED' && "hover:border-rose-500/30",
                                     auth.status === 'PENDING' && "hover:border-blue-500/30"
@@ -117,7 +117,7 @@ export default function FacultyAuthorizationsPage() {
                                                     "w-20 h-20 rounded-[2rem] flex items-center justify-center border transition-all shadow-2xl relative overflow-hidden",
                                                     auth.status === 'APPROVED' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" :
                                                         auth.status === 'REJECTED' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" :
-                                                            "bg-zinc-900/50 border-white/5 text-blue-500"
+                                                            "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-white/5 text-blue-500"
                                                 )}>
                                                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
                                                     {auth.status === 'APPROVED' ? <CheckCircle2 className="w-10 h-10 relative z-10" /> :
@@ -127,7 +127,7 @@ export default function FacultyAuthorizationsPage() {
 
                                                 <div>
                                                     <div className="flex items-center gap-4">
-                                                        <h3 className="text-2xl font-bold text-white tracking-tight uppercase italic">{auth.isStaffLeave ? "Staff Leave" : "Absence Permit"}</h3>
+                                                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight uppercase italic">{auth.isStaffLeave ? "Staff Leave" : "Absence Permit"}</h3>
                                                         <Badge className={cn(
                                                             "uppercase tracking-[0.3em] text-[8px] font-black px-4 py-1.5 rounded-full border shadow-lg",
                                                             auth.status === 'APPROVED' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30 shadow-emerald-900/20" :
@@ -140,15 +140,15 @@ export default function FacultyAuthorizationsPage() {
                                                     <div className="flex items-center gap-6 mt-4 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
                                                         <div className="flex items-center gap-2.5">
                                                             <CalendarIcon className="w-4 h-4 text-zinc-700" />
-                                                            <span className="text-zinc-400">{new Date(auth.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                                            <span className="text-zinc-600 dark:text-zinc-400">{new Date(auth.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                                             <Zap className="w-3 h-3 text-zinc-800" />
-                                                            <span className="text-zinc-400">{new Date(auth.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                                            <span className="text-zinc-600 dark:text-zinc-400">{new Date(auth.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="flex-1 max-w-lg p-6 bg-zinc-950/40 rounded-[2rem] border border-white/5 text-xs font-medium text-zinc-400 italic leading-relaxed shadow-inner">
+                                            <div className="flex-1 max-w-lg p-6 bg-white/40 dark:bg-zinc-950/40 rounded-[2rem] border border-zinc-200 dark:border-white/5 text-xs font-medium text-zinc-600 dark:text-zinc-400 italic leading-relaxed shadow-inner">
                                                 <div className="text-[8px] font-bold text-zinc-800 uppercase tracking-widest mb-2 not-italic">Justification Log</div>
                                                 "{auth.reason}"
                                             </div>
@@ -177,7 +177,7 @@ export default function FacultyAuthorizationsPage() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="text-center py-32 border-4 border-dashed border-white/5 rounded-[4rem] group hover:border-white/10 transition-all"
+                            className="text-center py-32 border-4 border-dashed border-zinc-200 dark:border-white/5 rounded-[4rem] group hover:border-zinc-300 dark:border-white/10 transition-all"
                         >
                             <div className="relative inline-block mb-8">
                                 <div className="absolute inset-0 bg-eduGreen-500/20 blur-[40px] rounded-full animate-pulse" />

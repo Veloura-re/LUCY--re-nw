@@ -54,14 +54,14 @@ export default function MarklistIndexPage() {
     return (
         <div className="p-8 max-w-6xl mx-auto space-y-8 pb-20">
             <div>
-                <h1 className="text-3xl font-medium uppercase tracking-tight text-white">My Marklists</h1>
-                <p className="text-zinc-400 font-medium">Select a Marklist to manage grades</p>
+                <h1 className="text-3xl font-medium uppercase tracking-tight text-zinc-900 dark:text-white">My Marklists</h1>
+                <p className="text-zinc-600 dark:text-zinc-400 font-medium">Select a Marklist to manage grades</p>
             </div>
 
             {loading ? (
                 <div className="flex justify-center p-20"><Loader2 className="animate-spin" /></div>
             ) : configs.length === 0 ? (
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800">
                     <CardContent className="p-10 text-center text-zinc-500 font-medium">
                         No Marklists configured yet. Ask your Director to create one.
                     </CardContent>
@@ -69,11 +69,11 @@ export default function MarklistIndexPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {configs.map((conf) => (
-                        <Card key={conf.id} className="group bg-zinc-900/50 border-zinc-800 hover:border-eduGreen-500/50 transition-all cursor-pointer  relative"
+                        <Card key={conf.id} className="group bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 transition-all cursor-pointer  relative"
                             onClick={() => router.push(`/dashboard/marklist/view?configId=${conf.id}`)}>
                             <div className="absolute top-0 bottom-0 left-0 w-1 bg-zinc-800 group-hover:bg-eduGreen-500 transition-colors" />
                             <CardHeader>
-                                <CardTitle className="text-xl font-medium text-white">{conf.class?.name}</CardTitle>
+                                <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white">{conf.class?.name}</CardTitle>
                                 <div className="text-eduGreen-400 font-medium uppercase tracking-widest text-xs flex items-center gap-2">
                                     <FileSpreadsheet className="w-4 h-4" />
                                     {conf.subject?.name}
@@ -82,7 +82,7 @@ export default function MarklistIndexPage() {
                             <CardContent>
                                 <div className="flex justify-between items-center mt-4">
                                     <span className="text-zinc-500 text-xs font-medium uppercase">{conf.columns?.length || 0} Assessments</span>
-                                    <Button size="sm" variant="ghost" className="text-zinc-400 group-hover:text-eduGreen-400 group-hover:translate-x-1 transition-all">
+                                    <Button size="sm" variant="ghost" className="text-zinc-600 dark:text-zinc-400 group-hover:text-eduGreen-400 group-hover:translate-x-1 transition-all">
                                         Open Chart <ArrowRight className="w-4 h-4 ml-1" />
                                     </Button>
                                 </div>
@@ -94,7 +94,7 @@ export default function MarklistIndexPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 p-4 rounded-xl mt-8">
+                <div className="flex items-center justify-between bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 p-4 rounded-xl mt-8">
                     <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">
                         Page {page} of {totalPages}
                     </p>
@@ -104,7 +104,7 @@ export default function MarklistIndexPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                         >
                             Previous
                         </Button>
@@ -113,7 +113,7 @@ export default function MarklistIndexPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="bg-zinc-950 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                            className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-800 hover:text-white"
                         >
                             Next
                         </Button>

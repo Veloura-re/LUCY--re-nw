@@ -82,7 +82,7 @@ export default function ParentsPage() {
                         <Users className="w-3 h-3" />
                         Parent Management
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Parent <span className="text-eduGreen-500">Inventory</span>
                     </h1>
                     <p className="text-zinc-500 font-medium max-w-xl text-sm md:text-base">
@@ -92,7 +92,7 @@ export default function ParentsPage() {
             </div>
 
             {/* Search Section */}
-            <Card className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-xl rounded-[2.5rem] ">
+            <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-300 dark:border-zinc-800/50 backdrop-blur-xl rounded-[2.5rem] ">
                 <CardContent className="p-8 md:p-12">
                     <form onSubmit={handleSearch} className="max-w-2xl mx-auto space-y-6">
                         <div className="text-center space-y-2 mb-8">
@@ -108,7 +108,7 @@ export default function ParentsPage() {
                                     placeholder="SEARCH BY NAME OR CODE"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    className="h-16 bg-zinc-950/80 border-2 border-zinc-800 rounded-[1.25rem] px-8 text-eduGreen-400 font-mono text-lg focus:border-eduGreen-600 transition-all placeholder:text-zinc-900"
+                                    className="h-16 bg-white/80 dark:bg-zinc-950/80 border-2 border-zinc-300 dark:border-zinc-800 rounded-[1.25rem] px-8 text-eduGreen-400 font-mono text-lg focus:border-eduGreen-600 transition-all placeholder:text-zinc-900"
                                     maxLength={40}
                                     required
                                 />
@@ -136,11 +136,11 @@ export default function ParentsPage() {
             {result && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-300">
                     <div className="flex items-center gap-4 px-2">
-                        <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center">
                             <GraduationCap className="w-6 h-6 text-eduGreen-500" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-medium text-white">{result.student.name}</h3>
+                            <h3 className="text-lg font-medium text-zinc-900 dark:text-white">{result.student.name}</h3>
                             <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
                                 <span>{result.student.code}</span>
                                 <span className="w-1 h-1 rounded-full bg-zinc-800" />
@@ -154,15 +154,15 @@ export default function ParentsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {result.parents.length > 0 ? (
                             result.parents.map((parent) => (
-                                <Card key={parent.id} className="group relative bg-zinc-900/40 border-zinc-800/80 hover:border-eduGreen-500/50 transition-all duration-300  rounded-[2.5rem]">
+                                <Card key={parent.id} className="group relative bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-300 dark:border-zinc-800/80 hover:border-eduGreen-500/50 transition-all duration-300  rounded-[2.5rem]">
                                     <CardContent className="p-8">
                                         <div className="flex items-start justify-between gap-6">
                                             <div className="flex items-start gap-5">
-                                                <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-800 group-hover:bg-eduGreen-900/10 group-hover:border-eduGreen-900/30 flex items-center justify-center transition-all duration-300">
+                                                <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 group-hover:bg-eduGreen-900/10 group-hover:border-eduGreen-900/30 flex items-center justify-center transition-all duration-300">
                                                     <UserCircle2 className="w-8 h-8 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h4 className="text-xl font-medium text-white group-hover:text-eduGreen-400 transition-colors">{parent.name}</h4>
+                                                    <h4 className="text-xl font-medium text-zinc-900 dark:text-white group-hover:text-eduGreen-400 transition-colors">{parent.name}</h4>
                                                     <div className="flex flex-col gap-1">
                                                         <div className="flex items-center gap-2 text-xs text-zinc-500">
                                                             <Mail className="w-3 h-3" />
@@ -177,7 +177,7 @@ export default function ParentsPage() {
                                             </div>
                                         </div>
 
-                                        <div className="mt-8 flex items-center justify-between gap-4 pt-6 border-t border-zinc-800/50">
+                                        <div className="mt-8 flex items-center justify-between gap-4 pt-6 border-t border-zinc-300 dark:border-zinc-800/50">
                                             <div className="flex items-center gap-2 text-zinc-600">
                                                 <Calendar className="w-3.5 h-3.5" />
                                                 <span className="text-[10px] font-medium uppercase tracking-wider">
@@ -186,7 +186,7 @@ export default function ParentsPage() {
                                             </div>
                                             <Button
                                                 onClick={() => handleStartChat(parent.id)}
-                                                className="bg-zinc-950 border border-zinc-900 hover:bg-eduGreen-950/20 hover:border-eduGreen-900/50 text-zinc-500 hover:text-eduGreen-400 rounded-2xl px-6 font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
+                                                className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 hover:bg-eduGreen-950/20 hover:border-eduGreen-900/50 text-zinc-500 hover:text-eduGreen-400 rounded-2xl px-6 font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
                                             >
                                                 Direct Message <MessageSquare className="w-3.5 h-3.5" />
                                             </Button>
@@ -195,8 +195,8 @@ export default function ParentsPage() {
                                 </Card>
                             ))
                         ) : (
-                            <div className="col-span-full py-20 bg-zinc-950/20 rounded-[2.5rem] border-2 border-dashed border-zinc-900 flex flex-col items-center justify-center text-center space-y-4">
-                                <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-800">
+                            <div className="col-span-full py-20 bg-white/20 dark:bg-zinc-950/20 rounded-[2.5rem] border-2 border-dashed border-zinc-200 dark:border-zinc-900 flex flex-col items-center justify-center text-center space-y-4">
+                                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
                                     <Users className="w-6 h-6 text-zinc-700" />
                                 </div>
                                 <div className="space-y-1">
@@ -216,11 +216,11 @@ export default function ParentsPage() {
                         { title: "Direct Connectivity", desc: "Start conversations and share updates instantly from the management hub." },
                         { title: "Unified Directory", desc: "Access verified institutional contacts in a secure, central location." }
                     ].map((feature, i) => (
-                        <div key={i} className="p-8 rounded-[2rem] bg-zinc-950/50 border border-zinc-900/50 space-y-3">
+                        <div key={i} className="p-8 rounded-[2rem] bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900/50 space-y-3">
                             <div className="w-8 h-8 rounded-lg bg-eduGreen-950/20 border border-eduGreen-900/20 flex items-center justify-center">
                                 <span className="text-eduGreen-500 font-medium text-xs">{i + 1}</span>
                             </div>
-                            <h5 className="text-sm font-medium text-white">{feature.title}</h5>
+                            <h5 className="text-sm font-medium text-zinc-900 dark:text-white">{feature.title}</h5>
                             <p className="text-xs text-zinc-600 leading-relaxed font-medium">{feature.desc}</p>
                         </div>
                     ))}

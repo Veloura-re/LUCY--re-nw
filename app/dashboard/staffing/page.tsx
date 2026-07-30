@@ -137,13 +137,13 @@ export default function StaffingPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div className="space-y-4">
-                    <h1 className="text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Faculty <span className="text-eduGreen-500 italic">Mapping</span>
                     </h1>
 
-                    <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-xl border border-zinc-900 w-fit">
+                    <div className="flex items-center gap-1 bg-white dark:bg-zinc-950 p-1 rounded-xl border border-zinc-200 dark:border-zinc-900 w-fit">
                         <button
                             onClick={() => setActiveTab('SUBJECTS')}
                             className={`px-4 py-2 rounded-lg text-[10px] font-medium uppercase tracking-widest transition-all ${activeTab === 'SUBJECTS' ? 'bg-eduGreen-600 text-white' : 'text-zinc-600 hover:text-zinc-400'}`}
@@ -161,9 +161,9 @@ export default function StaffingPage() {
 
                 <div className="hidden md:block">
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] mb-1">Institutional Resource Allocation</p>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900/50 border border-zinc-800">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800">
                         <ShieldCheck className="w-3.5 h-3.5 text-eduGreen-500" />
-                        <span className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest">Final Authorization required</span>
+                        <span className="text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Final Authorization required</span>
                     </div>
                 </div>
             </div>
@@ -171,9 +171,9 @@ export default function StaffingPage() {
             {activeTab === 'SUBJECTS' ? (
                 <div className="grid lg:grid-cols-1 gap-12 items-start animate-in fade-in slide-in-from-left-4 duration-300">
                     <div className="space-y-6">
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl">
-                            <CardHeader className="p-8 border-b border-zinc-900/50">
-                                <CardTitle className="text-lg font-medium text-white tracking-tight uppercase tracking-[0.2em] text-[10px]">Active Cohorts</CardTitle>
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl">
+                            <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
+                                <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight uppercase tracking-[0.2em] text-[10px]">Active Cohorts</CardTitle>
                             </CardHeader>
                             <CardContent className="p-4 flex flex-wrap gap-3">
                                 {classes.map((cls) => (
@@ -181,8 +181,8 @@ export default function StaffingPage() {
                                         key={cls.id}
                                         onClick={() => setSelectedClassId(cls.id)}
                                         className={`px-6 py-4 rounded-2xl flex items-center gap-4 transition-all group border ${selectedClassId === cls.id
-                                            ? 'bg-eduGreen-600 border-eduGreen-500 text-white shadow-xl shadow-eduGreen-900/20'
-                                            : 'bg-zinc-900/40 text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300 border-zinc-900/50'
+                                            ? 'bg-eduGreen-600 border-eduGreen-500 text-zinc-900 dark:text-white shadow-xl shadow-eduGreen-900/20'
+                                            : 'bg-zinc-100/40 dark:bg-zinc-900/40 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-zinc-300 border-zinc-200 dark:border-zinc-900/50'
                                             }`}
                                     >
                                         <div className="flex flex-col items-start">
@@ -198,15 +198,15 @@ export default function StaffingPage() {
                     </div>
 
                     <div className="space-y-8">
-                        <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl relative z-20">
-                            <CardHeader className="p-10 border-b border-zinc-900/80">
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl relative z-20">
+                            <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/80">
                                 <div className="flex items-center justify-between w-full">
                                     <div className="flex items-center gap-4">
                                         <div className="p-3 bg-eduGreen-950/20 rounded-2xl border border-eduGreen-900/30">
                                             <Layers className="w-5 h-5 text-eduGreen-500" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-2xl font-medium text-white tracking-tight">Discipline Matrix</CardTitle>
+                                            <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Discipline Matrix</CardTitle>
                                             <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Assignments for {classes.find(c => c.id === selectedClassId)?.name}</CardDescription>
                                         </div>
                                     </div>
@@ -227,12 +227,12 @@ export default function StaffingPage() {
                                         return (
                                             <div key={subject.id} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-eduGreen-900/5 transition-all group/row">
                                                 <div className="flex items-center gap-6">
-                                                    <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-900 flex items-center justify-center group-hover/row:border-eduGreen-900/30 transition-all shadow-2xl relative overflow-hidden">
+                                                    <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center group-hover/row:border-eduGreen-900/30 transition-all shadow-2xl relative overflow-hidden">
                                                         <BookOpen className="w-6 h-6 text-zinc-800 group-hover/row:text-eduGreen-500" />
                                                         <div className="absolute inset-x-0 bottom-0 h-1 bg-eduGreen-500/20" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-medium text-xl text-zinc-100 group-hover/row:text-white transition-colors tracking-tight">{subject.name}</h4>
+                                                        <h4 className="font-medium text-xl text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight">{subject.name}</h4>
                                                         <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mt-1">Core Discipline</p>
                                                     </div>
                                                 </div>
@@ -241,7 +241,7 @@ export default function StaffingPage() {
                                                     {assignment && (
                                                         <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-eduGreen-950/20 border border-eduGreen-900/20 animate-in fade-in zoom-in-95">
                                                             <CheckCircle2 className="w-4 h-4 text-eduGreen-500" />
-                                                            <span className="text-[10px] font-medium text-white uppercase tracking-widest">Synchronized</span>
+                                                            <span className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest">Synchronized</span>
                                                         </div>
                                                     )}
 
@@ -259,7 +259,7 @@ export default function StaffingPage() {
                                                                         handleAssign(subject.id, assignment.teacherId, parseInt(e.target.value) || 5);
                                                                     }
                                                                 }}
-                                                                className="h-14 w-full bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-center text-white font-medium text-sm focus:border-eduGreen-500/50 outline-none"
+                                                                className="h-14 w-full bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-center text-zinc-900 dark:text-white font-medium text-sm focus:border-eduGreen-500/50 outline-none"
                                                                 title="Periods per Week"
                                                             />
                                                         </div>
@@ -269,7 +269,7 @@ export default function StaffingPage() {
                                                                 onValueChange={(val: string) => handleAssign(subject.id, val)}
                                                                 disabled={saving === subject.id}
                                                             >
-                                                                <SelectTrigger className="h-14 bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-white font-medium hover:border-eduGreen-900/30 transition-all">
+                                                                <SelectTrigger className="h-14 bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium hover:border-eduGreen-900/30 transition-all">
                                                                     {saving === subject.id ? (
                                                                         <div className="flex items-center gap-2">
                                                                             <Loader2 className="w-4 h-4 animate-spin text-eduGreen-500" />
@@ -279,7 +279,7 @@ export default function StaffingPage() {
                                                                         <SelectValue placeholder="Select Instructor" />
                                                                     )}
                                                                 </SelectTrigger>
-                                                                <SelectContent className="bg-zinc-950 border-zinc-900 text-white">
+                                                                <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white">
                                                                     {teachers.map((teacher: any) => (
                                                                         <SelectItem key={teacher.id} value={teacher.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
                                                                             {teacher.name}
@@ -309,14 +309,14 @@ export default function StaffingPage() {
                 </div>
             ) : (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                    <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl">
-                        <CardHeader className="p-10 border-b border-zinc-900/80">
+                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem]  border-t-zinc-800/20 shadow-2xl">
+                        <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/80">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-eduGreen-950/20 rounded-2xl border border-eduGreen-900/30">
                                     <Users className="w-5 h-5 text-eduGreen-500" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl font-medium text-white tracking-tight">Homeroom Authority</CardTitle>
+                                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Homeroom Authority</CardTitle>
                                     <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Institutional presence management by cohort</CardDescription>
                                 </div>
                             </div>
@@ -326,12 +326,12 @@ export default function StaffingPage() {
                                 {classes.map((cls) => (
                                     <div key={cls.id} className="p-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-eduGreen-900/5 transition-all group/row">
                                         <div className="flex items-center gap-6">
-                                            <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-900 flex items-center justify-center font-medium text-zinc-600 text-xl group-hover/row:border-eduGreen-900/30 transition-all shadow-2xl relative overflow-hidden">
+                                            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center font-medium text-zinc-600 text-xl group-hover/row:border-eduGreen-900/30 transition-all shadow-2xl relative overflow-hidden">
                                                 {cls.name}
                                                 <div className="absolute inset-x-0 bottom-0 h-1 bg-eduGreen-500/20" />
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-xl text-zinc-100 group-hover/row:text-white transition-colors tracking-tight">{cls.gradeName} &bull; {cls.name}</h4>
+                                                <h4 className="font-medium text-xl text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight">{cls.gradeName} &bull; {cls.name}</h4>
                                                 <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest mt-1">{cls._count.students} Active Learners</p>
                                             </div>
                                         </div>
@@ -342,7 +342,7 @@ export default function StaffingPage() {
                                                 onValueChange={(val: string) => handleAssignHomeroom(cls.id, val === "null" ? null : val)}
                                                 disabled={saving === ("homeroom-" + cls.id)}
                                             >
-                                                <SelectTrigger className="h-14 bg-zinc-950/50 border-2 border-zinc-900 rounded-xl text-white font-medium hover:border-eduGreen-900/30 transition-all">
+                                                <SelectTrigger className="h-14 bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium hover:border-eduGreen-900/30 transition-all">
                                                     {saving === ("homeroom-" + cls.id) ? (
                                                         <div className="flex items-center gap-2">
                                                             <Loader2 className="w-4 h-4 animate-spin text-eduGreen-500" />
@@ -352,7 +352,7 @@ export default function StaffingPage() {
                                                         <SelectValue placeholder="Unassigned" />
                                                     )}
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-zinc-950 border-zinc-900 text-white">
+                                                <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white">
                                                     {teachers.map((teacher: any) => (
                                                         <SelectItem key={teacher.id} value={teacher.id} className="focus:bg-eduGreen-900/20 focus:text-eduGreen-400 font-medium text-[10px] uppercase">
                                                             {teacher.name}

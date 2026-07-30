@@ -45,7 +45,7 @@ export default function ContactPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -171,7 +171,7 @@ export default function ContactPage() {
                                             <Button 
                                                 onClick={() => setStep(3)} 
                                                 disabled={!formData.callsign || !formData.email || !formData.email.includes('@')}
-                                                className="text-[10px] uppercase tracking-widest bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-md dark:rounded-none h-10 px-6 font-bold"
+                                                className="text-[10px] uppercase tracking-widest bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-md dark:rounded-none h-10 px-6 font-bold"
                                             >
                                                 proceed_to_payload <ChevronRight className="w-3.5 h-3.5 ml-2" />
                                             </Button>
@@ -231,7 +231,7 @@ export default function ContactPage() {
                                             <Button
                                                 type="submit"
                                                 disabled={status === 'LOADING' || !formData.message}
-                                                className="font-bold tracking-widest text-[10px] uppercase bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 h-10 px-6 rounded-md dark:rounded-none gap-2"
+                                                className="font-bold tracking-widest text-[10px] uppercase bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 h-10 px-6 rounded-md dark:rounded-none gap-2"
                                             >
                                                 {status === 'LOADING' ? (
                                                     <>connecting_node... <Loader2 className="w-3.5 h-3.5 animate-spin" /></>

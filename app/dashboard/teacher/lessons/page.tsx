@@ -84,9 +84,9 @@ export default function TeacherLessonsPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-300">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-white">
+                    <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Lesson <span className="text-eduGreen-500 italic">Ledger</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">
@@ -107,7 +107,7 @@ export default function TeacherLessonsPage() {
                     variant="ghost"
                     onClick={() => setClassFilter("ALL")}
                     className={cn("h-10 px-5 rounded-xl text-[10px] font-medium uppercase tracking-widest",
-                        classFilter === "ALL" ? "bg-zinc-900 text-white border border-zinc-800" : "text-zinc-600 hover:text-zinc-300")}
+                        classFilter === "ALL" ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800" : "text-zinc-600 hover:text-zinc-300")}
                 >
                     All Classes
                 </Button>
@@ -117,7 +117,7 @@ export default function TeacherLessonsPage() {
                         variant="ghost"
                         onClick={() => setClassFilter(cls.id)}
                         className={cn("h-10 px-5 rounded-xl text-[10px] font-medium uppercase tracking-widest",
-                            classFilter === cls.id ? "bg-zinc-900 text-white border border-zinc-800" : "text-zinc-600 hover:text-zinc-300")}
+                            classFilter === cls.id ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800" : "text-zinc-600 hover:text-zinc-300")}
                     >
                         {cls.name}
                     </Button>
@@ -135,7 +135,7 @@ export default function TeacherLessonsPage() {
                             exit={{ opacity: 0 }}
                             transition={{ delay: idx * 0.03, duration: 0.15 }}
                         >
-                            <Card className="bg-zinc-950/40 border-zinc-900/50 rounded-[2rem] hover:border-zinc-800 transition-all group">
+                            <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2rem] hover:border-zinc-800 transition-all group">
                                 <CardContent className="p-6 md:p-8">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                         <div className="flex items-start gap-5">
@@ -144,9 +144,9 @@ export default function TeacherLessonsPage() {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3 flex-wrap">
-                                                    <h3 className="text-lg font-semibold text-white tracking-tight">{lesson.topic}</h3>
-                                                    <Badge className="bg-zinc-900 text-zinc-400 border-zinc-800 text-[8px] font-mono tracking-widest">{lesson.subject?.name}</Badge>
-                                                    <Badge className="bg-zinc-900 text-eduGreen-500 border-zinc-800 text-[8px] tracking-widest">{lesson.class?.name}</Badge>
+                                                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-white tracking-tight">{lesson.topic}</h3>
+                                                    <Badge className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 text-[8px] font-mono tracking-widest">{lesson.subject?.name}</Badge>
+                                                    <Badge className="bg-zinc-100 dark:bg-zinc-900 text-eduGreen-500 border-zinc-300 dark:border-zinc-800 text-[8px] tracking-widest">{lesson.class?.name}</Badge>
                                                 </div>
                                                 {lesson.objectives && (
                                                     <p className="text-zinc-500 text-xs mt-2 italic leading-relaxed max-w-xl">{lesson.objectives}</p>
@@ -171,7 +171,7 @@ export default function TeacherLessonsPage() {
                             </Card>
                         </motion.div>
                     )) : (
-                        <div className="text-center py-24 border-2 border-dashed border-zinc-900 rounded-[3rem]">
+                        <div className="text-center py-24 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                             <FileText className="w-12 h-12 text-zinc-900 mx-auto mb-6" />
                             <div className="text-zinc-700 font-bold uppercase tracking-[0.5em] text-sm">No Entries Found</div>
                             <p className="text-zinc-800 mt-2 text-xs uppercase tracking-widest">Log a lesson to begin populating the ledger.</p>
@@ -185,7 +185,7 @@ export default function TeacherLessonsPage() {
 
             {/* Log Lesson Modal */}
             <Dialog open={showModal} onOpenChange={setShowModal}>
-                <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-md rounded-[2.5rem]">
+                <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white max-w-md rounded-[2.5rem]">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-black italic tracking-tighter">Log Lesson</DialogTitle>
                         <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Record today's teaching session</DialogDescription>
@@ -200,7 +200,7 @@ export default function TeacherLessonsPage() {
                                     const firstSubject = classes.find((c: any) => c.classId === e.target.value);
                                     setForm(f => ({ ...f, classId: e.target.value, subjectId: firstSubject?.subjectId || "" }));
                                 }}
-                                className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500"
+                                className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500"
                             >
                                 <option value="">Select class...</option>
                                 {uniqueClasses.map((c: any) => (
@@ -214,7 +214,7 @@ export default function TeacherLessonsPage() {
                                 <select
                                     value={form.subjectId}
                                     onChange={e => setForm(f => ({ ...f, subjectId: e.target.value }))}
-                                    className="w-full h-12 bg-zinc-900 border border-zinc-800 rounded-xl px-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500"
+                                    className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500"
                                 >
                                     <option value="">Select subject...</option>
                                     {selectedClassSubjects.map((c: any) => (
@@ -229,7 +229,7 @@ export default function TeacherLessonsPage() {
                                 type="date"
                                 value={form.date}
                                 onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                                className="h-12 bg-zinc-900 border-zinc-800 rounded-xl text-white"
+                                className="h-12 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-white"
                             />
                         </div>
                         <div>
@@ -238,7 +238,7 @@ export default function TeacherLessonsPage() {
                                 placeholder="e.g. Introduction to Quadratic Equations"
                                 value={form.topic}
                                 onChange={e => setForm(f => ({ ...f, topic: e.target.value }))}
-                                className="h-12 bg-zinc-900 border-zinc-800 rounded-xl text-white"
+                                className="h-12 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-white"
                             />
                         </div>
                         <div>
@@ -248,7 +248,7 @@ export default function TeacherLessonsPage() {
                                 value={form.objectives}
                                 onChange={e => setForm(f => ({ ...f, objectives: e.target.value }))}
                                 rows={3}
-                                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500 resize-none"
+                                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-3 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-eduGreen-500 resize-none"
                             />
                         </div>
                         <Button

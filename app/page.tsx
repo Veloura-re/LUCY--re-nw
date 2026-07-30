@@ -358,7 +358,7 @@ export default function Home() {
   const loaded = liveStats.schools > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
       {/* ── Boot Sequence ── */}
       {mounted && booting && <BootSequence onDone={handleBootDone} />}
 
@@ -393,7 +393,7 @@ export default function Home() {
       />
 
       {/* ── Top Ticker ── */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-white dark:bg-white dark:text-black text-[9px] uppercase tracking-widest overflow-hidden py-1.5 transition-colors">
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black text-[9px] uppercase tracking-widest overflow-hidden py-1.5 transition-colors">
         <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ duration: 24.8, repeat: Infinity, ease: "linear" }} className="flex gap-16 whitespace-nowrap">
           {[...marqueeItems, ...marqueeItems].map((item, i) => (
             <span key={i} className="font-bold shrink-0">{item} //</span>
@@ -512,7 +512,7 @@ export default function Home() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.3 }} className="flex flex-wrap gap-4">
                 <Link href="/register">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button className="h-12 px-8 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-widest font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
+                    <Button className="h-12 px-8 bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-widest font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
                       <span className="relative z-10">initialize_node</span>
                       <motion.div className="absolute inset-0 bg-slate-700 dark:bg-zinc-200 translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
                     </Button>
@@ -577,7 +577,7 @@ export default function Home() {
 
                 <Link href="/register" className="block">
                   <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                    <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-12 rounded-md dark:rounded-none text-xs uppercase tracking-widest font-bold shadow-sm dark:shadow-none transition-colors">
+                    <Button className="w-full bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-12 rounded-md dark:rounded-none text-xs uppercase tracking-widest font-bold shadow-sm dark:shadow-none transition-colors">
                       initialize_node
                     </Button>
                   </motion.div>
@@ -1024,7 +1024,7 @@ export default function Home() {
                           boxShadow: ["0 0 0px rgba(0,0,0,0)", "0 0 10px rgba(16,185,129,0.2)", "0 0 0px rgba(0,0,0,0)"]
                         }}
                         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                        className="absolute top-4 right-4 bg-emerald-500 text-white dark:bg-white dark:text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-emerald-500 dark:border-white rounded-sm dark:rounded-none"
+                        className="absolute top-4 right-4 bg-emerald-500 text-zinc-900 dark:text-white dark:bg-white dark:text-black px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest border border-emerald-500 dark:border-white rounded-sm dark:rounded-none"
                       >
                         40%_discount
                       </motion.div>
@@ -1092,14 +1092,14 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">
                 <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}>
-                  <Button className="h-14 px-12 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
+                  <Button className="h-14 px-12 bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
                     system_boot
                   </Button>
                 </motion.div>
               </Link>
               <Link href="/contact">
                 <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}>
-                  <Button variant="outline" className="h-14 px-12 rounded-md dark:rounded-none border-slate-300 dark:border-white/20 text-slate-900 dark:text-white text-[11px] uppercase tracking-[0.2em] hover:border-slate-400 hover:bg-slate-50 dark:hover:border-white/50 dark:hover:bg-white/5 transition-all font-bold shadow-sm dark:shadow-none">
+                  <Button variant="outline" className="h-14 px-12 rounded-md dark:rounded-none border-slate-300 dark:border-white/20 text-slate-900 dark:text-white text-[11px] uppercase tracking-[0.2em] hover:border-slate-400 hover:bg-slate-50 dark:hover:border-zinc-200 dark:border-white/50 dark:hover:bg-white/5 transition-all font-bold shadow-sm dark:shadow-none">
                     request_uplink
                   </Button>
                 </motion.div>

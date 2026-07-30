@@ -139,7 +139,7 @@ export function TeacherView({ user, initialData }: {
                             "h-12 px-8 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all border w-full md:w-auto",
                             isClockedIn
                                 ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-500 cursor-not-allowed"
-                                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-zinc-900 dark:text-white border-white/10 hover:scale-105 active:scale-95"
+                                : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-zinc-900 dark:text-white border-zinc-300 dark:border-white/10 hover:scale-105 active:scale-95"
                         )}
                     >
                         {clockingIn ? (
@@ -164,7 +164,7 @@ export function TeacherView({ user, initialData }: {
                             </Button>
                         </Link>
                         <Link href="/dashboard/teacher/exams" className="w-full sm:w-auto">
-                            <Button className="w-full sm:w-auto bg-gradient-to-r from-eduGreen-600 to-emerald-700 hover:from-eduGreen-500 hover:to-emerald-600 text-zinc-900 dark:text-white h-12 px-10 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-950/40 transition-all hover:scale-105 active:scale-95 border border-white/10">
+                            <Button className="w-full sm:w-auto bg-gradient-to-r from-eduGreen-600 to-emerald-700 hover:from-eduGreen-500 hover:to-emerald-600 text-zinc-900 dark:text-white h-12 px-10 rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-950/40 transition-all hover:scale-105 active:scale-95 border border-zinc-300 dark:border-white/10">
                                 <Plus className="mr-3 h-5 w-5" /> Exam Registry
                             </Button>
                         </Link>
@@ -181,9 +181,9 @@ export function TeacherView({ user, initialData }: {
                             whileTap={{ scale: 0.98 }}
                         >
                             <Link href="/dashboard/teacher/exams/create" className="group block h-full">
-                                <Card className="h-full bg-gradient-to-br from-eduGreen-600 to-emerald-900 border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(15,94,63,0.3)] group-hover:shadow-[0_25px_60px_rgba(15,94,63,0.5)] transition-all relative border-t-white/20">
+                                <Card className="h-full bg-gradient-to-br from-eduGreen-600 to-emerald-900 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(15,94,63,0.3)] group-hover:shadow-[0_25px_60px_rgba(15,94,63,0.5)] transition-all relative border-t-white/20">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
-                                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/20 blur-2xl -ml-12 -mb-12" />
+                                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/20 dark:bg-black/20 blur-2xl -ml-12 -mb-12" />
 
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
                                         <div>
@@ -212,7 +212,7 @@ export function TeacherView({ user, initialData }: {
                             whileTap={{ scale: 0.98 }}
                         >
                             <Link href="/dashboard/teacher/exams/create?mode=ai" className="group block h-full">
-                                <Card className="h-full bg-gradient-to-br from-indigo-600 to-purple-900 border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(79,70,229,0.3)] group-hover:shadow-[0_25px_60px_rgba(79,70,229,0.5)] transition-all relative border-t-white/20">
+                                <Card className="h-full bg-gradient-to-br from-indigo-600 to-purple-900 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(79,70,229,0.3)] group-hover:shadow-[0_25px_60px_rgba(79,70,229,0.5)] transition-all relative border-t-white/20">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16 group-hover:bg-white/20 transition-colors" />
 
                                     <CardContent className="p-10 flex flex-col justify-between h-full min-h-[220px]">
@@ -275,7 +275,7 @@ export function TeacherView({ user, initialData }: {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.1 }}
                                 >
-                                    <Card className="group relative bg-gradient-to-br from-eduGreen-600 to-emerald-800 border-white/10 rounded-3xl overflow-hidden shadow-2xl shadow-eduGreen-950/40 border-t-white/20 h-full flex flex-col">
+                                    <Card className="group relative bg-gradient-to-br from-eduGreen-600 to-emerald-800 border-zinc-300 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl shadow-eduGreen-950/40 border-t-white/20 h-full flex flex-col">
                                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16" />
 
@@ -302,7 +302,7 @@ export function TeacherView({ user, initialData }: {
 
                                         <CardFooter className="p-10 pt-0 relative z-10 mt-auto">
                                             <Link href="/dashboard/homeroom" className="w-full">
-                                                <Button className="w-full h-12 bg-white/50 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
+                                                <Button className="w-full h-12 bg-white/50 dark:bg-zinc-950/50 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-300 dark:border-white/10 hover:border-eduGreen-500 transition-all group/btn shadow-2xl shadow-black/40 backdrop-blur-md">
                                                     Launch Console <ArrowRight className="ml-3 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                                                 </Button>
                                             </Link>
@@ -467,7 +467,7 @@ export function TeacherView({ user, initialData }: {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-12 bg-white/5 border border-dashed border-white/10 rounded-[2rem] text-center">
+                                    <div className="py-12 bg-white/5 border border-dashed border-zinc-300 dark:border-white/10 rounded-[2rem] text-center">
                                         <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest italic">Neural Registry Clear</p>
                                     </div>
                                 )}
