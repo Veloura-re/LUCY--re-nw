@@ -21,18 +21,18 @@ const clauses = [
 
 export default function Privacy() {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">LUCY OS</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">LUCY OS</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -40,25 +40,25 @@ export default function Privacy() {
                 <div className="max-w-3xl mx-auto space-y-20">
 
                     <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <Lock className="w-4 h-4" />
-                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                            <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">data_protocol // effective 2026-01-01</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
-                                privacy<br /><GlitchText className="text-zinc-800">policy.</GlitchText>
+                                privacy<br /><GlitchText className="text-slate-300 dark:text-zinc-800">policy.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-zinc-500 text-base leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base leading-relaxed">
                                 this policy describes how LUCY OS collects, processes, and protects data across all institutional nodes.
                             </p>
                         </Reveal>
                     </section>
 
                     {/* Clauses */}
-                    <div className="space-y-0 border border-white/5 overflow-hidden">
+                    <div className="space-y-0 border border-slate-200 dark:border-white/5 overflow-hidden rounded-xl dark:rounded-none">
                         {clauses.map((clause, i) => (
                             <motion.div
                                 key={i}
@@ -66,16 +66,16 @@ export default function Privacy() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.06 }}
-                                whileHover={{ backgroundColor: "rgba(255,255,255,0.015)" }}
-                                className="p-8 border-b border-white/5 last:border-b-0 space-y-3 group cursor-default transition-colors"
+                                whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
+                                className="p-8 border-b border-slate-200 dark:border-white/5 last:border-b-0 space-y-3 group cursor-default transition-colors dark:hover:!bg-[rgba(255,255,255,0.015)]"
                             >
                                 <div className="flex gap-6 items-baseline">
-                                    <motion.div animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.3 }} className="text-[9px] text-zinc-700 shrink-0 font-bold">[{clause.num}]</motion.div>
-                                    <h2 className="text-base font-bold uppercase tracking-tight group-hover:text-white transition-colors">{clause.title}</h2>
+                                    <motion.div animate={{ opacity: [0.4, 0.8, 0.4] }} transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.3 }} className="text-[9px] text-slate-400 dark:text-zinc-700 shrink-0 font-bold">[{clause.num}]</motion.div>
+                                    <h2 className="text-base font-bold uppercase tracking-tight group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{clause.title}</h2>
                                 </div>
-                                <p className="text-zinc-500 text-xs leading-relaxed pl-10">{clause.body}</p>
-                                <div className="pl-10 h-px bg-zinc-900 overflow-hidden">
-                                    <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.08 }} className="h-full bg-white/8" />
+                                <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed pl-10">{clause.body}</p>
+                                <div className="pl-10 h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden">
+                                    <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 1.3, delay: i * 0.08 }} className="h-full bg-slate-400/20 dark:bg-white/8" />
                                 </div>
                             </motion.div>
                         ))}

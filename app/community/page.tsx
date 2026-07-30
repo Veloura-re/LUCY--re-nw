@@ -43,7 +43,7 @@ export default function CommunityPage() {
             icon: Send,
             glowClass: "shadow-[0_0_30px_rgba(56,189,248,0.04)] hover:shadow-[0_0_50px_rgba(56,189,248,0.25)]",
             hoverBorder: "hover:border-sky-500/40",
-            iconColor: "text-sky-400",
+            iconColor: "text-sky-500 dark:text-sky-400",
             label: "telegram",
             desc: "join the global community discussion, announcements, and live support group."
         },
@@ -53,7 +53,7 @@ export default function CommunityPage() {
             icon: DiscordIcon,
             glowClass: "shadow-[0_0_30px_rgba(99,102,241,0.04)] hover:shadow-[0_0_50px_rgba(99,102,241,0.25)]",
             hoverBorder: "hover:border-indigo-500/40",
-            iconColor: "text-indigo-400",
+            iconColor: "text-indigo-500 dark:text-indigo-400",
             label: "discord",
             isCustomSvg: true,
             desc: "chat with developers, get system roles, join voice channels, and request custom features."
@@ -74,7 +74,7 @@ export default function CommunityPage() {
             icon: Video,
             glowClass: "shadow-[0_0_30px_rgba(6,182,212,0.04)] hover:shadow-[0_0_50px_rgba(236,72,153,0.25)]",
             hoverBorder: "hover:border-pink-500/40",
-            iconColor: "text-cyan-400 group-hover:text-pink-400",
+            iconColor: "text-cyan-500 dark:text-cyan-400 group-hover:text-pink-500 dark:group-hover:text-pink-400",
             label: "tiktok",
             desc: "explore short-form feature reveals, dev logs, UI animations, and platform sneak peeks."
         },
@@ -92,9 +92,9 @@ export default function CommunityPage() {
             title: "x_node",
             link: "https://x.com/GoodLuckfus",
             icon: XIcon,
-            glowClass: "shadow-[0_0_30px_rgba(255,255,255,0.02)] hover:shadow-[0_0_50px_rgba(255,255,255,0.15)]",
-            hoverBorder: "hover:border-white/30",
-            iconColor: "text-white",
+            glowClass: "shadow-[0_0_30px_rgba(0,0,0,0.05)] hover:shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_30px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.15)]",
+            hoverBorder: "hover:border-slate-400 dark:hover:border-white/30",
+            iconColor: "text-slate-900 dark:text-white",
             label: "x",
             isCustomSvg: true,
             desc: "follow live dev updates, quick changelogs, build notifications, and technical alerts."
@@ -105,7 +105,7 @@ export default function CommunityPage() {
             icon: Mail,
             glowClass: "shadow-[0_0_30px_rgba(16,185,129,0.04)] hover:shadow-[0_0_50px_rgba(16,185,129,0.25)]",
             hoverBorder: "hover:border-emerald-500/40",
-            iconColor: "text-emerald-400",
+            iconColor: "text-emerald-500 dark:text-emerald-400",
             label: "contact",
             external: false,
             desc: "open support tickets, report system issues, submit security disclosures, or contact press."
@@ -113,25 +113,25 @@ export default function CommunityPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
             
             {/* Background Matrix Rain */}
-            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
+            <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-10 pointer-events-none">
                 <MatrixRain cols={18} />
             </div>
 
             {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/80 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
                     <Link href="/">
-                        <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">
+                        <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                             return_to_main
                         </Button>
@@ -147,13 +147,13 @@ export default function CommunityPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center space-y-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-white/10 bg-zinc-950/60 text-[10px] text-zinc-500 uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold rounded-md dark:rounded-none shadow-sm dark:shadow-none">
                             <Terminal className="w-3.5 h-3.5" /> network_matrix // connect
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-white leading-none">
-                            community <span className="text-zinc-800">uplinks.</span>
+                        <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                            community <span className="text-slate-400 dark:text-zinc-800">uplinks.</span>
                         </h1>
-                        <p className="text-sm text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
+                        <p className="text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
                             tap any node to establish a secure uplink to the lucy academics grid.
                         </p>
                     </motion.div>
@@ -195,8 +195,8 @@ function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boole
     return (
         <TiltCard 
             className={cn(
-                "w-full aspect-square rounded-3xl border bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative group cursor-pointer transition-all duration-500",
-                hovered ? node.hoverBorder : "border-white/10",
+                "w-full aspect-square rounded-3xl border bg-white/80 dark:bg-zinc-950/40 backdrop-blur-md flex flex-col items-center justify-center relative group cursor-pointer transition-all duration-500 shadow-sm dark:shadow-none",
+                hovered ? node.hoverBorder : "border-slate-200 dark:border-white/10",
                 node.glowClass
             )}
         >
@@ -230,7 +230,7 @@ function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boole
                         y: hovered ? -10 : 0,
                         opacity: hovered ? 0.2 : 1
                     }}
-                    className="text-[9px] uppercase tracking-widest text-zinc-600 mt-4 font-mono select-none"
+                    className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-zinc-600 mt-4 font-mono select-none font-bold"
                     style={{ transform: "translateZ(15px)" }}
                 >
                     [{node.label}]
@@ -244,13 +244,13 @@ function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boole
                             animate={{ opacity: 1, scale: 1, y: 0, rotateX: 12 }}
                             exit={{ opacity: 0, scale: 0.8, y: 10, rotateX: 25 }}
                             transition={{ type: "spring", stiffness: 220, damping: 18 }}
-                            className="absolute top-[105%] left-1/2 -translate-x-1/2 w-[220px] text-center bg-black/95 border border-white/15 p-3 rounded-2xl pointer-events-none shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-50"
+                            className="absolute top-[105%] left-1/2 -translate-x-1/2 w-[220px] text-center bg-white/95 dark:bg-black/95 border border-slate-200 dark:border-white/15 p-3 rounded-2xl pointer-events-none shadow-[0_15px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-50"
                             style={{ transformStyle: "preserve-3d", transform: "translateZ(70px)" }}
                         >
                             {/* Little triangle tail */}
-                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border-l border-t border-white/15 rotate-45" />
+                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-black border-l border-t border-slate-200 dark:border-white/15 rotate-45" />
                             
-                            <p className="text-[10px] font-mono leading-normal text-zinc-300 tracking-tight lowercase">
+                            <p className="text-[10px] font-mono leading-normal text-slate-600 dark:text-zinc-300 tracking-tight lowercase font-medium">
                                 {node.desc}
                             </p>
                         </motion.div>
@@ -259,7 +259,7 @@ function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boole
             </div>
 
             {/* Spotlight hover effect */}
-            <div className="absolute inset-0 bg-radial-gradient from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="absolute inset-0 bg-radial-gradient from-slate-900/5 dark:from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
         </TiltCard>
     );
 }

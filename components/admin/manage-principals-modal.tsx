@@ -137,15 +137,15 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
     return (
         <>
             <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()}>
-                <DialogContent className="bg-zinc-950 border-zinc-900 text-white max-w-2xl rounded-[2.5rem] p-8 max-h-[90vh] overflow-y-auto">
+                <DialogContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-900 text-slate-900 dark:text-white max-w-2xl rounded-[2.5rem] p-8 max-h-[90vh] overflow-y-auto">
                     <DialogHeader className="mb-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800">
+                            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-zinc-900 flex items-center justify-center border border-slate-200 dark:border-zinc-800">
                                 <ShieldCheck className="w-5 h-5 text-eduGreen-500" />
                             </div>
                             <div>
                                 <DialogTitle className="text-xl font-medium tracking-tight">Manage Principals</DialogTitle>
-                                <DialogDescription className="text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">
+                                <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">
                                     {schoolName}
                                 </DialogDescription>
                             </div>
@@ -155,14 +155,14 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                     {/* Invite Form */}
                     <form onSubmit={handleInvite} className="mb-8 flex gap-3 items-end">
                         <div className="flex-1 space-y-1.5">
-                            <label className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest ml-1">Invite New Principal</label>
+                            <label className="text-[10px] font-semibold text-slate-500 dark:text-zinc-500 uppercase tracking-widest ml-1">Invite New Principal</label>
                             <Input
                                 type="email"
                                 placeholder="principal@institution.edu"
                                 value={newEmail}
                                 onChange={e => setNewEmail(e.target.value)}
                                 required
-                                className="bg-zinc-900/50 border-zinc-800 rounded-xl h-12 text-white focus:border-eduGreen-600"
+                                className="bg-slate-50 dark:bg-zinc-900/50 border-slate-200 dark:border-zinc-800 rounded-xl h-12 text-slate-900 dark:text-white focus:border-eduGreen-600"
                             />
                         </div>
                         <Button
@@ -189,26 +189,26 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                         <div className="space-y-6">
                             {/* Active Principals */}
                             <div>
-                                <h3 className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-3">Active Principals ({principals.length})</h3>
+                                <h3 className="text-[10px] font-semibold text-slate-500 dark:text-zinc-500 uppercase tracking-widest mb-3">Active Principals ({principals.length})</h3>
                                 {principals.length === 0 ? (
-                                    <div className="text-center py-6 bg-zinc-900/20 rounded-2xl border border-zinc-800/50">
-                                        <p className="text-[11px] text-zinc-500">No active principals found.</p>
+                                    <div className="text-center py-6 bg-slate-50 dark:bg-zinc-900/20 rounded-2xl border border-slate-200 dark:border-zinc-800/50">
+                                        <p className="text-[11px] text-slate-500 dark:text-zinc-500">No active principals found.</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
                                         {principals.map(p => (
-                                            <div key={p.id} className="flex items-center justify-between p-4 bg-zinc-900/40 border border-zinc-800/50 rounded-2xl">
+                                            <div key={p.id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-800/50 rounded-2xl">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
                                                         {p.photoUrl ? (
                                                             <img src={p.photoUrl} alt={p.name || ''} className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <User className="w-5 h-5 text-zinc-500" />
+                                                            <User className="w-5 h-5 text-slate-400 dark:text-zinc-500" />
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-medium text-white">{p.name || 'Unnamed'}</p>
-                                                        <p className="text-[11px] text-zinc-500">{p.email}</p>
+                                                        <p className="text-sm font-medium text-slate-900 dark:text-white">{p.name || 'Unnamed'}</p>
+                                                        <p className="text-[11px] text-slate-500 dark:text-zinc-500">{p.email}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
@@ -238,16 +238,16 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                             {/* Pending Invites */}
                             {invites.length > 0 && (
                                 <div>
-                                    <h3 className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-3">Pending Invites ({invites.length})</h3>
+                                    <h3 className="text-[10px] font-semibold text-slate-500 dark:text-zinc-500 uppercase tracking-widest mb-3">Pending Invites ({invites.length})</h3>
                                     <div className="space-y-3">
                                         {invites.map(inv => (
-                                            <div key={inv.id} className="flex items-center justify-between p-4 bg-zinc-900/40 border border-zinc-800/50 rounded-2xl border-dashed">
+                                            <div key={inv.id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-800/50 rounded-2xl border-dashed">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50 border-dashed">
-                                                        <Mail className="w-4 h-4 text-zinc-500" />
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center border border-slate-200 dark:border-zinc-700/50 border-dashed">
+                                                        <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-500" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-medium text-white">{inv.email}</p>
+                                                        <p className="text-sm font-medium text-slate-900 dark:text-white">{inv.email}</p>
                                                         <p className="text-[10px] text-amber-500 uppercase tracking-widest mt-0.5">Pending Acceptance</p>
                                                     </div>
                                                 </div>
@@ -256,7 +256,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                                                         variant="ghost" 
                                                         size="sm"
                                                         onClick={() => copyToken(inv.token)}
-                                                        className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 h-8 w-8 p-0"
+                                                        className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 h-8 w-8 p-0"
                                                         title="Copy Invite Link"
                                                     >
                                                         {copiedToken === inv.token ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}

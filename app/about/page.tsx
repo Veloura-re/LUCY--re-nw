@@ -25,18 +25,18 @@ const techStack = [
 
 export default function About() {
     return (
-        <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black font-mono lowercase tracking-tight">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
 
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/85 backdrop-blur-md px-6 py-4">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
                 </div>
             </nav>
 
@@ -46,18 +46,18 @@ export default function About() {
                     {/* Hero */}
                     <section className="space-y-8 relative overflow-hidden">
                         <ParticleField count={35} />
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
-                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-zinc-700" />
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
+                            <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[10px] uppercase tracking-[0.4em] font-bold">system_origin // genesis_directive</span>
-                            <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-white rounded-full" />
+                            <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                about<br /><GlitchText className="text-zinc-800">lucy_os.</GlitchText>
+                                about<br /><GlitchText className="text-slate-300 dark:text-zinc-800">lucy_os.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-2xl">
-                            <p className="text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
                                 conceived as a modular response to monolithic educational friction. lucy is the synthesis of cognitive routing and institutional logistics, built to run at scale without compromise.
                             </p>
                         </Reveal>
@@ -76,18 +76,19 @@ export default function About() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="h-full p-10 border border-white/5 bg-zinc-900/10 space-y-6 group cursor-default relative overflow-hidden"
+                                    className="h-full p-10 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-900/10 space-y-6 group cursor-default relative overflow-hidden rounded-xl dark:rounded-none"
                                 >
-                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
-                                    <div className="text-[9px] text-zinc-700 uppercase tracking-widest">{block.id}</div>
-                                    <h2 className="text-2xl font-bold uppercase tracking-tight">{block.title}</h2>
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none hidden dark:block" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
+                                    <motion.div initial={{ opacity: 0 }} whileHover={{ opacity: 1 }} className="absolute inset-0 pointer-events-none dark:hidden" style={{ background: "radial-gradient(circle at 20% 20%, rgba(0,0,0,0.02) 0%, transparent 70%)" }} />
+                                    <div className="text-[9px] text-slate-400 dark:text-zinc-700 uppercase tracking-widest relative z-10">{block.id}</div>
+                                    <h2 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white relative z-10">{block.title}</h2>
                                     {"body" in block ? (
-                                        <p className="text-zinc-500 text-sm leading-relaxed">{block.body}</p>
+                                        <p className="text-slate-500 dark:text-zinc-500 text-sm leading-relaxed relative z-10">{block.body}</p>
                                     ) : (
-                                        <ul className="space-y-3">
+                                        <ul className="space-y-3 relative z-10">
                                             {block.items!.map((item, j) => (
-                                                <motion.li key={j} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: j * 0.08 }} className="flex gap-4 text-sm text-zinc-500">
-                                                    <span className="text-white shrink-0">[{String(j + 1).padStart(2, "0")}]</span>{item}
+                                                <motion.li key={j} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: j * 0.08 }} className="flex gap-4 text-sm text-slate-500 dark:text-zinc-500">
+                                                    <span className="text-slate-900 dark:text-white shrink-0">[{String(j + 1).padStart(2, "0")}]</span>{item}
                                                 </motion.li>
                                             ))}
                                         </ul>
@@ -99,20 +100,20 @@ export default function About() {
 
                     {/* Timeline */}
                     <section className="space-y-12">
-                        <Reveal className="flex items-center gap-4 text-zinc-500">
-                            <div className="h-px w-12 bg-zinc-800" />
+                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
+                            <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">evolution_log // version_history</span>
                         </Reveal>
                         <div className="relative">
-                            <div className="absolute left-[10px] top-0 bottom-0 w-px bg-zinc-900" />
+                            <div className="absolute left-[10px] top-0 bottom-0 w-px bg-slate-200 dark:bg-zinc-900" />
                             {milestones.map((m, i) => (
                                 <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="pl-10 pb-14 relative">
-                                    <motion.div whileHover={{ scale: 1.5 }} className="absolute left-0 top-1 w-5 h-5 border border-white/20 bg-black flex items-center justify-center">
-                                        <div className="w-1.5 h-1.5 bg-white" />
+                                    <motion.div whileHover={{ scale: 1.5 }} className="absolute left-0 top-1 w-5 h-5 border border-slate-300 dark:border-white/20 bg-white dark:bg-black flex items-center justify-center">
+                                        <div className="w-1.5 h-1.5 bg-slate-900 dark:bg-white" />
                                     </motion.div>
-                                    <div className="text-[9px] text-zinc-700 uppercase tracking-widest mb-2">{m.year}</div>
-                                    <h3 className="text-xl font-bold uppercase tracking-tight mb-3">{m.title}</h3>
-                                    <p className="text-zinc-500 text-sm leading-relaxed">{m.desc}</p>
+                                    <div className="text-[9px] text-slate-400 dark:text-zinc-700 uppercase tracking-widest mb-2">{m.year}</div>
+                                    <h3 className="text-xl font-bold uppercase tracking-tight mb-3 text-slate-900 dark:text-white">{m.title}</h3>
+                                    <p className="text-slate-500 dark:text-zinc-500 text-sm leading-relaxed">{m.desc}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -120,18 +121,18 @@ export default function About() {
 
                     {/* Tech Stack */}
                     <Reveal>
-                        <div className="p-10 border border-white/10 bg-zinc-900/5 space-y-8">
-                            <div className="flex items-center gap-4 text-zinc-500">
+                        <div className="p-10 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/5 space-y-8 rounded-xl dark:rounded-none">
+                            <div className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                                 <Cpu className="w-4 h-4" />
                                 <span className="text-[10px] uppercase tracking-[0.4em]">technical_stack</span>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                                 {techStack.map((t, i) => (
                                     <motion.div key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} whileHover={{ y: -3 }} className="space-y-1 cursor-default">
-                                        <div className="text-[9px] text-zinc-700 uppercase tracking-widest">{t.label}</div>
-                                        <div className="text-sm text-white font-bold">{t.val}</div>
-                                        <div className="h-px bg-zinc-900 overflow-hidden">
-                                            <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.1 }} className="h-full bg-white/15" />
+                                        <div className="text-[9px] text-slate-400 dark:text-zinc-700 uppercase tracking-widest">{t.label}</div>
+                                        <div className="text-sm text-slate-900 dark:text-white font-bold">{t.val}</div>
+                                        <div className="h-px bg-slate-200 dark:bg-zinc-900 overflow-hidden">
+                                            <motion.div initial={{ width: 0 }} whileInView={{ width: "100%" }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.1 }} className="h-full bg-slate-400 dark:bg-white/15" />
                                         </div>
                                     </motion.div>
                                 ))}

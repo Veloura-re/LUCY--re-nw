@@ -34,8 +34,8 @@ export function AIParentChatbot() {
                 })
             });
             if (res.ok) {
-                const data = await res.json();
-                setMessages([...newHistory, { role: 'model' as const, content: data.text }]);
+                const data = await res.json() as { text?: string };
+                setMessages([...newHistory, { role: 'model' as const, content: data.text || "No response received." }]);
             } else {
                 setMessages([...newHistory, { role: 'model' as const, content: "I'm having trouble connecting to the school servers right now." }]);
             }
@@ -49,22 +49,22 @@ export function AIParentChatbot() {
     return (
         <div className="fixed bottom-6 right-6 z-50">
             {isOpen ? (
-                <Card className="w-[350px] md:w-[400px] h-[500px] flex flex-col shadow-2xl bg-zinc-950 border-zinc-800 rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                    <div className="p-4 bg-eduGreen-600 flex items-center justify-between text-white shadow-md z-10">
+                <Card className="w-[350px] md:w-[400px] h-[500px] flex flex-col shadow-2xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                    <div className="p-4 bg-emerald-600 flex items-center justify-between text-white shadow-md z-10">
                         <div className="flex items-center gap-2 font-black italic text-lg">
-                            <Sparkles className="w-5 h-5 text-eduGreen-200" />
+                            <Sparkles className="w-5 h-5 text-emerald-200" />
                             LUCY AI
                         </div>
-                        <Button variant="ghost" size="icon" className="hover:bg-eduGreen-700 text-white rounded-full h-8 w-8" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" size="icon" className="hover:bg-emerald-700 text-white rounded-full h-8 w-8" onClick={() => setIsOpen(false)}>
                             <X className="w-4 h-4" />
                         </Button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-950/50">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-zinc-950/50">
                         {messages.map((msg, i) => (
                             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-eduGreen-600 text-white shadow-lg' : 'bg-zinc-900 text-zinc-300 border border-zinc-800 shadow-md'}`}>
-                                    <div className="prose prose-invert prose-sm max-w-none">
+                                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 shadow-md'}`}>
+                                    <div className="prose dark:prose-invert prose-sm max-w-none">
                                         <ReactMarkdown>
                                             {msg.content}
                                         </ReactMarkdown>
@@ -74,23 +74,23 @@ export function AIParentChatbot() {
                         ))}
                         {loading && (
                             <div className="flex justify-start">
-                                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-sm text-zinc-500 flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4 animate-pulse text-eduGreen-500" />
+                                <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl px-4 py-3 text-sm text-slate-500 dark:text-zinc-500 flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4 animate-pulse text-emerald-600 dark:text-eduGreen-500" />
                                     <span>LUCY is thinking...</span>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="p-3 bg-zinc-900 border-t border-zinc-800 flex gap-2">
+                    <div className="p-3 bg-slate-100 dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 flex gap-2">
                         <Input
-                            className="flex-1 bg-zinc-950 border-zinc-800 focus:border-eduGreen-500 rounded-xl"
+                            className="flex-1 bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 focus:border-emerald-500 rounded-xl text-slate-900 dark:text-white"
                             placeholder="Ask a question..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                         />
-                        <Button size="icon" className="bg-eduGreen-600 hover:bg-eduGreen-500 rounded-xl" onClick={handleSend} disabled={loading || !input.trim()}>
+                        <Button size="icon" className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl" onClick={handleSend} disabled={loading || !input.trim()}>
                             <Send className="w-4 h-4" />
                         </Button>
                     </div>

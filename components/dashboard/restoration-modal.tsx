@@ -30,13 +30,13 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-3xl bg-zinc-950 border-zinc-900 p-0 overflow-hidden rounded-[2rem]">
-                <div className="p-8 border-b border-zinc-900/50 bg-zinc-950/50 backdrop-blur-xl relative">
+            <DialogContent className="sm:max-w-3xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-900 p-0 overflow-hidden rounded-[2rem]">
+                <div className="p-8 border-b border-slate-200/50 dark:border-zinc-900/50 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl relative">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-medium tracking-tighter text-white">
+                        <DialogTitle className="text-2xl font-medium tracking-tighter text-slate-900 dark:text-white">
                             Restoration Protocols
                         </DialogTitle>
-                        <DialogDescription className="text-zinc-500 font-medium uppercase tracking-[0.2em] text-[10px] mt-2">
+                        <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-[10px] mt-2">
                             Resolve architectural synchronization gaps
                         </DialogDescription>
                     </DialogHeader>
@@ -44,7 +44,7 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
 
                 <div className="flex h-[500px]">
                     {/* Sidebar */}
-                    <div className="w-64 border-r border-zinc-900/50 p-6 space-y-2 bg-zinc-950/30">
+                    <div className="w-64 border-r border-slate-200/50 dark:border-zinc-900/50 p-6 space-y-2 bg-slate-50/50 dark:bg-zinc-950/30">
                         <TabButton 
                             isActive={activeTab === 'faculty'} 
                             onClick={() => setActiveTab('faculty')} 
@@ -72,19 +72,19 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 bg-zinc-950/10 p-6 relative">
+                    <div className="flex-1 bg-slate-50 dark:bg-zinc-950/10 p-6 relative">
                         <div className="h-full pr-4 overflow-y-auto">
                             {activeTab === 'faculty' && (
                                 <div className="space-y-4">
-                                    <h3 className="text-white font-medium mb-4">Faculty Awaiting School Placement</h3>
+                                    <h3 className="text-slate-900 dark:text-white font-medium mb-4">Faculty Awaiting School Placement</h3>
                                     {data?.orphanedTeachers?.length === 0 ? (
                                         <EmptyState message="All faculty mapped successfully." />
                                     ) : (
                                         data?.orphanedTeachers?.map((t: any) => (
-                                            <div key={t.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700 transition-all">
+                                            <div key={t.id} className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-zinc-900/30 border border-slate-200 dark:border-zinc-800/50 hover:border-slate-300 dark:hover:border-zinc-700 transition-all">
                                                 <div>
-                                                    <div className="text-sm font-medium text-white">{t.name}</div>
-                                                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{t.email}</div>
+                                                    <div className="text-sm font-medium text-slate-900 dark:text-white">{t.name}</div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest mt-1">{t.email}</div>
                                                 </div>
                                                 <Button 
                                                     size="sm" 
@@ -103,17 +103,17 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
 
                             {activeTab === 'scholars' && (
                                 <div className="space-y-4">
-                                    <h3 className="text-white font-medium mb-4">Students Missing Parent Connections</h3>
+                                    <h3 className="text-slate-900 dark:text-white font-medium mb-4">Students Missing Parent Connections</h3>
                                     {data?.unmappedStudents?.length === 0 ? (
                                         <EmptyState message="All students have parent connections." />
                                     ) : (
                                         data?.unmappedStudents?.map((s: any) => (
-                                            <div key={s.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700 transition-all">
+                                            <div key={s.id} className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-zinc-900/30 border border-slate-200 dark:border-zinc-800/50 hover:border-slate-300 dark:hover:border-zinc-700 transition-all">
                                                 <div>
-                                                    <div className="text-sm font-medium text-white">{s.firstName} {s.lastName}</div>
-                                                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Provide this code to parent</div>
+                                                    <div className="text-sm font-medium text-slate-900 dark:text-white">{s.firstName} {s.lastName}</div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest mt-1">Provide this code to parent</div>
                                                 </div>
-                                                <div className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 font-mono text-xs text-eduGreen-500 tracking-widest select-all">
+                                                <div className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 font-mono text-xs text-eduGreen-500 tracking-widest select-all">
                                                     {s.studentCode}
                                                 </div>
                                             </div>
@@ -124,15 +124,15 @@ export function RestorationModal({ isOpen, onClose, data, onRefresh }: { isOpen:
 
                             {activeTab === 'parents' && (
                                 <div className="space-y-4">
-                                    <h3 className="text-white font-medium mb-4">Parents Without Child Connections</h3>
+                                    <h3 className="text-slate-900 dark:text-white font-medium mb-4">Parents Without Child Connections</h3>
                                     {data?.disconnectedParents?.length === 0 ? (
                                         <EmptyState message="All parents mapped successfully." />
                                     ) : (
                                         data?.disconnectedParents?.map((p: any) => (
-                                            <div key={p.id} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700 transition-all">
+                                            <div key={p.id} className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-zinc-900/30 border border-slate-200 dark:border-zinc-800/50 hover:border-slate-300 dark:hover:border-zinc-700 transition-all">
                                                 <div>
-                                                    <div className="text-sm font-medium text-white">{p.name}</div>
-                                                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{p.email}</div>
+                                                    <div className="text-sm font-medium text-slate-900 dark:text-white">{p.name}</div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest mt-1">{p.email}</div>
                                                 </div>
                                                 <div className="text-[10px] uppercase tracking-widest text-orange-500/70 font-medium">
                                                     Awaiting Child Code
@@ -157,18 +157,18 @@ function TabButton({ isActive, onClick, icon: Icon, label, count, color }: any) 
             className={cn(
                 "w-full flex items-center justify-between p-4 rounded-xl transition-all border",
                 isActive 
-                    ? "bg-zinc-900 border-zinc-800 shadow-xl" 
-                    : "bg-transparent border-transparent hover:bg-zinc-900/50"
+                    ? "bg-slate-100 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 shadow-xl" 
+                    : "bg-transparent border-transparent hover:bg-slate-100 dark:hover:bg-zinc-900/50"
             )}
         >
             <div className="flex items-center gap-3">
-                <Icon className={cn("w-4 h-4", isActive ? color : "text-zinc-600")} />
-                <span className={cn("text-[10px] font-medium uppercase tracking-widest", isActive ? "text-white" : "text-zinc-500")}>
+                <Icon className={cn("w-4 h-4", isActive ? color : "text-slate-400 dark:text-zinc-600")} />
+                <span className={cn("text-[10px] font-medium uppercase tracking-widest", isActive ? "text-slate-900 dark:text-white" : "text-slate-500 dark:text-zinc-500")}>
                     {label}
                 </span>
             </div>
             {count > 0 && (
-                <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full", isActive ? "bg-zinc-800 text-white" : "bg-zinc-900 text-zinc-600")}>
+                <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full", isActive ? "bg-slate-200 dark:bg-zinc-800 text-slate-900 dark:text-white" : "bg-slate-100 dark:bg-zinc-900 text-slate-500 dark:text-zinc-600")}>
                     {count}
                 </span>
             )}
@@ -178,9 +178,9 @@ function TabButton({ isActive, onClick, icon: Icon, label, count, color }: any) 
 
 function EmptyState({ message }: { message: string }) {
     return (
-        <div className="py-12 text-center flex flex-col items-center justify-center border-2 border-dashed border-zinc-900/50 rounded-3xl bg-zinc-950/20">
+        <div className="py-12 text-center flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-zinc-900/50 rounded-3xl bg-slate-50 dark:bg-zinc-950/20">
             <Check className="w-8 h-8 text-eduGreen-500/50 mb-4" />
-            <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">{message}</p>
+            <p className="text-[10px] font-medium text-slate-500 dark:text-zinc-500 uppercase tracking-widest">{message}</p>
         </div>
     );
 }
