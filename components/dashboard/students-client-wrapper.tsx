@@ -469,7 +469,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                             <div className={cn(
                                                 "px-3 py-1.5 rounded-lg border text-[9px] font-medium uppercase tracking-wider flex items-center gap-2",
                                                 Number(student.finance.unpaidCount) > 0
-                                                    ? "bg-amber-950/10 border-amber-900/20 text-amber-500"
+                                                    ? "bg-amber-950/10 border-amber-900/20 text-amber-600 dark:text-amber-500"
                                                     : "bg-eduGreen-950/10 border-eduGreen-900/20 text-eduGreen-500"
                                             )}>
                                                 <CreditCard className="w-3 h-3" />

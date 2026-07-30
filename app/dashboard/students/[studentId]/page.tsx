@@ -224,7 +224,7 @@ function StudentProfileContent() {
     const getPerformanceColor = (pct: number) => {
         if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10" };
         if (pct >= 60) return { text: "text-blue-500", border: "border-blue-900/30", bg: "bg-blue-900/10" };
-        if (pct >= 40) return { text: "text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10" };
+        if (pct >= 40) return { text: "text-amber-600 dark:text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10" };
         return { text: "text-rose-500", border: "border-rose-900/30", bg: "bg-rose-900/10" };
     };
 
@@ -640,7 +640,7 @@ function StudentProfileContent() {
                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest mt-1">Days Present</div>
                             </Card>
                             <Card className="p-8 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] text-center">
-                                <ShieldAlert className="w-8 h-8 text-red-500 mx-auto mb-4" />
+                                <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-500 mx-auto mb-4" />
                                 <div className="text-4xl font-black text-zinc-900 dark:text-white italic">{attendance.absent}</div>
                                 <div className="text-[9px] font-black text-zinc-700 uppercase tracking-widest mt-1">Unexcused Absence</div>
                             </Card>
@@ -659,8 +659,8 @@ function StudentProfileContent() {
                                                     <div className={cn(
                                                         "w-10 h-10 rounded-xl flex items-center justify-center border",
                                                         record.status === 'PRESENT' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" :
-                                                            record.status === 'ABSENT' ? "bg-red-500/10 border-red-500/20 text-red-500" :
-                                                                "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                                                            record.status === 'ABSENT' ? "bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500" :
+                                                                "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
                                                     )}>
                                                         <Calendar className="w-4 h-4" />
                                                     </div>
@@ -675,8 +675,8 @@ function StudentProfileContent() {
                                                     <Badge className={cn(
                                                         "rounded-lg px-3 py-1 text-[8px] font-black uppercase tracking-widest border-0",
                                                         record.status === 'PRESENT' ? "bg-emerald-500/20 text-emerald-400" :
-                                                            record.status === 'ABSENT' ? "bg-red-500/20 text-red-400" :
-                                                                "bg-amber-500/20 text-amber-400"
+                                                            record.status === 'ABSENT' ? "bg-red-500/20 text-red-600 dark:text-red-400" :
+                                                                "bg-amber-500/20 text-amber-600 dark:text-amber-400"
                                                     )}>
                                                         {record.status}
                                                     </Badge>

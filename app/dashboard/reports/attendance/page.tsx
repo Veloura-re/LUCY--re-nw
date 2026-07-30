@@ -84,14 +84,14 @@ export default function AttendanceIntelligencePage() {
                 </Card>
                 <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
-                        <UserX className="w-6 h-6 text-red-500" />
+                        <UserX className="w-6 h-6 text-red-600 dark:text-red-500" />
                     </div>
                     <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">2.4%</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Unexcused Absence Mean</p>
                 </Card>
                 <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                     <div className="flex justify-between items-start mb-4">
-                        <Clock className="w-6 h-6 text-amber-500" />
+                        <Clock className="w-6 h-6 text-amber-600 dark:text-amber-500" />
                     </div>
                     <div className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter mb-1">4.8%</div>
                     <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">Latency Variance (Late)</p>
@@ -150,7 +150,7 @@ export default function AttendanceIntelligencePage() {
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center justify-between p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-300 dark:border-zinc-800">
                                     <span className="text-[11px] font-medium text-zinc-900 dark:text-white uppercase">{item.name}</span>
-                                    <span className="text-[10px] font-medium text-red-500">{item.rate}</span>
+                                    <span className="text-[10px] font-medium text-red-600 dark:text-red-500">{item.rate}</span>
                                 </div>
                             ))}
                         </div>

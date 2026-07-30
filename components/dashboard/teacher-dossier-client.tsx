@@ -60,7 +60,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
         switch(type) {
             case 'POSITIVE': return <Sparkles className="w-4 h-4 text-emerald-500" />;
             case 'NEGATIVE': return <AlertTriangle className="w-4 h-4 text-rose-500" />;
-            case 'REVIEW': return <Star className="w-4 h-4 text-amber-500" />;
+            case 'REVIEW': return <Star className="w-4 h-4 text-amber-600 dark:text-amber-500" />;
             default: return <FileText className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />;
         }
     };
@@ -104,7 +104,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                     <div className="grid grid-cols-3 gap-2">
                                         <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Good</button>
                                         <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Infraction</button>
-                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Review</button>
+                                        <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-600 dark:text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Review</button>
                                     </div>
                                 </div>
 
@@ -113,7 +113,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                         <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Rating (1-5)</label>
                                         <div className="flex gap-2">
                                             {[1,2,3,4,5].map(num => (
-                                                <button key={num} type="button" onClick={() => setRating(num)} className={cn("flex-1 py-2 rounded-xl transition-all border", rating === num ? "bg-amber-500/20 border-amber-500 text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:border-zinc-600")}>
+                                                <button key={num} type="button" onClick={() => setRating(num)} className={cn("flex-1 py-2 rounded-xl transition-all border", rating === num ? "bg-amber-500/20 border-amber-500 text-amber-600 dark:text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:border-zinc-600")}>
                                                     <Star className={cn("w-4 h-4 mx-auto", rating === num ? "fill-amber-400" : "")} />
                                                 </button>
                                             ))}
@@ -158,7 +158,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                         <div className="flex items-center gap-3">
                                             <div className={cn("p-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border",
                                                 remark.type === 'POSITIVE' ? "border-emerald-900/50" :
-                                                remark.type === 'NEGATIVE' ? "border-rose-900/50" : "border-amber-900/50"
+                                                remark.type === 'NEGATIVE' ? "border-rose-900/50" : "border-amber-200 dark:border-amber-900/50"
                                             )}>
                                                 {getIconForType(remark.type)}
                                             </div>

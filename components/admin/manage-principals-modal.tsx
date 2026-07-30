@@ -175,7 +175,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                     </form>
 
                     {error && (
-                        <div className="mb-6 flex items-center gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30 text-[11px] text-red-400 font-medium">
+                        <div className="mb-6 flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-[11px] text-red-600 dark:text-red-400 font-medium">
                             {error}
                         </div>
                     )}
@@ -216,7 +216,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                                                         variant="ghost" 
                                                         size="sm"
                                                         onClick={() => setConfirmAction({ type: 'DEMOTE', id: p.id, name: p.name || p.email })}
-                                                        className="text-[10px] font-semibold uppercase tracking-widest text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 h-8"
+                                                        className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-500 hover:text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 h-8"
                                                     >
                                                         <ArrowDownCircle className="w-3.5 h-3.5 mr-1.5" /> Demote to Teacher
                                                     </Button>
@@ -224,7 +224,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                                                         variant="ghost" 
                                                         size="sm"
                                                         onClick={() => setConfirmAction({ type: 'REMOVE', id: p.id, name: p.name || p.email })}
-                                                        className="text-[10px] font-semibold uppercase tracking-widest text-red-500 hover:text-red-400 hover:bg-red-500/10 h-8"
+                                                        className="text-[10px] font-semibold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8"
                                                     >
                                                         <UserX className="w-3.5 h-3.5 mr-1.5" /> Unlink
                                                     </Button>
@@ -248,7 +248,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-medium text-slate-900 dark:text-white">{inv.email}</p>
-                                                        <p className="text-[10px] text-amber-500 uppercase tracking-widest mt-0.5">Pending Acceptance</p>
+                                                        <p className="text-[10px] text-amber-600 dark:text-amber-500 uppercase tracking-widest mt-0.5">Pending Acceptance</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ export function ManagePrincipalsModal({ isOpen, onClose, schoolId, schoolName }:
                                                         variant="ghost" 
                                                         size="sm"
                                                         onClick={() => setConfirmAction({ type: 'DELETE_INVITE', id: inv.id, name: inv.email })}
-                                                        className="text-[10px] font-semibold uppercase tracking-widest text-red-500 hover:text-red-400 hover:bg-red-500/10 h-8"
+                                                        className="text-[10px] font-semibold uppercase tracking-widest text-red-600 dark:text-red-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8"
                                                     >
                                                         <UserX className="w-3.5 h-3.5 mr-1.5" /> Revoke
                                                     </Button>

@@ -2,37 +2,44 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Calendar as CalendarIcon, Search, CheckCircle, XCircle, Clock, AlertCircle, Shield, Brain, Zap, Fingerprint, Activity } from "lucide-react";
+import { Calendar as CalendarIcon, CheckCircle, XCircle, Clock, AlertCircle, Brain, Zap, Activity } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { AlertModal } from "@/components/ui/confirmation-modal";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+
+type Student = { id: string; firstName: string; lastName: string; studentCode: string };
+type RecordType = { studentId: string; status: string; reason?: string; isLocked?: boolean };
+type Auth = { studentId: string; reason?: string };
+type Period = { id: string; name: string };
+type Subject = { id: string; name: string };
+type Class = { classId: string; className: string; subjects?: Subject[] };
 
 interface AttendanceClientWrapperProps {
-    initialClasses: any[];
+    initialClasses: Class[];
     initialMatrix: {
-        students: any[];
-        records: any[];
-        authorizations: any[];
+        students: Student[];
+        records: RecordType[];
+        authorizations: Auth[];
     };
     teacherId: string;
 }
 
-export default function AttendanceClientWrapper({ initialClasses, initialMatrix, teacherId }: AttendanceClientWrapperProps) {
-    const [classes, setClasses] = useState<any[]>(initialClasses);
+export default function AttendanceClientWrapper({ initialClasses, initialMatrix }: AttendanceClientWrapperProps) {
+    const [classes] = useState<Class[]>(initialClasses);
     const [selectedClassId, setSelectedClassId] = useState(initialClasses[0]?.classId || "");
-    const [periods, setPeriods] = useState<any[]>([]);
+    const [periods, setPeriods] = useState<Period[]>([]);
     const [selectedPeriodId, setSelectedPeriodId] = useState("full");
     const [selectedSubjectId, setSelectedSubjectId] = useState("none");
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     
     // Core Matrix State
-    const [students, setStudents] = useState<any[]>(initialMatrix.students);
+    const [students, setStudents] = useState<Student[]>(initialMatrix.students);
     const [attendance, setAttendance] = useState<{ [id: string]: string }>({});
     const [reasons, setReasons] = useState<{ [id: string]: string }>({});
-    const [authorizations, setAuthorizations] = useState<any[]>(initialMatrix.authorizations);
+    const [authorizations, setAuthorizations] = useState<Auth[]>(initialMatrix.authorizations);
     
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -41,8 +48,8 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
     // Initialize attendance from initial Matrix
     useEffect(() => {
-        const attMap: any = {};
-        const reasonMap: any = {};
+        const attMap: Record<string, string> = {};
+        const reasonMap: Record<string, string> = {};
         
         initialMatrix.students.forEach(s => {
             const record = initialMatrix.records.find(r => r.studentId === s.id);
@@ -82,6 +89,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
         if (!isInitialParams && selectedClassId) {
             fetchMatrix();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedClassId, selectedSubjectId, selectedPeriodId, date]);
 
     // Fetch periods when class changes
@@ -93,7 +101,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
 
     const fetchPeriods = async (classId: string) => {
         const res = await fetch(`/api/school/periods?classId=${classId}`);
-        const data = await res.json();
+        const data = (await res.json()) as { periods: Period[] };
         setPeriods(data.periods || []);
     };
 
@@ -105,16 +113,16 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
             if (selectedPeriodId !== "full") queryParams.append("periodId", selectedPeriodId);
 
             const res = await fetch(`/api/school/attendance?${queryParams.toString()}`);
-            const data = await res.json();
+            const data = (await res.json()) as { students: Student[], records: RecordType[], authorizations: Auth[] };
             
             if (data.students) {
                 setStudents(data.students);
-                const attMap: any = {};
-                const reasonMap: any = {};
+                const attMap: Record<string, string> = {};
+                const reasonMap: Record<string, string> = {};
                 
-                data.students.forEach((s: any) => {
-                    const record = data.records?.find((r: any) => r.studentId === s.id);
-                    const auth = data.authorizations?.find((a: any) => a.studentId === s.id);
+                data.students.forEach((s: Student) => {
+                    const record = data.records?.find((r: RecordType) => r.studentId === s.id);
+                    const auth = data.authorizations?.find((a: Auth) => a.studentId === s.id);
                     
                     if (record) {
                         attMap[s.id] = record.status;
@@ -214,7 +222,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 </Button>
             </div>
 
-            <Card className="p-10 bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] relative shadow-2xl overflow-hidden group">
+            <Card className="p-10 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] relative shadow-2xl overflow-hidden group">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
                     <ConfigField label="Cohort Identifier" icon={Brain}>
                         <Select value={selectedClassId} onValueChange={setSelectedClassId}>
@@ -238,7 +246,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                             </SelectTrigger>
                             <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="full" className="focus:bg-white focus:text-black py-4">Full Cycle</SelectItem>
-                                {periods.map((p: any) => (
+                                {periods.map((p: Period) => (
                                     <SelectItem key={p.id} value={p.id} className="focus:bg-white focus:text-black py-4">{p.name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -252,7 +260,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                             </SelectTrigger>
                             <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
                                 <SelectItem value="none" className="focus:bg-white focus:text-black py-4">Unified Stream</SelectItem>
-                                {availableSubjects.map((sub: any) => (
+                                {availableSubjects.map((sub: Subject) => (
                                     <SelectItem key={sub.id} value={sub.id} className="focus:bg-white focus:text-black py-4">{sub.name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -277,7 +285,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
                 <MiniStat label="LATENCY" value={stats.late} color="amber" percentage={(stats.late / (stats.total || 1)) * 100} />
             </div>
 
-            <Card className="bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden shadow-2xl relative">
+            <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden shadow-2xl relative">
                 <div className="p-10 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div>
                         <span className="text-2xl font-black text-zinc-900 dark:text-white italic">{students.length} <span className="text-zinc-800 dark:text-zinc-200 not-italic text-lg">DATAPOINTS REGISTERED</span></span>
@@ -317,7 +325,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix,
     );
 }
 
-function ConfigField({ label, icon: Icon, children }: any) {
+function ConfigField({ label, icon: Icon, children }: { label: string; icon: React.ElementType; children: React.ReactNode }) {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-3 ml-1">
@@ -329,9 +337,9 @@ function ConfigField({ label, icon: Icon, children }: any) {
     );
 }
 
-function MiniStat({ label, value, color, percentage }: any) {
+function MiniStat({ label, value, color, percentage }: { label: string; value: number | string; color: string; percentage?: number }) {
     return (
-        <Card className="p-6 bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative">
+        <Card className="p-6 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative">
             <div className="space-y-1 relative z-10">
                 <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em] italic">{label}</span>
                 <div className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter italic">{value}</div>
@@ -345,9 +353,9 @@ function MiniStat({ label, value, color, percentage }: any) {
     );
 }
 
-function StudentRecord({ student, attendance, setAttendance, reasons, setReasons, isLocked, authorizations, idx }: any) {
+function StudentRecord({ student, attendance, setAttendance, reasons, setReasons, isLocked, authorizations, idx }: { student: Student, attendance: Record<string, string>, setAttendance: (a: Record<string, string>) => void, reasons: Record<string, string>, setReasons: (r: Record<string, string>) => void, isLocked: boolean, authorizations: Auth[], idx: number }) {
     const currentStatus = attendance[student.id] || "PRESENT";
-    const auth = authorizations?.find((a: any) => a.studentId === student.id);
+    const auth = authorizations?.find((a: Auth) => a.studentId === student.id);
 
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8 hover:bg-white/[0.02] transition-all group/row relative">
@@ -374,7 +382,7 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
 
                 <div className="flex gap-2 bg-white/40 dark:bg-black/40 p-2 rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
                     <StatusBtn status="PRESENT" icon={CheckCircle} active={currentStatus === 'PRESENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'PRESENT' })} activeColor="text-emerald-500 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]" disabled={isLocked} />
-                    <StatusBtn status="LATE" icon={Clock} active={currentStatus === 'LATE'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'LATE' })} activeColor="text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.1)]" disabled={isLocked} />
+                    <StatusBtn status="LATE" icon={Clock} active={currentStatus === 'LATE'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'LATE' })} activeColor="text-amber-600 dark:text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.1)]" disabled={isLocked} />
                     <StatusBtn status="ABSENT" icon={XCircle} active={currentStatus === 'ABSENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'ABSENT' })} activeColor="text-rose-500 bg-rose-500/10 border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.1)]" disabled={isLocked} />
                     <StatusBtn status="EXCUSED" icon={AlertCircle} active={currentStatus === 'EXCUSED'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'EXCUSED' })} activeColor="text-blue-500 bg-blue-500/10 border-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.1)]" disabled={isLocked || !!auth} />
                 </div>
@@ -383,7 +391,7 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
     );
 }
 
-function StatusBtn({ status, icon: Icon, active, onSelect, activeColor, disabled }: any) {
+function StatusBtn({ status, icon: Icon, active, onSelect, activeColor, disabled }: { status: string; icon: React.ElementType; active: boolean; onSelect: () => void; activeColor: string; disabled?: boolean }) {
     return (
         <button onClick={onSelect} disabled={disabled} className={cn("h-14 px-6 rounded-[1.75rem] transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] relative group", active ? activeColor : "text-zinc-700 hover:text-zinc-400")}>
             <Icon className="w-5 h-5" />

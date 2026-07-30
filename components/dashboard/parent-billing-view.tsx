@@ -166,7 +166,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                     <div className="flex justify-between items-start mb-6">
                                                         <div className={cn(
                                                             "p-3 rounded-xl border transition-all",
-                                                            invoice.status === 'PAID' ? "bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950/20 border-amber-900/30 text-amber-500" : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500")
+                                                            invoice.status === 'PAID' ? "bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-50 dark:bg-amber-950/20 border-amber-900/30 text-amber-600 dark:text-amber-500" : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500")
                                                         )}>
                                                             {invoice.status === 'PAID' ? <CheckCircle2 className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
                                                         </div>
@@ -184,7 +184,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                             <div className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">${Number(invoice.amount).toLocaleString()}</div>
                                                             <div className={cn(
                                                                 "text-[8px] font-medium uppercase tracking-widest mt-1 px-2 py-0.5 rounded-full inline-block",
-                                                                invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500")
+                                                                invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-600 dark:text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500")
                                                             )}>
                                                                 {hasPendingPayment ? "Pending Verification" : invoice.status}
                                                             </div>

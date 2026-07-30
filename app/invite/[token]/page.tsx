@@ -35,7 +35,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
                     <div className="mb-8 text-center">
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-300 dark:border-zinc-800 shadow-2xl mb-6 backdrop-blur-xl relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent" />
-                            <AlertCircle className="w-8 h-8 text-red-500 relative z-10" />
+                            <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-500 relative z-10" />
                         </div>
                         <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white mb-2">Access Denied</h1>
                         <p className="text-sm font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Token Invalid or Expired</p>

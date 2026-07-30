@@ -11,10 +11,10 @@ export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-zinc-100 dark:bg-zinc-900 border border-red-900/50 rounded-2xl p-8 text-center space-y-6 shadow-2xl shadow-red-900/20">
-                <div className="w-20 h-20 bg-red-950/30 rounded-full flex items-center justify-center mx-auto border border-red-500/30">
+            <div className="max-w-md w-full bg-zinc-100 dark:bg-zinc-900 border border-red-200 dark:border-red-900/50 rounded-2xl p-8 text-center space-y-6 shadow-2xl shadow-red-900/20">
+                <div className="w-20 h-20 bg-red-950/30 rounded-full flex items-center justify-center mx-auto border border-red-200 dark:border-red-500/30">
                     <svg
-                        className="w-10 h-10 text-red-500"
+                        className="w-10 h-10 text-red-600 dark:text-red-500"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -40,7 +40,7 @@ export default async function SchoolSuspendedPage({ searchParams }: PageProps) {
                     </p>
                 </div>
 
-                <div className="bg-red-950/20 border border-red-500/20 rounded-lg p-4 text-sm text-red-400">
+                <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/20 rounded-lg p-4 text-sm text-red-600 dark:text-red-400">
                     {isTrialExpired
                         ? "Please contact your school administrator or owner to subscribe and reactivate access."
                         : "Please contact your school administrator or system director for more information."

@@ -32,7 +32,7 @@ export default function FacultyAuthorizationsPage() {
         setLoading(true);
         try {
             const res = await fetch('/api/user/authorizations');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setAuthorizations(data.authorizations || []);
         } catch (error) {
             toast.error("Failed to sync authorization ledger");
@@ -98,7 +98,7 @@ export default function FacultyAuthorizationsPage() {
                                 transition={{ delay: idx * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             >
                                 <Card className={cn(
-                                    "bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-zinc-300 dark:border-white/10 group relative",
+                                    "bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] overflow-hidden transition-all hover:border-zinc-300 dark:border-white/10 group relative",
                                     auth.status === 'APPROVED' && "hover:border-emerald-500/30",
                                     auth.status === 'REJECTED' && "hover:border-rose-500/30",
                                     auth.status === 'PENDING' && "hover:border-blue-500/30"

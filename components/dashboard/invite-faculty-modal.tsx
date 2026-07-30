@@ -169,7 +169,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                 <div className="mt-6 flex flex-col items-center justify-center gap-3">
                                     <div className="flex items-center gap-3">
                                         <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                                        <span className="text-[10px] text-red-500 font-medium uppercase tracking-widest">Email Delivery Failed</span>
+                                        <span className="text-[10px] text-red-600 dark:text-red-500 font-medium uppercase tracking-widest">Email Delivery Failed</span>
                                     </div>
                                     <p className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest text-center mt-2">The system could not deliver the email. Please share this token manually.</p>
                                 </div>

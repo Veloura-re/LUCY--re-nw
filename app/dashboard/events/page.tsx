@@ -132,7 +132,7 @@ export default function EventsPage() {
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => handleDelete(event.id)}
-                                        className="h-10 w-10 text-zinc-800 dark:text-zinc-200 hover:text-red-500 hover:bg-red-950/20 rounded-xl transition-all"
+                                        className="h-10 w-10 text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500 hover:bg-red-50 dark:bg-red-950/20 rounded-xl transition-all"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </Button>

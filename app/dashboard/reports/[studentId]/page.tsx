@@ -37,7 +37,7 @@ export default function StudentReportCardPage() {
     const getPerformanceColor = (pct: number) => {
         if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10" };
         if (pct >= 60) return { text: "text-blue-500", border: "border-blue-900/30", bg: "bg-blue-900/10" };
-        if (pct >= 40) return { text: "text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10" };
+        if (pct >= 40) return { text: "text-amber-600 dark:text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10" };
         return { text: "text-rose-500", border: "border-rose-900/30", bg: "bg-rose-900/10" };
     };
 

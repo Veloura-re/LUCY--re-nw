@@ -123,7 +123,7 @@ export default function ParentsPage() {
                         </div>
 
                         {error && (
-                            <div className="flex items-center gap-3 p-4 rounded-xl bg-red-950/20 border border-red-900/30 text-red-500 text-xs font-medium uppercase tracking-wider animate-in fade-in slide-in-from-top-2">
+                            <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-500 text-xs font-medium uppercase tracking-wider animate-in fade-in slide-in-from-top-2">
                                 <XCircle className="w-4 h-4" />
                                 {error}
                             </div>

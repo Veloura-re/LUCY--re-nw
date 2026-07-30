@@ -426,7 +426,7 @@ export default function SettingsPage() {
                             onClick={handleLogout}
                             disabled={loggingOut}
                             isLoading={loggingOut}
-                            className="w-full justify-start gap-4 px-6 py-4 h-auto rounded-2xl text-red-900 hover:text-red-500 hover:bg-red-950/10 transition-all font-medium text-[10px] uppercase tracking-widest border-transparent"
+                            className="w-full justify-start gap-4 px-6 py-4 h-auto rounded-2xl text-red-900 hover:text-red-600 dark:text-red-500 hover:bg-red-950/10 transition-all font-medium text-[10px] uppercase tracking-widest border-transparent"
                         >
                             <LogOut className="w-4 h-4" />
                             Terminate Session
@@ -929,7 +929,7 @@ export default function SettingsPage() {
                                                                     ...prev,
                                                                     locations: prev.locations.filter((_, i) => i !== idx)
                                                                 }))}
-                                                                className="w-10 h-10 p-0 rounded-full text-red-900/50 hover:text-red-500 hover:bg-red-500/10 transition-all border-none"
+                                                                className="w-10 h-10 p-0 rounded-full text-red-900/50 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 transition-all border-none"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
                                                             </Button>

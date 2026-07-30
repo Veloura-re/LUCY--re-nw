@@ -55,6 +55,12 @@
   --shadow-hover: 0 4px 22px rgba(0, 0, 0, 0.12);
   --shadow-elevation: 0 0 35px rgba(0, 0, 0, 0.15);
   --shadow-inputFocus: 0 0 0 2px #1AA76840;
+
+  /* Semantic UI Colors */
+  --color-ui-bg: var(--ui-bg);
+  --color-ui-text: var(--ui-text);
+  --color-ui-muted: var(--ui-muted);
+  --color-ui-border: var(--ui-border);
 }
 
 :root {
@@ -64,6 +70,11 @@
   --card-border: rgba(226, 232, 240, 0.8);
   --text-muted: #64748b;
   --glow-opacity: 0.12;
+  
+  --ui-bg: #f8fafc;
+  --ui-text: #0f172a;
+  --ui-muted: #64748b;
+  --ui-border: #e2e8f0;
 }
 
 .dark {
@@ -73,6 +84,11 @@
   --card-border: rgba(39, 39, 42, 0.8);
   --text-muted: #a1a1aa;
   --glow-opacity: 0.2;
+
+  --ui-bg: #070709;
+  --ui-text: #fafafa;
+  --ui-muted: #a1a1aa;
+  --ui-border: #27272a;
 }
 
 body {

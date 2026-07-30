@@ -42,8 +42,8 @@ export default function StudentProfilePage() {
     const attendancePct = parseFloat(stats?.attendancePct || "100");
     const avgScore = parseFloat(stats?.avgScore || "0");
 
-    const attendanceColor = attendancePct >= 90 ? "text-eduGreen-500" : attendancePct >= 75 ? "text-amber-400" : "text-red-400";
-    const gradeColor = avgScore >= 80 ? "text-eduGreen-500" : avgScore >= 60 ? "text-blue-400" : avgScore >= 40 ? "text-amber-400" : "text-red-400";
+    const attendanceColor = attendancePct >= 90 ? "text-eduGreen-500" : attendancePct >= 75 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400";
+    const gradeColor = avgScore >= 80 ? "text-eduGreen-500" : avgScore >= 60 ? "text-blue-400" : avgScore >= 40 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400";
 
     return (
         <div className="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-300">
@@ -129,7 +129,7 @@ export default function StudentProfilePage() {
                             {student.gradeRecords?.length > 0 ? (
                                 <div className="space-y-3">
                                     {student.gradeRecords.map((g: any, i: number) => {
-                                        const scoreColor = g.score >= 80 ? "text-eduGreen-500" : g.score >= 60 ? "text-blue-400" : g.score >= 40 ? "text-amber-400" : "text-red-400";
+                                        const scoreColor = g.score >= 80 ? "text-eduGreen-500" : g.score >= 60 ? "text-blue-400" : g.score >= 40 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400";
                                         const grade = g.score >= 90 ? 'A+' : g.score >= 80 ? 'A' : g.score >= 70 ? 'B' : g.score >= 60 ? 'C' : g.score >= 50 ? 'D' : 'F';
                                         return (
                                             <div key={i} className="flex items-center justify-between p-4 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-900">
@@ -174,7 +174,7 @@ export default function StudentProfilePage() {
                                             <Badge className={cn(
                                                 "text-[9px] font-bold border uppercase tracking-widest",
                                                 a.status === 'APPROVED' ? "bg-eduGreen-950/20 text-eduGreen-500 border-eduGreen-900/30" :
-                                                    a.status === 'REJECTED' ? "bg-red-950/20 text-red-500 border-red-900/30" :
+                                                    a.status === 'REJECTED' ? "bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-500 border-red-200 dark:border-red-900/30" :
                                                         "bg-blue-950/20 text-blue-400 border-blue-900/30"
                                             )}>
                                                 {a.status}

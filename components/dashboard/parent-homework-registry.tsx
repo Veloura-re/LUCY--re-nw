@@ -75,7 +75,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="FILTER REGISTRY..." 
-                        className="w-full bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white ring-0 focus:border-zinc-300 dark:border-white/20 transition-all placeholder:text-zinc-800 dark:text-zinc-200 outline-none"
+                        className="w-full bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[1.5rem] h-14 pl-14 text-[10px] font-black tracking-widest text-zinc-900 dark:text-white ring-0 focus:border-zinc-300 dark:border-white/20 transition-all placeholder:text-zinc-800 dark:text-zinc-200 outline-none"
                     />
                 </div>
             </div>
@@ -93,7 +93,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                 ))}
 
                 {filteredAssignments.length === 0 && (
-                    <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
+                    <div className="col-span-full py-32 flex flex-col items-center justify-center bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
                         <Activity className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
                         <h3 className="text-xl font-black text-zinc-700 italic uppercase">Registry Buffer Empty</h3>
                         <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">No synchronized dispatches found for the current filter parameters.</p>
@@ -117,7 +117,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                             initial={{ opacity: 0, scale: 0.9, y: 40 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 40 }}
-                            className="relative w-full max-w-4xl bg-[#09090b] border border-zinc-300 dark:border-white/10 rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
+                            className="relative w-full max-w-4xl bg-white dark:bg-[#09090b] border border-zinc-300 dark:border-white/10 rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
                         >
                             <div className="p-10 md:p-16 space-y-12">
                                 <div className="flex justify-between items-start">
@@ -167,7 +167,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                                     }
                                                                 })
                                                             });
-                                                            const data = await res.json();
+                                                            const data = (await res.json()) as any;
                                                             if (data.analysis) setParentAnalysis(data.analysis);
                                                         } finally {
                                                             setAnalyzing(false);
@@ -235,8 +235,8 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                 </div>
                                             ) : selectedAssignment.submission ? (
                                                 <div className="p-10 bg-amber-500/5 border border-amber-500/20 rounded-[2.5rem] space-y-4 text-center">
-                                                    <Activity className="w-10 h-10 text-amber-500 mx-auto animate-pulse" />
-                                                    <h4 className="text-xl font-black text-amber-500 italic uppercase">Coursework Under Review</h4>
+                                                    <Activity className="w-10 h-10 text-amber-600 dark:text-amber-500 mx-auto animate-pulse" />
+                                                    <h4 className="text-xl font-black text-amber-600 dark:text-amber-500 italic uppercase">Coursework Under Review</h4>
                                                     <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Submission detected. Pending educator evaluation.</p>
                                                 </div>
                                             ) : (
@@ -268,7 +268,7 @@ function RegistryCard({ assignment, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-10 rounded-[3.5rem] border backdrop-blur-3xl transition-all cursor-pointer group relative overflow-hidden",
-                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5 shadow-none" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-zinc-300 dark:border-white/10 hover:border-white/20 shadow-2xl"
+                assignment.submission ? "bg-white/40 dark:bg-[#050505]/40 border-zinc-200 dark:border-white/5 shadow-none" : "bg-gradient-to-br from-white to-zinc-50 dark:from-[#0c0c0c] dark:to-[#050505] border-zinc-300 dark:border-white/10 hover:border-white/20 shadow-2xl"
             )}
         >
             {isLate && (
@@ -313,7 +313,7 @@ function RegistryCard({ assignment, onClick }: any) {
                             <CheckCircle className="w-3.5 h-3.5" /> EVALUATED
                         </div>
                     ) : assignment.submission ? (
-                        <div className="flex items-center gap-2 text-amber-500/60 font-black text-[8px] uppercase tracking-widest">
+                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500/60 font-black text-[8px] uppercase tracking-widest">
                             <Activity className="w-3.5 h-3.5" /> IN REVIEW
                         </div>
                     ) : (

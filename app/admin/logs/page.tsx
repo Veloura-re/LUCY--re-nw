@@ -33,7 +33,7 @@ const ACTION_COLORS: Record<string, string> = {
     CREATE: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
     UPDATE: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
     UPDATE_SETTINGS: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-    DELETE: 'text-red-400 bg-red-500/10 border-red-500/20',
+    DELETE: 'text-red-600 dark:text-red-400 bg-red-500/10 border-red-200 dark:border-red-500/20',
     APPROVE: 'text-green-400 bg-green-500/10 border-green-500/20',
     RESOLVE: 'text-green-400 bg-green-500/10 border-green-500/20',
     REGISTER: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
@@ -44,7 +44,7 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 const ERROR_TYPE_COLORS: Record<string, string> = {
-    ui_crash: 'text-red-400 bg-red-500/10 border-red-500/20',
+    ui_crash: 'text-red-600 dark:text-red-400 bg-red-500/10 border-red-200 dark:border-red-500/20',
     api_error: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
     route_404: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
     auth_failure: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
@@ -337,7 +337,7 @@ export default function AdminLogsPage() {
                                 {errorStats.map((s: any, i: number) => (
                                     <motion.div key={s.type} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                                         onClick={() => setErrorTypeFilter(s.type === errorTypeFilter ? '' : s.type)}
-                                        className={cn("bg-white/[0.02] border rounded-xl p-4 space-y-2 cursor-pointer transition-all hover:bg-white/[0.04]", errorTypeFilter === s.type ? "border-red-500/30" : "border-zinc-200 dark:border-white/5")}>
+                                        className={cn("bg-white/[0.02] border rounded-xl p-4 space-y-2 cursor-pointer transition-all hover:bg-white/[0.04]", errorTypeFilter === s.type ? "border-red-200 dark:border-red-500/30" : "border-zinc-200 dark:border-white/5")}>
                                         <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase", ERROR_TYPE_COLORS[s.type] || 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
                                             {ERROR_TYPE_ICONS[s.type]}{s.type.replace('_', ' ')}
                                         </div>
@@ -435,7 +435,7 @@ export default function AdminLogsPage() {
                                     </div>
                                 ))}
                             </div>
-                            {selectedLog.before && <div><div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Before</div><pre className="bg-red-950/20 border border-red-500/10 rounded-xl p-3 text-[11px] text-red-300 overflow-x-auto">{JSON.stringify(selectedLog.before, null, 2)}</pre></div>}
+                            {selectedLog.before && <div><div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">Before</div><pre className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/10 rounded-xl p-3 text-[11px] text-red-700 dark:text-red-300 overflow-x-auto">{JSON.stringify(selectedLog.before, null, 2)}</pre></div>}
                             {selectedLog.after && <div><div className="text-[10px] text-zinc-600 uppercase tracking-widest mb-2">After</div><pre className="bg-emerald-950/20 border border-emerald-500/10 rounded-xl p-3 text-[11px] text-emerald-300 overflow-x-auto">{JSON.stringify(selectedLog.after, null, 2)}</pre></div>}
                         </motion.div>
                     </motion.div>
@@ -455,8 +455,8 @@ export default function AdminLogsPage() {
                                 </span>
                                 <button onClick={() => setSelectedError(null)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white text-xl">×</button>
                             </div>
-                            <div className="p-4 bg-red-950/20 border border-red-500/10 rounded-xl">
-                                <p className="text-sm text-red-300 font-medium">{selectedError.message}</p>
+                            <div className="p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/10 rounded-xl">
+                                <p className="text-sm text-red-700 dark:text-red-300 font-medium">{selectedError.message}</p>
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-xs">
                                 {[['School', selectedError.school?.name || '—'],['Path', selectedError.path || '—'],['Status', selectedError.statusCode?.toString() || '—'],['IP', selectedError.ip || '—'],['Level', selectedError.level],['Time', new Date(selectedError.createdAt).toLocaleString('en-GB')]].map(([l, v]) => (

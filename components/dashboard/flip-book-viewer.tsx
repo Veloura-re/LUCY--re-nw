@@ -107,7 +107,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-zinc-600 dark:text-zinc-400 hover:text-red-400 hover:bg-red-500/20 rounded-xl transition-all"
+                                className="text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:text-red-400 hover:bg-red-500/20 rounded-xl transition-all"
                             >
                                 <X className="w-5 h-5" />
                             </Button>
@@ -200,8 +200,8 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                                 
                                 {book.teacherNote && (
                                     <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 mt-4">
-                                        <h3 className="text-[9px] font-semibold text-amber-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</h3>
-                                        <p className="text-[10px] font-medium text-amber-500/80 leading-relaxed">{book.teacherNote}</p>
+                                        <h3 className="text-[9px] font-semibold text-amber-600 dark:text-amber-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</h3>
+                                        <p className="text-[10px] font-medium text-amber-600 dark:text-amber-500/80 leading-relaxed">{book.teacherNote}</p>
                                     </div>
                                 )}
                             </div>

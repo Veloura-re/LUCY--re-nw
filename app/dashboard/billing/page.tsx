@@ -147,7 +147,7 @@ export default function BillingPage() {
     if (!schoolInfo) {
         return (
             <div className="max-w-xl mx-auto mt-12 bg-zinc-100 dark:bg-zinc-900 border border-red-950/50 rounded-2xl p-8 text-center">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-500 mx-auto mb-4" />
                 <h1 className="text-xl font-bold uppercase tracking-tighter text-zinc-900 dark:text-white mb-2">No Institution Linked</h1>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">
                     This account is not currently linked to any active educational institution node.
@@ -189,10 +189,10 @@ export default function BillingPage() {
 
             {/* Expired Alert */}
             {isExpired && !isSubscribed && (
-                <div className="bg-red-950/20 border border-red-500/30 rounded-2xl p-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/30 rounded-2xl p-6 flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="flex gap-4 items-center">
-                        <div className="w-12 h-12 bg-red-950/40 rounded-xl flex items-center justify-center border border-red-500/20">
-                            <AlertCircle className="w-6 h-6 text-red-500" />
+                        <div className="w-12 h-12 bg-red-950/40 rounded-xl flex items-center justify-center border border-red-200 dark:border-red-500/20">
+                            <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-500" />
                         </div>
                         <div>
                             <h3 className="text-zinc-900 dark:text-white font-bold text-sm uppercase tracking-tighter">Trial Period Concluded</h3>
@@ -208,7 +208,7 @@ export default function BillingPage() {
             {hasPendingReceipt && !isSubscribed && (
                 <div className="bg-amber-950/25 border border-amber-500/30 rounded-2xl p-6 flex gap-4 items-center">
                     <div className="w-12 h-12 bg-amber-950/40 rounded-xl flex items-center justify-center border border-amber-500/20">
-                        <Loader2 className="w-6 h-6 text-amber-500 animate-spin" />
+                        <Loader2 className="w-6 h-6 text-amber-600 dark:text-amber-500 animate-spin" />
                     </div>
                     <div>
                         <h3 className="text-zinc-900 dark:text-white font-bold text-sm uppercase tracking-tighter">Receipt Review In Progress</h3>
@@ -240,9 +240,9 @@ export default function BillingPage() {
                                 isSubscribed 
                                     ? 'bg-eduGreen-950/20 border-eduGreen-500/30 text-eduGreen-500' 
                                     : hasPendingReceipt
-                                        ? 'bg-amber-950/20 border-amber-500/30 text-amber-500'
+                                        ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-500/30 text-amber-600 dark:text-amber-500'
                                         : isExpired
-                                            ? 'bg-red-950/20 border-red-500/30 text-red-500'
+                                            ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-500'
                                             : 'bg-zinc-200/80 dark:bg-zinc-800/80 border-zinc-400 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400'
                             }`}>
                                 {isSubscribed ? 'Active' : hasPendingReceipt ? 'Verification' : isExpired ? 'Expired' : 'Free Trial'}
@@ -506,7 +506,7 @@ export default function BillingPage() {
                                                 receipt.status === 'APPROVED' 
                                                     ? 'bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400' 
                                                     : receipt.status === 'REJECTED'
-                                                        ? 'bg-red-950/20 border-red-900/50 text-red-400'
+                                                        ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400'
                                                         : 'bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500'
                                             }`}>
                                                 {receipt.status}

@@ -180,7 +180,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                         {insight.frictionPoints.map((point: string, i: number) => (
                                             <div key={i} className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <AlertCircle className="w-3 h-3 text-amber-500" />
+                                                    <AlertCircle className="w-3 h-3 text-amber-600 dark:text-amber-500" />
                                                     <span className="text-[11px] font-medium text-zinc-600 dark:text-zinc-400">{point}</span>
                                                 </div>
                                                 <div className="h-1 w-20 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">

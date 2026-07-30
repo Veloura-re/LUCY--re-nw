@@ -118,7 +118,7 @@ function LoginContent() {
                             </div>
 
                             {error && (
-                                <div className="p-4 bg-red-950/10 border border-red-900/20 rounded-2xl text-[10px] text-red-500 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 font-medium uppercase tracking-wider">
+                                <div className="p-4 bg-red-950/10 border border-red-900/20 rounded-2xl text-[10px] text-red-600 dark:text-red-500 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 font-medium uppercase tracking-wider">
                                     <AlertCircle className="w-5 h-5 shrink-0" />
                                     <p className="font-medium leading-relaxed">{error}</p>
                                 </div>

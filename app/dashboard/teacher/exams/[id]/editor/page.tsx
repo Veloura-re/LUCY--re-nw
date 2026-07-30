@@ -238,7 +238,7 @@ export default function ExamEditorPage() {
                                                 <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Marks</span>
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="icon" onClick={() => removeQuestion(i)} className="text-zinc-700 hover:text-red-500">
+                                        <Button variant="ghost" size="icon" onClick={() => removeQuestion(i)} className="text-zinc-700 hover:text-red-600 dark:text-red-500">
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -370,7 +370,7 @@ export default function ExamEditorPage() {
                     <Button
                         onClick={handleRemix}
                         disabled={extracting}
-                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-amber-500 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                        className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-amber-600 dark:text-amber-500 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
                     >
                         {extracting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                         <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Remix</span>

@@ -274,11 +274,11 @@ function ExamsPageContent() {
                                             Published
                                         </span>
                                     ) : exam.isLocked ? (
-                                        <span className="text-[8px] font-medium px-3 py-1 bg-amber-950/20 border border-amber-900/30 text-amber-500 rounded-lg uppercase tracking-widest">
+                                        <span className="text-[8px] font-medium px-3 py-1 bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 text-amber-600 dark:text-amber-500 rounded-lg uppercase tracking-widest">
                                             Graded / Locked
                                         </span>
                                     ) : new Date(exam.dueAt) < new Date() ? (
-                                        <span className="text-[8px] font-medium px-3 py-1 bg-red-950/20 border border-red-900/30 text-red-500 rounded-lg uppercase tracking-widest">
+                                        <span className="text-[8px] font-medium px-3 py-1 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-500 rounded-lg uppercase tracking-widest">
                                             Pending Grades
                                         </span>
                                     ) : (
@@ -479,7 +479,7 @@ function ExamsPageContent() {
                                                             } else if (pct >= 60) {
                                                                 colorClass = "text-blue-400 bg-blue-500/5 border-blue-500/10";
                                                             } else if (pct >= 40) {
-                                                                colorClass = "text-amber-400 bg-amber-500/5 border-amber-500/10";
+                                                                colorClass = "text-amber-600 dark:text-amber-400 bg-amber-500/5 border-amber-500/10";
                                                             } else {
                                                                 colorClass = "text-rose-400 bg-rose-500/5 border-rose-500/10";
                                                             }
@@ -515,7 +515,7 @@ function ExamsPageContent() {
                                                             } else if (average >= 60) {
                                                                 colorClass = "text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-[0_0_15px_-3px_rgba(59,130,246,0.15)]";
                                                             } else if (average >= 40) {
-                                                                colorClass = "text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_-3px_rgba(245,158,11,0.15)]";
+                                                                colorClass = "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20 shadow-[0_0_15px_-3px_rgba(245,158,11,0.15)]";
                                                             } else {
                                                                 colorClass = "text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-[0_0_15px_-3px_rgba(239,68,68,0.15)]";
                                                             }
@@ -632,7 +632,7 @@ function ExamsPageContent() {
                                         className={cn(
                                             "w-full h-14 rounded-2xl border flex items-center justify-center gap-3 font-medium text-[10px] uppercase tracking-widest transition-all",
                                             newExam.isLocked 
-                                                ? "bg-amber-500/10 border-amber-500/30 text-amber-500" 
+                                                ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-500" 
                                                 : "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-500"
                                         )}
                                     >

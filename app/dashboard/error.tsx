@@ -16,8 +16,8 @@ export default function DashboardError({
 
     return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
-            <div className="w-16 h-16 rounded-2xl bg-amber-950/20 border border-amber-900/30 flex items-center justify-center mb-6">
-                <AlertTriangle className="w-8 h-8 text-amber-500" />
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 flex items-center justify-center mb-6">
+                <AlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-500" />
             </div>
             <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight mb-2">
                 Connection Interrupted
