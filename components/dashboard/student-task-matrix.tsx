@@ -114,7 +114,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                         <div className="h-[1px] w-12 bg-white/10" />
                         <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.5em] italic">Personal Planner v2.4</span>
                     </div>
-                    <h2 className="text-5xl md:text-8xl font-black tracking-[calc(-0.05em)] text-white italic leading-[0.85] uppercase">
+                    <h2 className="text-5xl md:text-8xl font-black tracking-[calc(-0.05em)] text-zinc-900 dark:text-white italic leading-[0.85] uppercase">
                         ACADEMIC <span className="text-zinc-800 not-italic">PATH</span>
                     </h2>
                 </motion.div>
@@ -148,7 +148,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                         ))}
 
                         {assignments.length === 0 && (
-                            <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-[3.5rem] text-center">
+                            <div className="col-span-full py-32 flex flex-col items-center justify-center bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
                                 <Activity className="w-12 h-12 text-zinc-800 mb-6 animate-pulse" />
                                 <h3 className="text-xl font-black text-zinc-700 italic uppercase">Neural Buffer Clear</h3>
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">No active assignments discovered in your current registry.</p>
@@ -180,10 +180,10 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-4">
-                                            <span className="px-5 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
+                                            <span className="px-5 py-1.5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
                                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{selectedAssignment.subject?.name}</span>
                                         </div>
-                                        <h3 className="text-3xl md:text-5xl font-black italic text-white uppercase">{selectedAssignment.title}</h3>
+                                        <h3 className="text-3xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase">{selectedAssignment.title}</h3>
                                         <div className="flex items-center gap-3 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
                                             <Clock className="w-4 h-4" /> DEADLINE: {format(new Date(selectedAssignment.dueDate), "PPP")}
                                         </div>
@@ -195,7 +195,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                     <div className="space-y-8">
                                         <div className="space-y-4">
                                             <label className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">TASK SPECIFICATIONS</label>
-                                            <p className="text-zinc-400 text-sm leading-relaxed font-medium">
+                                            <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed font-medium">
                                                 {selectedAssignment.description || "No additional instructions provided for this dispatch."}
                                             </p>
                                         </div>
@@ -215,7 +215,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         >
                                                             <div className="flex items-center gap-4">
                                                                 <FileText className="w-5 h-5 text-zinc-500" />
-                                                                <span className="text-[10px] font-black text-white italic uppercase">{m.name || "Resource Link"}</span>
+                                                                <span className="text-[10px] font-black text-zinc-900 dark:text-white italic uppercase">{m.name || "Resource Link"}</span>
                                                             </div>
                                                             <Download className="w-4 h-4 text-zinc-700 group-hover:text-white transition-colors" />
                                                         </a>
@@ -224,7 +224,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                             </div>
                                         )}
 
-                                        <div className="pt-8 border-t border-white/5 space-y-6">
+                                        <div className="pt-8 border-t border-zinc-200 dark:border-white/5 space-y-6">
                                             <Button 
                                                 onClick={async () => {
                                                     setAnalyzing(true);
@@ -248,7 +248,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                     }
                                                 }}
                                                 isLoading={analyzing}
-                                                className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 group"
+                                                className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 group"
                                             >
                                                 {!analyzing && <Brain className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />}
                                                 <span className="text-[10px] font-black uppercase tracking-widest">INITIALIZE NEURAL BREAKDOWN</span>
@@ -263,14 +263,14 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                     >
                                                         <div>
                                                             <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">NEURAL SUMMARY</span>
-                                                            <p className="text-zinc-300 text-sm mt-1 leading-relaxed">{analysis.summary}</p>
+                                                            <p className="text-zinc-700 dark:text-zinc-300 text-sm mt-1 leading-relaxed">{analysis.summary}</p>
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-6">
                                                             <div className="space-y-2">
                                                                 <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">OBJECTIVES</span>
                                                                 <ul className="space-y-1">
                                                                     {analysis.keyObjectives.map((obj: string, i: number) => (
-                                                                        <li key={i} className="text-[10px] text-zinc-400 flex items-center gap-2">
+                                                                        <li key={i} className="text-[10px] text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
                                                                             <div className="w-1 h-1 bg-emerald-500 rounded-full" /> {obj}
                                                                         </li>
                                                                     ))}
@@ -280,14 +280,14 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">SUCCESS TIPS</span>
                                                                 <ul className="space-y-2">
                                                                     {analysis.successTips.map((tip: string, i: number) => (
-                                                                        <li key={i} className="text-[10px] text-zinc-400 flex items-start gap-2">
+                                                                        <li key={i} className="text-[10px] text-zinc-600 dark:text-zinc-400 flex items-start gap-2">
                                                                             <Sparkles className="w-3 h-3 text-emerald-500 mt-0.5" /> {tip}
                                                                         </li>
                                                                     ))}
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                        <div className="pt-4 border-t border-white/5 flex items-center gap-4">
+                                                        <div className="pt-4 border-t border-zinc-200 dark:border-white/5 flex items-center gap-4">
                                                             <Clock className="w-3.5 h-3.5 text-zinc-600" />
                                                             <span className="text-[9px] font-black text-zinc-600 uppercase italic">ESTIMATED INTELLECTUAL LOAD: {analysis.estimatedTime}</span>
                                                         </div>
@@ -313,7 +313,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-widest flex items-center gap-2">
                                                             <MessageSquare className="w-3 h-3" /> FEEDBACK
                                                         </span>
-                                                        <p className="text-zinc-400 text-sm font-medium italic">&ldquo;{selectedAssignment.submission.feedback || "Exceptional synchronization of concepts."}&rdquo;</p>
+                                                        <p className="text-zinc-600 dark:text-zinc-400 text-sm font-medium italic">&ldquo;{selectedAssignment.submission.feedback || "Exceptional synchronization of concepts."}&rdquo;</p>
                                                     </div>
                                                 </div>
                                             ) : (
@@ -323,7 +323,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                         onChange={(e) => setSubmissionContent(e.target.value)}
                                                         disabled={selectedAssignment.submission?.status === 'SUBMITTED'}
                                                         placeholder="EXECUTE COURSEWORK RESPONSE HERE OR ATTACH FILES..." 
-                                                        className="min-h-[250px] bg-white/5 border-white/10 rounded-[2.5rem] p-10 text-white font-medium text-sm leading-relaxed ring-0 focus:border-white/20"
+                                                        className="min-h-[250px] bg-white/5 border-white/10 rounded-[2.5rem] p-10 text-zinc-900 dark:text-white font-medium text-sm leading-relaxed ring-0 focus:border-white/20"
                                                     />
 
                                                     {selectedAssignment.submission?.status !== 'SUBMITTED' && (
@@ -333,7 +333,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                     type="file" 
                                                                     onChange={handleFileUpload}
                                                                     disabled={uploading}
-                                                                    className="h-14 bg-white/5 border-white/10 rounded-2xl text-white font-medium file:bg-white/10 file:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
+                                                                    className="h-14 bg-white/5 border-white/10 rounded-2xl text-zinc-900 dark:text-white font-medium file:bg-white/10 file:text-zinc-900 dark:text-white file:border-0 file:rounded-xl file:px-4 file:py-1 file:mr-4 file:font-bold file:text-[10px] file:uppercase file:tracking-widest hover:file:bg-white/20 transition-all cursor-pointer"
                                                                 />
                                                                 {uploading && <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />}
                                                             </div>
@@ -348,7 +348,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                                     download 
                                                                                     target="_blank" 
                                                                                     rel="noopener noreferrer" 
-                                                                                    className="text-[10px] font-bold text-white tracking-widest uppercase hover:underline hover:text-emerald-400 transition-colors"
+                                                                                    className="text-[10px] font-bold text-zinc-900 dark:text-white tracking-widest uppercase hover:underline hover:text-emerald-400 transition-colors"
                                                                                 >
                                                                                     {m.name}
                                                                                 </a>
@@ -375,7 +375,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 initial={{ opacity: 0, height: 0 }}
                                                                 animate={{ opacity: 1, height: 'auto' }}
                                                                 exit={{ opacity: 0, height: 0 }}
-                                                                className="bg-zinc-950/60 border border-white/5 rounded-[2rem] p-8 space-y-6 overflow-hidden"
+                                                                className="bg-white/60 dark:bg-zinc-950/60 border border-zinc-200 dark:border-white/5 rounded-[2rem] p-8 space-y-6 overflow-hidden"
                                                             >
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-3">
@@ -388,18 +388,18 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         <XCircle className="w-4 h-4" />
                                                                     </Button>
                                                                 </div>
-                                                                <p className="text-zinc-400 text-xs italic leading-relaxed font-medium">
+                                                                <p className="text-zinc-600 dark:text-zinc-400 text-xs italic leading-relaxed font-medium">
                                                                     &ldquo;{preEval.feedback}&rdquo;
                                                                 </p>
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                     {preEval.checklist.map((item: any, i: number) => (
-                                                                        <div key={i} className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                                                                        <div key={i} className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-zinc-200 dark:border-white/5">
                                                                             {item.completed ? (
                                                                                 <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
                                                                             ) : (
                                                                                 <AlertCircle className="w-3.5 h-3.5 text-zinc-700" />
                                                                             )}
-                                                                            <span className={cn("text-[9px] font-bold uppercase", item.completed ? "text-zinc-300" : "text-zinc-600")}>
+                                                                            <span className={cn("text-[9px] font-bold uppercase", item.completed ? "text-zinc-700 dark:text-zinc-300" : "text-zinc-600")}>
                                                                                 {item.item}
                                                                             </span>
                                                                         </div>
@@ -439,7 +439,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 }}
                                                                 isLoading={evaluating}
                                                                 disabled={!submissionContent}
-                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-white hover:bg-white hover:text-black transition-all group relative overflow-hidden text-emerald-500"
+                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all group relative overflow-hidden text-emerald-500"
                                                             >
                                                                 {!evaluating && <Brain className="w-5 h-5 group-hover:scale-110 transition-transform" />}
                                                                 <span className="absolute bottom-1 text-[6px] font-black uppercase text-emerald-500/40">PRE-EVAL</span>
@@ -454,7 +454,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         setSubmissionContent("Starting my response...");
                                                                     }
                                                                 }}
-                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-white hover:bg-white hover:text-black transition-all"
+                                                                className="w-16 h-16 rounded-[1.5rem] border-white/10 bg-white/5 text-zinc-900 dark:text-white hover:bg-white hover:text-black transition-all"
                                                             >
                                                                 <Sparkles className="w-5 h-5 text-emerald-500 animate-pulse" />
                                                             </Button>
@@ -498,7 +498,7 @@ function TaskCard({ assignment, onClick }: any) {
             onClick={onClick}
             className={cn(
                 "p-10 rounded-[3.5rem] border backdrop-blur-3xl transition-all cursor-pointer group relative overflow-hidden",
-                assignment.submission ? "bg-[#050505]/40 border-white/5" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-white/10 hover:border-white/20 shadow-2xl"
+                assignment.submission ? "bg-[#050505]/40 border-zinc-200 dark:border-white/5" : "bg-gradient-to-br from-[#0c0c0c] to-[#050505] border-white/10 hover:border-white/20 shadow-2xl"
             )}
         >
             {/* Visual indicator for late tasks */}
@@ -516,7 +516,7 @@ function TaskCard({ assignment, onClick }: any) {
                             <span className="text-zinc-600 font-black text-[9px] uppercase italic">{assignment.subject?.name[0]}</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.1em] italic">{assignment.subject?.name}</span>
+                            <span className="text-[10px] font-black text-zinc-900 dark:text-white/50 uppercase tracking-[0.1em] italic">{assignment.subject?.name}</span>
                             <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">{assignment.type}</span>
                         </div>
                     </div>
@@ -528,11 +528,11 @@ function TaskCard({ assignment, onClick }: any) {
                 </div>
 
                 <div className="space-y-2">
-                    <h4 className="text-3xl font-black italic text-white uppercase leading-none tracking-tight group-hover:text-eduGreen-500 transition-colors">{assignment.title}</h4>
+                    <h4 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase leading-none tracking-tight group-hover:text-eduGreen-500 transition-colors">{assignment.title}</h4>
                     <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest line-clamp-1">{assignment.teacher?.name}</p>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-white/5">
                     <div className="flex items-center gap-2">
                         <Calendar className="w-3.5 h-3.5 text-zinc-600" />
                         <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">
@@ -562,9 +562,9 @@ function TaskCard({ assignment, onClick }: any) {
 
 function MiniMetric({ label, value }: any) {
     return (
-        <div className="px-8 py-4 bg-[#050505]/40 backdrop-blur-xl border border-white/5 rounded-3xl flex flex-col justify-center">
+        <div className="px-8 py-4 bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-3xl flex flex-col justify-center">
             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.3em] italic mb-1">{label}</span>
-            <div className="text-2xl font-black text-white italic leading-none">{value}</div>
+            <div className="text-2xl font-black text-zinc-900 dark:text-white italic leading-none">{value}</div>
         </div>
     );
 }

@@ -68,7 +68,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
                     {/* Name pill — desktop only */}
                     {userName && (
                         <div className="hidden md:flex items-center gap-2 px-3 h-[42px] rounded-2xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shrink-0 mr-1">
-                            <div className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[9px] font-black text-white shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[9px] font-black text-zinc-900 dark:text-white shrink-0">
                                 {userName[0]?.toUpperCase()}
                             </div>
                             <span className="text-[10px] font-semibold text-slate-700 dark:text-zinc-300 uppercase tracking-widest whitespace-nowrap max-w-[90px] truncate">{userName}</span>
@@ -163,7 +163,7 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                     : variant === 'danger'
                         ? "bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95"
                         : variant === 'toggle'
-                            ? "bg-white/[0.05] text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-white/5 md:hover:border-white/20 md:hover:scale-105 active:scale-95"
+                            ? "bg-white/[0.05] text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-zinc-200 dark:border-white/5 md:hover:border-white/20 md:hover:scale-105 active:scale-95"
                             : "bg-white/[0.03] text-zinc-500 hover:text-white hover:bg-white/[0.1] border border-white/[0.05] md:hover:border-white/10 md:hover:scale-105 active:scale-95",
                 isMobile ? "min-w-[42px] min-h-[42px]" : ""
             )}
@@ -198,7 +198,7 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                         zIndex: 99999,
                         pointerEvents: "none",
                     }}
-                    className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-[10px] font-medium text-white whitespace-nowrap uppercase tracking-widest"
+                    className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-lg text-[10px] font-medium text-zinc-900 dark:text-white whitespace-nowrap uppercase tracking-widest"
                 >
                     {label}
                 </motion.div>

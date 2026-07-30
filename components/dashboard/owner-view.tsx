@@ -58,43 +58,43 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
     if (isLoading && initialSchool) {
         return (
             <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                     <div className="space-y-4">
-                        <Skeleton className="h-10 w-64 bg-zinc-900/50 rounded-xl" />
-                        <Skeleton className="h-4 w-40 bg-zinc-900/50 rounded-md" />
+                        <Skeleton className="h-10 w-64 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl" />
+                        <Skeleton className="h-4 w-40 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md" />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {[1, 2, 3, 4].map((i) => (
-                        <Card key={i} className="bg-zinc-950/20 border-zinc-900 rounded-3xl p-8 border-t-zinc-800/20">
-                            <Skeleton className="h-4 w-20 bg-zinc-900/50 rounded-md mb-6" />
-                            <Skeleton className="h-12 w-16 bg-zinc-900/50 rounded-lg mb-4" />
-                            <Skeleton className="h-3 w-24 bg-zinc-900/50 rounded-md" />
+                        <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 border-t-zinc-800/20">
+                            <Skeleton className="h-4 w-20 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md mb-6" />
+                            <Skeleton className="h-12 w-16 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-lg mb-4" />
+                            <Skeleton className="h-3 w-24 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md" />
                         </Card>
                     ))}
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-8">
-                        <Card className="bg-zinc-950/40 border-zinc-900/50 rounded-[2.5rem] h-[400px]">
-                            <CardHeader className="p-8 border-b border-zinc-900/50">
-                                <Skeleton className="h-8 w-48 bg-zinc-900/50 rounded-xl" />
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] h-[400px]">
+                            <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
+                                <Skeleton className="h-8 w-48 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl" />
                             </CardHeader>
                             <CardContent className="p-8 grid grid-cols-4 gap-4">
-                                <Skeleton className="col-span-4 h-32 bg-zinc-900/50 rounded-2xl" />
+                                <Skeleton className="col-span-4 h-32 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl" />
                                 {[1, 2, 3, 4].map((i) => (
-                                    <Skeleton key={i} className="col-span-1 h-24 bg-zinc-900/50 rounded-2xl" />
+                                    <Skeleton key={i} className="col-span-1 h-24 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl" />
                                 ))}
                             </CardContent>
                         </Card>
                     </div>
                     <div className="lg:col-span-4">
-                        <Card className="bg-zinc-950/40 border-zinc-900/50 rounded-[2.5rem] h-[400px]">
-                            <CardHeader className="p-8 border-b border-zinc-900/50">
-                                <Skeleton className="h-6 w-32 bg-zinc-900/50 rounded-xl" />
+                        <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] h-[400px]">
+                            <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
+                                <Skeleton className="h-6 w-32 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl" />
                             </CardHeader>
                             <CardContent className="p-8 space-y-4">
                                 {[1, 2, 3].map((i) => (
-                                    <Skeleton key={i} className="h-16 w-full bg-zinc-900/50 rounded-xl" />
+                                    <Skeleton key={i} className="h-16 w-full bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl" />
                                 ))}
                             </CardContent>
                         </Card>
@@ -108,9 +108,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
     if (!initialSchool) {
         return (
             <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
-                <div className="py-24 text-center rounded-3xl bg-zinc-950/40 border border-zinc-900/50 shadow-2xl">
+                <div className="py-24 text-center rounded-3xl bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900/50 shadow-2xl">
                     <SchoolIcon className="w-12 h-12 text-zinc-800 mx-auto mb-6" />
-                    <h2 className="text-2xl font-medium text-white mb-2">Unlinked Account</h2>
+                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white mb-2">Unlinked Account</h2>
                     <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">
                         Your owner profile is not associated with any active institution.
                         <br />Please contact the super administrator to be linked to your school.
@@ -136,16 +136,16 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <DashboardGreeting name={user?.name || 'Owner'} role="Owner" gender={user?.gender} />
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                     <Link href="/dashboard/events" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto bg-zinc-900 hover:bg-zinc-800 text-white border-zinc-800 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2">
+                        <Button className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2">
                             <Calendar className="w-3 h-3 text-eduGreen-500" />
                             Events Portal
                         </Button>
                     </Link>
-                    <div className="flex w-full sm:w-auto bg-zinc-950 p-1.5 rounded-2xl border border-zinc-900 shadow-2xl">
+                    <div className="flex w-full sm:w-auto bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
                         <button
                             onClick={() => setViewMode('realtime')}
                             className={cn(
@@ -184,12 +184,12 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                         {/* Quick Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                             {stats.map((stat, i) => (
-                                <Card key={i} className="bg-zinc-950/20 border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20 relative overflow-hidden group">
+                                <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                         <stat.icon className="w-12 h-12" />
                                     </div>
                                     <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">{stat.label}</p>
-                                    <p className="text-4xl font-medium text-white">{stat.value}</p>
+                                    <p className="text-4xl font-medium text-zinc-900 dark:text-white">{stat.value}</p>
                                     <p className="text-[9px] font-medium text-zinc-800 uppercase tracking-widest mt-2">{stat.desc}</p>
                                 </Card>
                             ))}
@@ -197,10 +197,10 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                             <div className="lg:col-span-8">
-                                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-3xl overflow-hidden group shadow-2xl border-t-zinc-800/20 flex flex-col h-full">
-                                    <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between border-b border-zinc-900/50">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden group shadow-2xl border-t-zinc-800/20 flex flex-col h-full">
+                                    <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                                         <div>
-                                            <CardTitle className="text-lg md:text-2xl font-medium text-white tracking-tight flex items-center gap-3">
+                                            <CardTitle className="text-lg md:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
                                                 <DollarSign className="w-5 h-5 text-amber-500" />
                                                 Executive Overview
                                             </CardTitle>
@@ -259,9 +259,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                 </Card>
                             </div>
                             <div className="lg:col-span-4">
-                                <Card className="h-full bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
-                                    <CardHeader className="p-8 pb-4 border-b border-zinc-900/50">
-                                        <CardTitle className="text-base md:text-xl font-medium text-white flex items-center gap-3">
+                                <Card className="h-full bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
+                                    <CardHeader className="p-8 pb-4 border-b border-zinc-200 dark:border-zinc-900/50">
+                                        <CardTitle className="text-base md:text-xl font-medium text-zinc-900 dark:text-white flex items-center gap-3">
                                             <Calendar className="w-5 h-5 text-eduGreen-500" />
                                             Scholastic Summons
                                         </CardTitle>
@@ -287,11 +287,11 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                             {/* Attendance Waveform */}
                             <div className="lg:col-span-7">
-                                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
                                     <CardHeader className="p-10 pb-2">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <CardTitle className="text-lg md:text-2xl font-medium text-white">Attendance Waveform</CardTitle>
+                                                <CardTitle className="text-lg md:text-2xl font-medium text-zinc-900 dark:text-white">Attendance Waveform</CardTitle>
                                                 <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">7-Day Scholar Presence Index</p>
                                             </div>
                                             <div className="px-3 py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-lg">
@@ -307,9 +307,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
 
                             {/* Subject Power Bars */}
                             <div className="lg:col-span-5">
-                                <Card className="bg-zinc-950/40 backdrop-blur-xl border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20 h-full">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20 h-full">
                                     <CardHeader className="p-10 pb-4">
-                                        <CardTitle className="text-base md:text-xl font-medium text-white">Subject Mastery</CardTitle>
+                                        <CardTitle className="text-base md:text-xl font-medium text-zinc-900 dark:text-white">Subject Mastery</CardTitle>
                                         <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Performance Distribution</p>
                                     </CardHeader>
                                     <CardContent className="px-10 pb-10 space-y-8">
@@ -317,10 +317,10 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                             analytics.performanceBySubject.map((s: any, i: number) => (
                                                 <div key={i} className="space-y-3">
                                                     <div className="flex justify-between items-end">
-                                                        <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">{s.name}</span>
-                                                        <span className="text-sm font-medium text-white">{s.avg.toFixed(1)}%</span>
+                                                        <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{s.name}</span>
+                                                        <span className="text-sm font-medium text-zinc-900 dark:text-white">{s.avg.toFixed(1)}%</span>
                                                     </div>
-                                                    <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden border border-zinc-800/50">
+                                                    <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden border border-zinc-300 dark:border-zinc-800/50">
                                                         <motion.div
                                                             initial={{ width: 0 }}
                                                             animate={{ width: `${s.avg}%` }}
@@ -350,7 +350,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
             "relative group/metric overflow-hidden transition-all duration-300 rounded-3xl",
             featured
                 ? "p-8 md:p-10 bg-gradient-to-br from-zinc-900/80 to-zinc-950 hover:shadow-[0_0_40px_-10px_rgba(20,184,115,0.2)]"
-                : "p-5 bg-zinc-950/40 hover:bg-zinc-900/60"
+                : "p-5 bg-white/40 dark:bg-zinc-950/40 hover:bg-zinc-200 dark:hover:bg-zinc-900/60"
         )}>
             {/* Background Glow */}
             {featured && (
@@ -367,13 +367,13 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                             "flex items-center justify-center rounded-2xl shadow-inner transition-colors duration-300",
                             featured
                                 ? "w-12 h-12 bg-eduGreen-500/20 text-eduGreen-400 group-hover/metric:bg-eduGreen-500/30 group-hover/metric:text-eduGreen-300"
-                                : "w-10 h-10 bg-zinc-900 text-zinc-400 group-hover/metric:text-white"
+                                : "w-10 h-10 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 group-hover/metric:text-zinc-900 dark:text-white"
                         )}>
                             {icon}
                         </div>
                         <span className={cn(
                             "font-medium uppercase tracking-[0.2em]",
-                            featured ? "text-xs text-zinc-300" : "text-[10px] text-zinc-500 group-hover/metric:text-zinc-400 transition-colors"
+                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-500 group-hover/metric:text-zinc-600 dark:text-zinc-400 transition-colors"
                         )}>{label}</span>
                     </div>
 
@@ -389,7 +389,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
                     <div>
                         <div className={cn(
                             "font-semibold tracking-tighter mb-2 mt-4",
-                            featured ? "text-6xl text-white" : "text-3xl text-zinc-100"
+                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-100"
                         )}>
                             {value}
                         </div>
@@ -402,7 +402,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
 
                     {percentage !== undefined && (
                         <div className="flex flex-col items-end justify-center mb-1">
-                            <span className={cn("font-medium text-zinc-400 leading-none", featured ? "text-xl" : "text-sm")}>
+                            <span className={cn("font-medium text-zinc-600 dark:text-zinc-400 leading-none", featured ? "text-xl" : "text-sm")}>
                                 {Math.round(percentage)}%
                             </span>
                             <span className={cn("font-medium text-zinc-600 uppercase mt-1", featured ? "text-[8px]" : "text-[6px]")}>Index</span>

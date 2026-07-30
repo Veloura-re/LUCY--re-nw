@@ -18,9 +18,9 @@ export default function SpringingLoader({ message = "Synchronizing Institutional
                     <Sparkles className="w-3 h-3" />
                     <span>LUCY System active</span>
                 </div>
-                <h2 className="text-white font-medium text-xl tracking-tighter opacity-90">{message}...</h2>
+                <h2 className="text-zinc-900 dark:text-white font-medium text-xl tracking-tighter opacity-90">{message}...</h2>
                 <div className="flex justify-center gap-1">
-                    <div className="w-8 h-1 rounded-full bg-zinc-900 overflow-hidden">
+                    <div className="w-8 h-1 rounded-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
                         <div className="h-full bg-eduGreen-600 w-1/2 animate-[progress-slide_2s_ease-in-out_infinite]" />
                     </div>
                 </div>

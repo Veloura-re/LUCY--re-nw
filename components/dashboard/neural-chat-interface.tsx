@@ -180,7 +180,7 @@ const NeuralAction = ({ type }: { type: string }) => {
             onClick={() => window.location.href = action.href}
             className="flex items-center gap-4 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all my-4 group shadow-xl backdrop-blur-md"
         >
-            <div className={cn("w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5", action.color)}>
+            <div className={cn("w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-zinc-200 dark:border-white/5", action.color)}>
                 <action.icon className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             </div>
             {action.label}
@@ -400,7 +400,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                 "max-w-[92%] md:max-w-[85%] px-4 py-3 md:px-6 md:py-4 rounded-2xl md:rounded-[1.5rem] text-[12px] md:text-sm leading-relaxed shadow-lg relative border transition-all",
                 m.role === "user"
                     ? "bg-white text-black font-black uppercase italic tracking-wider rounded-tr-none border-white/20"
-                    : "bg-white/5 text-white/90 font-medium rounded-tl-none border-white/10 backdrop-blur-md"
+                    : "bg-white/5 text-zinc-900 dark:text-white/90 font-medium rounded-tl-none border-white/10 backdrop-blur-md"
             )}>
                 {m.role === "ai" && (
                     <div className={cn("absolute top-0 left-0 w-1 h-full opacity-60 rounded-full", activeB.color)} />
@@ -420,7 +420,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                     components={{
                                         p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
                                         ul: ({ children }) => <ul className="list-disc ml-5 mb-4 space-y-1">{children}</ul>,
-                                        h1: ({ children }) => <h1 className="text-base font-black uppercase tracking-[0.2em] mb-4 text-white/90">{children}</h1>,
+                                        h1: ({ children }) => <h1 className="text-base font-black uppercase tracking-[0.2em] mb-4 text-zinc-900 dark:text-white/90">{children}</h1>,
                                         code: ({ children }) => <code className="bg-white/10 px-1.5 py-0.5 rounded font-mono text-[11px] font-normal">{children}</code>,
                                         strong: ({ children }) => <strong className={cn("font-black tracking-wide", activeB.secondaryColor)}>{children}</strong>
                                     }}
@@ -434,7 +434,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                     <p>{m.content}</p>
                 )}
             </div>
-            <span className="text-[9px] font-black text-white/10 uppercase tracking-[0.2em] mt-2 px-2">
+            <span className="text-[9px] font-black text-zinc-900 dark:text-white/10 uppercase tracking-[0.2em] mt-2 px-2">
                 {m.role === "user" ? "Authored" : "Neural Link"} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
         </motion.div>
@@ -479,11 +479,11 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                     borderRadius: (standalone || isMaximized) ? "0px" : "3rem"
                 }}
                 className={cn(
-                    "bg-[#050505]/90 border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col relative overflow-hidden group h-full md:h-auto",
+                    "bg-[#050505]/90 border border-zinc-200 dark:border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col relative overflow-hidden group h-full md:h-auto",
                     standalone && "border-0 shadow-none bg-transparent"
                 )}
             >
-                <header className="h-20 md:h-24 border-b border-white/5 px-4 md:px-8 flex items-center justify-between bg-gradient-to-b from-white/[0.03] to-transparent relative z-20 shrink-0">
+                <header className="h-20 md:h-24 border-b border-zinc-200 dark:border-white/5 px-4 md:px-8 flex items-center justify-between bg-gradient-to-b from-white/[0.03] to-transparent relative z-20 shrink-0">
                     <div className="flex items-center gap-3 md:gap-6">
                         <div className={cn(
                             "w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center border shadow-2xl relative group overflow-hidden transition-all",
@@ -495,8 +495,8 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                         </div>
                         <div>
                             <div className="flex items-center gap-2 md:gap-3">
-                                <h2 className="text-sm sm:text-xl md:text-2xl font-black italic uppercase tracking-[0.2em] md:tracking-[0.3em] text-white">
-                                    LUCYA <span className="hidden md:inline text-white/20 font-light not-italic">NEURAL WORKSPACE</span>
+                                <h2 className="text-sm sm:text-xl md:text-2xl font-black italic uppercase tracking-[0.2em] md:tracking-[0.3em] text-zinc-900 dark:text-white">
+                                    LUCYA <span className="hidden md:inline text-zinc-900 dark:text-white/20 font-light not-italic">NEURAL WORKSPACE</span>
                                 </h2>
                                 <div className={cn("px-2 md:px-3 py-1 rounded-full text-[7px] md:text-[8px] font-black uppercase tracking-[0.2em] border shadow-lg", activeB.color, "text-black")}>
                                     {activeB.name}
@@ -506,7 +506,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                 <div className="flex items-center gap-2">
                                     <div className={cn("w-1.5 h-1.5 rounded-full animate-ping absolute", activeB.color)} />
                                     <div className={cn("w-1.5 h-1.5 rounded-full relative", activeB.color)} />
-                                    <span className="text-[9px] font-bold tracking-[0.2em] text-white/30 uppercase">Neural Connection Stable</span>
+                                    <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white/30 uppercase">Neural Connection Stable</span>
                                 </div>
                             </div>
                         </div>
@@ -516,15 +516,15 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-white/20 hover:text-white hover:bg-white/5 transition-all"
+                            className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-white hover:bg-white/5 transition-all"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         >
-                            <Layout className={cn("w-5 h-5 md:w-6 md:h-6", isSidebarOpen ? "text-eduGreen-500" : "text-white/20")} />
+                            <Layout className={cn("w-5 h-5 md:w-6 md:h-6", isSidebarOpen ? "text-eduGreen-500" : "text-zinc-900 dark:text-white/20")} />
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-12 w-12 rounded-2xl text-white/20 hover:text-white hover:bg-white/5 transition-all hidden md:flex"
+                            className="h-12 w-12 rounded-2xl text-zinc-900 dark:text-white/20 hover:text-white hover:bg-white/5 transition-all hidden md:flex"
                             onClick={() => setIsMaximized(!isMaximized)}
                         >
                             {isMaximized ? <Minimize2 className="w-6 h-6" /> : <Maximize2 className="w-6 h-6" />}
@@ -533,7 +533,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all"
                                 onClick={onClose}
                             >
                                 <X className="w-5 h-5 md:w-6 md:h-6" />
@@ -558,12 +558,12 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                     initial={{ x: -340, opacity: 0 }}
                                     animate={{ x: 0, opacity: 1 }}
                                     exit={{ x: -340, opacity: 0 }}
-                                    className="fixed md:relative inset-y-0 left-0 w-[280px] sm:w-[300px] md:w-[340px] z-[160] md:z-10 border-r border-white/5 flex flex-col bg-[#050505] md:bg-white/[0.01] overflow-hidden shrink-0"
+                                    className="fixed md:relative inset-y-0 left-0 w-[280px] sm:w-[300px] md:w-[340px] z-[160] md:z-10 border-r border-zinc-200 dark:border-white/5 flex flex-col bg-[#050505] md:bg-white/[0.01] overflow-hidden shrink-0"
                                 >
                                     <div className="p-4 md:p-8 space-y-6 md:space-y-10 flex-1 overflow-y-auto scrollbar-hide">
                                         <div className="flex items-center justify-between md:hidden mb-4">
-                                            <h2 className="text-[10px] font-black text-white/40 uppercase tracking-widest italic">Neural Console</h2>
-                                            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="text-white/20">
+                                            <h2 className="text-[10px] font-black text-zinc-900 dark:text-white/40 uppercase tracking-widest italic">Neural Console</h2>
+                                            <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="text-zinc-900 dark:text-white/20">
                                                 <X className="w-4 h-4" />
                                             </Button>
                                         </div>
@@ -581,7 +581,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
 
                                         <section className="space-y-4 relative">
                                             <div className="flex items-center justify-between px-2">
-                                                <h3 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
+                                                <h3 className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
                                                     <Layers className="w-3 h-3" /> Protocol
                                                 </h3>
                                             </div>
@@ -591,22 +591,22 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                     onClick={() => setIsProtocolOpen(!isProtocolOpen)}
                                                     className={cn(
                                                         "w-full flex items-center p-3 md:p-4 rounded-xl md:rounded-2xl border transition-all gap-3 md:gap-4 group relative overflow-hidden bg-white/[0.03]",
-                                                        isProtocolOpen ? "border-white/20 shadow-2xl" : "border-white/5 hover:border-white/10"
+                                                        isProtocolOpen ? "border-white/20 shadow-2xl" : "border-zinc-200 dark:border-white/5 hover:border-white/10"
                                                     )}
                                                 >
                                                     <div className={cn(
-                                                        "w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0 border border-white/5 shadow-inner transition-colors",
+                                                        "w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0 border border-zinc-200 dark:border-white/5 shadow-inner transition-colors",
                                                         activeB.color
                                                     )}>
                                                         <IconB className="w-4 h-4 md:w-5 md:h-5 text-black" />
                                                     </div>
                                                     <div className="flex flex-col items-start truncate flex-1 md:hidden lg:flex">
-                                                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">{activeB.name}</span>
-                                                        <span className="text-[7px] md:text-[8px] text-white/20 font-medium truncate w-full uppercase">Neural Sync Active</span>
+                                                        <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white">{activeB.name}</span>
+                                                        <span className="text-[7px] md:text-[8px] text-zinc-900 dark:text-white/20 font-medium truncate w-full uppercase">Neural Sync Active</span>
                                                     </div>
                                                     <motion.div
                                                         animate={{ rotate: isProtocolOpen ? 180 : 0 }}
-                                                        className="text-white/20"
+                                                        className="text-zinc-900 dark:text-white/20"
                                                     >
                                                         <Plus className="w-4 h-4" />
                                                     </motion.div>
@@ -639,8 +639,8 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                                             className={cn(
                                                                                 "flex-1 py-1.5 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                                                                                 activeCategory === cat
-                                                                                    ? "bg-white/10 text-white shadow-lg"
-                                                                                    : "text-white/40 hover:text-white/60"
+                                                                                    ? "bg-white/10 text-zinc-900 dark:text-white shadow-lg"
+                                                                                    : "text-zinc-900 dark:text-white/40 hover:text-white/60"
                                                                             )}
                                                                         >
                                                                             {cat === 'CORE' ? 'Neural Core' : 'Educators'}
@@ -669,18 +669,18 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                                                 "group p-3 rounded-xl border transition-all flex flex-col items-center gap-2 text-center",
                                                                                 isActive
                                                                                     ? "border-white/20 bg-white/[0.08] shadow-xl"
-                                                                                    : "border-white/5 bg-white/5 hover:bg-white/[0.05] hover:border-white/10"
+                                                                                    : "border-zinc-200 dark:border-white/5 bg-white/5 hover:bg-white/[0.05] hover:border-white/10"
                                                                             )}
                                                                         >
                                                                             <div className={cn(
-                                                                                "w-8 h-8 rounded-lg flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform text-white",
+                                                                                "w-8 h-8 rounded-lg flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform text-zinc-900 dark:text-white",
                                                                                 isActive ? b.color : "bg-white/5"
                                                                             )}>
-                                                                                <BIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-white/40")} />
+                                                                                <BIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-zinc-900 dark:text-white/40")} />
                                                                             </div>
                                                                             <span className={cn(
                                                                                 "text-[8px] font-black uppercase tracking-wider truncate w-full",
-                                                                                isActive ? "text-white" : "text-white/40"
+                                                                                isActive ? "text-zinc-900 dark:text-white" : "text-zinc-900 dark:text-white/40"
                                                                             )}>{b.name}</span>
                                                                         </button>
                                                                     );
@@ -694,7 +694,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
 
                                         <section className="space-y-4">
                                             <div className="flex items-center justify-between px-2">
-                                                <h3 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
+                                                <h3 className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
                                                     <History className="w-3 h-3" /> Neural Threads
                                                 </h3>
                                             </div>
@@ -708,7 +708,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                         }}
                                                         className={cn(
                                                             "w-full flex items-center justify-between p-4 rounded-2xl border transition-all group relative overflow-hidden",
-                                                            activeSessionId === s.id ? "bg-white/5 border-white/20 text-white shadow-xl" : "border-transparent text-white/30 hover:bg-white/[0.02]"
+                                                            activeSessionId === s.id ? "bg-white/5 border-white/20 text-zinc-900 dark:text-white shadow-xl" : "border-transparent text-zinc-900 dark:text-white/30 hover:bg-white/[0.02]"
                                                         )}
                                                     >
                                                         <div className="flex items-center gap-3 truncate">
@@ -717,7 +717,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                         </div>
                                                         {activeSessionId === s.id && (
                                                             <Trash2
-                                                                className="w-3 h-3 text-white/10 hover:text-red-500 transition-colors"
+                                                                className="w-3 h-3 text-zinc-900 dark:text-white/10 hover:text-red-500 transition-colors"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     deleteSession(e, s.id);
@@ -730,14 +730,14 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                         </section>
                                     </div>
 
-                                    <div className="p-8 border-t border-white/5 md:bg-black/20">
-                                        <div className="flex items-center gap-4 px-4 py-3 bg-white/[0.03] rounded-xl border border-white/5">
+                                    <div className="p-8 border-t border-zinc-200 dark:border-white/5 md:bg-black/20">
+                                        <div className="flex items-center gap-4 px-4 py-3 bg-white/[0.03] rounded-xl border border-zinc-200 dark:border-white/5">
                                             <div className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-black text-xs italic">
                                                 {userName?.[0] || 'U'}
                                             </div>
                                             <div className="flex flex-col truncate">
-                                                <span className="text-[10px] font-black text-white uppercase tracking-widest truncate">{userName || 'Neural Subject'}</span>
-                                                <span className="text-[8px] text-white/20 font-bold uppercase tracking-tighter">Biometric Uplink Active</span>
+                                                <span className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-widest truncate">{userName || 'Neural Subject'}</span>
+                                                <span className="text-[8px] text-zinc-900 dark:text-white/20 font-bold uppercase tracking-tighter">Biometric Uplink Active</span>
                                             </div>
                                         </div>
                                     </div>
@@ -753,7 +753,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: "auto", opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                className="md:hidden flex flex-col border-b border-white/5 p-4 gap-4 bg-white/[0.02] shrink-0"
+                                className="md:hidden flex flex-col border-b border-zinc-200 dark:border-white/5 p-4 gap-4 bg-white/[0.02] shrink-0"
                             >
                                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
                                     <button
@@ -768,7 +768,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                             onClick={() => setActiveSessionId(s.id)}
                                             className={cn(
                                                 "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest shrink-0 border transition-all truncate max-w-[140px] italic italic",
-                                                activeSessionId === s.id ? "bg-white/5 border-white/20 text-white shadow-lg" : "border-transparent text-white/30"
+                                                activeSessionId === s.id ? "bg-white/5 border-white/20 text-zinc-900 dark:text-white shadow-lg" : "border-transparent text-zinc-900 dark:text-white/30"
                                             )}
                                         >
                                             {s.title}
@@ -807,7 +807,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                 />
                                             ))}
                                         </div>
-                                        <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest ml-2">Thinking 🤤</span>
+                                        <span className="text-[10px] font-medium text-zinc-900 dark:text-white/40 uppercase tracking-widest ml-2">Thinking 🤤</span>
                                     </motion.div>
                                 )}
                             </div>
@@ -831,7 +831,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                             name="msg"
                                             placeholder="INITIALIZE COMMAND..."
                                             autoComplete="off"
-                                            className="w-full h-14 md:h-20 bg-white/[0.04] border border-white/10 rounded-2xl md:rounded-[2.5rem] px-5 md:px-10 py-4 md:py-6 text-xs md:text-base text-white placeholder:text-white/10 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all font-black italic tracking-widest uppercase"
+                                            className="w-full h-14 md:h-20 bg-white/[0.04] border border-white/10 rounded-2xl md:rounded-[2.5rem] px-5 md:px-10 py-4 md:py-6 text-xs md:text-base text-zinc-900 dark:text-white placeholder:text-zinc-900 dark:text-white/10 focus:outline-none focus:border-white/20 focus:bg-white/[0.06] transition-all font-black italic tracking-widest uppercase"
                                         />
                                     </div>
                                     <button

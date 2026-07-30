@@ -285,7 +285,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="relative w-full max-w-2xl bg-zinc-950/40 border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group"
+                    className="relative w-full max-w-2xl bg-white/40 dark:bg-zinc-950/40 border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group"
                 >
                     {/* Glass Surface Scanline */}
                     <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,transparent_45%,rgba(255,255,255,0.05)_50%,transparent_55%,transparent)] bg-[length:200%_200%] animate-[shimmer_5s_infinite] pointer-events-none" />
@@ -298,13 +298,13 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     <Sparkles className={cn("w-6 h-6", steps[currentStep].color.replace('bg-', 'text-'))} />
                                 </div>
                                 <div>
-                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Neural Protocol</h2>
-                                    <h1 className="text-xl font-black uppercase tracking-widest text-white italic">Onboarding v1</h1>
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-900 dark:text-white/40">Neural Protocol</h2>
+                                    <h1 className="text-xl font-black uppercase tracking-widest text-zinc-900 dark:text-white italic">Onboarding v1</h1>
                                 </div>
                             </div>
                             <button
                                 onClick={handleComplete}
-                                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-white/30 hover:text-white"
+                                className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-900 dark:text-white/30 hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -328,10 +328,10 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                         )}>
                                             Module {currentStep + 1} of {steps.length}
                                         </div>
-                                        <h3 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight italic mb-4 leading-none">
+                                        <h3 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white uppercase tracking-tight italic mb-4 leading-none">
                                             {steps[currentStep].title}
                                         </h3>
-                                        <p className="text-zinc-400 text-sm md:text-base font-medium leading-relaxed tracking-wide italic">
+                                        <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base font-medium leading-relaxed tracking-wide italic">
                                             {steps[currentStep].description}
                                         </p>
                                     </motion.div>
@@ -362,7 +362,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                             >
                                                 {(() => {
                                                     const Icon = steps[currentStep].icon;
-                                                    return <Icon className={cn("w-12 h-12 md:w-20 md:h-20 text-white relative z-10")} />;
+                                                    return <Icon className={cn("w-12 h-12 md:w-20 md:h-20 text-zinc-900 dark:text-white relative z-10")} />;
                                                 })()}
                                             </motion.div>
                                         </AnimatePresence>
