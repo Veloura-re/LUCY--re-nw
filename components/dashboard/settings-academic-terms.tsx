@@ -300,7 +300,7 @@ export function SettingsAcademicTerms() {
                     <Button 
                         onClick={handleCreateTerm}
                         disabled={creating || !formData.name || !formData.startDate || !formData.endDate}
-                        className="w-full bg-eduGreen-600 hover:bg-eduGreen-700 text-zinc-900 dark:text-white h-12 rounded-xl text-xs font-bold uppercase tracking-widest mt-4"
+                        className="w-full bg-eduGreen-600 hover:bg-eduGreen-700 text-white dark:text-zinc-900 h-12 rounded-xl text-xs font-bold uppercase tracking-widest mt-4"
                     >
                         {creating ? "Processing..." : "Register Period"}
                     </Button>

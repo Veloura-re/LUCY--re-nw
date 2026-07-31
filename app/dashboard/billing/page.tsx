@@ -498,7 +498,7 @@ export default function BillingPage() {
                                                 href={receipt.receiptUrl} 
                                                 target="_blank" 
                                                 rel="noreferrer" 
-                                                className="px-2.5 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white transition-all text-[10px] uppercase font-bold tracking-wider"
+                                                className="px-2.5 py-1 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all text-[10px] uppercase font-bold tracking-wider"
                                             >
                                                 View Receipt
                                             </a>

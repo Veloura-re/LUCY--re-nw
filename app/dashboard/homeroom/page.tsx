@@ -203,14 +203,14 @@ export default function HomeroomDashboard() {
 
                     <div className="flex flex-col items-end gap-6">
                         <div className="flex bg-white dark:bg-zinc-950 p-2 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl items-center gap-2">
-                            <Button variant="ghost" size="icon" onClick={() => setDate(subDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-white rounded-xl">
+                            <Button variant="ghost" size="icon" onClick={() => setDate(subDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-xl">
                                 <ChevronLeft className="w-5 h-5" />
                             </Button>
                             <div className="px-4 py-2 flex items-center gap-3 border-x border-zinc-200 dark:border-zinc-900">
                                 <Calendar className="w-4 h-4 text-eduGreen-500" />
                                 <span className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 text-[10px] uppercase tracking-widest">{format(date, 'MMMM dd, yyyy')}</span>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => setDate(addDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-white rounded-xl">
+                            <Button variant="ghost" size="icon" onClick={() => setDate(addDays(date, 1))} className="w-10 h-10 text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-xl">
                                 <ChevronRight className="w-5 h-5" />
                             </Button>
                         </div>
@@ -265,7 +265,7 @@ export default function HomeroomDashboard() {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-3">
-                                                    <p className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-white transition-colors tracking-tight text-base mb-0.5">{student.firstName} {student.lastName}</p>
+                                                    <p className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-eduGreen-600 dark:group-hover:text-eduGreen-400 transition-colors tracking-tight text-base mb-0.5">{student.firstName} {student.lastName}</p>
                                                     {authorizations[student.id] && (
                                                         <Badge className="bg-eduGreen-950/30 text-eduGreen-500 border-eduGreen-500/20 uppercase tracking-widest text-[8px] px-2 py-0.5 rounded-lg flex items-center gap-1">
                                                             <CheckCircle2 className="w-2.5 h-2.5" /> Verified Permit

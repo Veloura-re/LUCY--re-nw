@@ -188,7 +188,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                             <Clock className="w-4 h-4" /> DEADLINE: {format(new Date(selectedAssignment.dueDate), "PPP")}
                                         </div>
                                     </div>
-                                    <Button variant="ghost" onClick={() => setShowSubmitModal(false)} className="text-zinc-600 hover:text-white uppercase font-black tracking-widest text-[9px]">CLOSE</Button>
+                                    <Button variant="ghost" onClick={() => setShowSubmitModal(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase font-black tracking-widest text-[9px]">CLOSE</Button>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -217,7 +217,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                 <FileText className="w-5 h-5 text-zinc-600 dark:text-zinc-500" />
                                                                 <span className="text-[10px] font-black text-zinc-900 dark:text-white italic uppercase">{m.name || "Resource Link"}</span>
                                                             </div>
-                                                            <Download className="w-4 h-4 text-zinc-700 group-hover:text-white transition-colors" />
+                                                            <Download className="w-4 h-4 text-zinc-700 group-hover:text-zinc-900 dark:hover:text-white transition-colors" />
                                                         </a>
                                                     ))}
                                                 </div>
@@ -384,7 +384,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         )} />
                                                                         <span className="text-[10px] font-black uppercase tracking-widest italic">Neural Readiness: {preEval.status}</span>
                                                                     </div>
-                                                                    <Button variant="ghost" onClick={() => setPreEval(null)} className="h-6 w-6 p-0 text-zinc-600 dark:text-zinc-500 hover:text-white">
+                                                                    <Button variant="ghost" onClick={() => setPreEval(null)} className="h-6 w-6 p-0 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                                                                         <XCircle className="w-4 h-4" />
                                                                     </Button>
                                                                 </div>

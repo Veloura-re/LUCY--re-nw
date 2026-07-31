@@ -303,7 +303,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                                 variant="ghost" 
                                                 size="sm"
                                                 onClick={() => copyToken(inv.token)}
-                                                className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5 h-8 w-8 p-0"
+                                                className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5 h-8 w-8 p-0"
                                                 title="Copy Invite Link"
                                             >
                                                 {copiedToken === inv.token ? <CheckCircle2 className="w-4 h-4 text-eduGreen-500" /> : <Copy className="w-4 h-4" />}

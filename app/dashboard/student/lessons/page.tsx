@@ -95,7 +95,7 @@ export default function StudentLessonsPage() {
                     onClick={() => setSubjectFilter("ALL")}
                     className={cn(
                         "rounded-xl h-10 px-5 text-[10px] font-medium uppercase tracking-widest border transition-all whitespace-nowrap",
-                        subjectFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
+                        subjectFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
                     )}
                 >
                     All Subjects

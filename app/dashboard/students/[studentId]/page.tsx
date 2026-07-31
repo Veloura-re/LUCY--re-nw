@@ -248,7 +248,7 @@ function StudentProfileContent() {
                 <Button
                     onClick={() => router.back()}
                     variant="ghost"
-                    className="text-zinc-600 hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
+                    className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
                 >
                     <ArrowLeft className="w-4 h-4" /> Return to Registry
                 </Button>
@@ -381,7 +381,7 @@ function StudentProfileContent() {
                         </div>
 
                         <div className="md:col-span-2 flex justify-end gap-3 mt-4">
-                            <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-zinc-600 dark:text-zinc-500 hover:text-white font-black uppercase text-[10px] tracking-widest">Cancel</Button>
+                            <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white font-black uppercase text-[10px] tracking-widest">Cancel</Button>
                             <Button type="submit" isLoading={submitting} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black uppercase text-[10px] tracking-widest rounded-xl px-8">Save Changes</Button>
                         </div>
                     </form>

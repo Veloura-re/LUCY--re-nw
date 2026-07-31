@@ -157,7 +157,7 @@ export default function MarklistManagerPage() {
                     <Button
                         onClick={loadMore}
                         disabled={loadingMore}
-                        className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500 text-zinc-700 dark:text-zinc-300 hover:text-white rounded-full h-16 px-12 font-medium text-xs uppercase tracking-[0.2em] shadow-2xl transition-all disabled:opacity-50"
+                        className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white rounded-full h-16 px-12 font-medium text-xs uppercase tracking-[0.2em] shadow-2xl transition-all disabled:opacity-50"
                     >
                         {loadingMore ? <Loader2 className="w-5 h-5 animate-spin mr-3 text-eduGreen-500" /> : <Plus className="w-5 h-5 mr-3 text-eduGreen-500" />}
                         {loadingMore ? "Transmitting..." : "Load Additional Records"}

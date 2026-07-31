@@ -413,7 +413,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                             </div>
 
                             <div className="md:col-span-2 pt-4 border-t border-zinc-200 dark:border-zinc-900/50 flex justify-end gap-4">
-                                <Button type="button" onClick={() => setIsAdding(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] transition-all">
+                                <Button type="button" onClick={() => setIsAdding(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] transition-all">
                                     Cancel
                                 </Button>
                                 <Button type="submit" className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-10 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20">
@@ -501,7 +501,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                         <Link href={`/dashboard/students/${student.id}`}>
                                             <Button
                                                 variant="ghost"
-                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 hover:text-white transition-colors"
+                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 hover:text-zinc-900 dark:hover:text-white transition-colors"
                                             >
                                                 View Dossier <ChevronRight className="w-3 h-3 ml-1" />
                                             </Button>
@@ -520,7 +520,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                         <Link href={`/dashboard/students/${student.id}?tab=academic`}>
                                             <Button
                                                 variant="ghost"
-                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors"
+                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
                                             >
                                                 <FileText className="w-3 h-3 mr-2" /> Marklist
                                             </Button>
@@ -547,7 +547,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                         variant="outline"
                         disabled={page <= 1}
                         onClick={() => setPage(p => p - 1)}
-                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800"
+                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800"
                     >
                         Previous
                     </Button>
@@ -558,7 +558,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                         variant="outline"
                         disabled={page >= totalPages}
                         onClick={() => setPage(p => p + 1)}
-                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800"
+                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800"
                     >
                         Next
                     </Button>

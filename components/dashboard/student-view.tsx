@@ -78,7 +78,7 @@ export function StudentView({ user }: StudentProps) {
 
                 <div className="flex items-center gap-3 mb-1">
                     <Link href="/dashboard/messages">
-                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <MessageSquare className="mr-2 h-4 w-4" /> Secure Comms
                         </Button>
                     </Link>
@@ -124,7 +124,7 @@ export function StudentView({ user }: StudentProps) {
                                     </div>
                                 </div>
                                 <Link href="/dashboard/student/grades">
-                                    <Button variant="ghost" className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 hover:text-white group">
+                                    <Button variant="ghost" className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 hover:text-zinc-900 dark:hover:text-white group">
                                         View Curriculum <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </Link>
@@ -153,7 +153,7 @@ export function StudentView({ user }: StudentProps) {
                                                 <p className="text-xl font-medium text-zinc-900 dark:text-white">{Math.round(subject.avgGrade)}%</p>
                                             </div>
                                             <Link href="/dashboard/student/grades">
-                                                <Button size="icon" variant="ghost" className="text-zinc-800 dark:text-zinc-200 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-xl transition-all">
+                                                <Button size="icon" variant="ghost" className="text-zinc-800 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-xl transition-all">
                                                     <ArrowRight className="w-5 h-5" />
                                                 </Button>
                                             </Link>
@@ -201,7 +201,7 @@ export function StudentView({ user }: StudentProps) {
                                 </div>
                             )}
                             <Link href="/dashboard/student/timetable">
-                                <Button variant="ghost" className="w-full mt-8 text-[10px] font-medium uppercase tracking-widest text-zinc-600 hover:text-white group">
+                                <Button variant="ghost" className="w-full mt-8 text-[10px] font-medium uppercase tracking-widest text-zinc-600 hover:text-zinc-900 dark:hover:text-white group">
                                     Full Schedule <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
