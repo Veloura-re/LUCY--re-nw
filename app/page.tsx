@@ -288,8 +288,8 @@ export default function Home() {
   const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -50]);
 
   // Using standard framer-motion fade-in that wraps the container
-  const heroLine1 = "INTELLIGENCE";
-  const heroLine2 = "UNBOUND.";
+  const heroLine1 = "YOUR SCHOOL'S";
+  const heroLine2 = "DIGITAL HOME.";
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
@@ -488,7 +488,7 @@ export default function Home() {
                     transition={{ type: "spring", stiffness: 150, damping: 15 }}
                     className="text-slate-900 dark:text-white cursor-default transition-all duration-300 transform-gpu dark:hover:drop-shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
                   >
-                    {heroLine1 || "INTELLIGENCE"}
+                    {heroLine1 || "YOUR SCHOOL'S"}
                   </motion.div>
                   <motion.div 
                     whileHover={{ 
@@ -500,7 +500,7 @@ export default function Home() {
                     transition={{ type: "spring", stiffness: 150, damping: 15 }}
                     className="text-slate-400 dark:text-zinc-800 cursor-default transition-all duration-300 transform-gpu dark:hover:drop-shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:drop-shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                   >
-                    {heroLine2 || "UNBOUND."}
+                    {heroLine2 || "DIGITAL HOME."}
                   </motion.div>
                 </h1>
               </motion.div>
