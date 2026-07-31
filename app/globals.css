@@ -229,25 +229,19 @@ h6 {
   75%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
-/* View Transitions API (Curtain Effect Theme Toggle) */
+/* View Transitions API (Snatched Cloth Effect) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-/* Light to Dark: Dark (new) drops down over Light (old) */
-.dark::view-transition-old(root) {
-  z-index: 1;
-}
-.dark::view-transition-new(root) {
+/* The old theme is always on top, getting "snatched" away */
+::view-transition-old(root) {
   z-index: 2;
+  filter: url(#cloth-ripple);
+  transform-origin: top right;
 }
-
-/* Dark to Light: Dark (old) lifts up off Light (new) */
-:root:not(.dark)::view-transition-old(root) {
-  z-index: 2;
-}
-:root:not(.dark)::view-transition-new(root) {
+::view-transition-new(root) {
   z-index: 1;
 }

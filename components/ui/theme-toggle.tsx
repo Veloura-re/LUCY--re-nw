@@ -46,38 +46,36 @@ export function ThemeToggle({ className }: { className?: string }) {
         });
 
         transition.ready.then(() => {
-            let keyframes: Keyframe[] = [];
-            
-            if (isDark) {
-                // Switching Dark to Light: Old Dark (curtain) lifts up
-                keyframes = [
-                    { clipPath: 'inset(0 0 0 0)' },
-                    { clipPath: 'inset(0 0 100% 0)' }
-                ];
-                
-                document.documentElement.animate(keyframes, {
-                    duration: 600,
-                    easing: "cubic-bezier(0.87, 0, 0.13, 1)",
-                    pseudoElement: "::view-transition-old(root)",
-                });
-            } else {
-                // Switching Light to Dark: New Dark (curtain) drops down
-                keyframes = [
-                    { clipPath: 'inset(0 0 100% 0)' },
-                    { clipPath: 'inset(0 0 0 0)' }
-                ];
-                
-                document.documentElement.animate(keyframes, {
-                    duration: 600,
-                    easing: "cubic-bezier(0.87, 0, 0.13, 1)",
-                    pseudoElement: "::view-transition-new(root)",
-                });
-            }
+            const snatchKeyframes = [
+                { 
+                  clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 80%, 0% 60%, 0% 40%, 0% 20%)',
+                  transform: 'rotate(0deg) scale(1)' 
+                },
+                { 
+                  clipPath: 'polygon(100% 0%, 100% 0%, 100% 0%, 100% 0%, 120% 20%, 110% 40%, 130% 60%, 100% 80%)',
+                  transform: 'rotate(15deg) scale(0.9) translate(20%, -20%)' 
+                }
+            ];
+
+            document.documentElement.animate(snatchKeyframes, {
+                duration: 800,
+                easing: "cubic-bezier(0.7, 0, 0.3, 1)",
+                pseudoElement: "::view-transition-old(root)",
+            });
         });
     };
 
     return (
-        <button
+        <>
+            <svg className="hidden" aria-hidden="true" width="0" height="0" style={{ position: 'absolute' }}>
+                <defs>
+                    <filter id="cloth-ripple">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" xChannelSelector="R" yChannelSelector="G" />
+                    </filter>
+                </defs>
+            </svg>
+            <button
             onClick={handleToggle}
             type="button"
             aria-label={isDark ? "Switch to White Mode" : "Switch to Dark Mode"}
@@ -116,5 +114,6 @@ export function ThemeToggle({ className }: { className?: string }) {
                 )}
             </AnimatePresence>
         </button>
+        </>
     );
 }
