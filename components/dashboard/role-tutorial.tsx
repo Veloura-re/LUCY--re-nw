@@ -87,7 +87,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-orange-500"
         },
         {
-            title: "Expense Nexus",
+            title: "Expenses",
             description: "Institutional disbursement hub. Manage faculty payroll and track institutional outflow with cryptographic precision.",
             icon: Wallet,
             color: "bg-amber-500"
@@ -181,7 +181,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-purple-500"
         },
         {
-            title: "Achievement Nexus",
+            title: "Achievements",
             description: "Monitor your digital ascent. Track earned badges and institutional recognition for your scholarly efforts.",
             icon: Award,
             color: "bg-yellow-500"
@@ -213,7 +213,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-purple-500"
         },
         {
-            title: "Verification Nexus",
+            title: "Verifications",
             description: "Authorize ward activities and administrative requests with secure cryptographical validation.",
             icon: Fingerprint,
             color: "bg-eduGreen-600"

@@ -187,7 +187,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     </div>
 
                                     <div className="space-y-2 bg-slate-50 dark:bg-zinc-900/40 p-3 rounded-xl border border-slate-200 dark:border-zinc-900/50">
-                                        <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest mb-1">{type === "STUDENT" ? "Emergency Uplinks" : "Contact Number"}</p>
+                                        <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest mb-1">{type === "STUDENT" ? "Emergency Contacts" : "Contact Number"}</p>
                                         <div className="flex flex-col gap-1">
                                             <div className="flex items-center gap-2 text-slate-900 dark:text-white font-medium text-xs">
                                                 <Phone className="w-3 h-3 text-eduGreen-600" />
@@ -327,7 +327,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                         </div>
                                     </div>
                                     <div className="space-y-[2mm] bg-slate-50 dark:bg-white/5 p-[2.5mm] rounded-[2.5mm] border border-slate-200 dark:border-white/5">
-                                        <p className="text-[4.5pt] font-medium uppercase text-slate-400 dark:text-zinc-500 tracking-widest">{type === "STUDENT" ? "Emergency Uplinks" : "Contact Number"}</p>
+                                        <p className="text-[4.5pt] font-medium uppercase text-slate-400 dark:text-zinc-500 tracking-widest">{type === "STUDENT" ? "Emergency Contacts" : "Contact Number"}</p>
                                         <div className="flex flex-col gap-0.5">
                                             <p className="text-[8.5pt] font-medium text-slate-900 dark:text-white">{type === "STUDENT" ? (user.guardianPhone || "N/A") : (user.phone || "N/A")}</p>
                                             {type === "STUDENT" && user.secondaryPhone && (

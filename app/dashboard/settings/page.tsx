@@ -983,7 +983,7 @@ export default function SettingsPage() {
                                             {schoolForm.locations.length === 0 && (
                                                 <div className="py-12 bg-zinc-100/10 dark:bg-zinc-900/10 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] flex flex-col items-center justify-center text-zinc-800 dark:text-zinc-200">
                                                     <MapPin className="w-8 h-8 mb-4 opacity-10" />
-                                                    <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-700">No secondary institutional nodes integrated</p>
+                                                    <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-700">No secondary school accounts integrated</p>
                                                 </div>
                                             )}
                                         </div>
