@@ -8,7 +8,7 @@ async function main() {
     // 1. Ensure School
     let school = await prisma.school.findFirst();
     if (!school) {
-        school = await prisma.school.create({ data: { name: 'Marketing Academy', timezone: 'UTC' } });
+        school = await prisma.school.create({ data: { name: 'Marketing Academy', schoolCode: 'MKT101' } });
     }
 
     // 2. Ensure Grade
@@ -16,11 +16,17 @@ async function main() {
     if (!grade) {
         grade = await prisma.grade.create({ data: { name: 'Grade 10', level: 10, schoolId: school.id } });
     }
+    
+    // 2b. Ensure Class
+    let classRecord = await prisma.class.findFirst({ where: { gradeId: grade.id } });
+    if (!classRecord) {
+        classRecord = await prisma.class.create({ data: { name: '10A', gradeId: grade.id } });
+    }
 
     // 3. Ensure Subject
     let subject = await prisma.subject.findFirst({ where: { schoolId: school.id } });
     if (!subject) {
-        subject = await prisma.subject.create({ data: { name: 'Advanced Astrophysics', code: 'ASTRO101', schoolId: school.id, gradeId: grade.id } });
+        subject = await prisma.subject.create({ data: { name: 'Advanced Astrophysics', schoolId: school.id } });
     }
 
     // 4. Ensure Term
@@ -33,16 +39,12 @@ async function main() {
     let exam = await prisma.exam.create({
         data: {
             title: 'Midterm Astrophysics Assessment',
-            date: new Date(),
             availableFrom: new Date(),
-            availableUntil: new Date(),
-            status: 'DRAFT',
+            dueAt: new Date(),
             subjectId: subject.id,
-            schoolId: school.id,
-            gradeId: grade.id,
-            termId: term.id,
-            creatorId: userId,
-            type: 'EXAM',
+            classId: classRecord.id,
+            createdById: userId,
+            isPublished: false,
             config: {
                 durationMinutes: 60,
                 maxScore: 100,

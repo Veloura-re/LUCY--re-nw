@@ -19,10 +19,10 @@ jobs:
     name: ZAP Full Scan
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
       
       - name: Run OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.12.0
+        uses: zaproxy/action-full-scan@v0.13.0
         with:
           # TODO: If scanning staging, replace this with your staging domain (e.g., staging.lucy-re-nw.com)
           # For scheduled runs on main, this targets production.
