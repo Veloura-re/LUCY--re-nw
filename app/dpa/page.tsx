@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield } from "lucide-react";
@@ -30,7 +32,10 @@ export default function DPA() {
                         <Logo className="w-8 h-8" />
                         <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">LUCY OS</span>
                     </Link>
-                    <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    <div className="flex items-center gap-4">
+                        <ThemeToggle className="scale-90" />
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                    </div>
                 </div>
             </nav>
 
