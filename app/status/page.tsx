@@ -76,7 +76,7 @@ export default function Status() {
                     <section className="space-y-6">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">service_nodes</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">service_schools</span>
                         </Reveal>
                         <div className="space-y-px border border-slate-200 dark:border-white/5 overflow-hidden rounded-xl dark:rounded-none">
                             {services.map((svc, i) => (

@@ -57,7 +57,7 @@ export default function Partners() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <Globe className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">network_alliance // trusted_nodes</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">network_alliance // trusted_schools</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
@@ -84,7 +84,7 @@ export default function Partners() {
                     <section className="space-y-8">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">active_nodes // partner_registry</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">active_schools // partner_registry</span>
                         </Reveal>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-slate-200 dark:bg-white/10 border border-slate-200 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
                             {partners.map((p, i) => (

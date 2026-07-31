@@ -11,7 +11,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 const schoolTypes = [
     { type: "Primary School", icon: BookOpen, id: "PRIM", desc: "Foundation management — class registers, homework tracking, parent alerts, and grade-level analytics.", features: ["attendance tracking", "parent portal", "grade book", "timetable"] },
     { type: "High School", icon: School, id: "HIGH", desc: "Subject-based scheduling, department analytics, exam management, and individual teacher dashboards.", features: ["subject allocation", "exam locking", "attendance + analytics", "ai academic assistant"] },
-    { type: "University / College", icon: Users, id: "UNIV", desc: "Multi-faculty architecture, lecture scheduling, student enrollment management, and cross-department reporting.", features: ["department nodes", "enrollment tracking", "cross-faculty analytics", "permission layers"] },
+    { type: "University / College", icon: Users, id: "UNIV", desc: "Multi-faculty architecture, lecture scheduling, student enrollment management, and cross-department reporting.", features: ["department schools", "enrollment tracking", "cross-faculty analytics", "permission layers"] },
 ];
 
 const useCases = [
@@ -86,7 +86,7 @@ export default function Schools() {
                     <section className="space-y-8">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">deployment_types // institutional_nodes</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">deployment_types // institutional_schools</span>
                         </Reveal>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {schoolTypes.map((s, i) => (
@@ -153,7 +153,7 @@ export default function Schools() {
                                 <Link href="/demo"><Button className="h-14 px-10 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">view_demo</Button></Link>
                             </MagneticButton>
                             <MagneticButton>
-                                <Link href="/register"><Button variant="outline" className="h-14 px-10 rounded-xl dark:rounded-none border-slate-300 dark:border-white/20 text-[11px] uppercase tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">initialize_node</Button></Link>
+                                <Link href="/register"><Button variant="outline" className="h-14 px-10 rounded-xl dark:rounded-none border-slate-300 dark:border-white/20 text-[11px] uppercase tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">get_started</Button></Link>
                             </MagneticButton>
                         </div>
                     </Reveal>

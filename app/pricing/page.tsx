@@ -82,7 +82,7 @@ export default function Pricing() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                         {[
                             {
-                                tier: "Pilot Node",
+                                tier: "Pilot Plan",
                                 price: "Free",
                                 period: "up to 3 months",
                                 desc: "Full access for a single institution during evaluation period. No credit card required.",

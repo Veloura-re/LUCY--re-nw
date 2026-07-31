@@ -177,7 +177,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                         );
                     }) : (
                         <div className="py-20 text-center border border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-medium">
-                            No active personnel nodes detected.
+                            No active personnel schools detected.
                         </div>
                     )}
                 </div>

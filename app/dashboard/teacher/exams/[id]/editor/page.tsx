@@ -386,7 +386,7 @@ export default function ExamEditorPage() {
                         <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[3rem] p-12 max-w-2xl">
                             <DialogHeader>
                                 <DialogTitle className="text-4xl font-black text-zinc-900 dark:text-white italic uppercase italic mb-2">Cognitive Synthesis</DialogTitle>
-                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Convert drafts into valid assessment nodes</DialogDescription>
+                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Convert drafts into valid assessment schools</DialogDescription>
                             </DialogHeader>
                             <Textarea
                                 value={aiText}

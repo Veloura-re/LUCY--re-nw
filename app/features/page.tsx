@@ -21,7 +21,7 @@ const specs = [
 ];
 
 const logLines = [
-    "[system_log] node_01_initiate...",
+    "[system_log] server_01_initiate...",
     "[auth] crypt_handshake: success",
     "[attendance] ingest_vector: class_047",
     "[vault] hash_check: 4f8s...2x9 [OK]",

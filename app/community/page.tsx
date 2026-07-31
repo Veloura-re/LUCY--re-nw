@@ -21,7 +21,7 @@ const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-interface SocialNode {
+interface SocialLink {
     title: string;
     link: string;
     icon: any;
@@ -36,9 +36,9 @@ interface SocialNode {
 
 export default function CommunityPage() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const socialNodes: SocialNode[] = [
+    const socialLinks: SocialLink[] = [
         {
-            title: "telegram_node",
+            title: "telegram",
             link: "https://t.me/+ElIFqzvGBlYzMDBk",
             icon: Send,
             glowClass: "shadow-[0_0_30px_rgba(56,189,248,0.04)] hover:shadow-[0_0_50px_rgba(56,189,248,0.25)]",
@@ -48,7 +48,7 @@ export default function CommunityPage() {
             desc: "join the global community discussion, announcements, and live support group."
         },
         {
-            title: "discord_node",
+            title: "discord",
             link: "https://discord.gg/Kbm4XhzfMJ",
             icon: DiscordIcon,
             glowClass: "shadow-[0_0_30px_rgba(99,102,241,0.04)] hover:shadow-[0_0_50px_rgba(99,102,241,0.25)]",
@@ -69,7 +69,7 @@ export default function CommunityPage() {
             desc: "watch system walk-throughs, updates, features, and platform setup guidelines."
         },
         {
-            title: "tiktok_node",
+            title: "tiktok",
             link: "https://tiktok.com/@lucy.os",
             icon: Video,
             glowClass: "shadow-[0_0_30px_rgba(6,182,212,0.04)] hover:shadow-[0_0_50px_rgba(236,72,153,0.25)]",
@@ -79,7 +79,7 @@ export default function CommunityPage() {
             desc: "explore short-form feature reveals, dev logs, UI animations, and platform sneak peeks."
         },
         {
-            title: "instagram_node",
+            title: "instagram",
             link: "https://www.instagram.com/lucy_devs/",
             icon: Instagram,
             glowClass: "shadow-[0_0_30px_rgba(236,72,153,0.04)] hover:shadow-[0_0_50px_rgba(245,158,11,0.25)]",
@@ -89,7 +89,7 @@ export default function CommunityPage() {
             desc: "view clean UI previews, visual design assets, mockups, and layout updates."
         },
         {
-            title: "x_node",
+            title: "x_twitter",
             link: "https://x.com/GoodLuckfus",
             icon: XIcon,
             glowClass: "shadow-[0_0_30px_rgba(0,0,0,0.05)] hover:shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_30px_rgba(255,255,255,0.02)] dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.15)]",
@@ -158,9 +158,9 @@ export default function CommunityPage() {
                         </p>
                     </motion.div>
 
-                    {/* Nodes 3D Grid */}
+                    {/* Social Links Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-3xl mx-auto justify-center">
-                        {socialNodes.map((node, i) => (
+                        {socialLinks.map((node, i) => (
                             <motion.div
                                 key={node.title}
                                 initial={{ opacity: 0, scale: 0.8 }}
@@ -184,12 +184,12 @@ export default function CommunityPage() {
                 </div>
             </main>
 
-            <PageFooter id="COMMUNITY_NODES" links={[{ href: "/docs", label: "docs" }, { href: "/support", label: "support" }, { href: "/contact", label: "contact" }]} />
+            <PageFooter id="COMMUNITY_LINKS" links={[{ href: "/docs", label: "docs" }, { href: "/support", label: "support" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }
 
-function CommunityNodeCard({ node, hovered }: { node: SocialNode; hovered: boolean }) {
+function CommunityNodeCard({ node, hovered }: { node: SocialLink; hovered: boolean }) {
     const Icon = node.icon;
 
     return (

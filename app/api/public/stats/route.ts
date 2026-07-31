@@ -12,7 +12,7 @@ const getPublicStats = unstable_cache(
         const teachers = await prisma.user.count({ where: { role: { in: ["TEACHER", "HOMEROOM"] } } });
         const classes = await prisma.class.count();
 
-        return { schools, students, teachers, classes, totalNodes: schools + students + teachers + classes };
+        return { schools, students, teachers, classes, totalSchools: schools + students + teachers + classes };
     },
     ["public-stats-cache"],
     { revalidate: 300, tags: ["stats"] }
@@ -30,6 +30,6 @@ export async function GET(request: Request) {
     } catch (e: any) {
         console.error("[PublicStats/GET] Error:", e.message);
         // Return zeros only on actual failure
-        return secureJson({ schools: 0, students: 0, teachers: 0, classes: 0, totalNodes: 0 });
+        return secureJson({ schools: 0, students: 0, teachers: 0, classes: 0, totalSchools: 0 });
     }
 }

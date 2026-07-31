@@ -100,7 +100,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
         },
         {
             title: "Neural Diagnostic",
-            description: "Identify and bridge disconnected nodes. Ensure institutional integrity by linking orphaned faculty and scholars.",
+            description: "Identify and bridge disconnected schools. Ensure institutional integrity by linking orphaned faculty and scholars.",
             icon: Network,
             color: "bg-eduGreen-600"
         }
