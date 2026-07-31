@@ -644,9 +644,9 @@ export default function Home() {
                   whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
                   className="bg-white dark:bg-black p-12 space-y-4 cursor-default group dark:hover:bg-white/[0.02] transition-colors"
                 >
-                  <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest font-bold">{stat.label}</div>
+                  <div className="text-[9px] text-slate-500 dark:text-zinc-400 uppercase tracking-widest font-bold">{stat.label}</div>
                   <motion.div key={stat.val} initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} className="text-4xl font-bold tracking-tighter text-slate-900 dark:text-white">
-                    {stat.val}<span className="text-slate-400 dark:text-zinc-700 text-xl font-medium">{loaded ? stat.unit : ""}</span>
+                    {stat.val}<span className="text-slate-500 dark:text-zinc-500 text-xl font-medium ml-1">{loaded ? stat.unit : ""}</span>
                   </motion.div>
                   {/* Animated underline progress bar */}
                   <div className="h-px bg-slate-100 dark:bg-zinc-900 w-full overflow-hidden relative">
@@ -1093,7 +1093,7 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">
                 <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}>
-                  <Button className="h-14 px-12 bg-slate-900 text-zinc-900 dark:text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
+                  <Button className="h-14 px-12 bg-slate-900 text-white dark:text-black hover:bg-slate-800 dark:bg-white dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
                     system_boot
                   </Button>
                 </motion.div>

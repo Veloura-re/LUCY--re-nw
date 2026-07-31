@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { motion } from "framer-motion";
 
 export default function RegisterPage() {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -143,8 +144,6 @@ export default function RegisterPage() {
                     </p>
 
                     <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-4 py-8 px-12 rounded-[2rem] border border-slate-200 dark:border-zinc-900 bg-white/60 dark:bg-zinc-900/20 backdrop-blur-sm text-[10px] font-bold text-slate-400 dark:text-zinc-600 tracking-[0.4em] uppercase shadow-inner">
-                        <div className="flex items-center gap-2.5"><Lock className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Bio-Security</div>
-                        <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-zinc-800 hidden sm:block" />
                         <div className="flex items-center gap-2.5"><Globe className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Global Node</div>
                         <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-zinc-800 hidden sm:block" />
                         <div className="flex items-center gap-2.5"><Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Neural Edge</div>
@@ -155,6 +154,32 @@ export default function RegisterPage() {
             {/* Visual Decoration */}
             <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-eduGreen-500/10 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+            {/* Breathtaking 4-Month Trial Popup */}
+            <motion.div 
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.8, type: "spring", stiffness: 100, damping: 20 }}
+                className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+            >
+                <div className="relative group cursor-pointer pointer-events-auto overflow-hidden rounded-full p-[1px]">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-eduGreen-500 animate-[spin_4s_linear_infinite] opacity-70 group-hover:opacity-100" />
+                    <div className="relative flex items-center gap-4 bg-slate-50 dark:bg-zinc-950 px-8 py-4 rounded-full border border-transparent group-hover:bg-white dark:group-hover:bg-zinc-900 transition-colors shadow-2xl">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-emerald-500/20 animate-pulse" />
+                            <Sparkles className="w-5 h-5 text-emerald-600 dark:text-eduGreen-400 relative z-10" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                4-Month Unrestricted Trial <span className="flex h-2 w-2 rounded-full bg-emerald-500 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span></span>
+                            </p>
+                            <p className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase tracking-widest font-medium mt-0.5">
+                                Included with all new institutional nodes
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
         </div>
     );
 }
