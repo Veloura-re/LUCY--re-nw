@@ -21,7 +21,7 @@ const releases = [
         version: "v1.0.4", date: "2026-03-01", label: "stable", changes: [
             { type: "fix", text: "Resolved race condition in attendance sync during high-concurrency writes" },
             { type: "fix", text: "Parent notification latency reduced from 4s to 0.8s" },
-            { type: "improve", text: "Dashboard telemetry rendering optimized for low-bandwidth nodes" }
+            { type: "improve", text: "Dashboard telemetry rendering optimized for low-bandwidth schools" }
         ]
     },
     {
@@ -36,7 +36,7 @@ const releases = [
         version: "v1.0.2", date: "2026-02-05", label: "stable", changes: [
             { type: "new", text: "Automated parent lateness alerts via email on 3+ late records" },
             { type: "new", text: "Role-specific visual onboarding tutorial (Neural Briefing)" },
-            { type: "new", text: "MFA tokenization enforcement for Admin and Faculty nodes" },
+            { type: "new", text: "MFA tokenization enforcement for Admin and Faculty schools" },
             { type: "fix", text: "School deletion API cascade timeout resolved" }
         ]
     },

@@ -15,7 +15,7 @@ const clauses = [
     { num: "03", title: "Ransomware & Cyber Extortion", body: "The policy provides dedicated capital for cyber extortion threats, including ransomware response, forensic investigation, and deployment of specialized cybersecurity crisis management firms to resolve the threat rapidly." },
     { num: "04", title: "Business Interruption & Recovery", body: "In the event of a prolonged, catastrophic platform outage caused by a cyber attack, the insurance covers forensic IT review and data restoration costs, ensuring that LUCY OS has the immediate liquidity to rebuild and restore school accounts without delay." },
     { num: "05", title: "Regulatory Fines & Penalties", body: "Where legally insurable, our policy covers defense costs and fines levied by regulatory bodies (such as Information Regulators under POPIA or GDPR authorities) resulting directly from a data breach originating within our infrastructure." },
-    { num: "06", title: "Policy Limits & Verification", body: "We maintain coverage limits commensurate with our aggregated data risk across all active nodes. A redacted Certificate of Insurance (COI) detailing current coverage limits and the underwriting carrier is available to the Institution's legal or procurement team upon formal written request to our security officer." },
+    { num: "06", title: "Policy Limits & Verification", body: "We maintain coverage limits commensurate with our aggregated data risk across all active schools. A redacted Certificate of Insurance (COI) detailing current coverage limits and the underwriting carrier is available to the Institution's legal or procurement team upon formal written request to our security officer." },
 ];
 
 export default function Insurance() {

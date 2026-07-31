@@ -12,7 +12,7 @@ interface Stats {
     students: number;
     teachers: number;
     classes: number;
-    totalNodes: number;
+    totalSchools: number;
 }
 
 export default function Network() {
@@ -108,7 +108,7 @@ export default function Network() {
                         {[
                             { label: "schools_on_network", val: loaded ? stats!.schools.toString() : "…", icon: Globe },
                             { label: "scholar_records", val: loaded ? stats!.students.toLocaleString() : "…", icon: Activity },
-                            { label: "faculty_nodes", val: loaded ? stats!.teachers.toLocaleString() : "…", icon: Wifi },
+                            { label: "faculty_schools", val: loaded ? stats!.teachers.toLocaleString() : "…", icon: Wifi },
                             { label: "class_instances", val: loaded ? stats!.classes.toLocaleString() : "…", icon: Zap },
                         ].map((m, i) => (
                             <motion.div

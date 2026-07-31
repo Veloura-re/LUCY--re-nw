@@ -73,7 +73,7 @@ export default function About() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
                             { id: "ORIGIN_PROTOCOL", title: "The Genesis", body: "lucy was initiated to solve the latency between data ingestion and academic output. the protocol bypasses traditional administrative overhead in favor of direct neural coordination between roles." },
-                            { id: "OPERATIONAL_DIR", title: "System Goals", items: ["zero-friction scheduling for high-concurrency environments.", "cryptographically secured scholar identity matrices.", "distributed node consistency for isolated institutions.", "ai-driven cognitive routing for academic intelligence."] }
+                            { id: "OPERATIONAL_DIR", title: "System Goals", items: ["zero-friction scheduling for high-concurrency environments.", "cryptographically secured scholar identity matrices.", "distributed data consistency for isolated institutions.", "ai-driven cognitive routing for academic intelligence."] }
                         ].map((block, i) => (
                             <TiltCard key={i}>
                                 <motion.div

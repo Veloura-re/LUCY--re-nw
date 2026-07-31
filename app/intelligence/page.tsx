@@ -26,11 +26,11 @@ const personas = [
 
 const thoughtStream = [
     "> initializing neural mesh...",
-    "> loading persona_registry: 5 nodes",
+    "> loading persona_registry: 5 schools",
     "> cognitive_routing: ACTIVE",
     "> behavioral_pattern: NOMINAL",
     "> threat_detection: CLEAR",
-    "> scholar_nodes: MONITORED",
+    "> enrolled_students: MONITORED",
     "> uptime: 99.98% // 30_day_avg",
 ];
 
@@ -172,7 +172,7 @@ export default function Intelligence() {
                     <section className="space-y-8">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">persona_registry // {personas.length}_active_nodes</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">persona_registry // {personas.length}_active_schools</span>
                         </Reveal>
                         <div className="space-y-px overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
                             {personas.map((p, i) => (

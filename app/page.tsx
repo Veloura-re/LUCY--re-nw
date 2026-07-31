@@ -268,8 +268,8 @@ export default function Home() {
   };
   const [scrolled, setScrolled] = useState(false);
   const [time, setTime] = useState("");
-  const [liveStats, setLiveStats] = useState({ schools: 0, students: 0, teachers: 0, totalNodes: 0 });
-  const [animCounters, setAnimCounters] = useState({ schools: 0, students: 0, teachers: 0, totalNodes: 0 });
+  const [liveStats, setLiveStats] = useState({ schools: 0, students: 0, teachers: 0, totalSchools: 0 });
+  const [animCounters, setAnimCounters] = useState({ schools: 0, students: 0, teachers: 0, totalSchools: 0 });
 
   // Mouse cursor effects
   const mouseX = useMotionValue(-100);
@@ -318,7 +318,7 @@ export default function Home() {
             schools: Math.round(liveStats.schools * ease),
             students: Math.round(liveStats.students * ease),
             teachers: Math.round(liveStats.teachers * ease),
-            totalNodes: Math.round(liveStats.totalNodes * ease),
+            totalSchools: Math.round(liveStats.totalNodes * ease),
           });
           if (step >= steps) clearInterval(iv);
         }, 2000 / steps);
@@ -332,7 +332,7 @@ export default function Home() {
     { icon: Command, title: "core_control", desc: "direct command abstraction of all institutional variables." },
     { icon: Shield, title: "vault_security", desc: "quantum-resistant silos for high-sensitivity scholar data." },
     { icon: Activity, title: "live_telemetry", desc: "real-time ingestion of attendance and behavioral vectors." },
-    { icon: Database, title: "cluster_sync", desc: "distributed node consistency across the network." },
+    { icon: Database, title: "data_sync", desc: "distributed data consistency across the network." },
     { icon: Network, title: "neural_routing", desc: "autonomous scheduling via heuristic temporal mapping." },
     { icon: Search, title: "deep_audit", desc: "cryptographically verifiable logs for all operations." }
   ];
@@ -514,7 +514,7 @@ export default function Home() {
                 <Link href="/register">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button className="h-12 px-8 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-widest font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
-                      <span className="relative z-10">initialize_node</span>
+                      <span className="relative z-10">get_started</span>
                       <motion.div className="absolute inset-0 bg-slate-700 dark:bg-zinc-200 translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
                     </Button>
                   </motion.div>
@@ -547,7 +547,7 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.6 }} className="lg:col-span-4 space-y-4 pb-4">
               <TiltCard className="p-8 border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 cursor-default rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
                 <div className="flex justify-between items-center text-[10px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest font-bold">
-                  <span>node_status</span>
+                  <span>system_status</span>
                   <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="text-emerald-600 dark:text-white font-bold">● active</motion.span>
                 </div>
 
@@ -565,7 +565,7 @@ export default function Home() {
                 {/* Dashboard logs */}
                 <div className="bg-slate-100/60 dark:bg-black/60 p-4 font-mono text-[9px] text-slate-600 dark:text-zinc-600 space-y-1 border border-slate-200 dark:border-white/5 rounded-md dark:rounded-none font-medium">
                   {[
-                    { text: "> node_01 :: handshake_ok", delay: 0.2 },
+                    { text: "> system :: all_systems_go", delay: 0.2 },
                     { text: "> vault :: encrypted_active", delay: 0.5 },
                     { text: "> neural_engine :: nominal", delay: 0.8 },
                   ].map((line, i) => (
@@ -579,7 +579,7 @@ export default function Home() {
                 <Link href="/register" className="block">
                   <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                     <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-12 rounded-md dark:rounded-none text-xs uppercase tracking-widest font-bold shadow-sm dark:shadow-none transition-colors">
-                      initialize_node
+                      get_started
                     </Button>
                   </motion.div>
                 </Link>
@@ -631,9 +631,9 @@ export default function Home() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 dark:bg-white/5 overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
               {[
                 { label: "institutions", val: loaded ? animCounters.schools.toLocaleString() : "—", unit: " schools" },
-                { label: "scholar_nodes", val: loaded ? animCounters.students.toLocaleString() : "—", unit: " students" },
+                { label: "enrolled_students", val: loaded ? animCounters.students.toLocaleString() : "—", unit: " students" },
                 { label: "faculty_roster", val: loaded ? animCounters.teachers.toLocaleString() : "—", unit: " teachers" },
-                { label: "total_nodes", val: loaded ? animCounters.totalNodes.toLocaleString() : "—", unit: " active" },
+                { label: "active_schools", val: loaded ? animCounters.totalSchools.toLocaleString() : "—", unit: " active" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -741,7 +741,7 @@ export default function Home() {
                 {[
                   { ts: "08:24:11", msg: "attendance sync completed — 3 classes", col: "text-emerald-600 dark:text-zinc-500 font-bold" },
                   { ts: "08:23:47", msg: "parent alert dispatched — 2 absences", col: "text-slate-600 dark:text-zinc-600" },
-                  { ts: "08:22:30", msg: "exam locked by teacher_node_07", col: "text-slate-600 dark:text-zinc-600" },
+                  { ts: "08:22:30", msg: "exam locked by teacher_07", col: "text-slate-600 dark:text-zinc-600" },
                   { ts: "08:21:15", msg: "new scholar enrolled — school_id: 4f2a", col: "text-slate-600 dark:text-zinc-600" },
                   { ts: "08:20:02", msg: "vault backup completed — 0 errors", col: "text-slate-400 dark:text-zinc-700" },
                   { ts: "08:19:44", msg: "ai session started — persona: core", col: "text-slate-400 dark:text-zinc-700" },
@@ -774,19 +774,19 @@ export default function Home() {
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="space-y-12">
               <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
                 <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
-                <span className="text-[10px] uppercase tracking-[0.4em]">infrastructure_node</span>
+                <span className="text-[10px] uppercase tracking-[0.4em]">infrastructure</span>
               </div>
               <h2 className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                 distributed <br /><span className="text-slate-400 dark:text-zinc-800">architecture.</span>
               </h2>
               <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-md font-medium">
-                deploy isolated instances locally or through our cloud node. complete data sovereignty over your academic system.
+                deploy isolated instances locally or through our cloud server. complete data sovereignty over your academic system.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/network">
                   <motion.div whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }}>
                     <Button variant="outline" className="h-12 px-8 rounded-md dark:rounded-none border-slate-300 dark:border-white/20 text-[11px] uppercase tracking-widest text-slate-900 dark:text-white hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all font-bold shadow-sm dark:shadow-none">
-                      explore_nodes
+                      explore_schools
                     </Button>
                   </motion.div>
                 </Link>
@@ -824,7 +824,7 @@ export default function Home() {
 
               <Cpu className="w-8 h-8 text-slate-900 dark:text-white opacity-20 dark:opacity-10 relative z-10" />
 
-              {["node_01", "node_02", "node_03", "node_04"].map((n, i) => (
+              {["server_01", "server_02", "server_03", "server_04"].map((n, i) => (
                 <motion.div key={i} animate={{ opacity: [0.15, 0.8, 0.15] }} transition={{ duration: 2.3, repeat: Infinity, delay: i * 0.6 }} className={`absolute text-[8px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest font-bold ${i === 0 ? "top-4 left-4" : i === 1 ? "top-4 right-4" : i === 2 ? "bottom-4 left-4" : "bottom-4 right-4"}`}>
                   {n}
                 </motion.div>
@@ -842,7 +842,7 @@ export default function Home() {
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-slate-200 dark:bg-white/10 border border-slate-200 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
               {[
-                { step: "01", title: "Provision Node", desc: "Register your institution in under 5 minutes. Choose your plan, verify your domain, and initialize the system.", icon: "⬡" },
+                { step: "01", title: "Create Account", desc: "Register your institution in under 5 minutes. Choose your plan, verify your domain, and initialize the system.", icon: "⬡" },
                 { step: "02", title: "Import Data", desc: "Upload existing student rosters, faculty records, and timetables via CSV or invite users directly by email.", icon: "⬡" },
                 { step: "03", title: "Assign Roles", desc: "Grant Director, Teacher, Student, and Parent access. Role-based permissions enforce data isolation automatically.", icon: "⬡" },
                 { step: "04", title: "Go Live", desc: "The system activates. Attendance flows, AI responds, alerts dispatch. Real-time institutional intelligence begins.", icon: "⬡" },
@@ -940,7 +940,7 @@ export default function Home() {
               {[
                 { quote: "We went from 3 admin staff manually tracking attendance spreadsheets to zero. The system does it, alerts parents, and logs everything. Took us 3 days to deploy.", author: "T. Mokoena", role: "School Director, Western Cape", id: "OP_01" },
                 { quote: "The AI actually understands the curriculum. My students get real answers to maths problems, not generic LLM responses. It knows the subject.", author: "L. Dlamini", role: "Grade 10 Teacher, Johannesburg", id: "OP_02" },
-                { quote: "As a parent I get a notification the second my child is marked absent. Before LUCY, I'd find out at 6pm when they got home. That peace of mind is priceless.", author: "N. Osei", role: "Parent, Accra Node", id: "OP_03" },
+                { quote: "As a parent I get a notification the second my child is marked absent. Before LUCY, I'd find out at 6pm when they got home. That peace of mind is priceless.", author: "N. Osei", role: "Parent, Accra Campus", id: "OP_03" },
               ].map((t, i) => (
                 <TiltCard key={i} className="h-full">
                   <motion.div
@@ -991,7 +991,7 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { tier: "Pilot Node", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
+                { tier: "Pilot Plan", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
                 { tier: "Core Platform", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
                 { tier: "Enterprise", price: "Custom", period: "per institution", desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
               ].map((p, i) => (
@@ -1032,7 +1032,7 @@ export default function Home() {
                     )}
 
                     <div className="space-y-2 relative z-10">
-                      <div className="text-[9px] text-slate-400 dark:text-zinc-400 uppercase tracking-widest font-bold">{p.highlight ? "recommended_node" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
+                      <div className="text-[9px] text-slate-400 dark:text-zinc-400 uppercase tracking-widest font-bold">{p.highlight ? "recommended_plan" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
                       <h3 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-zinc-300 transition-colors font-orbitron">{p.tier}</h3>
                     </div>
                     
@@ -1088,7 +1088,7 @@ export default function Home() {
               initiate_connection
             </motion.h2>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-slate-500 dark:text-zinc-500 text-lg max-w-lg mx-auto leading-relaxed font-medium">
-              your school account awaits provisioning. the lucy platform is standing by.
+              your school account awaits setup. the lucy platform is standing by.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">
@@ -1126,7 +1126,7 @@ export default function Home() {
             </ul>
           </div>
           <div className="space-y-4">
-            <div className="text-slate-900 dark:text-white font-bold">nodes</div>
+            <div className="text-slate-900 dark:text-white font-bold">schools</div>
             <ul className="space-y-2 font-bold">
               {[{ href: "/intelligence", l: "intelligence" }, { href: "/network", l: "network" }, { href: "/docs", l: "docs" }, { href: "/status", l: "status" }, { href: "/changelog", l: "changelog" }, { href: "/roadmap", l: "roadmap" }].map(i => (
                 <li key={i.href}><Link href={i.href} className="hover:text-slate-900 dark:hover:text-white transition-colors">{i.l}</Link></li>
@@ -1159,7 +1159,7 @@ export default function Home() {
         </div>
         <div className="max-w-[1400px] mx-auto mt-24 pt-12 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-[9px] text-slate-400 dark:text-zinc-800 font-bold">
           <p>© 2026 LUCY_SYS // ALL DATA ENCRYPTED</p>
-          <motion.p animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 2.8 }}>node_id: lucy-47-x-beta // uptime: nominal</motion.p>
+          <motion.p animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 2.8 }}>server_id: lucy-47-x-beta // uptime: nominal</motion.p>
         </div>
       </footer>
       <PromoPopup />
