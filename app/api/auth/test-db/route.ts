@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     try {
@@ -9,17 +7,8 @@ export async function GET() {
         let queryError = null;
 
         try {
-            const pool = new Pool({ 
-                user: 'postgres.caeeusbhwrkelnffbbub',
-                password: 'Amsocookd2133#',
-                host: 'aws-1-eu-west-1.pooler.supabase.com',
-                port: 5432,
-                database: 'postgres',
-                ssl: { rejectUnauthorized: false }
-            });
-            const adapter = new PrismaPg(pool);
-            const prisma = new PrismaClient({ adapter });
-            
+            // 🛡️ Sentinel: Removed hardcoded database credentials.
+            // Using the centralized prisma instance configured via secure environment variables.
             await prisma.$queryRaw`SELECT 1`;
             poolTest = "success";
         } catch (e: any) {
