@@ -377,7 +377,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
-                        Transactions <span className="text-eduGreen-500 not-italic">Portal</span>
+                        Transactions
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Autonomous Resource Controller & Billing Terminal</p>
                 </div>
