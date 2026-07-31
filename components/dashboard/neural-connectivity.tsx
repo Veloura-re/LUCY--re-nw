@@ -88,7 +88,7 @@ export function NeuralConnectivity() {
                                     count={data.unmappedStudents.length}
                                     icon={Link2Off}
                                     color="text-red-600 dark:text-red-500"
-                                    desc="Students missing parent nodes"
+                                    desc="Students missing parent schools"
                                 />
                             )}
                             {data?.disconnectedParents?.length > 0 && (

@@ -44,7 +44,7 @@ export function AuthorizationRequestModal({ isOpen, onClose, studentId: initialS
                 }
             }
         } catch (error) {
-            console.error("Failed to link family nodes", error);
+            console.error("Failed to link family schools", error);
         } finally {
             setLoadingChildren(false);
         }

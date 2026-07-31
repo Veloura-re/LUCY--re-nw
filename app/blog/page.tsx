@@ -18,7 +18,7 @@ const posts = [
     {
         id: "02", category: "ai & personas", date: "2026-02-20", readTime: "5 min",
         title: "Building AI Personas That Actually Understand School Context",
-        excerpt: "How we trained subject-specific AI nodes — and why a generic LLM wrapper isn't enough for academic instruction.",
+        excerpt: "How we trained subject-specific AI schools — and why a generic LLM wrapper isn't enough for academic instruction.",
         featured: false,
     },
     {
