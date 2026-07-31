@@ -105,7 +105,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
     const handleRefresh = async () => {
         setIsRefreshing(true);
         await fetchDashboardMetrics();
-        toast.success("Telemetry matrix refreshed.");
+        toast.success("Telemetry system refreshed.");
         setIsRefreshing(false);
     };
 
@@ -155,7 +155,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                             className="h-12 px-5 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-2 transition-all active:scale-95"
                         >
                             <RefreshCw className={cn("w-4 h-4 text-emerald-400", isRefreshing && "animate-spin")} />
-                            Sync Matrix
+                            Sync System
                         </button>
 
                         <Link
@@ -242,7 +242,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                             ))}
                         </div>
 
-                        {/* Quick Action Matrix & System Health */}
+                        {/* Quick Action System & System Health */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             {/* Controls */}
                             <motion.div variants={cardVariants} className="lg:col-span-2 space-y-4">

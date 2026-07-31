@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Terminal, Send, Youtube, Mail, Video, Instagram } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
-import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, MatrixRain, TiltCard } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, SystemRain, TiltCard } from "@/components/public/animations";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -100,7 +100,7 @@ export default function CommunityPage() {
             desc: "follow live dev updates, quick changelogs, build notifications, and technical alerts."
         },
         {
-            title: "direct_transmission",
+            title: "direct_message",
             link: "/contact",
             icon: Mail,
             glowClass: "shadow-[0_0_30px_rgba(16,185,129,0.04)] hover:shadow-[0_0_50px_rgba(16,185,129,0.25)]",
@@ -118,9 +118,9 @@ export default function CommunityPage() {
             <CustomCursor />
             <AnimatedGrid />
             
-            {/* Background Matrix Rain */}
+            {/* Background Digital Rain */}
             <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-10 pointer-events-none">
-                <MatrixRain cols={18} />
+                <SystemRain cols={18} />
             </div>
 
             {/* Navbar */}
@@ -151,10 +151,10 @@ export default function CommunityPage() {
                             <Terminal className="w-3.5 h-3.5" /> community_network // connect
                         </div>
                         <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
-                            community <span className="text-slate-400 dark:text-zinc-800">uplinks.</span>
+                            community <span className="text-slate-400 dark:text-zinc-800">connections.</span>
                         </h1>
                         <p className="text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
-                            tap any node to establish a secure uplink to the lucy educational network.
+                            tap any node to establish a secure connection to the lucy educational network.
                         </p>
                     </motion.div>
 

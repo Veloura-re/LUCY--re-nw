@@ -12,7 +12,7 @@ const mentions = [
     { outlet: "EdTech Africa", date: "2026-02-28", title: "LUCY OS is quietly becoming the backbone for African schools scrambling to digitize.", category: "Feature" },
     { outlet: "TechCrunch Africa", date: "2026-02-15", title: "The school OS nobody saw coming — LUCY is rewriting institutional management for the continent.", category: "Profile" },
     { outlet: "SchoolLeader Digest", date: "2026-01-30", title: "How a zero-trust AI layer is keeping parent data private while boosting engagement 3x.", category: "Analysis" },
-    { outlet: "AI Horizons Podcast", date: "2026-01-20", title: "Episode 142: Neural routing for academic institutions — live demo with LUCY OS.", category: "Podcast" },
+    { outlet: "AI Horizons Podcast", date: "2026-01-20", title: "Episode 142: Smart routing for academic institutions — live demo with LUCY OS.", category: "Podcast" },
     { outlet: "Cape Business News", date: "2026-01-05", title: "Western Cape schools pilot LUCY OS as the province's smart-school initiative expands.", category: "News" },
 ];
 

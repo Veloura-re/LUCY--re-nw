@@ -53,7 +53,7 @@ export default function SLA() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-slate-500 dark:text-zinc-500 text-base leading-relaxed">
-                                operational guarantees, response matrix, and technical remedies defining platform reliability.
+                                operational guarantees, response system, and technical remedies defining platform reliability.
                             </p>
                         </Reveal>
                     </section>

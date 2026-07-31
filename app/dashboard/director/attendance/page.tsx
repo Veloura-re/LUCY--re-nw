@@ -238,7 +238,7 @@ export default function DirectorAttendancePage() {
                                     </div>
                                     <div>
                                         <CardTitle className="text-2xl font-black text-zinc-900 dark:text-white uppercase italic tracking-[0.2em]">TEACHER COMPLIANCE</CardTitle>
-                                        <CardDescription className="text-zinc-900 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px] mt-2">Real-time attendance submission matrix</CardDescription>
+                                        <CardDescription className="text-zinc-900 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px] mt-2">Real-time attendance submission system</CardDescription>
                                     </div>
                                 </div>
                                 <Sparkles className="w-6 h-6 text-emerald-500/30" />
@@ -314,7 +314,7 @@ export default function DirectorAttendancePage() {
                                     </div>
                                     <div>
                                         <CardTitle className="text-2xl font-black text-zinc-900 dark:text-white uppercase italic tracking-[0.2em]">STAFF ROLL CALL</CardTitle>
-                                        <CardDescription className="text-zinc-900 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px] mt-2">Official faculty presence matrix</CardDescription>
+                                        <CardDescription className="text-zinc-900 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px] mt-2">Official faculty presence system</CardDescription>
                                     </div>
                                 </div>
 

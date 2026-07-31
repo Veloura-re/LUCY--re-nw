@@ -208,7 +208,7 @@ export default function StudentDashboard() {
                                 <ClipboardCheck className="w-6 h-6 text-zinc-900 dark:text-white" />
                             </div>
                             <div>
-                                <p className="text-zinc-900 dark:text-white/60 text-[10px] font-bold uppercase tracking-[0.2em] italic">Task Matrix</p>
+                                <p className="text-zinc-900 dark:text-white/60 text-[10px] font-bold uppercase tracking-[0.2em] italic">Task System</p>
                                 <h4 className="text-zinc-900 dark:text-white font-black text-2xl italic uppercase tracking-tight">Academic Planner</h4>
                                 <p className="text-eduGreen-100/70 text-[10px] font-medium mt-1 uppercase tracking-widest flex items-center gap-2">
                                     Execute Coursework <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
@@ -229,7 +229,7 @@ export default function StudentDashboard() {
                             </div>
                             <div>
                                 <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Cognitive Feed</p>
-                                <h4 className="text-zinc-900 dark:text-white font-medium text-lg">Neural Insights</h4>
+                                <h4 className="text-zinc-900 dark:text-white font-medium text-lg">Smart Insights</h4>
                                 <p className="text-eduGreen-500 text-[10px] font-medium mt-1 uppercase tracking-widest flex items-center gap-1">
                                     Check AI Feedback <ArrowRight className="w-3 h-3" />
                                 </p>

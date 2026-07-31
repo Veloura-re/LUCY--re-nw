@@ -79,7 +79,7 @@ export function InviteFacultyModal({ isOpen, onClose, onSuccess }: InviteFaculty
                                 {inviteResult ? "Deployment Successful" : "Invite Academic Personnel"}
                             </DialogTitle>
                             <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">
-                                {inviteResult ? "Secure uplink established" : "Generate secure access token for faculty member"}
+                                {inviteResult ? "Secure connection established" : "Generate secure access token for faculty member"}
                             </DialogDescription>
                         </div>
                     </div>

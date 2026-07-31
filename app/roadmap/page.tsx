@@ -16,7 +16,7 @@ const quarters = [
             { title: "Attendance module with parent alerts", done: true },
             { title: "Grading + exam locking engine", done: true },
             { title: "Timetable generator v1", done: true },
-            { title: "AI neural assistant (core persona)", done: true },
+            { title: "AI assistant (core persona)", done: true },
         ]
     },
     {
@@ -42,7 +42,7 @@ const quarters = [
         label: "Q3 2026 — vision", done: false,
         items: [
             { title: "On-premise deployment toolkit", done: false },
-            { title: "Multi-language neural interface", done: false },
+            { title: "Multi-language interface", done: false },
             { title: "Predictive dropout risk scoring", done: false },
             { title: "Open API for third-party integrations", done: false },
         ]
@@ -87,7 +87,7 @@ export default function Roadmap() {
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
-                                the planned trajectory of the lucy neural matrix. publicly transparent, quarterly-gated development vectors.
+                                the planned trajectory of the lucy platform. publicly transparent, quarterly-gated development vectors.
                             </p>
                         </Reveal>
                     </section>

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
         const html = `
             <div style="font-family: sans-serif; background: #0a0a0a; color: #fff; padding: 40px; border: 1px solid #147A52; border-radius: 12px;">
-                <h1 style="color: #00ff9d; font-size: 24px; text-transform: uppercase; letter-spacing: 0.2em;">Establish Uplink: Handshake</h1>
+                <h1 style="color: #00ff9d; font-size: 24px; text-transform: uppercase; letter-spacing: 0.2em;">Establish Connection: Handshake</h1>
                 <p style="color: #888; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em;">New connection request received.</p>
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
                 <div style="margin-bottom: 20px;">
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        console.error("[Uplink API Error]:", error);
+        console.error("[Connection API Error]:", error);
         return NextResponse.json(
             { error: "Transmission failed. Error: " + error.message },
             { status: 500 }

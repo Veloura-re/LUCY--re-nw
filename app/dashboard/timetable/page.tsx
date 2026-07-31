@@ -142,7 +142,7 @@ export default function TimetableManagementPage() {
             }
         } catch (e) {
             setAlertConfig({
-                title: "Protocol Fault",
+                title: "System Fault",
                 message: "Failed to synchronize period data with core infrastructure.",
                 isOpen: true,
                 variant: "error"
@@ -226,7 +226,7 @@ export default function TimetableManagementPage() {
             const data = (await res.json()) as any;
             if (res.ok) {
                 setAlertConfig({
-                    title: "Matrix Generated",
+                    title: "System Generated",
                     message: data.message,
                     isOpen: true,
                     variant: "success"

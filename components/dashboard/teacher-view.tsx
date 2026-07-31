@@ -468,7 +468,7 @@ export function TeacherView({ user, initialData }: {
                                     </div>
                                 ) : (
                                     <div className="py-12 bg-zinc-200 dark:bg-white/5 border border-dashed border-zinc-300 dark:border-white/10 rounded-[2rem] text-center">
-                                        <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest italic">Neural Registry Clear</p>
+                                        <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest italic">Smart Registry Clear</p>
                                     </div>
                                 )}
                             </div>

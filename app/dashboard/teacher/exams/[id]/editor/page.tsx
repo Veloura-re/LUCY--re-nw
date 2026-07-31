@@ -281,7 +281,7 @@ export default function ExamEditorPage() {
                                     {q.type === "SHORT" && (
                                         <div className="space-y-4">
                                             <div className="space-y-2">
-                                                <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] ml-2">Correct Answer Matrix</label>
+                                                <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] ml-2">Correct Answer System</label>
                                                 <Input
                                                     value={q.answer}
                                                     onChange={e => updateQuestion(i, { answer: e.target.value })}
@@ -380,7 +380,7 @@ export default function ExamEditorPage() {
                         <DialogTrigger asChild>
                             <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-[2rem] border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
                                 <FileText className="w-5 h-5" />
-                                <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Neural Write</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Smart Write</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[3rem] p-12 max-w-2xl">

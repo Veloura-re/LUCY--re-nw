@@ -57,7 +57,7 @@ export default async function DashboardLayout({
         }
     }
     if (!dbUser) {
-        // Handle database uplink interruptions or missing profiles
+        // Handle database connection interruptions or missing profiles
         return (
             <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-6">

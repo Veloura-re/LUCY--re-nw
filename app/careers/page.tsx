@@ -10,7 +10,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 
 const jobs = [
     { id: "J_01", title: "Full-Stack Engineer", dept: "Core Systems", type: "Remote", level: "Senior", tags: ["Next.js", "PostgreSQL", "Prisma"] },
-    { id: "J_02", title: "AI/ML Engineer", dept: "Neural Engine", type: "Remote", level: "Senior", tags: ["Python", "OpenAI", "LangChain"] },
+    { id: "J_02", title: "AI/ML Engineer", dept: "Smart Engine", type: "Remote", level: "Senior", tags: ["Python", "OpenAI", "LangChain"] },
     { id: "J_03", title: "Security Engineer", dept: "Vault Protocol", type: "Remote", level: "Mid-Senior", tags: ["Pen Testing", "Auth", "RBAC"] },
     { id: "J_04", title: "Product Designer", dept: "Interface Layer", type: "Remote", level: "Mid", tags: ["Figma", "Motion", "Systems Design"] },
     { id: "J_05", title: "School Success Manager", dept: "Institutional Relations", type: "Hybrid", level: "Mid", tags: ["Education", "Onboarding", "SaaS"] },
@@ -56,7 +56,7 @@ export default function Careers() {
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                join the<br /><GlitchText className="text-slate-300 dark:text-zinc-800">matrix.</GlitchText>
+                                join the<br /><GlitchText className="text-slate-300 dark:text-zinc-800">system.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">

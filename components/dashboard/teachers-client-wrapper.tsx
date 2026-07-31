@@ -226,7 +226,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
                     { label: "Active Faculty", value: activeStat, sub: "Verified Personnel" },
-                    { label: "Pending Access", value: pendingStat, sub: "Awaiting Uplink" }
+                    { label: "Pending Access", value: pendingStat, sub: "Awaiting Connection" }
                 ].map((stat, i) => (
                     <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20">
                         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">{stat.label}</p>

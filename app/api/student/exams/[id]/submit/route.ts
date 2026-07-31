@@ -34,7 +34,7 @@ export async function POST(
         let totalPoints = 0;
         const gradingDetails: any[] = [];
 
-        // Advanced Grading Matrix
+        // Advanced Grading System
         for (const q of questions) {
             const studentAnswer = answers[q.id];
             const weight = q.points || 10;

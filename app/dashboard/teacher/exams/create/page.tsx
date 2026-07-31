@@ -199,7 +199,7 @@ function CreateExamContent() {
                 setAiText("");
             }
         } catch (e) {
-            toast.error("Neural Synthesis Failed");
+            toast.error("Smart Synthesis Failed");
         } finally {
             setExtracting(false);
         }
@@ -293,7 +293,7 @@ function CreateExamContent() {
                                             <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center mx-auto text-zinc-700">
                                                 <List className="w-8 h-8" />
                                             </div>
-                                            <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No questions defined in this protocol.</p>
+                                            <p className="text-zinc-600 font-medium uppercase tracking-widest text-xs">No questions defined in this system.</p>
                                         </div>
                                     ) : (
                                         questions.map((q, i) => (
@@ -343,7 +343,7 @@ function CreateExamContent() {
                                         <Settings className="w-6 h-6 text-zinc-600 dark:text-zinc-500" /> Advanced Control
                                     </DialogTitle>
                                     <DialogDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px]">
-                                        Configure Neural Assessment Parameters
+                                        Configure Smart Assessment Parameters
                                     </DialogDescription>
                                 </DialogHeader>
                                 <div className="p-8 space-y-8">
@@ -366,7 +366,7 @@ function CreateExamContent() {
 
                                         <div className="flex items-center justify-between">
                                             <div className="space-y-0.5">
-                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Shuffle Matrix</Label>
+                                                <Label className="text-xs font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-tight">Shuffle System</Label>
                                                 <p className="text-[10px] text-zinc-600 font-medium">Randomize question sequence for each user</p>
                                             </div>
                                             <Switch
@@ -411,7 +411,7 @@ function CreateExamContent() {
                                         onClick={() => setIsSettingsOpen(false)}
                                         className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium uppercase tracking-widest h-12 rounded-xl transition-all"
                                     >
-                                        Apply Matrix Parameters
+                                        Apply System Parameters
                                     </Button>
                                 </div>
                             </DialogContent>
@@ -517,7 +517,7 @@ function CreateExamContent() {
                                         </div>
                                     </div>
                                     <Button variant="ghost" className="mt-8 text-zinc-600 dark:text-zinc-500 group-hover:text-eduGreen-500 font-medium text-[9px] uppercase tracking-widest p-0 justify-start">
-                                        Initialize Protocol <Plus className="ml-2 w-3 h-3" />
+                                        Initialize System <Plus className="ml-2 w-3 h-3" />
                                     </Button>
                                 </Card>
                             </motion.div>
@@ -561,7 +561,7 @@ function CreateExamContent() {
                                             <Sparkles className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-medium text-zinc-900 dark:text-white italic uppercase">Neural Synthesis</h3>
+                                            <h3 className="text-xl font-medium text-zinc-900 dark:text-white italic uppercase">Smart Synthesis</h3>
                                             <p className="text-zinc-600 font-medium text-[8px] mt-1 uppercase tracking-widest">AI Assisted • Topic Driven</p>
                                         </div>
                                     </div>
@@ -765,14 +765,14 @@ function CreateExamContent() {
                         <DialogTrigger asChild>
                             <Button className="bg-white dark:bg-zinc-950 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-purple-400 h-14 px-6 rounded-full border border-zinc-300 dark:border-zinc-800 shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-3">
                                 <FileText className="w-5 h-5" />
-                                <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">Neural Write</span>
+                                <span className="text-[10px] font-medium uppercase tracking-widest hidden md:inline">Smart Write</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white rounded-[2rem] w-[95vw] sm:max-w-2xl p-0 max-h-[85vh] overflow-y-auto shadow-2xl">
                             <Tabs defaultValue="draft" className="w-full">
                                 <TabsList className="w-full h-12 bg-zinc-100/50 dark:bg-zinc-900/50 border-b border-zinc-300 dark:border-zinc-800 rounded-none p-0 flex">
                                     <TabsTrigger value="draft" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 data-[state=active]:text-purple-400">
-                                        Neural Draft
+                                        Smart Draft
                                     </TabsTrigger>
                                     <TabsTrigger value="guide" className="flex-1 rounded-none data-[state=active]:bg-zinc-100 dark:bg-zinc-900 border-none font-medium text-[9px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 data-[state=active]:text-purple-400">
                                         How it Works
@@ -782,7 +782,7 @@ function CreateExamContent() {
                                 <TabsContent value="draft" className="m-0 focus-visible:ring-0">
                                     <DialogHeader className="p-8 bg-zinc-100/10 dark:bg-zinc-900/10">
                                         <DialogTitle className="text-2xl font-medium italic uppercase flex items-center gap-3">
-                                            <Sparkles className="w-6 h-6 text-purple-500" /> Neural Architect
+                                            <Sparkles className="w-6 h-6 text-purple-500" /> Smart Architect
                                         </DialogTitle>
                                         <DialogDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px]">
                                             Synthesizing Assessment Protocol from Raw Data
@@ -894,7 +894,7 @@ function CreateExamContent() {
                                     <div className="p-10 space-y-8">
                                         <div className="space-y-2">
                                             <h3 className="text-xl font-medium text-zinc-900 dark:text-white italic uppercase">How it Works</h3>
-                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Mastering the Neural Architect</p>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-medium uppercase tracking-widest">Mastering the Smart Architect</p>
                                         </div>
 
                                         <div className="space-y-6">
@@ -954,7 +954,7 @@ export default function CreateExamPage() {
             <div className="min-h-screen bg-white dark:bg-zinc-950 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="w-8 h-8 animate-spin text-eduGreen-500" />
-                    <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] animate-pulse">Initializing Synthesis Matrix</p>
+                    <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] animate-pulse">Initializing Synthesis System</p>
                 </div>
             </div>
         }>

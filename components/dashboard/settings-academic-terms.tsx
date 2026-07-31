@@ -83,7 +83,7 @@ export function SettingsAcademicTerms() {
                 }
             }
         } catch (e) {
-            toast.error("Network error during uplink.");
+            toast.error("Network error during connection.");
         } finally {
             setSavingSettings(false);
         }

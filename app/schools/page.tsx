@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, School, CheckCircle, Users, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, NeuralWeb, MagneticButton, Counter, HexGrid } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, SmartWeb, MagneticButton, Counter, HexGrid } from "@/components/public/animations";
 
 const schoolTypes = [
     { type: "Primary School", icon: BookOpen, id: "PRIM", desc: "Foundation management — class registers, homework tracking, parent alerts, and grade-level analytics.", features: ["attendance tracking", "parent portal", "grade book", "timetable"] },
@@ -48,7 +48,7 @@ export default function Schools() {
 
                     {/* Hero */}
                     <section className="relative overflow-hidden space-y-10 min-h-[55vh] flex flex-col justify-center">
-                        <div className="absolute inset-0 opacity-25 dark:opacity-25 opacity-[0.05]"><NeuralWeb nodeCount={22} /></div>
+                        <div className="absolute inset-0 opacity-25 dark:opacity-25 opacity-[0.05]"><SmartWeb nodeCount={22} /></div>
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">

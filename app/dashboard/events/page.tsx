@@ -187,7 +187,7 @@ export default function EventsPage() {
             <Dialog open={isCreating} onOpenChange={setIsCreating}>
                 <DialogContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-6 md:p-10 max-w-[95vw] md:max-w-xl max-h-[85vh] overflow-y-auto shadow-[0_0_100px_rgba(0,0,0,0.8)]">
                     <DialogHeader className="mb-8">
-                        <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight">Event Matrix</DialogTitle>
+                        <DialogTitle className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tight">Event System</DialogTitle>
                         <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Initialize new institutional event sequence</CardDescription>
                     </DialogHeader>
                     {createLoading ? (

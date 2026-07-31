@@ -186,7 +186,7 @@ function SignalWallPreview() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="space-y-2">
             <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
               <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
-              <span className="text-[10px] uppercase tracking-[0.4em]">signal_wall // live_transmissions</span>
+              <span className="text-[10px] uppercase tracking-[0.4em]">signal_wall // live_messages</span>
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.3, repeat: Infinity }} className="w-1.5 h-1.5 bg-emerald-500 dark:bg-white rounded-full" />
             </div>
           </motion.div>
@@ -245,7 +245,7 @@ function SignalWallPreview() {
         <div className="text-center">
           <Link href="/wall">
             <motion.div whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }} className="inline-block px-10 py-4 border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/30 text-[10px] uppercase tracking-widest text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white transition-all bg-white dark:bg-transparent rounded-md dark:rounded-none shadow-sm dark:shadow-none font-bold">
-              leave_your_transmission →
+              leave_your_message →
             </motion.div>
           </Link>
         </div>
@@ -333,7 +333,7 @@ export default function Home() {
     { icon: Shield, title: "vault_security", desc: "quantum-resistant silos for high-sensitivity scholar data." },
     { icon: Activity, title: "live_telemetry", desc: "real-time ingestion of attendance and behavioral vectors." },
     { icon: Database, title: "data_sync", desc: "distributed data consistency across the network." },
-    { icon: Network, title: "neural_routing", desc: "autonomous scheduling via heuristic temporal mapping." },
+    { icon: Network, title: "smart_routing", desc: "autonomous scheduling via heuristic temporal mapping." },
     { icon: Search, title: "deep_audit", desc: "cryptographically verifiable logs for all operations." }
   ];
 
@@ -567,7 +567,7 @@ export default function Home() {
                   {[
                     { text: "> system :: all_systems_go", delay: 0.2 },
                     { text: "> vault :: encrypted_active", delay: 0.5 },
-                    { text: "> neural_engine :: nominal", delay: 0.8 },
+                    { text: "> smart_engine :: nominal", delay: 0.8 },
                   ].map((line, i) => (
                     <motion.div key={i} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: line.delay + 1 }}>
                       {line.text}
@@ -736,7 +736,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }} className="space-y-6">
-              <div className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-zinc-600 font-bold">neural_activity_log</div>
+              <div className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-zinc-600 font-bold">smart_activity_log</div>
               <div className="border border-slate-200 dark:border-white/5 bg-white dark:bg-black p-6 font-mono text-[10px] space-y-2 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
                 {[
                   { ts: "08:24:11", msg: "attendance sync completed — 3 classes", col: "text-emerald-600 dark:text-zinc-500 font-bold" },

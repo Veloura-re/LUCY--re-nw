@@ -23,7 +23,7 @@ export default function DashboardError({
                 Connection Interrupted
             </h2>
             <p className="text-zinc-600 dark:text-zinc-500 max-w-md mb-8 font-medium uppercase tracking-widest text-[10px]">
-                The institutional uplink experienced a momentary disruption during cold-start. Re-establishing the secure connection typically resolves this.
+                The institutional connection experienced a momentary disruption during cold-start. Re-establishing the secure connection typically resolves this.
             </p>
             <button
                 onClick={reset}

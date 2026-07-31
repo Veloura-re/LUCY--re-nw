@@ -47,7 +47,7 @@ export default function FacultyAuthorizationsPage() {
                 <div className="w-20 h-20 border-2 border-eduGreen-500/20 rounded-full animate-ping absolute inset-0" />
                 <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin relative z-10" />
             </div>
-            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Personal Authorization Nexus...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Personal Authorizations...</p>
         </div>
     );
 
@@ -67,7 +67,7 @@ export default function FacultyAuthorizationsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <div className="h-[1px] w-8 bg-eduGreen-500" />
-                        <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.5em]">Neural Link Status: Active</span>
+                        <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.5em]">Connection Status: Active</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white uppercase italic leading-none">
                         LEAVE <span className="text-eduGreen-500">AUTHORIZATIONS</span>
@@ -184,7 +184,7 @@ export default function FacultyAuthorizationsPage() {
                                 <FileText className="w-20 h-20 text-zinc-800 dark:text-zinc-200 mx-auto relative z-10" />
                             </div>
                             <div className="text-zinc-600 font-black uppercase tracking-[0.8em] text-xl italic ml-4">LEDGER VACANCY</div>
-                            <p className="text-zinc-800 dark:text-zinc-200 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active leave permits recorded in neural registry.</p>
+                            <p className="text-zinc-800 dark:text-zinc-200 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active leave permits recorded in system registry.</p>
                             <Button
                                 onClick={() => setShowModal(true)}
                                 variant="ghost"

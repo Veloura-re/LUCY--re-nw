@@ -11,7 +11,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 const releases = [
     {
         version: "v1.0.5", date: "2026-07-04", label: "stable", changes: [
-            { type: "new", text: "Redesigned Contact node into a 4-step sequential wizard uplink interface" },
+            { type: "new", text: "Redesigned Contact node into a 4-step sequential wizard connection interface" },
             { type: "new", text: "Overhauled Presentation Deck with 13 slides, stat counters, and 3D hover navigation" },
             { type: "improve", text: "Standardized platform aesthetic to strict monochrome (zinc/white) terminal style" },
             { type: "improve", text: "Updated global browser metadata title to 'LUCY | Academia'" }
@@ -27,7 +27,7 @@ const releases = [
     {
         version: "v1.0.3", date: "2026-02-18", label: "stable", changes: [
             { type: "new", text: "AI multi-session chat support with per-user storage isolation" },
-            { type: "new", text: "Geography Teacher persona added to the neural persona registry" },
+            { type: "new", text: "Geography Teacher persona added to the smart persona registry" },
             { type: "fix", text: "Fixed mobile layout overflow on AI chat workspace" },
             { type: "improve", text: "Redesigned Director Institutional Pulse metrics" }
         ]
@@ -35,7 +35,7 @@ const releases = [
     {
         version: "v1.0.2", date: "2026-02-05", label: "stable", changes: [
             { type: "new", text: "Automated parent lateness alerts via email on 3+ late records" },
-            { type: "new", text: "Role-specific visual onboarding tutorial (Neural Briefing)" },
+            { type: "new", text: "Role-specific visual onboarding tutorial (Smart Briefing)" },
             { type: "new", text: "MFA tokenization enforcement for Admin and Faculty schools" },
             { type: "fix", text: "School deletion API cascade timeout resolved" }
         ]
@@ -49,9 +49,9 @@ const releases = [
     },
     {
         version: "v1.0.0", date: "2026-01-01", label: "genesis", changes: [
-            { type: "new", text: "Initial system boot: core scheduling, attendance, and grading matrix" },
+            { type: "new", text: "Initial system boot: core scheduling, attendance, and grading system" },
             { type: "new", text: "Multi-role auth: Director, Principal, Teacher, Student, Parent" },
-            { type: "new", text: "Neural AI assistant initialized with core persona set" }
+            { type: "new", text: "Smart AI assistant initialized with core persona set" }
         ]
     }
 ];
@@ -105,7 +105,7 @@ export default function Changelog() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-xl">
-                                a full audit of every state mutation applied to the lucy neural matrix. cryptographically signed and immutable.
+                                a full audit of every state mutation applied to the lucy platform. cryptographically signed and immutable.
                             </p>
                         </Reveal>
                     </section>
