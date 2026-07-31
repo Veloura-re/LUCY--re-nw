@@ -12,6 +12,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { ParticleField } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { PromoPopup } from "@/components/marketing/promo-popup";
 
 
 
@@ -1161,6 +1162,7 @@ export default function Home() {
           <motion.p animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 2.8 }}>node_id: lucy-47-x-beta // uptime: nominal</motion.p>
         </div>
       </footer>
+      <PromoPopup />
     </div>
   );
 }
