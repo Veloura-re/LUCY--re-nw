@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SpringingLoader from "./springing-loader";
 import { toast } from "sonner";
 import { NeuralConnectivity } from "./neural-connectivity";
+import { FinancialAnalyticsChart } from "./financial-analytics-chart";
 
 import { Gender, School, Role } from "@prisma/client";
 
@@ -145,6 +146,15 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                             Events Portal
                         </Button>
                     </Link>
+                    <Link href="/dashboard/finance" className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2 relative overflow-hidden group">
+                            <span className="relative z-10 flex items-center gap-2">
+                                <DollarSign className="w-3 h-3" />
+                                Generate Invoices
+                            </span>
+                            <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                        </Button>
+                    </Link>
                     <div className="flex w-full sm:w-auto bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
                         <button
                             onClick={() => setViewMode('realtime')}
@@ -272,6 +282,9 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                                         <UpcomingEventsWidget />
                                     </CardContent>
                                 </Card>
+                            </div>
+                            <div className="lg:col-span-12">
+                                <FinancialAnalyticsChart />
                             </div>
                             <div className="lg:col-span-12">
                                 <NeuralConnectivity />
