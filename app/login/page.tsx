@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Turnstile } from '@marsidev/react-turnstile';
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
@@ -33,30 +34,43 @@ function LoginContent() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [error, setError] = useState<string | null>(errorParam);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError(null);
-
-        const { error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (authError) {
-            setError(authError.message);
-            setIsLoading(false);
+        
+        if (!turnstileToken) {
+            setError("Security check in progress. Please wait a moment and try again.");
             return;
         }
 
+        setIsLoading(true);
+        setError(null);
+
         try {
-            await fetch('/api/auth/register-session', { method: 'POST' });
-        } catch (e) {
-            console.error("Session registration failed", e);
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, turnstileToken })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.error || "Authentication failed");
+                setIsLoading(false);
+                return;
+            }
+
+            // After successful auth, register session
+            await fetch('/api/auth/register-session', { method: 'POST' }).catch(() => null);
+        } catch (e: any) {
+            setError("Internal Server Error");
+            setIsLoading(false);
+            return;
         }
 
         router.refresh();
@@ -123,6 +137,14 @@ function LoginContent() {
                                     <p className="font-medium leading-relaxed">{error}</p>
                                 </div>
                             )}
+
+                            <div className="flex justify-center">
+                                <Turnstile 
+                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} 
+                                    onSuccess={(token) => setTurnstileToken(token)}
+                                    options={{ theme: 'auto', size: 'invisible' }}
+                                />
+                            </div>
 
                             <div className="flex items-start space-x-3 pt-2 pb-2">
                                 <input
