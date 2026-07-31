@@ -174,7 +174,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 toast.error(`Failed: ${errorData.error || res.statusText}`);
             }
         } catch (e: any) {
-            toast.error(e.message || "Uplink Failure");
+            toast.error(e.message || "Connection Failure");
         } finally {
             setIsPaying(null);
         }
@@ -284,7 +284,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             const data = await res.json();
             setFinancialAnalytics(data);
         } catch (e) {
-            console.error("Finance analytics uplink failed:", e);
+            console.error("Finance analytics connection failed:", e);
         }
     };
 
@@ -929,7 +929,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 }
 
 function RevenueFluxChart({ data }: { data: any }) {
-    if (!data) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Initializing Neural Stream...</div>;
+    if (!data) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Initializing Smart Stream...</div>;
 
     const maxVal = Math.max(...data.datasets[0].data, ...data.datasets[1].data, 1000);
 

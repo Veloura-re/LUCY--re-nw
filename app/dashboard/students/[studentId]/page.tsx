@@ -140,11 +140,11 @@ function StudentProfileContent() {
                 fetchStudentData();
             } else {
                 const errorData: any = await res.json();
-                toast.error(errorData.error || "Uplink Failure: Mutation Rejected");
+                toast.error(errorData.error || "Connection Failure: Mutation Rejected");
             }
         } catch (err) {
             console.error(err);
-            toast.error("Neural Link Failure: Request Timed Out");
+            toast.error("Smart Link Failure: Request Timed Out");
         } finally {
             setSubmitting(false);
         }
@@ -164,7 +164,7 @@ function StudentProfileContent() {
                 setIsAddingRemark(false);
                 fetchStudentData();
             } else {
-                toast.error("Uplink Jammed: Remark Rejected");
+                toast.error("Connection Jammed: Remark Rejected");
             }
         } catch (e) {
             console.error(e);
@@ -192,7 +192,7 @@ function StudentProfileContent() {
             }
         } catch (e) {
             console.error(e);
-            toast.error("Neural Link Offline: Note lost");
+            toast.error("Smart Link Offline: Note lost");
         } finally {
             setSubmitting(false);
         }
@@ -207,17 +207,17 @@ function StudentProfileContent() {
                 setAiAnalysis(resData.analysis);
                 toast.success("AI Predictive Analysis Complete");
             } else {
-                toast.error("Uplink Jammed: AI Analysis Failed");
+                toast.error("Connection Jammed: AI Analysis Failed");
             }
         } catch (e) {
-            toast.error("Neural Link Offline: AI Server unreachable");
+            toast.error("Smart Link Offline: AI Server unreachable");
         } finally {
             setAnalyzing(false);
         }
     };
 
     if (loading) return <div className="min-h-screen flex items-center justify-center"><SpringingLoader message="Synthesizing Student Dossier" /></div>;
-    if (!data?.student) return <div className="p-20 text-center text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest">Neural Link Severed: Entity Not Found</div>;
+    if (!data?.student) return <div className="p-20 text-center text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest">Connection Lost: Entity Not Found</div>;
 
     const { student, grades, assignments, attendance } = data;
 
@@ -487,7 +487,7 @@ function StudentProfileContent() {
                         <Card className="lg:col-span-8 bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] ">
                             <CardHeader className="p-8 border-b border-zinc-300 dark:border-zinc-800/50 flex flex-row items-center justify-between">
                                 <div>
-                                    <CardTitle className="text-xl font-black text-zinc-900 dark:text-white italic">Execution <span className="text-zinc-700 not-italic ml-1">Matrix</span></CardTitle>
+                                    <CardTitle className="text-xl font-black text-zinc-900 dark:text-white italic">Execution <span className="text-zinc-700 not-italic ml-1">System</span></CardTitle>
                                     <CardDescription className="text-zinc-600 font-bold uppercase tracking-widest text-[9px] mt-1">Validated academic grade records</CardDescription>
                                 </div>
                                 <div className="hidden md:flex gap-1.5 h-6">

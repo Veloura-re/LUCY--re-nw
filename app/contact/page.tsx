@@ -21,7 +21,7 @@ export default function ContactPage() {
         e.preventDefault();
         setStatus('LOADING');
         try {
-            const res = await fetch('/api/uplink', {
+            const res = await fetch('/api/connection', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...formData, category })
@@ -38,7 +38,7 @@ export default function ContactPage() {
     };
 
     const categories = [
-        { id: 'sales', label: 'deployment_request', icon: Server, desc: 'provision a new school matrix' },
+        { id: 'sales', label: 'deployment_request', icon: Server, desc: 'provision a new school system' },
         { id: 'support', label: 'system_support', icon: LifeBuoy, desc: 'technical assistance & bug reports' },
         { id: 'billing', label: 'financial_inquiry', icon: CreditCard, desc: 'billing, invoices & subscription' },
         { id: 'security', label: 'vulnerability_report', icon: ShieldCheck, desc: 'white-hat & security disclosures' }
@@ -74,13 +74,13 @@ export default function ContactPage() {
                         className="text-center space-y-6"
                     >
                         <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest rounded-md dark:rounded-none">
-                            <Terminal className="w-3.5 h-3.5" /> secure_comms // uplink // step_{step}
+                            <Terminal className="w-3.5 h-3.5" /> secure_comms // connection // step_{step}
                         </div>
                         <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
-                            <GlitchText>establish uplink.</GlitchText>
+                            <GlitchText>establish connection.</GlitchText>
                         </h1>
                         <p className="text-sm md:text-base text-slate-500 dark:text-zinc-500 max-w-xl mx-auto lowercase leading-relaxed font-sans font-light">
-                            initiate contact with a vanguard representative. please configure your transmission packet below.
+                            initiate contact with a vanguard representative. please configure your message packet below.
                         </p>
                     </motion.div>
 
@@ -97,7 +97,7 @@ export default function ContactPage() {
                                     className="absolute inset-0 space-y-6"
                                 >
                                     <div className="text-[10px] text-slate-500 dark:text-zinc-500 font-bold uppercase tracking-widest border-b border-slate-200 dark:border-white/5 pb-2">
-                                        [01] select_transmission_vector
+                                        [01] select_message_vector
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {categories.map((c) => (
@@ -221,7 +221,7 @@ export default function ContactPage() {
                                         </div>
 
                                         {status === 'ERROR' && (
-                                            <p className="text-[9px] text-red-600 dark:text-red-500 font-bold uppercase tracking-widest bg-red-50 dark:bg-red-950/30 p-2 border border-red-200 dark:border-red-900/50 rounded-md dark:rounded-none">transmission failed. check uplink node.</p>
+                                            <p className="text-[9px] text-red-600 dark:text-red-500 font-bold uppercase tracking-widest bg-red-50 dark:bg-red-950/30 p-2 border border-red-200 dark:border-red-900/50 rounded-md dark:rounded-none">message failed. check connection node.</p>
                                         )}
 
                                         <div className="flex items-center justify-between pt-4">
@@ -256,9 +256,9 @@ export default function ContactPage() {
                                         <div className="absolute inset-0 bg-emerald-100 dark:bg-white/20 blur-xl rounded-full animate-pulse" />
                                         <CheckCircle2 className="w-16 h-16 text-emerald-500 dark:text-white relative z-10" />
                                     </div>
-                                    <h4 className="text-2xl font-bold uppercase text-slate-900 dark:text-white mb-2 tracking-tighter"><GlitchText>uplink_established</GlitchText></h4>
+                                    <h4 className="text-2xl font-bold uppercase text-slate-900 dark:text-white mb-2 tracking-tighter"><GlitchText>connection_established</GlitchText></h4>
                                     <div className="p-4 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black text-left w-full max-w-sm mt-4 mb-6 rounded-lg dark:rounded-none">
-                                        <div className="text-[10px] text-slate-500 dark:text-zinc-600 font-mono border-b border-slate-200 dark:border-white/5 pb-2 mb-2">transmission_receipt</div>
+                                        <div className="text-[10px] text-slate-500 dark:text-zinc-600 font-mono border-b border-slate-200 dark:border-white/5 pb-2 mb-2">message_receipt</div>
                                         <div className="text-xs text-slate-600 dark:text-zinc-400 font-mono space-y-1">
                                             <p><span className="text-slate-400 dark:text-zinc-600">callsign:</span> {formData.callsign}</p>
                                             <p><span className="text-slate-400 dark:text-zinc-600">vector:</span> {category}</p>
@@ -270,7 +270,7 @@ export default function ContactPage() {
                                         onClick={() => { setStatus('IDLE'); setFormData({ callsign: '', email: '', message: '' }); setStep(1); }}
                                         className="border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-white/5 dark:hover:text-white font-bold uppercase text-[9px] tracking-widest rounded-md dark:rounded-none h-10 px-8"
                                     >
-                                        new_transmission
+                                        new_message
                                     </Button>
                                 </motion.div>
                             )}

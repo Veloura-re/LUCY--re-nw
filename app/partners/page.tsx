@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Layers, Globe, Shield, Cpu } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, NeuralWeb, MagneticButton, Counter, HexGrid, GlitchOverlay } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, SmartWeb, MagneticButton, Counter, HexGrid, GlitchOverlay } from "@/components/public/animations";
 
 const partners = [
     { name: "Dept. of Education", region: "Western Cape, ZA", tier: "Government", id: "GOV_01", desc: "Piloting LUCY across 12 government schools in the Western Cape's underserved districts." },
@@ -51,7 +51,7 @@ export default function Partners() {
 
                     {/* Hero */}
                     <section className="relative overflow-hidden space-y-10 min-h-[55vh] flex flex-col justify-center">
-                        <div className="absolute inset-0 opacity-10 dark:opacity-30"><NeuralWeb nodeCount={20} /></div>
+                        <div className="absolute inset-0 opacity-10 dark:opacity-30"><SmartWeb nodeCount={20} /></div>
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
@@ -160,7 +160,7 @@ export default function Partners() {
                         <MagneticButton>
                             <Link href="/contact">
                                 <Button className="h-14 px-10 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">
-                                    establish_uplink
+                                    establish_connection
                                 </Button>
                             </Link>
                         </MagneticButton>

@@ -13,8 +13,8 @@ import { Logo } from "@/components/ui/logo";
 const sections = [
     { id: "01", title: "Getting Started", items: ["System Overview", "Provisioning Your Node", "Role Setup", "First Login"] },
     { id: "02", title: "Attendance System", items: ["Marking Attendance", "Automated Alerts", "Late Thresholds", "Parent Notifications"] },
-    { id: "03", title: "Grading Matrix", items: ["Creating Exam Records", "Grade Entry", "Locking Results", "Report Export"] },
-    { id: "04", title: "AI Neural Assistant", items: ["Persona Overview", "Switching Personas", "Chat Sessions", "Privacy & Isolation"] },
+    { id: "03", title: "Grading System", items: ["Creating Exam Records", "Grade Entry", "Locking Results", "Report Export"] },
+    { id: "04", title: "AI Assistant", items: ["Persona Overview", "Switching Personas", "Chat Sessions", "Privacy & Isolation"] },
     { id: "05", title: "Timetable Engine", items: ["Creating Periods", "Assigning Teachers", "Student View", "Conflicts"] },
     { id: "06", title: "API Reference", items: ["Authentication", "Endpoints", "Rate Limits", "Webhook Events"] },
     { id: "07", title: "Legal & Compliance", items: ["Terms of Service", "Privacy Policy", "Data Processing Agreement", "Service Level Agreement", "Cyber Liability Insurance"] },
@@ -78,12 +78,12 @@ export default function Docs() {
                                 whileHover={{ rotateX: 10, rotateY: -10 }}
                                 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none perspective-[1000px] cursor-default"
                             >
-                                docs<br /><GlitchText className="text-slate-300 dark:text-zinc-800">protocol.</GlitchText>
+                                docs<br /><GlitchText className="text-slate-300 dark:text-zinc-800">system.</GlitchText>
                             </motion.h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
-                                complete technical reference for the lucy neural matrix. everything you need to deploy, configure, and extend your school account.
+                                complete technical reference for the lucy platform. everything you need to deploy, configure, and extend your school account.
                             </p>
                         </Reveal>
                         <Reveal delay={0.3}><ScanBar /></Reveal>

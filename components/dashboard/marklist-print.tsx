@@ -42,7 +42,7 @@ export const MarklistPrint = React.forwardRef<HTMLDivElement, MarklistPrintProps
                     </div>
                 </div>
 
-                {/* Matrix Table */}
+                {/* System Table */}
                 <table className="w-full border-collapse border border-zinc-200">
                     <thead>
                         <tr className="bg-zinc-50 text-[9px] font-bold uppercase tracking-widest text-zinc-600">

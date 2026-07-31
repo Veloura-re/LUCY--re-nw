@@ -96,7 +96,7 @@ export default function Wall() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <MessageSquare className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">signal_wall // public_transmissions</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">signal_wall // public_messages</span>
                             <div className="ml-auto flex items-center gap-2 text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest">
                                 <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.3, repeat: Infinity }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                                 live
@@ -109,7 +109,7 @@ export default function Wall() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-xl">
-                                leave a transmission for the matrix. public signals from operators around the world — live and unfiltered.
+                                leave a message for the community. public messages from users around the world — live and unfiltered.
                             </p>
                         </Reveal>
                     </section>
@@ -117,7 +117,7 @@ export default function Wall() {
                     {/* Submit form */}
                     <Reveal>
                         <form onSubmit={handleSubmit} className="border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/30 p-8 space-y-6 rounded-xl dark:rounded-none">
-                            <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest mb-2 font-bold">new_transmission</div>
+                            <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest mb-2 font-bold">new_message</div>
 
                             {/* Emoji picker */}
                             <div className="space-y-2">
@@ -176,7 +176,7 @@ export default function Wall() {
                                 </MagneticButton>
                                 <AnimatePresence>
                                     {status === "limit" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold">daily limit reached for this callsign</motion.div>}
-                                    {status === "error" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold">transmission_failed — try again</motion.div>}
+                                    {status === "error" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-[9px] text-red-600 dark:text-red-500 uppercase tracking-widest font-bold">message_failed — try again</motion.div>}
                                 </AnimatePresence>
                             </div>
                         </form>
@@ -197,7 +197,7 @@ export default function Wall() {
                                 <div className="text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest mt-4">fetching_signals...</div>
                             </div>
                         ) : comments.length === 0 ? (
-                            <div className="py-20 text-center text-slate-500 dark:text-zinc-700 text-[10px] uppercase tracking-widest">no transmissions yet — be first to signal</div>
+                            <div className="py-20 text-center text-slate-500 dark:text-zinc-700 text-[10px] uppercase tracking-widest">no messages yet — be first to signal</div>
                         ) : (
                             <div className="space-y-px border border-slate-200 dark:border-white/5 overflow-hidden rounded-xl dark:rounded-none">
                                 <AnimatePresence>

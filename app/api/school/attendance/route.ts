@@ -4,7 +4,7 @@ import { requireSchoolLinked, handleApiError } from '@/lib/security';
 import { sendLatenessNotificationEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
-import { getAttendanceMatrix } from '@/lib/services/attendance';
+import { getAttendanceSystem } from '@/lib/services/attendance';
 
 export async function GET(request: Request) {
     try {
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         }
 
         // Fetch from the optimized, cached service
-        const data = await getAttendanceMatrix(user.schoolId!, classId, date, subjectId, periodId);
+        const data = await getAttendanceSystem(user.schoolId!, classId, date, subjectId, periodId);
 
         return NextResponse.json(data);
     } catch (e) {
@@ -202,7 +202,7 @@ export async function POST(request: Request) {
             });
         }
 
-        // Trigger Cache Invalidation for the attendance matrix
+        // Trigger Cache Invalidation for the attendance system
         revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId), 'max');
 
         // 5. Asynchronous Notification Dispatch

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Play, Monitor, Zap, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, NeuralWeb, MatrixRain, MagneticButton, Typewriter, Counter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, Counter } from "@/components/public/animations";
 
 const demoSteps = [
     { id: "01", title: "Director Logs In", desc: "School director authenticates with multi-factor token. Dashboard instantly renders real-time institutional metrics.", terminal: ["> auth.verify(director_id)", "> mfa.challenge(): passed", "> session.spawn(role=DIRECTOR)", "> dashboard.render(): 14ms"] },
@@ -103,7 +103,7 @@ export default function Demo() {
                                 </div>
                                 <TiltCard>
                                     <div className="border border-slate-200 dark:border-white/5 bg-slate-900 dark:bg-black p-6 space-y-2 relative overflow-hidden rounded-xl dark:rounded-none">
-                                        <div className="absolute inset-0 pointer-events-none"><MatrixRain cols={8} /></div>
+                                        <div className="absolute inset-0 pointer-events-none"><SystemRain cols={8} /></div>
                                         <div className="relative z-10">
                                             {demoSteps[active].terminal.map((line, j) => (
                                                 <motion.div key={j} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: j * 0.12 }}

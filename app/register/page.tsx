@@ -71,7 +71,7 @@ export default function RegisterPage() {
                         <Logo className="w-16 h-16" />
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-800 backdrop-blur-xl text-[10px] font-bold text-emerald-600 dark:text-eduGreen-400 uppercase tracking-[0.3em] shadow-md dark:shadow-2xl">
                             <Cpu className="w-3.5 h-3.5 animate-pulse" />
-                            <span>Initialize Protocol v2.6</span>
+                            <span>Initialize System v2.6</span>
                         </div>
                     </div>
 
@@ -146,7 +146,7 @@ export default function RegisterPage() {
                     <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-4 py-8 px-12 rounded-[2rem] border border-slate-200 dark:border-zinc-900 bg-white/60 dark:bg-zinc-900/20 backdrop-blur-sm text-[10px] font-bold text-slate-400 dark:text-zinc-600 tracking-[0.4em] uppercase shadow-inner">
                         <div className="flex items-center gap-2.5"><Globe className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Global Node</div>
                         <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-zinc-800 hidden sm:block" />
-                        <div className="flex items-center gap-2.5"><Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Neural Edge</div>
+                        <div className="flex items-center gap-2.5"><Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-eduGreen-900" /> Smart Edge</div>
                     </div>
                 </div>
             </div>

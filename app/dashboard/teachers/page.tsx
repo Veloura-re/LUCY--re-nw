@@ -37,7 +37,7 @@ export default async function TeachersPage() {
         <Suspense fallback={
             <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
                 <SpringingLoader message="Synthesizing Faculty Personnel Profiles..." />
-                <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest animate-pulse">Establishing Secure Uplink</p>
+                <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest animate-pulse">Establishing Secure Connection</p>
             </div>
         }>
             <TeachersClientWrapper 

@@ -39,7 +39,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
                     <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
-                        Neural <span className="text-eduGreen-500 italic">Ledger</span>
+                        Smart <span className="text-eduGreen-500 italic">Ledger</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Personal Remuneration History</p>
                 </div>
@@ -128,7 +128,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
                         <div className="space-y-6">
                             <div className="p-6 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 space-y-3">
                                 <ArrowDownCircle className="w-5 h-5 text-eduGreen-500" />
-                                <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Automatic Uplink</h4>
+                                <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Automatic Connection</h4>
                                 <p className="text-[10px] text-zinc-600 font-medium leading-relaxed uppercase">Your payments are automatically synchronized with the institutional bank node.</p>
                             </div>
 

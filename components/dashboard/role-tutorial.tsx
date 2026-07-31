@@ -56,7 +56,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
         },
         {
             title: "System Integrity",
-            description: "Ensure operational perfection across the institution. Monitor real-time status and security metrics to keep your neural network functioning smoothly.",
+            description: "Ensure operational perfection across the institution. Monitor real-time status and security metrics to keep your smart network functioning smoothly.",
             icon: Activity,
             color: "bg-purple-500"
         }
@@ -99,7 +99,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-purple-500"
         },
         {
-            title: "Neural Diagnostic",
+            title: "Smart Diagnostic",
             description: "Identify and bridge disconnected schools. Ensure institutional integrity by linking orphaned faculty and scholars.",
             icon: Network,
             color: "bg-eduGreen-600"
@@ -107,14 +107,14 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
     ],
     TEACHER: [
         {
-            title: "Neural Classroom",
+            title: "Smart Classroom",
             description: "Access your active learning environments. Manage classes and daily schedules from a clean tactical interface.",
             icon: BookOpen,
             color: "bg-orange-500"
         },
         {
-            title: "Assessment Uplink",
-            description: "Deploy exams and record marks directly to the neural grid. Automated grading sync for maximum efficiency.",
+            title: "Assessment Connection",
+            description: "Deploy exams and record marks directly to the smart grid. Automated grading sync for maximum efficiency.",
             icon: Target,
             color: "bg-red-500"
         },
@@ -131,19 +131,19 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-blue-500"
         },
         {
-            title: "Neural Ledger",
+            title: "Smart Ledger",
             description: "Your personalized fiscal record. Access detailed paychecks, earnings history, and institutional disburstments.",
             icon: Wallet,
             color: "bg-amber-500"
         },
         {
-            title: "Neural Communications",
+            title: "Smart Communications",
             description: "Secure, real-time messaging with parents and students. Maintain clear communication pathways.",
             icon: Sparkles,
             color: "bg-purple-500"
         },
         {
-            title: "Neural Attendance",
+            title: "Smart Attendance",
             description: "Synchronize student presence at the point of interaction. High-precision tactical attendance tracking.",
             icon: Activity,
             color: "bg-eduGreen-500"
@@ -170,12 +170,12 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
         },
         {
             title: "Learning Resources",
-            description: "Access digital curriculum and study materials. Your entire library, accessible on the neural grid.",
+            description: "Access digital curriculum and study materials. Your entire library, accessible on the smart grid.",
             icon: BookOpen,
             color: "bg-orange-500"
         },
         {
-            title: "Neural Link",
+            title: "Smart Link",
             description: "Interact with the AI assistant for personalized learning support and institutional guidance.",
             icon: Sparkles,
             color: "bg-purple-500"
@@ -208,7 +208,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
         },
         {
             title: "Direct Support",
-            description: "Instant messaging channels with faculty and administration. Direct uplink for ward-related queries.",
+            description: "Instant messaging channels with faculty and administration. Direct connection for ward-related queries.",
             icon: Sparkles,
             color: "bg-purple-500"
         },
@@ -219,7 +219,7 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
             color: "bg-eduGreen-600"
         },
         {
-            title: "Neural Signals",
+            title: "Smart Signals",
             description: "Real-time updates on your ward's institutional status. Stay informed with high-priority pulse notifications.",
             icon: Bell,
             color: "bg-amber-500"
@@ -298,7 +298,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     <Sparkles className={cn("w-6 h-6", steps[currentStep].color.replace('bg-', 'text-'))} />
                                 </div>
                                 <div>
-                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-900 dark:text-white/40">Neural Protocol</h2>
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-900 dark:text-white/40">Smart Protocol</h2>
                                     <h1 className="text-xl font-black uppercase tracking-widest text-zinc-900 dark:text-white italic">Onboarding v1</h1>
                                 </div>
                             </div>

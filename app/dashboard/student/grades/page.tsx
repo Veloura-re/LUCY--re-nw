@@ -88,10 +88,10 @@ function StudentGradesContent() {
 
                             <Card className="bg-zinc-100/40 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 md:col-span-2">
                                 <div className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                    <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-500" /> Neural Verdict
+                                    <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-500" /> Smart Verdict
                                 </div>
                                 <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium italic leading-relaxed">
-                                    {exam.remark || "Your assessment has been reviewed by the neural engine. Detailed question-level feedback is available below to help you improve."}
+                                    {exam.remark || "Your assessment has been reviewed by the smart engine. Detailed question-level feedback is available below to help you improve."}
                                 </p>
                             </Card>
                         </div>
@@ -167,7 +167,7 @@ function StudentGradesContent() {
 
     if (loading) return (
         <div className="min-h-[60vh] flex items-center justify-center">
-            <SpringingLoader message="Accessing Academic Matrix..." />
+            <SpringingLoader message="Accessing Academic System..." />
         </div>
     );
 
@@ -175,7 +175,7 @@ function StudentGradesContent() {
         <div className="space-y-12 animate-in fade-in pb-20">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white italic uppercase">Academic Matrix</h2>
+                    <h2 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white italic uppercase">Academic System</h2>
                     <div className="flex items-center gap-3 mt-2">
                         <div className="h-0.5 w-12 bg-eduGreen-500" />
                         <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs">
@@ -254,7 +254,7 @@ function StudentGradesContent() {
                                     </div>
                                 ))}
                                 {sub.exams.length === 0 && (
-                                    <div className="p-10 text-center text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em]">Neural records empty.</div>
+                                    <div className="p-10 text-center text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em]">Smart records empty.</div>
                                 )}
                             </div>
                         </CardContent>
@@ -265,7 +265,7 @@ function StudentGradesContent() {
             {subjects.length === 0 && (
                 <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                     <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Terminal Data Vacancy</div>
-                    <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs font-medium uppercase tracking-widest">No academic signatures detected in the matrix.</p>
+                    <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs font-medium uppercase tracking-widest">No academic signatures detected in the system.</p>
                 </div>
             )}
 
@@ -289,7 +289,7 @@ export default function StudentGradesPage() {
     return (
         <Suspense fallback={
             <div className="min-h-[60vh] flex items-center justify-center">
-                <SpringingLoader message="Syncing with Matrix..." />
+                <SpringingLoader message="Syncing with System..." />
             </div>
         }>
             <StudentGradesContent />

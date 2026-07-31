@@ -270,7 +270,7 @@ function MarklistViewContent() {
                     <h2 className="text-2xl font-medium uppercase tracking-tighter text-zinc-900 dark:text-white">
                         {config.class?.name} <span className="text-eduGreen-500 italic">::</span> {config.subject?.name}
                     </h2>
-                    <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.3em] mt-1">Academic Performance Matrix</p>
+                    <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.3em] mt-1">Academic Performance System</p>
                 </div>
 
                 <div className="flex items-center gap-6">

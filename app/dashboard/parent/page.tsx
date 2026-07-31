@@ -29,7 +29,7 @@ export default function ParentDashboard() {
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
             <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin" />
-            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px]">Syncing Family Node Matrix...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px]">Syncing Family Node System...</p>
         </div>
     );
 

@@ -289,7 +289,7 @@ export default function GradebookPage() {
                             </div>
                             <div>
                                 <DialogTitle className="text-3xl font-black text-zinc-900 dark:text-white italic uppercase">{student.firstName}'s Audit</DialogTitle>
-                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Neural Assessment Breakdown</DialogDescription>
+                                <DialogDescription className="text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Smart Assessment Breakdown</DialogDescription>
                             </div>
                         </div>
                     </DialogHeader>
@@ -348,7 +348,7 @@ export default function GradebookPage() {
                                                 <div className="bg-eduGreen-950/20 border border-eduGreen-900/30 rounded-2xl p-4 flex gap-3">
                                                     <Brain className="w-5 h-5 text-eduGreen-500 shrink-0" />
                                                     <div>
-                                                        <div className="text-[9px] font-black text-eduGreen-500 uppercase tracking-widest mb-1">Neural Grading Logic</div>
+                                                        <div className="text-[9px] font-black text-eduGreen-500 uppercase tracking-widest mb-1">Smart Grading Logic</div>
                                                         <p className="text-xs text-zinc-700 dark:text-zinc-300 italic">"{grading.feedback}"</p>
                                                     </div>
                                                 </div>
@@ -696,7 +696,7 @@ export default function GradebookPage() {
 
                 {filteredStudents.length === 0 && (
                     <div className="py-24 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem] text-center bg-white/20 dark:bg-zinc-950/20">
-                        <div className="text-zinc-700 font-bold uppercase tracking-[0.4em] text-xs italic">Matrix Query Vacant</div>
+                        <div className="text-zinc-700 font-bold uppercase tracking-[0.4em] text-xs italic">System Query Vacant</div>
                         <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-[10px] font-bold uppercase tracking-widest">No matching students found in this scope.</p>
                     </div>
                 )}

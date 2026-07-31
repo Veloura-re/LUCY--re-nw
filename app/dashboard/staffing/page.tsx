@@ -206,7 +206,7 @@ export default function StaffingPage() {
                                             <Layers className="w-5 h-5 text-eduGreen-500" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Discipline Matrix</CardTitle>
+                                            <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Discipline System</CardTitle>
                                             <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Assignments for {classes.find(c => c.id === selectedClassId)?.name}</CardDescription>
                                         </div>
                                     </div>
@@ -216,7 +216,7 @@ export default function StaffingPage() {
                                         className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white border-eduGreen-500 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest transition-all shadow-lg shadow-eduGreen-900/20"
                                     >
                                         <Printer className="mr-2 h-3.5 w-3.5" />
-                                        Print Matrix
+                                        Print System
                                     </Button>
                                 </div>
                             </CardHeader>
@@ -383,7 +383,7 @@ export default function StaffingPage() {
                             class: { name: classes.find(c => c.id === selectedClassId)?.name || 'N/A' }
                         };
                     })}
-                    title={`Staffing Matrix: ${classes.find(c => c.id === selectedClassId)?.name}`}
+                    title={`Staffing System: ${classes.find(c => c.id === selectedClassId)?.name}`}
                     type="STAFFING"
                 />
             </div>

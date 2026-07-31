@@ -90,7 +90,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
 
             {/* Assessment Details Breakdown */}
             <div className="mt-16 space-y-8">
-                <h3 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-200 dark:border-zinc-900">Neural Assessment Log</h3>
+                <h3 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-[0.4em] pl-4 border-l-4 border-zinc-200 dark:border-zinc-900">Smart Assessment Log</h3>
                 <div className="grid grid-cols-2 gap-8">
                     {subjects.map((sub: any, idx: number) => (
                         <div key={idx} className="border border-zinc-100 rounded-[2rem] overflow-hidden">
@@ -130,7 +130,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
                             Official Academic Record for {studentName}
                         </p>
                         <p className="text-[8px] text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">
-                            Verified via LUCY Neural Protocol
+                            Verified via LUCY Smart Protocol
                         </p>
                     </div>
                 </div>

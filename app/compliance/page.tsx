@@ -57,11 +57,11 @@ export default function Compliance() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <FileCheck className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">compliance_matrix // regulatory_status</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">compliance_system // regulatory_status</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
-                                compliance<br /><GlitchText className="text-slate-300 dark:text-zinc-800">matrix.</GlitchText>
+                                compliance<br /><GlitchText className="text-slate-300 dark:text-zinc-800">system.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">

@@ -45,7 +45,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
 
     const filteredMenu = mounted
         ? menu.filter((item) => {
-            if (isDesktop && item.label === "Neural Link") return false;
+            if (isDesktop && item.label === "Smart Link") return false;
             return true;
         })
         : menu;

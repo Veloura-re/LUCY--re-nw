@@ -28,7 +28,7 @@ export default async function AssignmentsHubPage() {
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                         <div>
                             <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
-                                Scholastic <span className="text-eduGreen-500 not-italic">Matrix</span>
+                                Scholastic <span className="text-eduGreen-500 not-italic">System</span>
                             </h1>
                             <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Institutional Oversight & Task Analytics</p>
                         </div>

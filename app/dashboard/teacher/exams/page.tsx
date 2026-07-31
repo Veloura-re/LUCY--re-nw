@@ -317,7 +317,7 @@ function ExamsPageContent() {
                                             <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
                                                 <div className="absolute inset-0 bg-purple-500/5 group-hover/edit:bg-purple-500/10 transition-colors" />
                                                 <span className="relative z-10 flex items-center gap-2">
-                                                    <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Neural Editor
+                                                    <Sparkles className="w-3.5 h-3.5 text-purple-500" /> AI Editor
                                                 </span>
                                             </Button>
                                         </Link>
@@ -562,14 +562,14 @@ function ExamsPageContent() {
 
                     {createLoading ? (
                         <div className="py-20 flex justify-center items-center scale-90">
-                            <SpringingLoader message="Initializing Assessment Matrix" />
+                            <SpringingLoader message="Initializing Assessment System" />
                         </div>
                     ) : (
                         <form onSubmit={handleCreateExam} className="p-12 space-y-10">
                             <div className="space-y-3">
                                 <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Assessment Label</label>
                                 <Input
-                                    placeholder="e.g. Neural Networks Midterm"
+                                    placeholder="e.g. Smart Networks Midterm"
                                     value={newExam.title}
                                     onChange={e => setNewExam({ ...newExam, title: e.target.value })}
                                     required
@@ -672,7 +672,7 @@ export default function ExamsPage() {
     return (
         <Suspense fallback={
             <div className="max-w-5xl mx-auto py-40 flex flex-col items-center justify-center scale-90">
-                <SpringingLoader message="Initializing Assessment Matrix" />
+                <SpringingLoader message="Initializing Assessment System" />
             </div>
         }>
             <ExamsPageContent />

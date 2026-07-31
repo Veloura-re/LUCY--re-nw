@@ -6,14 +6,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, MatrixRain, Typewriter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, SystemRain, Typewriter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 
 const terminalLines = [
     "> pricing_engine: operational",
     "> tier_config: ACTIVE",
     "> rate_cards: COMPILED_AND_VERIFIED",
-    "> sla_matrix: DEPLOYED",
+    "> sla_system: DEPLOYED",
     "> billing_currency: USD",
     "> status: SECURE_UPLINK_ESTABLISHED_",
 ];
@@ -43,7 +43,7 @@ export default function Pricing() {
 
                     {/* Animated terminal */}
                     <div className="relative overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-950/80 p-8 text-left max-w-2xl mx-auto rounded-xl dark:rounded-none">
-                        <div className="absolute inset-0 opacity-10 dark:opacity-20"><MatrixRain cols={10} /></div>
+                        <div className="absolute inset-0 opacity-10 dark:opacity-20"><SystemRain cols={10} /></div>
                         <div className="relative z-10 font-mono">
                             <div className="flex items-center gap-2 mb-6">
                                 <div className="w-2 h-2 bg-slate-300 dark:bg-white/30 rounded-full" />
@@ -61,7 +61,7 @@ export default function Pricing() {
                             <div className="flex items-center justify-center gap-3 text-slate-400 dark:text-zinc-400">
                                 <Clock className="w-4 h-4 text-slate-300 dark:text-white/40" />
                                 <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-white">active_tariffs // pricing_matrix</span>
+                                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 dark:text-white">active_tariffs // pricing_system</span>
                                 <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                                 <Clock className="w-4 h-4 text-slate-300 dark:text-white/40" />
                             </div>

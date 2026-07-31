@@ -19,7 +19,7 @@ type Class = { classId: string; className: string; subjects?: Subject[] };
 
 interface AttendanceClientWrapperProps {
     initialClasses: Class[];
-    initialMatrix: {
+    initialSystem: {
         students: Student[];
         records: RecordType[];
         authorizations: Auth[];
@@ -27,7 +27,7 @@ interface AttendanceClientWrapperProps {
     teacherId: string;
 }
 
-export default function AttendanceClientWrapper({ initialClasses, initialMatrix }: AttendanceClientWrapperProps) {
+export default function AttendanceClientWrapper({ initialClasses, initialSystem }: AttendanceClientWrapperProps) {
     const [classes] = useState<Class[]>(initialClasses);
     const [selectedClassId, setSelectedClassId] = useState(initialClasses[0]?.classId || "");
     const [periods, setPeriods] = useState<Period[]>([]);
@@ -36,24 +36,24 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     
     // Core Plan State
-    const [students, setStudents] = useState<Student[]>(initialMatrix.students);
+    const [students, setStudents] = useState<Student[]>(initialSystem.students);
     const [attendance, setAttendance] = useState<{ [id: string]: string }>({});
     const [reasons, setReasons] = useState<{ [id: string]: string }>({});
-    const [authorizations, setAuthorizations] = useState<Auth[]>(initialMatrix.authorizations);
+    const [authorizations, setAuthorizations] = useState<Auth[]>(initialSystem.authorizations);
     
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [isLocked, setIsLocked] = useState(false);
 
-    // Initialize attendance from initial Matrix
+    // Initialize attendance from initial System
     useEffect(() => {
         const attMap: Record<string, string> = {};
         const reasonMap: Record<string, string> = {};
         
-        initialMatrix.students.forEach(s => {
-            const record = initialMatrix.records.find(r => r.studentId === s.id);
-            const auth = initialMatrix.authorizations.find(a => a.studentId === s.id);
+        initialSystem.students.forEach(s => {
+            const record = initialSystem.records.find(r => r.studentId === s.id);
+            const auth = initialSystem.authorizations.find(a => a.studentId === s.id);
             
             if (record) {
                 attMap[s.id] = record.status;
@@ -66,19 +66,19 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
             }
         });
 
-        if (initialMatrix.records.length > 0) {
-            setIsLocked(initialMatrix.records[0].isLocked);
+        if (initialSystem.records.length > 0) {
+            setIsLocked(initialSystem.records[0].isLocked);
         } else {
             setIsLocked(false);
         }
 
         setAttendance(attMap);
         setReasons(reasonMap);
-        setStudents(initialMatrix.students);
-        setAuthorizations(initialMatrix.authorizations);
-    }, [initialMatrix]);
+        setStudents(initialSystem.students);
+        setAuthorizations(initialSystem.authorizations);
+    }, [initialSystem]);
 
-    // Fetch matrix on UI filter changes
+    // Fetch system on UI filter changes
     useEffect(() => {
         // Skip first load if it matches initial
         const isInitialParams = selectedClassId === initialClasses[0]?.classId && 
@@ -87,7 +87,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
                                 selectedPeriodId === "full";
         
         if (!isInitialParams && selectedClassId) {
-            fetchMatrix();
+            fetchSystem();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedClassId, selectedSubjectId, selectedPeriodId, date]);
@@ -105,7 +105,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
         setPeriods(data.periods || []);
     };
 
-    const fetchMatrix = async () => {
+    const fetchSystem = async () => {
         setLoading(true);
         try {
             const queryParams = new URLSearchParams({ classId: selectedClassId, date });
@@ -201,7 +201,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                     <div className="flex items-center gap-3 mb-1">
                         <div className="h-[1px] w-8 bg-zinc-200 dark:bg-zinc-800" />
-                        <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.4em]">Neural Link Protocol 0.2</span>
+                        <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.4em]">Smart Link Protocol 0.2</span>
                     </div>
                     <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
                         AUTHORITY <span className="text-zinc-800 dark:text-zinc-200 not-italic">LOG</span>
@@ -253,7 +253,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
                         </Select>
                     </ConfigField>
 
-                    <ConfigField label="Neural Path" icon={Zap}>
+                    <ConfigField label="Smart Path" icon={Zap}>
                         <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
                             <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="All Streams" />

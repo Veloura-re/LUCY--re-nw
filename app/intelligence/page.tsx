@@ -6,12 +6,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Brain, Zap, Target, Sparkles, Network } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, NeuralWeb, MatrixRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 
 const behaviors = [
     { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query hits the right node within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
-    { title: "Neural Synthesizing", desc: "Aggregates fragmented data points — attendance, grades, behavior — into actionable insights for faculty and administration.", icon: Brain, id: "BEH_02", metric: "99.9%", metricLabel: "data_accuracy" },
+    { title: "AI Synthesizing", desc: "Aggregates fragmented data points — attendance, grades, behavior — into actionable insights for faculty and administration.", icon: Brain, id: "BEH_02", metric: "99.9%", metricLabel: "data_accuracy" },
     { title: "Tactical Response", desc: "Real-time adjustments to scheduling and resource allocation. The system detects friction points and reroutes before they compound.", icon: Target, id: "BEH_03", metric: "3s", metricLabel: "alert_latency" },
 ];
 
@@ -19,13 +19,13 @@ const personas = [
     { name: "Core Intelligence", role: "Primary logic gate and system oversight. Handles inter-module coordination.", id: "LUCY_CORE", color: "rgba(255,255,255,0.15)" },
     { name: "Teacher Collective", role: "Specialized academic instruction — grading, lesson notes, and student feedback.", id: "TEACHER_COLL", color: "rgba(255,255,255,0.08)" },
     { name: "Administrative Hub", role: "Logistics, attendance, timetabling, and fiscal management.", id: "ADMIN_HUB", color: "rgba(255,255,255,0.08)" },
-    { name: "Geography Protocol", role: "Geographic and spatial intelligence specialist — maps, biomes, geopolitics.", id: "GEO_PROTO", color: "rgba(255,255,255,0.08)" },
+    { name: "Geography Expert", role: "Geographic and spatial intelligence specialist — maps, biomes, geopolitics.", id: "GEO_PROTO", color: "rgba(255,255,255,0.08)" },
 
     { name: "Math Architect", role: "Advanced mathematical reasoning — calculus, algebra, and proof-based problem solving.", id: "MATH_ARCH", color: "rgba(255,255,255,0.08)" },
 ];
 
 const thoughtStream = [
-    "> initializing neural mesh...",
+    "> initializing system...",
     "> loading persona_registry: 5 schools",
     "> cognitive_routing: ACTIVE",
     "> behavioral_pattern: NOMINAL",
@@ -58,9 +58,9 @@ export default function Intelligence() {
             <main className="relative z-10 pt-32 pb-40 px-6">
                 <div className="max-w-5xl mx-auto space-y-32">
 
-                    {/* Hero with NeuralWeb */}
+                    {/* Hero with SmartWeb */}
                     <section className="relative min-h-[60vh] flex flex-col justify-center space-y-10 overflow-hidden">
-                        <div className="absolute inset-0 opacity-10 dark:opacity-40"><NeuralWeb nodeCount={28} /></div>
+                        <div className="absolute inset-0 opacity-10 dark:opacity-40"><SmartWeb nodeCount={28} /></div>
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-400">
@@ -72,7 +72,7 @@ export default function Intelligence() {
 
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-[7.5rem] font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
-                                neural<br /><GlitchText className="text-slate-400 dark:text-zinc-800">logic.</GlitchText>
+                                smart<br /><GlitchText className="text-slate-400 dark:text-zinc-800">logic.</GlitchText>
                             </h1>
                         </Reveal>
 
@@ -102,7 +102,7 @@ export default function Intelligence() {
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TiltCard>
                             <div className="p-10 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-950/50 space-y-6 h-full relative overflow-hidden rounded-xl dark:rounded-none">
-                                <div className="absolute inset-0 opacity-10 dark:opacity-30"><MatrixRain cols={6} /></div>
+                                <div className="absolute inset-0 opacity-10 dark:opacity-30"><SystemRain cols={6} /></div>
                                 <div className="relative z-10 space-y-4">
                                     <div className="text-[9px] text-slate-400 dark:text-zinc-700 uppercase tracking-widest">cognitive_stream // live</div>
                                     <motion.div animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 2.8, repeat: Infinity }} className="w-2 h-2 bg-slate-900 dark:bg-white rounded-full" />
@@ -124,7 +124,7 @@ export default function Intelligence() {
                         </TiltCard>
                     </section>
 
-                    {/* Behavior Matrix */}
+                    {/* Behavior System */}
                     <section className="space-y-8">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />

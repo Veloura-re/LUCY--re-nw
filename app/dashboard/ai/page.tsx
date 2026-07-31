@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function NeuralPage() {
+export default function SmartPage() {
     const [userData, setUserData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -29,7 +29,7 @@ export default function NeuralPage() {
         return (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
                 <Loader2 className="w-12 h-12 text-eduGreen-500 animate-spin mb-4" />
-                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.3em] text-[10px]">Synchronizing Neural Correlates</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.3em] text-[10px]">Synchronizing Smart Correlates</p>
             </div>
         );
     }
@@ -43,10 +43,10 @@ export default function NeuralPage() {
                 <div>
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-eduGreen-950/30 border border-eduGreen-500/20 text-[10px] font-medium text-eduGreen-400 uppercase tracking-[0.3em] mb-4 backdrop-blur-md">
                         <Sparkles className="w-3 h-3 animate-pulse" />
-                        <span>Institutional Neural Link</span>
+                        <span>Institutional Smart Link</span>
                     </div>
                     <h1 className="text-2xl md:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase italic">
-                        Neural <span className="text-eduGreen-500 not-italic">Interface</span>
+                        Smart <span className="text-eduGreen-500 not-italic">Interface</span>
                     </h1>
                 </div>
 
@@ -79,7 +79,7 @@ export default function NeuralPage() {
                         transition={{ delay: 0.3, duration: 0.8 }}
                         className="text-3xl md:text-5xl font-medium text-zinc-900 dark:text-white uppercase tracking-[0.1em] mb-4"
                     >
-                        Neural Core <span className="text-eduGreen-500 italic">Initializing</span>
+                        Smart Core <span className="text-eduGreen-500 italic">Initializing</span>
                     </motion.h2>
                     
                     <motion.p 

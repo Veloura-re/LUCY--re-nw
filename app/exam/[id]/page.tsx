@@ -36,7 +36,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                 setExamData(data.exam);
                 setTimeLeft((data.exam.duration || 60) * 60);
             } catch (e) {
-                toast.error("Failed to initialize assessment uplink.");
+                toast.error("Failed to initialize assessment connection.");
             } finally {
                 setLoading(false);
             }
@@ -78,7 +78,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                 toast.error(data.error || "Submission failed.");
             }
         } catch (e) {
-            toast.error("Critical Uplink Failure during submission.");
+            toast.error("Critical Connection Failure during submission.");
         } finally {
             setIsSubmitting(false);
         }
@@ -94,7 +94,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
     if (loading) return (
         <div className="min-h-screen flex flex-col items-center justify-center space-y-4 bg-white dark:bg-zinc-950">
             <Loader2Icon className="w-12 h-12 text-eduGreen-500 animate-spin" />
-            <p className="text-zinc-600 dark:text-zinc-500 font-black uppercase tracking-[0.4em] text-xs">Establishing Protocol Uplink...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-black uppercase tracking-[0.4em] text-xs">Establishing System Connection...</p>
         </div>
     );
 
@@ -107,7 +107,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                     <ShieldAlert className="w-5 h-5 text-eduGreen-500" />
                     <div>
                         <h1 className="text-lg font-black text-zinc-900 dark:text-white tracking-tight uppercase italic">{examData.title}</h1>
-                        <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Assessment Matrix</p>
+                        <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Assessment System</p>
                     </div>
                 </div>
 
@@ -234,7 +234,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                 <div className="pt-10 flex flex-col items-center gap-6">
                     <div className="w-20 h-1 bg-zinc-100 dark:bg-zinc-900 rounded-full" />
                     <Button onClick={handleSubmit} disabled={isSubmitting} className="h-20 w-full rounded-[2.5rem] bg-white text-black hover:bg-zinc-200 font-black uppercase tracking-[0.3em] text-xs transition-all shadow-2xl active:scale-95">
-                        {isSubmitting ? <Loader2Icon className="w-6 h-6 animate-spin" /> : "Finalize & Transmit Protocol"}
+                        {isSubmitting ? <Loader2Icon className="w-6 h-6 animate-spin" /> : "Finalize & Submit"}
                     </Button>
                 </div>
             </main>

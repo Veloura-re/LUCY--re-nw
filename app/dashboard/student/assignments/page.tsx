@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
 import { getCachedStudentAssignments } from "@/lib/services/assignments";
-import StudentTaskMatrix from "@/components/dashboard/student-task-matrix";
+import StudentTaskSystem from "@/components/dashboard/student-task-system";
 import { Suspense } from "react";
 import { Activity } from "lucide-react";
 
@@ -54,7 +54,7 @@ export default async function StudentAssignmentsPage() {
 
     return (
         <Suspense fallback={<AssignmentsLoadingFallback />}>
-            <StudentTaskMatrix 
+            <StudentTaskSystem 
                 initialAssignments={assignments}
                 studentId={student.id}
             />
