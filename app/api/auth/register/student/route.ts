@@ -72,14 +72,10 @@ export async function POST(req: Request) {
         }
 
         // 3. Create User Account in Database (Synced with Supabase ID)
-        const bcrypt = require('bcryptjs');
-        const hashedPassword = await bcrypt.hash(password, 12);
-
         try {
             const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
                 id: authUser.id,
                 email: finalEmail,
-                passwordHash: hashedPassword,
                 name: `${student.firstName} ${student.lastName}`,
                 role: "STUDENT",
                 schoolId: student.schoolId,
