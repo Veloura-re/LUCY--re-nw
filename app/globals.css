@@ -222,3 +222,25 @@ h6 {
   0% { transform: scale(1); opacity: 1; }
   75%, 100% { transform: scale(1.8); opacity: 0; }
 }
+
+/* View Transitions API (Theme Toggle) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Ensure the new theme circle draws on top */
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 2;
+}
+.dark::view-transition-new(root) {
+  z-index: 1;
+}
