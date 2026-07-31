@@ -112,7 +112,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Transactions
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Family Financial Terminal & Protocol Monitor</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Family Financial Overview</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
@@ -153,7 +153,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                     <div className="w-16 h-16 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6">
                         <User className="w-8 h-8 text-zinc-800 dark:text-zinc-200" />
                     </div>
-                    <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Terminal</p>
+                    <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Account</p>
                     <Link href="/dashboard">
                         <Button variant="ghost" className="text-eduGreen-500 mt-4 font-medium uppercase tracking-widest text-[9px]">Establish Student Link</Button>
                     </Link>

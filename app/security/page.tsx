@@ -98,7 +98,7 @@ export default function Security() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -112,7 +112,7 @@ export default function Security() {
                         <Reveal className="flex items-center gap-4 text-orange-500">
                             <AlertTriangle className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "80px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-orange-500/40" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">vault_protocol // zero_trust_architecture</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">security_standards // zero_trust_architecture</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
@@ -143,7 +143,7 @@ export default function Security() {
                     <section className="space-y-8">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">vault_layers // defense_matrix</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">security_layers // defense_systems</span>
                         </Reveal>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-[1px] bg-slate-200 dark:bg-white/10 border border-slate-200 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
                             {securityLayers.map((layer, i) => (
@@ -181,7 +181,7 @@ export default function Security() {
                     <section className="space-y-6">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">vulnerability_disclosure // pgp_uplink</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">vulnerability_disclosure // pgp_contact</span>
                         </Reveal>
 
                         <AnimatePresence mode="wait">
@@ -359,7 +359,7 @@ export default function Security() {
                 </div>
             </main>
 
-            <PageFooter id="VAULT_PROTOCOL" links={[{ href: "/compliance", label: "compliance" }, { href: "/privacy", label: "privacy" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="VAULT_PROTOCOL" links={[{ href: "/compliance", label: "compliance" }, { href: "/privacy", label: "privacy" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

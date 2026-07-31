@@ -73,7 +73,7 @@ export function StudentView({ user }: StudentProps) {
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Scholarly <span className="text-eduGreen-500 italic capitalize">Sanctum</span>
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] mt-3">Active Institutional Uplink & Neural Terminal</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] mt-3">Student Portal & Active Connection</p>
                 </div>
 
                 <div className="flex items-center gap-3 mb-1">

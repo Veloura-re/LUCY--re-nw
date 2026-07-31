@@ -33,7 +33,7 @@ export default function Pricing() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -92,7 +92,7 @@ export default function Pricing() {
                                 buttonText: "price"
                             },
                             {
-                                tier: "Core Matrix",
+                                tier: "Core Plan",
                                 price: "$149",
                                 originalPrice: "$250",
                                 period: "/ month",
@@ -123,8 +123,8 @@ export default function Pricing() {
                             >
                                 {t.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-slate-400 dark:via-white/30 to-transparent" />}
                                 
-                                {/* Glowing radial pulse behind Core Matrix card */}
-                                {t.tier === "Core Matrix" && (
+                                {/* Glowing radial pulse behind Core Plan card */}
+                                {t.tier === "Core Plan" && (
                                     <>
                                         <motion.div 
                                             animate={{ opacity: [0.1, 0.3, 0.1] }} 
@@ -142,7 +142,7 @@ export default function Pricing() {
                                 )}
 
                                 {/* Pulsing discount burst badge */}
-                                {t.tier === "Core Matrix" && (
+                                {t.tier === "Core Plan" && (
                                     <motion.div 
                                         animate={{ 
                                             scale: [1, 1.08, 1],
@@ -194,7 +194,7 @@ export default function Pricing() {
                 </div>
             </main>
 
-            <PageFooter id="PRICING_ACTIVE" links={[{ href: "/features", label: "features" }, { href: "/demo", label: "demo" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="PRICING_ACTIVE" links={[{ href: "/features", label: "features" }, { href: "/demo", label: "demo" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

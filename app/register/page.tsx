@@ -174,7 +174,7 @@ export default function RegisterPage() {
                                 4-Month Unrestricted Trial <span className="flex h-2 w-2 rounded-full bg-emerald-500 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span></span>
                             </p>
                             <p className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase tracking-widest font-medium mt-0.5">
-                                Included with all new institutional nodes
+                                Included with all new school accounts
                             </p>
                         </div>
                     </div>

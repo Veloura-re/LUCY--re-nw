@@ -41,7 +41,7 @@ export default function Partners() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -168,7 +168,7 @@ export default function Partners() {
                 </div>
             </main>
 
-            <PageFooter id="PARTNER_NETWORK" links={[{ href: "/about", label: "about" }, { href: "/pricing", label: "tiers" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="PARTNER_NETWORK" links={[{ href: "/about", label: "about" }, { href: "/pricing", label: "tiers" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

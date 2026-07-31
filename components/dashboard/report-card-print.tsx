@@ -32,7 +32,7 @@ export const ReportCardPrint = React.forwardRef<HTMLDivElement, ReportCardPrintP
                     </div>
                     <div className="text-right">
                         <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Institutional Context</p>
-                        <p className="text-xl font-bold text-zinc-900 dark:text-white uppercase tracking-tight">{school?.name || "Educational Nexus"}</p>
+                        <p className="text-xl font-bold text-zinc-900 dark:text-white uppercase tracking-tight">{school?.name || "Institution"}</p>
                         <p className="text-xs font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest mt-1">Generated: {format(new Date(), 'PPP')}</p>
                     </div>
                 </div>

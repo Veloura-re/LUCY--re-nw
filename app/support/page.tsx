@@ -10,7 +10,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 import { useState } from "react";
 
 const faqs = [
-    { q: "How do I register a new school?", a: "Navigate to /register and complete the Director Provisioning form. You'll receive an admin activation code by email within 24 hours. Once verified, your institutional node is live." },
+    { q: "How do I register a new school?", a: "Navigate to /register and complete the Director Provisioning form. You'll receive an admin activation code by email within 24 hours. Once verified, your school account is live." },
     { q: "Can students and parents access LUCY?", a: "Yes. Principals can invite teachers, who can then enroll students. Parents are linked via unique invitation tokens sent through the parent pairing module." },
     { q: "How is student data protected?", a: "Every school's data is stored in a cryptographically isolated schema. No cross-institutional data access is architecturally possible. All data is encrypted at rest (AES-256) and in transit (TLS 1.3)." },
     { q: "What happens if a teacher is absent?", a: "Staff attendance is tracked separately. The Director dashboard shows which classes are unstaffed in real-time, and substitution can be arranged through the timetable module." },
@@ -19,8 +19,8 @@ const faqs = [
 ];
 
 const channels = [
-    { icon: Mail, name: "Email Support", desc: "General queries and provisioning requests", link: "mailto:lucyosck21@gmail.com", label: "compose_uplink" },
-    { icon: MessageCircle, name: "Emergency Uplink", desc: "Critical system failures — Tier 2+ only", link: "/contact", label: "open_ticket" },
+    { icon: Mail, name: "Email Support", desc: "General queries and provisioning requests", link: "mailto:lucyosck21@gmail.com", label: "email_us" },
+    { icon: MessageCircle, name: "Emergency Contact", desc: "Critical system failures — Tier 2+ only", link: "/contact", label: "open_ticket" },
     { icon: BookOpen, name: "Documentation", desc: "Full technical reference and protocol guides", link: "/docs", label: "read_docs" },
 ];
 
@@ -43,7 +43,7 @@ export default function Support() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -55,7 +55,7 @@ export default function Support() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <HelpCircle className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">support_protocol // knowledge_base</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">support_policy // knowledge_base</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
@@ -144,7 +144,7 @@ export default function Support() {
                 </div>
             </main>
 
-            <PageFooter id="SUPPORT_NODE" links={[{ href: "/docs", label: "docs" }, { href: "/status", label: "status" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="SUPPORT_NODE" links={[{ href: "/docs", label: "docs" }, { href: "/status", label: "status" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

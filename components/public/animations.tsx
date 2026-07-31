@@ -526,7 +526,7 @@ export function PageNav() {
                 <Link href="/">
                     <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-white group">
                         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                        return_to_main
+                        back_to_home
                     </Button>
                 </Link>
             </div>

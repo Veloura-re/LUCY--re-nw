@@ -13,7 +13,7 @@ const clauses = [
     { num: "01", title: "Comprehensive Cyber Coverage", body: "LUCY OS maintains a comprehensive Cyber Liability and Errors & Omissions (E&O) insurance policy specifically designed for SaaS educational platforms. This policy acts as a financial safeguard for our institutional partners in the event of an unforeseen cyber incident." },
     { num: "02", title: "Data Breach & Privacy Liability", body: "Our coverage includes protection against third-party claims arising from a failure to protect personally identifiable information (PII) or institutional data due to a network security failure or privacy breach on our platform." },
     { num: "03", title: "Ransomware & Cyber Extortion", body: "The policy provides dedicated capital for cyber extortion threats, including ransomware response, forensic investigation, and deployment of specialized cybersecurity crisis management firms to resolve the threat rapidly." },
-    { num: "04", title: "Business Interruption & Recovery", body: "In the event of a prolonged, catastrophic platform outage caused by a cyber attack, the insurance covers forensic IT review and data restoration costs, ensuring that LUCY OS has the immediate liquidity to rebuild and restore institutional nodes without delay." },
+    { num: "04", title: "Business Interruption & Recovery", body: "In the event of a prolonged, catastrophic platform outage caused by a cyber attack, the insurance covers forensic IT review and data restoration costs, ensuring that LUCY OS has the immediate liquidity to rebuild and restore school accounts without delay." },
     { num: "05", title: "Regulatory Fines & Penalties", body: "Where legally insurable, our policy covers defense costs and fines levied by regulatory bodies (such as Information Regulators under POPIA or GDPR authorities) resulting directly from a data breach originating within our infrastructure." },
     { num: "06", title: "Policy Limits & Verification", body: "We maintain coverage limits commensurate with our aggregated data risk across all active nodes. A redacted Certificate of Insurance (COI) detailing current coverage limits and the underwriting carrier is available to the Institution's legal or procurement team upon formal written request to our security officer." },
 ];
@@ -33,7 +33,7 @@ export default function Insurance() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -44,7 +44,7 @@ export default function Insurance() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <ShieldAlert className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">security_protocol // effective 2026-01-01</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">security_policy // effective 2026-01-01</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
@@ -53,7 +53,7 @@ export default function Insurance() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-slate-500 dark:text-zinc-500 text-base leading-relaxed">
-                                financial safeguards and policy overview protecting institutional nodes against cyber contingencies.
+                                financial safeguards and policy overview protecting school accounts against cyber contingencies.
                             </p>
                         </Reveal>
                     </section>

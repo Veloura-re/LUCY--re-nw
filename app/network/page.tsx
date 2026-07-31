@@ -71,7 +71,7 @@ export default function Network() {
                     <Link href="/">
                         <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                            return_to_main
+                            back_to_home
                         </Button>
                     </Link>
                 </div>
@@ -236,7 +236,7 @@ export default function Network() {
                         <Link href="/contact">
                             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                                 <Button variant="outline" className="rounded-md dark:rounded-none border-slate-300 dark:border-white/20 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black text-[10px] uppercase tracking-widest font-bold h-12 px-8 transition-all">
-                                    request_uplink
+                                    contact_us
                                 </Button>
                             </motion.div>
                         </Link>
