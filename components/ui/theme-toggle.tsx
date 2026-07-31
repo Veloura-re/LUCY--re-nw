@@ -46,22 +46,33 @@ export function ThemeToggle({ className }: { className?: string }) {
         });
 
         transition.ready.then(() => {
-            const clipPath = [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`,
-            ];
-            document.documentElement.animate(
-                {
-                    clipPath: isDark ? clipPath.reverse() : clipPath,
-                },
-                {
-                    duration: 400,
-                    easing: "ease-in-out",
-                    pseudoElement: isDark
-                        ? "::view-transition-old(root)"
-                        : "::view-transition-new(root)",
-                }
-            );
+            let keyframes: Keyframe[] = [];
+            
+            if (isDark) {
+                // Switching Dark to Light: Old Dark (curtain) lifts up
+                keyframes = [
+                    { clipPath: 'inset(0 0 0 0)' },
+                    { clipPath: 'inset(0 0 100% 0)' }
+                ];
+                
+                document.documentElement.animate(keyframes, {
+                    duration: 600,
+                    easing: "cubic-bezier(0.87, 0, 0.13, 1)",
+                    pseudoElement: "::view-transition-old(root)",
+                });
+            } else {
+                // Switching Light to Dark: New Dark (curtain) drops down
+                keyframes = [
+                    { clipPath: 'inset(0 0 100% 0)' },
+                    { clipPath: 'inset(0 0 0 0)' }
+                ];
+                
+                document.documentElement.animate(keyframes, {
+                    duration: 600,
+                    easing: "cubic-bezier(0.87, 0, 0.13, 1)",
+                    pseudoElement: "::view-transition-new(root)",
+                });
+            }
         });
     };
 

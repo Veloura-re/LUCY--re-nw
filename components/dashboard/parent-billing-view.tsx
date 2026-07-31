@@ -30,6 +30,7 @@ interface ParentBillingViewProps {
 }
 
 export function ParentBillingView({ user, students }: ParentBillingViewProps) {
+    const [activeTab, setActiveTab] = React.useState<'invoices' | 'receipts'>('invoices');
     const [processingId, setProcessingId] = React.useState<string | null>(null);
     const [selectingPaymentId, setSelectingPaymentId] = React.useState<string | null>(null);
     const [paymentMethod, setPaymentMethod] = React.useState<string>("BANK_TRANSFER");
@@ -109,12 +110,36 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
-                        Billing <span className="text-eduGreen-500 not-italic">Nexus</span>
+                        Transactions <span className="text-eduGreen-500 not-italic">Portal</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Family Financial Terminal & Protocol Monitor</p>
                 </div>
 
-                <div className="flex items-center gap-3 mb-1">
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                    <div className="flex w-full sm:w-auto bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-xl">
+                        <button
+                            onClick={() => setActiveTab('invoices')}
+                            className={cn(
+                                "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
+                                activeTab === 'invoices'
+                                    ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg"
+                                    : "text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
+                            )}
+                        >
+                            Active Invoices
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('receipts')}
+                            className={cn(
+                                "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
+                                activeTab === 'receipts'
+                                    ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
+                                    : "text-zinc-600 hover:text-eduGreen-600"
+                            )}
+                        >
+                            Receipts
+                        </button>
+                    </div>
                     <div className="px-5 py-3 rounded-2xl bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 flex items-center gap-3">
                         <ShieldCheck className="w-4 h-4 text-eduGreen-500" />
                         <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Secure Link Established</span>
@@ -148,12 +173,26 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {student.invoices?.length === 0 ? (
-                                    <Card className="md:col-span-3 bg-white/30 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2.5rem] py-16 text-center">
-                                        <p className="text-zinc-800 dark:text-zinc-200 font-medium uppercase tracking-[0.4em] text-[10px]">No Active Invoices Detectable</p>
-                                    </Card>
-                                ) : (
-                                    student.invoices.map((invoice: any) => {
+                                {(() => {
+                                    const filteredInvoices = student.invoices?.filter((invoice: any) => {
+                                        if (activeTab === 'receipts') {
+                                            return invoice.status === 'PAID';
+                                        } else {
+                                            return invoice.status !== 'PAID';
+                                        }
+                                    }) || [];
+
+                                    if (filteredInvoices.length === 0) {
+                                        return (
+                                            <Card className="md:col-span-3 bg-white/30 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2.5rem] py-16 text-center">
+                                                <p className="text-zinc-800 dark:text-zinc-200 font-medium uppercase tracking-[0.4em] text-[10px]">
+                                                    {activeTab === 'receipts' ? "No Receipts Available" : "No Active Invoices Detectable"}
+                                                </p>
+                                            </Card>
+                                        );
+                                    }
+
+                                    return filteredInvoices.map((invoice: any) => {
                                         const hasPendingPayment = invoice.payments?.some((p: any) => p.status === 'PENDING');
                                         return (
                                             <Card key={invoice.id} className="group bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-2xl relative">
@@ -191,7 +230,9 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                         </div>
                                                     </div>
 
-                                                    <h3 className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight leading-none mb-4 whitespace-nowrap overflow-hidden text-ellipsis">Institutional Dues</h3>
+                                                    <h3 className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight leading-none mb-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        {activeTab === 'receipts' ? "Official Receipt" : "Institutional Dues"}
+                                                    </h3>
                                                     <div className="space-y-2">
                                                         {invoice.items.slice(0, 3).map((item: any, idx: number) => (
                                                             <div key={idx} className="flex justify-between items-center text-[10px] font-medium text-zinc-600">
@@ -236,8 +277,8 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                 </CardContent>
                                             </Card>
                                         );
-                                    })
-                                )}
+                                    });
+                                })()}
                             </div>
                         </div>
                     ))}

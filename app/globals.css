@@ -155,11 +155,17 @@ h6 {
   }
 }
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 @theme {
   --animate-scan: scan 3s linear infinite;
   --animate-spin-slow: spin-slow 8s linear infinite;
   --animate-spring: spring 3s ease-in-out infinite;
   --animate-neural-pulse: neural-pulse 4s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.5s infinite;
 }
 
 @keyframes progress-slide {
@@ -223,24 +229,25 @@ h6 {
   75%, 100% { transform: scale(1.8); opacity: 0; }
 }
 
-/* View Transitions API (Theme Toggle) */
+/* View Transitions API (Curtain Effect Theme Toggle) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-/* Ensure the new theme circle draws on top */
-::view-transition-old(root) {
+/* Light to Dark: Dark (new) drops down over Light (old) */
+.dark::view-transition-old(root) {
   z-index: 1;
 }
-::view-transition-new(root) {
+.dark::view-transition-new(root) {
   z-index: 2;
 }
 
-.dark::view-transition-old(root) {
+/* Dark to Light: Dark (old) lifts up off Light (new) */
+:root:not(.dark)::view-transition-old(root) {
   z-index: 2;
 }
-.dark::view-transition-new(root) {
+:root:not(.dark)::view-transition-new(root) {
   z-index: 1;
 }
