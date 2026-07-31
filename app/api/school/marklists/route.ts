@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
         // Teachers can create marklists for their subjects? Yes.
 
-        const { title, classId, subjectId, totalMarks, category, description, date, termId } = await request.json();
+        const { title, classId, subjectId, totalMarks, category, description, date, termId } = await request.json() as any;
 
         // Validate assignment if Teacher
         if (user.role === 'TEACHER') {
