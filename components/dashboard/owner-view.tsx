@@ -152,7 +152,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                 "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
                                 viewMode === 'realtime'
                                     ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
-                                    : "text-zinc-600 hover:text-white"
+                                    : "text-zinc-600 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
                             Real-time
@@ -163,7 +163,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                 "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
                                 viewMode === 'historical'
                                     ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
-                                    : "text-zinc-600 hover:text-white"
+                                    : "text-zinc-600 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
                             Historical

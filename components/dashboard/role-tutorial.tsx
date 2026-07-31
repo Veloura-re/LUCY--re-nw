@@ -304,7 +304,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                             </div>
                             <button
                                 onClick={handleComplete}
-                                className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-200 dark:bg-white/5 hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-900 dark:text-white/30 hover:text-white"
+                                className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-200 dark:bg-white/5 hover:bg-zinc-300 dark:hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-600 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -349,7 +349,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     />
 
                                     <div className={cn(
-                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-white/40 dark:bg-black/40 border border-zinc-300 dark:border-white/10 backdrop-blur-md shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
+                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-white/60 dark:bg-black/40 border border-zinc-300 dark:border-white/10 backdrop-blur-md shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
                                     )}>
                                         <div className={cn("absolute inset-0 opacity-10", steps[currentStep].color)} />
                                         <AnimatePresence mode="wait">

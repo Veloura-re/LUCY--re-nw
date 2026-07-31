@@ -173,7 +173,7 @@ export default function ExamEditorPage() {
             <div className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-900 px-8 py-4">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
+                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <h1 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight uppercase italic truncate max-w-[200px] md:max-w-md">

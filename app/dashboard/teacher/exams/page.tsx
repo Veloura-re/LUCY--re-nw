@@ -216,7 +216,7 @@ function ExamsPageContent() {
                     <Link href="/dashboard/teacher/exams/create?mode=ai" passHref>
                         <Button
                             variant="outline"
-                            className="border-zinc-300 dark:border-zinc-800 text-purple-400 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all mb-1 gap-2"
+                            className="border-zinc-300 dark:border-zinc-800 text-purple-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all mb-1 gap-2"
                         >
                             <Sparkles className="h-4 w-4" /> Start Writing
                         </Button>
@@ -243,7 +243,7 @@ function ExamsPageContent() {
                                     "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
                                     newExam.classId === cls.classId
                                         ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
-                                        : "text-zinc-600 hover:text-white"
+                                        : "text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
                                 )}
                             >
                                 {cls.className}
@@ -314,7 +314,7 @@ function ExamsPageContent() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <Link href={`/dashboard/teacher/exams/${exam.id}/editor`} passHref>
-                                            <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
+                                            <Button variant="outline" className="w-full h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium text-[10px] uppercase tracking-widest rounded-2xl group/edit overflow-hidden relative">
                                                 <div className="absolute inset-0 bg-purple-500/5 group-hover/edit:bg-purple-500/10 transition-colors" />
                                                 <span className="relative z-10 flex items-center gap-2">
                                                     <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Neural Editor
@@ -393,7 +393,7 @@ function ExamsPageContent() {
                                 onClick={handleExportCSV}
                                 disabled={dossierStudents.length === 0}
                                 variant="outline"
-                                className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-11 px-5 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
+                                className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 h-11 px-5 rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all gap-2"
                             >
                                 <FileSpreadsheet className="h-4 w-4 text-emerald-500" /> Export CSV
                             </Button>
@@ -648,7 +648,7 @@ function ExamsPageContent() {
                                     variant="ghost"
                                     disabled={createLoading}
                                     onClick={() => setIsCreating(false)}
-                                    className="h-16 flex-1 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] transition-all"
+                                    className="h-16 flex-1 border border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] transition-all"
                                 >
                                     Abort Protocol
                                 </Button>

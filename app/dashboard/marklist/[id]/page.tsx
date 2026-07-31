@@ -173,7 +173,7 @@ export default function MarklistEntryPage() {
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard/marklist">
-                        <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900">
+                        <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900">
                             <ChevronLeft className="w-6 h-6" />
                         </Button>
                     </Link>

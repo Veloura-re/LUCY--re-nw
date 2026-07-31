@@ -154,7 +154,7 @@ export function TeacherView({ user, initialData }: {
 
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                         <Link href="/dashboard/teacher/attendance" className="w-full sm:w-auto">
-                            <Button variant="outline" className="w-full sm:w-auto rounded-xl border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:border-zinc-700 transition-all h-12 px-8 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-white shadow-xl">
+                            <Button variant="outline" className="w-full sm:w-auto rounded-xl border-zinc-300 dark:border-zinc-800 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:border-zinc-700 transition-all h-12 px-8 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white shadow-xl">
                                 <Calendar className="mr-3 h-4 w-4 text-eduGreen-500" /> Attendance
                             </Button>
                         </Link>
@@ -345,14 +345,14 @@ export function TeacherView({ user, initialData }: {
                                                     <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] relative z-10">CAPACITY</span>
                                                     <div className="flex items-center gap-3 relative z-10">
                                                         <Users className="w-5 h-5 text-eduGreen-600" />
-                                                        <span className="text-xl font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors">{cls.studentCount}</span>
+                                                        <span className="text-xl font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-eduGreen-600 dark:hover:text-white transition-colors">{cls.studentCount}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col gap-2 p-5 bg-white/[0.02] rounded-3xl border border-zinc-200 dark:border-white/5 group-hover:bg-white/[0.04] transition-all relative overflow-hidden">
                                                     <span className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] relative z-10">PERFORMANCE</span>
                                                     <div className="flex items-center gap-3 relative z-10">
                                                         <GraduationCap className="w-5 h-5 text-eduGreen-600" />
-                                                        <span className="text-xl font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-white transition-colors">
+                                                        <span className="text-xl font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-eduGreen-600 dark:hover:text-white transition-colors">
                                                             {cls.avgGrade ? `${Math.round(cls.avgGrade)}%` : 'N/A'}
                                                         </span>
                                                     </div>

@@ -95,7 +95,7 @@ export default function StudentFinanceDossier() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div>
-                    <button onClick={() => router.push('/dashboard/finance')} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white transition-colors mb-4">
+                    <button onClick={() => router.push('/dashboard/finance')} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors mb-4">
                         <ArrowLeft className="w-3 h-3" /> Back to Finance Nexus
                     </button>
                     <h1 className="text-4xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
@@ -214,7 +214,7 @@ export default function StudentFinanceDossier() {
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Previous
                         </Button>
@@ -223,7 +223,7 @@ export default function StudentFinanceDossier() {
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Next
                         </Button>
@@ -262,7 +262,7 @@ export default function StudentFinanceDossier() {
                                         </div>
                                     </div>
                                 </div>
-                                <button onClick={() => setSelectedStudent(null)} className="text-zinc-600 dark:text-zinc-500 hover:text-white text-2xl leading-none">&times;</button>
+                                <button onClick={() => setSelectedStudent(null)} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white text-2xl leading-none">&times;</button>
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

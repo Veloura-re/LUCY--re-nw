@@ -148,7 +148,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase tracking-tight">Institutional synthesis Report</h3>
                                 </div>
                             </div>
-                            <Button variant="ghost" onClick={() => setInsight(null)} className="text-zinc-600 hover:text-white uppercase text-[10px] font-black tracking-widest">Clear Buffer</Button>
+                            <Button variant="ghost" onClick={() => setInsight(null)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase text-[10px] font-black tracking-widest">Clear Buffer</Button>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -235,7 +235,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                             </CardTitle>
                             <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1">Real-time Global Sync</p>
                         </div>
-                        <Button variant="ghost" size="icon" className="text-zinc-600 hover:text-white">
+                        <Button variant="ghost" size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white">
                             <Filter className="w-4 h-4" />
                         </Button>
                     </CardHeader>
@@ -270,7 +270,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                                 {task.teacher.name}
                                             </td>
                                             <td className="py-6 px-8 text-right">
-                                                <div className="text-[11px] font-medium text-zinc-600 dark:text-zinc-500 group-hover:text-white transition-colors">
+                                                <div className="text-[11px] font-medium text-zinc-600 dark:text-zinc-500 group-hover:text-zinc-900 dark:hover:text-white transition-colors">
                                                     {new Date(task.dueDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
                                                 </div>
                                             </td>

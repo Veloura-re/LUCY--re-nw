@@ -80,7 +80,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className={cn("rounded-xl transition-all", sidebarOpen ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5")}
+                            className={cn("rounded-xl transition-all", sidebarOpen ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5")}
                             title="Toggle Info Panel"
                         >
                             <Info className="w-5 h-5" />
@@ -89,7 +89,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setFullScreen(!fullScreen)}
-                            className="text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                            className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5 rounded-xl transition-all"
                             title={fullScreen ? "Exit Fullscreen" : "Fullscreen"}
                         >
                             {fullScreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
@@ -97,7 +97,7 @@ export function FlipBookViewer({ isOpen, onClose, book }: FlipBookViewerProps) {
                         <a
                             href={book.fileUrl}
                             download
-                            className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl transition-all flex items-center justify-center"
+                            className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5 rounded-xl transition-all flex items-center justify-center"
                             title="Download PDF"
                         >
                             <Download className="w-5 h-5" />

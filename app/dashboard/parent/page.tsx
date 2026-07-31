@@ -47,12 +47,12 @@ export default function ParentDashboard() {
                 </div>
                 <div className="flex gap-3">
                     <Link href="/dashboard/parent/authorizations">
-                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <ClipboardCheck className="w-4 h-4 mr-2" /> Absence Permits
                         </Button>
                     </Link>
                     <Link href="/dashboard/finance">
-                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
+                        <Button variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 h-12 px-6 text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <CreditCard className="w-4 h-4 mr-2" /> Billing
                         </Button>
                     </Link>
@@ -147,7 +147,7 @@ export default function ParentDashboard() {
                                                     </Button>
                                                 </Link>
                                                 <Link href={`/dashboard/parent/authorizations?studentId=${student.id}`}>
-                                                    <Button variant="ghost" className="w-full h-11 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[10px] uppercase tracking-widest">
+                                                    <Button variant="ghost" className="w-full h-11 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[10px] uppercase tracking-widest">
                                                         <ClipboardCheck className="w-4 h-4 mr-2" /> Absence Permit
                                                         <ChevronRight className="w-3 h-3 ml-auto" />
                                                     </Button>

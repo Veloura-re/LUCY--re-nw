@@ -139,7 +139,7 @@ export default function DirectorAttendancePage() {
                                 "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all",
                                 activeTab === 'OVERVIEW'
                                     ? "bg-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                                    : "text-zinc-900 dark:text-white/40 hover:text-white"
+                                    : "text-zinc-900 dark:text-white/40 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
                             STUDENT OVERVIEW
@@ -150,7 +150,7 @@ export default function DirectorAttendancePage() {
                                 "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all",
                                 activeTab === 'STAFF'
                                     ? "bg-blue-500 text-black shadow-[0_0_20px_rgba(59,130,246,0.3)]"
-                                    : "text-zinc-900 dark:text-white/40 hover:text-white"
+                                    : "text-zinc-900 dark:text-white/40 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
                             STAFF REPORTING
@@ -164,7 +164,7 @@ export default function DirectorAttendancePage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={handlePreviousDay}
-                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-zinc-300 dark:hover:bg-white/10 text-zinc-600 dark:text-white/40 hover:text-zinc-900 dark:hover:text-white transition-all flex items-center justify-center"
                         >
                             &larr;
                         </motion.button>
@@ -176,7 +176,7 @@ export default function DirectorAttendancePage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={handleNextDay}
-                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-white/10 text-zinc-900 dark:text-white/40 hover:text-white transition-all flex items-center justify-center"
+                            className="w-12 h-12 rounded-xl bg-zinc-200 dark:bg-white/5 hover:bg-zinc-300 dark:hover:bg-white/10 text-zinc-600 dark:text-white/40 hover:text-zinc-900 dark:hover:text-white transition-all flex items-center justify-center"
                         >
                             &rarr;
                         </motion.button>

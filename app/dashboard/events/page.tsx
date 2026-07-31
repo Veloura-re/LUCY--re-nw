@@ -116,7 +116,7 @@ export default function EventsPage() {
                                     {new Date(event.eventDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </div>
                             </div>
-                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-white transition-colors tracking-tight leading-tight">{event.title}</CardTitle>
+                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-eduGreen-600 dark:group-hover:text-eduGreen-400 transition-colors tracking-tight leading-tight">{event.title}</CardTitle>
                             <CardDescription className="text-zinc-600 dark:text-zinc-500 font-medium text-sm mt-3 leading-relaxed line-clamp-2">{event.description || "No tactical details provided for this event sequence."}</CardDescription>
                         </CardHeader>
                         <CardContent className="p-8 pt-0 mt-auto">
@@ -167,7 +167,7 @@ export default function EventsPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Previous
                         </Button>
@@ -176,7 +176,7 @@ export default function EventsPage() {
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Next
                         </Button>
@@ -226,7 +226,7 @@ export default function EventsPage() {
                                 />
                             </div>
                             <div className="flex justify-end gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-900/50">
-                                <Button type="button" variant="ghost" disabled={createLoading} onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-white font-medium uppercase tracking-[0.2em] text-[10px] h-14 px-8">Abort</Button>
+                                <Button type="button" variant="ghost" disabled={createLoading} onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-zinc-600 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-900/20 font-medium uppercase tracking-[0.2em] text-[10px] h-14 px-8">Abort</Button>
                                 <Button type="submit" isLoading={createLoading} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-10 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20">Confirm Deployment</Button>
                             </div>
                         </form>

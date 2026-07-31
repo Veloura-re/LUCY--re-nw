@@ -70,7 +70,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
             <Button
                 onClick={() => router.back()}
                 variant="ghost"
-                className="text-zinc-600 hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
+                className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
             >
                 <ArrowLeft className="w-4 h-4" /> Return to Registry
             </Button>
@@ -103,7 +103,7 @@ export default function TeacherDossierClient({ teacher, initialRemarks }: { teac
                                     <label className="text-[9px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Entry Type</label>
                                     <div className="grid grid-cols-3 gap-2">
                                         <button type="button" onClick={() => setRemarkType('POSITIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'POSITIVE' ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Good</button>
-                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Infraction</button>
+                                        <button type="button" onClick={() => setRemarkType('NEGATIVE')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'NEGATIVE' ? "bg-rose-500/10 border-rose-500/50 text-rose-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white")}>Infraction</button>
                                         <button type="button" onClick={() => setRemarkType('REVIEW')} className={cn("py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all border", remarkType === 'REVIEW' ? "bg-amber-500/10 border-amber-500/50 text-amber-600 dark:text-amber-400" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white")}>Review</button>
                                     </div>
                                 </div>

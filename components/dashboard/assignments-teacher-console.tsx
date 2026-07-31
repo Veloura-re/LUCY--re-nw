@@ -346,7 +346,7 @@ function CreateAssignmentForm({ classes, subjects, data, setData, onSave, onCanc
                     <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.3em]">Initialize Dispatch</span>
                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase">New Academic Task</h3>
                 </div>
-                <Button variant="ghost" onClick={onCancel} className="text-zinc-600 dark:text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Abort</Button>
+                <Button variant="ghost" onClick={onCancel} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 uppercase text-[10px] font-black tracking-widest">Abort</Button>
             </div>
             
             <div className="p-12 space-y-10">
@@ -679,7 +679,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Evaluation Node</span>
                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase">{submission.student?.firstName}'s Submission</h3>
                 </div>
-                <Button variant="ghost" onClick={onBack} className="text-zinc-600 dark:text-zinc-500 hover:text-white uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
+                <Button variant="ghost" onClick={onBack} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
             </div>
 
             <div className="p-12 space-y-10">
@@ -757,7 +757,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                                             <FileText className="w-4 h-4 text-emerald-500" />
                                             <span className="text-[10px] font-bold text-zinc-900 dark:text-white tracking-widest uppercase truncate max-w-[180px]">{file.name}</span>
                                         </div>
-                                        <Download className="w-4 h-4 text-zinc-700 group-hover:text-white transition-colors" />
+                                        <Download className="w-4 h-4 text-zinc-700 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors" />
                                     </a>
                                 ))}
                             </div>

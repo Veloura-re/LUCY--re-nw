@@ -58,7 +58,7 @@ export function NeuralConnectivity() {
                         onClick={fetchDiagnostics}
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
+                        className="h-8 w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                     >
                         <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
                     </Button>

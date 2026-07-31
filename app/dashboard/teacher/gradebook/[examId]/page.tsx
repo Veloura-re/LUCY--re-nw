@@ -362,7 +362,7 @@ export default function GradebookPage() {
                                 <Button onClick={applyAiScore} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black uppercase tracking-widest px-8 rounded-2xl h-14 gap-2">
                                     <Save className="w-4 h-4" /> Authorize AI Score
                                 </Button>
-                                <Button onClick={() => setIsReviewOpen(false)} variant="ghost" className="text-zinc-600 dark:text-zinc-500 hover:text-white font-black uppercase tracking-widest px-10 rounded-2xl h-14">
+                                <Button onClick={() => setIsReviewOpen(false)} variant="ghost" className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white font-black uppercase tracking-widest px-10 rounded-2xl h-14">
                                     Exit Audit
                                 </Button>
                             </div>
@@ -379,7 +379,7 @@ export default function GradebookPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard/teacher/exams">
-                        <Button variant="ghost" size="icon" className="text-zinc-600 hover:text-white rounded-full">
+                        <Button variant="ghost" size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-full">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                     </Link>
@@ -414,7 +414,7 @@ export default function GradebookPage() {
                         <Button
                             variant="outline"
                             onClick={handleBulkReview}
-                            className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] transition-all"
+                            className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white h-12 px-6 rounded-2xl font-black uppercase tracking-widest text-[9px] transition-all"
                         >
                             Secure All
                         </Button>
@@ -636,7 +636,7 @@ export default function GradebookPage() {
                                                 type="button"
                                                 variant="ghost"
                                                 onClick={() => { setSelectedStudent(student); setIsReviewOpen(true); }}
-                                                className="h-8 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white transition-all text-[8px] uppercase tracking-widest"
+                                                className="h-8 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all text-[8px] uppercase tracking-widest"
                                             >
                                                 Audit Detail
                                             </Button>

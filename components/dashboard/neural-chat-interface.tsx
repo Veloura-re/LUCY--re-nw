@@ -516,7 +516,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-white hover:bg-white/5 transition-all"
+                            className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl text-zinc-900 dark:text-white/20 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5 transition-all"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         >
                             <Layout className={cn("w-5 h-5 md:w-6 md:h-6", isSidebarOpen ? "text-eduGreen-500" : "text-zinc-900 dark:text-white/20")} />
@@ -524,7 +524,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-12 w-12 rounded-2xl text-zinc-900 dark:text-white/20 hover:text-white hover:bg-white/5 transition-all hidden md:flex"
+                            className="h-12 w-12 rounded-2xl text-zinc-900 dark:text-white/20 hover:text-zinc-900 dark:hover:text-white hover:bg-white/5 transition-all hidden md:flex"
                             onClick={() => setIsMaximized(!isMaximized)}
                         >
                             {isMaximized ? <Minimize2 className="w-6 h-6" /> : <Maximize2 className="w-6 h-6" />}
@@ -640,7 +640,7 @@ export function NeuralChatInterface({ userName, userId, fullScreen = false, stan
                                                                                 "flex-1 py-1.5 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                                                                                 activeCategory === cat
                                                                                     ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white shadow-lg"
-                                                                                    : "text-zinc-900 dark:text-white/40 hover:text-white/60"
+                                                                                    : "text-zinc-900 dark:text-white/40 hover:text-zinc-900 dark:hover:text-white/60"
                                                                             )}
                                                                         >
                                                                             {cat === 'CORE' ? 'Neural Core' : 'Educators'}
