@@ -29,7 +29,7 @@ export default function SettingsPage() {
         bio: "",
         preferences: {
             immersiveVisuals: true,
-            neuralSync: true,
+            smartSync: true,
             analyticExport: false,
             emailAlerts: true,
             pushSignals: true,
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                     bio: data.user.bio || "",
                     preferences: data.user.preferences || {
                         immersiveVisuals: true,
-                        neuralSync: true,
+                        smartSync: true,
                         analyticExport: false,
                         emailAlerts: true,
                         pushSignals: true,
@@ -238,7 +238,7 @@ export default function SettingsPage() {
                 if (!formData.preferences.immersiveVisuals) body.classList.add('hide-immersive-visuals');
                 else body.classList.remove('hide-immersive-visuals');
 
-                if (!formData.preferences.neuralSync) body.classList.add('reduce-motion');
+                if (!formData.preferences.smartSync) body.classList.add('reduce-motion');
                 else body.classList.remove('reduce-motion');
             }
 
@@ -299,7 +299,7 @@ export default function SettingsPage() {
                 setPasswordData({ current: "", new: "", confirm: "" });
             } else {
                 setAlertConfig({
-                    title: "Uplink Failed",
+                    title: "Connection Failed",
                     message: data.error || "Communication with the identity server was interrupted.",
                     isOpen: true,
                     variant: "error"
@@ -329,14 +329,14 @@ export default function SettingsPage() {
             } else {
                 setAlertConfig({
                     title: "Diagnostic Failure",
-                    message: data.error || "A critical fault was detected in the neural grid.",
+                    message: data.error || "A critical fault was detected in the smart grid.",
                     isOpen: true,
                     variant: "error"
                 });
             }
         } catch (e) {
             console.error(e);
-            setAlertConfig({ title: "Uplink Error", message: "Failed to communicate with the diagnostic node.", isOpen: true, variant: "error" });
+            setAlertConfig({ title: "Connection Error", message: "Failed to communicate with the diagnostic node.", isOpen: true, variant: "error" });
         } finally {
             setDiagnosing(false);
         }
@@ -621,13 +621,13 @@ export default function SettingsPage() {
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <Zap className="w-4 h-4 text-eduGreen-500" />
-                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Neural Sync</h4>
+                                                <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-wider">Smart Sync</h4>
                                             </div>
                                             <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest">Enable high-performance micro-animations and transitions</p>
                                         </div>
                                         <Switch
-                                            checked={formData.preferences.neuralSync}
-                                            onCheckedChange={() => handlePrefToggle('neuralSync')}
+                                            checked={formData.preferences.smartSync}
+                                            onCheckedChange={() => handlePrefToggle('smartSync')}
                                         />
                                     </div>
 
@@ -1162,7 +1162,7 @@ export default function SettingsPage() {
                                     </div>
                                     <div>
                                         <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">Encrypted Transmission Node</h4>
-                                        <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest mt-1 max-w-sm">All institutional broadcasts are routed through a secured SMTP uplink (Gmail Service Active).</p>
+                                        <p className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest mt-1 max-w-sm">All institutional broadcasts are routed through a secured SMTP connection (Gmail Service Active).</p>
                                     </div>
                                 </div>
                             </Card>

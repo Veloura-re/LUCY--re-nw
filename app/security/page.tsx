@@ -38,11 +38,11 @@ export default function Security() {
 
         // Terminal animation steps
         const logs = [
-            "initializing secure uplink...",
+            "initializing secure connection...",
             "establishing peer-to-peer encryption tunnel (TLS 1.3)...",
             "sealing disclosure payload with ephemeral AES-256 keys...",
             "transmitting chunk package to vault host...",
-            "verifying transmission package integrity check...",
+            "verifying message package integrity check...",
             "establishing secure database write..."
         ];
 
@@ -60,13 +60,13 @@ export default function Security() {
 
             const data = (await res.json()) as any;
             if (res.ok) {
-                setTxLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] transmission verified. reference: ${data.hash.substring(0, 16)}...`]);
+                setTxLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] message verified. reference: ${data.hash.substring(0, 16)}...`]);
                 await new Promise(r => setTimeout(r, 800));
                 setResultHash(data.hash);
                 setResultTime(new Date(data.timestamp).toLocaleString());
                 setStatus('SUCCESS');
             } else {
-                setErrorMsg(data.error || "Uplink validation rejected the transmission.");
+                setErrorMsg(data.error || "Connection validation rejected the request.");
                 setStatus('ERROR');
             }
         } catch (err) {
@@ -197,10 +197,10 @@ export default function Security() {
                                         <Shield className="w-24 h-24 stroke-[1]" />
                                     </div>
                                     <div className="space-y-2 relative z-10">
-                                        <div className="text-[10px] text-emerald-600 dark:text-emerald-500 uppercase tracking-widest font-bold">transmission_secured // response_active</div>
+                                        <div className="text-[10px] text-emerald-600 dark:text-emerald-500 uppercase tracking-widest font-bold">message_secured // response_active</div>
                                         <h3 className="font-bold text-emerald-900 dark:text-white uppercase tracking-tight text-xl">Vulnerability Disclosure Logged</h3>
                                         <p className="text-emerald-700 dark:text-zinc-400 text-xs leading-relaxed max-w-2xl">
-                                            your transmission has been sealed and cataloged. our security operations center (soc) response team will evaluate the payload within 24 hours. thank you for protecting the lucy network.
+                                            your message has been sealed and cataloged. our security operations center (soc) response team will evaluate the payload within 24 hours. thank you for protecting the lucy network.
                                         </p>
                                     </div>
                                     <div className="p-6 bg-white/80 dark:bg-zinc-950/80 border border-emerald-100 dark:border-zinc-900 font-mono text-xs space-y-3 rounded-xl max-w-2xl relative z-10">
@@ -209,7 +209,7 @@ export default function Security() {
                                             <span>VALUES</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span className="text-emerald-600 dark:text-zinc-500">transmission_hash:</span>
+                                            <span className="text-emerald-600 dark:text-zinc-500">message_hash:</span>
                                             <span className="text-emerald-600 dark:text-emerald-400 font-bold select-all break-all ml-4 text-right">{resultHash}</span>
                                         </div>
                                         <div className="flex justify-between">

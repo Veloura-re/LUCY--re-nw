@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { RoleTutorial } from "./role-tutorial";
 
-export function NeuralTutorialWrapper({ role }: { role: string }) {
+export function SmartTutorialWrapper({ role }: { role: string }) {
     const [showTutorial, setShowTutorial] = useState(false);
 
     useEffect(() => {

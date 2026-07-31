@@ -53,7 +53,7 @@ export default function StaffAuthorizationsPage() {
                 setAuthorizations(data);
             }
         } catch (error) {
-            toast.error("Failed to sync authorization matrix");
+            toast.error("Failed to sync authorization system");
         } finally {
             setLoading(false);
         }
@@ -76,7 +76,7 @@ export default function StaffAuthorizationsPage() {
                 toast.error(data.error || "Action failed");
             }
         } catch (error) {
-            toast.error("Neural uplink failure");
+            toast.error("Smart connection failure");
         } finally {
             setProcessingId(null);
         }

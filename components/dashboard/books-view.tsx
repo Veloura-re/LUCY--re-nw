@@ -142,7 +142,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
             // Subjects API returns { subjects: [...] }
             setSubjects(subjectsData.subjects || subjectsData || []);
         } catch (e) {
-            console.error("Data uplink failed:", e);
+            console.error("Data connection failed:", e);
         }
     };
 
@@ -922,7 +922,7 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                 onSuccess();
             }
         } catch (e) {
-            toast.error("Subspace transmission failure");
+            toast.error("Subspace message failure");
         } finally {
             setLoading(false);
         }

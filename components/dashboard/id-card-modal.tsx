@@ -139,7 +139,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 <div className="px-6 py-3 bg-slate-100/50 dark:bg-zinc-900/30 flex justify-between items-center border-t border-slate-200 dark:border-zinc-900/50">
                                     <div className="flex items-center gap-1 opacity-20">
                                         <ShieldCheck className="w-3 h-3 text-slate-900 dark:text-white" />
-                                        <span className="text-[6px] font-medium text-slate-900 dark:text-white uppercase tracking-[0.3em]">Neural Verification Active</span>
+                                        <span className="text-[6px] font-medium text-slate-900 dark:text-white uppercase tracking-[0.3em]">Smart Verification Active</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse" />

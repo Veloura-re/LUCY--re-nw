@@ -36,6 +36,6 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error("Security Report Error:", error);
-        return NextResponse.json({ error: "Internal transmission failure" }, { status: 500 });
+        return NextResponse.json({ error: "Internal message failure" }, { status: 500 });
     }
 }

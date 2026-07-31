@@ -88,7 +88,7 @@ export default function StudentRegisterPage() {
 
                     <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
                         <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white uppercase tracking-wide">
-                            Activation Protocol
+                            Activation Process
                         </CardTitle>
                         <CardDescription className="text-zinc-600 font-medium text-xs uppercase tracking-widest mt-1">
                             Enter your credentials to initialize your workspace
@@ -146,7 +146,7 @@ export default function StudentRegisterPage() {
                                         className="space-y-6"
                                     >
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Secure Email Uplink</Label>
+                                            <Label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Secure Email Verification</Label>
                                             <div className="relative group">
                                                 <Mail className="absolute left-4 top-4 w-5 h-5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                                                 <Input

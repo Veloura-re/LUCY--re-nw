@@ -18,7 +18,7 @@ const PRINCIPAL_SECTIONS = [
             <div className="space-y-4 text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm">
                 <p>Welcome to the <strong>LUCY Educational Operating System</strong>. As the Principal, you possess full cryptographic oversight over the entire institution's data architecture.</p>
                 <h4 className="text-zinc-900 dark:text-white font-bold text-base mt-4 border-b border-zinc-300 dark:border-white/10 pb-2">Navigation Modes</h4>
-                <p>Use the Tactical Dock or the Neural Sidebar. You can toggle this via Settings.</p>
+                <p>Use the Tactical Dock or the Sidebar. You can toggle this via Settings.</p>
             </div>
         )
     },

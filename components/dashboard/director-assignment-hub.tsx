@@ -124,7 +124,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                 )}
                             </div>
                             <div className="space-y-1">
-                                <h3 className="text-2xl font-black italic text-zinc-900 dark:text-white uppercase tracking-tighter">Neural Institutional Insight</h3>
+                                <h3 className="text-2xl font-black italic text-zinc-900 dark:text-white uppercase tracking-tighter">Smart Institutional Insight</h3>
                                 <p className="text-[10px] font-black text-eduGreen-500/60 uppercase tracking-[0.3em]">Synthesize Global Operational Data</p>
                             </div>
                         </div>

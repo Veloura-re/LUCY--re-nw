@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
         if (!emailResult.success) {
             console.error('Resend email error:', emailResult.error);
-            return NextResponse.json({ error: 'SMTP gateway transmission failure.' }, { status: 500 });
+            return NextResponse.json({ error: 'SMTP gateway message failure.' }, { status: 500 });
         }
 
         return NextResponse.json({ success: true, message: 'Recovery instructions dispatched.' });

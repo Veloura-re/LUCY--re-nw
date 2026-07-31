@@ -61,7 +61,7 @@ export default function ParentAuthorizationsPage() {
                 <div className="w-20 h-20 border-2 border-eduGreen-500/20 rounded-full animate-ping absolute inset-0" />
                 <Loader2 className="w-10 h-10 text-eduGreen-500 animate-spin relative z-10" />
             </div>
-            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Family Authorization Nexus...</p>
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.4em] text-[10px] mt-8">Accessing Family Authorizations...</p>
         </div>
     );
 
@@ -81,7 +81,7 @@ export default function ParentAuthorizationsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <div className="h-[1px] w-8 bg-eduGreen-500" />
-                        <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.5em]">Family Link Matrix: Online</span>
+                        <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.5em]">Family Link System: Online</span>
                     </div>
                     <h1 className="text-6xl font-black tracking-tighter text-zinc-900 dark:text-white uppercase italic leading-none">
                         ABSENCE <span className="text-eduGreen-500">MATRIX</span>
@@ -214,7 +214,7 @@ export default function ParentAuthorizationsPage() {
                                 <FileText className="w-20 h-20 text-zinc-800 dark:text-zinc-200 mx-auto relative z-10" />
                             </div>
                             <div className="text-zinc-600 font-black uppercase tracking-[0.8em] text-xl italic ml-4">LEDGER VACANCY</div>
-                            <p className="text-zinc-800 dark:text-zinc-200 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active absence permits recorded in the family matrix.</p>
+                            <p className="text-zinc-800 dark:text-zinc-200 mt-6 text-[10px] font-bold uppercase tracking-[0.4em]">No active absence permits recorded in the family system.</p>
                             <Button
                                 onClick={() => setShowModal(true)}
                                 variant="ghost"

@@ -177,7 +177,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                     className="h-8 px-4 rounded-xl bg-zinc-200 dark:bg-white/5 text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center gap-2"
                                                 >
                                                     {analyzing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                                                    <span className="text-[8px] font-black uppercase tracking-widest">Neural Support</span>
+                                                    <span className="text-[8px] font-black uppercase tracking-widest">Smart Support</span>
                                                 </Button>
                                             </div>
                                             <p className="text-zinc-900 dark:text-white font-black italic uppercase text-lg">{selectedAssignment.teacher?.name}</p>

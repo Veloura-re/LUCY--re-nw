@@ -174,9 +174,9 @@ export function ParticleField({ count = 30 }: { count?: number }) {
     return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-// ─── Matrix Rain — full canvas, no DOM schools at all ──────────────────────────
+// ─── System Rain — full canvas, no DOM schools at all ──────────────────────────
 const MATRIX_CHARS = "ルアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘ01";
-export function MatrixRain({ cols = 12 }: { cols?: number }) {
+export function SystemRain({ cols = 12 }: { cols?: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const prefersReduced = useReducedMotion();
     const lowPower = useIsLowPower();
@@ -239,9 +239,9 @@ export function MatrixRain({ cols = 12 }: { cols?: number }) {
     return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-// ─── Neural Web — canvas, throttled to 24fps ─────────────────────────────────
+// ─── Smart Web — canvas, throttled to 24fps ─────────────────────────────────
 interface NetNode { x: number; y: number; vx: number; vy: number; }
-export function NeuralWeb({ nodeCount = 16 }: { nodeCount?: number }) {
+export function SmartWeb({ nodeCount = 16 }: { nodeCount?: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const schools = useRef<NetNode[]>([]);
     const prefersReduced = useReducedMotion();

@@ -109,7 +109,7 @@ export default function AttendanceIntelligencePage() {
             <div className="grid lg:grid-cols-12 gap-8">
                 <Card className="lg:col-span-8 bg-zinc-100/30 dark:bg-zinc-900/30 backdrop-blur-md border-zinc-200 dark:border-zinc-900 rounded-[3rem]  border-t-zinc-800/20">
                     <CardHeader className="p-6 md:p-10 border-b border-zinc-300 dark:border-zinc-800/50">
-                        <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white italic">Neural <span className="text-zinc-700 not-italic ml-2">Presence Trend</span></CardTitle>
+                        <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white italic">Smart <span className="text-zinc-700 not-italic ml-2">Presence Trend</span></CardTitle>
                         <CardDescription className="text-zinc-600 font-medium uppercase tracking-widest text-[9px] mt-1">Institutional presence over time duration</CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 md:p-10">

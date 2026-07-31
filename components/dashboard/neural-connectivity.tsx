@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { RestorationModal } from "./restoration-modal";
 
-export function NeuralConnectivity() {
+export function SmartConnectivity() {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export function NeuralConnectivity() {
                     <div>
                         <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
                             <Activity className="w-5 h-5 text-amber-600 dark:text-amber-500" />
-                            Neural Connectivity
+                            Smart Connectivity
                         </CardTitle>
                         <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 italic">Synchronization Diagnostic Gauge</p>
                     </div>

@@ -305,7 +305,7 @@ export default function ReportsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <ShieldCheck className="w-4 h-4 text-eduGreen-500" />
-                        <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-widest italic">Neural Insights <span className="not-italic opacity-40 ml-1">Beta</span></h4>
+                        <h4 className="text-xs font-medium text-zinc-900 dark:text-white uppercase tracking-widest italic">Smart Insights <span className="not-italic opacity-40 ml-1">Beta</span></h4>
                     </div>
                     <p className="text-[10px] font-medium text-zinc-600 leading-relaxed uppercase max-w-2xl">
                         {data?.performanceBySubject?.length > 0 ? (

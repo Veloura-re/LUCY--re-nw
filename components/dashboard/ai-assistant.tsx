@@ -121,7 +121,7 @@ const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, 
         color: "bg-orange-500",
         secondaryColor: "text-orange-400",
         ring: "border-orange-500",
-        greeting: (n) => `✦ **Maternal Uplink: Corazón Protocol.** 🥘\n\n¡Hola mi amor! **${n || 'mi vida'}**, have you eaten yet? Don't tell me you're working on an empty stomach, que me da algo. \n\nI’m here to make sure you succeed, but if you don't listen to your **Mama**, it's gonna be "la chancla" time. Now, dime, what are we doing today? ❯ 💖`
+        greeting: (n) => `✦ **Maternal Connection: Corazón Protocol.** 🥘\n\n¡Hola mi amor! **${n || 'mi vida'}**, have you eaten yet? Don't tell me you're working on an empty stomach, que me da algo. \n\nI’m here to make sure you succeed, but if you don't listen to your **Mama**, it's gonna be "la chancla" time. Now, dime, what are we doing today? ❯ 💖`
     },
     MATH_TEACHER: {
         name: "Maths Teacher",
@@ -173,7 +173,7 @@ const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, 
     }
 };
 
-const NeuralAction = ({ type }: { type: string }) => {
+const SmartAction = ({ type }: { type: string }) => {
     const actions: Record<string, { label: string, icon: any, href: string, color: string }> = {
         OPEN_EXAM_MANAGER: { label: "Open Exam Builder", icon: Zap, href: "/dashboard/teacher/exams", color: "text-emerald-400" },
         OPEN_STUDENT_DIRECTORY: { label: "Open Student Directory", icon: Shield, href: "/dashboard/teacher/students", color: "text-blue-400" },
@@ -259,7 +259,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
         const id = Math.random().toString(36).substring(7);
         const firstSession: ChatSession = {
             id,
-            title: "New Neural Thread",
+            title: "New Smart Thread",
             behavior: 'INSTITUTIONAL',
             messages: [{ role: "ai", content: BEHAVIORS.INSTITUTIONAL.greeting(userName) }],
             updatedAt: Date.now()
@@ -344,7 +344,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
             console.error("[AI Assistant] Error in handleSend:", error);
             setSessions(prev => prev.map(s =>
                 s.id === activeSessionId
-                    ? { ...s, messages: [...newMessages, { role: "ai", content: "✦ **Neural Link Interrupted.** ⚠️\n\nI was unable to establish a connection to the neural core. Please check your uplink and try again." }], updatedAt: Date.now() }
+                    ? { ...s, messages: [...newMessages, { role: "ai", content: "✦ **Smart Link Interrupted.** ⚠️\n\nI was unable to establish a connection to the smart core. Please check your connection and try again." }], updatedAt: Date.now() }
                     : s
             ));
         } finally {
@@ -356,7 +356,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
         const id = Math.random().toString(36).substring(7);
         const newSession: ChatSession = {
             id,
-            title: "New Neural Thread",
+            title: "New Smart Thread",
             behavior: prefBehavior,
             messages: [{ role: "ai", content: BEHAVIORS[prefBehavior].greeting(userName) }],
             updatedAt: Date.now()
@@ -373,7 +373,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 const newId = Math.random().toString(36).substring(7);
                 return [{
                     id: newId,
-                    title: "New Neural Thread",
+                    title: "New Smart Thread",
                     behavior: 'INSTITUTIONAL',
                     messages: [{ role: "ai", content: BEHAVIORS.INSTITUTIONAL.greeting(userName) }],
                     updatedAt: Date.now()
@@ -425,7 +425,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                             if (part.startsWith('[ACTION:')) {
                                 const match = part.match(/\[ACTION: ([A-Z_]+)\]/);
                                 const type = match ? match[1] : null;
-                                if (type) return <NeuralAction key={index} type={type} />;
+                                if (type) return <SmartAction key={index} type={type} />;
                             }
                             return (
                                 <ReactMarkdown
@@ -449,14 +449,14 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 )}
             </div>
             <span className="text-[9px] font-black text-zinc-900 dark:text-white/10 uppercase tracking-[0.2em] mt-2 px-2">
-                {m.role === "user" ? "Authored" : "Neural Link"} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {m.role === "user" ? "Authored" : "Smart Link"} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
         </motion.div>
     );
 
     return (
         <>
-            {/* Neural Launcher Button — Bold Edge Tab (Desktop Only) */}
+            {/* Smart Launcher Button — Bold Edge Tab (Desktop Only) */}
             <AnimatePresence>
                 {!isOpen && (
                     <motion.button
@@ -471,7 +471,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                     >
                         {/* Ambient Glow Behind the Tab */}
                         <div className={cn(
-                            "absolute inset-0 rounded-l-2xl blur-2xl opacity-30 animate-neural-pulse -z-10",
+                            "absolute inset-0 rounded-l-2xl blur-2xl opacity-30 animate-smart-pulse -z-10",
                             activeB.color
                         )} />
 
@@ -512,7 +512,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 )}
             </AnimatePresence>
 
-            {/* Neural Workspace / Expanded View */}
+            {/* Smart Workspace / Expanded View */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -569,7 +569,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                         activeB.color.replace('bg-', 'bg-opacity-5 bg-'),
                                         activeB.ring.replace('border-', 'border-opacity-20 border-')
                                     )}>
-                                        <div className={cn("absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-300 animate-neural-pulse", activeB.color)} />
+                                        <div className={cn("absolute inset-0 opacity-10 group-hover:opacity-30 transition-opacity duration-300 animate-smart-pulse", activeB.color)} />
                                         <IconB className={cn("w-6 h-6 md:w-7 md:h-7 relative z-10", activeB.secondaryColor)} />
                                     </div>
                                     <div>
@@ -585,7 +585,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                             <div className="flex items-center gap-2">
                                                 <div className={cn("w-1.5 h-1.5 rounded-full animate-ping absolute", activeB.color)} />
                                                 <div className={cn("w-1.5 h-1.5 rounded-full relative", activeB.color)} />
-                                                <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white/30 uppercase">Neural Connection Stable</span>
+                                                <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white/30 uppercase">Smart Connection Stable</span>
                                             </div>
                                             <span className="text-zinc-900 dark:text-white/10 text-[9px]">|</span>
                                             <span className="text-[9px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white/30 uppercase">{activeSession?.title || "Active Thread"}</span>
@@ -641,7 +641,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                             >
                                                 <div className="p-4 md:p-8 space-y-6 md:space-y-10 flex-1 overflow-y-auto scrollbar-hide">
                                                     <div className="flex items-center justify-between md:hidden mb-4">
-                                                        <h2 className="text-[10px] font-black text-zinc-900 dark:text-white/40 uppercase tracking-widest italic">Neural Console</h2>
+                                                        <h2 className="text-[10px] font-black text-zinc-900 dark:text-white/40 uppercase tracking-widest italic">Smart Console</h2>
                                                         <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="text-zinc-900 dark:text-white/20">
                                                             <X className="w-4 h-4" />
                                                         </Button>
@@ -681,7 +681,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                 </div>
                                                                 <div className="flex flex-col items-start truncate flex-1 md:hidden lg:flex">
                                                                     <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white">{activeB.name}</span>
-                                                                    <span className="text-[7px] md:text-[8px] text-zinc-900 dark:text-white/20 font-medium truncate w-full uppercase">Neural Sync Active</span>
+                                                                    <span className="text-[7px] md:text-[8px] text-zinc-900 dark:text-white/20 font-medium truncate w-full uppercase">Smart Sync Active</span>
                                                                 </div>
                                                                 <motion.div
                                                                     animate={{ rotate: isProtocolOpen ? 180 : 0 }}
@@ -722,7 +722,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                                                 : "text-zinc-900 dark:text-white/40 hover:text-zinc-900 dark:hover:text-white/60"
                                                                                         )}
                                                                                     >
-                                                                                        {cat === 'CORE' ? 'Neural Core' : 'Educators'}
+                                                                                        {cat === 'CORE' ? 'Smart Core' : 'Educators'}
                                                                                     </button>
                                                                                 );
                                                                             })}
@@ -774,7 +774,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                     <section className="space-y-4">
                                                         <div className="flex items-center justify-between px-2">
                                                             <h3 className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
-                                                                <History className="w-3 h-3" /> Neural Threads
+                                                                <History className="w-3 h-3" /> Smart Threads
                                                             </h3>
                                                         </div>
                                                         <div className="space-y-2">
@@ -815,8 +815,8 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                             {userName?.[0] || 'U'}
                                                         </div>
                                                         <div className="flex flex-col truncate">
-                                                            <span className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-widest truncate">{userName || 'Neural Subject'}</span>
-                                                            <span className="text-[8px] text-zinc-900 dark:text-white/20 font-bold uppercase tracking-tighter">Biometric Uplink Active</span>
+                                                            <span className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-widest truncate">{userName || 'Smart Subject'}</span>
+                                                            <span className="text-[8px] text-zinc-900 dark:text-white/20 font-bold uppercase tracking-tighter">Biometric Connection Active</span>
                                                         </div>
                                                     </div>
                                                 </div>

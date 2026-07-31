@@ -28,7 +28,7 @@ export default function StudentProfilePage() {
 
     if (loading) return (
         <div className="min-h-[60vh] flex items-center justify-center">
-            <SpringingLoader message="Querying Student Profile Matrix..." />
+            <SpringingLoader message="Querying Student Profile System..." />
         </div>
     );
 

@@ -163,7 +163,7 @@ export default function HomeroomDashboard() {
     if (loading) {
         return (
             <div className="min-h-[60vh] flex items-center justify-center">
-                <SpringingLoader message="Establishing Secure Homeroom Uplink" />
+                <SpringingLoader message="Establishing Secure Homeroom Connection" />
             </div>
         );
     }
@@ -218,7 +218,7 @@ export default function HomeroomDashboard() {
                 </div>
             </div>
 
-            {/* Attendance Matrix */}
+            {/* Attendance System */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Stats Sidebar */}
                 <div className="space-y-4">
@@ -251,7 +251,7 @@ export default function HomeroomDashboard() {
                 <div className="lg:col-span-3">
                     <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] border-t-zinc-800/20 shadow-2xl ">
                         <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/80">
-                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight leading-tight">Student Presence Matrix</CardTitle>
+                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight leading-tight">Student Presence System</CardTitle>
                             <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Daily mark status for active learners</p>
                         </CardHeader>
                         <CardContent className="p-0">

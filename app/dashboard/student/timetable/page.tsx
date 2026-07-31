@@ -71,7 +71,7 @@ export default function StudentTimetablePage() {
         <div className="space-y-8 animate-in fade-in duration-300 max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">Temporal <span className="text-eduGreen-500">Matrix</span></h1>
+                    <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter">Temporal <span className="text-eduGreen-500">System</span></h1>
                     <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-[0.2em] text-xs mt-2">Class Schedule & Learning Objectives</p>
                 </div>
 

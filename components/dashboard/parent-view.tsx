@@ -182,7 +182,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent" />
                                 <DialogHeader className="p-8 pb-4">
                                     <DialogTitle className="text-2xl font-medium text-zinc-900 dark:text-white uppercase tracking-tight italic">Staff <span className="text-eduGreen-500">Discovery</span></DialogTitle>
-                                    <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-2 leading-relaxed">Initiate neural link with institutional educators and directors.</p>
+                                    <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-2 leading-relaxed">Initiate smart link with institutional educators and directors.</p>
                                 </DialogHeader>
                                 <div className="p-8 pt-0 space-y-6">
                                     <div className="relative group">

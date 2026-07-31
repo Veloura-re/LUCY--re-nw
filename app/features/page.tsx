@@ -14,9 +14,9 @@ const specs = [
     { icon: Database, title: "Data Ingestion", id: "0x02", desc: "Process attendance records, grades, timetables, and behavioral metadata via synchronized API clusters with full audit trail." },
     { icon: Calendar, title: "Temporal Phasing", id: "0x03", desc: "Algorithmic generation of complex scheduling matrices. Optimize resource allocation across subjects, rooms, and temporal constraints." },
     { icon: Shield, title: "AES-256 Vault", id: "0x04", desc: "End-to-end payload encryption for all scholar data. TLS 1.3 in transit. Isolated schemas per institution." },
-    { icon: Network, title: "Neural Mesh", id: "0x05", desc: "Single-tenant deployment architecture with clean API boundaries. No shared infrastructure between institutional clients." },
+    { icon: Network, title: "Isolated Infrastructure", id: "0x05", desc: "Single-tenant deployment architecture with clean API boundaries. No shared infrastructure between institutional clients." },
     { icon: Command, title: "Command Interface", id: "0x06", desc: "Direct administrative oversight via role-specific dashboards. Every UI element maps to a secured API endpoint." },
-    { icon: Activity, title: "Live Telemetry", id: "0x07", desc: "Real-time attendance ingestion with parent notification dispatch. Configurable late thresholds and automated email alerts." },
+    { icon: Activity, title: "Live Analytics", id: "0x07", desc: "Real-time attendance ingestion with parent notification dispatch. Configurable late thresholds and automated email alerts." },
     { icon: Search, title: "Deep Audit", id: "0x08", desc: "Cryptographically signed append-only ledger of every data mutation. Full actor + timestamp + IP traceability." },
 ];
 
@@ -66,7 +66,7 @@ export default function Features() {
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-2xl mx-auto">
                             <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
-                                granular breakdown of the lucy neural matrix. engineered for resilience and high-throughput academic coordination.
+                                granular breakdown of the lucy platform. engineered for resilience and high-throughput academic coordination.
                             </p>
                         </Reveal>
                         <Reveal delay={0.3} className="max-w-xs mx-auto"><ScanBar /></Reveal>

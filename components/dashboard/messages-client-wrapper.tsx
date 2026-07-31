@@ -140,7 +140,7 @@ export default function MessagesClientWrapper({
                                 // Fetch latest preferences dynamically or assume enabled if not explicitly false
                                 // For immediate sync, we can check localStorage or the global window object if needed, 
                                 // but a simple read of document body class or similar is fast.
-                                // Actually, let's play a high-tech "neural" chirp using Web Audio API
+                                // Actually, let's play a high-tech "smart" chirp using Web Audio API
                                 const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
                                 if (AudioContext) {
                                     const ctx = new AudioContext();
@@ -233,7 +233,7 @@ export default function MessagesClientWrapper({
 
             if (!res.ok) {
                 setMessages(prev => prev.filter(m => m.id !== tempId));
-                setAlertConfig({ title: "Transmission Error", message: "The neural signal could not be relayed.", isOpen: true, variant: "error" });
+                setAlertConfig({ title: "Transmission Error", message: "The smart signal could not be relayed.", isOpen: true, variant: "error" });
             } else {
                 fetchRooms();
                 // Replace temp with real response to avoid flashes
@@ -290,7 +290,7 @@ export default function MessagesClientWrapper({
                 <div>
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-eduGreen-950/30 border border-eduGreen-500/20 text-[10px] font-medium text-eduGreen-400 uppercase tracking-[0.3em] mb-4 backdrop-blur-md">
                         <Sparkles className="w-3 h-3" />
-                        <span>Institutional Neural Link</span>
+                        <span>Institutional Smart Link</span>
                     </div>
                     <h1 className="text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase italic">
                         Message <span className="text-eduGreen-500 not-italic">Hub</span>
@@ -357,7 +357,7 @@ export default function MessagesClientWrapper({
                                     <Avatar className="h-10 w-10 border border-eduGreen-500/50"><AvatarFallback>{activeRoom.type === 'GROUP' ? 'G' : activeRoom.partner?.name[0]}</AvatarFallback></Avatar>
                                     <div>
                                         <div className="font-bold text-[10px] text-zinc-900 dark:text-white uppercase tracking-widest">{activeRoom.type === 'GROUP' ? activeRoom.name : activeRoom.partner?.name}</div>
-                                        <div className="text-[8px] text-eduGreen-500/80 uppercase tracking-widest">Neural Link Established</div>
+                                        <div className="text-[8px] text-eduGreen-500/80 uppercase tracking-widest">Smart Link Established</div>
                                     </div>
                                 </div>
                             </div>
@@ -409,7 +409,7 @@ export default function MessagesClientWrapper({
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center opacity-30">
                             <MessageSquare className="w-12 h-12 mb-4" />
-                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]">Initialize Uplink</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]">Initialize Connection</p>
                         </div>
                     )}
                 </div>

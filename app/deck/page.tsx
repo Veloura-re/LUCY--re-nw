@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { 
   ScanLines, CustomCursor, AnimatedGrid, HexGrid, 
   GlitchOverlay, ParticleField, TiltCard, Reveal, GlitchText,
-  Counter, MatrixRain, Typewriter
+  Counter, SystemRain, Typewriter
 } from "@/components/public/animations";
 
 // ─── Custom Confetti Particle System ──────────────────────────────────────────
@@ -520,7 +520,7 @@ export default function PresentationDeck() {
         </div>
       ),
       technicalAppendix: [
-        "Scheduling engine uses a relational graph matrix.",
+        "Scheduling engine uses a relational database.",
         "Mutations propagate instantly across the network updating UI without page refreshes."
       ]
     },
@@ -582,13 +582,13 @@ export default function PresentationDeck() {
             <p className="text-xs text-slate-600 dark:text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Activity} title="telemetry data" desc="tracking exact API request timestamps." delay={0.1} />
+            <FeatureItem icon={Activity} title="analytics data" desc="tracking exact API request timestamps." delay={0.1} />
             <FeatureItem icon={BarChart3} title="KPI visualizer" desc="indisputable compliance metrics." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Backend telemetry aggregates exact timestamps for API requests (grading, attendance).",
+        "Backend analytics aggregates exact timestamps for API requests (grading, attendance).",
         "Data feeds into an objective KPI visualizer for leadership dashboards."
       ]
     },

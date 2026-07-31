@@ -21,7 +21,7 @@ const faqs = [
 const channels = [
     { icon: Mail, name: "Email Support", desc: "General queries and provisioning requests", link: "mailto:lucyosck21@gmail.com", label: "email_us" },
     { icon: MessageCircle, name: "Emergency Contact", desc: "Critical system failures — Tier 2+ only", link: "/contact", label: "open_ticket" },
-    { icon: BookOpen, name: "Documentation", desc: "Full technical reference and protocol guides", link: "/docs", label: "read_docs" },
+    { icon: BookOpen, name: "Documentation", desc: "Full technical reference and system guides", link: "/docs", label: "read_docs" },
 ];
 
 export default function Support() {
@@ -64,7 +64,7 @@ export default function Support() {
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
-                                answers to the most common queries. for urgent incidents, use the emergency uplink channel below.
+                                answers to the most common queries. for urgent incidents, use the emergency support channel below.
                             </p>
                         </Reveal>
                     </section>
@@ -73,7 +73,7 @@ export default function Support() {
                     <section className="space-y-6">
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">uplink_channels</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">connection_channels</span>
                         </Reveal>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {channels.map((ch, i) => (

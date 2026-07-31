@@ -26,12 +26,12 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, isAfter } from "date-fns";
 
-interface StudentTaskMatrixProps {
+interface StudentTaskSystemProps {
     initialAssignments: any[];
     studentId: string;
 }
 
-export default function StudentTaskMatrix({ initialAssignments, studentId }: StudentTaskMatrixProps) {
+export default function StudentTaskSystem({ initialAssignments, studentId }: StudentTaskSystemProps) {
     const [assignments, setAssignments] = useState(initialAssignments);
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
@@ -150,7 +150,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                         {assignments.length === 0 && (
                             <div className="col-span-full py-32 flex flex-col items-center justify-center bg-white/40 dark:bg-[#050505]/40 backdrop-blur-xl border border-zinc-200 dark:border-white/5 rounded-[3.5rem] text-center">
                                 <Activity className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mb-6 animate-pulse" />
-                                <h3 className="text-xl font-black text-zinc-700 italic uppercase">Neural Buffer Clear</h3>
+                                <h3 className="text-xl font-black text-zinc-700 italic uppercase">Smart Buffer Clear</h3>
                                 <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-2">No active assignments discovered in your current registry.</p>
                             </div>
                         )}
@@ -382,7 +382,7 @@ export default function StudentTaskMatrix({ initialAssignments, studentId }: Stu
                                                                         <Activity className={cn("w-4 h-4", 
                                                                             preEval.status === 'Ready' ? "text-emerald-500" : "text-amber-600 dark:text-amber-500"
                                                                         )} />
-                                                                        <span className="text-[10px] font-black uppercase tracking-widest italic">Neural Readiness: {preEval.status}</span>
+                                                                        <span className="text-[10px] font-black uppercase tracking-widest italic">Smart Readiness: {preEval.status}</span>
                                                                     </div>
                                                                     <Button variant="ghost" onClick={() => setPreEval(null)} className="h-6 w-6 p-0 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                                                                         <XCircle className="w-4 h-4" />

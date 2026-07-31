@@ -14,7 +14,7 @@ import { DashboardGreeting } from "./dashboard-greeting";
 import { Skeleton } from "@/components/ui/skeleton";
 import SpringingLoader from "./springing-loader";
 import { toast } from "sonner";
-import { NeuralConnectivity } from "./neural-connectivity";
+import { SmartConnectivity } from "./smart-connectivity";
 
 import { Gender, School, Role } from "@prisma/client";
 
@@ -272,7 +272,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                 </Card>
                             </div>
                             <div className="lg:col-span-12">
-                                <NeuralConnectivity />
+                                <SmartConnectivity />
                             </div>
                         </div>
                     </motion.div>
@@ -331,7 +331,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="py-20 text-center text-[10px] font-medium uppercase text-zinc-800 dark:text-zinc-200 tracking-[0.3em]">No Data Uplink Found</div>
+                                            <div className="py-20 text-center text-[10px] font-medium uppercase text-zinc-800 dark:text-zinc-200 tracking-[0.3em]">No Data Connection Found</div>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -396,7 +396,7 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
 
                         <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-600 uppercase tracking-widest italic flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_8px_rgba(20,184,115,0.8)]" />
-                            Live Telemetry
+                            Live Analytics
                         </div>
                     </div>
 
@@ -418,7 +418,7 @@ function AttendanceWaveform({ data }: { data: any[] }) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Neural Link...</div>;
+    if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Smart Link...</div>;
 
     const points = data.map((d, i) => {
         const x = (i / (data.length - 1)) * 100;

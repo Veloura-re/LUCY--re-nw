@@ -46,7 +46,7 @@ export default function StudentVerificationPage() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-zinc-900 dark:text-white italic uppercase">Access Denied</h1>
-                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "Neural Link Severed"}</p>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "Connection Lost"}</p>
                     </div>
                 </Card>
             </div>

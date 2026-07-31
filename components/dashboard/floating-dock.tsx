@@ -43,7 +43,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
     }, []);
 
     const filteredMenu = mounted ? menu.filter((item: any) => {
-        if (isDesktop && item.label === "Neural Link") return false;
+        if (isDesktop && item.label === "Smart Link") return false;
         return true;
     }) : menu;
 

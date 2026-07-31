@@ -36,7 +36,7 @@ const posts = [
     {
         id: "05", category: "operations", date: "2026-01-15", readTime: "8 min",
         title: "Timetable Generation: Why We Avoided ML and Used Constraint Solving",
-        excerpt: "Neural networks looked sexy. But for school timetables, constraint solvers are faster, cheaper, and more explainable. The tradeoffs explained.",
+        excerpt: "Smart networks looked sexy. But for school timetables, constraint solvers are faster, cheaper, and more explainable. The tradeoffs explained.",
         featured: false,
     },
 ];

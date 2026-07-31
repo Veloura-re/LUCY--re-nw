@@ -145,7 +145,7 @@ export function WelcomeAnnouncement() {
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
                   <div className="text-sky-600 dark:text-sky-400 font-bold mb-1">📩 wants access ledger</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    public contact transmissions route to our new db wants-access ledger, viewable inside the admin panel.
+                    public contact messages route to our new db wants-access ledger, viewable inside the admin panel.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
@@ -171,7 +171,7 @@ export function WelcomeAnnouncement() {
 
             {/* Community Links */}
             <div className="border-t border-slate-200 dark:border-white/5 pt-4 text-center">
-              <div className="text-[10px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest mb-3">[community_uplinks]</div>
+              <div className="text-[10px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest mb-3">[community_connections]</div>
               <div className="flex flex-wrap justify-center gap-3 text-[10px] font-mono">
                 <a href="https://t.me/+ElIFqzvGBlYzMDBk" target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-xl border border-sky-500/20 bg-sky-50 dark:bg-sky-950/10 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-500/20 transition-all">
                   telegram

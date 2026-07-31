@@ -13,7 +13,7 @@ const services = [
     { name: "API Gateway", status: "operational", latency: "12ms", uptime: "100%" },
     { name: "Auth Node", status: "operational", latency: "8ms", uptime: "100%" },
     { name: "Database Vault", status: "operational", latency: "4ms", uptime: "100%" },
-    { name: "AI Neural Engine", status: "operational", latency: "220ms", uptime: "99.8%" },
+    { name: "AI Engine", status: "operational", latency: "220ms", uptime: "99.8%" },
     { name: "Email Dispatch", status: "operational", latency: "1.2s", uptime: "99.9%" },
     { name: "File Upload CDN", status: "operational", latency: "48ms", uptime: "100%" },
 ];

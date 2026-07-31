@@ -45,8 +45,8 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     return (
         <Suspense fallback={
             <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-                <SpringingLoader message="Synchronizing Institutional Neural Net..." />
-                <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest animate-pulse">Establishing Secure Uplink</p>
+                <SpringingLoader message="Synchronizing Institutional Smart Net..." />
+                <p className="text-[10px] font-medium text-zinc-700 uppercase tracking-widest animate-pulse">Establishing Secure Connection</p>
             </div>
         }>
             <MessagesClientWrapper 

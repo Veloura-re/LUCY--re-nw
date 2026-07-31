@@ -115,7 +115,7 @@ export async function POST(request: Request) {
                         subject: `New Secure Message from ${authUser.user_metadata?.name || 'LUCY OS'}`,
                         html: `
                             <div style="font-family: sans-serif; color: #111; max-w-2xl mx-auto border: 1px solid #eaeaea; border-radius: 8px; padding: 24px;">
-                                <h2 style="color: #147A52;">Neural Uplink Received</h2>
+                                <h2 style="color: #147A52;">Smart Connection Received</h2>
                                 <p>You have a new message from <strong>${authUser.user_metadata?.name || 'System'}</strong>:</p>
                                 <blockquote style="border-left: 4px solid #3BD68D; padding-left: 16px; color: #444; font-style: italic; background: #f9f9f9; padding: 12px; border-radius: 4px;">
                                     ${content || '<i>[Attachment]</i>'}
