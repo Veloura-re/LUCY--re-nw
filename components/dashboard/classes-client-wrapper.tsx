@@ -244,7 +244,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                     {grade.level}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-medium text-xl text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-white transition-colors tracking-tight">{grade.name}</h4>
+                                                    <h4 className="font-medium text-xl text-zinc-900 dark:text-white group-hover:text-eduGreen-600 dark:group-hover:text-eduGreen-400 transition-colors tracking-tight">{grade.name}</h4>
                                                     <div className="flex items-center gap-3 mt-1">
                                                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Academic Tier</p>
                                                         <div className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
@@ -307,7 +307,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                                                     onValueChange={(teacherId: string) => handleAssignHomeroom(cls.id, teacherId === "null" ? null : teacherId)}
                                                                     defaultValue={cls.homeroomTeacherId || "null"}
                                                                 >
-                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white transition-all">
+                                                                    <SelectTrigger className="w-32 h-9 rounded-lg bg-zinc-200 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all">
                                                                         <SelectValue placeholder="Staff" />
                                                                     </SelectTrigger>
                                                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
@@ -377,7 +377,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                         <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/80">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2.5 bg-sky-950/20 rounded-xl border border-sky-900/30">
+                                    <div className="p-2.5 bg-sky-100 dark:bg-sky-950/20 rounded-xl border border-sky-300 dark:border-sky-900/30">
                                         <BookOpen className="w-4 h-4 text-sky-500" />
                                     </div>
                                     <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight">Core Disciplines</CardTitle>
@@ -421,7 +421,7 @@ export default function ClassesClientWrapper({ initialGrades, initialSubjects, i
                                     <div key={sub.id} className="p-5 flex items-center justify-between hover:bg-sky-900/5 transition-all group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800 group-hover:bg-sky-500 group-hover:shadow-[0_0_8px_rgba(14,165,233,0.5)] transition-all" />
-                                            <span className="font-medium text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-100 transition-colors tracking-tight">{sub.name}</span>
+                                            <span className="font-medium text-sm text-zinc-600 dark:text-zinc-400 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight">{sub.name}</span>
                                         </div>
                                         <Button
                                             size="icon"

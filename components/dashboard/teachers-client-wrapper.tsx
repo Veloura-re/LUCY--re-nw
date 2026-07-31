@@ -269,8 +269,8 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                                         </div>
                                     )}
                                     {teacher.id && <Link href={`/dashboard/messages?userId=${teacher.id}`}><Button variant="ghost" size="icon" className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500"><MessageSquare className="w-4 h-4" /></Button></Link>}
-                                    <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForEdit(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-white"><Pencil className="w-4 h-4" /></Button>
-                                    <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForID(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-white"><ShieldCheck className="w-4 h-4" /></Button>
+                                    <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForEdit(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"><Pencil className="w-4 h-4" /></Button>
+                                    <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForID(teacher)} className="w-10 h-10 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"><ShieldCheck className="w-4 h-4" /></Button>
                                     <Button variant="ghost" size="icon" onClick={() => setConfirmDeleteEmail(teacher.email)} className="w-10 h-10 rounded-xl text-zinc-800 dark:text-zinc-200 hover:text-red-600 dark:text-red-500"><Trash2 className="w-4 h-4" /></Button>
                                 </div>
                             </div>
@@ -291,7 +291,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                             size="sm"
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1 || isLoading}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Previous
                         </Button>
@@ -300,7 +300,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                             size="sm"
                             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages || isLoading}
-                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                            className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                         >
                             Next
                         </Button>

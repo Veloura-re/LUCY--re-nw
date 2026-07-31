@@ -122,7 +122,7 @@ export function PayrollDashboard({ staff, payrollHistory, handleIssuePayment, is
                                             <Button
                                                 variant="ghost"
                                                 onClick={() => setExpandedStaff(isExpanded ? null : member.id)}
-                                                className="h-12 w-12 rounded-xl border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-white text-zinc-600 dark:text-zinc-500"
+                                                className="h-12 w-12 rounded-xl border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-white text-zinc-600 dark:text-zinc-500"
                                             >
                                                 {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                             </Button>

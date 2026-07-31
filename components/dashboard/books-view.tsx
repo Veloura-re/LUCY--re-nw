@@ -259,7 +259,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     onClick={() => setSelectedStudentId(null)}
                                     className={cn(
                                         "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
-                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
+                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                                     )}
                                 >
                                     All Library
@@ -284,7 +284,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         <Button
                             onClick={() => handlePrint()}
                             variant="outline"
-                            className="h-14 px-6 rounded-2xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white hover:text-white transition-all font-medium text-[10px] uppercase tracking-widest hidden md:flex shadow-lg shadow-eduGreen-900/20"
+                            className="h-14 px-6 rounded-2xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white hover:text-zinc-900 dark:hover:text-white transition-all font-medium text-[10px] uppercase tracking-widest hidden md:flex shadow-lg shadow-eduGreen-900/20"
                         >
                             <Printer className="mr-2 h-4 w-4 text-eduGreen-500" /> Export PDF Registry
                         </Button>
@@ -348,7 +348,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         onClick={() => setGradeFilter("ALL")}
                         className={cn(
                             "rounded-xl h-10 px-6 font-medium text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
-                            gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
+                            gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
                         )}
                     >
                         All Grades
@@ -562,7 +562,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Previous
                             </Button>
@@ -571,7 +571,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Next
                             </Button>
@@ -824,7 +824,7 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                         <h2 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Unit Synthesizer</h2>
                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Bundling institutional intelligence packs</p>
                     </div>
-                    <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-white rounded-full">
+                    <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-full">
                         <X className="w-6 h-6" />
                     </Button>
                 </div>
@@ -946,7 +946,7 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
                         <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">Request Resource</h2>
                         <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Submit requirements</p>
                     </div>
-                    <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-white rounded-full">
+                    <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-full">
                         <X className="w-5 h-5" />
                     </Button>
                 </div>
@@ -1104,7 +1104,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                 className="w-full max-w-3xl bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800/60 rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)] flex flex-col max-h-[92vh]"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-900 bg-gradient-to-r from-zinc-950 to-zinc-900/50 shrink-0">
+                <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-200 dark:border-zinc-900 bg-gradient-to-r from-zinc-100 to-white dark:from-zinc-950 dark:to-zinc-900/50 shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
                             <Book className="w-5 h-5 text-eduGreen-500" />
@@ -1114,13 +1114,13 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
                             <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Deploy to institutional library</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl text-zinc-600 hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all">
+                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl text-zinc-600 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto scrollbar-hide">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-zinc-900">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x divide-zinc-200 dark:divide-zinc-900">
 
                         {/* Left Panel — File + Title + Description */}
                         <div className="p-8 space-y-5">

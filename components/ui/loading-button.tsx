@@ -27,9 +27,9 @@ export function LoadingButton({
 
     const variants = {
         default: "bg-eduGreen-600 hover:bg-eduGreen-500 text-white shadow-[0_6px_20px_-4px_rgba(20,122,82,0.35)]",
-        ghost: "bg-transparent hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-white",
+        ghost: "bg-transparent hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white",
         destructive: "bg-red-600/10 hover:bg-red-600/20 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-900/30",
-        outline: "bg-transparent border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-white",
+        outline: "bg-transparent border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white",
     };
 
     const sizes = {

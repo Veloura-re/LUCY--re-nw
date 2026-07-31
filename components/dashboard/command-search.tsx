@@ -96,7 +96,7 @@ export function CommandSearch() {
                         />
                         <div className="flex items-center gap-2">
                             {loading && <div className="w-4 h-4 border-2 border-eduGreen-500 border-t-transparent rounded-full animate-spin" />}
-                            <button onClick={() => setOpen(false)} className="text-zinc-600 hover:text-white">
+                            <button onClick={() => setOpen(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>

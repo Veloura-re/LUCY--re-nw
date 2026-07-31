@@ -378,7 +378,7 @@ export default function TimetableManagementPage() {
                                 <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Configure global teaching slots</p>
                             </div>
                             <div className="flex gap-4">
-                                <Button onClick={addPeriod} variant="outline" className="border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest transition-all">
+                                <Button onClick={addPeriod} variant="outline" className="border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl h-12 px-6 font-medium uppercase text-[10px] tracking-widest transition-all">
                                     <Plus className="w-4 h-4 mr-2" /> Add Slot
                                 </Button>
                                 <Button onClick={handleSavePeriods} isLoading={saving} className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-8 rounded-2xl font-medium uppercase text-[10px] tracking-widest shadow-2xl transition-all shadow-eduGreen-900/20">

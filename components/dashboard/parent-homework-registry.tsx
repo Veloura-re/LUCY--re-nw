@@ -54,7 +54,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                     <div className="flex items-center gap-4 mb-4">
                         <Link href="/dashboard/parent">
                             <Button variant="ghost" className="p-0 h-auto hover:bg-transparent group">
-                                <ArrowLeft className="w-5 h-5 text-zinc-700 group-hover:text-white transition-colors" />
+                                <ArrowLeft className="w-5 h-5 text-zinc-700 group-hover:text-zinc-900 dark:hover:text-white transition-colors" />
                             </Button>
                         </Link>
                         <div className="h-[1px] w-8 bg-zinc-200 dark:bg-zinc-800" />
@@ -131,7 +131,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                             <Calendar className="w-4 h-4" /> DEADLINE: {format(new Date(selectedAssignment.dueDate), "PPP")}
                                         </div>
                                     </div>
-                                    <Button variant="ghost" onClick={() => setShowDetailModal(false)} className="text-zinc-600 hover:text-white uppercase font-black tracking-widest text-[9px]">EXIT HUD</Button>
+                                    <Button variant="ghost" onClick={() => setShowDetailModal(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase font-black tracking-widest text-[9px]">EXIT HUD</Button>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">

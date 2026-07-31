@@ -256,7 +256,7 @@ function CreateExamContent() {
             <div className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-900 px-8 py-4">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
+                        <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <h1 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic truncate max-w-[200px] md:max-w-md">
@@ -283,7 +283,7 @@ function CreateExamContent() {
                                             <span className="text-zinc-600 text-[10px] uppercase tracking-widest font-medium">Est. Duration: {duration}m</span>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" size="icon" onClick={() => setIsPreviewOpen(false)} className="text-zinc-600 dark:text-zinc-500 hover:text-white">
+                                    <Button variant="ghost" size="icon" onClick={() => setIsPreviewOpen(false)} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                                         <X className="w-5 h-5" />
                                     </Button>
                                 </div>
@@ -665,7 +665,7 @@ function CreateExamContent() {
                                                     variant="ghost"
                                                     size="sm"
                                                     onClick={() => addOption(i)}
-                                                    className="text-zinc-600 hover:text-white font-medium text-[9px] uppercase tracking-widest gap-2 pl-0"
+                                                    className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-medium text-[9px] uppercase tracking-widest gap-2 pl-0"
                                                 >
                                                     <Plus className="w-3 h-3" /> Add Choice
                                                 </Button>
@@ -844,7 +844,7 @@ function CreateExamContent() {
                                                 {aiAllowedTypes.length > 0 && (
                                                     <button
                                                         onClick={() => setAiAllowedTypes([])}
-                                                        className="px-3 py-1.5 text-[8px] font-medium uppercase text-zinc-700 hover:text-white"
+                                                        className="px-3 py-1.5 text-[8px] font-medium uppercase text-zinc-700 hover:text-zinc-900 dark:hover:text-white"
                                                     >
                                                         Clear
                                                     </button>

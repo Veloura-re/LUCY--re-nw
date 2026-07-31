@@ -68,10 +68,10 @@ export default function StudentReportCardPage() {
                 </div>
 
                 <div className="flex gap-4 mb-1">
-                    <Button onClick={printReport} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
+                    <Button onClick={printReport} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                         <Printer className="w-4 h-4 mr-2" /> Print PDF
                     </Button>
-                    <Button onClick={exportRawData} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white">
+                    <Button onClick={exportRawData} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                         <Download className="w-4 h-4 mr-2" /> Download JSON
                     </Button>
                 </div>

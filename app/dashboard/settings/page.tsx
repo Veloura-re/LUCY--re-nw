@@ -729,7 +729,7 @@ export default function SettingsPage() {
                                                     <Button
                                                         variant="ghost"
                                                         onClick={() => setVerifiedStudent(null)}
-                                                        className="h-10 px-4 rounded-xl text-zinc-600 hover:text-white uppercase text-[8px] tracking-widest"
+                                                        className="h-10 px-4 rounded-xl text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase text-[8px] tracking-widest"
                                                     >
                                                         Cancel
                                                     </Button>
@@ -1067,7 +1067,7 @@ export default function SettingsPage() {
 
                                     {isPrincipal && !schoolForm.logoUrl && (
                                         <label className="mt-6">
-                                            <div className="cursor-pointer px-8 py-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl text-[9px] font-medium uppercase tracking-widest hover:border-eduGreen-500 hover:text-white transition-all">
+                                            <div className="cursor-pointer px-8 py-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl text-[9px] font-medium uppercase tracking-widest hover:border-eduGreen-500 hover:text-eduGreen-700 dark:hover:text-eduGreen-400 transition-all">
                                                 Initialize Brand Map
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
@@ -1167,6 +1167,16 @@ export default function SettingsPage() {
                                 </div>
                             </Card>
                         </div>
+                    )}
+                    
+                    {activeTab === 'academic' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <SettingsAcademicTerms />
+                        </motion.div>
                     )}
                 </div>
             </div>

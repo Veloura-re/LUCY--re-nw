@@ -173,7 +173,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                             <DialogTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
+                                    className="border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all bg-transparent"
                                 >
                                     <MessageSquare className="mr-2 h-4 w-4 text-eduGreen-500" /> Contact Staff
                                 </Button>
@@ -259,7 +259,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                 <Button
                                     variant="ghost"
                                     onClick={() => setIsAdding(false)}
-                                    className="p-0 h-auto hover:bg-transparent text-zinc-700 hover:text-white transition-colors group/back"
+                                    className="p-0 h-auto hover:bg-transparent text-zinc-700 hover:text-zinc-900 dark:hover:text-white transition-colors group/back"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center group-hover/back:border-eduGreen-500 transition-all">
@@ -320,7 +320,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <Button
                                             variant="ghost"
                                             onClick={() => { setStatus('IDLE'); setFoundStudent(null); }}
-                                            className="flex-1 h-16 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em]"
+                                            className="flex-1 h-16 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em]"
                                         >
                                             Decline
                                         </Button>
@@ -461,12 +461,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
 
                                     <div className="grid grid-cols-3 gap-3">
                                         <Link href={`/dashboard/reports/${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Performance
                                             </Button>
                                         </Link>
                                         <Link href={`/dashboard/books?studentId=${child.id}`}>
-                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                            <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                 Bookshelf
                                             </Button>
                                         </Link>
@@ -482,21 +482,21 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             <div className="grid grid-cols-2 gap-3">
                                                 {child.userId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.userId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> {child.firstName}
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                                 {child.class?.homeroomTeacherId ? (
                                                     <Link href={`/dashboard/messages?userId=${child.class.homeroomTeacherId}`}>
-                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
+                                                        <Button className="w-full h-12 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg">
                                                             <MessageSquare className="w-4 h-4 mr-2" /> Teacher
                                                         </Button>
                                                     </Link>
                                                 ) : <div />}
                                             </div>
                                             <Link href={`/dashboard/parent/authorizations?studentId=${child.id}`}>
-                                                <Button className="w-full h-12 bg-white dark:bg-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
+                                                <Button className="w-full h-12 bg-white dark:bg-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-800 transition-all shadow-lg">
                                                     <FileText className="w-4 h-4 mr-2" /> Request Leave Authorization
                                                 </Button>
                                             </Link>

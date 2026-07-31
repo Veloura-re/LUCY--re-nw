@@ -506,7 +506,7 @@ export default function Home() {
               </motion.div>
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-slate-500 dark:text-zinc-500 max-w-xl text-lg lowercase leading-relaxed font-medium">
-                modular cognitive architecture for institutional synthesis. eliminate the friction between raw data and academic output.
+                a simple place you can call your own. drop the messy spreadsheets and build a digital home that's yours.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.3 }} className="flex flex-wrap gap-4">

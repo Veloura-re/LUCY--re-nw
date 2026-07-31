@@ -114,7 +114,7 @@ export default function StudentExamsPage() {
                                     ) : (
                                         <div className="flex items-center gap-3">
                                             <Link href="/dashboard/student/grades">
-                                                <Button variant="outline" className="h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
+                                                <Button variant="outline" className="h-14 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 font-medium uppercase tracking-widest px-8 rounded-xl opacity-50 cursor-not-allowed" disabled>
                                                     <Lock className="w-4 h-4 mr-2" /> Missed
                                                 </Button>
                                             </Link>

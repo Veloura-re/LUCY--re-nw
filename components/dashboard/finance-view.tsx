@@ -387,7 +387,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         variant="ghost"
                         onClick={() => setShowInvoiceModal(true)}
                         disabled={isGenerating}
-                        className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white"
+                        className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                     >
                         <Zap className={cn("mr-2 h-4 w-4 text-amber-600 dark:text-amber-500", isGenerating && "animate-pulse")} />
                         {isGenerating ? "Executing Cycle..." : "Launch Invoicing Cycle"}
@@ -395,7 +395,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <Link href="/dashboard/finance/students">
                         <Button
                             variant="ghost"
-                            className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-white"
+                            className="rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-14 px-6 font-medium text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                         >
                             <Users className="mr-2 h-4 w-4 text-eduGreen-500" /> Student Dossiers
                         </Button>
@@ -496,7 +496,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <CardDescription className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 mt-1">Establishing new billing protocol</CardDescription>
                                 </div>
                             </div>
-                            <Button variant="ghost" onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-white font-medium text-[10px] uppercase tracking-widest">
+                            <Button variant="ghost" onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-medium text-[10px] uppercase tracking-widest">
                                 Cancel
                             </Button>
                         </div>
@@ -795,7 +795,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
                                         disabled={page === 1}
-                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                                     >
                                         Previous
                                     </Button>
@@ -804,7 +804,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         size="sm"
                                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                         disabled={page === totalPages}
-                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-white"
+                                        className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                                     >
                                         Next
                                     </Button>

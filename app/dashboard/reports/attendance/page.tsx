@@ -52,7 +52,7 @@ export default function AttendanceIntelligencePage() {
                     <Button
                         onClick={() => router.back()}
                         variant="ghost"
-                        className="text-zinc-600 hover:text-white font-medium uppercase tracking-widest text-[10px] gap-2 mb-4 -ml-4"
+                        className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-medium uppercase tracking-widest text-[10px] gap-2 mb-4 -ml-4"
                     >
                         <ArrowLeft className="w-4 h-4" /> Return to Intelligence
                     </Button>
