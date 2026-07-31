@@ -131,7 +131,7 @@ export function AuthorizationRequestModal({ isOpen, onClose, studentId: initialS
                                     {isStaffLeave ? "Staff" : "Absence"} <span className="text-eduGreen-500">Permit</span>
                                 </DialogTitle>
                                 <DialogDescription className="text-slate-500 dark:text-zinc-500 font-medium uppercase tracking-[0.3em] text-[8px] mt-1">
-                                    Authorization Matrix Protocol v1
+                                    Authorization System
                                 </DialogDescription>
                             </div>
                         </div>

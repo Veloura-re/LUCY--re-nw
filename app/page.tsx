@@ -351,7 +351,7 @@ export default function Home() {
     { href: "/partners", l: "partners" },
     { href: "/press", l: "press" },
     { href: "/blog", l: "signal log" },
-    { href: "/contact", l: "uplink" },
+    { href: "/contact", l: "contact" },
     { href: "/support", l: "support" },
     { href: "/community", l: "community" }
   ];
@@ -562,7 +562,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Terminal lines */}
+                {/* Dashboard logs */}
                 <div className="bg-slate-100/60 dark:bg-black/60 p-4 font-mono text-[9px] text-slate-600 dark:text-zinc-600 space-y-1 border border-slate-200 dark:border-white/5 rounded-md dark:rounded-none font-medium">
                   {[
                     { text: "> node_01 :: handshake_ok", delay: 0.2 },
@@ -664,7 +664,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Feature Matrix ── */}
+        {/* ── Features List ── */}
         <section ref={featureRef} id="features" className="py-40 px-6 bg-white dark:bg-black transition-colors duration-300">
           <div className="max-w-[1400px] mx-auto space-y-16">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
@@ -1088,7 +1088,7 @@ export default function Home() {
               initiate_connection
             </motion.h2>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-slate-500 dark:text-zinc-500 text-lg max-w-lg mx-auto leading-relaxed font-medium">
-              your institutional node awaits provisioning. the lucy platform is standing by.
+              your school account awaits provisioning. the lucy platform is standing by.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">
@@ -1101,7 +1101,7 @@ export default function Home() {
               <Link href="/contact">
                 <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}>
                   <Button variant="outline" className="h-14 px-12 rounded-md dark:rounded-none border-slate-300 dark:border-white/20 text-slate-900 dark:text-white text-[11px] uppercase tracking-[0.2em] hover:border-slate-400 hover:bg-slate-50 dark:hover:border-zinc-200 dark:border-white/50 dark:hover:bg-white/5 transition-all font-bold shadow-sm dark:shadow-none">
-                    request_uplink
+                    contact_us
                   </Button>
                 </motion.div>
               </Link>

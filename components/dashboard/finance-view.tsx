@@ -379,7 +379,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Transactions
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Autonomous Resource Controller & Billing Terminal</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Resource & Billing Controller</p>
                 </div>
 
                 <div className="flex items-center gap-4 mb-1">
@@ -607,7 +607,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         activeTab === "EXPENSES" ? "bg-amber-600 text-zinc-900 dark:text-white shadow-lg" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
                     )}
                 >
-                    Expense Nexus (Payroll)
+                    Payroll & Expenses
                 </button>
             </div>
 
@@ -621,7 +621,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <ShieldCheck className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Verification <span className="text-amber-600 dark:text-amber-500 not-italic">Nexus</span></h2>
+                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Payment <span className="text-amber-600 dark:text-amber-500 not-italic">Verification</span></h2>
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Awaiting Institutional Reconciliation</p>
                                 </div>
                             </div>

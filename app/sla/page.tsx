@@ -10,7 +10,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, GlitchText }
 import { Logo } from "@/components/ui/logo";
 
 const clauses = [
-    { num: "01", title: "Uptime Guarantee", body: "LUCY OS guarantees a 99.9% Monthly Uptime Percentage for all Core Matrix nodes, and 99.99% for Enterprise nodes. Uptime is calculated as total monthly minutes minus downtime minutes, divided by total monthly minutes." },
+    { num: "01", title: "Uptime Guarantee", body: "LUCY OS guarantees a 99.9% Monthly Uptime Percentage for all Core Plan nodes, and 99.99% for Enterprise Plan. Uptime is calculated as total monthly minutes minus downtime minutes, divided by total monthly minutes." },
     { num: "02", title: "Downtime Definition & Exclusions", body: "Downtime occurs when the platform is completely inaccessible or when critical database read/write operations fail system-wide. Exclusions include: scheduled maintenance (announced 7 days prior), upstream provider outages (AWS/Vercel/Supabase), force majeure, or issues caused by the Institution's network/hardware." },
     { num: "03", title: "Incident Severity & Response Times", body: "Incidents are categorized by severity. \n\nSeverity 1 (Critical Outage - Platform down): 30-minute initial response, continuous updates every hour. \nSeverity 2 (High - Major feature degraded): 2-hour response. \nSeverity 3 (Medium - Minor feature bug): 12-hour response. \nSeverity 4 (Low - UI glitch/inquiry): 24-hour response." },
     { num: "04", title: "What Happens When Something Breaks?", body: "Upon detecting a Severity 1 or 2 incident, our automated monitoring triggers an immediate pager alert to the engineering team. We immediately update the LUCY OS Status Page. Engineers will execute pre-configured disaster recovery runbooks to reroute traffic or roll back degraded updates. You will receive an incident post-mortem within 48 hours of resolution detailing the root cause and preventative measures taken." },
@@ -33,7 +33,7 @@ export default function SLA() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -44,7 +44,7 @@ export default function SLA() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <Activity className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">uptime_protocol // effective 2026-01-01</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">uptime_policy // effective 2026-01-01</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">

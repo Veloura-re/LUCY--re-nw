@@ -35,7 +35,7 @@ export default function AttendanceClientWrapper({ initialClasses, initialMatrix 
     const [selectedSubjectId, setSelectedSubjectId] = useState("none");
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     
-    // Core Matrix State
+    // Core Plan State
     const [students, setStudents] = useState<Student[]>(initialMatrix.students);
     const [attendance, setAttendance] = useState<{ [id: string]: string }>({});
     const [reasons, setReasons] = useState<{ [id: string]: string }>({});

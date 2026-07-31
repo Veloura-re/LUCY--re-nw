@@ -57,7 +57,7 @@ export default function Docs() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -83,7 +83,7 @@ export default function Docs() {
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
                             <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed">
-                                complete technical reference for the lucy neural matrix. everything you need to deploy, configure, and extend your institutional node.
+                                complete technical reference for the lucy neural matrix. everything you need to deploy, configure, and extend your school account.
                             </p>
                         </Reveal>
                         <Reveal delay={0.3}><ScanBar /></Reveal>

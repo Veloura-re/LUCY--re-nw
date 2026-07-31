@@ -133,7 +133,7 @@ export default function CommunityPage() {
                     <Link href="/">
                         <Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group">
                             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                            return_to_main
+                            back_to_home
                         </Button>
                     </Link>
                 </div>
@@ -148,13 +148,13 @@ export default function CommunityPage() {
                         className="text-center space-y-6"
                     >
                         <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold rounded-md dark:rounded-none shadow-sm dark:shadow-none">
-                            <Terminal className="w-3.5 h-3.5" /> network_matrix // connect
+                            <Terminal className="w-3.5 h-3.5" /> community_network // connect
                         </div>
                         <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
                             community <span className="text-slate-400 dark:text-zinc-800">uplinks.</span>
                         </h1>
                         <p className="text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
-                            tap any node to establish a secure uplink to the lucy academics grid.
+                            tap any node to establish a secure uplink to the lucy educational network.
                         </p>
                     </motion.div>
 
@@ -184,7 +184,7 @@ export default function CommunityPage() {
                 </div>
             </main>
 
-            <PageFooter id="COMMUNITY_NODES" links={[{ href: "/docs", label: "docs" }, { href: "/support", label: "support" }, { href: "/contact", label: "uplink" }]} />
+            <PageFooter id="COMMUNITY_NODES" links={[{ href: "/docs", label: "docs" }, { href: "/support", label: "support" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

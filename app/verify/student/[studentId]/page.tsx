@@ -147,7 +147,7 @@ export default function StudentVerificationPage() {
                             </div>
                             <div>
                                 <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest">Emergency Contact</h3>
-                                <p className="text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Primary Guardian Uplink</p>
+                                <p className="text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Primary Guardian Contact</p>
                             </div>
                         </div>
                         <div className="space-y-4">
@@ -156,12 +156,12 @@ export default function StudentVerificationPage() {
                                 <span className="text-xs font-bold text-zinc-900 dark:text-white uppercase">{student.guardianName || "N/A"}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Primary Uplink</span>
+                                <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Primary Contact</span>
                                 <span className="text-xs font-bold text-eduGreen-500">{student.guardianPhone || "N/A"}</span>
                             </div>
                             {student.secondaryPhone && (
                                 <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-900/50">
-                                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Secondary Uplink</span>
+                                    <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Secondary Contact</span>
                                     <span className="text-xs font-bold text-eduGreen-500/60 ">{student.secondaryPhone}</span>
                                 </div>
                             )}

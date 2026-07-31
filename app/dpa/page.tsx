@@ -34,7 +34,7 @@ export default function DPA() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />return_to_main</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
@@ -45,7 +45,7 @@ export default function DPA() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
                             <Shield className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">compliance_protocol // effective 2026-01-01</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em]">compliance_policy // effective 2026-01-01</span>
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
