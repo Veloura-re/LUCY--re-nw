@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,8 +23,46 @@ export function ThemeToggle({ className }: { className?: string }) {
 
     const isDark = resolvedTheme === "dark" || theme === "dark";
 
-    const handleToggle = () => {
-        setTheme(isDark ? "light" : "dark");
+    const handleToggle = async (e: React.MouseEvent) => {
+        const newTheme = isDark ? "light" : "dark";
+        
+        // Fallback for browsers that don't support View Transitions
+        if (!document.startViewTransition) {
+            setTheme(newTheme);
+            return;
+        }
+
+        const x = e.clientX;
+        const y = e.clientY;
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        const transition = document.startViewTransition(() => {
+            flushSync(() => {
+                setTheme(newTheme);
+            });
+        });
+
+        transition.ready.then(() => {
+            const clipPath = [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+            ];
+            document.documentElement.animate(
+                {
+                    clipPath: isDark ? clipPath.reverse() : clipPath,
+                },
+                {
+                    duration: 400,
+                    easing: "ease-in-out",
+                    pseudoElement: isDark
+                        ? "::view-transition-old(root)"
+                        : "::view-transition-new(root)",
+                }
+            );
+        });
     };
 
     return (
