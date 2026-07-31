@@ -118,7 +118,7 @@ export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => 
 /**
  * Fetch the complete student/attendance matrix for a specific cohort and date.
  */
-export const getAttendanceMatrix = (
+export const getAttendanceSystem = (
     schoolId: string,
     classId: string,
     date: string,
