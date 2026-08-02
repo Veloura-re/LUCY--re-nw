@@ -51,3 +51,45 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Failed to create term" }, { status: 500 });
     }
 }
+
+export async function DELETE(req: Request) {
+    try {
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
+        if (!user?.schoolId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ error: "Term ID is required" }, { status: 400 });
+        }
+
+        const existing = await prisma.academicTerm.findFirst({
+            where: { id, schoolId: user.schoolId },
+            include: {
+                _count: {
+                    select: { marklists: true, exams: true }
+                }
+            }
+        });
+
+        if (!existing) {
+            return NextResponse.json({ error: "Term not found" }, { status: 404 });
+        }
+
+        if (existing._count.marklists > 0 || existing._count.exams > 0) {
+            return NextResponse.json({ 
+                error: `Cannot delete term "${existing.name}". It is currently linked to ${existing._count.marklists} marklist(s) and ${existing._count.exams} exam(s).` 
+            }, { status: 409 });
+        }
+
+        await prisma.academicTerm.delete({
+            where: { id }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Delete term error:", error);
+        return NextResponse.json({ error: "Failed to delete term" }, { status: 500 });
+    }
+}

@@ -154,7 +154,7 @@ export default function CommunityPage() {
                             community <span className="text-slate-400 dark:text-zinc-800">connections.</span>
                         </h1>
                         <p className="text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
-                            tap any node to establish a secure connection to the lucy educational network.
+                            select a platform to connect with the lucy educational community.
                         </p>
                     </motion.div>
 

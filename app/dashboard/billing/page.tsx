@@ -150,7 +150,7 @@ export default function BillingPage() {
                 <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-500 mx-auto mb-4" />
                 <h1 className="text-xl font-bold uppercase tracking-tighter text-zinc-900 dark:text-white mb-2">No Institution Linked</h1>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm">
-                    This account is not currently linked to any active educational institution node.
+                    This account is not currently linked to an active school account.
                 </p>
             </div>
         );
