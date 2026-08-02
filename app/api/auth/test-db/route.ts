@@ -4,6 +4,10 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
 export async function GET() {
+    if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: "Endpoint disabled in production." }, { status: 403 });
+    }
+
     try {
         let poolTest = "not attempted";
         let queryError = null;

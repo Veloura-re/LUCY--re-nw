@@ -46,12 +46,9 @@ async function createSuperAdmin() {
     const userId = authData.user.id;
     console.log(`[2/3] Auth account created with ID: ${userId}`);
 
-    // Hash the password for the DB fallback (if needed)
-    const encoder = new TextEncoder();
-    const pwData = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', pwData);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    // Hash the password securely with bcrypt
+    const bcrypt = await import('bcryptjs');
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     console.log(`[3/3] Inserting into public.User table...`);
 

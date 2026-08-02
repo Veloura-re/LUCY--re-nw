@@ -1,4 +1,5 @@
-process.env.DATABASE_URL = "postgresql://postgres.caeeusbhwrkelnffbbub:Amsocookd2133%23@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
+require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env' });
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
