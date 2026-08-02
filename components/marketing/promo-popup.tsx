@@ -140,7 +140,7 @@ export function PromoPopup() {
                                     transition={{ delay: 0.6 }}
                                     className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 font-medium leading-relaxed"
                                 >
-                                    Initialize your node today and experience the full power of the LUCY OS, completely free for your first 4 months.
+                                    Create your school account today and experience the full power of the LUCY OS, completely free for your first 4 months.
                                 </motion.p>
 
                                 <motion.div

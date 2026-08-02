@@ -326,9 +326,9 @@ export default function StaffAuthorizationsPage() {
                     ) : (
                         <div className="text-center py-20 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                             <Clock className="w-12 h-12 text-zinc-900 dark:text-white mx-auto mb-6" />
-                            <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">Queue Synced</div>
+                            <div className="text-zinc-700 font-medium uppercase tracking-[0.5em] text-sm italic">All Clear</div>
                             <p className="text-zinc-800 dark:text-zinc-200 mt-2 text-xs font-medium uppercase tracking-widest">
-                                No signals in the {statusFilter} {typeFilter !== 'ALL' ? typeFilter.toLowerCase() + ' ' : ''}nexus.
+                                No {statusFilter.toLowerCase()} {typeFilter !== 'ALL' ? typeFilter.toLowerCase() + ' ' : ''}requests found.
                             </p>
                         </div>
                     )}

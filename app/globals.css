@@ -234,12 +234,13 @@ h6 {
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  backface-visibility: hidden;
+  will-change: transform, clip-path, filter;
 }
 
 /* The old theme is always on top, getting "snatched" away */
 ::view-transition-old(root) {
   z-index: 2;
-  filter: url(#cloth-ripple);
   transform-origin: top right;
 }
 ::view-transition-new(root) {

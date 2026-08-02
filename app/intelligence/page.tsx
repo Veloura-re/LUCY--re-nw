@@ -10,7 +10,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal,
 import { Logo } from "@/components/ui/logo";
 
 const behaviors = [
-    { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query hits the right node within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
+    { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query reaches the right engine within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
     { title: "AI Synthesizing", desc: "Aggregates fragmented data points — attendance, grades, behavior — into actionable insights for faculty and administration.", icon: Brain, id: "BEH_02", metric: "99.9%", metricLabel: "data_accuracy" },
     { title: "Tactical Response", desc: "Real-time adjustments to scheduling and resource allocation. The system detects friction points and reroutes before they compound.", icon: Target, id: "BEH_03", metric: "3s", metricLabel: "alert_latency" },
 ];
@@ -66,7 +66,7 @@ export default function Intelligence() {
                         <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-400">
                             <Sparkles className="w-4 h-4" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-600" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">cognitive_layer // intelligence_node_active</span>
+                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">cognitive_layer // intelligence_engine_active</span>
                             <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                         </Reveal>
 
@@ -78,7 +78,7 @@ export default function Intelligence() {
 
                         <Reveal delay={0.2} className="max-w-2xl">
                             <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
-                                the intelligence node is the central processing unit of lucy_os. it orchestrates the behavioral patterns of all specialized personas and manages the cognitive routing of institutional data.
+                                the intelligence engine is the central processing core of lucy_os. it orchestrates the behavioral patterns of all specialized personas and manages the cognitive routing of institutional data.
                             </p>
                         </Reveal>
 
