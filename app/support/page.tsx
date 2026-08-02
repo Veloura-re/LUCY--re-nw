@@ -59,7 +59,7 @@ export default function Support() {
                         </Reveal>
                         <Reveal delay={0.1}>
                             <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
-                                support<br /><GlitchText className="text-slate-300 dark:text-zinc-800">node.</GlitchText>
+                                support<br /><GlitchText className="text-slate-300 dark:text-zinc-800">center.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">

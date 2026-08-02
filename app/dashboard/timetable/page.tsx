@@ -189,8 +189,8 @@ export default function TimetableManagementPage() {
             }
         } catch (e) {
             setAlertConfig({
-                title: "Network Fault",
-                message: "Communication with the central timetable node was interrupted.",
+                title: "Network Error",
+                message: "Failed to connect to the timetable service. Please try again.",
                 isOpen: true,
                 variant: "error"
             });

@@ -102,12 +102,32 @@ export function SettingsAcademicTerms() {
                 setFormData({ name: "", startDate: "", endDate: "", isActive: false });
                 fetchData();
             } else {
-                toast.error("Failed to create term.");
+                const err = await res.json() as any;
+                toast.error(err.error || "Failed to create term.");
             }
         } catch (e) {
             console.error(e);
+            toast.error("Failed to create term.");
         } finally {
             setCreating(false);
+        }
+    };
+
+    const handleDeleteTerm = async (id: string) => {
+        try {
+            const res = await fetch(`/api/school/terms?id=${id}`, {
+                method: "DELETE"
+            });
+            if (res.ok) {
+                toast.success("Academic period deleted.");
+                setTerms(prev => prev.filter(t => t.id !== id));
+            } else {
+                const err = await res.json() as any;
+                toast.error(err.error || "Failed to delete term.");
+            }
+        } catch (e) {
+            console.error(e);
+            toast.error("Failed to delete term.");
         }
     };
 
@@ -213,6 +233,7 @@ export function SettingsAcademicTerms() {
                                 </SelectTrigger>
                                 <SelectContent className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                     <SelectItem value="MONTHLY">Monthly</SelectItem>
+                                    <SelectItem value="TERM">Academic Term</SelectItem>
                                     <SelectItem value="QUARTERLY">Quarterly</SelectItem>
                                     <SelectItem value="SEMESTERLY">Semesterly</SelectItem>
                                     <SelectItem value="ANNUAL">Full Academic Year</SelectItem>
@@ -333,7 +354,12 @@ export function SettingsAcademicTerms() {
                                 <p className="text-zinc-900 dark:text-white text-xs font-medium">{t._count?.marklists || 0}</p>
                                 <p className="text-[9px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Marklists</p>
                             </div>
-                            <Button variant="ghost" size="icon" className="text-zinc-600 dark:text-zinc-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full">
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={() => handleDeleteTerm(t.id)}
+                                className="text-zinc-600 dark:text-zinc-500 hover:text-red-600 dark:text-red-400 hover:bg-red-500/10 h-8 w-8 rounded-full"
+                            >
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>

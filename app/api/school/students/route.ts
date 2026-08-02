@@ -66,6 +66,24 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Grade is required" }, { status: 400 });
         }
 
+        // Validate grade belongs to this institution
+        const grade = await prisma.grade.findFirst({
+            where: { id: gradeId, schoolId: targetSchoolId! }
+        });
+        if (!grade) {
+            return NextResponse.json({ error: "Selected grade does not exist in your institution." }, { status: 400 });
+        }
+
+        // Validate class belongs to this institution (if specified)
+        if (classId) {
+            const cls = await prisma.class.findFirst({
+                where: { id: classId, schoolId: targetSchoolId! }
+            });
+            if (!cls) {
+                return NextResponse.json({ error: "Selected class does not exist in your institution." }, { status: 400 });
+            }
+        }
+
         if (email) {
             const existingUser = await prisma.user.findUnique({ where: { email } });
             if (existingUser) {
@@ -81,6 +99,21 @@ export async function POST(request: Request) {
             if (existingInvite) {
                 await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
             }
+        }
+
+        // Generate unique collision-resistant student code
+        let generatedStudentCode = '';
+        for (let attempt = 0; attempt < 5; attempt++) {
+            const suffix = globalThis.crypto.randomUUID().replace(/-/g, '').substring(0, 8).toUpperCase();
+            const candidateCode = `ST-${suffix}-${new Date().getFullYear()}`;
+            const exists = await prisma.student.findUnique({ where: { studentCode: candidateCode } });
+            if (!exists) {
+                generatedStudentCode = candidateCode;
+                break;
+            }
+        }
+        if (!generatedStudentCode) {
+            generatedStudentCode = `ST-${Date.now().toString(36).toUpperCase()}-${new Date().getFullYear()}`;
         }
 
         const result = await prisma.$transaction(async (tx) => {
@@ -99,7 +132,7 @@ export async function POST(request: Request) {
                     guardianPhone: guardianPhone || null,
                     secondaryPhone: secondaryPhone || null,
                     photoUrl: photoUrl || null,
-                    studentCode: `ST-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 6).toUpperCase()}-${new Date().getFullYear()}`
+                    studentCode: generatedStudentCode
                 }
             });
 

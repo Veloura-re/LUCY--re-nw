@@ -336,7 +336,7 @@ export default function SettingsPage() {
             }
         } catch (e) {
             console.error(e);
-            setAlertConfig({ title: "Connection Error", message: "Failed to communicate with the diagnostic node.", isOpen: true, variant: "error" });
+            setAlertConfig({ title: "Connection Error", message: "Failed to run diagnostic service.", isOpen: true, variant: "error" });
         } finally {
             setDiagnosing(false);
         }
@@ -699,7 +699,7 @@ export default function SettingsPage() {
 
                                 {/* Link New Student */}
                                 <div className="p-8 bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800 rounded-[2rem] space-y-6">
-                                    <h4 className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Initialize New Link</h4>
+                                    <h4 className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Link Student Profile</h4>
                                     {!verifiedStudent ? (
                                         <div className="flex gap-4">
                                             <Input
@@ -1068,7 +1068,7 @@ export default function SettingsPage() {
                                     {isPrincipal && !schoolForm.logoUrl && (
                                         <label className="mt-6">
                                             <div className="cursor-pointer px-8 py-3 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl text-[9px] font-medium uppercase tracking-widest hover:border-eduGreen-500 hover:text-eduGreen-700 dark:hover:text-eduGreen-400 transition-all">
-                                                Initialize Brand Map
+                                                Upload School Logo
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} />
                                         </label>
@@ -1146,7 +1146,7 @@ export default function SettingsPage() {
                                                 }))}
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
-                                            <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this communication node.</p>
+                                            <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this email address.</p>
                                         </div>
                                     </div>
                                 </CardContent>

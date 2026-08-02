@@ -353,7 +353,7 @@ export default function Security() {
                             <span className="text-[9px] uppercase tracking-widest font-bold">system_warning // unauthorized_access_advisory</span>
                         </div>
                         <p className="text-orange-900 dark:text-zinc-600 text-xs leading-relaxed uppercase tracking-wide font-medium">
-                            unauthorized attempts to bypass the vault or decrypt institutional assets will result in permanent node isolation, cryptographic nullification, and legal escalation.
+                            unauthorized attempts to bypass security controls or decrypt institutional assets will result in permanent account termination and legal escalation.
                         </p>
                     </Reveal>
                 </div>

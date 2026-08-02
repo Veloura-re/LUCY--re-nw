@@ -15,7 +15,7 @@ const terminalLines = [
     "> rate_cards: COMPILED_AND_VERIFIED",
     "> sla_system: DEPLOYED",
     "> billing_currency: USD",
-    "> status: SECURE_UPLINK_ESTABLISHED_",
+    "> status: SECURE_CONNECTION_READY",
 ];
 
 export default function Pricing() {
@@ -73,7 +73,7 @@ export default function Pricing() {
                         </Reveal>
                         <Reveal delay={0.2}>
                             <p className="text-slate-500 dark:text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
-                                select a node tier to provision your school instance. all plans begin with a 120-day trial evaluation period.
+                                select a plan that fits your school. all plans include a 120-day trial evaluation period.
                             </p>
                         </Reveal>
                     </div>

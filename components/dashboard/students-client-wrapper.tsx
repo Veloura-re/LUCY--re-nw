@@ -91,9 +91,23 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 } else {
                     setAlertConfig({ title: "Student Enrolled", message: "Student record has been created successfully.", isOpen: true, variant: "success" });
                 }
+            } else {
+                const errData = await res.json().catch(() => ({})) as any;
+                setAlertConfig({ 
+                    title: "Enrollment Failed", 
+                    message: errData?.error || "Failed to create student record. Please check the fields and try again.", 
+                    isOpen: true, 
+                    variant: "error" 
+                });
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
+            setAlertConfig({ 
+                title: "Network Error", 
+                message: e?.message || "An unexpected error occurred while saving the student.", 
+                isOpen: true, 
+                variant: "error" 
+            });
         } finally {
             await new Promise(resolve => setTimeout(resolve, 800));
             setLoading(false);

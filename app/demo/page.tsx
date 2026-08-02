@@ -131,13 +131,13 @@ export default function Demo() {
 
                     {/* CTA */}
                     <Reveal className="text-center space-y-8">
-                        <h2 className="text-4xl font-bold uppercase tracking-tighter">ready to initialize your node?</h2>
+                        <h2 className="text-4xl font-bold uppercase tracking-tighter">ready to get started?</h2>
                         <div className="flex flex-wrap gap-4 justify-center">
                             <MagneticButton>
-                                <Link href="/register"><Button className="h-14 px-10 bg-slate-900 dark:bg-white text-zinc-900 dark:text-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-lg dark:rounded-none text-[11px] uppercase tracking-widest font-bold">provision_node</Button></Link>
+                                <Link href="/register"><Button className="h-14 px-10 bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-lg dark:rounded-none text-[11px] uppercase tracking-widest font-bold">Get Started</Button></Link>
                             </MagneticButton>
                             <MagneticButton>
-                                <Link href="/contact"><Button variant="outline" className="h-14 px-10 rounded-lg dark:rounded-none border-slate-200 dark:border-white/20 text-[11px] uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white hover:text-slate-900 dark:hover:text-black transition-all">speak_to_vanguard</Button></Link>
+                                <Link href="/contact"><Button variant="outline" className="h-14 px-10 rounded-lg dark:rounded-none border-slate-200 dark:border-white/20 text-[11px] uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white hover:text-slate-900 dark:hover:text-black transition-all">Contact Us</Button></Link>
                             </MagneticButton>
                         </div>
                     </Reveal>

@@ -251,6 +251,7 @@ model Student {
   remarks               StudentRemark[]
 
   @@index([schoolId, classId])
+  @@index([schoolId, studentCode])
   @@index([lastName, firstName])
 }
 
@@ -263,6 +264,7 @@ model ParentStudentLink {
   parent        User          @relation(fields: [parentId], references: [id])
   student       Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
+  @@unique([parentId, studentId])
   @@index([parentId])
   @@index([studentId])
 }
