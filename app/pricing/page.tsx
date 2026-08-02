@@ -89,7 +89,7 @@ export default function Pricing() {
                                 features: ["1 institution", "up to 500 students", "all core features", "email support"],
                                 highlight: false,
                                 href: "/register/admin?plan=pilot",
-                                buttonText: "price"
+                                buttonText: "Start Free Trial"
                             },
                             {
                                 tier: "Core Plan",
@@ -100,7 +100,7 @@ export default function Pricing() {
                                 features: ["unlimited students", "all roles + AI helper", "parent portal", "priority support", "99.9% uptime SLA"],
                                 highlight: true,
                                 href: "/register/admin?plan=core",
-                                buttonText: "price"
+                                buttonText: "Start 120-Day Trial"
                             },
                             {
                                 tier: "Enterprise",
@@ -110,7 +110,7 @@ export default function Pricing() {
                                 features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated support manager", "99.99% SLA"],
                                 highlight: false,
                                 href: "/contact",
-                                buttonText: "price"
+                                buttonText: "Contact Sales"
                             }
                         ].map((t, i) => (
                             <motion.div
@@ -183,7 +183,7 @@ export default function Pricing() {
 
                                 <div className="pt-4 relative z-10">
                                     <Link href={t.href} className="w-full">
-                                        <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.25em] font-bold transition-all duration-300 rounded-md dark:rounded-none ${t.highlight ? "bg-slate-900 text-white border-slate-900 hover:bg-slate-800 dark:bg-white dark:text-black dark:border-white dark:hover:bg-zinc-200" : "border-slate-300 text-slate-600 bg-slate-50 hover:bg-slate-900 hover:text-white dark:border-white/20 dark:text-zinc-300 dark:bg-white/5 dark:hover:bg-white dark:hover:text-black"}`}>
+                                        <div className={`w-full h-11 border flex items-center justify-center text-[10px] uppercase tracking-[0.2em] font-semibold transition-all duration-300 rounded-lg shadow-sm ${t.highlight ? "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 dark:bg-white dark:text-black dark:border-white dark:hover:bg-zinc-200" : "border-slate-300 text-slate-900 bg-white hover:bg-slate-900 hover:text-white dark:border-zinc-700 dark:text-white dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:hover:border-zinc-500"}`}>
                                             {t.buttonText}
                                         </div>
                                     </Link>
