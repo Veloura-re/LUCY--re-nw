@@ -3,32 +3,23 @@ const { createClient } = require('@supabase/supabase-js');
 const { Pool } = require('pg');
 const crypto = require('crypto');
 
-const envContent = fs.readFileSync('.dev.vars', 'utf-8');
-const env = {};
-envContent.split('\n').forEach(line => {
-    if (line.includes('=')) {
-        const [key, ...rest] = line.split('=');
-        env[key.trim()] = rest.join('=').trim().replace('\r', '');
-    }
-});
+require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env' });
 
 async function main() {
-    const supabaseUrl = env['NEXT_PUBLIC_SUPABASE_URL'];
-    const supabaseKey = env['SUPABASE_SERVICE_ROLE_KEY'];
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const dbUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
     
     if (!supabaseUrl || !supabaseKey) {
-        console.error("Missing Supabase credentials in .env.local");
+        console.error("Missing Supabase credentials in environment");
         process.exit(1);
     }
     
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     const pool = new Pool({ 
-        user: 'postgres.caeeusbhwrkelnffbbub',
-        password: 'Amsocookd2133#',
-        host: 'aws-1-eu-west-1.pooler.supabase.com',
-        port: 5432,
-        database: 'postgres',
+        connectionString: dbUrl,
         ssl: { rejectUnauthorized: false }
     });
     
