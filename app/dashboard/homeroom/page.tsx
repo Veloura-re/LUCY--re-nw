@@ -15,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
 
 export default function HomeroomDashboard() {
-    const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [myClass, setMyClass] = useState<any>(null);
@@ -27,6 +26,7 @@ export default function HomeroomDashboard() {
 
     useEffect(() => {
         const init = async () => {
+            const supabase = createClient();
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 await fetchHomeroomInfo(user.id);

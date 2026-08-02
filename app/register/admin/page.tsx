@@ -20,12 +20,13 @@ export default function AdminRegister() {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
-    const supabase = createClient();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
+
+        const supabase = createClient();
 
         // 1. Verify Secret Key with API BEFORE creating Auth user to prevent spam
         // Actually, we can do it in parallel or just handle cleanup. 

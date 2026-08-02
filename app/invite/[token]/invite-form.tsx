@@ -15,7 +15,6 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
     const [statusText, setStatusText] = useState("");
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
-    const supabase = createClient();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,6 +22,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
         setError(null);
         setStatusText("Securing your credentials...");
 
+        const supabase = createClient();
         let userId = "";
 
         // 1. Attempt SignUp with Supabase

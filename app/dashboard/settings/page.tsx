@@ -17,7 +17,6 @@ import { SettingsAcademicTerms } from "@/components/dashboard/settings-academic-
 
 export default function SettingsPage() {
     const router = useRouter();
-    const supabase = createClient();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
@@ -134,6 +133,7 @@ export default function SettingsPage() {
 
         setSaving(true);
         try {
+            const supabase = createClient();
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random()}.${fileExt}`;
             const filePath = `logos/${fileName}`;
@@ -344,6 +344,7 @@ export default function SettingsPage() {
 
     const handleLogout = async () => {
         setLoggingOut(true);
+        const supabase = createClient();
         await supabase.auth.signOut();
         router.push('/login');
     };

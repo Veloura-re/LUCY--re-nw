@@ -30,7 +30,6 @@ function LoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const errorParam = searchParams.get('error');
-    const supabase = createClient();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

@@ -25,7 +25,6 @@ export default function DirectorRegister() {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
-    const supabase = createClient();
 
     const handleValidateKey = async (e: React.FormEvent) => {
         e.preventDefault();

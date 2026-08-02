@@ -9,12 +9,12 @@ function LogoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const reason = searchParams.get('reason');
-    const supabase = createClient();
     const [loggingOut, setLoggingOut] = useState(true);
 
     useEffect(() => {
         const performLogout = async () => {
             // Sign out of Supabase
+            const supabase = createClient();
             await supabase.auth.signOut();
             
             // Delete the concurrent session cookie

@@ -35,7 +35,6 @@ export default function ParentRegister() {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
-    const supabase = createClient();
 
     // --- Actions ---
 
