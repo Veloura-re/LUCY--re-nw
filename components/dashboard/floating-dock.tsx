@@ -59,11 +59,11 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
             <form ref={signOutFormRef} action="/auth/signout" method="post" className="hidden" />
 
             {/* Use a plain div with NO transform so child fixed-position portals work correctly */}
-            <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex justify-center z-[100] pointer-events-none">
+            <div className="fixed bottom-2 sm:bottom-4 md:bottom-6 left-0 right-0 flex justify-center z-[100] pointer-events-none px-1 sm:px-2">
                 <motion.div
                     onMouseMove={(e) => mouseX.set(e.pageX)}
                     onMouseLeave={() => mouseX.set(Infinity)}
-                    className="flex items-center gap-2 px-3 pt-3 pb-3 rounded-[2.5rem] bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-max max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide pointer-events-auto"
+                    className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-3 pt-1.5 sm:pt-3 pb-1.5 sm:pb-3 rounded-xl sm:rounded-[2.5rem] bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-max max-w-[calc(100vw-0.5rem)] sm:max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-hide pointer-events-auto"
                 >
                     {/* Name pill — desktop only */}
                     {userName && (
@@ -77,7 +77,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
 
                     {/* Theme Toggle Switcher */}
                     <div className="shrink-0">
-                        <ThemeToggle className="!w-[42px] !h-[42px] !rounded-2xl" />
+                        <ThemeToggle className="!w-7 !h-7 sm:!w-[42px] sm:!h-[42px] !rounded-lg sm:!rounded-2xl" />
                     </div>
 
                     {items.map((item: any, i: number) => (
@@ -152,12 +152,12 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
         <motion.div
             id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
             ref={ref}
-            style={{ width: isMobile ? 42 : width }}
+            style={{ width: isMobile ? 32 : width }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={() => setHovered(false)}
             onClick={onClick}
             className={cn(
-                "group aspect-square rounded-2xl flex items-center justify-center relative transition-all duration-100 cursor-pointer",
+                "group aspect-square rounded-lg sm:rounded-2xl flex items-center justify-center relative transition-all duration-100 cursor-pointer",
                 isActive
                     ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/40"
                     : variant === 'danger'
@@ -165,17 +165,17 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                         : variant === 'toggle'
                             ? "bg-ui-muted/10 text-eduGreen-600 dark:text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-ui-border md:hover:border-transparent md:hover:scale-105 active:scale-95"
                             : "bg-ui-muted/5 text-ui-muted hover:text-ui-text hover:bg-ui-muted/20 border border-ui-border md:hover:border-ui-muted/40 md:hover:scale-105 active:scale-95",
-                isMobile ? "min-w-[42px] min-h-[42px]" : ""
+                isMobile ? "min-w-[32px] min-h-[32px]" : "min-w-[42px] min-h-[42px]"
             )}
         >
             {!isActive && (
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/5 dark:from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             )}
-            {Icon && <Icon className="w-5 h-5" />}
+            {Icon && <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
             {isActive && (
                 <motion.div
                     layoutId="active-dot"
-                    className="absolute -bottom-1 w-1.5 h-1 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+                    className="absolute -bottom-0.5 sm:-bottom-1 w-1 sm:w-1.5 h-0.5 sm:h-1 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]"
                     transition={{ type: "spring", stiffness: 800, damping: 35 }}
                 />
             )}

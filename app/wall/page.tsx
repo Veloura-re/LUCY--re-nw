@@ -31,7 +31,7 @@ export default function Wall() {
         try {
             const res = await fetch("/api/public/comments");
             if (res.ok) {
-                const data = await res.json();
+                const data = (await res.json()) as { comments?: Comment[] };
                 setComments(data.comments ?? []);
             }
         } finally {
@@ -57,7 +57,7 @@ export default function Wall() {
             });
             if (res.status === 429) { setStatus("limit"); return; }
             if (!res.ok) { setStatus("error"); return; }
-            const data = await res.json();
+            const data = (await res.json()) as { comment: Comment };
             setComments(prev => [data.comment, ...prev]);
             setForm({ callsign: "", message: "", emoji: "🔭" });
             setStatus("success");
@@ -88,27 +88,27 @@ export default function Wall() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-4xl mx-auto space-y-20">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-4xl mx-auto space-y-12 sm:space-y-20">
 
                     {/* Hero */}
-                    <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
-                            <MessageSquare className="w-4 h-4" />
+                    <section className="space-y-6 sm:space-y-8">
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
+                            <MessageSquare className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">signal_wall // public_messages</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">signal_wall // public_messages</span>
                             <div className="ml-auto flex items-center gap-2 text-[9px] text-slate-500 dark:text-zinc-700 uppercase tracking-widest">
                                 <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.3, repeat: Infinity }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                                 live
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                            <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                                 signal<br /><GlitchText className="text-slate-400 dark:text-zinc-800">wall.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-xl">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-lg leading-relaxed max-w-xl">
                                 leave a message for the community. public messages from users around the world — live and unfiltered.
                             </p>
                         </Reveal>

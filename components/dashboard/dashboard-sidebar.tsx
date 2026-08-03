@@ -79,11 +79,11 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
 
             {/* ── Sidebar ── */}
             <motion.aside
-                animate={{ width: collapsed ? 68 : 288 }}
+                animate={{ width: collapsed ? 68 : (isDesktop ? 288 : 260) }}
                 transition={{ duration: 0.1, ease: [0.4, 0, 0.2, 1] }}
                 className={cn(
-                    "fixed inset-y-0 left-0 z-[55] bg-white/40 dark:bg-zinc-950/40 backdrop-blur-2xl border-r border-zinc-200 dark:border-zinc-900/50 flex flex-col overflow-hidden shrink-0",
-                    "md:relative md:translate-x-0 md:h-screen",
+                    "fixed inset-y-0 left-0 z-[55] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border-r border-zinc-200 dark:border-zinc-900/50 flex flex-col overflow-hidden shrink-0 max-w-[85vw]",
+                    "md:relative md:translate-x-0 md:h-screen md:bg-white/40 md:dark:bg-zinc-950/40",
                     mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
                     "transition-transform duration-300"
                 )}
@@ -93,7 +93,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                 <div className={cn(
                     "flex items-center gap-3 px-4 pt-5 pb-4 relative",
                     collapsed ? "justify-center" : "justify-between",
-                    "md:px-4 px-16" // Add padding on mobile to avoid X button
+                    "md:px-4 px-14" // Add padding on mobile to avoid X button
                 )}>
                     <AnimatePresence mode="wait">
                         {!collapsed && (
@@ -106,9 +106,9 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 className="flex flex-col gap-1"
                             >
                                 {dbUser.school?.logoUrl ? (
-                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-10 h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
+                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
                                 ) : (
-                                    <Logo className="w-10 h-10" />
+                                    <Logo className="w-8 h-8 sm:w-10 sm:h-10" />
                                 )}
                                 {dbUser.school && (
                                     <p className="text-[9px] uppercase tracking-widest text-zinc-600 font-medium truncate max-w-[140px]">{dbUser.school.name}</p>
@@ -143,7 +143,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                     id={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                                     whileHover={{ x: collapsed ? 0 : 2 }}
                                     className={cn(
-                                        "flex items-center gap-3 h-11 px-3 rounded-2xl transition-all group font-semibold text-sm cursor-pointer",
+                                        "flex items-center gap-3 h-10 sm:h-11 px-3 rounded-xl sm:rounded-2xl transition-all group font-semibold text-xs sm:text-sm cursor-pointer",
                                         isActive
                                             ? "bg-eduGreen-900/20 text-eduGreen-600 dark:text-eduGreen-400 border border-eduGreen-900/30"
                                             : "text-zinc-700 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 hover:border-eduGreen-900/20 border border-transparent",
@@ -216,7 +216,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                     transition={{ duration: 0.1 }}
                                     className="overflow-hidden min-w-0"
                                 >
-                                    <p className="text-xs font-semibold truncate text-zinc-900 dark:text-white dark:text-zinc-100 tracking-tight">{dbUser.name || "—"}</p>
+                                    <p className="text-xs font-semibold truncate text-zinc-900 dark:text-zinc-100 tracking-tight">{dbUser.name || "—"}</p>
                                     <p className="text-[9px] text-zinc-600 truncate">{dbUser.email}</p>
                                 </motion.div>
                             )}

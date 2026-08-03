@@ -134,24 +134,24 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
     ];
 
     return (
-        <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
+        <div className="max-w-5xl mx-auto space-y-3.5 sm:space-y-8 md:space-y-12 animate-in fade-in duration-300 relative z-10 pb-20 sm:pb-0">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-3 sm:pb-10">
                 <DashboardGreeting name={user?.name || 'Owner'} role="Owner" gender={user?.gender} />
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                    <Link href="/dashboard/events" className="w-full sm:w-auto">
-                        <Button className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-2">
+                <div className="flex flex-row items-center gap-2 sm:gap-4 w-full md:w-auto">
+                    <Link href="/dashboard/events" className="flex-1 sm:flex-initial">
+                        <Button className="w-full sm:w-auto bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl h-8 sm:h-10 px-2.5 sm:px-4 text-[8px] sm:text-[10px] font-medium uppercase tracking-widest flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm">
                             <Calendar className="w-3 h-3 text-eduGreen-500" />
-                            Events Portal
+                            Events
                         </Button>
                     </Link>
-                    <div className="flex w-full sm:w-auto bg-white dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-2xl">
+                    <div className="flex bg-white dark:bg-zinc-950 p-0.5 sm:p-1.5 rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 shadow-sm sm:shadow-2xl justify-center">
                         <button
                             onClick={() => setViewMode('realtime')}
                             className={cn(
-                                "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
+                                "px-2.5 sm:px-5 py-1.5 sm:py-2.5 rounded-md sm:rounded-xl text-[8px] sm:text-[10px] font-medium uppercase tracking-widest transition-all",
                                 viewMode === 'realtime'
-                                    ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
+                                    ? "bg-eduGreen-600 text-white shadow-md sm:shadow-lg shadow-eduGreen-900/20"
                                     : "text-zinc-600 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
@@ -160,9 +160,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                         <button
                             onClick={() => setViewMode('historical')}
                             className={cn(
-                                "px-5 py-2.5 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all",
+                                "px-2.5 sm:px-5 py-1.5 sm:py-2.5 rounded-md sm:rounded-xl text-[8px] sm:text-[10px] font-medium uppercase tracking-widest transition-all",
                                 viewMode === 'historical'
-                                    ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/20"
+                                    ? "bg-eduGreen-600 text-white shadow-md sm:shadow-lg shadow-eduGreen-900/20"
                                     : "text-zinc-600 hover:text-eduGreen-600 dark:hover:text-white"
                             )}
                         >
@@ -179,32 +179,32 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="space-y-12"
+                        className="space-y-3.5 sm:space-y-12"
                     >
                         {/* Quick Stats Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-8">
                             {stats.map((stat, i) => (
-                                <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                        <stat.icon className="w-12 h-12" />
+                                <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-xl sm:rounded-3xl p-3 sm:p-8 hover:border-eduGreen-900/30 transition-all border-t-zinc-800/20 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-2 sm:p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <stat.icon className="w-5 h-5 sm:w-12 sm:h-12" />
                                     </div>
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-2">{stat.label}</p>
-                                    <p className="text-4xl font-medium text-zinc-900 dark:text-white">{stat.value}</p>
-                                    <p className="text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-2">{stat.desc}</p>
+                                    <p className="text-[7px] sm:text-[10px] font-medium uppercase tracking-widest text-zinc-700 mb-0.5 sm:mb-2 truncate">{stat.label}</p>
+                                    <p className="text-lg sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tight">{stat.value}</p>
+                                    <p className="text-[7px] sm:text-[9px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest mt-0.5 sm:mt-2 truncate">{stat.desc}</p>
                                 </Card>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-8">
                             <div className="lg:col-span-8">
-                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden group shadow-2xl border-t-zinc-800/20 flex flex-col h-full">
-                                    <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl overflow-hidden group shadow-xl sm:shadow-2xl border-t-zinc-800/20 flex flex-col h-full">
+                                    <CardHeader className="p-3.5 sm:p-8 pb-2 sm:pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                                         <div>
-                                            <CardTitle className="text-lg md:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
-                                                <DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+                                            <CardTitle className="text-base sm:text-lg md:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-2 sm:gap-3">
+                                                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-500" />
                                                 Executive Overview
                                             </CardTitle>
-                                            <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 ml-8">Financials & Personnel Ledger</p>
+                                            <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 sm:mt-1 ml-6 sm:ml-8">Financials & Personnel Ledger</p>
                                         </div>
                                         <div className="flex space-x-1">
                                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -212,45 +212,45 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse delay-150" />
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="p-8 flex-grow">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-                                            <div className="md:col-span-2 lg:col-span-4">
+                                    <CardContent className="p-3.5 sm:p-8 flex-grow">
+                                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 h-full">
+                                            <div className="col-span-2 lg:col-span-4">
                                                 <MetricNode
                                                     label="Current Monthly Revenue"
                                                     value={`$${(analytics?.summary?.collectedFees || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
-                                                    icon={<DollarSign className="w-6 h-6 text-amber-600 dark:text-amber-500" />}
+                                                    icon={<DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-500" />}
                                                     percentage={92}
                                                     trend="Positive Yield"
                                                     featured
                                                 />
                                             </div>
 
-                                            <div className="lg:col-span-1">
+                                            <div className="col-span-1 lg:col-span-1">
                                                 <MetricNode
                                                     label="Principals"
                                                     value={analytics?.summary?.principalCount || 0}
-                                                    icon={<Shield className="w-5 h-5" />}
+                                                    icon={<Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 />
                                             </div>
-                                            <div className="lg:col-span-1">
+                                            <div className="col-span-1 lg:col-span-1">
                                                 <MetricNode
                                                     label="Staff/Teachers"
                                                     value={analytics?.summary?.staffPresence?.total || 0}
-                                                    icon={<Users className="w-5 h-5" />}
+                                                    icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 />
                                             </div>
-                                             <div className="lg:col-span-1">
+                                             <div className="col-span-1 lg:col-span-1">
                                                 <MetricNode
                                                     label="Approvals"
                                                     value={analytics?.summary?.pendingApprovals || 0}
-                                                    icon={<BookOpen className="w-5 h-5" />}
+                                                    icon={<BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 />
                                             </div>
-                                            <div className="lg:col-span-1">
+                                            <div className="col-span-1 lg:col-span-1">
                                                 <MetricNode
                                                     label="System State"
                                                     value="Optimal"
-                                                    icon={<Activity className="w-5 h-5" />}
+                                                    icon={<Activity className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                     trend="Online"
                                                 />
                                             </div>
@@ -259,14 +259,14 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                 </Card>
                             </div>
                             <div className="lg:col-span-4">
-                                <Card className="h-full bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
-                                    <CardHeader className="p-8 pb-4 border-b border-zinc-200 dark:border-zinc-900/50">
-                                        <CardTitle className="text-base md:text-xl font-medium text-zinc-900 dark:text-white flex items-center gap-3">
-                                            <Calendar className="w-5 h-5 text-eduGreen-500" />
+                                <Card className="h-full bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-t-zinc-800/20">
+                                    <CardHeader className="p-3.5 sm:p-8 pb-2 sm:pb-4 border-b border-zinc-200 dark:border-zinc-900/50">
+                                        <CardTitle className="text-sm sm:text-base md:text-xl font-medium text-zinc-900 dark:text-white flex items-center gap-2 sm:gap-3">
+                                            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-eduGreen-500" />
                                             Scholastic Summons
                                         </CardTitle>
                                     </CardHeader>
-                                    <CardContent className="px-8 pb-8 pt-4">
+                                    <CardContent className="px-3.5 sm:px-8 pb-3.5 sm:pb-8 pt-2 sm:pt-4">
                                         <UpcomingEventsWidget />
                                     </CardContent>
                                 </Card>
@@ -282,24 +282,24 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="space-y-12"
+                        className="space-y-3.5 sm:space-y-12"
                     >
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-8">
                             {/* Attendance Waveform */}
                             <div className="lg:col-span-7">
-                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20">
-                                    <CardHeader className="p-10 pb-2">
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-t-zinc-800/20">
+                                    <CardHeader className="p-4 sm:p-10 pb-2">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <CardTitle className="text-lg md:text-2xl font-medium text-zinc-900 dark:text-white">Attendance Waveform</CardTitle>
-                                                <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">7-Day Scholar Presence Index</p>
+                                                <CardTitle className="text-base sm:text-lg md:text-2xl font-medium text-zinc-900 dark:text-white">Attendance Waveform</CardTitle>
+                                                <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 sm:mt-1">7-Day Scholar Presence Index</p>
                                             </div>
-                                            <div className="px-3 py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-lg">
-                                                <span className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-widest italic">Live Trend</span>
+                                            <div className="px-2 sm:px-3 py-0.5 sm:py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-md sm:rounded-lg">
+                                                <span className="text-[8px] sm:text-[10px] font-medium text-eduGreen-500 uppercase tracking-widest italic">Live Trend</span>
                                             </div>
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="p-10 pt-8">
+                                    <CardContent className="p-4 sm:p-10 pt-3 sm:pt-8">
                                         <AttendanceWaveform data={analytics?.attendance || []} />
                                     </CardContent>
                                 </Card>
@@ -307,20 +307,20 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
 
                             {/* Subject Power Bars */}
                             <div className="lg:col-span-5">
-                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-3xl overflow-hidden shadow-2xl border-t-zinc-800/20 h-full">
-                                    <CardHeader className="p-10 pb-4">
-                                        <CardTitle className="text-base md:text-xl font-medium text-zinc-900 dark:text-white">Subject Mastery</CardTitle>
-                                        <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-[0.2em] mt-1">Performance Distribution</p>
+                                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border-t-zinc-800/20 h-full">
+                                    <CardHeader className="p-4 sm:p-10 pb-2 sm:pb-4">
+                                        <CardTitle className="text-sm sm:text-base md:text-xl font-medium text-zinc-900 dark:text-white">Subject Mastery</CardTitle>
+                                        <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 sm:mt-1">Performance Distribution</p>
                                     </CardHeader>
-                                    <CardContent className="px-10 pb-10 space-y-8">
+                                    <CardContent className="px-4 sm:px-10 pb-4 sm:pb-10 space-y-3 sm:space-y-8">
                                         {analytics?.performanceBySubject?.length > 0 ? (
                                             analytics.performanceBySubject.map((s: any, i: number) => (
-                                                <div key={i} className="space-y-3">
+                                                <div key={i} className="space-y-1.5 sm:space-y-3">
                                                     <div className="flex justify-between items-end">
-                                                        <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{s.name}</span>
-                                                        <span className="text-sm font-medium text-zinc-900 dark:text-white">{s.avg.toFixed(1)}%</span>
+                                                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">{s.name}</span>
+                                                        <span className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white">{s.avg.toFixed(1)}%</span>
                                                     </div>
-                                                    <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden border border-zinc-300 dark:border-zinc-800/50">
+                                                    <div className="h-1.5 sm:h-2 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden border border-zinc-300 dark:border-zinc-800/50">
                                                         <motion.div
                                                             initial={{ width: 0 }}
                                                             animate={{ width: `${s.avg}%` }}
@@ -331,7 +331,7 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="py-20 text-center text-[10px] font-medium uppercase text-zinc-800 dark:text-zinc-200 tracking-[0.3em]">No Data Connection Found</div>
+                                            <div className="py-10 sm:py-20 text-center text-[8px] sm:text-[10px] font-medium uppercase text-zinc-800 dark:text-zinc-200 tracking-[0.2em] sm:tracking-[0.3em]">No Data Connection Found</div>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -347,10 +347,10 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
 function MetricNode({ label, value, icon, percentage, trend, featured = false }: { label: string, value: string | number, icon: React.ReactNode, percentage?: number, trend?: string, featured?: boolean }) {
     return (
         <div className={cn(
-            "relative group/metric overflow-hidden transition-all duration-300 rounded-3xl",
+            "relative group/metric overflow-hidden transition-all duration-300 rounded-xl sm:rounded-3xl",
             featured
-                ? "p-8 md:p-10 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900/80 dark:to-zinc-950 hover:shadow-[0_0_40px_-10px_rgba(20,184,115,0.2)] border border-zinc-200 dark:border-zinc-800/50"
-                : "p-5 bg-white/40 dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
+                ? "p-4 sm:p-8 md:p-10 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900/80 dark:to-zinc-950 hover:shadow-[0_0_40px_-10px_rgba(20,184,115,0.2)] border border-zinc-200 dark:border-zinc-800/50"
+                : "p-2.5 sm:p-5 bg-white/40 dark:bg-zinc-950/40 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
         )}>
             {/* Background Glow */}
             {featured && (
@@ -361,51 +361,51 @@ function MetricNode({ label, value, icon, percentage, trend, featured = false }:
             )}
 
             <div className="relative z-10 h-full flex flex-col justify-between">
-                <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
+                <div className="flex items-start justify-between mb-2 sm:mb-4">
+                    <div className="flex items-center gap-1.5 sm:gap-3">
                         <div className={cn(
-                            "flex items-center justify-center rounded-2xl shadow-inner transition-colors duration-300",
+                            "flex items-center justify-center rounded-lg sm:rounded-2xl shadow-inner transition-colors duration-300",
                             featured
-                                ? "w-12 h-12 bg-eduGreen-500/10 dark:bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 group-hover/metric:bg-eduGreen-500/20 dark:group-hover/metric:bg-eduGreen-500/30 group-hover/metric:text-eduGreen-700 dark:group-hover/metric:text-eduGreen-300"
-                                : "w-10 h-10 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-white"
+                                ? "w-8 h-8 sm:w-12 sm:h-12 bg-eduGreen-500/10 dark:bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 group-hover/metric:bg-eduGreen-500/20 dark:group-hover/metric:bg-eduGreen-500/30 group-hover/metric:text-eduGreen-700 dark:group-hover/metric:text-eduGreen-300"
+                                : "w-7 h-7 sm:w-10 sm:h-10 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-white"
                         )}>
                             {icon}
                         </div>
                         <span className={cn(
-                            "font-medium uppercase tracking-[0.2em]",
-                            featured ? "text-xs text-zinc-700 dark:text-zinc-300" : "text-[10px] text-zinc-600 dark:text-zinc-500 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-zinc-400 transition-colors"
+                            "font-medium uppercase tracking-[0.1em] sm:tracking-[0.2em] truncate",
+                            featured ? "text-[9px] sm:text-xs text-zinc-700 dark:text-zinc-300" : "text-[8px] sm:text-[10px] text-zinc-600 dark:text-zinc-500 group-hover/metric:text-zinc-900 dark:group-hover/metric:text-zinc-400 transition-colors"
                         )}>{label}</span>
                     </div>
 
                     {trend && (
-                        <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1">
-                            <Activity className="w-3 h-3" />
+                        <div className="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[7px] sm:text-[9px] font-bold uppercase tracking-widest flex items-center gap-1">
+                            <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             {trend}
                         </div>
                     )}
                 </div>
 
-                <div className="flex items-end justify-between gap-6">
+                <div className="flex items-end justify-between gap-2 sm:gap-6">
                     <div>
                         <div className={cn(
-                            "font-semibold tracking-tighter mb-2 mt-4",
-                            featured ? "text-6xl text-zinc-900 dark:text-white" : "text-3xl text-zinc-900 dark:text-white"
+                            "font-semibold tracking-tighter mb-1 sm:mb-2 mt-1 sm:mt-4",
+                            featured ? "text-2xl sm:text-6xl text-zinc-900 dark:text-white" : "text-base sm:text-3xl text-zinc-900 dark:text-white"
                         )}>
                             {value}
                         </div>
 
-                        <div className="text-[10px] font-medium text-zinc-500 dark:text-zinc-600 uppercase tracking-widest italic flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_8px_rgba(20,184,115,0.8)]" />
-                            Live Analytics
+                        <div className="text-[7px] sm:text-[10px] font-medium text-zinc-500 dark:text-zinc-600 uppercase tracking-widest italic flex items-center gap-1.5 sm:gap-2">
+                            <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_8px_rgba(20,184,115,0.8)]" />
+                            Live
                         </div>
                     </div>
 
                     {percentage !== undefined && (
-                        <div className="flex flex-col items-end justify-center mb-1">
-                            <span className={cn("font-medium text-zinc-600 dark:text-zinc-400 leading-none", featured ? "text-xl" : "text-sm")}>
+                        <div className="flex flex-col items-end justify-center mb-0.5 sm:mb-1">
+                            <span className={cn("font-medium text-zinc-600 dark:text-zinc-400 leading-none", featured ? "text-sm sm:text-xl" : "text-xs sm:text-sm")}>
                                 {Math.round(percentage)}%
                             </span>
-                            <span className={cn("font-medium text-zinc-400 dark:text-zinc-600 uppercase mt-1", featured ? "text-[8px]" : "text-[6px]")}>Index</span>
+                            <span className={cn("font-medium text-zinc-400 dark:text-zinc-600 uppercase mt-0.5 sm:mt-1", featured ? "text-[7px] sm:text-[8px]" : "text-[5px] sm:text-[6px]")}>Index</span>
                         </div>
                     )}
                 </div>
@@ -418,7 +418,7 @@ function AttendanceWaveform({ data }: { data: any[] }) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    if (!data.length) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Smart Link...</div>;
+    if (!data.length) return <div className="h-40 sm:h-64 flex items-center justify-center text-[8px] sm:text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Awaiting Smart Link...</div>;
 
     const points = data.map((d, i) => {
         const x = (i / (data.length - 1)) * 100;
@@ -429,7 +429,7 @@ function AttendanceWaveform({ data }: { data: any[] }) {
     const areaPoints = `0,100 ${points} 100,100`;
 
     return (
-        <div className="relative h-64 w-full group">
+        <div className="relative h-40 sm:h-64 w-full group">
             <svg viewBox="0 0 100 100" className="w-full h-full preserve-3d" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
@@ -474,9 +474,9 @@ function AttendanceWaveform({ data }: { data: any[] }) {
             </svg>
 
             {/* X-Axis Labels */}
-            <div className="flex justify-between mt-6">
+            <div className="flex justify-between mt-3 sm:mt-6">
                 {data.map((d, i) => (
-                    <span key={i} className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">
+                    <span key={i} className="text-[7px] sm:text-[8px] font-medium text-zinc-700 uppercase tracking-widest">
                         {mounted ? new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }) : "---"}
                     </span>
                 ))}
