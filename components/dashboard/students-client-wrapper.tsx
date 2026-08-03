@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Plus, Search, BookOpen, GraduationCap, Users, MessageSquare, Shield, Filter, Calendar, ChevronRight, Trash2, FileText, CreditCard, Printer } from "lucide-react";
+import { Plus, Search, BookOpen, GraduationCap, Users, MessageSquare, Shield, Filter, Calendar, ChevronRight, Trash2, FileText, CreditCard, Printer, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReactToPrint } from "react-to-print";
@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { PenTool } from "lucide-react";
 import dynamic from 'next/dynamic';
+import { toast } from "sonner";
 
 const StudentRegistryPrint = dynamic(() => import('@/components/dashboard/student-registry-print').then(m => m.StudentRegistryPrint), { ssr: false });
 const ConfirmationModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.ConfirmationModal), { ssr: false });
@@ -54,6 +55,19 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
 
     // Grading Modal
     const [gradingStudent, setGradingStudent] = useState<any>(null);
+    const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
+
+    const handleCopyCode = (e: React.MouseEvent, student: any) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!student.studentCode) return;
+        navigator.clipboard.writeText(student.studentCode);
+        setCopiedCodeId(student.id);
+        toast.success(`Access code ${student.studentCode} copied to clipboard!`, {
+            description: `Share this code with ${student.firstName}'s guardian for direct portal onboarding.`
+        });
+        setTimeout(() => setCopiedCodeId(null), 2500);
+    };
 
     const printRef = useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({
@@ -444,7 +458,20 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                             <CardTitle className="text-sm sm:text-base md:text-lg font-medium text-zinc-900 dark:text-white leading-none group-hover/card:text-eduGreen-400 transition-colors">
                                                 {student.firstName} {student.lastName}
                                             </CardTitle>
-                                            <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">{student.studentCode}</p>
+                                            <div className="mt-1 sm:mt-1.5 flex items-center gap-1.5">
+                                                <button
+                                                    onClick={(e) => handleCopyCode(e, student)}
+                                                    title="Click to copy Parent Access Code"
+                                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[8px] sm:text-[9px] font-mono text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500 hover:border-eduGreen-500/40 transition-all cursor-pointer group/code"
+                                                >
+                                                    <span>{student.studentCode}</span>
+                                                    {copiedCodeId === student.id ? (
+                                                        <Check className="w-2.5 h-2.5 text-eduGreen-500" />
+                                                    ) : (
+                                                        <Copy className="w-2.5 h-2.5 opacity-50 group-hover/code:opacity-100" />
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${student.enrollmentStatus === 'ACTIVE' ? 'bg-eduGreen-500' : 'bg-zinc-200 dark:bg-zinc-800'}`} />

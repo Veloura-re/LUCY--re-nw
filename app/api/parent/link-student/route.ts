@@ -1,70 +1,130 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, secureJson, rateLimit, sanitizeInput } from '@/lib/security';
+import { logActivity, logError } from '@/lib/audit';
+import { z } from 'zod';
+
+const LinkStudentSchema = z.object({
+    studentCode: z.string().min(1).max(32).transform(val => sanitizeInput(val).toUpperCase()),
+    confirm: z.boolean().optional()
+});
 
 export async function POST(request: Request) {
+    const limit = rateLimit(request, "parent/link-student", 10);
+    if (limit) return limit;
+
+    const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+    const userAgent = request.headers.get('user-agent') || undefined;
+
     try {
         const dbParent = await requireRole(['PARENT']);
-        const { studentCode, confirm } = await request.json();
+        const rawBody = await request.json().catch(() => ({}));
+        const parseResult = LinkStudentSchema.safeParse(rawBody);
+
+        if (!parseResult.success) {
+            return secureJson({ error: "Invalid student code format", details: parseResult.error.flatten().fieldErrors }, 400);
+        }
+
+        const { studentCode, confirm } = parseResult.data;
 
         const student = await prisma.student.findUnique({
-            where: { studentCode: studentCode.trim().toUpperCase() },
+            where: { studentCode },
             include: {
-                grade: true,
-                school: true
+                grade: { select: { level: true, name: true } },
+                school: { select: { name: true, id: true } }
             }
         });
 
         if (!student) {
-            return NextResponse.json({ error: 'Invalid Student Code' }, { status: 404 });
+            await logError({
+                type: 'auth_failure',
+                message: `Parent ${dbParent.id} searched for non-existent student code: ${studentCode}`,
+                path: '/api/parent/link-student',
+                statusCode: 404,
+                ip,
+                userAgent
+            });
+
+            return secureJson({ 
+                error: 'Invalid Student Code', 
+                recovery: {
+                    message: "The student code entered could not be found. Please check with your school's administration.",
+                    format: "Expected format: ST-XXXXXX-YYYY"
+                }
+            }, 404);
         }
 
-        // 1. Verification Mode: Just return student details (masked if needed)
+        // 1. Verification Mode: Return masked student details for confirmation
         if (!confirm) {
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'LINK_PARENT', resourceType: 'parent_link', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({
+            return secureJson({
                 success: true,
                 student: {
                     id: student.id,
                     firstName: student.firstName,
                     lastName: student.lastName,
-                    schoolName: student.school.name, // Show school name for trust
-                    gradeLevel: student.grade?.level     // Show grade for confirmation
+                    schoolName: student.school.name,
+                    gradeLevel: student.grade?.level || 0,
+                    gradeName: student.grade?.name
                 }
             });
         }
 
-        // 2. Linking Mode: Create the relationship
-        const link = await prisma.parentStudentLink.create({
-            data: {
-                parentId: dbParent.id,
-                studentId: student.id,
-                pairingMethod: 'CODE',
-                verifiedAt: new Date()
+        // 2. Linking Mode: Atomic creation of relationship and school association
+        const result = await prisma.$transaction(async (tx) => {
+            const existingLink = await tx.parentStudentLink.findUnique({
+                where: {
+                    parentId_studentId: {
+                        parentId: dbParent.id,
+                        studentId: student.id
+                    }
+                }
+            });
+
+            if (existingLink) {
+                return { link: existingLink, alreadyLinked: true };
             }
+
+            const link = await tx.parentStudentLink.create({
+                data: {
+                    parentId: dbParent.id,
+                    studentId: student.id,
+                    pairingMethod: 'CODE',
+                    verifiedAt: new Date()
+                }
+            });
+
+            // Ensure parent is linked to the student's school if not already
+            if (!dbParent.schoolId) {
+                await tx.user.update({
+                    where: { id: dbParent.id },
+                    data: { schoolId: student.schoolId }
+                });
+            }
+
+            return { link, alreadyLinked: false };
         });
 
-        // 3. Ensure parent is linked to the school if not already
-        if (!dbParent.schoolId) {
-            await prisma.user.update({
-                where: { id: dbParent.id },
-                data: { schoolId: student.schoolId }
-            });
-        }
+        // 3. Security Audit Log
+        await logActivity({
+            userId: dbParent.id,
+            schoolId: student.schoolId,
+            action: 'LINK_PARENT_STUDENT',
+            resourceType: 'PARENT_STUDENT_LINK',
+            resourceId: result.link.id,
+            ip,
+            userAgent,
+            after: { parentId: dbParent.id, studentId: student.id }
+        });
 
-        return NextResponse.json({ success: true, link });
+        return secureJson({ 
+            success: true, 
+            link: result.link,
+            message: result.alreadyLinked ? "Student was already linked to your account." : "Student successfully linked."
+        });
 
     } catch (e: any) {
-        if (e.code === 'P2002') return NextResponse.json({ error: 'You are already linked to this student.' }, { status: 400 });
+        if (e.code === 'P2002') {
+            return secureJson({ error: 'You are already linked to this student.' }, 400);
+        }
         return handleApiError(e);
     }
 }

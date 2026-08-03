@@ -1,148 +1,255 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
-import { rateLimit } from '@/lib/security';
+import { prisma } from '@/lib/prisma';
+import { rateLimit, secureJson, sanitizeInput } from '@/lib/security';
+import { logActivity, logError } from '@/lib/audit';
+import { z } from 'zod';
+
+const RegisterParentSchema = z.object({
+    userId: z.string().uuid().optional(),
+    email: z.string().email().transform(val => sanitizeInput(val).toLowerCase()),
+    name: z.string().min(1).max(100).optional().transform(val => val ? sanitizeInput(val) : 'Parent'),
+    studentCode: z.string().max(32).optional().transform(val => val ? sanitizeInput(val).toUpperCase() : undefined)
+});
 
 export async function POST(request: Request) {
     const limit = rateLimit(request, "auth/register-parent", 10);
     if (limit) return limit;
 
-    try {
-        const { userId, email, name, studentCode } = await request.json() as any;
+    const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+    const userAgent = request.headers.get('user-agent') || undefined;
 
-        if (!email) {
-            return NextResponse.json({ error: "Email is required." }, { status: 400 });
+    try {
+        const rawBody = await request.json();
+        const parseResult = RegisterParentSchema.safeParse(rawBody);
+
+        if (!parseResult.success) {
+            return secureJson({ 
+                error: "Invalid registration payload", 
+                details: parseResult.error.flatten().fieldErrors 
+            }, 400);
         }
+
+        const { userId, email, name, studentCode } = parseResult.data;
 
         const supabaseAdmin = createSupabaseAdmin(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 1. Verify User Identity
-        // Check session first, otherwise verify user existence in Supabase Auth
+        // 1. Strict Identity & IDOR Verification
         const supabase = await createClient();
         const { data: { user: sessionUser } } = await supabase.auth.getUser();
 
         let verifiedUserId = sessionUser?.id;
 
+        if (sessionUser && userId && sessionUser.id !== userId) {
+            await logError({
+                type: 'auth_failure',
+                message: `IDOR attempt blocked: Session user ${sessionUser.id} attempted to register payload for ${userId}`,
+                path: '/api/auth/register-parent',
+                statusCode: 403,
+                ip,
+                userAgent,
+                metadata: { sessionUserId: sessionUser.id, payloadUserId: userId, email }
+            });
+            return secureJson({ error: "Access denied: User identity mismatch." }, 403);
+        }
+
         if (!verifiedUserId && userId) {
             const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.getUserById(userId);
-            if (authError || !authUser?.user || authUser.user.email?.toLowerCase() !== email.toLowerCase().trim()) {
-                return NextResponse.json({ error: "Invalid user credentials or authentication session." }, { status: 401 });
+            if (authError || !authUser?.user || authUser.user.email?.toLowerCase().trim() !== email) {
+                await logError({
+                    type: 'auth_failure',
+                    message: `Unverified credentials for userId: ${userId}, email: ${email}`,
+                    path: '/api/auth/register-parent',
+                    statusCode: 401,
+                    ip,
+                    userAgent
+                });
+                return secureJson({ error: "Invalid user credentials or expired authentication session." }, 401);
             }
             verifiedUserId = authUser.user.id;
         }
 
         if (!verifiedUserId) {
-            return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+            return secureJson({ error: "Authentication session required to complete registration." }, 401);
         }
 
-        // 2. Protect existing privileged accounts from being overwritten to PARENT
-        const { data: existingDbUser } = await supabaseAdmin
-            .from('User')
-            .select('id, role')
-            .eq('id', verifiedUserId)
-            .maybeSingle();
+        // 2. Prevent role hijacking / privilege overwriting
+        const existingDbUser = await prisma.user.findUnique({
+            where: { id: verifiedUserId },
+            select: { id: true, role: true, schoolId: true }
+        });
 
         if (existingDbUser && existingDbUser.role && !['PARENT', 'STUDENT'].includes(existingDbUser.role)) {
-            return NextResponse.json({ error: "An administrative account already exists with this ID." }, { status: 403 });
+            await logError({
+                type: 'auth_failure',
+                message: `Privileged account ${verifiedUserId} (${existingDbUser.role}) blocked from registration downgrade to PARENT`,
+                path: '/api/auth/register-parent',
+                statusCode: 403,
+                ip,
+                userAgent
+            });
+            return secureJson({ error: "An administrative account is already associated with this identity." }, 403);
         }
 
-        let studentInfo = null;
-        let link = null;
-        
-        // 3. Validate student code if provided
+        // 3. Validate Student Code if provided with Smart Onboarding Recovery
+        let studentInfo: { id: string; schoolId: string; firstName: string; lastName: string } | null = null;
+
         if (studentCode) {
-            const sanitizedCode = studentCode.trim().toUpperCase();
-            const { data: student } = await supabaseAdmin
-                .from('Student')
-                .select('*')
-                .eq('studentCode', sanitizedCode)
-                .maybeSingle();
+            const student = await prisma.student.findUnique({
+                where: { studentCode },
+                select: { id: true, schoolId: true, firstName: true, lastName: true, school: { select: { name: true } } }
+            });
 
             if (!student) {
-                return NextResponse.json({ error: `Student Code "${sanitizedCode}" is invalid or could not be found.` }, { status: 404 });
+                await logError({
+                    type: 'auth_failure',
+                    message: `Invalid student code attempted: ${studentCode}`,
+                    path: '/api/auth/register-parent',
+                    statusCode: 404,
+                    ip,
+                    userAgent,
+                    metadata: { studentCode, userId: verifiedUserId }
+                });
+
+                return secureJson({
+                    error: `Student Code "${studentCode}" is invalid or could not be found.`,
+                    recovery: {
+                        help: "Please double check the code printed on the official registration dossier or contact your school's administration.",
+                        format: "Expected format: ST-XXXXXX-YYYY"
+                    }
+                }, 404);
             }
             studentInfo = student;
         }
 
-        // 4. Upsert User
-        const { data: user, error: userError } = await supabaseAdmin.from('User').upsert({
-            id: verifiedUserId,
-            email: email.toLowerCase().trim(),
-            name: name || 'Parent',
-            role: 'PARENT',
-            verified: true,
-            schoolId: studentInfo ? studentInfo.schoolId : (existingDbUser ? undefined : null),
-            updatedAt: new Date().toISOString()
-        }).select().single();
-
-        if (userError) throw userError;
-
-        // 5. Link Student (idempotent check)
-        if (studentInfo) {
-            const { data: existingLink } = await supabaseAdmin
-                .from('ParentStudentLink')
-                .select('id')
-                .eq('parentId', user.id)
-                .eq('studentId', studentInfo.id)
-                .maybeSingle();
-
-            if (!existingLink) {
-                const { data: newLink, error: linkError } = await supabaseAdmin.from('ParentStudentLink').insert({
-                    parentId: user.id,
-                    studentId: studentInfo.id,
-                    pairingMethod: 'CODE'
-                }).select().single();
-                
-                if (!linkError) {
-                    link = newLink;
+        // 4. Atomic Execution via Prisma Transaction
+        const transactionResult = await prisma.$transaction(async (tx) => {
+            // Upsert Parent User
+            const user = await tx.user.upsert({
+                where: { id: verifiedUserId },
+                create: {
+                    id: verifiedUserId,
+                    email,
+                    name: name || 'Parent',
+                    role: 'PARENT',
+                    verified: true,
+                    schoolId: studentInfo ? studentInfo.schoolId : (existingDbUser ? existingDbUser.schoolId : null)
+                },
+                update: {
+                    email,
+                    name: name || undefined,
+                    role: 'PARENT',
+                    verified: true,
+                    schoolId: studentInfo ? studentInfo.schoolId : undefined
                 }
-            } else {
-                link = existingLink;
+            });
+
+            let linkRecord = null;
+
+            // Link Student Idempotently
+            if (studentInfo) {
+                const existingLink = await tx.parentStudentLink.findUnique({
+                    where: {
+                        parentId_studentId: {
+                            parentId: user.id,
+                            studentId: studentInfo.id
+                        }
+                    }
+                });
+
+                if (!existingLink) {
+                    linkRecord = await tx.parentStudentLink.create({
+                        data: {
+                            parentId: user.id,
+                            studentId: studentInfo.id,
+                            pairingMethod: 'CODE',
+                            verifiedAt: new Date()
+                        }
+                    });
+                } else {
+                    linkRecord = existingLink;
+                }
+
+                // Ensure Global School Chat Membership
+                try {
+                    let globalChat = await tx.chatRoom.findFirst({
+                        where: {
+                            schoolId: studentInfo.schoolId,
+                            name: "Global School",
+                            type: "GROUP"
+                        }
+                    });
+
+                    if (!globalChat) {
+                        globalChat = await tx.chatRoom.create({
+                            data: {
+                                schoolId: studentInfo.schoolId,
+                                name: "Global School",
+                                type: "GROUP"
+                            }
+                        });
+                    }
+
+                    if (globalChat) {
+                        await tx.chatRoomMember.upsert({
+                            where: {
+                                chatRoomId_userId: {
+                                    chatRoomId: globalChat.id,
+                                    userId: user.id
+                                }
+                            },
+                            create: {
+                                chatRoomId: globalChat.id,
+                                userId: user.id
+                            },
+                            update: {}
+                        });
+                    }
+                } catch (chatErr) {
+                    console.warn('[register-parent] Non-blocking chat join issue:', chatErr);
+                }
             }
 
-            // Add to Global School Chat
-            try {
-                let { data: globalSchoolChat } = await supabaseAdmin
-                    .from('ChatRoom')
-                    .select('id')
-                    .eq('schoolId', studentInfo.schoolId)
-                    .eq('name', 'Global School')
-                    .eq('type', 'GROUP')
-                    .maybeSingle();
+            return { user, link: linkRecord };
+        });
 
-                if (!globalSchoolChat) {
-                    const { data: newChat } = await supabaseAdmin.from('ChatRoom').insert({
-                        schoolId: studentInfo.schoolId,
-                        name: "Global School",
-                        type: "GROUP",
-                    }).select('id').single();
-                    globalSchoolChat = newChat;
-                }
-
-                if (globalSchoolChat) {
-                    await supabaseAdmin.from('ChatRoomMember').upsert({
-                        chatRoomId: globalSchoolChat.id,
-                        userId: user.id
-                    }, { onConflict: 'chatRoomId,userId' });
-                }
-            } catch { /* non-blocking */ }
-        }
-
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || undefined) : undefined;
-            if (user?.id) {
-                await logActivity({ userId: user.id, action: 'REGISTER', resourceType: 'registration', ip: _ip || undefined });
+        // 5. Enterprise Security Audit Logging
+        await logActivity({
+            userId: transactionResult.user.id,
+            schoolId: studentInfo?.schoolId || transactionResult.user.schoolId || undefined,
+            action: 'REGISTER_PARENT',
+            resourceType: 'USER',
+            resourceId: transactionResult.user.id,
+            ip,
+            userAgent,
+            after: {
+                userId: transactionResult.user.id,
+                email: transactionResult.user.email,
+                linkedStudentId: studentInfo?.id || null
             }
-        } catch { /* non-blocking */ }
+        });
 
-        return NextResponse.json({ user, link });
+        return secureJson({ 
+            success: true, 
+            user: transactionResult.user, 
+            link: transactionResult.link 
+        }, 200);
+
     } catch (e: any) {
-        console.error("Parent Registration Error:", e);
-        return NextResponse.json({ error: e.message || "Registration failed" }, { status: 500 });
+        console.error("[register-parent] Registration Error:", e);
+        await logError({
+            type: 'api_error',
+            message: e?.message || "Internal server error during parent registration",
+            stack: e?.stack,
+            path: '/api/auth/register-parent',
+            statusCode: 500,
+            ip,
+            userAgent
+        });
+        return secureJson({ error: "Registration processing failed. Please try again or contact support." }, 500);
     }
 }
