@@ -93,9 +93,9 @@ export default function ParentAuthorizationsPage() {
 
                 <Button
                     onClick={() => setShowModal(true)}
-                    className="bg-white text-black hover:bg-zinc-200 h-16 px-10 rounded-[2rem] font-bold text-[10px] uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(255,255,255,0.1)] transition-all active:scale-95 group overflow-hidden relative"
+                    className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 h-16 px-10 rounded-[2rem] font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg transition-all active:scale-95 group overflow-hidden relative border border-slate-800 dark:border-transparent"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white dark:via-black/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-black/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
                     <Plus className="mr-3 h-5 w-5" /> New Authorization
                 </Button>
             </div>
@@ -218,7 +218,7 @@ export default function ParentAuthorizationsPage() {
                             <Button
                                 onClick={() => setShowModal(true)}
                                 variant="ghost"
-                                className="mt-12 text-eduGreen-500 hover:text-eduGreen-400 hover:bg-eduGreen-500/5 font-black uppercase tracking-[0.4em] text-[10px] h-14 px-10 rounded-2xl border border-eduGreen-500/20"
+                                className="mt-12 text-eduGreen-600 dark:text-eduGreen-400 hover:text-eduGreen-700 dark:hover:text-eduGreen-300 bg-eduGreen-500/10 hover:bg-eduGreen-500/20 font-black uppercase tracking-[0.4em] text-[10px] h-14 px-10 rounded-2xl border border-eduGreen-500/30"
                             >
                                 Initiate Primary Request
                             </Button>

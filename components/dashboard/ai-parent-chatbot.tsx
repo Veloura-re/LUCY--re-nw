@@ -50,12 +50,12 @@ export function AIParentChatbot() {
         <div className="fixed bottom-6 right-6 z-50">
             {isOpen ? (
                 <Card className="w-[350px] md:w-[400px] h-[500px] flex flex-col shadow-2xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                    <div className="p-4 bg-emerald-600 flex items-center justify-between text-zinc-900 dark:text-white shadow-md z-10">
+                    <div className="p-4 bg-emerald-600 flex items-center justify-between text-white shadow-md z-10">
                         <div className="flex items-center gap-2 font-black italic text-lg">
                             <Sparkles className="w-5 h-5 text-emerald-200" />
                             LUCY AI
                         </div>
-                        <Button variant="ghost" size="icon" className="hover:bg-emerald-700 text-zinc-900 dark:text-white rounded-full h-8 w-8" onClick={() => setIsOpen(false)}>
+                        <Button variant="ghost" size="icon" className="hover:bg-emerald-700 text-white hover:text-white rounded-full h-8 w-8" onClick={() => setIsOpen(false)}>
                             <X className="w-4 h-4" />
                         </Button>
                     </div>
@@ -98,7 +98,7 @@ export function AIParentChatbot() {
             ) : (
                 <Button
                     onClick={() => setIsOpen(true)}
-                    className="h-16 w-16 rounded-full bg-eduGreen-600 hover:bg-eduGreen-500 shadow-xl shadow-eduGreen-900/30 text-zinc-900 dark:text-white animate-bounce 
+                    className="h-16 w-16 rounded-full bg-eduGreen-600 hover:bg-eduGreen-500 shadow-xl shadow-eduGreen-900/30 text-white animate-bounce 
                     shadow-[0_0_30px_rgba(59,214,141,0.5)] border-2 border-eduGreen-400 group"
                 >
                     <MessageCircle className="w-7 h-7 group-hover:scale-110 transition-transform" />
