@@ -10,15 +10,20 @@ import { format } from "date-fns";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { PersonnelPrint } from "@/components/dashboard/personnel-print";
+import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
 
 export default function StaffingPage() {
+    const cachedStaffingMeta = typeof window !== 'undefined' ? getClientCache<any>('staffing_base_meta') : null;
+
     const [activeTab, setActiveTab] = useState<'SUBJECTS' | 'HOMEROOM'>('SUBJECTS');
-    const [classes, setClasses] = useState<any[]>([]);
-    const [subjects, setSubjects] = useState<any[]>([]);
-    const [teachers, setTeachers] = useState<any[]>([]);
-    const [selectedClassId, setSelectedClassId] = useState<string>("");
+    const [classes, setClasses] = useState<any[]>(cachedStaffingMeta?.classes || []);
+    const [subjects, setSubjects] = useState<any[]>(cachedStaffingMeta?.subjects || []);
+    const [teachers, setTeachers] = useState<any[]>(cachedStaffingMeta?.teachers || []);
+    const [selectedClassId, setSelectedClassId] = useState<string>(cachedStaffingMeta?.classes?.[0]?.id || "");
     const [assignments, setAssignments] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!cachedStaffingMeta);
+    const [isRevalidating, setIsRevalidating] = useState(false);
     const [saving, setSaving] = useState<string | null>(null);
     const [periodsState, setPeriodsState] = useState<Record<string, number>>({});
 
@@ -34,23 +39,28 @@ export default function StaffingPage() {
 
     useEffect(() => {
         if (selectedClassId) {
+            const cachedClassAssignments = getClientCache<any>(`staffing_assignments_${selectedClassId}`);
+            if (cachedClassAssignments) {
+                setAssignments(cachedClassAssignments);
+            }
             fetchAssignments(selectedClassId);
         }
     }, [selectedClassId]);
 
     const fetchInitialData = async () => {
+        if (!cachedStaffingMeta) setLoading(true);
+        else setIsRevalidating(true);
+
         try {
-            const [cRes, sRes, tRes] = await Promise.all([
-                fetch('/api/school/classes'),
-                fetch('/api/school/subjects'),
-                fetch('/api/school/teachers')
+            const [cRes, sRes, tRes] = await Promise.allSettled([
+                fetchWithResilience('/api/school/classes', {}, 8000),
+                fetchWithResilience('/api/school/subjects', {}, 8000),
+                fetchWithResilience('/api/school/teachers', {}, 8000)
             ]);
 
-            const [cData, sData, tData] = (await Promise.all([
-                cRes.json(),
-                sRes.json(),
-                tRes.json()
-            ])) as any[];
+            const cData = cRes.status === 'fulfilled' && cRes.value.ok ? (await cRes.value.json()) as any : { grades: [] };
+            const sData = sRes.status === 'fulfilled' && sRes.value.ok ? (await sRes.value.json()) as any : { subjects: [] };
+            const tData = tRes.status === 'fulfilled' && tRes.value.ok ? (await tRes.value.json()) as any : { teachers: [] };
 
             const flattened = (cData.grades || []).flatMap((g: any) =>
                 g.classes.map((c: any) => ({ ...c, gradeName: g.name }))
@@ -60,21 +70,31 @@ export default function StaffingPage() {
             setSubjects(sData.subjects || []);
             setTeachers(tData.teachers || []);
 
-            if (flattened.length > 0) {
+            if (flattened.length > 0 && !selectedClassId) {
                 setSelectedClassId(flattened[0].id);
             }
+
+            setClientCache('staffing_base_meta', {
+                classes: flattened,
+                subjects: sData.subjects || [],
+                teachers: tData.teachers || []
+            }, 15 * 60 * 1000);
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
+            setIsRevalidating(false);
         }
     };
 
     const fetchAssignments = async (classId: string) => {
         try {
-            const res = await fetch(`/api/school/staffing?classId=${classId}`);
-            const data = (await res.json()) as any;
-            setAssignments(data.assignments || []);
+            const res = await fetchWithResilience(`/api/school/staffing?classId=${classId}`, {}, 8000);
+            if (res.ok) {
+                const data = (await res.json()) as any;
+                setAssignments(data.assignments || []);
+                setClientCache(`staffing_assignments_${classId}`, data.assignments || [], 10 * 60 * 1000);
+            }
         } catch (e) {
             console.error(e);
         }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,56 +9,81 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { cn } from "@/lib/utils";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import SpringingLoader from "@/components/dashboard/springing-loader";
+import { useCachedQuery } from "@/hooks/use-cached-query";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
+
+interface EventsResponse {
+    events: any[];
+    userRole?: string;
+    pagination?: {
+        totalPages: number;
+        totalCount?: number;
+    };
+}
 
 export default function EventsPage() {
-    const [events, setEvents] = useState<any[]>([]);
-    const [userRole, setUserRole] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: "", description: "", date: "" });
-    const [loading, setLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
-
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
     const limit = 50;
 
-    useEffect(() => {
-        fetchEvents();
-    }, [page]);
-
-    const fetchEvents = async () => {
-        try {
+    const {
+        data,
+        loading,
+        isRevalidating,
+        isOffline,
+        isFromCache,
+        error,
+        refetch,
+        mutate
+    } = useCachedQuery<EventsResponse>({
+        key: `school_events_page_${page}`,
+        fetcher: async (signal) => {
             const params = new URLSearchParams({
                 page: page.toString(),
                 limit: limit.toString()
             });
-            const res = await fetch(`/api/school/events?${params.toString()}`);
-            const data = await res.json() as any;
-            if (data.events) setEvents(data.events);
-            if (data.userRole) setUserRole(data.userRole);
-            if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    };
+            const res = await fetch(`/api/school/events?${params.toString()}`, { signal });
+            if (!res.ok) throw new Error("Failed to fetch events");
+            const resJson = (await res.json()) as any;
+            return {
+                events: resJson.events || [],
+                userRole: resJson.userRole,
+                pagination: resJson.pagination || { totalPages: 1 }
+            };
+        },
+        initialData: { events: [], pagination: { totalPages: 1 } }
+    });
+
+    const events = data?.events || [];
+    const userRole = data?.userRole;
+    const totalPages = data?.pagination?.totalPages || 1;
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         setCreateLoading(true);
         try {
-            await fetch('/api/school/events', {
+            const res = await fetch('/api/school/events', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newEvent)
             });
+            const createdData = res.ok ? ((await res.json()) as any) : null;
             setIsCreating(false);
             setNewEvent({ title: "", description: "", date: "" });
-            fetchEvents();
+
+            if (createdData?.event) {
+                mutate(prev => ({
+                    ...(prev || { events: [], pagination: { totalPages: 1 } }),
+                    events: [createdData.event, ...(prev?.events || [])]
+                }), true);
+            } else {
+                refetch(true);
+            }
         } finally {
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 800));
             setCreateLoading(false);
         }
     };
@@ -71,7 +96,10 @@ export default function EventsPage() {
         if (!deleteId) return;
         try {
             await fetch(`/api/school/events?id=${deleteId}`, { method: 'DELETE' });
-            fetchEvents();
+            mutate(prev => ({
+                ...(prev || { events: [], pagination: { totalPages: 1 } }),
+                events: (prev?.events || []).filter(ev => ev.id !== deleteId)
+            }), true);
         } finally {
             setDeleteId(null);
         }
@@ -92,20 +120,30 @@ export default function EventsPage() {
                     </p>
                 </div>
 
-                {userRole === 'PRINCIPAL' && (
-                    <Button
-                        onClick={() => setIsCreating(true)}
-                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95"
-                    >
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Event
-                    </Button>
-                )}
+                <div className="flex items-center gap-4">
+                    <CachedSyncBadge
+                        isRevalidating={isRevalidating}
+                        isOffline={isOffline}
+                        isFromCache={isFromCache}
+                        error={error}
+                        onSync={() => refetch(true)}
+                    />
+
+                    {userRole === 'PRINCIPAL' && (
+                        <Button
+                            onClick={() => setIsCreating(true)}
+                            className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95"
+                        >
+                            <Plus className="mr-2 h-4 w-4" />
+                            New Event
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {events.map((event) => (
-                    <Card key={event.id} className="group relative bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900 rounded-[2.5rem]  hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl h-full flex flex-col">
+                    <Card key={event.id} className="group relative bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 backdrop-blur-2xl border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] hover:border-eduGreen-900/40 transition-all border-t-zinc-800/20 shadow-2xl h-full flex flex-col">
                         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-eduGreen-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                         <CardHeader className="p-8 pb-4">
                             <div className="flex items-start justify-between gap-4 mb-4">
@@ -246,4 +284,3 @@ export default function EventsPage() {
         </div>
     );
 }
-

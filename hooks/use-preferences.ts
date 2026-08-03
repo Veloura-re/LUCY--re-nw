@@ -12,8 +12,8 @@ export function usePreferences() {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 const res = await fetch('/api/user/settings');
-                const data = await res.json();
-                if (data.user?.preferences) {
+                const data = (await res.json()) as any;
+                if (data?.user?.preferences) {
                     setPreferences(data.user.preferences);
                     applyPreferences(data.user.preferences);
                 }
