@@ -1,40 +1,98 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireRole } from '@/lib/security';
+import { handleApiError, requireAuth, requireRole } from '@/lib/security';
 
 export async function GET() {
     try {
-        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
+        const authUser = await requireAuth();
 
-        // Handle case where user is a global SuperAdmin without a fixed schoolId
-        if (!user.schoolId) {
-            if (user.role === 'SUPERADMIN') {
-                const firstSchool = await prisma.school.findFirst({
+        // 1. Fetch user record with related school connections
+        const dbUser = await prisma.user.findUnique({
+            where: { id: authUser.id },
+            include: {
+                school: {
                     include: {
                         _count: {
                             select: { students: true, users: true, grades: true }
                         }
                     }
-                });
-                return NextResponse.json({ school: firstSchool, isSuperadmin: true });
-            }
-            return NextResponse.json({ school: null, error: "No school associated with this account." });
-        }
-
-        const school = await prisma.school.findUnique({
-            where: { id: user.schoolId },
-            include: {
-                _count: {
-                    select: { students: true, users: true, grades: true }
+                },
+                parentLinks: {
+                    include: {
+                        student: {
+                            include: {
+                                school: {
+                                    include: {
+                                        _count: {
+                                            select: { students: true, users: true, grades: true }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                student: {
+                    include: {
+                        school: {
+                            include: {
+                                _count: {
+                                    select: { students: true, users: true, grades: true }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         });
 
-        if (!school) {
-            return NextResponse.json({ school: null, error: "School record not found." }, { status: 404 });
+        if (!dbUser) {
+            return NextResponse.json({ school: null, error: "User profile not found." }, { status: 404 });
         }
 
-        return NextResponse.json({ school });
+        // 2. Resolve school via direct link or related relations
+        let resolvedSchool = dbUser.school;
+
+        if (!resolvedSchool && dbUser.parentLinks?.length > 0) {
+            resolvedSchool = dbUser.parentLinks[0]?.student?.school || null;
+        }
+
+        if (!resolvedSchool && dbUser.student?.school) {
+            resolvedSchool = dbUser.student.school;
+        }
+
+        // 3. Fallback for SUPERADMIN or single-institution deployments
+        if (!resolvedSchool && (dbUser.role === 'SUPERADMIN' || !dbUser.schoolId)) {
+            resolvedSchool = await prisma.school.findFirst({
+                include: {
+                    _count: {
+                        select: { students: true, users: true, grades: true }
+                    }
+                },
+                orderBy: { createdAt: 'asc' }
+            });
+
+            // Auto-heal the user record if a single school exists
+            if (resolvedSchool && !dbUser.schoolId) {
+                try {
+                    await prisma.user.update({
+                        where: { id: dbUser.id },
+                        data: { schoolId: resolvedSchool.id }
+                    });
+                } catch {
+                    /* non-blocking */
+                }
+            }
+        }
+
+        if (!resolvedSchool) {
+            return NextResponse.json({ school: null, error: "No school associated with this account." });
+        }
+
+        return NextResponse.json({
+            school: resolvedSchool,
+            isSuperadmin: dbUser.role === 'SUPERADMIN'
+        });
     } catch (e) {
         return handleApiError(e);
     }

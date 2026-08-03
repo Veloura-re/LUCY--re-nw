@@ -6,12 +6,11 @@ export async function GET() {
     try {
         const dbUser = await requireAuth();
 
-        let user;
+        let user: any = null;
         if (!prisma) {
             const { createClient } = require('@supabase/supabase-js');
             const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin.from('User').select('*').eq('id', dbUser.id).single();
-            // Simplify data for edge
+            const { data } = await supabaseAdmin.from('User').select('*, school:School(*)').eq('id', dbUser.id).single();
             user = {
                 id: data?.id,
                 email: data?.email,
@@ -20,7 +19,7 @@ export async function GET() {
                 schoolId: data?.schoolId,
                 bio: data?.bio,
                 preferences: data?.preferences,
-                school: null,
+                school: data?.school || null,
                 parentLinks: [],
                 teacherAssignments: []
             };
@@ -49,6 +48,24 @@ export async function GET() {
                             stripeSubscriptionId: true,
                         }
                     },
+                    student: {
+                        select: {
+                            school: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    schoolCode: true,
+                                    logoUrl: true,
+                                    status: true,
+                                    subscriptionStatus: true,
+                                    trialEndsAt: true,
+                                    createdAt: true,
+                                    stripeCustomerId: true,
+                                    stripeSubscriptionId: true,
+                                }
+                            }
+                        }
+                    },
                     // Include linked students for Parents
                     parentLinks: {
                         include: {
@@ -59,7 +76,21 @@ export async function GET() {
                                     lastName: true,
                                     studentCode: true,
                                     grade: { select: { name: true } },
-                                    class: { select: { name: true } }
+                                    class: { select: { name: true } },
+                                    school: {
+                                        select: {
+                                            id: true,
+                                            name: true,
+                                            schoolCode: true,
+                                            logoUrl: true,
+                                            status: true,
+                                            subscriptionStatus: true,
+                                            trialEndsAt: true,
+                                            createdAt: true,
+                                            stripeCustomerId: true,
+                                            stripeSubscriptionId: true,
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -73,6 +104,33 @@ export async function GET() {
                     }
                 }
             });
+
+            if (user && !user.school) {
+                if (user.parentLinks?.length > 0 && user.parentLinks[0]?.student?.school) {
+                    user.school = user.parentLinks[0].student.school;
+                } else if (user.student?.school) {
+                    user.school = user.student.school;
+                } else if (user.role === 'SUPERADMIN' || !user.schoolId) {
+                    const defaultSchool = await prisma.school.findFirst({
+                        select: {
+                            id: true,
+                            name: true,
+                            schoolCode: true,
+                            logoUrl: true,
+                            status: true,
+                            subscriptionStatus: true,
+                            trialEndsAt: true,
+                            createdAt: true,
+                            stripeCustomerId: true,
+                            stripeSubscriptionId: true,
+                        },
+                        orderBy: { createdAt: 'asc' }
+                    });
+                    if (defaultSchool) {
+                        user.school = defaultSchool;
+                    }
+                }
+            }
         }
 
         return NextResponse.json({ user });
@@ -84,7 +142,7 @@ export async function GET() {
 export async function PATCH(request: Request) {
     try {
         const dbUser = await requireAuth();
-        const { name, bio, preferences } = await request.json();
+        const { name, bio, preferences } = ((await request.json()) || {}) as any;
 
         let user;
         if (!prisma) {
