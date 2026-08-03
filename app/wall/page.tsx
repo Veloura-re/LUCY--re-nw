@@ -68,7 +68,7 @@ export default function Wall() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -164,7 +164,7 @@ export default function Wall() {
 
                             <div className="flex items-center gap-4">
                                 <MagneticButton>
-                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black text-[10px] uppercase tracking-widest font-bold hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2 rounded-md dark:rounded-none">
+                                    <button type="submit" disabled={status === "loading" || status === "success"} className="h-12 px-8 bg-slate-900 text-white dark:bg-white dark:text-black text-[10px] uppercase tracking-widest font-bold hover:bg-slate-800 dark:hover:bg-zinc-200 transition-all disabled:opacity-50 flex items-center gap-2 rounded-md dark:rounded-none">
                                         {status === "loading" ? (
                                             <><motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} className="w-3 h-3 border border-white dark:border-black border-t-transparent rounded-full" />routing...</>
                                         ) : status === "success" ? (

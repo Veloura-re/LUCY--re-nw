@@ -884,7 +884,7 @@ export default function PresentationDeck() {
                 handleNext();
               }
             }}
-            className="h-10 px-6 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
+            className="h-10 px-6 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
           >
             {currentSlide === slides.length - 1 ? (
               <>deploy_system <ArrowUpRight className="w-3.5 h-3.5" /></>
