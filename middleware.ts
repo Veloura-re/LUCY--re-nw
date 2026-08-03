@@ -11,8 +11,11 @@ export const runtime = 'experimental-edge'
 const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
 
 function checkRateLimit(ip: string, path: string): boolean {
+    // Localhost & internal development bypass
+    if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') return true;
+
     const isAuth = path.startsWith('/api/auth/');
-    const limit = isAuth ? 10 : 100; // 10 requests/min for auth, 100/min for general API
+    const limit = isAuth ? 120 : 300; // 120 req/min for auth actions, 300 req/min for standard API
     const windowMs = 60 * 1000;
     
     const key = `${ip}:${isAuth ? 'auth' : 'api'}`;
@@ -81,9 +84,15 @@ export async function middleware(request: NextRequest) {
     // RATE LIMITING LAYER (Global Anti-DoS & Anti-Brute Force)
     // ─────────────────────────────────────────────────
     if (isApiPage) {
-        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || '127.0.0.1';
-        if (!checkRateLimit(ip, path)) {
-            return new NextResponse(JSON.stringify({ error: "Too Many Requests" }), {
+        const rawForwarded = request.headers.get('x-forwarded-for');
+        const ip = request.headers.get('cf-connecting-ip')
+            || request.headers.get('x-real-ip')
+            || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
+            || '127.0.0.1';
+        const cleanIp = ip.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
+
+        if (!checkRateLimit(cleanIp, path)) {
+            return new NextResponse(JSON.stringify({ error: "Too Many Requests. Please wait before retrying." }), {
                 status: 429,
                 headers: { 'Content-Type': 'application/json', 'Retry-After': '60' }
             })
