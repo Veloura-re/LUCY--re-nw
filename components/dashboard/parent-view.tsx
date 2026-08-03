@@ -15,12 +15,37 @@ import { DashboardGreeting } from "./dashboard-greeting";
 import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 import { createBrowserClient } from "@supabase/ssr";
 
+import { toast } from "sonner";
+
 interface VerifiedStudent {
     id: string;
     firstName: string;
     lastName: string;
     schoolName: string;
     gradeLevel: number;
+    gradeName?: string;
+}
+
+interface RecoveryDetails {
+    message?: string;
+    help?: string;
+    format?: string;
+}
+
+function formatStudentCodeInput(val: string): string {
+    const raw = val.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (raw.length <= 2) return raw;
+    if (raw.startsWith('ST')) {
+        const rest = raw.slice(2);
+        if (rest.length <= 8) {
+            return `ST-${rest}`;
+        }
+        return `ST-${rest.slice(0, 8)}-${rest.slice(8, 12)}`;
+    }
+    if (raw.length <= 8) {
+        return `ST-${raw}`;
+    }
+    return `ST-${raw.slice(0, 8)}-${raw.slice(8, 12)}`;
 }
 
 interface Student {
@@ -60,6 +85,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
     const [code, setCode] = useState("");
     const [status, setStatus] = useState<'IDLE' | 'VERIFYING' | 'CONFIRMING' | 'LINKING' | 'SUCCESS'>('IDLE');
     const [error, setError] = useState<string | null>(null);
+    const [recovery, setRecovery] = useState<RecoveryDetails | null>(null);
     const [foundStudent, setFoundStudent] = useState<VerifiedStudent | null>(null);
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
     const [staffSearchQuery, setStaffSearchQuery] = useState("");
@@ -78,12 +104,21 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
         }
     }, [students, activeChildId]);
 
+    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatStudentCodeInput(e.target.value);
+        setCode(formatted);
+        if (error) {
+            setError(null);
+            setRecovery(null);
+        }
+    };
 
     const verifyCode = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!code) return;
         setStatus('VERIFYING');
         setError(null);
+        setRecovery(null);
         try {
             const res = await fetch('/api/parent/link-student', {
                 method: 'POST',
@@ -91,7 +126,10 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 body: JSON.stringify({ studentCode: code, confirm: false })
             });
             const data = (await res.json()) as any;
-            if (!res.ok) throw new Error(data.error || "Failed to verify code");
+            if (!res.ok) {
+                if (data.recovery) setRecovery(data.recovery);
+                throw new Error(data.error || "Failed to verify student code");
+            }
             setFoundStudent(data.student);
             setStatus('CONFIRMING');
         } catch (err: any) {
@@ -109,10 +147,11 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentCode: code, confirm: true })
             });
+            const data = (await res.json()) as any;
             if (!res.ok) {
-                const data = (await res.json()) as any;
-                throw new Error(data.error || "Failed to link");
+                throw new Error(data.error || "Failed to link student");
             }
+            toast.success(data.message || "Student successfully linked to your account!");
             setStatus('SUCCESS');
             setTimeout(() => {
                 router.refresh();
@@ -120,9 +159,10 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 setCode("");
                 setStatus('IDLE');
                 setFoundStudent(null);
-            }, 2000);
+            }, 1800);
         } catch (err: any) {
             setError(err.message);
+            toast.error(err.message);
             setStatus('CONFIRMING');
         }
     };
@@ -336,12 +376,12 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                             ) : (
                                 <form onSubmit={verifyCode} className="space-y-4 sm:space-y-8">
                                     <div className="space-y-2 sm:space-y-5">
-                                        <label className="text-[8px] sm:text-[10px] font-medium text-zinc-700 uppercase tracking-[0.2em] sm:tracking-[0.3em] ml-2 sm:ml-3">Digital Token</label>
+                                        <label className="text-[8px] sm:text-[10px] font-medium text-zinc-700 uppercase tracking-[0.2em] sm:tracking-[0.3em] ml-2 sm:ml-3">Digital Student Code</label>
                                         <Input
-                                            placeholder="ST-XXXXXX-2026"
+                                            placeholder="ST-A1B2C3D4-2026"
                                             value={code}
-                                            onChange={e => setCode(e.target.value.toUpperCase())}
-                                            className="text-center text-base sm:text-4xl font-medium tracking-[0.15em] sm:tracking-[0.3em] uppercase h-11 sm:h-28 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all border-2 rounded-xl sm:rounded-[2.5rem]"
+                                            onChange={handleCodeChange}
+                                            className="text-center text-base sm:text-3xl font-mono font-medium tracking-[0.15em] sm:tracking-[0.25em] uppercase h-11 sm:h-20 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all border-2 rounded-xl sm:rounded-[2rem]"
                                             maxLength={20}
                                             required
                                             disabled={status === 'VERIFYING'}
@@ -349,18 +389,25 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                     </div>
 
                                     {error && (
-                                        <div className="p-3 sm:p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 rounded-xl text-[9px] sm:text-[10px] font-medium text-red-600 dark:text-red-500 flex items-center justify-center gap-2 sm:gap-3">
-                                            <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> {error}
+                                        <div className="p-3.5 sm:p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-left space-y-1">
+                                            <p className="text-[10px] sm:text-xs font-medium text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                                                <AlertCircle className="w-4 h-4 shrink-0" /> {error}
+                                            </p>
+                                            {recovery?.message && (
+                                                <p className="text-[10px] text-zinc-600 dark:text-zinc-400 pl-6">
+                                                    {recovery.message}
+                                                </p>
+                                            )}
                                         </div>
                                     )}
 
                                     <div className="pt-2 sm:pt-4">
                                         <Button
                                             type="submit"
-                                            className="w-full h-10 sm:h-20 bg-white text-black hover:bg-zinc-200 rounded-lg sm:rounded-[2rem] font-medium text-[10px] sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-all"
-                                            disabled={status === 'VERIFYING'}
+                                            className="w-full h-10 sm:h-16 bg-white text-black hover:bg-zinc-200 rounded-lg sm:rounded-2xl font-medium text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all"
+                                            disabled={status === 'VERIFYING' || !code}
                                         >
-                                            {status === 'VERIFYING' ? <Loader2 className="w-4 h-4 sm:w-6 sm:h-6 animate-spin" /> : "Initiate Verification"}
+                                            {status === 'VERIFYING' ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : "Initiate Verification"}
                                         </Button>
                                     </div>
                                 </form>

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     if (process.env.NODE_ENV === 'production') {
@@ -9,29 +7,23 @@ export async function GET() {
     }
 
     try {
-        let poolTest = "not attempted";
-        let queryError = null;
-
-        try {
-            const pool = new Pool({ 
-                connectionString: process.env.DATABASE_URL,
-                ssl: { rejectUnauthorized: false }
-            });
-            const adapter = new PrismaPg(pool);
-            const prisma = new PrismaClient({ adapter });
-            
-            await prisma.$queryRaw`SELECT 1`;
-            poolTest = "success";
-        } catch (e: any) {
-            queryError = e.message;
-        }
+        const startTime = Date.now();
+        // fix: Use centralized singleton prisma instance to prevent connection socket leaks
+        const result = await prisma.$queryRaw<Array<{ db_test: number }>>`SELECT 1 as db_test`;
+        const latencyMs = Date.now() - startTime;
 
         return NextResponse.json({ 
-            poolTest,
-            queryError,
+            status: "connected",
+            queryResult: result,
+            latencyMs,
             time: new Date().toISOString()
         });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        console.error("[Test-DB Error]:", e);
+        return NextResponse.json({ 
+            status: "error", 
+            error: e.message, 
+            code: e.code 
+        }, { status: 500 });
     }
 }
