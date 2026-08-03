@@ -79,10 +79,17 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
         e.preventDefault();
         setLoading(true);
         try {
+            const payload = {
+                ...newStudent,
+                photoUrl: newStudent.photoUrl.trim() || undefined,
+                email: newStudent.email.trim() || undefined,
+                gender: newStudent.gender || undefined,
+            };
+
             const res = await fetch('/api/school/students', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newStudent)
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
@@ -92,9 +99,9 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                     firstName: "", lastName: "", grade: "", classId: "", email: "",
                     gender: "", dob: "", age: "", address: "", guardianName: "", guardianPhone: "", secondaryPhone: "", photoUrl: ""
                 });
-                // Invalidate cache implicitly through revalidation or refresh
-                // For immediate UI update, we add it to the list
-                setStudents(prev => [data.student, ...prev]);
+                if (data.student) {
+                    setStudents(prev => [data.student, ...prev]);
+                }
                 
                 if (data.token) {
                     if (data.emailSent === false) {
@@ -107,9 +114,10 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 }
             } else {
                 const errData = await res.json().catch(() => ({})) as any;
+                const errorMsg = errData?.error || (errData?.details ? Object.values(errData.details).flat().join(", ") : "Failed to create student record. Please check the fields and try again.");
                 setAlertConfig({ 
                     title: "Enrollment Failed", 
-                    message: errData?.error || "Failed to create student record. Please check the fields and try again.", 
+                    message: errorMsg, 
                     isOpen: true, 
                     variant: "error" 
                 });
@@ -381,16 +389,36 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
 
                             <div className="space-y-4">
                                 <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Academic Placement</label>
-                                <Select onValueChange={(v: string) => setNewStudent({ ...newStudent, classId: v })}>
+                                <Select onValueChange={(val: string) => {
+                                    for (const g of (grades || [])) {
+                                        if (g.id === val) {
+                                            setNewStudent(prev => ({ ...prev, grade: g.id, classId: "" }));
+                                            return;
+                                        }
+                                        const foundCls = g.classes?.find((c: any) => c.id === val);
+                                        if (foundCls) {
+                                            setNewStudent(prev => ({ ...prev, grade: g.id, classId: foundCls.id }));
+                                            return;
+                                        }
+                                    }
+                                    setNewStudent(prev => ({ ...prev, grade: val, classId: val }));
+                                }}>
                                     <SelectTrigger className="h-14 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-700 dark:text-zinc-300">
-                                        <SelectValue placeholder="Select Class/Grade" />
+                                        <SelectValue placeholder="Select Class or Grade" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
                                         {grades?.map(grade => (
                                             <div key={grade.id}>
-                                                <div className="px-3 py-2 text-xs font-bold text-zinc-600 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50">{grade.name}</div>
+                                                <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-100/60 dark:bg-zinc-900/60">
+                                                    {grade.name}
+                                                </div>
+                                                <SelectItem value={grade.id} className="font-semibold text-xs text-eduGreen-600 dark:text-eduGreen-400">
+                                                    {grade.name} (General / Unassigned Class)
+                                                </SelectItem>
                                                 {grade.classes?.map((cls: any) => (
-                                                    <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                                                    <SelectItem key={cls.id} value={cls.id} className="pl-6 text-xs">
+                                                        ↳ {cls.name}
+                                                    </SelectItem>
                                                 ))}
                                             </div>
                                         ))}

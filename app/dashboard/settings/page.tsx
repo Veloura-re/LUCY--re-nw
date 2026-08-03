@@ -93,7 +93,24 @@ export default function SettingsPage() {
                     }
                 });
 
-                // Fetch school settings for everyone (principals can edit, others read)
+                if (data.user.school) {
+                    setSchoolData(data.user.school);
+                    setSchoolForm({
+                        name: data.user.school.name || "",
+                        schoolCode: data.user.school.schoolCode || "",
+                        logoUrl: data.user.school.logoUrl || "",
+                        address: data.user.school.address || "",
+                        locations: data.user.school.locations || [],
+                        communicationsConfig: data.user.school.communicationsConfig || {
+                            sendInvites: true,
+                            sendReports: true,
+                            sendInvoices: true,
+                            replyTo: ""
+                        }
+                    });
+                }
+
+                // Fetch full school settings for everyone (principals can edit, others read)
                 fetchSchoolSettings();
             }
         } catch (e) {
@@ -134,32 +151,44 @@ export default function SettingsPage() {
 
         setSaving(true);
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Math.random()}.${fileExt}`;
-            const filePath = `logos/${fileName}`;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('bucket', 'logos');
 
-            const { data, error } = await supabase.storage
-                .from('school-assets')
-                .upload(filePath, file);
+            const uploadRes = await fetch('/api/school/upload', {
+                method: 'POST',
+                body: formData
+            });
 
-            if (error) throw error;
+            if (!uploadRes.ok) {
+                const errData = await uploadRes.json() as any;
+                throw new Error(errData.error || 'Failed to upload logo');
+            }
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('school-assets')
-                .getPublicUrl(filePath);
+            const uploadData = await uploadRes.json() as any;
+            const publicUrl = uploadData.url;
 
             setSchoolForm(prev => ({ ...prev, logoUrl: publicUrl }));
+            setSchoolData((prev: any) => ({ ...prev, logoUrl: publicUrl }));
+            
             // Also trigger a save automatically for the logo
             await fetch('/api/school/settings', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...schoolForm, logoUrl: publicUrl })
             });
-        } catch (e) {
+
+            setAlertConfig({
+                title: "Logo Updated",
+                message: "School logo successfully updated and deployed across all dashboards.",
+                isOpen: true,
+                variant: "success"
+            });
+        } catch (e: any) {
             console.error(e);
             setAlertConfig({
                 title: "Upload Failed",
-                message: "Verify storage bucket permissions for brand asset deployment.",
+                message: e.message || "Verify image format and network connection.",
                 isOpen: true,
                 variant: "error"
             });

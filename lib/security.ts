@@ -81,6 +81,16 @@ export async function requireRole(allowedRoles: Role[]) {
         throw new Error(`Forbidden: Access denied for role ${dbUser.role}`);
     }
 
+    if (!dbUser.schoolId) {
+        try {
+            const { getCachedUser } = require('@/lib/users');
+            const enriched = await getCachedUser(user.id);
+            if (enriched?.schoolId) {
+                dbUser.schoolId = enriched.schoolId;
+            }
+        } catch {}
+    }
+
     if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
         dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
     }
@@ -111,6 +121,16 @@ export async function requireSchoolLinked() {
             where: { id: user.id },
             select: { id: true, role: true, schoolId: true }
         });
+    }
+
+    if (!dbUser?.schoolId) {
+        try {
+            const { getCachedUser } = require('@/lib/users');
+            const enriched = await getCachedUser(user.id);
+            if (enriched?.schoolId) {
+                dbUser = { ...dbUser, schoolId: enriched.schoolId };
+            }
+        } catch {}
     }
 
     if (!dbUser?.schoolId) {

@@ -12,16 +12,18 @@ import { z } from 'zod';
 const StudentCreateSchema = z.object({
     firstName: z.string().min(1, "First name is required").max(100).transform(sanitizeInput),
     lastName: z.string().min(1, "Last name is required").max(100).transform(sanitizeInput),
-    grade: z.string().min(1, "Grade is required").transform(sanitizeInput),
-    classId: z.string().optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    email: z.string().email().optional().nullable().transform(val => val ? sanitizeInput(val).toLowerCase() : null),
-    gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable(),
-    dob: z.string().optional().nullable(),
-    address: z.string().max(255).optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    guardianName: z.string().max(100).optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    guardianPhone: z.string().max(50).optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    secondaryPhone: z.string().max(50).optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    photoUrl: z.string().url().optional().nullable().or(z.literal(''))
+    grade: z.string().optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : ""),
+    gradeId: z.string().optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : ""),
+    classId: z.string().optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
+    email: z.string().email().optional().nullable().or(z.literal('')).transform(val => (val ? sanitizeInput(val).toLowerCase() : null)),
+    gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable().or(z.literal('')).transform(val => (val === '' ? null : val)),
+    dob: z.string().optional().nullable().or(z.literal('')).transform(val => (val === '' ? null : val)),
+    age: z.union([z.string(), z.number()]).optional().nullable(),
+    address: z.string().max(255).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
+    guardianName: z.string().max(100).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
+    guardianPhone: z.string().max(50).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
+    secondaryPhone: z.string().max(50).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
+    photoUrl: z.string().url().optional().nullable().or(z.literal('')).or(z.literal(null)).transform(val => (val === '' ? null : val))
 });
 
 const StudentUpdateSchema = z.object({
@@ -30,8 +32,8 @@ const StudentUpdateSchema = z.object({
     lastName: z.string().min(1).max(100).optional().transform(val => val ? sanitizeInput(val) : undefined),
     gradeId: z.string().optional().transform(val => val ? sanitizeInput(val) : undefined),
     classId: z.string().optional().nullable().transform(val => val ? sanitizeInput(val) : null),
-    email: z.string().email().optional().nullable().transform(val => val ? sanitizeInput(val).toLowerCase() : null),
-    gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable(),
+    email: z.string().email().optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val).toLowerCase() : null),
+    gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().nullable().or(z.literal('')).transform(val => (val === '' ? null : val)),
     dob: z.string().optional().nullable(),
     address: z.string().max(255).optional().nullable().transform(val => val ? sanitizeInput(val) : undefined),
     guardianName: z.string().max(100).optional().nullable().transform(val => val ? sanitizeInput(val) : undefined),
@@ -92,7 +94,18 @@ export async function POST(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const rawBody = await request.json();
-        const targetSchoolId = user.schoolId;
+        
+        let targetSchoolId = user.schoolId;
+        if (!targetSchoolId) {
+            try {
+                const { getCachedUser } = require('@/lib/users');
+                const enriched = await getCachedUser(user.id);
+                targetSchoolId = enriched?.schoolId || null;
+            } catch {}
+        }
+        if (!targetSchoolId) {
+            return secureJson({ error: "No active school associated with your account." }, 400);
+        }
 
         const parseResult = StudentCreateSchema.safeParse(rawBody);
         if (!parseResult.success) {
@@ -103,26 +116,57 @@ export async function POST(request: Request) {
         }
 
         const {
-            firstName, lastName, grade: gradeId, classId, email,
+            firstName, lastName, grade: gradeInput, gradeId: gradeIdInput, classId, email,
             gender, dob, address, guardianName, guardianPhone, secondaryPhone, photoUrl
         } = parseResult.data;
 
-        // 1. Cross-Tenant Validation: Grade belongs to target institution
-        const grade = await prisma.grade.findFirst({
-            where: { id: gradeId, schoolId: targetSchoolId! }
-        });
-        if (!grade) {
-            return secureJson({ error: "Selected grade does not exist in your institution." }, 400);
+        let resolvedGradeId = gradeIdInput || gradeInput || null;
+        let resolvedClassId = classId || null;
+
+        // 1. Cross-Tenant Validation & Resolution: Class belongs to target institution
+        if (resolvedClassId) {
+            const cls = await prisma.class.findFirst({
+                where: { id: resolvedClassId, schoolId: targetSchoolId }
+            });
+            if (cls) {
+                resolvedClassId = cls.id;
+                if (!resolvedGradeId) {
+                    resolvedGradeId = cls.gradeId;
+                }
+            } else {
+                resolvedClassId = null;
+            }
         }
 
-        // 2. Cross-Tenant Validation: Class belongs to target institution (if specified)
-        if (classId) {
-            const cls = await prisma.class.findFirst({
-                where: { id: classId, schoolId: targetSchoolId! }
+        // 2. Cross-Tenant Validation & Resolution: Grade
+        let matchedGrade = null;
+        if (resolvedGradeId) {
+            matchedGrade = await prisma.grade.findFirst({
+                where: {
+                    schoolId: targetSchoolId,
+                    OR: [
+                        { id: resolvedGradeId },
+                        { name: { equals: resolvedGradeId, mode: 'insensitive' } }
+                    ]
+                }
             });
-            if (!cls) {
-                return secureJson({ error: "Selected class does not exist in your institution." }, 400);
-            }
+        }
+
+        if (!matchedGrade) {
+            matchedGrade = await prisma.grade.findFirst({
+                where: { schoolId: targetSchoolId },
+                orderBy: { level: 'asc' }
+            });
+        }
+
+        if (!matchedGrade) {
+            // Auto-create initial default Grade for school so registration never blocks
+            matchedGrade = await prisma.grade.create({
+                data: {
+                    name: "Grade 1",
+                    schoolId: targetSchoolId
+                }
+            });
         }
 
         // 3. Email cross-tenant and collision checks
@@ -162,15 +206,15 @@ export async function POST(request: Request) {
             generatedStudentCode = `ST-${fallbackEntropy}-${currentYear}`;
         }
 
-        // 5. Atomic Transaction: Student Creation + Invite Token + Audit Log
+        // 5. Atomic Transaction: Student Creation + Invite Token
         const result = await prisma.$transaction(async (tx) => {
             const student = await tx.student.create({
                 data: {
                     firstName,
                     lastName,
-                    schoolId: targetSchoolId!,
-                    gradeId: gradeId,
-                    classId: classId || null,
+                    schoolId: targetSchoolId,
+                    gradeId: matchedGrade.id,
+                    classId: resolvedClassId,
                     email: email || null,
                     dob: dob ? new Date(dob) : null,
                     gender: gender || null,
@@ -180,6 +224,10 @@ export async function POST(request: Request) {
                     secondaryPhone: secondaryPhone || null,
                     photoUrl: photoUrl || null,
                     studentCode: generatedStudentCode
+                },
+                include: {
+                    grade: true,
+                    class: true
                 }
             });
 
@@ -190,7 +238,7 @@ export async function POST(request: Request) {
                         token,
                         email,
                         role: 'STUDENT',
-                        schoolId: targetSchoolId!,
+                        schoolId: targetSchoolId,
                         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                     }
                 });
@@ -203,7 +251,7 @@ export async function POST(request: Request) {
         // 6. Security & Operations Audit Logging
         await logActivity({
             userId: user.id,
-            schoolId: targetSchoolId!,
+            schoolId: targetSchoolId,
             action: 'CREATE_STUDENT',
             resourceType: 'STUDENT',
             resourceId: result.student.id,
@@ -217,7 +265,7 @@ export async function POST(request: Request) {
         });
 
         // Invalidate tags
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId!), 'max');
+        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId), 'max');
 
         if (email && result.token) {
             const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
