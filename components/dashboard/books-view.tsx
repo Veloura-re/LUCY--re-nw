@@ -239,26 +239,26 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     );
 
     return (
-        <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 pb-20">
+        <div className="max-w-6xl mx-auto space-y-3.5 sm:space-y-8 md:space-y-12 animate-in fade-in duration-300 relative z-10 pb-12 sm:pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-3 sm:pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
                         Learning <span className="text-eduGreen-500 not-italic">Center</span>
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Centralized Academic Resource Repository</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[8px] sm:text-xs mt-1 sm:mt-3">Centralized Academic Resource Repository</p>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex flex-col md:flex-row md:items-center gap-2.5 sm:gap-4">
                     {user.role === 'PARENT' && children.length > 0 && (
-                        <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Select Student:</span>
-                            <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                            <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Select Student:</span>
+                            <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
                                 <Button
                                     variant="ghost"
                                     onClick={() => setSelectedStudentId(null)}
                                     className={cn(
-                                        "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
+                                        "h-8 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl border transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shrink-0",
                                         !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                                     )}
                                 >
@@ -270,7 +270,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         variant="ghost"
                                         onClick={() => setSelectedStudentId(child.id)}
                                         className={cn(
-                                            "h-14 px-6 rounded-2xl border transition-all font-medium text-[10px] uppercase tracking-widest",
+                                            "h-8 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl border transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shrink-0",
                                             selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
                                         )}
                                     >
@@ -280,36 +280,36 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             </div>
                         </div>
                     )}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full md:w-auto">
                         <Button
                             onClick={() => handlePrint()}
                             variant="outline"
-                            className="h-14 px-6 rounded-2xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white hover:text-zinc-900 dark:hover:text-white transition-all font-medium text-[10px] uppercase tracking-widest hidden md:flex shadow-lg shadow-eduGreen-900/20"
+                            className="h-8 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white hover:text-zinc-900 dark:hover:text-white transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest hidden md:flex shadow-md shadow-eduGreen-900/20"
                         >
-                            <Printer className="mr-2 h-4 w-4 text-eduGreen-500" /> Export PDF Registry
+                            <Printer className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-eduGreen-500" /> Export PDF
                         </Button>
-                        <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                        <div className="relative flex-1 md:w-64">
+                            <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-zinc-600" />
                             <Input
                                 placeholder="Find Resources..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="h-14 w-64 pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-xs"
+                                className="h-8 sm:h-14 w-full pl-8 sm:pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-lg sm:rounded-2xl focus:border-eduGreen-500 transition-all font-medium text-[10px] sm:text-xs"
                             />
                         </div>
                         {isDirector ? (
                             <Button
                                 onClick={() => setIsUploading(true)}
-                                className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest shadow-2xl transition-all active:scale-95 shadow-eduGreen-900/20"
+                                className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-8 sm:h-14 px-3 sm:px-8 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shadow-md transition-all active:scale-95 shadow-eduGreen-900/20 shrink-0"
                             >
-                                <Plus className="mr-2 h-4 w-4" /> Deploy Material
+                                <Plus className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" /> Deploy
                             </Button>
                         ) : (
                             <Button
                                 onClick={() => setRequestModal(true)}
-                                className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-8 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
+                                className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-8 sm:h-14 px-3 sm:px-8 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest transition-all shrink-0"
                             >
-                                <Zap className="mr-2 h-4 w-4 text-eduGreen-500" /> Request Resource
+                                <Zap className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-eduGreen-500" /> Request
                             </Button>
                         )}
                     </div>
@@ -317,7 +317,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
             </div>
 
             {/* Sub-Hub Navigation */}
-            <div className="flex items-center gap-8 border-b border-zinc-200 dark:border-zinc-900/50 pb-6">
+            <div className="flex items-center gap-4 sm:gap-8 border-b border-zinc-200 dark:border-zinc-900/50 pb-3 sm:pb-6 overflow-x-auto scrollbar-hide">
                 {[
                     { id: 'library', label: 'Institutional Library', icon: Book },
                     { id: 'units', label: 'Unit Bundles', icon: Layers },
@@ -327,14 +327,14 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={cn(
-                            "flex items-center gap-3 transition-all relative group",
+                            "flex items-center gap-1.5 sm:gap-3 transition-all relative group shrink-0 pb-1 sm:pb-0",
                             activeTab === tab.id ? "text-zinc-900 dark:text-white" : "text-zinc-600 hover:text-zinc-400"
                         )}
                     >
-                        <tab.icon className={cn("w-4 h-4", activeTab === tab.id ? "text-eduGreen-500" : "")} />
-                        <span className="text-[10px] font-medium uppercase tracking-[0.2em]">{tab.label}</span>
+                        <tab.icon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", activeTab === tab.id ? "text-eduGreen-500" : "")} />
+                        <span className="text-[8px] sm:text-[10px] font-medium uppercase tracking-[0.1em] sm:tracking-[0.2em]">{tab.label}</span>
                         {activeTab === tab.id && (
-                            <motion.div layoutId="activeTab" className="absolute -bottom-6 left-0 w-full h-[2px] bg-eduGreen-500" />
+                            <motion.div layoutId="activeTab" className="absolute -bottom-3 sm:-bottom-6 left-0 w-full h-[2px] bg-eduGreen-500" />
                         )}
                     </button>
                 ))}
@@ -342,12 +342,12 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
 
             {/* Quick Filters - Only for Library */}
             {activeTab === 'library' && (
-                <div className="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 sm:pb-4 scrollbar-hide">
                     <Button
                         variant="ghost"
                         onClick={() => setGradeFilter("ALL")}
                         className={cn(
-                            "rounded-xl h-10 px-6 font-medium text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
+                            "rounded-lg sm:rounded-xl h-7 sm:h-10 px-3 sm:px-6 font-medium text-[8px] sm:text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
                             gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
                         )}
                     >
@@ -359,7 +359,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             variant="ghost"
                             onClick={() => setGradeFilter(grade.id)}
                             className={cn(
-                                "rounded-xl h-10 px-6 font-medium text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
+                                "rounded-lg sm:rounded-xl h-7 sm:h-10 px-3 sm:px-6 font-medium text-[8px] sm:text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
                                 gradeFilter === grade.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
                             )}
                         >
@@ -372,7 +372,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
             {/* Active Section Content */}
             {activeTab === 'library' && (
                 <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
                     <AnimatePresence>
                         {filteredBooks.map((book, i) => {
                             const isCompleted = progress.find(p => p.bookId === book.id)?.completed;
@@ -388,7 +388,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     transition={{ duration: 0.2, delay: i * 0.05 }}
                                 >
                                     <Card className={cn(
-                                        "group relative bg-white/60 dark:bg-zinc-950/60 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem] overflow-hidden hover:border-eduGreen-500/40 transition-all duration-300 border-t-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full flex flex-col",
+                                        "group relative bg-white/60 dark:bg-zinc-950/60 backdrop-blur-3xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-2xl md:rounded-[3rem] overflow-hidden hover:border-eduGreen-500/40 transition-all duration-300 border-t-white/10 shadow-lg sm:shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full flex flex-col",
                                         isLocked ? "opacity-60 grayscale scale-[0.98]" : "hover:scale-[1.02]",
                                         isExpired ? "border-red-200 dark:border-red-900/30" : ""
                                     )}>
@@ -420,67 +420,67 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             </div>
                                         </div>
 
-                                        <CardHeader className="p-8 pb-4 relative z-10">
-                                            <div className="flex justify-between items-start mb-6">
+                                        <CardHeader className="p-3.5 sm:p-6 md:p-8 pb-2 sm:pb-4 relative z-10">
+                                            <div className="flex justify-between items-start mb-3 sm:mb-6">
                                                 <div className={cn(
-                                                    "p-3 rounded-xl border transition-all",
+                                                    "p-2 sm:p-3 rounded-lg sm:rounded-xl border transition-all",
                                                     isCompleted ? "bg-eduGreen-500/10 border-eduGreen-500/20 text-eduGreen-500" : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-eduGreen-500"
                                                 )}>
-                                                    {isLocked ? <Zap className="w-6 h-6 text-zinc-700" /> : <BookOpen className="w-6 h-6" />}
+                                                    {isLocked ? <Zap className="w-4 h-4 sm:w-6 sm:h-6 text-zinc-700" /> : <BookOpen className="w-4 h-4 sm:w-6 sm:h-6" />}
                                                 </div>
-                                                <div className="px-2 py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-lg">
-                                                    <span className="text-[8px] font-medium text-eduGreen-500 uppercase tracking-widest italic">
+                                                <div className="px-2 py-0.5 sm:py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-md sm:rounded-lg">
+                                                    <span className="text-[7px] sm:text-[8px] font-medium text-eduGreen-500 uppercase tracking-widest italic">
                                                         {book.subject.name}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <CardTitle className="text-xl font-medium text-zinc-900 dark:text-white leading-tight tracking-tight group-hover:text-eduGreen-500 transition-colors">
+                                            <CardTitle className="text-base sm:text-xl font-medium text-zinc-900 dark:text-white leading-tight tracking-tight group-hover:text-eduGreen-500 transition-colors">
                                                 {book.title}
                                             </CardTitle>
                                             {isLocked ? (
-                                                <div className="flex items-center gap-2 mt-4 text-red-600 dark:text-red-500">
+                                                <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-4 text-red-600 dark:text-red-500">
                                                     <X className="w-3 h-3" />
-                                                    <span className="text-[8px] font-medium uppercase tracking-widest">Locked: Complete Prerequisite</span>
+                                                    <span className="text-[7px] sm:text-[8px] font-medium uppercase tracking-widest">Locked: Complete Prerequisite</span>
                                                 </div>
                                             ) : isExpired ? (
-                                                <div className="flex items-center gap-2 mt-4 text-zinc-600">
+                                                <div className="flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-4 text-zinc-600">
                                                     <X className="w-3 h-3" />
-                                                    <span className="text-[8px] font-medium uppercase tracking-widest">Seasonal Availability Expired</span>
+                                                    <span className="text-[7px] sm:text-[8px] font-medium uppercase tracking-widest">Seasonal Availability Expired</span>
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center gap-3 mt-4">
-                                                    <span className="text-[8px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-2 py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-300 dark:border-zinc-800">
+                                                <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-4">
+                                                    <span className="text-[7px] sm:text-[8px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-1.5 sm:px-2 py-0.5 sm:py-1 bg-zinc-100 dark:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800">
                                                         Grade {book.grade.level}
                                                     </span>
-                                                    <span className="text-[8px] font-medium text-eduGreen-900 uppercase tracking-tighter">
+                                                    <span className="text-[7px] sm:text-[8px] font-medium text-eduGreen-900 uppercase tracking-tighter">
                                                         Section: {book.class.name}
                                                     </span>
                                                 </div>
                                             )}
                                         </CardHeader>
 
-                                        <CardContent className="px-8 flex-1 relative z-10">
-                                            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium line-clamp-2 leading-relaxed">
+                                        <CardContent className="px-3.5 sm:px-6 md:px-8 flex-1 relative z-10">
+                                            <p className="text-[10px] sm:text-xs text-zinc-600 dark:text-zinc-400 font-medium line-clamp-2 leading-relaxed">
                                                 {parseBookMeta(book.description).text || "Comprehensive academic resource for institutional mastery."}
                                             </p>
 
                                             {book.teacherNote && (
-                                                <div className="mt-6 p-4 bg-eduGreen-500/5 border border-eduGreen-500/10 rounded-2xl relative overflow-hidden group/note">
-                                                    <div className="absolute top-0 right-0 p-2 opacity-20"><Zap className="w-3 h-3 text-eduGreen-500" /></div>
-                                                    <p className="text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest mb-1">Teacher&apos;s Note</p>
-                                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{book.teacherNote}</p>
+                                                <div className="mt-3 sm:mt-6 p-2.5 sm:p-4 bg-eduGreen-500/5 border border-eduGreen-500/10 rounded-xl sm:rounded-2xl relative overflow-hidden group/note">
+                                                    <div className="absolute top-0 right-0 p-1.5 sm:p-2 opacity-20"><Zap className="w-3 h-3 text-eduGreen-500" /></div>
+                                                    <p className="text-[7px] sm:text-[9px] font-medium text-eduGreen-500 uppercase tracking-widest mb-0.5 sm:mb-1">Teacher&apos;s Note</p>
+                                                    <p className="text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">{book.teacherNote}</p>
                                                 </div>
                                             )}
 
-                                            <div className="mt-6 flex flex-wrap gap-4">
+                                            <div className="mt-3 sm:mt-6 flex flex-wrap gap-2.5 sm:gap-4">
                                                 {book.author && (
-                                                    <div className="flex items-center gap-2 text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
+                                                    <div className="flex items-center gap-1.5 sm:gap-2 text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
                                                         <Layers className="w-3 h-3" />
                                                         <span>{book.author}</span>
                                                     </div>
                                                 )}
                                                 {book.edition && (
-                                                    <div className="flex items-center gap-2 text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
+                                                    <div className="flex items-center gap-1.5 sm:gap-2 text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest">
                                                         <Zap className="w-3 h-3" />
                                                         <span>{book.edition}</span>
                                                     </div>
@@ -488,14 +488,14 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             </div>
                                         </CardContent>
 
-                                        <CardFooter className="px-8 pb-8 pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
-                                            <div className="flex gap-2">
+                                        <CardFooter className="px-3.5 sm:px-6 md:px-8 pb-3.5 sm:pb-6 md:pb-8 pt-3 sm:pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
+                                            <div className="flex gap-1.5 sm:gap-2">
                                                 <Button
                                                     disabled={isLocked || isExpired}
                                                     onClick={() => window.open(book.fileUrl, '_blank')}
-                                                    className="h-12 px-6 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                                                    className="h-8 sm:h-12 px-3 sm:px-6 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-1.5 sm:gap-2 shadow-md disabled:opacity-50"
                                                 >
-                                                    <BookOpen className="w-4 h-4" /> Start Reading
+                                                    <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Start Reading
                                                 </Button>
                                                 {!isDirector && (
                                                     <Button
@@ -503,11 +503,11 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                         onClick={() => toggleProgress(book.id, isCompleted)}
                                                         isLoading={togglingProgress === book.id}
                                                         className={cn(
-                                                            "h-12 w-12 p-0 rounded-xl transition-all",
+                                                            "h-8 w-8 sm:h-12 sm:w-12 p-0 rounded-lg sm:rounded-xl transition-all",
                                                             isCompleted ? "bg-eduGreen-500 text-white" : "bg-white dark:bg-zinc-950 text-zinc-600 hover:text-white border border-zinc-200 dark:border-zinc-900"
                                                         )}
                                                     >
-                                                        <Zap className="w-4 h-4" />
+                                                        <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                     </Button>
                                                 )}
                                             </div>
@@ -517,9 +517,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => setDeleteId(book.id)}
-                                                    className="w-12 h-12 text-zinc-700 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all"
+                                                    className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-700 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-lg sm:rounded-2xl transition-all"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                                 </Button>
                                             )}
                                         </CardFooter>
@@ -540,29 +540,29 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                     />
 
                     {filteredBooks.length === 0 && (
-                        <div className="col-span-full py-32 text-center">
-                            <div className="w-24 h-24 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6 opacity-30">
-                                <Book className="w-12 h-12 text-zinc-600 dark:text-zinc-500" />
+                        <div className="col-span-full py-16 sm:py-32 text-center">
+                            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-3 sm:mb-6 opacity-30">
+                                <Book className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-600 dark:text-zinc-500" />
                             </div>
-                            <h3 className="text-zinc-600 font-medium uppercase tracking-[0.4em] text-xs">Library records not found</h3>
-                            <p className="text-zinc-800 dark:text-zinc-200 text-[10px] font-medium uppercase mt-2">No scholarly resources available for selected parameters</p>
+                            <h3 className="text-zinc-600 font-medium uppercase tracking-[0.2em] sm:tracking-[0.4em] text-[10px] sm:text-xs">Library records not found</h3>
+                            <p className="text-zinc-800 dark:text-zinc-200 text-[8px] sm:text-[10px] font-medium uppercase mt-1 sm:mt-2">No scholarly resources available for selected parameters</p>
                         </div>
                     )}
                 </div>
                 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-8">
-                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
+                    <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md mt-4 sm:mt-8">
+                        <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                             Page {page} of {totalPages}
                         </p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
+                                className="h-7 sm:h-9 text-[8px] sm:text-xs bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Previous
                             </Button>
@@ -571,7 +571,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                 size="sm"
                                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
+                                className="h-7 sm:h-9 text-[8px] sm:text-xs bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 Next
                             </Button>
@@ -583,20 +583,20 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
 
             {/* Units Section */}
             {activeTab === 'units' && (
-                <div className="space-y-8">
+                <div className="space-y-3.5 sm:space-y-8">
                     {isDirector && (
                         <div className="flex justify-end">
                             <Button
                                 onClick={() => setUnitModal(true)}
-                                className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-6 rounded-xl font-medium text-[10px] uppercase tracking-widest shadow-lg transition-all"
+                                className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-8 sm:h-12 px-3 sm:px-6 rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shadow-md transition-all"
                             >
-                                <Plus className="mr-2 h-4 w-4" /> Synthesize Unit Pack
+                                <Plus className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" /> Synthesize Unit Pack
                             </Button>
                         </div>
                     )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-8">
                         {units.map((unit) => (
-                            <Card key={unit.id} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[3rem] overflow-hidden p-8 flex flex-col gap-6 group hover:border-eduGreen-900/30 transition-all shadow-2xl relative">
+                            <Card key={unit.id} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-xl sm:rounded-2xl md:rounded-[3rem] overflow-hidden p-3.5 sm:p-6 md:p-8 flex flex-col gap-3 sm:gap-6 group hover:border-eduGreen-900/30 transition-all shadow-xl relative">
                                 {isDirector && (
                                     <Button
                                         variant="ghost"

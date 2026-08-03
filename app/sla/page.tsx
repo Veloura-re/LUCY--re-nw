@@ -38,21 +38,21 @@ export default function SLA() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-3xl mx-auto space-y-20">
-                    <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
-                            <Activity className="w-4 h-4" />
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-3xl mx-auto space-y-12 sm:space-y-20">
+                    <section className="space-y-6 sm:space-y-8">
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
+                            <Activity className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">uptime_policy // effective 2026-01-01</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em]">uptime_policy // effective 2026-01-01</span>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
+                            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold uppercase tracking-tighter leading-none">
                                 service level<br /><GlitchText className="text-slate-300 dark:text-zinc-800">agreement.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-slate-500 dark:text-zinc-500 text-base leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-sm sm:text-base leading-relaxed">
                                 operational guarantees, response system, and technical remedies defining platform reliability.
                             </p>
                         </Reveal>

@@ -196,14 +196,14 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
     };
 
     return (
-        <div className="relative min-h-screen space-y-12 pb-24">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 relative z-10">
+        <div className="relative min-h-screen space-y-3.5 sm:space-y-8 md:space-y-12 pb-12 sm:pb-24">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-8 relative z-10">
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                    <div className="flex items-center gap-3 mb-1">
-                        <div className="h-[1px] w-8 bg-zinc-200 dark:bg-zinc-800" />
-                        <span className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.4em]">Smart Link Protocol 0.2</span>
+                    <div className="flex items-center gap-2 sm:gap-3 mb-1">
+                        <div className="h-[1px] w-6 sm:w-8 bg-zinc-200 dark:bg-zinc-800" />
+                        <span className="text-[8px] sm:text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] sm:tracking-[0.4em]">Smart Link Protocol 0.2</span>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
+                    <h2 className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
                         AUTHORITY <span className="text-zinc-800 dark:text-zinc-200 not-italic">LOG</span>
                     </h2>
                 </motion.div>
@@ -212,26 +212,26 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
                     onClick={handleSave}
                     disabled={isLocked || loading || saving}
                     className={cn(
-                        "h-20 px-12 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl relative overflow-hidden group active:scale-95",
-                        isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black"
+                        "h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-12 rounded-lg sm:rounded-2xl md:rounded-[2rem] font-bold text-[8px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.3em] transition-all shadow-xl relative overflow-hidden group active:scale-95",
+                        isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black hover:bg-zinc-200"
                     )}
                 >
-                    <div className="flex items-center gap-4 relative z-10">
-                        {isLocked ? "SYNC COMPLETE" : saving ? "SEALING..." : <><Activity className="w-5 h-5" /> SEAL RECORDS</>}
+                    <div className="flex items-center gap-2 sm:gap-4 relative z-10">
+                        {isLocked ? "SYNC COMPLETE" : saving ? "SEALING..." : <><Activity className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> SEAL RECORDS</>}
                     </div>
                 </Button>
             </div>
 
-            <Card className="p-10 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3rem] relative shadow-2xl overflow-hidden group">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
+            <Card className="p-3.5 sm:p-6 md:p-10 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-xl sm:rounded-3xl md:rounded-[3rem] relative shadow-xl overflow-hidden group">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-10 relative z-10">
                     <ConfigField label="Cohort Identifier" icon={Brain}>
                         <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-9 sm:h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-lg sm:rounded-2xl text-zinc-900 dark:text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Select Class" />
                             </SelectTrigger>
-                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-xl sm:rounded-2xl">
                                 {classes.map((cls) => (
-                                    <SelectItem key={cls.classId} value={cls.classId} className="focus:bg-white focus:text-black py-4">
+                                    <SelectItem key={cls.classId} value={cls.classId} className="focus:bg-white focus:text-black py-2 sm:py-4 text-xs">
                                         {cls.className}
                                     </SelectItem>
                                 ))}
@@ -241,13 +241,13 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
 
                     <ConfigField label="Temporal Slot" icon={Clock}>
                         <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-9 sm:h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-lg sm:rounded-2xl text-zinc-900 dark:text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="Day Cycle" />
                             </SelectTrigger>
-                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
-                                <SelectItem value="full" className="focus:bg-white focus:text-black py-4">Full Cycle</SelectItem>
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-xl sm:rounded-2xl">
+                                <SelectItem value="full" className="focus:bg-white focus:text-black py-2 sm:py-4 text-xs">Full Cycle</SelectItem>
                                 {periods.map((p: Period) => (
-                                    <SelectItem key={p.id} value={p.id} className="focus:bg-white focus:text-black py-4">{p.name}</SelectItem>
+                                    <SelectItem key={p.id} value={p.id} className="focus:bg-white focus:text-black py-2 sm:py-4 text-xs">{p.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -255,13 +255,13 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
 
                     <ConfigField label="Smart Path" icon={Zap}>
                         <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                            <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-widest ring-0">
+                            <SelectTrigger className="h-9 sm:h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-lg sm:rounded-2xl text-zinc-900 dark:text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest ring-0">
                                 <SelectValue placeholder="All Streams" />
                             </SelectTrigger>
-                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-2xl">
-                                <SelectItem value="none" className="focus:bg-white focus:text-black py-4">Unified Stream</SelectItem>
+                            <SelectContent className="bg-zinc-50 dark:bg-[#0a0a0a] border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white rounded-xl sm:rounded-2xl">
+                                <SelectItem value="none" className="focus:bg-white focus:text-black py-2 sm:py-4 text-xs">Unified Stream</SelectItem>
                                 {availableSubjects.map((sub: Subject) => (
-                                    <SelectItem key={sub.id} value={sub.id} className="focus:bg-white focus:text-black py-4">{sub.name}</SelectItem>
+                                    <SelectItem key={sub.id} value={sub.id} className="focus:bg-white focus:text-black py-2 sm:py-4 text-xs">{sub.name}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -272,35 +272,35 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
                             type="date"
                             value={date}
                             onChange={e => setDate(e.target.value)}
-                            className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl text-zinc-900 dark:text-white font-bold text-xs uppercase tracking-[0.2em] px-6 appearance-none"
+                            className="h-9 sm:h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-lg sm:rounded-2xl text-zinc-900 dark:text-white font-bold text-[10px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] px-3 sm:px-6 appearance-none"
                         />
                     </ConfigField>
                 </div>
             </Card>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-6">
                 <MiniStat label="ACTIVE NODES" value={stats.total} color="blue" />
                 <MiniStat label="PRESENT" value={stats.present} color="emerald" percentage={(stats.present / (stats.total || 1)) * 100} />
                 <MiniStat label="ABSENT" value={stats.absent} color="rose" percentage={(stats.absent / (stats.total || 1)) * 100} />
                 <MiniStat label="LATENCY" value={stats.late} color="amber" percentage={(stats.late / (stats.total || 1)) * 100} />
             </div>
 
-            <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[3.5rem] overflow-hidden shadow-2xl relative">
-                <div className="p-10 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <Card className="bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-xl sm:rounded-3xl md:rounded-[3.5rem] overflow-hidden shadow-xl sm:shadow-2xl relative">
+                <div className="p-3.5 sm:p-6 md:p-10 border-b border-zinc-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-6">
                     <div>
-                        <span className="text-2xl font-black text-zinc-900 dark:text-white italic">{students.length} <span className="text-zinc-800 dark:text-zinc-200 not-italic text-lg">DATAPOINTS REGISTERED</span></span>
+                        <span className="text-sm sm:text-2xl font-bold text-zinc-900 dark:text-white italic">{students.length} <span className="text-zinc-700 dark:text-zinc-300 not-italic text-xs sm:text-lg">DATAPOINTS REGISTERED</span></span>
                     </div>
-                    <div className="flex items-center gap-4 bg-white/40 dark:bg-black/40 p-2 rounded-[2rem] border border-zinc-200 dark:border-white/5">
-                        <button onClick={() => !isLocked && setAll('PRESENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-emerald-500 hover:bg-emerald-500/10 transition-all">SYNCHRONIZE ALL</button>
-                        <button onClick={() => !isLocked && setAll('ABSENT')} disabled={isLocked} className="h-12 px-8 rounded-[1.5rem] text-[10px] font-black uppercase text-rose-500 hover:bg-rose-500/10 transition-all">VOID ALL</button>
+                    <div className="flex items-center gap-2 sm:gap-4 bg-white/40 dark:bg-black/40 p-1 sm:p-2 rounded-lg sm:rounded-[2rem] border border-zinc-200 dark:border-white/5 w-full sm:w-auto justify-center">
+                        <button onClick={() => !isLocked && setAll('PRESENT')} disabled={isLocked} className="h-8 sm:h-12 px-3 sm:px-8 rounded-md sm:rounded-[1.5rem] text-[8px] sm:text-[10px] font-bold uppercase text-emerald-500 hover:bg-emerald-500/10 transition-all flex-1 sm:flex-initial">SYNCHRONIZE ALL</button>
+                        <button onClick={() => !isLocked && setAll('ABSENT')} disabled={isLocked} className="h-8 sm:h-12 px-3 sm:px-8 rounded-md sm:rounded-[1.5rem] text-[8px] sm:text-[10px] font-bold uppercase text-rose-500 hover:bg-rose-500/10 transition-all flex-1 sm:flex-initial">VOID ALL</button>
                     </div>
                 </div>
 
-                <div className="divide-y divide-white/5 min-h-[400px]">
+                <div className="divide-y divide-zinc-200 dark:divide-white/5 min-h-[300px]">
                     {loading ? (
-                        <div className="p-32 flex justify-center flex-col items-center gap-6">
-                            <Activity className="w-12 h-12 text-zinc-900 dark:text-white animate-pulse" />
-                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Querying Institutional Records...</p>
+                        <div className="p-12 sm:p-32 flex justify-center flex-col items-center gap-3 sm:gap-6">
+                            <Activity className="w-8 h-8 sm:w-12 sm:h-12 text-zinc-900 dark:text-white animate-pulse" />
+                            <p className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Querying Institutional Records...</p>
                         </div>
                     ) : (
                         students.map((student, idx) => (
@@ -327,10 +327,10 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
 
 function ConfigField({ label, icon: Icon, children }: { label: string; icon: React.ElementType; children: React.ReactNode }) {
     return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-3 ml-1">
-                <Icon className="w-3 h-3 text-zinc-700" />
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">{label}</label>
+        <div className="space-y-1.5 sm:space-y-4">
+            <div className="flex items-center gap-1.5 sm:gap-3 ml-0.5 sm:ml-1">
+                <Icon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-zinc-700" />
+                <label className="text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.3em] text-zinc-600">{label}</label>
             </div>
             {children}
         </div>
@@ -339,13 +339,13 @@ function ConfigField({ label, icon: Icon, children }: { label: string; icon: Rea
 
 function MiniStat({ label, value, color, percentage }: { label: string; value: number | string; color: string; percentage?: number }) {
     return (
-        <Card className="p-6 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative">
-            <div className="space-y-1 relative z-10">
-                <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em] italic">{label}</span>
-                <div className="text-4xl font-black text-zinc-900 dark:text-white tracking-tighter italic">{value}</div>
+        <Card className="p-3 sm:p-6 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-xl sm:rounded-[2.5rem] flex flex-col justify-between group overflow-hidden relative shadow-sm">
+            <div className="space-y-0.5 sm:space-y-1 relative z-10">
+                <span className="text-[7px] sm:text-[9px] font-bold text-zinc-600 uppercase tracking-[0.15em] sm:tracking-[0.3em] italic">{label}</span>
+                <div className="text-xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tighter italic">{value}</div>
             </div>
             {percentage !== undefined && (
-                <div className="mt-4 relative z-10 h-1 w-full bg-zinc-200 dark:bg-white/5 rounded-full overflow-hidden">
+                <div className="mt-2 sm:mt-4 relative z-10 h-1 w-full bg-zinc-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${percentage}%` }} className={cn("h-full", color === 'emerald' ? 'bg-emerald-500' : color === 'rose' ? 'bg-rose-500' : 'bg-amber-500')} />
                 </div>
             )}
@@ -358,29 +358,29 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
     const auth = authorizations?.find((a: Auth) => a.studentId === student.id);
 
     return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8 hover:bg-white/[0.02] transition-all group/row relative">
-            <div className="flex items-center gap-8 relative z-10">
-                <div className="w-20 h-20 rounded-[2rem] bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center font-black text-zinc-800 dark:text-zinc-200 text-2xl relative overflow-hidden italic shadow-inner">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="p-3.5 sm:p-6 md:p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-8 hover:bg-white/[0.02] transition-all group/row relative">
+            <div className="flex items-center gap-3 sm:gap-8 relative z-10">
+                <div className="w-10 h-10 sm:w-16 md:w-20 sm:h-16 md:h-20 rounded-lg sm:rounded-2xl md:rounded-[2rem] bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-200 dark:border-white/5 flex items-center justify-center font-bold text-zinc-800 dark:text-zinc-200 text-xs sm:text-xl md:text-2xl relative overflow-hidden italic shadow-inner shrink-0">
                     {student.firstName[0]}{student.lastName[0]}
                 </div>
-                <div className="space-y-1">
-                    <div className="font-black text-3xl text-zinc-900 dark:text-white dark:text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight italic uppercase">{student.firstName} <span className="text-zinc-700">{student.lastName}</span></div>
-                    <div className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em] font-mono">{student.studentCode}</div>
+                <div className="space-y-0.5 sm:space-y-1">
+                    <div className="font-bold text-sm sm:text-2xl md:text-3xl text-zinc-900 dark:text-white dark:text-zinc-100 group-hover/row:text-zinc-900 dark:text-white transition-colors tracking-tight italic uppercase">{student.firstName} <span className="text-zinc-700">{student.lastName}</span></div>
+                    <div className="text-[8px] sm:text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] sm:tracking-[0.3em] font-mono">{student.studentCode}</div>
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 sm:gap-8 relative z-10">
                 {(currentStatus !== 'PRESENT') && (
                     <Input
                         placeholder={auth ? `VERIFIED: ${auth.reason}` : "SPECIFY CAUSE..."}
                         value={reasons[student.id] || ""}
                         disabled={isLocked}
                         onChange={(e) => setReasons({ ...reasons, [student.id]: e.target.value })}
-                        className="h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-2xl px-6 text-xs italic font-black text-zinc-900 dark:text-white w-full md:w-80"
+                        className="h-8 sm:h-14 bg-zinc-200 dark:bg-white/5 border-zinc-300 dark:border-white/10 rounded-lg sm:rounded-2xl px-3 sm:px-6 text-[10px] sm:text-xs italic font-bold text-zinc-900 dark:text-white w-full md:w-80"
                     />
                 )}
 
-                <div className="flex gap-2 bg-white/40 dark:bg-black/40 p-2 rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-2xl backdrop-blur-xl">
+                <div className="flex gap-1 sm:gap-2 bg-white/40 dark:bg-black/40 p-1 sm:p-2 rounded-lg sm:rounded-[2.25rem] border border-zinc-200 dark:border-white/5 overflow-x-auto shrink-0 shadow-lg backdrop-blur-xl justify-between sm:justify-start">
                     <StatusBtn status="PRESENT" icon={CheckCircle} active={currentStatus === 'PRESENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'PRESENT' })} activeColor="text-emerald-500 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.1)]" disabled={isLocked} />
                     <StatusBtn status="LATE" icon={Clock} active={currentStatus === 'LATE'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'LATE' })} activeColor="text-amber-600 dark:text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.1)]" disabled={isLocked} />
                     <StatusBtn status="ABSENT" icon={XCircle} active={currentStatus === 'ABSENT'} onSelect={() => !isLocked && setAttendance({ ...attendance, [student.id]: 'ABSENT' })} activeColor="text-rose-500 bg-rose-500/10 border-rose-500/20 shadow-[0_0_30px_rgba(244,63,94,0.1)]" disabled={isLocked} />
@@ -393,9 +393,9 @@ function StudentRecord({ student, attendance, setAttendance, reasons, setReasons
 
 function StatusBtn({ status, icon: Icon, active, onSelect, activeColor, disabled }: { status: string; icon: React.ElementType; active: boolean; onSelect: () => void; activeColor: string; disabled?: boolean }) {
     return (
-        <button onClick={onSelect} disabled={disabled} className={cn("h-14 px-6 rounded-[1.75rem] transition-all flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] relative group", active ? activeColor : "text-zinc-700 hover:text-zinc-400")}>
-            <Icon className="w-5 h-5" />
-            <span className={cn(active ? "flex" : "hidden group-hover:flex")}>{status}</span>
+        <button onClick={onSelect} disabled={disabled} className={cn("h-8 sm:h-14 px-2 sm:px-6 rounded-md sm:rounded-[1.75rem] transition-all flex items-center gap-1.5 sm:gap-3 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] relative group", active ? activeColor : "text-zinc-700 hover:text-zinc-400")}>
+            <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            <span className={cn(active ? "flex" : "hidden sm:group-hover:flex")}>{status}</span>
         </button>
     );
 }

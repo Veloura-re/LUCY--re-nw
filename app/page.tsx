@@ -140,7 +140,7 @@ function BootSequence({ onDone }: { onDone: () => void }) {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[999] bg-white dark:bg-black flex flex-col items-center justify-center font-mono"
         >
-          <div className="relative inline-block text-7xl md:text-[12rem] font-bold tracking-tighter text-slate-100 dark:text-zinc-900 select-none uppercase leading-none">
+          <div className="relative inline-block text-5xl sm:text-7xl md:text-[12rem] font-bold tracking-tighter text-slate-100 dark:text-zinc-900 select-none uppercase leading-none">
             LUCY
             <div 
               className="absolute bottom-0 left-0 right-0 overflow-hidden"
@@ -318,7 +318,7 @@ export default function Home() {
             schools: Math.round(liveStats.schools * ease),
             students: Math.round(liveStats.students * ease),
             teachers: Math.round(liveStats.teachers * ease),
-            totalSchools: Math.round(liveStats.totalNodes * ease),
+            totalSchools: Math.round(liveStats.totalSchools * ease),
           });
           if (step >= steps) clearInterval(iv);
         }, 2000 / steps);
@@ -776,7 +776,7 @@ export default function Home() {
                 <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
                 <span className="text-[10px] uppercase tracking-[0.4em]">infrastructure</span>
               </div>
-              <h2 className="text-5xl lg:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+              <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                 distributed <br /><span className="text-slate-400 dark:text-zinc-800">architecture.</span>
               </h2>
               <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-md font-medium">
@@ -969,15 +969,15 @@ export default function Home() {
         </section>
 
         {/* ── Pricing Teaser ── */}
-        <section className="py-40 px-6 bg-white dark:bg-black border-t border-slate-200 dark:border-white/5 transition-colors duration-300">
-          <div className="max-w-[1400px] mx-auto space-y-20">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+        <section className="py-20 sm:py-32 lg:py-40 px-4 sm:px-6 bg-white dark:bg-black border-t border-slate-200 dark:border-white/5 transition-colors duration-300">
+          <div className="max-w-[1400px] mx-auto space-y-12 sm:space-y-20">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 sm:gap-8">
               <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="space-y-4">
                 <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
                   <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
                   <span className="text-[10px] uppercase tracking-[0.4em]">pricing_plans // coming_soon</span>
                 </div>
-                <h2 className="text-5xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">simple<br /><span className="text-slate-400 dark:text-zinc-800">pricing.</span></h2>
+                <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">simple<br /><span className="text-slate-400 dark:text-zinc-800">pricing.</span></h2>
               </motion.div>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false }}>
                 <Link href="/pricing">
@@ -1001,7 +1001,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ delay: i * 0.1 }}
-                    className={`relative p-10 border h-full space-y-8 group cursor-default overflow-hidden transition-all duration-300 rounded-2xl dark:rounded-none ${p.highlight ? "border-emerald-500/30 dark:border-white/30 bg-emerald-50/50 dark:bg-zinc-950/60 shadow-lg shadow-emerald-500/5 dark:shadow-white/[0.01]" : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/30 hover:border-slate-300 dark:hover:border-white/20 shadow-sm dark:shadow-none"}`}
+                    className={`relative p-6 sm:p-10 border h-full space-y-6 sm:space-y-8 group cursor-default overflow-hidden transition-all duration-300 rounded-2xl dark:rounded-none ${p.highlight ? "border-emerald-500/30 dark:border-white/30 bg-emerald-50/50 dark:bg-zinc-950/60 shadow-lg shadow-emerald-500/5 dark:shadow-white/[0.01]" : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/30 hover:border-slate-300 dark:hover:border-white/20 shadow-sm dark:shadow-none"}`}
                   >
                     {p.highlight && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 dark:via-white/20 to-transparent" />}
                     
@@ -1033,19 +1033,19 @@ export default function Home() {
 
                     <div className="space-y-2 relative z-10">
                       <div className="text-[9px] text-slate-400 dark:text-zinc-400 uppercase tracking-widest font-bold">{p.highlight ? "recommended_plan" : `tier_${String(i + 1).padStart(2, "0")}`}</div>
-                      <h3 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-zinc-300 transition-colors font-orbitron">{p.tier}</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-zinc-300 transition-colors font-orbitron">{p.tier}</h3>
                     </div>
                     
                     <div className="flex items-end gap-2 relative z-10">
                       {p.tier === "Core Platform" ? (
                         <>
-                          <span className="text-4xl font-bold text-slate-900 dark:text-white font-orbitron">{p.price}</span>
-                          <span className="text-sm line-through text-slate-400 dark:text-zinc-500 mb-1">$250</span>
+                          <span className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white font-orbitron">{p.price}</span>
+                          <span className="text-xs sm:text-sm line-through text-slate-400 dark:text-zinc-500 mb-1">$250</span>
                         </>
                       ) : (
-                        <span className="text-4xl font-bold text-slate-900 dark:text-white font-orbitron">{p.price}</span>
+                        <span className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white font-orbitron">{p.price}</span>
                       )}
-                      <span className="text-slate-500 dark:text-zinc-400 text-xs mb-1.5 font-bold">{p.period}</span>
+                      <span className="text-slate-500 dark:text-zinc-400 text-xs mb-1 font-bold">{p.period}</span>
                     </div>
                     
                     <p className="text-slate-600 dark:text-zinc-300 text-xs leading-relaxed relative z-10 font-medium">{p.desc}</p>
@@ -1058,7 +1058,7 @@ export default function Home() {
                       ))}
                     </div>
                     
-                    <div className="pt-6 relative z-10">
+                    <div className="pt-4 sm:pt-6 relative z-10">
                       <Link href="/pricing" className="w-full">
                         <div className={`w-full h-11 border flex items-center justify-center text-[9px] uppercase tracking-[0.3em] font-bold transition-all duration-300 rounded-md dark:rounded-none ${p.highlight ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500 hover:text-white dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white dark:hover:text-black" : "border-slate-300 bg-white hover:bg-slate-900 hover:text-white text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300 dark:hover:text-black dark:hover:bg-white"}`}>
                           price
@@ -1076,24 +1076,24 @@ export default function Home() {
         <SignalWallPreview />
 
         {/* ── CTA ── */}
-        <section className="py-40 px-6 border-t border-slate-200 dark:border-white/5 overflow-hidden relative bg-white dark:bg-black transition-colors duration-300">
+        <section className="py-20 sm:py-32 lg:py-40 px-4 sm:px-6 border-t border-slate-200 dark:border-white/5 overflow-hidden relative bg-white dark:bg-black transition-colors duration-300">
           {[160, 80, 40].map((size, i) => (
             <motion.div key={i} animate={{ rotate: i % 2 === 0 ? 360 : -360 }} transition={{ duration: 59.8 + i * 20, repeat: Infinity, ease: "linear" }} className={`absolute -right-${size / 4} -bottom-${size / 4} border border-slate-200 dark:border-white/5 rounded-full pointer-events-none hidden dark:block`} style={{ width: size * 2, height: size * 2, right: -(size), bottom: -(size) }} />
           ))}
-          <div className="max-w-3xl mx-auto text-center space-y-10 relative z-10">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="inline-block p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl dark:rounded-none shadow-sm dark:shadow-none text-slate-500 dark:text-white">
-              <TerminalIcon className="w-6 h-6" />
+          <div className="max-w-3xl mx-auto text-center space-y-8 sm:space-y-10 relative z-10">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="inline-block p-3 sm:p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl dark:rounded-none shadow-sm dark:shadow-none text-slate-500 dark:text-white">
+              <TerminalIcon className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.div>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="text-4xl lg:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white">
+            <motion.h2 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white">
               initiate_connection
             </motion.h2>
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-slate-500 dark:text-zinc-500 text-lg max-w-lg mx-auto leading-relaxed font-medium">
+            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-slate-500 dark:text-zinc-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed font-medium">
               your school account awaits setup. the lucy platform is standing by.
             </motion.p>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-4">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
               <Link href="/register">
                 <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}>
-                  <Button className="h-14 px-12 bg-slate-900 text-white dark:text-black hover:bg-slate-800 dark:bg-white dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
+                  <Button className="w-full sm:w-auto h-12 sm:h-14 px-8 sm:px-12 bg-slate-900 text-white dark:text-black hover:bg-slate-800 dark:bg-white dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-bold shadow-md dark:shadow-none transition-colors">
                     system_boot
                   </Button>
                 </motion.div>

@@ -49,23 +49,23 @@ export default function Features() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-6xl mx-auto space-y-24">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-6xl mx-auto space-y-16 sm:space-y-24">
 
-                    <section className="space-y-8 text-center relative overflow-hidden">
+                    <section className="space-y-6 sm:space-y-8 text-center relative overflow-hidden">
                         <ParticleField count={40} />
-                        <Reveal className="flex items-center justify-center gap-4 text-slate-400 dark:text-zinc-500">
+                        <Reveal className="flex items-center justify-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
                             <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">technical_specifications // v1.0</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">technical_specifications // v1.0</span>
                             <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity, delay: 1 }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                            <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                                 system<br /><GlitchText className="text-slate-400 dark:text-zinc-800">capabilities.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-2xl mx-auto">
-                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed">
                                 granular breakdown of the lucy platform. engineered for resilience and high-throughput academic coordination.
                             </p>
                         </Reveal>

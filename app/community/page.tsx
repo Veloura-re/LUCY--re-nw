@@ -139,21 +139,21 @@ export default function CommunityPage() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-36 pb-40 px-6 flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
-                <div className="max-w-4xl w-full mx-auto space-y-16">
+            <main className="relative z-10 pt-24 sm:pt-36 pb-20 sm:pb-40 px-4 sm:px-6 flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
+                <div className="max-w-4xl w-full mx-auto space-y-12 sm:space-y-16">
                     {/* Header */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-center space-y-6"
+                        className="text-center space-y-4 sm:space-y-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold rounded-md dark:rounded-none shadow-sm dark:shadow-none">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[9px] sm:text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold rounded-md dark:rounded-none shadow-sm dark:shadow-none">
                             <Terminal className="w-3.5 h-3.5" /> community_network // connect
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                        <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
                             community <span className="text-slate-400 dark:text-zinc-800">connections.</span>
                         </h1>
-                        <p className="text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-500 max-w-md mx-auto lowercase leading-relaxed">
                             select a platform to connect with the lucy educational community.
                         </p>
                     </motion.div>

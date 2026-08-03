@@ -103,25 +103,25 @@ export default function Security() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-5xl mx-auto space-y-24">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto space-y-16 sm:space-y-24">
 
                     {/* Hero */}
-                    <section className="space-y-8 relative overflow-hidden">
+                    <section className="space-y-6 sm:space-y-8 relative overflow-hidden">
                         <ParticleField count={30} />
-                        <Reveal className="flex items-center gap-4 text-orange-500">
-                            <AlertTriangle className="w-4 h-4" />
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-orange-500">
+                            <AlertTriangle className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "80px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-orange-500/40" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">security_standards // zero_trust_architecture</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">security_standards // zero_trust_architecture</span>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                            <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                                 security<br />
                                 <GlitchText className="text-slate-400 dark:text-zinc-800">vault.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-2xl">
-                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed">
                                 the lucy vault operates on a zero-trust model. every request is authenticated, authorized, and logged — regardless of origin.
                             </p>
                         </Reveal>
