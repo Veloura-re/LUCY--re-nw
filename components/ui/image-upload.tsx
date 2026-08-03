@@ -37,13 +37,15 @@ export function ImageUpload({ value, onChange, disabled, bucket = 'avatars' }: I
             });
 
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.error || "Upload failed");
+                const err = (await res.json()) as any;
+                throw new Error(err?.error || "Upload failed");
             }
 
-            const data = await res.json();
-            onChange(data.url);
-            setPreview(data.url);
+            const data = (await res.json()) as any;
+            if (data?.url) {
+                onChange(data.url);
+                setPreview(data.url);
+            }
         } catch (error) {
             console.error("Upload failed", error);
             // Revert preview if failed?

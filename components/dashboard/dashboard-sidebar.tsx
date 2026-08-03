@@ -92,11 +92,18 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                 {/* ── Logo + Desktop Hamburger ── */}
                 <div className={cn(
                     "flex items-center gap-3 px-4 pt-5 pb-4 relative",
-                    collapsed ? "justify-center" : "justify-between",
-                    "md:px-4 px-14" // Add padding on mobile to avoid X button
+                    collapsed ? "flex-col justify-center gap-2 px-2" : "justify-between md:px-4 px-14"
                 )}>
-                    <AnimatePresence mode="wait">
-                        {!collapsed && (
+                    {collapsed ? (
+                        <div className="flex items-center justify-center mb-1" title={dbUser.school?.name || "LUCY OS"}>
+                            {dbUser.school?.logoUrl ? (
+                                <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-0.5" />
+                            ) : (
+                                <Logo className="w-7 h-7" />
+                            )}
+                        </div>
+                    ) : (
+                        <AnimatePresence mode="wait">
                             <motion.div
                                 key="logo"
                                 initial={{ opacity: 0, x: -10 }}
@@ -105,17 +112,22 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 transition={{ duration: 0.1 }}
                                 className="flex flex-col gap-1"
                             >
-                                {dbUser.school?.logoUrl ? (
-                                    <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
-                                ) : (
-                                    <Logo className="w-8 h-8 sm:w-10 sm:h-10" />
-                                )}
-                                {dbUser.school && (
-                                    <p className="text-[9px] uppercase tracking-widest text-zinc-600 font-medium truncate max-w-[140px]">{dbUser.school.name}</p>
-                                )}
+                                <div className="flex items-center gap-2.5">
+                                    {dbUser.school?.logoUrl ? (
+                                        <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
+                                    ) : (
+                                        <Logo className="w-8 h-8 sm:w-10 sm:h-10" />
+                                    )}
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="font-orbitron font-black text-sm tracking-wider text-zinc-900 dark:text-white leading-tight">LUCY</span>
+                                        {dbUser.school && (
+                                            <p className="text-[9px] uppercase tracking-widest text-eduGreen-600 dark:text-eduGreen-400 font-semibold truncate max-w-[130px]">{dbUser.school.name}</p>
+                                        )}
+                                    </div>
+                                </div>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
+                        </AnimatePresence>
+                    )}
 
                     {/* Desktop hamburger / collapse toggle */}
                     <button
