@@ -139,10 +139,22 @@ export async function POST(request: Request) {
         let resolvedGradeId = gradeIdInput || gradeInput || null;
         let resolvedClassId = classId || null;
 
+        const isUuid = (str: string | null | undefined): boolean => {
+            if (!str || typeof str !== 'string') return false;
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str.trim());
+        };
+
         // 1. Cross-Tenant Validation & Resolution: Class belongs to target institution
         if (resolvedClassId) {
+            const classUuidValid = isUuid(resolvedClassId);
             const cls = await prisma.class.findFirst({
-                where: { id: resolvedClassId, schoolId: targetSchoolId }
+                where: {
+                    ...(classUuidValid ? { id: resolvedClassId } : { name: { equals: resolvedClassId, mode: 'insensitive' } }),
+                    OR: [
+                        { schoolId: targetSchoolId },
+                        { grade: { schoolId: targetSchoolId } }
+                    ]
+                }
             });
             if (cls) {
                 resolvedClassId = cls.id;
@@ -157,13 +169,18 @@ export async function POST(request: Request) {
         // 2. Cross-Tenant Validation & Resolution: Grade
         let matchedGrade = null;
         if (resolvedGradeId) {
+            const gradeUuidValid = isUuid(resolvedGradeId);
             matchedGrade = await prisma.grade.findFirst({
                 where: {
                     schoolId: targetSchoolId,
-                    OR: [
-                        { id: resolvedGradeId },
-                        { name: { equals: resolvedGradeId, mode: 'insensitive' } }
-                    ]
+                    ...(gradeUuidValid ? {
+                        OR: [
+                            { id: resolvedGradeId },
+                            { name: { equals: resolvedGradeId, mode: 'insensitive' } }
+                        ]
+                    } : {
+                        name: { equals: resolvedGradeId, mode: 'insensitive' }
+                    })
                 }
             });
         }
@@ -199,7 +216,7 @@ export async function POST(request: Request) {
 
             const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
             if (existingInvite) {
-                await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
+                await prisma.inviteToken.delete({ where: { id: existingInvite.id } }).catch(() => {});
             }
         }
 
@@ -278,32 +295,48 @@ export async function POST(request: Request) {
                 lastName: result.student.lastName,
                 gradeId: result.student.gradeId
             }
-        });
+        }).catch(() => {});
 
-        // Invalidate tags
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId), 'max');
+        // Invalidate tags safely
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, targetSchoolId), 'max');
+        } catch {}
 
         if (email && result.token) {
-            const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
-            const inviteUrl = `${origin}/invite/${result.token}`;
-            const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
-            
-            console.log(`📨 [STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
-            const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
-            const res = emailResult as any;
-            
-            return secureJson({ 
-                student: result.student, 
-                token: result.token, 
-                emailSent: res.success && !res.skipped, 
-                emailError: res.error || null 
-            });
+            try {
+                const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+                const inviteUrl = `${origin}/invite/${result.token}`;
+                const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
+                
+                console.log(`📨 [STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
+                const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
+                const res = emailResult as any;
+                
+                return secureJson({ 
+                    student: result.student, 
+                    token: result.token, 
+                    emailSent: res?.success && !res?.skipped, 
+                    emailError: res?.error || null 
+                });
+            } catch (err: any) {
+                console.warn("[STUDENTS API] Invite email delivery skipped or failed:", err);
+                return secureJson({ 
+                    student: result.student, 
+                    token: result.token, 
+                    emailSent: false, 
+                    emailError: "Invite email could not be delivered directly." 
+                });
+            }
         }
 
         return secureJson({ student: result.student });
 
     } catch (e: any) {
-        return handleApiError(e);
+        console.error("❌ [STUDENTS API POST ERROR]:", e);
+        const msg = e?.message || "Failed to create student record";
+        if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
+        if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);
+        return secureJson({ error: msg }, 400);
     }
 }
 
@@ -332,24 +365,42 @@ export async function PUT(request: Request) {
             return secureJson({ error: "Student not found in your institution." }, 404);
         }
 
+        const isUuid = (str: string | null | undefined): boolean => {
+            if (!str || typeof str !== 'string') return false;
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str.trim());
+        };
+
         // Validate new grade if provided
         if (data.gradeId) {
+            const isGradeUuid = isUuid(data.gradeId);
             const grade = await prisma.grade.findFirst({
-                where: { id: data.gradeId, schoolId: user.schoolId! }
+                where: {
+                    ...(isGradeUuid ? { id: data.gradeId } : { name: { equals: data.gradeId, mode: 'insensitive' } }),
+                    schoolId: user.schoolId!
+                }
             });
             if (!grade) {
                 return secureJson({ error: "Selected grade does not belong to your institution." }, 400);
             }
+            data.gradeId = grade.id;
         }
 
         // Validate new class if provided
         if (data.classId) {
+            const isClassUuid = isUuid(data.classId);
             const cls = await prisma.class.findFirst({
-                where: { id: data.classId, schoolId: user.schoolId! }
+                where: {
+                    ...(isClassUuid ? { id: data.classId } : { name: { equals: data.classId, mode: 'insensitive' } }),
+                    OR: [
+                        { schoolId: user.schoolId! },
+                        { grade: { schoolId: user.schoolId! } }
+                    ]
+                }
             });
             if (!cls) {
                 return secureJson({ error: "Selected class does not belong to your institution." }, 400);
             }
+            data.classId = cls.id;
         }
 
         let updateDob: Date | undefined = undefined;
@@ -386,16 +437,22 @@ export async function PUT(request: Request) {
             resourceId: student.id,
             before: existingStudent,
             after: student
-        });
+        }).catch(() => {});
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
-        revalidateTag(`student-${id}`, 'max');
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
+            revalidateTag(`student-${id}`, 'max');
+        } catch {}
 
         return secureJson({ student });
 
     } catch (e: any) {
-        return handleApiError(e);
+        console.error("❌ [STUDENTS API PUT ERROR]:", e);
+        const msg = e?.message || "Failed to update student";
+        if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
+        if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);
+        return secureJson({ error: msg }, 400);
     }
 }
 
@@ -458,14 +515,20 @@ export async function DELETE(request: Request) {
             resourceType: 'STUDENT',
             resourceId: id,
             before: student
-        });
+        }).catch(() => {});
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.STUDENTS, user.schoolId!), 'max');
+        } catch {}
 
         return secureJson({ success: true });
 
     } catch (e: any) {
-        return handleApiError(e);
+        console.error("❌ [STUDENTS API DELETE ERROR]:", e);
+        const msg = e?.message || "Failed to delete student";
+        if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
+        if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);
+        return secureJson({ error: msg }, 400);
     }
 }

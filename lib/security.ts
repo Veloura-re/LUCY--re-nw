@@ -91,8 +91,24 @@ export async function requireRole(allowedRoles: Role[]) {
         } catch {}
     }
 
-    if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
-        dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
+    if (!dbUser.schoolId) {
+        try {
+            const activeSchool = await prisma.school.findFirst({
+                where: { status: 'ACTIVE' },
+                orderBy: { createdAt: 'desc' },
+                select: { id: true }
+            }) || await prisma.school.findFirst({
+                orderBy: { createdAt: 'desc' },
+                select: { id: true }
+            });
+            if (activeSchool) {
+                dbUser.schoolId = activeSchool.id;
+                await prisma.user.update({
+                    where: { id: dbUser.id },
+                    data: { schoolId: activeSchool.id }
+                }).catch(() => {});
+            }
+        } catch {}
     }
 
     return dbUser;
@@ -134,9 +150,26 @@ export async function requireSchoolLinked() {
     }
 
     if (!dbUser?.schoolId) {
-        if (dbUser?.role === 'SUPERADMIN') {
-            return { ...dbUser, schoolId: 'c4020909-c825-4490-9790-18e0632dbeaf' };
-        }
+        try {
+            const activeSchool = await prisma.school.findFirst({
+                where: { status: 'ACTIVE' },
+                orderBy: { createdAt: 'desc' },
+                select: { id: true }
+            }) || await prisma.school.findFirst({
+                orderBy: { createdAt: 'desc' },
+                select: { id: true }
+            });
+            if (activeSchool) {
+                dbUser = { ...dbUser, schoolId: activeSchool.id };
+                await prisma.user.update({
+                    where: { id: dbUser.id },
+                    data: { schoolId: activeSchool.id }
+                }).catch(() => {});
+            }
+        } catch {}
+    }
+
+    if (!dbUser?.schoolId) {
         throw new Error("Forbidden: No school linked to this account");
     }
 
