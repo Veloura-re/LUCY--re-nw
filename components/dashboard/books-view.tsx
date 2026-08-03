@@ -32,6 +32,8 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Printer } from "lucide-react";
 
+import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
+
 interface BooksViewProps {
     user: any;
     school: any;
@@ -50,30 +52,35 @@ const parseBookMeta = (desc: string | null) => {
 };
 
 export function BooksView({ user, school, children = [] }: BooksViewProps) {
-    const [books, setBooks] = useState<any[]>([]);
-    const [units, setUnits] = useState<any[]>([]);
-    const [requests, setRequests] = useState<any[]>([]);
-    const [progress, setProgress] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [isUploading, setIsUploading] = useState(false);
-    const [showRequests, setShowRequests] = useState(false);
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [gradeFilter, setGradeFilter] = useState("ALL");
-    
-    // Pagination State
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const limit = 50;
-    const [activeTab, setActiveTab] = useState<'library' | 'units' | 'requests'>('library');
-    const [requestModal, setRequestModal] = useState(false);
-    const [unitModal, setUnitModal] = useState(false);
     const [selectedStudentId, setSelectedStudentId] = useState<string | null>(() => {
         if (typeof window !== 'undefined') {
             return new URLSearchParams(window.location.search).get('studentId');
         }
         return null;
     });
+
+    const [page, setPage] = useState(1);
+    const limit = 50;
+
+    const cacheKey = `library_books_${selectedStudentId || 'all'}_p${page}`;
+    const initialCachedBooks = typeof window !== 'undefined' ? getClientCache<any>(cacheKey) : null;
+    const initialCachedAux = typeof window !== 'undefined' ? getClientCache<any>(`library_aux_${selectedStudentId || 'all'}`) : null;
+    const initialCachedMeta = typeof window !== 'undefined' ? getClientCache<any>('library_meta') : null;
+
+    const [books, setBooks] = useState<any[]>(initialCachedBooks?.books || []);
+    const [units, setUnits] = useState<any[]>(initialCachedAux?.units || []);
+    const [requests, setRequests] = useState<any[]>(initialCachedAux?.requests || []);
+    const [progress, setProgress] = useState<any[]>(initialCachedAux?.progress || []);
+    const [loading, setLoading] = useState(!initialCachedBooks);
+    const [isUploading, setIsUploading] = useState(false);
+    const [showRequests, setShowRequests] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [gradeFilter, setGradeFilter] = useState("ALL");
+    const [totalPages, setTotalPages] = useState(initialCachedBooks?.pagination?.totalPages || 1);
+    const [activeTab, setActiveTab] = useState<'library' | 'units' | 'requests'>('library');
+    const [requestModal, setRequestModal] = useState(false);
+    const [unitModal, setUnitModal] = useState(false);
 
     const [statusLoading, setStatusLoading] = useState<string | null>(null);
     const [deletingUnit, setDeletingUnit] = useState<string | null>(null);
@@ -120,8 +127,8 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     };
 
     // Metadata for dropdowns
-    const [grades, setGrades] = useState<any[]>([]);
-    const [subjects, setSubjects] = useState<any[]>([]);
+    const [grades, setGrades] = useState<any[]>(initialCachedMeta?.grades || []);
+    const [subjects, setSubjects] = useState<any[]>(initialCachedMeta?.subjects || []);
     const [classes, setClasses] = useState<any[]>([]);
 
     useEffect(() => {
@@ -131,45 +138,61 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
 
     const fetchInitialData = async () => {
         try {
-            const [classesRes, sRes] = await Promise.all([
-                fetch('/api/school/classes'),
-                fetch('/api/school/subjects')
+            const [classesRes, sRes] = await Promise.allSettled([
+                fetchWithResilience('/api/school/classes', {}, 8000),
+                fetchWithResilience('/api/school/subjects', {}, 8000)
             ]);
-            const classesData = await classesRes.json() as any;
-            const subjectsData = await sRes.json() as any;
-            // Grades are nested inside the classes response
-            setGrades(classesData.grades || []);
-            // Subjects API returns { subjects: [...] }
-            setSubjects(subjectsData.subjects || subjectsData || []);
+
+            const classesData = classesRes.status === 'fulfilled' && classesRes.value.ok ? ((await classesRes.value.json()) as any) : { grades: [] };
+            const subjectsData = sRes.status === 'fulfilled' && sRes.value.ok ? ((await sRes.value.json()) as any) : { subjects: [] };
+
+            const resolvedGrades = classesData.grades || [];
+            const resolvedSubjects = subjectsData.subjects || subjectsData || [];
+
+            setGrades(resolvedGrades);
+            setSubjects(resolvedSubjects);
+
+            setClientCache('library_meta', {
+                grades: resolvedGrades,
+                subjects: resolvedSubjects
+            }, 15 * 60 * 1000);
         } catch (e) {
             console.error("Data connection failed:", e);
         }
     };
 
     const fetchBooks = async () => {
-        setLoading(true);
+        const currentCacheKey = `library_books_${selectedStudentId || 'all'}_p${page}`;
+        const cached = getClientCache<any>(currentCacheKey);
+        if (!cached) setLoading(true);
+
         try {
             const queryParams = new URLSearchParams({
                 page: page.toString(),
                 limit: limit.toString(),
                 ...(selectedStudentId && { studentId: selectedStudentId })
             });
-            const res = await fetch(`/api/school/books?${queryParams.toString()}`);
-            const data = await res.json() as any;
-            if (data.books) {
-                setBooks(data.books);
-                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
-            } else {
-                setBooks(data); // Fallback
+
+            const res = await fetchWithResilience(`/api/school/books?${queryParams.toString()}`, {}, 8000);
+            if (res.ok) {
+                const data = ((await res.json()) as any);
+                if (data.books) {
+                    setBooks(data.books);
+                    if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+                    setClientCache(currentCacheKey, data, 10 * 60 * 1000);
+                } else if (Array.isArray(data)) {
+                    setBooks(data);
+                    setClientCache(currentCacheKey, { books: data }, 10 * 60 * 1000);
+                }
             }
 
             // Parallel fetch of other components relative to student context
             const baseQuery = selectedStudentId ? `?studentId=${selectedStudentId}` : '';
-            Promise.all([
-                fetch(`/api/school/books/units${baseQuery}`).then(r => r.json()).then(setUnits),
-                fetch(`/api/school/books/requests${baseQuery}`).then(r => r.json()).then(setRequests),
-                fetch(`/api/school/books/progress${baseQuery}`).then(r => r.json()).then(setProgress)
-            ].map(p => p.catch(console.error)));
+            Promise.allSettled([
+                fetchWithResilience(`/api/school/books/units${baseQuery}`, {}, 8000).then(r => r.ok ? r.json() : []).then(setUnits),
+                fetchWithResilience(`/api/school/books/requests${baseQuery}`, {}, 8000).then(r => r.ok ? r.json() : []).then(setRequests),
+                fetchWithResilience(`/api/school/books/progress${baseQuery}`, {}, 8000).then(r => r.ok ? r.json() : []).then(setProgress)
+            ]).catch(console.error);
         } catch (e) {
             toast.error("Failed to retrieve library records");
         } finally {

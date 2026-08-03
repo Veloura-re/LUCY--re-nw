@@ -37,6 +37,8 @@ interface SearchResult {
     parents: Parent[];
 }
 
+import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
+
 export default function ParentsPage() {
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -46,23 +48,32 @@ export default function ParentsPage() {
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!query.trim()) return;
+        const trimmed = query.trim();
+        if (!trimmed) return;
 
-        setIsLoading(true);
-        setError(null);
-        setResult(null);
+        const cacheKey = `parents_search_${trimmed.toLowerCase()}`;
+        const cached = getClientCache<SearchResult>(cacheKey);
+        if (cached) {
+            setResult(cached);
+            setError(null);
+        } else {
+            setIsLoading(true);
+            setError(null);
+            setResult(null);
+        }
 
         try {
-            const res = await fetch(`/api/parents/search?studentCode=${encodeURIComponent(query)}`);
-            const data = await res.json();
+            const res = await fetchWithResilience(`/api/parents/search?studentCode=${encodeURIComponent(trimmed)}`, {}, 8000);
+            const data = (await res.json()) as any;
 
             if (!res.ok) {
                 throw new Error(data.error || "Search failed");
             }
 
-            setResult(data);
+            setResult(data as SearchResult);
+            setClientCache(cacheKey, data, 10 * 60 * 1000);
         } catch (err: any) {
-            setError(err.message);
+            if (!cached) setError(err.message);
         } finally {
             setIsLoading(false);
         }

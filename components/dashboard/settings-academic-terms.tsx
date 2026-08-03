@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,16 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Calendar, Trash2, Lock, ShieldAlert, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { useCachedQuery } from "@/hooks/use-cached-query";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
+
+interface TermsPayload {
+    school: any;
+    terms: any[];
+}
 
 export function SettingsAcademicTerms() {
-    const [terms, setTerms] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
-    const [school, setSchool] = useState<any>(null);
     const [savingSettings, setSavingSettings] = useState(false);
     
     const [formData, setFormData] = useState({
@@ -30,34 +34,45 @@ export function SettingsAcademicTerms() {
         defaultBillingCycle: "MONTHLY"
     });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // Cache-first query with background SWR sync
+    const { 
+        data, 
+        loading, 
+        isRevalidating, 
+        isOffline, 
+        isFromCache, 
+        error, 
+        refetch, 
+        mutate 
+    } = useCachedQuery<TermsPayload>({
+        key: 'academic_terms_and_settings',
+        fetcher: async (signal) => {
+            const [schoolRes, termsRes] = await Promise.all([
+                fetch("/api/school/settings", { signal }),
+                fetch("/api/school/terms", { signal })
+            ]);
 
-    const fetchData = async () => {
-        try {
-            // Fetch school settings
-            const schoolRes = await fetch("/api/school/settings");
-            const schoolJson = (await schoolRes.json()) as any;
-            if (schoolJson.school) {
-                setSchool(schoolJson.school);
+            const schoolJson = schoolRes.ok ? ((await schoolRes.json()) as any) : { school: null };
+            const termsJson = termsRes.ok ? ((await termsRes.json()) as any) : { terms: [] };
+
+            return {
+                school: schoolJson.school,
+                terms: termsJson.terms || []
+            };
+        },
+        onSuccess: (freshData) => {
+            if (freshData.school) {
                 setSettingsData({
-                    termStructure: schoolJson.school.termStructure || "QUARTERS",
-                    termStructureLocked: schoolJson.school.termStructureLocked || false,
-                    defaultBillingCycle: schoolJson.school.defaultBillingCycle || "MONTHLY"
+                    termStructure: freshData.school.termStructure || "QUARTERS",
+                    termStructureLocked: freshData.school.termStructureLocked || false,
+                    defaultBillingCycle: freshData.school.defaultBillingCycle || "MONTHLY"
                 });
             }
-
-            // Fetch terms
-            const termsRes = await fetch("/api/school/terms");
-            const termsJson = await termsRes.json() as { terms: any[] };
-            if (termsJson.terms) setTerms(termsJson.terms);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
         }
-    };
+    });
+
+    const school = data?.school;
+    const terms = data?.terms || [];
 
     const handleUpdateSettings = async () => {
         setSavingSettings(true);
@@ -70,10 +85,9 @@ export function SettingsAcademicTerms() {
             const json = (await res.json()) as any;
             if (res.ok) {
                 toast.success("Institutional parameters synchronized successfully.");
-                setSchool(json.school);
+                mutate(prev => prev ? { ...prev, school: json.school } : { school: json.school, terms: [] });
             } else {
                 toast.error(json.error || "Failed to update settings.");
-                // Revert settings state
                 if (school) {
                     setSettingsData({
                         termStructure: school.termStructure || "QUARTERS",
@@ -98,9 +112,16 @@ export function SettingsAcademicTerms() {
                 body: JSON.stringify(formData)
             });
             if (res.ok) {
+                const termJson = await res.json() as any;
                 toast.success("Term created successfully.");
                 setFormData({ name: "", startDate: "", endDate: "", isActive: false });
-                fetchData();
+                
+                // Optimistically append term to cache
+                if (termJson.term) {
+                    mutate(prev => prev ? { ...prev, terms: [termJson.term, ...prev.terms] } : prev, true);
+                } else {
+                    refetch(true);
+                }
             } else {
                 const err = await res.json() as any;
                 toast.error(err.error || "Failed to create term.");
@@ -118,13 +139,13 @@ export function SettingsAcademicTerms() {
             const res = await fetch(`/api/school/terms?id=${id}`, {
                 method: "DELETE"
             });
-            const data = (await res.json().catch(() => ({}))) as any;
+            const resData = (await res.json().catch(() => ({}))) as any;
             if (res.ok) {
                 toast.success("Academic period deleted successfully.");
-                setTerms(prev => prev.filter(t => t.id !== id));
+                mutate(prev => prev ? { ...prev, terms: prev.terms.filter(t => t.id !== id) } : prev);
             } else {
-                toast.error(data.error || "Failed to delete academic term.", {
-                    description: data.details || "Check if any active marklists or exams depend on this term."
+                toast.error(resData.error || "Failed to delete academic term.", {
+                    description: resData.details || "Check if any active marklists or exams depend on this term."
                 });
             }
         } catch (e: any) {
@@ -134,10 +155,9 @@ export function SettingsAcademicTerms() {
 
     const handleAutoGenerate = async () => {
         toast.info("Auto-generation protocol initiated...");
-        // This is a placeholder for auto-generation logic
-        // We'll simulate creating Q1, Q2, Q3, Q4 for QUARTERS
         const currentYear = new Date().getFullYear();
         let generatedTerms = [];
+
         if (settingsData.termStructure === 'QUARTERS') {
             generatedTerms = [
                 { name: `Q1 ${currentYear}`, startDate: `${currentYear}-09-01`, endDate: `${currentYear}-11-15`, isActive: true },
@@ -161,16 +181,23 @@ export function SettingsAcademicTerms() {
         }
         
         toast.success("Academic periods auto-generated successfully.");
-        fetchData();
+        refetch(true);
     };
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Academic & Financial Cycles</h2>
+                    <h2 className="text-xl font-medium text-zinc-900 dark:text-white tracking-tight">Academic &amp; Financial Cycles</h2>
                     <p className="text-xs text-zinc-600 dark:text-zinc-500 mt-1 uppercase tracking-widest">Manage quarters, semesters, and billing periods</p>
                 </div>
+                <CachedSyncBadge 
+                    isRevalidating={isRevalidating} 
+                    isOffline={isOffline} 
+                    isFromCache={isFromCache} 
+                    error={error} 
+                    onSync={() => refetch(true)} 
+                />
             </div>
 
             {/* Structure Settings */}
@@ -272,7 +299,7 @@ export function SettingsAcademicTerms() {
                         <CardTitle className="text-sm font-medium text-zinc-900 dark:text-white">Periods Timeline</CardTitle>
                         <CardDescription className="text-xs text-zinc-600 dark:text-zinc-500">Define the actual dates for your grading periods.</CardDescription>
                     </div>
-                    {terms.length === 0 && (
+                    {terms.length === 0 && !loading && (
                         <Button 
                             onClick={handleAutoGenerate}
                             variant="outline" 
@@ -330,7 +357,7 @@ export function SettingsAcademicTerms() {
             </Card>
 
             <div className="space-y-3">
-                {loading ? (
+                {loading && terms.length === 0 ? (
                     <div className="h-20 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl animate-pulse" />
                 ) : terms.map((t: any) => (
                     <div key={t.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#050505] border border-zinc-200 dark:border-white/5 rounded-2xl group">
