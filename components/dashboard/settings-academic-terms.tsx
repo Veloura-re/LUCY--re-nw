@@ -118,16 +118,17 @@ export function SettingsAcademicTerms() {
             const res = await fetch(`/api/school/terms?id=${id}`, {
                 method: "DELETE"
             });
+            const data = (await res.json().catch(() => ({}))) as any;
             if (res.ok) {
-                toast.success("Academic period deleted.");
+                toast.success("Academic period deleted successfully.");
                 setTerms(prev => prev.filter(t => t.id !== id));
             } else {
-                const err = await res.json() as any;
-                toast.error(err.error || "Failed to delete term.");
+                toast.error(data.error || "Failed to delete academic term.", {
+                    description: data.details || "Check if any active marklists or exams depend on this term."
+                });
             }
-        } catch (e) {
-            console.error(e);
-            toast.error("Failed to delete term.");
+        } catch (e: any) {
+            toast.error(e?.message || "Failed to delete academic term.");
         }
     };
 
