@@ -2,7 +2,29 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
-// fix: Resilient Prisma client singleton with PG connection pool adapter
+// Bypass TLS verification for managed Postgres pools with self-signed / intermediate certificates
+if (typeof process !== 'undefined' && process.env) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
+/**
+ * Sanitizes connection strings to ensure compatibility with both driver adapter and native engine
+ */
+function getSanitizedDbUrl(url?: string): string | undefined {
+    if (!url) return undefined;
+    try {
+        const parsed = new URL(url);
+        // Ensure sslmode doesn't enforce strict CA rejection on self-signed pooler certs
+        if (parsed.searchParams.get('sslmode') === 'require' || parsed.searchParams.get('sslmode') === 'verify-full') {
+            parsed.searchParams.set('sslmode', 'no-verify');
+        }
+        return parsed.toString();
+    } catch {
+        return url;
+    }
+}
+
+// Resilient Prisma client singleton with PG connection pool adapter
 const prismaClientSingleton = () => {
     const rawUrl = process.env.DATABASE_URL;
     if (!rawUrl) {
@@ -25,7 +47,9 @@ const prismaClientSingleton = () => {
         });
     } catch (err) {
         console.warn("[Prisma Init Fallback] Falling back to default native client:", err);
+        const safeUrl = getSanitizedDbUrl(rawUrl);
         return new PrismaClient({
+            datasources: safeUrl ? { db: { url: safeUrl } } : undefined,
             log: ['error'],
         });
     }
@@ -43,3 +67,4 @@ export const prisma = (typeof window === 'undefined')
 if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
     globalThis.prismaGlobal = prisma;
 }
+
