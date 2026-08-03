@@ -81,9 +81,15 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
         try {
             const payload = {
                 ...newStudent,
+                dob: newStudent.dob?.trim() || undefined,
+                age: newStudent.age ? Number(newStudent.age) : undefined,
                 photoUrl: newStudent.photoUrl.trim() || undefined,
                 email: newStudent.email.trim() || undefined,
                 gender: newStudent.gender || undefined,
+                guardianName: newStudent.guardianName.trim() || undefined,
+                guardianPhone: newStudent.guardianPhone.trim() || undefined,
+                secondaryPhone: newStudent.secondaryPhone.trim() || undefined,
+                address: newStudent.address.trim() || undefined,
             };
 
             const res = await fetch('/api/school/students', {
@@ -363,7 +369,29 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                             <Input
                                                 type="date"
                                                 value={newStudent.dob}
-                                                onChange={e => setNewStudent({ ...newStudent, dob: e.target.value, age: "" })}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    if (!val) {
+                                                        setNewStudent(prev => ({ ...prev, dob: "", age: "" }));
+                                                        return;
+                                                    }
+                                                    const birth = new Date(val);
+                                                    if (!isNaN(birth.getTime())) {
+                                                        const today = new Date();
+                                                        let calculatedAge = today.getFullYear() - birth.getFullYear();
+                                                        const m = today.getMonth() - birth.getMonth();
+                                                        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+                                                            calculatedAge--;
+                                                        }
+                                                        setNewStudent(prev => ({
+                                                            ...prev,
+                                                            dob: val,
+                                                            age: calculatedAge >= 0 ? String(calculatedAge) : ""
+                                                        }));
+                                                    } else {
+                                                        setNewStudent(prev => ({ ...prev, dob: val }));
+                                                    }
+                                                }}
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-10 rounded-xl focus:border-eduGreen-600 transition-all border-2 w-full text-xs"
                                             />
                                         </div>
@@ -373,7 +401,26 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                                 type="number"
                                                 placeholder="Age"
                                                 value={newStudent.age}
-                                                onChange={e => setNewStudent({ ...newStudent, age: e.target.value, dob: "" })}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    if (!val) {
+                                                        setNewStudent(prev => ({ ...prev, age: "", dob: "" }));
+                                                        return;
+                                                    }
+                                                    const ageNum = parseInt(val, 10);
+                                                    if (!isNaN(ageNum) && ageNum >= 0 && ageNum <= 100) {
+                                                        const currentYear = new Date().getFullYear();
+                                                        const estYear = currentYear - ageNum;
+                                                        const estDob = `${estYear}-01-01`;
+                                                        setNewStudent(prev => ({
+                                                            ...prev,
+                                                            age: val,
+                                                            dob: estDob
+                                                        }));
+                                                    } else {
+                                                        setNewStudent(prev => ({ ...prev, age: val }));
+                                                    }
+                                                }}
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-10 rounded-xl focus:border-eduGreen-600 transition-all border-2 w-full text-xs"
                                             />
                                         </div>

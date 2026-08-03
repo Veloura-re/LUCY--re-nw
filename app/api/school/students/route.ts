@@ -23,7 +23,7 @@ const StudentCreateSchema = z.object({
     guardianName: z.string().max(100).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
     guardianPhone: z.string().max(50).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
     secondaryPhone: z.string().max(50).optional().nullable().or(z.literal('')).transform(val => val ? sanitizeInput(val) : null),
-    photoUrl: z.string().url().optional().nullable().or(z.literal('')).or(z.literal(null)).transform(val => (val === '' ? null : val))
+    photoUrl: z.string().optional().nullable().or(z.literal('')).or(z.literal(null)).transform(val => (val ? sanitizeInput(val) : null))
 });
 
 const StudentUpdateSchema = z.object({
@@ -39,7 +39,7 @@ const StudentUpdateSchema = z.object({
     guardianName: z.string().max(100).optional().nullable().transform(val => val ? sanitizeInput(val) : undefined),
     guardianPhone: z.string().max(50).optional().nullable().transform(val => val ? sanitizeInput(val) : undefined),
     secondaryPhone: z.string().max(50).optional().nullable().transform(val => val ? sanitizeInput(val) : undefined),
-    photoUrl: z.string().url().optional().nullable().or(z.literal(''))
+    photoUrl: z.string().optional().nullable().or(z.literal('')).transform(val => (val ? sanitizeInput(val) : null))
 });
 
 // GET: List all students in the school
@@ -117,8 +117,24 @@ export async function POST(request: Request) {
 
         const {
             firstName, lastName, grade: gradeInput, gradeId: gradeIdInput, classId, email,
-            gender, dob, address, guardianName, guardianPhone, secondaryPhone, photoUrl
+            gender, dob, age, address, guardianName, guardianPhone, secondaryPhone, photoUrl
         } = parseResult.data;
+
+        // Safely parse or infer DOB from age
+        let parsedDob: Date | null = null;
+        if (dob && typeof dob === 'string' && dob.trim()) {
+            const candidate = new Date(dob);
+            if (!isNaN(candidate.getTime())) {
+                parsedDob = candidate;
+            }
+        }
+        if (!parsedDob && age !== undefined && age !== null && age !== '') {
+            const ageNum = parseInt(String(age), 10);
+            if (!isNaN(ageNum) && ageNum > 0 && ageNum < 120) {
+                const estYear = new Date().getFullYear() - ageNum;
+                parsedDob = new Date(Date.UTC(estYear, 0, 1));
+            }
+        }
 
         let resolvedGradeId = gradeIdInput || gradeInput || null;
         let resolvedClassId = classId || null;
@@ -216,7 +232,7 @@ export async function POST(request: Request) {
                     gradeId: matchedGrade.id,
                     classId: resolvedClassId,
                     email: email || null,
-                    dob: dob ? new Date(dob) : null,
+                    dob: parsedDob,
                     gender: gender || null,
                     address: address || null,
                     guardianName: guardianName || null,
@@ -336,6 +352,14 @@ export async function PUT(request: Request) {
             }
         }
 
+        let updateDob: Date | undefined = undefined;
+        if (data.dob && typeof data.dob === 'string' && data.dob.trim()) {
+            const parsed = new Date(data.dob);
+            if (!isNaN(parsed.getTime())) {
+                updateDob = parsed;
+            }
+        }
+
         const student = await prisma.student.update({
             where: { id },
             data: {
@@ -349,7 +373,7 @@ export async function PUT(request: Request) {
                 secondaryPhone: data.secondaryPhone,
                 address: data.address,
                 photoUrl: data.photoUrl,
-                dob: data.dob ? new Date(data.dob) : undefined,
+                dob: updateDob,
                 gender: data.gender
             }
         });
