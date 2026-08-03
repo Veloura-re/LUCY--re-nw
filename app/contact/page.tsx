@@ -65,26 +65,26 @@ export default function ContactPage() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6 min-h-[90vh] flex flex-col justify-center">
-                <div className="max-w-4xl mx-auto w-full space-y-16">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6 min-h-[90vh] flex flex-col justify-center">
+                <div className="max-w-4xl mx-auto w-full space-y-12 sm:space-y-16">
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-center space-y-6"
+                        className="text-center space-y-4 sm:space-y-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest rounded-md dark:rounded-none">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/60 text-[9px] sm:text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest rounded-md dark:rounded-none">
                             <Terminal className="w-3.5 h-3.5" /> secure_comms // connection // step_{step}
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
                             <GlitchText>establish connection.</GlitchText>
                         </h1>
-                        <p className="text-sm md:text-base text-slate-500 dark:text-zinc-500 max-w-xl mx-auto lowercase leading-relaxed font-sans font-light">
+                        <p className="text-xs sm:text-sm md:text-base text-slate-500 dark:text-zinc-500 max-w-xl mx-auto lowercase leading-relaxed font-sans font-light">
                             initiate contact with a vanguard representative. please configure your message packet below.
                         </p>
                     </motion.div>
 
-                    <div className="max-w-2xl mx-auto relative h-[450px]">
+                    <div className="max-w-2xl mx-auto relative min-h-[480px] sm:min-h-[450px]">
                         <AnimatePresence mode="wait">
                             {/* STEP 1: CATEGORY SELECTION */}
                             {step === 1 && (
@@ -104,12 +104,12 @@ export default function ContactPage() {
                                             <button
                                                 key={c.id}
                                                 onClick={() => { setCategory(c.id as Category); setStep(2); }}
-                                                className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/50 hover:bg-slate-100 dark:hover:bg-zinc-900/80 hover:border-slate-300 dark:hover:border-white/30 text-left transition-all duration-300 group relative overflow-hidden rounded-xl dark:rounded-none"
+                                                className="p-5 sm:p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-950/50 hover:bg-slate-100 dark:hover:bg-zinc-900/80 hover:border-slate-300 dark:hover:border-white/30 text-left transition-all duration-300 group relative overflow-hidden rounded-xl dark:rounded-none"
                                             >
                                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 dark:via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                                                <c.icon className="w-6 h-6 text-slate-400 dark:text-zinc-400 mb-4 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
-                                                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-tight text-sm">{c.label}</h3>
-                                                <p className="text-[10px] text-slate-500 dark:text-zinc-500 mt-2 font-sans">{c.desc}</p>
+                                                <c.icon className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 dark:text-zinc-400 mb-3 sm:mb-4 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
+                                                <h3 className="font-bold text-slate-900 dark:text-white uppercase tracking-tight text-xs sm:text-sm">{c.label}</h3>
+                                                <p className="text-[9px] sm:text-[10px] text-slate-500 dark:text-zinc-500 mt-1.5 sm:mt-2 font-sans">{c.desc}</p>
                                             </button>
                                         ))}
                                     </div>
@@ -135,7 +135,7 @@ export default function ContactPage() {
                                         </div>
                                     </div>
 
-                                    <div className="p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
+                                    <div className="p-5 sm:p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-5 sm:space-y-6 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
                                         <div className="space-y-2">
                                             <label className="text-[9px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest flex justify-between">
                                                 <span>callsign // identifier</span>
@@ -146,7 +146,7 @@ export default function ContactPage() {
                                                 autoFocus
                                                 value={formData.callsign}
                                                 onChange={(e) => setFormData({ ...formData, callsign: e.target.value })}
-                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-2.5 sm:py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder="enter_callsign_ or school_name_"
                                             />
                                         </div>
@@ -159,7 +159,7 @@ export default function ContactPage() {
                                                 type="email"
                                                 value={formData.email}
                                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-2.5 sm:py-3 text-sm text-slate-900 dark:text-white transition-colors rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder="user@domain.com"
                                             />
                                         </div>
@@ -171,7 +171,7 @@ export default function ContactPage() {
                                             <Button 
                                                 onClick={() => setStep(3)} 
                                                 disabled={!formData.callsign || !formData.email || !formData.email.includes('@')}
-                                                className="text-[10px] uppercase tracking-widest bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-md dark:rounded-none h-10 px-6 font-bold"
+                                                className="text-[10px] uppercase tracking-widest bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-md dark:rounded-none h-10 px-6 font-bold"
                                             >
                                                 proceed_to_payload <ChevronRight className="w-3.5 h-3.5 ml-2" />
                                             </Button>
@@ -199,19 +199,19 @@ export default function ContactPage() {
                                         </div>
                                     </div>
 
-                                    <form onSubmit={handleSubmit} className="p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-6 rounded-xl dark:rounded-none relative shadow-sm dark:shadow-none">
+                                    <form onSubmit={handleSubmit} className="p-5 sm:p-8 border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-zinc-950/60 backdrop-blur-sm space-y-5 sm:space-y-6 rounded-xl dark:rounded-none relative shadow-sm dark:shadow-none">
                                         <div className="space-y-2">
                                             <label className="text-[9px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest flex justify-between">
                                                 <span>payload_content // message</span>
                                                 <span className="text-slate-400 dark:text-zinc-700">*required</span>
                                             </label>
                                             <textarea
-                                                rows={5}
+                                                rows={4}
                                                 required
                                                 autoFocus
                                                 value={formData.message}
                                                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-3 text-sm text-slate-900 dark:text-white transition-colors resize-none rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
+                                                className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-white/10 focus:border-slate-900 dark:focus:border-white outline-none px-4 py-2.5 sm:py-3 text-sm text-slate-900 dark:text-white transition-colors resize-none rounded-lg dark:rounded-none placeholder:text-slate-400 dark:placeholder:text-zinc-700"
                                                 placeholder={
                                                     category === 'sales' ? "details on number of students and deployment timeline..." :
                                                     category === 'security' ? "describe vulnerability vector and proof of concept..." :
@@ -231,7 +231,7 @@ export default function ContactPage() {
                                             <Button
                                                 type="submit"
                                                 disabled={status === 'LOADING' || !formData.message}
-                                                className="font-bold tracking-widest text-[10px] uppercase bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 h-10 px-6 rounded-md dark:rounded-none gap-2"
+                                                className="font-bold tracking-widest text-[10px] uppercase bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 h-10 px-6 rounded-md dark:rounded-none gap-2"
                                             >
                                                 {status === 'LOADING' ? (
                                                     <>connecting_node... <Loader2 className="w-3.5 h-3.5 animate-spin" /></>

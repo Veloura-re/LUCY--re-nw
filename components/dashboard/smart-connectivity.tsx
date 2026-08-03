@@ -45,34 +45,34 @@ export function SmartConnectivity() {
 
     return (
         <>
-            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden group shadow-2xl border-t-zinc-800/20">
-                <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
+            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-[2.5rem] overflow-hidden group shadow-xl sm:shadow-2xl border-t-zinc-800/20">
+                <CardHeader className="p-3.5 sm:p-8 pb-2 sm:pb-4 flex flex-row items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                     <div>
-                        <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-3">
-                            <Activity className="w-5 h-5 text-amber-600 dark:text-amber-500" />
+                        <CardTitle className="text-sm sm:text-lg font-medium text-zinc-900 dark:text-white tracking-tight flex items-center gap-2 sm:gap-3">
+                            <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-500" />
                             Smart Connectivity
                         </CardTitle>
-                        <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] mt-1 italic">Synchronization Diagnostic Gauge</p>
+                        <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 sm:mt-1 italic">Synchronization Diagnostic Gauge</p>
                     </div>
                     <Button
                         onClick={fetchDiagnostics}
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                        className="h-7 w-7 sm:h-8 sm:w-8 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                     >
-                        <RefreshCcw className={cn("w-4 h-4", loading && "animate-spin")} />
+                        <RefreshCcw className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", loading && "animate-spin")} />
                     </Button>
                 </CardHeader>
-                <CardContent className="p-8">
+                <CardContent className="p-3.5 sm:p-8">
                     {gapsCount === 0 ? (
-                        <div className="py-12 text-center">
-                            <div className="w-12 h-12 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center mx-auto mb-4">
-                                <LinkIcon className="w-6 h-6 text-eduGreen-500" />
+                        <div className="py-6 sm:py-12 text-center">
+                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                                <LinkIcon className="w-4 h-4 sm:w-6 sm:h-6 text-eduGreen-500" />
                             </div>
-                            <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest leading-relaxed">All Scholarly Nodes Synchronized<br /><span className="text-eduGreen-500 italic">Institutional Integrity Verified</span></p>
+                            <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest leading-relaxed">All Scholarly Nodes Synchronized<br /><span className="text-eduGreen-500 italic">Institutional Integrity Verified</span></p>
                         </div>
                     ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-3 sm:space-y-6">
                             {data?.orphanedTeachers?.length > 0 && (
                                 <GapItem
                                     label="Orphaned Faculty"
@@ -101,10 +101,10 @@ export function SmartConnectivity() {
                                 />
                             )}
 
-                            <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900/50">
+                            <div className="pt-2.5 sm:pt-4 border-t border-zinc-200 dark:border-zinc-900/50">
                                 <Button 
                                     onClick={() => setIsModalOpen(true)}
-                                    className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-xl h-10 px-4 text-[9px] font-medium uppercase tracking-widest transition-all italic"
+                                    className="w-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl h-8 sm:h-10 px-3 sm:px-4 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest transition-all italic shadow-sm"
                                 >
                                     Initialize Restoration Protocols
                                 </Button>
@@ -127,16 +127,16 @@ export function SmartConnectivity() {
 function GapItem({ label, count, icon: Icon, color, desc }: { label: string, count: number, icon: any, color: string, desc: string }) {
     return (
         <div className="flex items-center justify-between group/gap">
-            <div className="flex items-center gap-4">
-                <div className={cn("w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center transition-colors group-hover/gap:border-zinc-400 dark:border-zinc-700", color)}>
-                    <Icon className="w-5 h-5" />
+            <div className="flex items-center gap-2.5 sm:gap-4">
+                <div className={cn("w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center transition-colors group-hover/gap:border-zinc-400 dark:border-zinc-700", color)}>
+                    <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                    <div className="text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest">{label}</div>
-                    <div className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{desc}</div>
+                    <div className="text-[8px] sm:text-[10px] font-medium text-zinc-900 dark:text-white uppercase tracking-widest">{label}</div>
+                    <div className="text-[7px] sm:text-[8px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{desc}</div>
                 </div>
             </div>
-            <div className={cn("text-xl font-medium", color)}>{count}</div>
+            <div className={cn("text-base sm:text-xl font-medium", color)}>{count}</div>
         </div>
     );
 }

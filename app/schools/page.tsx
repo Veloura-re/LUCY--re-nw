@@ -43,26 +43,26 @@ export default function Schools() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-6xl mx-auto space-y-32">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-6xl mx-auto space-y-16 sm:space-y-32">
 
                     {/* Hero */}
-                    <section className="relative overflow-hidden space-y-10 min-h-[55vh] flex flex-col justify-center">
+                    <section className="relative overflow-hidden space-y-6 sm:space-y-10 min-h-[45vh] sm:min-h-[55vh] flex flex-col justify-center">
                         <div className="absolute inset-0 opacity-25 dark:opacity-25 opacity-[0.05]"><SmartWeb nodeCount={22} /></div>
                         <HexGrid />
 
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
-                            <School className="w-4 h-4" />
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
+                            <School className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">institutional_deployment // for_schools</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">institutional_deployment // for_schools</span>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
+                            <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
                                 for<br /><GlitchText className="text-slate-300 dark:text-zinc-800">schools.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2} className="max-w-xl">
-                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed">
                                 lucy_os is purpose-built for every level of academic institution — from a 200-student primary school to a 20,000-student university network.
                             </p>
                         </Reveal>

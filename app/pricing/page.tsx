@@ -67,7 +67,7 @@ export default function Pricing() {
                             </div>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                            <h1 className="text-3xl sm:text-6xl md:text-7xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                                 pricing<br /><span className="text-slate-400 dark:text-zinc-600">plans.</span>
                             </h1>
                         </Reveal>

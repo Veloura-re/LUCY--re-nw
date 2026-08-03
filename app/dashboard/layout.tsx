@@ -152,22 +152,22 @@ export default async function DashboardLayout({
 
             {/* Header (Appears in DOCK mode on desktop) */}
             {!isSidebar && (
-                <header className="w-full pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-6 md:px-12 relative z-20">
+                <header className="w-full pt-3 sm:pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-3 sm:px-6 md:px-12 relative z-20">
                     <div className="hidden md:block w-32" /> {/* Spacer */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4">
                         {dbUser.school?.logoUrl ? (
-                            <Image src={dbUser.school.logoUrl} alt="School Logo" width={48} height={48} className="w-12 h-12 object-contain rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
+                            <Image src={dbUser.school.logoUrl} alt="School Logo" width={36} height={36} className="w-8 h-8 sm:w-12 sm:h-12 object-contain rounded-lg sm:rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
                         ) : (
-                            <Logo className="w-12 h-12" />
+                            <Logo className="w-8 h-8 sm:w-12 sm:h-12" />
                         )}
-                        <div className="relative flex items-center bg-zinc-100 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-xl">
+                        <div className="relative flex items-center bg-zinc-100 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-3 sm:pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-lg sm:rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
-                            <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-xl md:text-3xl font-black tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-2 md:ml-3">
+                            <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
+                            <span className="relative text-base sm:text-xl md:text-3xl font-black tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-1.5 sm:ml-2 md:ml-3">
                                 LUCY
-                                <span className="absolute -top-1 -right-2 text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
+                                <span className="absolute -top-1 -right-2 text-[7px] sm:text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
                             </span>
-                            <span className="text-eduGreen-500 font-orbitron font-black text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2 md:ml-3">]</span>
+                            <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1.5 sm:ml-2 md:ml-3">]</span>
                         </div>
                     </div>
                     <EdgeHealthIndicator />

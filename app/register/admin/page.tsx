@@ -79,30 +79,30 @@ export default function AdminRegister() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-eduGreen-500/20 blur-[120px] rounded-full" />
             </div>
 
-            <Card className="w-full max-w-md bg-zinc-100/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-800 shadow-2xl relative z-10">
-                <CardHeader className="text-center pb-2">
-                    <div className="mx-auto flex justify-center mb-4">
+            <Card className="w-full max-w-md bg-zinc-100/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-800 shadow-2xl relative z-10 rounded-2xl sm:rounded-3xl overflow-hidden">
+                <CardHeader className="text-center pb-2 pt-6 sm:pt-8 px-4 sm:px-6">
+                    <div className="mx-auto flex justify-center mb-3 sm:mb-4">
                         {/* Cyberpunk Mark Wrapper */}
-                        <div className="relative flex items-center bg-white dark:bg-zinc-950 border-r-2 border-eduGreen-500 pr-3 overflow-hidden group">
+                        <div className="relative flex items-center bg-white dark:bg-zinc-950 border-r-2 border-eduGreen-500 pr-3 overflow-hidden group rounded-lg p-1">
                             {/* Glitch Overlay Effect */}
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
 
-                            <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-3xl font-black tracking-[0.2em] font-orbitron text-zinc-900 dark:text-white ml-2">
+                            <span className="text-eduGreen-500 font-orbitron font-black text-2xl sm:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
+                            <span className="relative text-2xl sm:text-3xl font-black tracking-[0.2em] font-orbitron text-zinc-900 dark:text-white ml-2">
                                 LUCY
-                                <span className="absolute -top-1 -right-2 text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
+                                <span className="absolute -top-1 -right-2 text-[9px] sm:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
                             </span>
-                            <span className="text-eduGreen-500 font-orbitron font-black text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
+                            <span className="text-eduGreen-500 font-orbitron font-black text-2xl sm:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-2">]</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-medium text-zinc-900 dark:text-white">Super Admin Access</CardTitle>
-                    <CardDescription className="text-zinc-600 dark:text-zinc-400">
+                    <CardTitle className="text-xl sm:text-2xl font-medium text-zinc-900 dark:text-white">Admin Access</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
                         Restricted registration. Requires Master Key.
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleRegister} className="space-y-4">
-                        <div className="space-y-4">
+                <CardContent className="p-4 sm:p-6">
+                    <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             <Input
                                 label="Admin Name"
                                 icon={<User className="w-4 h-4 text-zinc-600 dark:text-zinc-500" />}
@@ -110,7 +110,7 @@ export default function AdminRegister() {
                                 onChange={e => setName(e.target.value)}
                                 required
                                 placeholder="System Administrator"
-                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600 text-sm sm:text-base"
                             />
                             <Input
                                 label="Email"
@@ -120,7 +120,7 @@ export default function AdminRegister() {
                                 onChange={e => setEmail(e.target.value)}
                                 required
                                 placeholder="admin@lucy.edu"
-                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600 text-sm sm:text-base"
                             />
                             <Input
                                 label="Password"
@@ -130,9 +130,9 @@ export default function AdminRegister() {
                                 onChange={e => setPassword(e.target.value)}
                                 required
                                 placeholder="••••••••"
-                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600"
+                                className="bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-600 focus:border-eduGreen-600 text-sm sm:text-base"
                             />
-                            <div className="pt-2">
+                            <div className="pt-1 sm:pt-2">
                                 <Input
                                     label="Master Secret Key"
                                     type="password"
@@ -141,18 +141,18 @@ export default function AdminRegister() {
                                     onChange={e => setSecretKey(e.target.value)}
                                     required
                                     placeholder="ENTER_SECRET_KEY"
-                                    className="bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-200 placeholder:text-eduGreen-800/50 focus:border-eduGreen-500"
+                                    className="bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-200 placeholder:text-eduGreen-800/50 focus:border-eduGreen-500 text-sm sm:text-base"
                                 />
                             </div>
                         </div>
 
                         {error && (
-                            <div className="p-3 bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-                                <AlertCircle className="w-4 h-4" /> {error}
+                            <div className="p-3 bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-xl text-xs sm:text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                             </div>
                         )}
 
-                        <div className="flex items-start space-x-3 pt-2 pb-2">
+                        <div className="flex items-start space-x-3 pt-1 pb-1 sm:pt-2 sm:pb-2">
                             <input
                                 type="checkbox"
                                 id="terms"
@@ -161,17 +161,17 @@ export default function AdminRegister() {
                                 className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
                             />
                             <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
-                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>. I understand the strict penalties for platform abuse.
+                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
                             </label>
                         </div>
 
-                        <Button type="submit" disabled={!agreedToTerms || isLoading} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white py-6 mt-2" isLoading={isLoading}>
+                        <Button type="submit" disabled={!agreedToTerms || isLoading} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-11 sm:h-12 rounded-xl text-xs sm:text-sm uppercase tracking-wider font-semibold mt-2" isLoading={isLoading}>
                             Initialize Admin Account
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="justify-center border-t border-zinc-300 dark:border-zinc-800 py-4">
-                    <Link href="/login" className="text-zinc-600 dark:text-zinc-500 hover:text-white text-sm transition-colors">
+                <CardFooter className="justify-center border-t border-zinc-300 dark:border-zinc-800 py-3 sm:py-4">
+                    <Link href="/login" className="text-zinc-600 dark:text-zinc-500 hover:text-white text-xs sm:text-sm transition-colors">
                         Return to Login
                     </Link>
                 </CardFooter>

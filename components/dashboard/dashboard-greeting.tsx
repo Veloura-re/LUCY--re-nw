@@ -58,14 +58,14 @@ export function DashboardGreeting({ name, role, gender }: DashboardGreetingProps
 
     return (
         <div>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-4">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="inline-flex items-center gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 text-eduGreen-500 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-0.5 sm:py-1.5 rounded-full bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 text-eduGreen-500 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em]"
                 >
-                    <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3 text-eduGreen-500" />
+                    <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-eduGreen-500" />
                     {role} PORTAL ACTIVE
                 </motion.div>
 
@@ -73,35 +73,25 @@ export function DashboardGreeting({ name, role, gender }: DashboardGreetingProps
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.1 }}
-                    className="inline-flex items-center gap-2 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-500 text-[9px] md:text-[10px] font-medium uppercase tracking-widest min-w-[120px] md:min-w-[140px]"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1.5 rounded-full bg-zinc-100/30 dark:bg-zinc-900/30 border border-zinc-300 dark:border-zinc-800/50 text-zinc-600 dark:text-zinc-500 text-[8px] sm:text-[10px] font-medium uppercase tracking-widest min-w-[100px] sm:min-w-[140px]"
                 >
-                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 text-zinc-600" />
-                    {mounted ? currentDate : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2.5 w-20 md:w-24 rounded"></span>}
+                    <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-zinc-600" />
+                    {mounted ? currentDate : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2 sm:h-2.5 w-16 sm:w-24 rounded"></span>}
                 </motion.div>
             </div>
 
-            <h1 className="text-xl sm:text-2xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center flex-wrap gap-1.5 md:gap-2">
+            <h1 className="text-lg sm:text-2xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center flex-wrap gap-1 sm:gap-2">
                 <span className="lowercase text-zinc-600 dark:text-zinc-400 capitalize">
-                    {mounted ? greeting : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-8 md:h-10 w-32 md:w-48 rounded inline-block"></span>}
+                    {mounted ? greeting : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-6 sm:h-10 w-24 sm:w-48 rounded inline-block"></span>}
                 </span>
                 <span>
                     {mounted && ","} <span className="text-eduGreen-500 italic">{displayName}</span>
                 </span>
             </h1>
 
-            <p className="text-zinc-600 dark:text-zinc-500 font-medium tracking-[0.05em] md:tracking-[0.1em] text-sm md:text-lg mt-2 md:mt-3 min-h-[14px] md:min-h-[16px] flex items-center italic">
-                {mounted ? `"${quote}"` : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2.5 md:h-3 w-48 md:w-64 rounded inline-block"></span>}
+            <p className="text-zinc-600 dark:text-zinc-500 font-medium tracking-[0.03em] sm:tracking-[0.1em] text-xs sm:text-base md:text-lg mt-1 sm:mt-3 min-h-[12px] sm:min-h-[16px] flex items-center italic">
+                {mounted ? `"${quote}"` : <span className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-2 sm:h-3 w-36 sm:w-64 rounded inline-block"></span>}
             </p>
-
-            {/* Mobile-only beauty hint */}
-            <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="md:hidden text-[9px] text-zinc-600 mt-4 uppercase tracking-[0.2em] font-black italic opacity-50"
-            >
-                for a bttr beauty try oour pc version
-            </motion.p>
         </div>
     );
 }

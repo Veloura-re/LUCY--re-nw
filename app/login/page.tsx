@@ -57,7 +57,7 @@ function LoginContent() {
                 body: JSON.stringify({ email, password, turnstileToken })
             });
 
-            const data = await res.json();
+            const data = (await res.json()) as { error?: string };
 
             if (!res.ok) {
                 setError(data.error || "Authentication failed");
@@ -90,21 +90,21 @@ function LoginContent() {
             </div>
 
             <TiltCard className="w-full max-w-md">
-                <Card className="w-full max-w-md bg-white/90 dark:bg-zinc-900/90 border-slate-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl relative z-10 overflow-hidden backdrop-blur-xl">
-                    <CardHeader className="space-y-2 items-center text-center pb-2 pt-8">
-                        <div className="mx-auto flex justify-center mb-4">
-                            <Logo className="w-16 h-16" />
+                <Card className="w-full max-w-md bg-white/90 dark:bg-zinc-900/90 border-slate-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl relative z-10 overflow-hidden backdrop-blur-xl rounded-2xl sm:rounded-3xl">
+                    <CardHeader className="space-y-1.5 items-center text-center pb-2 pt-6 sm:pt-8 px-4 sm:px-6">
+                        <div className="mx-auto flex justify-center mb-3 sm:mb-4">
+                            <Logo className="w-12 h-12 sm:w-16 sm:h-16" />
                         </div>
-                        <CardTitle className="text-2xl font-medium text-slate-900 dark:text-white tracking-tight">
+                        <CardTitle className="text-xl sm:text-2xl font-medium text-slate-900 dark:text-white tracking-tight">
                             Welcome Back
                         </CardTitle>
-                        <CardDescription className="text-slate-500 dark:text-zinc-500 font-medium text-sm">
+                        <CardDescription className="text-slate-500 dark:text-zinc-500 font-medium text-xs sm:text-sm">
                             Access your workspace
                         </CardDescription>
                     </CardHeader>
 
-                    <CardContent className="pt-6">
-                        <form onSubmit={handleLogin} className="space-y-5">
+                    <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                        <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
                             <Input
                                 label="Email Address"
                                 type="email"
@@ -132,8 +132,8 @@ function LoginContent() {
                             </div>
 
                             {error && (
-                                <div className="p-4 bg-red-950/10 border border-red-900/20 rounded-2xl text-[10px] text-red-600 dark:text-red-500 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 font-medium uppercase tracking-wider">
-                                    <AlertCircle className="w-5 h-5 shrink-0" />
+                                <div className="p-3 sm:p-4 bg-red-950/10 border border-red-900/20 rounded-xl sm:rounded-2xl text-[10px] text-red-600 dark:text-red-500 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 font-medium uppercase tracking-wider">
+                                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                     <p className="font-medium leading-relaxed">{error}</p>
                                 </div>
                             )}
@@ -146,7 +146,7 @@ function LoginContent() {
                                 />
                             </div>
 
-                            <div className="flex items-start space-x-3 pt-2 pb-2">
+                            <div className="flex items-start space-x-3 pt-1 pb-1 sm:pt-2 sm:pb-2">
                                 <input
                                     type="checkbox"
                                     id="terms"
@@ -161,24 +161,24 @@ function LoginContent() {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white py-7 text-base font-medium rounded-2xl group"
+                                className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-11 sm:h-14 text-sm sm:text-base font-medium rounded-xl sm:rounded-2xl group"
                                 isLoading={isLoading}
                                 disabled={isLoading || !agreedToTerms}
                             >
                                 Sign In
-                                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </form>
                     </CardContent>
 
-                    <CardFooter className="flex flex-col gap-4 border-t border-slate-200/80 dark:border-zinc-800 py-6 justify-center bg-slate-50/80 dark:bg-zinc-950/40">
+                    <CardFooter className="flex flex-col gap-3 sm:gap-4 border-t border-slate-200/80 dark:border-zinc-800 py-4 sm:py-6 px-4 sm:px-6 justify-center bg-slate-50/80 dark:bg-zinc-950/40">
                         <div className="text-xs text-center text-slate-600 dark:text-zinc-500 font-medium">
                             New to LUCY?{" "}
                             <Link href="/register" className="text-emerald-600 dark:text-eduGreen-500 font-medium hover:underline">
                                 Create an account
                             </Link>
                         </div>
-                        <div className="text-[9px] text-center text-slate-400 dark:text-zinc-600 flex items-center justify-center gap-2 px-8 font-medium">
+                        <div className="text-[9px] text-center text-slate-400 dark:text-zinc-600 flex items-center justify-center gap-2 px-4 sm:px-8 font-medium">
                             <Shield className="w-3 h-3 text-emerald-600 dark:text-eduGreen-900/50" />
                             <span className="uppercase tracking-tighter">Secure Educational Platform • AES-256 Encryption</span>
                         </div>

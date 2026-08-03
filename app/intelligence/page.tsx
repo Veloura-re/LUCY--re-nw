@@ -55,29 +55,29 @@ export default function Intelligence() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-5xl mx-auto space-y-32">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto space-y-16 sm:space-y-32">
 
                     {/* Hero with SmartWeb */}
-                    <section className="relative min-h-[60vh] flex flex-col justify-center space-y-10 overflow-hidden">
+                    <section className="relative min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center space-y-6 sm:space-y-10 overflow-hidden">
                         <div className="absolute inset-0 opacity-10 dark:opacity-40"><SmartWeb nodeCount={28} /></div>
                         <HexGrid />
 
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-400">
-                            <Sparkles className="w-4 h-4" />
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-400">
+                            <Sparkles className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-600" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">cognitive_layer // intelligence_engine_active</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">cognitive_layer // intelligence_engine_active</span>
                             <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
                         </Reveal>
 
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-[7.5rem] font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                            <h1 className="text-3xl sm:text-6xl md:text-[7.5rem] font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                                 smart<br /><GlitchText className="text-slate-400 dark:text-zinc-800">logic.</GlitchText>
                             </h1>
                         </Reveal>
 
                         <Reveal delay={0.2} className="max-w-2xl">
-                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed">
                                 the intelligence engine is the central processing core of lucy_os. it orchestrates the behavioral patterns of all specialized personas and manages the cognitive routing of institutional data.
                             </p>
                         </Reveal>

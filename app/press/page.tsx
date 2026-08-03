@@ -54,23 +54,23 @@ export default function Press() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-4xl mx-auto space-y-32">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-4xl mx-auto space-y-16 sm:space-y-32">
 
-                    <section className="space-y-10 relative overflow-hidden">
+                    <section className="space-y-6 sm:space-y-10 relative overflow-hidden">
                         <HexGrid />
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
-                            <Newspaper className="w-4 h-4" />
+                        <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
+                            <Newspaper className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">press_room // media_coverage</span>
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">press_room // media_coverage</span>
                         </Reveal>
                         <Reveal delay={0.1}>
-                            <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
+                            <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
                                 press<br /><GlitchText className="text-slate-300 dark:text-zinc-800">room.</GlitchText>
                             </h1>
                         </Reveal>
                         <Reveal delay={0.2}>
-                            <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed max-w-xl">
+                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed max-w-xl">
                                 media coverage, podcast appearances, and press resources. for all inquiries, contact press@5-cn.net.
                             </p>
                         </Reveal>

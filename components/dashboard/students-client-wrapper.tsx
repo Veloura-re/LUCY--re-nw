@@ -190,62 +190,62 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-500 relative z-10 pb-20">
+        <div className="max-w-7xl mx-auto space-y-3.5 sm:space-y-8 md:space-y-12 animate-in fade-in duration-500 relative z-10 pb-12 sm:pb-20">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-3 sm:pb-10">
                 <div>
-                    <h1 className="text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Student <span className="text-eduGreen-500 italic">Registry</span>
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Active Enrollment & Records</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[8px] sm:text-xs mt-1 sm:mt-3">Active Enrollment & Records</p>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                     <Button
                         onClick={() => handlePrint()}
-                        className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-14 px-6 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-lg"
+                        className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-md"
                     >
-                        <Printer className="mr-2 h-4 w-4" /> Print Registry
+                        <Printer className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" /> Print Registry
                     </Button>
                     <Button
                         onClick={() => setIsAdding(true)}
-                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95"
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-9 sm:h-14 px-4 sm:px-8 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] shadow-xl shadow-eduGreen-900/20 transition-all active:scale-95"
                     >
-                        <Plus className="mr-2 h-4 w-4" />
+                        <Plus className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         Enrol Student
                     </Button>
                 </div>
             </div>
 
             {/* Compact Search & Filters Bar */}
-            <div className="flex flex-col md:flex-row items-center gap-3 bg-white/40 dark:bg-zinc-950/40 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row items-center gap-2 sm:gap-3 bg-white/40 dark:bg-zinc-950/40 p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
                 {/* Search */}
                 <form onSubmit={handleSearch} className="relative flex-1 w-full group">
-                    <div className="relative flex gap-2">
+                    <div className="relative flex gap-1.5 sm:gap-2">
                         <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
+                            <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-zinc-600 group-focus-within:text-eduGreen-500 transition-colors" />
                             <Input
                                 placeholder="Search students..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl pl-10 pr-4 text-xs text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all placeholder:text-zinc-700 w-full"
+                                className="h-8 sm:h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl pl-8 sm:pl-10 pr-3 sm:pr-4 text-[10px] sm:text-xs text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all placeholder:text-zinc-700 w-full"
                             />
                         </div>
                         <Button
                             type="submit"
-                            className="h-10 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl px-5 font-medium text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-eduGreen-900/10"
+                            className="h-8 sm:h-10 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-lg sm:rounded-xl px-3 sm:px-5 font-medium text-[8px] sm:text-[9px] uppercase tracking-widest transition-all shadow-md shadow-eduGreen-900/10"
                         >
                             Search
                         </Button>
                     </div>
                 </form>
 
-                <div className="flex items-center gap-2 w-full md:w-auto">
+                <div className="flex items-center gap-1.5 sm:gap-2 w-full md:w-auto">
                     {/* Class Filter */}
                     <Select value={filterClassId} onValueChange={setFilterClassId}>
-                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[140px]">
-                            <div className="flex items-center gap-2">
-                                <Filter className="w-3 h-3" />
+                        <SelectTrigger className="h-8 sm:h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl px-2.5 sm:px-4 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[110px] sm:min-w-[140px]">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                                <Filter className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                 <SelectValue placeholder="FILTER" />
                             </div>
                         </SelectTrigger>
@@ -253,7 +253,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                             <SelectItem value="ALL">ALL CLASSES</SelectItem>
                             {grades?.map(grade => (
                                 <div key={grade.id}>
-                                    <div className="px-3 py-1.5 text-[7px] font-bold text-zinc-700 uppercase tracking-[0.2em] bg-zinc-100/30 dark:bg-zinc-900/30">{grade.name}</div>
+                                    <div className="px-3 py-2 text-xs font-bold text-zinc-600 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50">{grade.name}</div>
                                     {grade.classes?.map((cls: any) => (
                                         <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
                                     ))}
@@ -268,9 +268,9 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                         setBy(by as any);
                         setSortDir(dir as any);
                     }}>
-                        <SelectTrigger className="h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-xl px-4 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[130px]">
-                            <div className="flex items-center gap-2">
-                                <Calendar className="w-3 h-3" />
+                        <SelectTrigger className="h-8 sm:h-10 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl px-2.5 sm:px-4 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 min-w-[100px] sm:min-w-[130px]">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                                <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                 <SelectValue placeholder="SORT" />
                             </div>
                         </SelectTrigger>
@@ -351,59 +351,39 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                                 type="number"
                                                 placeholder="Age"
                                                 value={newStudent.age}
-                                                onChange={e => {
-                                                    const age = e.target.value;
-                                                    const dob = age ? format(new Date(new Date().getFullYear() - parseInt(age), 0, 1), 'yyyy-MM-dd') : "";
-                                                    setNewStudent({ ...newStudent, age, dob });
-                                                }}
+                                                onChange={e => setNewStudent({ ...newStudent, age: e.target.value, dob: "" })}
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-10 rounded-xl focus:border-eduGreen-600 transition-all border-2 w-full text-xs"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <Input
-                                    placeholder="Home Address"
+                                    placeholder="Address"
                                     value={newStudent.address}
                                     onChange={e => setNewStudent({ ...newStudent, address: e.target.value })}
-                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
-                                />
-                                <Input
-                                    placeholder="Email (Optional)"
-                                    type="email"
-                                    value={newStudent.email}
-                                    onChange={e => setNewStudent({ ...newStudent, email: e.target.value })}
                                     className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Academic & Guardian</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Select onValueChange={(v: string) => {
-                                        setNewStudent({ ...newStudent, grade: v, classId: "" })
-                                    }}>
-                                        <SelectTrigger className="h-14 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-700 dark:text-zinc-300">
-                                            <SelectValue placeholder="Select Grade" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white max-h-[300px]">
-                                            {grades?.map(g => (
-                                                <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Academic Placement</label>
+                                <Select onValueChange={(v: string) => setNewStudent({ ...newStudent, classId: v })}>
+                                    <SelectTrigger className="h-14 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-700 dark:text-zinc-300">
+                                        <SelectValue placeholder="Select Class/Grade" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
+                                        {grades?.map(grade => (
+                                            <div key={grade.id}>
+                                                <div className="px-3 py-2 text-xs font-bold text-zinc-600 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50">{grade.name}</div>
+                                                {grade.classes?.map((cls: any) => (
+                                                    <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
 
-                                    <Select onValueChange={(v: string) => setNewStudent({ ...newStudent, classId: v })} disabled={!newStudent.grade}>
-                                        <SelectTrigger className="h-14 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-700 dark:text-zinc-300">
-                                            <SelectValue placeholder="Select Class" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white max-h-[300px]">
-                                            {grades?.find(g => g.id === newStudent.grade)?.classes?.map((c: any) => (
-                                                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
+                                <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2 mt-4 block">Guardian Contact</label>
                                 <Input
                                     placeholder="Guardian Name"
                                     value={newStudent.guardianName}
@@ -424,9 +404,16 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                         className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
                                     />
                                 </div>
+                                <Input
+                                    type="email"
+                                    placeholder="Student/Guardian Email (for Invite)"
+                                    value={newStudent.email}
+                                    onChange={e => setNewStudent({ ...newStudent, email: e.target.value })}
+                                    className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2"
+                                />
                             </div>
 
-                            <div className="md:col-span-2 pt-4 border-t border-zinc-200 dark:border-zinc-900/50 flex justify-end gap-4">
+                            <div className="md:col-span-2 flex justify-end gap-4 mt-6">
                                 <Button type="button" onClick={() => setIsAdding(false)} className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white h-14 px-8 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] transition-all">
                                     Cancel
                                 </Button>
@@ -439,14 +426,14 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 </DialogContent>
             </Dialog>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {(students || []).map((student) => (
                     <div key={student.id} className="group relative">
-                        <Card className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 transition-all h-full rounded-[2rem] group/card shadow-none hover:shadow-2xl hover:shadow-black/50 overflow-hidden border">
+                        <Card className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-950 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 transition-all h-full rounded-xl sm:rounded-2xl md:rounded-[2rem] group/card shadow-none hover:shadow-xl hover:shadow-black/50 overflow-hidden border">
                             <Link href={`/dashboard/students/${student.id}`} className="block">
-                                <CardHeader className="p-8 pb-4 flex flex-row items-start justify-between border-b border-zinc-200 dark:border-zinc-900/30">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-16 relative rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center text-xl font-medium text-zinc-900 dark:text-white shadow-inner overflow-hidden">
+                                <CardHeader className="p-3.5 sm:p-6 md:p-8 pb-2 sm:pb-4 flex flex-row items-start justify-between border-b border-zinc-200 dark:border-zinc-900/30">
+                                    <div className="flex items-center gap-2.5 sm:gap-4">
+                                        <div className="w-9 h-12 sm:w-12 sm:h-16 relative rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center text-sm sm:text-xl font-medium text-zinc-900 dark:text-white shadow-inner overflow-hidden shrink-0">
                                             {student.photoUrl ? (
                                                 <Image src={student.photoUrl} alt="" fill sizes="48px" className="object-cover" />
                                             ) : (
@@ -454,53 +441,53 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                             )}
                                         </div>
                                         <div>
-                                            <CardTitle className="text-lg font-medium text-zinc-900 dark:text-white leading-none group-hover/card:text-eduGreen-400 transition-colors">
+                                            <CardTitle className="text-sm sm:text-base md:text-lg font-medium text-zinc-900 dark:text-white leading-none group-hover/card:text-eduGreen-400 transition-colors">
                                                 {student.firstName} {student.lastName}
                                             </CardTitle>
-                                            <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-2">{student.studentCode}</p>
+                                            <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">{student.studentCode}</p>
                                         </div>
                                     </div>
-                                    <div className={`w-3 h-3 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${student.enrollmentStatus === 'ACTIVE' ? 'bg-eduGreen-500' : 'bg-zinc-200 dark:bg-zinc-800'}`} />
+                                    <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${student.enrollmentStatus === 'ACTIVE' ? 'bg-eduGreen-500' : 'bg-zinc-200 dark:bg-zinc-800'}`} />
                                 </CardHeader>
                             </Link>
 
-                            <CardContent className="p-8 pt-2">
+                            <CardContent className="p-3.5 sm:p-6 md:p-8 pt-1.5 sm:pt-2">
                                 <Link href={`/dashboard/students/${student.id}`} className="block">
-                                    <div className="flex flex-wrap gap-2 mt-4">
-                                        <div className="px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                                            <GraduationCap className="w-3 h-3" />
+                                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-4">
+                                        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[8px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                            <GraduationCap className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                             {student.grade?.name}
                                         </div>
-                                        <div className="px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                                            <BookOpen className="w-3 h-3" />
+                                        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[8px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                            <BookOpen className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                             {student.class?.name || "Unassigned"}
                                         </div>
-                                        <div className="px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-                                            <Users className="w-3 h-3" />
+                                        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50 text-[8px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                            <Users className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                             {student.gender || "STUDENT"}
                                         </div>
                                         {student.finance && (
                                             <div className={cn(
-                                                "px-3 py-1.5 rounded-lg border text-[9px] font-medium uppercase tracking-wider flex items-center gap-2",
+                                                "px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg border text-[8px] sm:text-[9px] font-medium uppercase tracking-wider flex items-center gap-1.5 sm:gap-2",
                                                 Number(student.finance.unpaidCount) > 0
                                                     ? "bg-amber-950/10 border-amber-900/20 text-amber-600 dark:text-amber-500"
                                                     : "bg-eduGreen-950/10 border-eduGreen-900/20 text-eduGreen-500"
                                             )}>
-                                                <CreditCard className="w-3 h-3" />
+                                                <CreditCard className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                                 {Number(student.finance.unpaidCount) > 0 ? `$${student.finance.outstanding} Due` : "All Paid"}
                                             </div>
                                         )}
                                         {student.user && (
-                                            <div className="px-3 py-1.5 rounded-lg bg-eduGreen-950/10 border border-eduGreen-900/20 text-[9px] font-medium text-eduGreen-600 uppercase tracking-wider flex items-center gap-2">
-                                                <Shield className="w-3 h-3" />
+                                            <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg bg-eduGreen-950/10 border border-eduGreen-900/20 text-[8px] sm:text-[9px] font-medium text-eduGreen-600 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+                                                <Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                                 Portal Active
                                             </div>
                                         )}
                                     </div>
                                 </Link>
 
-                                <div className="mt-8 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-900/50 pt-4 relative z-20">
-                                    <div className="flex items-center gap-2">
+                                <div className="mt-4 sm:mt-8 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-900/50 pt-2.5 sm:pt-4 relative z-20">
+                                    <div className="flex items-center gap-1 sm:gap-2">
                                         <Button
                                             variant="ghost"
                                             onClick={(e) => {
@@ -508,16 +495,16 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                                 e.stopPropagation();
                                                 handleDelete(student.id);
                                             }}
-                                            className="h-8 w-8 p-0 rounded-full hover:bg-rose-500/10 text-zinc-600 hover:text-rose-500 transition-colors"
+                                            className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-full hover:bg-rose-500/10 text-zinc-600 hover:text-rose-500 transition-colors"
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                         </Button>
                                         <Link href={`/dashboard/students/${student.id}`}>
                                             <Button
                                                 variant="ghost"
-                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                                                className="h-7 sm:h-8 px-2 sm:px-3 rounded-md sm:rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest text-zinc-600 hover:text-zinc-900 dark:hover:text-white transition-colors"
                                             >
-                                                View Dossier <ChevronRight className="w-3 h-3 ml-1" />
+                                                View Dossier <ChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 ml-1" />
                                             </Button>
                                         </Link>
                                         <Button
@@ -527,23 +514,23 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                                 e.stopPropagation();
                                                 setGradingStudent(student);
                                             }}
-                                            className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-eduGreen-600 hover:text-eduGreen-500 transition-colors"
+                                            className="h-7 sm:h-8 px-2 sm:px-3 rounded-md sm:rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest text-eduGreen-600 hover:text-eduGreen-500 transition-colors"
                                         >
-                                            <PenTool className="w-3 h-3 mr-2" /> Add Mark
+                                            <PenTool className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-2" /> Add Mark
                                         </Button>
                                         <Link href={`/dashboard/students/${student.id}?tab=academic`}>
                                             <Button
                                                 variant="ghost"
-                                                className="h-8 px-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                                                className="h-7 sm:h-8 px-2 sm:px-3 rounded-md sm:rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[8px] sm:text-[9px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
                                             >
-                                                <FileText className="w-3 h-3 mr-2" /> Marklist
+                                                <FileText className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-2" /> Marklist
                                             </Button>
                                         </Link>
                                     </div>
                                     {student.user && (
                                         <Link href={`/dashboard/messages?userId=${student.user.id}`} onClick={(e) => e.stopPropagation()}>
-                                            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center hover:bg-eduGreen-600 hover:text-white transition-all text-zinc-600">
-                                                <MessageSquare className="w-3 h-3" />
+                                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center hover:bg-eduGreen-600 hover:text-white transition-all text-zinc-600">
+                                                <MessageSquare className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                             </div>
                                         </Link>
                                     )}

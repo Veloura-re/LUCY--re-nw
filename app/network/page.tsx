@@ -77,28 +77,28 @@ export default function Network() {
                 </div>
             </nav>
 
-            <main className="relative z-10 pt-32 pb-40 px-6">
-                <div className="max-w-5xl mx-auto space-y-24">
+            <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto space-y-16 sm:space-y-24">
 
                     {/* Hero */}
                     <motion.section
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="space-y-8"
+                        className="space-y-6 sm:space-y-8"
                     >
-                        <div className="flex items-center gap-4 text-emerald-600 dark:text-emerald-400">
-                            <Globe className="w-4 h-4" />
-                            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">infrastructure_overview // deployment_map</span>
+                        <div className="flex items-center gap-3 sm:gap-4 text-emerald-600 dark:text-emerald-400">
+                            <Globe className="w-4 h-4 shrink-0" />
+                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">infrastructure_overview // deployment_map</span>
                             <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full" />
                         </div>
-                        <h1 className="text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
+                        <h1 className="text-3xl sm:text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
                             system <br />
                             <motion.span className="text-slate-400 dark:text-zinc-800 inline-block" animate={{ x: [0, -2, 2, 0] }} transition={{ duration: 0.1, repeat: Infinity, repeatDelay: 7 }}>
                                 network.
                             </motion.span>
                         </h1>
-                        <p className="text-slate-500 dark:text-zinc-500 text-xl leading-relaxed max-w-2xl">
+                        <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed max-w-2xl">
                             lucy_os runs as a single-tenant institutional platform. each school gets its own isolated data environment. no shared infrastructure between clients.
                         </p>
                     </motion.section>
