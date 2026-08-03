@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,6 +18,15 @@ import { Logo } from "@/components/ui/logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
 import { PresenceBroadcaster } from "@/components/dashboard/presence-broadcaster";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: false,
+        noarchive: true,
+        nosnippet: true,
+    },
+};
 
 export default async function DashboardLayout({
     children,
