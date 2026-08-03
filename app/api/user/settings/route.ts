@@ -17,8 +17,10 @@ export async function GET() {
                 email: data?.email,
                 name: data?.name,
                 role: data?.role,
+                schoolId: data?.schoolId,
                 bio: data?.bio,
                 preferences: data?.preferences,
+                school: null,
                 parentLinks: [],
                 teacherAssignments: []
             };
@@ -30,8 +32,23 @@ export async function GET() {
                     email: true,
                     name: true,
                     role: true,
+                    schoolId: true,
                     bio: true,
                     preferences: true,
+                    school: {
+                        select: {
+                            id: true,
+                            name: true,
+                            schoolCode: true,
+                            logoUrl: true,
+                            status: true,
+                            subscriptionStatus: true,
+                            trialEndsAt: true,
+                            createdAt: true,
+                            stripeCustomerId: true,
+                            stripeSubscriptionId: true,
+                        }
+                    },
                     // Include linked students for Parents
                     parentLinks: {
                         include: {
@@ -92,7 +109,6 @@ export async function PATCH(request: Request) {
             });
         }
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
@@ -102,7 +118,8 @@ export async function PATCH(request: Request) {
                 await logActivity({ userId: _userId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
-return NextResponse.json({ user });
+
+        return NextResponse.json({ user });
     } catch (e) {
         return handleApiError(e);
     }

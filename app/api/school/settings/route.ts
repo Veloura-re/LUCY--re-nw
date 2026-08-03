@@ -6,14 +6,33 @@ export async function GET() {
     try {
         const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
 
+        // Handle case where user is a global SuperAdmin without a fixed schoolId
+        if (!user.schoolId) {
+            if (user.role === 'SUPERADMIN') {
+                const firstSchool = await prisma.school.findFirst({
+                    include: {
+                        _count: {
+                            select: { students: true, users: true, grades: true }
+                        }
+                    }
+                });
+                return NextResponse.json({ school: firstSchool, isSuperadmin: true });
+            }
+            return NextResponse.json({ school: null, error: "No school associated with this account." });
+        }
+
         const school = await prisma.school.findUnique({
-            where: { id: user.schoolId! },
+            where: { id: user.schoolId },
             include: {
                 _count: {
                     select: { students: true, users: true, grades: true }
                 }
             }
         });
+
+        if (!school) {
+            return NextResponse.json({ school: null, error: "School record not found." }, { status: 404 });
+        }
 
         return NextResponse.json({ school });
     } catch (e) {
@@ -24,7 +43,9 @@ export async function GET() {
 export async function PATCH(request: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
-        if (!user?.schoolId) {
+        const targetSchoolId = user.schoolId || (user.role === 'SUPERADMIN' ? (await prisma.school.findFirst({ select: { id: true } }))?.id : null);
+        
+        if (!targetSchoolId) {
             return NextResponse.json({ error: "No school associated with this account." }, { status: 400 });
         }
 
@@ -41,7 +62,7 @@ export async function PATCH(request: Request) {
             defaultBillingCycle 
         } = body || {};
 
-        const currentSchool = await prisma.school.findUnique({ where: { id: user.schoolId } });
+        const currentSchool = await prisma.school.findUnique({ where: { id: targetSchoolId } });
         if (!currentSchool) {
             return NextResponse.json({ error: "School record not found." }, { status: 404 });
         }
@@ -73,7 +94,7 @@ export async function PATCH(request: Request) {
         if (defaultBillingCycle) updateData.defaultBillingCycle = defaultBillingCycle;
 
         const school = await prisma.school.update({
-            where: { id: user.schoolId },
+            where: { id: targetSchoolId },
             data: updateData
         });
 
