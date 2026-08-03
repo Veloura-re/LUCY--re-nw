@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AlertModal, ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
 
 const DAYS = [
     { label: "Monday", value: "MON" },
@@ -24,15 +26,19 @@ const DAYS = [
 ];
 
 export default function TimetableManagementPage() {
-    const [periods, setPeriods] = useState<any[]>([]);
-    const [classes, setClasses] = useState<any[]>([]);
-    const [subjects, setSubjects] = useState<any[]>([]);
-    const [teachers, setTeachers] = useState<any[]>([]);
+    // Attempt instant initial cache hydration
+    const cachedMeta = typeof window !== 'undefined' ? getClientCache<any>('timetable_initial_meta') : null;
+
+    const [periods, setPeriods] = useState<any[]>(cachedMeta?.periods || []);
+    const [classes, setClasses] = useState<any[]>(cachedMeta?.classes || []);
+    const [subjects, setSubjects] = useState<any[]>(cachedMeta?.subjects || []);
+    const [teachers, setTeachers] = useState<any[]>(cachedMeta?.teachers || []);
     const [assignments, setAssignments] = useState<any[]>([]); // Staffing assignments
-    const [selectedClassId, setSelectedClassId] = useState("");
+    const [selectedClassId, setSelectedClassId] = useState(cachedMeta?.classes?.[0]?.id || "");
     const [timetableEntries, setTimetableEntries] = useState<any[]>([]);
     const [showWeekends, setShowWeekends] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!cachedMeta);
+    const [isRevalidating, setIsRevalidating] = useState(false);
     const [saving, setSaving] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [confirmGenerate, setConfirmGenerate] = useState(false);
@@ -45,6 +51,20 @@ export default function TimetableManagementPage() {
 
     useEffect(() => {
         if (selectedClassId) {
+            // Load class-specific cached data instantly if available
+            const cachedClassData = getClientCache<any>(`timetable_class_${selectedClassId}`);
+            if (cachedClassData) {
+                setTimetableEntries(cachedClassData.timetable || []);
+                if (cachedClassData.periods && cachedClassData.periods.length > 0) {
+                    setPeriods(cachedClassData.periods);
+                }
+            }
+
+            const cachedStaffing = getClientCache<any>(`staffing_class_${selectedClassId}`);
+            if (cachedStaffing) {
+                setAssignments(cachedStaffing.assignments || []);
+            }
+
             fetchTimetable(selectedClassId);
             fetchStaffing(selectedClassId);
         }
@@ -52,30 +72,33 @@ export default function TimetableManagementPage() {
 
     const fetchStaffing = async (classId: string) => {
         try {
-            const res = await fetch(`/api/school/staffing?classId=${classId}`);
-            const data = (await res.json()) as any;
-            setAssignments(data.assignments || []);
+            const res = await fetchWithResilience(`/api/school/staffing?classId=${classId}`, {}, 8000);
+            if (res.ok) {
+                const data = (await res.json()) as any;
+                setAssignments(data.assignments || []);
+                setClientCache(`staffing_class_${classId}`, data, 10 * 60 * 1000);
+            }
         } catch (e) {
             console.error("Failed to fetch staffing", e);
         }
     };
 
     const fetchInitialData = async () => {
-        setLoading(true);
+        if (!cachedMeta) setLoading(true);
+        else setIsRevalidating(true);
+
         try {
-            const [pRes, cRes, sRes, tRes] = await Promise.all([
-                fetch(`/api/school/periods${selectedClassId ? `?classId=${selectedClassId}` : ''}`),
-                fetch('/api/school/classes'),
-                fetch('/api/school/subjects'),
-                fetch('/api/school/teachers')
+            const [pRes, cRes, sRes, tRes] = await Promise.allSettled([
+                fetchWithResilience(`/api/school/periods${selectedClassId ? `?classId=${selectedClassId}` : ''}`, {}, 8000),
+                fetchWithResilience('/api/school/classes', {}, 8000),
+                fetchWithResilience('/api/school/subjects', {}, 8000),
+                fetchWithResilience('/api/school/teachers', {}, 8000)
             ]);
 
-            const pData = (await pRes.json()) as any;
-            const [cData, sData, tData] = (await Promise.all([
-                cRes.json(),
-                sRes.json(),
-                tRes.json()
-            ])) as any[];
+            const pData = pRes.status === 'fulfilled' && pRes.value.ok ? (await pRes.value.json()) as any : { periods: [] };
+            const cData = cRes.status === 'fulfilled' && cRes.value.ok ? (await cRes.value.json()) as any : { classes: [] };
+            const sData = sRes.status === 'fulfilled' && sRes.value.ok ? (await sRes.value.json()) as any : { subjects: [] };
+            const tData = tRes.status === 'fulfilled' && tRes.value.ok ? (await tRes.value.json()) as any : { teachers: [] };
 
             setPeriods(pData.periods || []);
 
@@ -91,31 +114,45 @@ export default function TimetableManagementPage() {
             setSubjects(sData.subjects || []);
             setTeachers(tData.teachers || []);
 
-            if (flattenedClasses.length > 0) {
+            if (flattenedClasses.length > 0 && !selectedClassId) {
                 setSelectedClassId(flattenedClasses[0].id);
             }
+
+            // Cache metadata for instant future renders
+            setClientCache('timetable_initial_meta', {
+                periods: pData.periods || [],
+                classes: flattenedClasses,
+                subjects: sData.subjects || [],
+                teachers: tData.teachers || []
+            }, 15 * 60 * 1000);
         } catch (e) {
             console.error("Failed to load initial data", e);
         } finally {
             setLoading(false);
+            setIsRevalidating(false);
         }
     };
 
     const fetchTimetable = async (classId: string) => {
         try {
-            const [tRes, pRes] = await Promise.all([
-                fetch(`/api/school/timetable?classId=${classId}`),
-                fetch(`/api/school/periods?classId=${classId}`)
+            const [tRes, pRes] = await Promise.allSettled([
+                fetchWithResilience(`/api/school/timetable?classId=${classId}`, {}, 8000),
+                fetchWithResilience(`/api/school/periods?classId=${classId}`, {}, 8000)
             ]);
-            const tData = (await tRes.json()) as any;
-            const pData = (await pRes.json()) as any;
+
+            const tData = tRes.status === 'fulfilled' && tRes.value.ok ? (await tRes.value.json()) as any : { timetable: [] };
+            const pData = pRes.status === 'fulfilled' && pRes.value.ok ? (await pRes.value.json()) as any : { periods: [] };
 
             setTimetableEntries(tData.timetable || []);
-            // If the class has periods, use them. Otherwise fallback to global or keep existing?
-            // User requested: "different periods for every class"
             if (pData.periods && pData.periods.length > 0) {
                 setPeriods(pData.periods);
             }
+
+            // Cache class-specific timetable
+            setClientCache(`timetable_class_${classId}`, {
+                timetable: tData.timetable || [],
+                periods: pData.periods || []
+            }, 10 * 60 * 1000);
         } catch (e) {
             console.error("Failed to load timetable/periods", e);
         }

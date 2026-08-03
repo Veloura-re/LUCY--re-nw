@@ -108,8 +108,8 @@ export default function BillingPage() {
                     try {
                         const res = await fetchWithTimeout('/api/school/settings');
                         if (res.ok) {
-                            const data = await res.json();
-                            if (data.school) return data.school;
+                            const data = (await res.json()) as any;
+                            if (data?.school) return data.school;
                         }
                     } catch (e) {
                         console.warn('[Billing] /api/school/settings fetch failed, attempting fallback...', e);
@@ -118,8 +118,8 @@ export default function BillingPage() {
                     // Fallback to /api/user/settings
                     const resUser = await fetchWithTimeout('/api/user/settings');
                     if (resUser.ok) {
-                        const dataUser = await resUser.json();
-                        if (dataUser.user?.school) return dataUser.user.school;
+                        const dataUser = (await resUser.json()) as any;
+                        if (dataUser?.user?.school) return dataUser.user.school;
                     }
                     return null;
                 })(),
@@ -127,8 +127,8 @@ export default function BillingPage() {
                     try {
                         const res = await fetchWithTimeout('/api/school/billing/receipt');
                         if (res.ok) {
-                            const data = await res.json();
-                            return data.receipts || [];
+                            const data = (await res.json()) as any;
+                            return data?.receipts || [];
                         }
                     } catch (e) {
                         console.warn('[Billing] /api/school/billing/receipt fetch failed:', e);

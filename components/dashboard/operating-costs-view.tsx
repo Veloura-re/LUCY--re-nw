@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,8 @@ import {
 import { Plus, Receipt, Loader2, Calendar, FileText, Monitor, BookOpen, Wrench, Shield, Briefcase, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useCachedQuery } from "@/hooks/use-cached-query";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
 
 type Expense = {
     id: string;
@@ -47,8 +49,6 @@ const CATEGORY_ICONS: Record<Expense["category"], React.ReactNode> = {
 };
 
 export function OperatingCostsView() {
-    const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -58,22 +58,26 @@ export function OperatingCostsView() {
     const [category, setCategory] = useState<Expense["category"]>("EQUIPMENT");
     const [description, setDescription] = useState("");
 
-    const fetchExpenses = async () => {
-        try {
-            const res = await fetch('/api/school/finance/expenses');
+    // Cache-first query with background SWR sync
+    const {
+        data: expenses = [],
+        loading: isLoading,
+        isRevalidating,
+        isOffline,
+        isFromCache,
+        error,
+        refetch,
+        mutate
+    } = useCachedQuery<Expense[]>({
+        key: 'school_operating_expenses',
+        fetcher: async (signal) => {
+            const res = await fetch('/api/school/finance/expenses', { signal });
             if (!res.ok) throw new Error("Failed to fetch expenses");
             const data = await res.json() as Expense[];
-            setExpenses(data);
-        } catch (error) {
-            toast.error("Failed to load operating costs");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchExpenses();
-    }, []);
+            return data;
+        },
+        initialData: []
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +100,8 @@ export function OperatingCostsView() {
                 throw new Error(data.error || "Failed to log expense");
             }
 
+            const newExpenseData = await res.json().catch(() => null);
+
             toast.success("Expense logged successfully");
             setIsDialogOpen(false);
             
@@ -105,8 +111,12 @@ export function OperatingCostsView() {
             setDescription("");
             setCategory("EQUIPMENT");
 
-            // Refresh list
-            fetchExpenses();
+            // Optimistically update list & trigger live sync
+            if (newExpenseData && (newExpenseData as Expense).id) {
+                mutate(prev => [(newExpenseData as Expense), ...(prev || [])], true);
+            } else {
+                refetch(true);
+            }
         } catch (error: any) {
             toast.error(error.message);
         } finally {
@@ -114,7 +124,7 @@ export function OperatingCostsView() {
         }
     };
 
-    const totalSpent = expenses.reduce((acc, exp) => acc + parseFloat(exp.amount), 0);
+    const totalSpent = (expenses || []).reduce((acc, exp) => acc + parseFloat(exp.amount || '0'), 0);
 
     return (
         <div className="space-y-6">
@@ -127,83 +137,93 @@ export function OperatingCostsView() {
                     <p className="text-slate-500 dark:text-zinc-500 font-medium">Internal ledger for tracking institutional assets and expenses.</p>
                 </div>
 
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium shadow-xl shadow-eduGreen-900/20">
-                            <Plus className="w-4 h-4 mr-2" />
-                            Log Expense
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white sm:max-w-[425px]">
-                        <DialogHeader>
-                            <DialogTitle>Log New Expense</DialogTitle>
-                            <DialogDescription className="text-slate-600 dark:text-zinc-400">
-                                Record a new institutional purchase or cost. This is only visible to directors and owners.
-                            </DialogDescription>
-                        </DialogHeader>
-                        
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="title" className="text-slate-700 dark:text-zinc-300">Title / Item Name</Label>
-                                <Input 
-                                    id="title" 
-                                    required 
-                                    placeholder="e.g. 10x Dell Laptops"
-                                    value={title}
-                                    onChange={e => setTitle(e.target.value)}
-                                    className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
-                                />
-                            </div>
+                <div className="flex items-center gap-3">
+                    <CachedSyncBadge 
+                        isRevalidating={isRevalidating} 
+                        isOffline={isOffline} 
+                        isFromCache={isFromCache} 
+                        error={error} 
+                        onSync={() => refetch(true)} 
+                    />
 
-                            <div className="grid grid-cols-2 gap-4">
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium shadow-xl shadow-eduGreen-900/20">
+                                <Plus className="w-4 h-4 mr-2" />
+                                Log Expense
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Log New Expense</DialogTitle>
+                                <DialogDescription className="text-slate-600 dark:text-zinc-400">
+                                    Record a new institutional purchase or cost. This is only visible to directors and owners.
+                                </DialogDescription>
+                            </DialogHeader>
+                            
+                            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="amount" className="text-slate-700 dark:text-zinc-300">Amount (ZAR)</Label>
+                                    <Label htmlFor="title" className="text-slate-700 dark:text-zinc-300">Title / Item Name</Label>
                                     <Input 
-                                        id="amount" 
-                                        type="number"
-                                        step="0.01"
+                                        id="title" 
                                         required 
-                                        placeholder="0.00"
-                                        value={amount}
-                                        onChange={e => setAmount(e.target.value)}
+                                        placeholder="e.g. 10x Dell Laptops"
+                                        value={title}
+                                        onChange={e => setTitle(e.target.value)}
                                         className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="category" className="text-slate-700 dark:text-zinc-300">Category</Label>
-                                    <Select value={category} onValueChange={(val: any) => setCategory(val)}>
-                                        <SelectTrigger className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
-                                            <SelectValue placeholder="Select..." />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800">
-                                            <SelectItem value="EQUIPMENT">Equipment</SelectItem>
-                                            <SelectItem value="BOOKS">Books & Media</SelectItem>
-                                            <SelectItem value="SOFTWARE">Software</SelectItem>
-                                            <SelectItem value="MAINTENANCE">Maintenance</SelectItem>
-                                            <SelectItem value="SERVICES">Services</SelectItem>
-                                            <SelectItem value="OTHER">Other</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="amount" className="text-slate-700 dark:text-zinc-300">Amount (ZAR)</Label>
+                                        <Input 
+                                            id="amount" 
+                                            type="number"
+                                            step="0.01"
+                                            required 
+                                            placeholder="0.00"
+                                            value={amount}
+                                            onChange={e => setAmount(e.target.value)}
+                                            className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="category" className="text-slate-700 dark:text-zinc-300">Category</Label>
+                                        <Select value={category} onValueChange={(val: any) => setCategory(val)}>
+                                            <SelectTrigger className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-white">
+                                                <SelectValue placeholder="Select..." />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800">
+                                                <SelectItem value="EQUIPMENT">Equipment</SelectItem>
+                                                <SelectItem value="BOOKS">Books &amp; Media</SelectItem>
+                                                <SelectItem value="SOFTWARE">Software</SelectItem>
+                                                <SelectItem value="MAINTENANCE">Maintenance</SelectItem>
+                                                <SelectItem value="SERVICES">Services</SelectItem>
+                                                <SelectItem value="OTHER">Other</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="description" className="text-slate-700 dark:text-zinc-300">Description (Optional)</Label>
-                                <Input 
-                                    id="description" 
-                                    placeholder="Serial numbers, purpose, etc."
-                                    value={description}
-                                    onChange={e => setDescription(e.target.value)}
-                                    className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
-                                />
-                            </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="description" className="text-slate-700 dark:text-zinc-300">Description (Optional)</Label>
+                                    <Input 
+                                        id="description" 
+                                        placeholder="Serial numbers, purpose, etc."
+                                        value={description}
+                                        onChange={e => setDescription(e.target.value)}
+                                        className="bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 focus:border-eduGreen-500 text-slate-900 dark:text-white"
+                                    />
+                                </div>
 
-                            <Button type="submit" disabled={isSubmitting} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white mt-4">
-                                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Save Expense"}
-                            </Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                                <Button type="submit" disabled={isSubmitting} className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white mt-4">
+                                    {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Save Expense"}
+                                </Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
             {/* Quick Stats */}
@@ -223,7 +243,7 @@ export function OperatingCostsView() {
                         <CardTitle className="text-sm font-medium text-slate-600 dark:text-zinc-400">Total Items Logged</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{expenses.length}</div>
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{(expenses || []).length}</div>
                     </CardContent>
                 </Card>
             </div>
@@ -237,11 +257,11 @@ export function OperatingCostsView() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {isLoading ? (
+                    {isLoading && (!expenses || expenses.length === 0) ? (
                         <div className="py-8 flex justify-center">
                             <Loader2 className="w-8 h-8 text-eduGreen-500 animate-spin" />
                         </div>
-                    ) : expenses.length === 0 ? (
+                    ) : (expenses || []).length === 0 ? (
                         <div className="text-center py-12 text-slate-500 dark:text-zinc-500">
                             <Receipt className="w-12 h-12 mx-auto mb-3 opacity-20" />
                             <p>No expenses logged yet.</p>

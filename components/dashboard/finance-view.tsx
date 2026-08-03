@@ -31,6 +31,8 @@ import { format } from "date-fns";
 import { Printer, ChevronDown, Wallet, Users, ArrowUpCircle } from "lucide-react";
 import { PayrollDashboard } from "./payroll-dashboard";
 
+import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
+
 interface FinanceViewProps {
     user: any;
     school: any;
@@ -38,13 +40,17 @@ interface FinanceViewProps {
 }
 
 export function FinanceView({ user, school, grades }: FinanceViewProps) {
-    const [fees, setFees] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const cachedFees = typeof window !== 'undefined' ? getClientCache<any[]>('finance_fees_list') : null;
+    const cachedAnalytics = typeof window !== 'undefined' ? getClientCache<any>('finance_analytics') : null;
+    const cachedStaff = typeof window !== 'undefined' ? getClientCache<any[]>('finance_staff_list') : null;
+
+    const [fees, setFees] = useState<any[]>(cachedFees || []);
+    const [loading, setLoading] = useState(!cachedFees);
     const [isCreating, setIsCreating] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-    const [financialAnalytics, setFinancialAnalytics] = useState<any>(null);
+    const [financialAnalytics, setFinancialAnalytics] = useState<any>(cachedAnalytics || null);
     const [invoices, setInvoices] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
@@ -54,7 +60,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 50;
-    const [staff, setStaff] = useState<any[]>([]);
+    const [staff, setStaff] = useState<any[]>(cachedStaff || []);
     const [payrollHistory, setPayrollHistory] = useState<any[]>([]);
     const [isPaying, setIsPaying] = useState<string | null>(null);
 
@@ -99,7 +105,9 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const triggerPrint = (invoice: any) => {
         setPrintInvoice(invoice);
         setPrintStudent(invoice.student);
-        setTimeout(() => handlePrint(), 100);
+        setTimeout(() => {
+            handlePrint();
+        }, 100);
     };
 
 
@@ -112,22 +120,34 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     }, []);
 
     useEffect(() => {
+        const invCacheKey = `finance_invoices_${page}_${statusFilter}_${searchQuery}`;
+        const cachedInv = getClientCache<any>(invCacheKey);
+        if (cachedInv) {
+            setInvoices(cachedInv.invoices || cachedInv);
+            if (cachedInv.pagination) setTotalPages(cachedInv.pagination.totalPages || 1);
+        }
         fetchInvoices();
     }, [page, searchQuery, statusFilter]);
 
     const fetchStaff = async () => {
         try {
-            const res = await fetch('/api/school/teachers');
-            const data = await res.json();
-            setStaff((data as any).teachers || []);
+            const res = await fetchWithResilience('/api/school/teachers', {}, 8000);
+            if (res.ok) {
+                const data = await res.json();
+                const teacherList = (data as any).teachers || [];
+                setStaff(teacherList);
+                setClientCache('finance_staff_list', teacherList, 15 * 60 * 1000);
+            }
         } catch (e) { console.error(e); }
     };
 
     const fetchPayrollHistory = async () => {
         try {
-            const res = await fetch('/api/director/payroll');
-            const data = await res.json();
-            setPayrollHistory(Array.isArray(data) ? data : []);
+            const res = await fetchWithResilience('/api/director/payroll', {}, 8000);
+            if (res.ok) {
+                const data = await res.json();
+                setPayrollHistory(Array.isArray(data) ? data : []);
+            }
         } catch (e) {
             console.error(e);
             setPayrollHistory([]);
@@ -265,13 +285,17 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 status: statusFilter,
                 ...(searchQuery && { search: searchQuery })
             });
-            const res = await fetch(`/api/school/finance/invoices?${params.toString()}`);
-            const data = await res.json() as any;
-            if (data.invoices) {
-                setInvoices(data.invoices);
-                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
-            } else {
-                setInvoices(data as any);
+            const res = await fetchWithResilience(`/api/school/finance/invoices?${params.toString()}`, {}, 8000);
+            if (res.ok) {
+                const data = ((await res.json()) as any);
+                if (data.invoices) {
+                    setInvoices(data.invoices);
+                    if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+                } else if (Array.isArray(data)) {
+                    setInvoices(data);
+                }
+                const invCacheKey = `finance_invoices_${page}_${statusFilter}_${searchQuery}`;
+                setClientCache(invCacheKey, data, 10 * 60 * 1000);
             }
         } catch (e) {
             console.error("Invoice synchronizer failed:", e);
@@ -280,20 +304,26 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
     const fetchFinancialAnalytics = async () => {
         try {
-            const res = await fetch('/api/school/finance/analytics');
-            const data = await res.json();
-            setFinancialAnalytics(data);
+            const res = await fetchWithResilience('/api/school/finance/analytics', {}, 8000);
+            if (res.ok) {
+                const data = await res.json();
+                setFinancialAnalytics(data);
+                setClientCache('finance_analytics', data, 15 * 60 * 1000);
+            }
         } catch (e) {
             console.error("Finance analytics connection failed:", e);
         }
     };
 
     const fetchFees = async () => {
-        setLoading(true);
+        if (!cachedFees) setLoading(true);
         try {
-            const res = await fetch('/api/school/finance/fees');
-            const data = await res.json();
-            setFees(data as any);
+            const res = await fetchWithResilience('/api/school/finance/fees', {}, 8000);
+            if (res.ok) {
+                const data = ((await res.json()) as any);
+                setFees(Array.isArray(data) ? data : []);
+                setClientCache('finance_fees_list', Array.isArray(data) ? data : [], 15 * 60 * 1000);
+            }
         } catch (e) {
             console.error(e);
             toast.error("Failed to synchronize financial data");
