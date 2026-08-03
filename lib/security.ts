@@ -276,10 +276,18 @@ export function rateLimit(
     windowMs: number = 60_000
 ): NextResponse | null {
     cleanupRateLimits();
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-        || request.headers.get('cf-connecting-ip')
+    const rawForwarded = request.headers.get('x-forwarded-for');
+    const rawIp = request.headers.get('cf-connecting-ip')
         || request.headers.get('x-real-ip')
+        || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
         || 'unknown';
+    const ip = rawIp.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
+
+    // Bypass localhost/dev testing
+    if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') {
+        return null;
+    }
+
     const key = `${ip}:${endpoint}`;
     const now = Date.now();
     const entry = rateLimitStore.get(key);

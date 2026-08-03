@@ -11,8 +11,10 @@ function getClientIp(req: Request): string {
 
     let candidate = cfIp || realIp || (forwarded ? forwarded.split(',')[0].trim() : null) || '127.0.0.1';
     
+    // Remove port if present (e.g. 192.168.1.1:4532 or [::1]:80)
+    candidate = candidate.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
+
     // Normalize and validate IPv4 or IPv6
-    candidate = candidate.trim();
     const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     const ipv6Regex = /^[0-9a-fA-F:]{2,39}$/;
 
@@ -64,6 +66,7 @@ export async function POST(req: Request) {
         }
 
         const clientIp = getClientIp(req);
+        const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
         const verifyParams = new URLSearchParams();
@@ -83,15 +86,18 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Security check failed. Access Denied." }, { status: 403 });
         }
 
-        // 3. Rate Limiting Check
-        if (prisma) {
+        // 3. Isolated Rate Limiting Check (50 attempts per 1 hour per specific client IP)
+        if (prisma && !isLocalhost) {
             try {
                 const rateLimitResult = await prisma.$queryRaw<Array<{ allowed: boolean }>>`
                     SELECT enforce_login_rate_limit(${clientIp}::inet) as allowed
                 `;
                 if (rateLimitResult && rateLimitResult[0] && rateLimitResult[0].allowed === false) {
                     await recordAuditLog(clientIp, sanitizedEmail, 'RATE_LIMITED');
-                    return NextResponse.json({ error: "Too many login attempts. Please try again later." }, { status: 429 });
+                    return NextResponse.json(
+                        { error: "Too many login attempts from this IP. Please try again in 1 hour." }, 
+                        { status: 429, headers: { 'Retry-After': '3600' } }
+                    );
                 }
             } catch (e) {
                 // Rate limit function or table may not be initialized yet; continue safely
@@ -110,8 +116,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: authError.message }, { status: 401 });
         }
 
-        // 5. Successful login
+        // 5. Successful login: reset failed counter for this IP and record audit log
         await recordAuditLog(clientIp, sanitizedEmail, 'SUCCESS');
+        if (prisma && !isLocalhost) {
+            try {
+                await prisma.$executeRaw`
+                    SELECT reset_login_rate_limit(${clientIp}::inet)
+                `;
+            } catch {
+                // Suppress error if function is missing
+            }
+        }
         return NextResponse.json({ success: true });
 
     } catch (e: any) {

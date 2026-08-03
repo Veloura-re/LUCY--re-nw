@@ -1,14 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: process.env.DIRECT_URL || process.env.DATABASE_URL
-        }
-    }
-});
+dotenv.config({ path: '.env' });
+import { prisma } from '../lib/prisma';
 
 async function main() {
     console.log("Applying Security Database Schema...");
@@ -36,30 +29,36 @@ async function main() {
     `);
     console.log("- Created auth_audit_logs table");
 
-    // 3. Plpgsql Function
+    // 3. Plpgsql Functions
     await prisma.$executeRawUnsafe(`
         CREATE OR REPLACE FUNCTION enforce_login_rate_limit(client_ip INET) 
         RETURNS BOOLEAN AS $$
         DECLARE
             limit_record auth_rate_limits%ROWTYPE;
-            MAX_ATTEMPTS CONSTANT INT := 5;
-            LOCKOUT_DURATION CONSTANT INTERVAL := '15 minutes';
+            MAX_ATTEMPTS CONSTANT INT := 50;
+            WINDOW_DURATION CONSTANT INTERVAL := '1 hour';
+            LOCKOUT_DURATION CONSTANT INTERVAL := '1 hour';
         BEGIN
+            -- Never rate limit localhost/loopback
+            IF client_ip = '127.0.0.1'::inet OR client_ip = '::1'::inet THEN
+                RETURN TRUE;
+            END IF;
+
             SELECT * INTO limit_record FROM auth_rate_limits WHERE ip_address = client_ip;
             
             IF FOUND THEN
                 -- Check if currently locked out
-                IF limit_record.locked_until > CURRENT_TIMESTAMP THEN
+                IF limit_record.locked_until IS NOT NULL AND limit_record.locked_until > CURRENT_TIMESTAMP THEN
                     RETURN FALSE; -- Access Denied
                 END IF;
 
-                -- If the last attempt was over an hour ago, reset counter
-                IF limit_record.last_attempt < (CURRENT_TIMESTAMP - INTERVAL '1 hour') THEN
+                -- If the last attempt was over 1 hour ago, or lockout expired, reset counter
+                IF limit_record.last_attempt < (CURRENT_TIMESTAMP - WINDOW_DURATION) OR (limit_record.locked_until IS NOT NULL AND limit_record.locked_until <= CURRENT_TIMESTAMP) THEN
                     UPDATE auth_rate_limits SET attempts = 1, last_attempt = CURRENT_TIMESTAMP, locked_until = NULL WHERE ip_address = client_ip;
                     RETURN TRUE;
                 END IF;
 
-                -- Increment attempts
+                -- Check if attempts exceed maximum allowed (50)
                 IF limit_record.attempts >= MAX_ATTEMPTS THEN
                     UPDATE auth_rate_limits SET locked_until = CURRENT_TIMESTAMP + LOCKOUT_DURATION, last_attempt = CURRENT_TIMESTAMP WHERE ip_address = client_ip;
                     RETURN FALSE; -- Access Denied
@@ -68,13 +67,30 @@ async function main() {
                     RETURN TRUE;
                 END IF;
             ELSE
-                INSERT INTO auth_rate_limits (ip_address) VALUES (client_ip);
+                INSERT INTO auth_rate_limits (ip_address, attempts, last_attempt, locked_until) 
+                VALUES (client_ip, 1, CURRENT_TIMESTAMP, NULL)
+                ON CONFLICT (ip_address) DO UPDATE 
+                SET attempts = auth_rate_limits.attempts + 1, last_attempt = CURRENT_TIMESTAMP;
                 RETURN TRUE;
             END IF;
         END;
         $$ LANGUAGE plpgsql;
     `);
-    console.log("- Created enforce_login_rate_limit function");
+    console.log("- Created enforce_login_rate_limit function (50 attempts / 1 hour)");
+
+    await prisma.$executeRawUnsafe(`
+        CREATE OR REPLACE FUNCTION reset_login_rate_limit(client_ip INET)
+        RETURNS VOID AS $$
+        BEGIN
+            DELETE FROM auth_rate_limits WHERE ip_address = client_ip;
+        END;
+        $$ LANGUAGE plpgsql;
+    `);
+    console.log("- Created reset_login_rate_limit function");
+
+    // Clear any existing stale lockouts
+    await prisma.$executeRawUnsafe(`TRUNCATE TABLE auth_rate_limits;`);
+    console.log("- Cleared existing rate limit blocks");
 
     console.log("Done.");
 }
