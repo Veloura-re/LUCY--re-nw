@@ -359,7 +359,7 @@ export default function Home() {
   const loaded = liveStats.schools > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
       {/* ── Boot Sequence ── */}
       {mounted && booting && <BootSequence onDone={handleBootDone} />}
 
@@ -394,7 +394,7 @@ export default function Home() {
       />
 
       {/* ── Top Ticker ── */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black text-[9px] uppercase tracking-widest overflow-hidden py-1.5 transition-colors">
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-white dark:bg-white dark:text-black text-[9px] uppercase tracking-widest overflow-hidden py-1.5 transition-colors">
         <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ duration: 24.8, repeat: Infinity, ease: "linear" }} className="flex gap-16 whitespace-nowrap">
           {[...marqueeItems, ...marqueeItems].map((item, i) => (
             <span key={i} className="font-bold shrink-0">{item} //</span>

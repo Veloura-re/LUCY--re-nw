@@ -262,7 +262,7 @@ function StudentProfileContent() {
                     {isDirector && (
                         <Button
                             onClick={() => { setIsEditing(true); fetchGradesData(); }}
-                            className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
+                            className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 shadow-sm transition-all"
                         >
                             Edit Profile
                         </Button>
@@ -270,7 +270,7 @@ function StudentProfileContent() {
                     {isDirector && (
                         <Button
                             onClick={() => setShowIDCard(true)}
-                            className="bg-zinc-100 hover:bg-white text-zinc-900 dark:text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
+                            className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 shadow-sm transition-all"
                         >
                             <CreditCard className="w-4 h-4 mr-2" /> Generate ID
                         </Button>

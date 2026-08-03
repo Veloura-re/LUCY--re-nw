@@ -23,7 +23,7 @@ const useCases = [
 
 export default function Schools() {
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-zinc-900 dark:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -150,7 +150,7 @@ export default function Schools() {
                         <p className="text-slate-500 dark:text-zinc-500 text-sm max-w-md mx-auto">schedule a demo or start your free institutional pilot. onboarding takes 3 days.</p>
                         <div className="flex flex-wrap gap-4 justify-center">
                             <MagneticButton>
-                                <Link href="/demo"><Button className="h-14 px-10 bg-slate-900 text-zinc-900 dark:text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">view_demo</Button></Link>
+                                <Link href="/demo"><Button className="h-14 px-10 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 rounded-xl dark:rounded-none text-[11px] uppercase tracking-widest font-bold">view_demo</Button></Link>
                             </MagneticButton>
                             <MagneticButton>
                                 <Link href="/register"><Button variant="outline" className="h-14 px-10 rounded-xl dark:rounded-none border-slate-300 dark:border-white/20 text-[11px] uppercase tracking-widest hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">get_started</Button></Link>

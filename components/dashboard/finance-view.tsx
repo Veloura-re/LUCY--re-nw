@@ -803,7 +803,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                     size="sm"
                                                     isLoading={simulatingPay === inv.id}
                                                     onClick={() => handleRecordManualPayment(inv)}
-                                                    className="h-7 sm:h-10 px-2.5 sm:px-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-zinc-900 dark:text-white rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[9px] uppercase tracking-widest transition-all"
+                                                    className="h-7 sm:h-10 px-2.5 sm:px-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-zinc-900 dark:text-white hover:text-white border border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[9px] uppercase tracking-widest transition-all"
                                                 >
                                                     Record
                                                 </Button>
