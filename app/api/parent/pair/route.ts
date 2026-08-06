@@ -5,7 +5,8 @@ import { requireRole, handleApiError } from '@/lib/security';
 export async function POST(request: Request) {
     try {
         const dbParent = await requireRole(['PARENT']);
-        const { studentCode } = await request.json();
+        const body = await request.json() as any;
+        const { studentCode } = body || {};
 
         if (!studentCode) {
             return NextResponse.json({ error: 'Student code is required' }, { status: 400 });
@@ -22,15 +23,17 @@ export async function POST(request: Request) {
         }
 
         // 3. Check if link already exists
-        const existingLink = await prisma.parentStudentLink.findFirst({
+        const existingLink = await prisma.parentStudentLink.findUnique({
             where: {
-                parentId: dbParent.id,
-                studentId: student.id
+                parentId_studentId: {
+                    parentId: dbParent.id,
+                    studentId: student.id
+                }
             }
         });
 
         if (existingLink) {
-            return NextResponse.json({ error: 'Student already linked to this account' }, { status: 400 });
+            return NextResponse.json({ message: 'Student is already linked to this account', alreadyLinked: true }, { status: 200 });
         }
 
         // 4. Create the link
@@ -56,7 +59,7 @@ export async function POST(request: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = dbParent?.id;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'PAIR_PARENT', resourceType: 'parent_pair', ip: _ip || undefined });
             }
