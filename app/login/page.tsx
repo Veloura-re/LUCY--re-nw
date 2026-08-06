@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Mail, Lock, ShieldCheck, ArrowRight, Loader2, AlertCircle, Shield } from "lucide-react";
+import { Mail, Lock, ShieldCheck, ArrowRight, Loader2, AlertCircle, Shield, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { motion } from "framer-motion";
@@ -30,6 +30,7 @@ function LoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const errorParam = searchParams.get('error');
+    const resetParam = searchParams.get('reset');
     const supabase = createClient();
 
     const [email, setEmail] = useState("");
@@ -104,6 +105,12 @@ function LoginContent() {
                     </CardHeader>
 
                     <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                        {resetParam === 'success' && (
+                            <div className="mb-4 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-mono flex items-center gap-2">
+                                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                                <span>Password updated successfully! Please log in with your new credentials.</span>
+                            </div>
+                        )}
                         <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
                             <Input
                                 label="Email Address"
