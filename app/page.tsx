@@ -12,6 +12,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { ParticleField } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PromoPopup } from "@/components/marketing/promo-popup";
 
 
@@ -429,7 +430,10 @@ export default function Home() {
               <span>{time}</span>
             </div>
             
-            <ThemeToggle className="scale-90" />
+            <div className="flex items-center gap-2">
+              <LanguageToggle className="scale-90" />
+              <ThemeToggle className="scale-90" />
+            </div>
 
             <Link href="/login">
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
