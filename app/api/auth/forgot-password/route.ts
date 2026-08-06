@@ -48,7 +48,7 @@ export async function POST(request: Request) {
             type: 'recovery',
             email,
             options: {
-                redirectTo: `${origin}/auth/callback?next=/dashboard/settings`,
+                redirectTo: `${origin}/auth/callback?next=/reset-password`,
             }
         });
 
