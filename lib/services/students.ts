@@ -20,25 +20,31 @@ export const getCachedSchoolStudents = (schoolId: string) => {
             const isEdge = !_prismaCheck;
 
             if (isEdge) {
-                const supabase = getSupabase();
-                const { data: students } = await supabase
-                    .from('Student')
-                    .select('*, grade:Grade(*), class:Class(*), parentLinks:ParentStudentLink(*, parent:User(id, name, role)), invoices:Invoice(*)')
-                    .eq('schoolId', schoolId)
-                    .order('lastName', { ascending: true });
+                try {
+                    const supabase = getSupabase();
+                    const { data: students, error } = await supabase
+                        .from('Student')
+                        .select('*, grade:Grade(*), class:Class(*), parentLinks:ParentStudentLink(*, parent:User(id, name, role)), invoices:Invoice(*)')
+                        .eq('schoolId', schoolId)
+                        .order('lastName', { ascending: true });
 
-                return (students || []).map((s: any) => {
-                    const unpaidInvoices = (s.invoices || []).filter((inv: any) => ['PENDING', 'OVERDUE'].includes(inv.status));
-                    const outstanding = unpaidInvoices.reduce((acc: number, inv: any) => acc + Number(inv.amount), 0);
+                    if (!error && students) {
+                        return students.map((s: any) => {
+                            const unpaidInvoices = (s.invoices || []).filter((inv: any) => ['PENDING', 'OVERDUE'].includes(inv.status));
+                            const outstanding = unpaidInvoices.reduce((acc: number, inv: any) => acc + Number(inv.amount), 0);
 
-                    return {
-                        ...s,
-                        finance: {
-                            unpaidCount: unpaidInvoices.length,
-                            outstanding: outstanding.toFixed(2)
-                        }
-                    };
-                });
+                            return {
+                                ...s,
+                                finance: {
+                                    unpaidCount: unpaidInvoices.length,
+                                    outstanding: outstanding.toFixed(2)
+                                }
+                            };
+                        });
+                    }
+                } catch {
+                    // Fall through to Prisma query below
+                }
             }
 
             // Node.js Prisma Fallback

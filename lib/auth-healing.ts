@@ -72,7 +72,23 @@ export async function healUserMismatch(placeholderId: string, userId: string, em
             try {
                 const txAny = tx as any;
                 if (txAny.absenceAuthorization) await txAny.absenceAuthorization.updateMany({ where: { parentId: placeholderId }, data: { parentId: userId } });
-                if (txAny.parentStudentLink) await txAny.parentStudentLink.updateMany({ where: { parentId: placeholderId }, data: { parentId: userId } });
+                if (txAny.parentStudentLink) {
+                    // Remove duplicate links where target userId already has a link to the student
+                    const targetExistingLinks = await txAny.parentStudentLink.findMany({
+                        where: { parentId: userId },
+                        select: { studentId: true }
+                    });
+                    const existingStudentIds = targetExistingLinks.map((l: any) => l.studentId);
+                    if (existingStudentIds.length > 0) {
+                        await txAny.parentStudentLink.deleteMany({
+                            where: {
+                                parentId: placeholderId,
+                                studentId: { in: existingStudentIds }
+                            }
+                        });
+                    }
+                    await txAny.parentStudentLink.updateMany({ where: { parentId: placeholderId }, data: { parentId: userId } });
+                }
                 if (txAny.student) await txAny.student.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });
                 if (txAny.event) await txAny.event.updateMany({ where: { createdById: placeholderId }, data: { createdById: userId } });
                 if (txAny.staffAttendanceRecord) await txAny.staffAttendanceRecord.updateMany({ where: { userId: placeholderId }, data: { userId: userId } });

@@ -20,51 +20,61 @@ export const getCachedTeacherRegistry = (schoolId: string) => {
             const isEdge = !_prismaCheck;
 
             if (isEdge) {
-                const supabase = getSupabase();
-                
-                // 1. Get All Teachers associated with this school
-                const { data: users } = await supabase
-                    .from('User')
-                    .select('id, name, email, phone, teacherCode, qualification, gender, photoUrl, createdAt, verified')
-                    .eq('schoolId', schoolId)
-                    .in('role', ['TEACHER', 'HOMEROOM']);
+                try {
+                    const supabase = getSupabase();
+                    
+                    // 1. Get All Teachers associated with this school
+                    const { data: users } = await supabase
+                        .from('User')
+                        .select('id, name, email, phone, teacherCode, qualification, gender, photoUrl, createdAt, verified')
+                        .eq('schoolId', schoolId)
+                        .in('role', ['TEACHER', 'HOMEROOM']);
 
-                // 2. Get All Pending Tokens
-                const { data: invites } = await supabase
-                    .from('InviteToken')
-                    .select('*')
-                    .eq('schoolId', schoolId)
-                    .in('role', ['TEACHER', 'HOMEROOM'])
-                    .is('usedAt', null);
+                    // 2. Get All Pending Tokens
+                    const { data: invites } = await supabase
+                        .from('InviteToken')
+                        .select('*')
+                        .eq('schoolId', schoolId)
+                        .in('role', ['TEACHER', 'HOMEROOM'])
+                        .is('usedAt', null);
 
-                const teacherList = users || [];
-                const inviteList = invites || [];
+                    const teacherList = users || [];
+                    const inviteList = invites || [];
 
-                // 3. Format Teachers
-                const formattedTeachers = teacherList.map(u => {
-                    const invite = inviteList.find(i => i.email === u.email);
-                    return {
-                        ...u,
-                        token: invite?.token || null,
-                        status: u.verified ? 'ACTIVE' : 'PENDING'
-                    };
-                });
+                    if (users) {
+                        // 3. Format Teachers
+                        const formattedTeachers = teacherList.map(u => {
+                            const invite = inviteList.find(i => i.email === u.email);
+                            return {
+                                ...u,
+                                token: invite?.token || null,
+                                status: u.verified ? 'ACTIVE' : 'PENDING'
+                            };
+                        });
 
-                // 4. Also include Invites that don't have a User record yet
-                const orphanedInvites = inviteList
-                    .filter(i => !teacherList.find(u => u.email === i.email))
-                    .map(i => ({
-                        id: i.id,
-                        name: null,
-                        email: i.email,
-                        token: i.token,
-                        createdAt: i.createdAt,
-                        status: 'PENDING'
-                    }));
+                        // 4. Append unassigned invites
+                        const unassignedInvites = inviteList
+                            .filter(i => !teacherList.some(u => u.email === i.email))
+                            .map(i => ({
+                                id: i.id,
+                                name: i.name || 'Pending Teacher',
+                                email: i.email,
+                                phone: null,
+                                teacherCode: null,
+                                qualification: null,
+                                gender: null,
+                                photoUrl: null,
+                                createdAt: i.createdAt,
+                                verified: false,
+                                token: i.token,
+                                status: 'INVITED'
+                            }));
 
-                return [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
-                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                );
+                        return [...formattedTeachers, ...unassignedInvites];
+                    }
+                } catch {
+                    // Fall through to Prisma query below
+                }
             }
 
             // Node.js Prisma Fallback
