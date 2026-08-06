@@ -71,7 +71,6 @@ import NextTopLoader from "nextjs-toploader";
 import { GlobalConnectionProbe } from "@/components/global-connection-probe";
 import { ErrorListenerInit } from "@/components/error-listener-init";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { LanguageProvider } from "@/components/providers/language-provider";
 
 export default function RootLayout({
   children,
@@ -87,23 +86,21 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <LanguageProvider>
-            <NextTopLoader
-              color="#10b981"
-              initialPosition={0.08}
-              crawlSpeed={200}
-              height={3}
-              crawl={true}
-              showSpinner={false}
-              easing="ease"
-              speed={200}
-              shadow="0 0 10px #10b981,0 0 5px #10b981"
-            />
-            <ErrorListenerInit />
-            <GlobalConnectionProbe />
-            {children}
-            <Toaster position="top-right" closeButton richColors />
-          </LanguageProvider>
+          <NextTopLoader
+            color="#10b981"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #10b981,0 0 5px #10b981"
+          />
+          <ErrorListenerInit />
+          <GlobalConnectionProbe />
+          {children}
+          <Toaster position="top-right" closeButton richColors />
         </ThemeProvider>
       </body>
     </html>

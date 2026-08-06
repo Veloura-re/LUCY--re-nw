@@ -5,7 +5,6 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { X, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/components/providers/language-provider";
 
 // Text Reveal Component
 const TextReveal = ({ text }: { text: string }) => {
@@ -49,7 +48,6 @@ const TextReveal = ({ text }: { text: string }) => {
 };
 
 export function PromoPopup() {
-    const { t } = useLanguage();
     const [isVisible, setIsVisible] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
@@ -123,7 +121,7 @@ export function PromoPopup() {
                                             />
                                         </div>
                                         <span className="text-[8px] sm:text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
-                                            {t("promo.exclusive_invite", "Exclusive Invite")}
+                                            Exclusive Invite
                                         </span>
                                     </motion.div>
                                     <button 
@@ -134,7 +132,7 @@ export function PromoPopup() {
                                     </button>
                                 </div>
 
-                                <TextReveal text={t("promo.free_trial_title", "4 Months Free Trial")} />
+                                <TextReveal text="4 Months Free Trial" />
                                 
                                 <motion.p 
                                     initial={{ opacity: 0, y: 10 }}
@@ -142,7 +140,7 @@ export function PromoPopup() {
                                     transition={{ delay: 0.6 }}
                                     className="text-[11px] sm:text-xs text-zinc-600 dark:text-zinc-400 mb-3 sm:mb-5 font-medium leading-snug sm:leading-relaxed"
                                 >
-                                    {t("promo.free_trial_desc", "Create your school account today and experience the full power of LUCY OS, completely free for your first 4 months.")}
+                                    Create your school account today and experience the full power of LUCY OS, completely free for your first 4 months.
                                 </motion.p>
 
                                 <motion.div
@@ -156,7 +154,7 @@ export function PromoPopup() {
                                             className="w-full group h-9 sm:h-11 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all relative overflow-hidden"
                                         >
                                             <span className="relative z-10 flex items-center justify-center">
-                                                {t("promo.start_trial_btn", "Start Free Trial")}
+                                                Start Free Trial
                                                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1.5 sm:ml-2 group-hover:translate-x-1 transition-transform" />
                                             </span>
                                             {/* Button shine effect */}
