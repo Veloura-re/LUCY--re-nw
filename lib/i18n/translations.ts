@@ -12,6 +12,11 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.dashboard": "Dashboard",
         "nav.admin": "Admin",
         "nav.back_to_home": "Back to Home",
+        "nav.intelligence": "Intelligence",
+        "nav.network": "Network",
+        "nav.vault": "Vault",
+        "nav.presentation": "Presentation",
+        "nav.community": "Community",
 
         "auth.welcome_back": "Welcome Back",
         "auth.access_workspace": "Access your workspace",
@@ -35,6 +40,15 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.logout": "Sign Out",
         "dash.active_tenants": "Active Tenants",
         "dash.total_learners": "Total Learners",
+        "dash.reports": "Reports",
+        "dash.messages": "Messages",
+        "dash.books": "Digital Books",
+        "dash.exams": "Exams & Grading",
+        "dash.analytics": "Analytics",
+        "dash.billing": "Billing",
+        "dash.homeroom": "Homeroom",
+        "dash.approvals": "Approvals",
+        "dash.schedule": "Timetable & Schedule",
 
         "common.live": "LIVE",
         "common.loading": "Loading...",
@@ -48,7 +62,14 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "promo.exclusive_invite": "Exclusive Invite",
         "promo.free_trial_title": "4 Months Free Trial",
         "promo.free_trial_desc": "Create your school account today and experience the full power of LUCY OS, completely free for your first 4 months.",
-        "promo.start_trial_btn": "Start Free Trial"
+        "promo.start_trial_btn": "Start Free Trial",
+
+        "hero.line1": "YOUR SCHOOL'S",
+        "hero.line2": "DIGITAL HOME.",
+        "hero.subtitle": "a simple place you can call your own. drop the messy spreadsheets and build a digital home that's yours.",
+        "hero.get_started": "get_started",
+        "hero.read_docs": "read_docs",
+        "hero.view_presentation": "view_presentation"
     },
     am: {
         "nav.home": "መነሻ",
@@ -61,6 +82,11 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.dashboard": "ዳሽቦርድ",
         "nav.admin": "አስተዳዳሪ",
         "nav.back_to_home": "ወደ መነሻ ተመለስ",
+        "nav.intelligence": "አርቲፊሻል ኢንቴሊጀንስ",
+        "nav.network": "ኔትወርክ",
+        "nav.vault": "ደህንነቱ የተጠበቀ መዝገብ",
+        "nav.presentation": "ማብራሪያ",
+        "nav.community": "ማህበረሰብ",
 
         "auth.welcome_back": "እንኳን ደህና መጡ",
         "auth.access_workspace": "ወደ መለያዎ ይግቡ",
@@ -84,6 +110,15 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.logout": "ውጣ",
         "dash.active_tenants": "ንቁ ትምህርት ቤቶች",
         "dash.total_learners": "ጠቅላላ ተማሪዎች",
+        "dash.reports": "ሪፖርቶች",
+        "dash.messages": "መልእክቶች",
+        "dash.books": "ዲጂታል መጻሕፍት",
+        "dash.exams": "ፈተናዎች እና ውጤቶች",
+        "dash.analytics": "ትንታኔዎች",
+        "dash.billing": "ክፍያዎች",
+        "dash.homeroom": "የክፍል ኃላፊነት",
+        "dash.approvals": "ማጽደቂያዎች",
+        "dash.schedule": "የጊዜ ሰሌዳ",
 
         "common.live": "ቀጥታ",
         "common.loading": "እየጫነ ነው...",
@@ -92,7 +127,14 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "common.search": "ፈልግ...",
         "common.active": "ንቁ",
         "common.pending": "በመጠባበቅ ላይ",
-        "common.system_status": "ሲስተሙ በትክክል እየሰራ ነው"
+        "common.system_status": "ሲስተሙ በትክክል እየሰራ ነው",
+
+        "hero.line1": "የትምህርት ቤትዎ",
+        "hero.line2": "ዲጂታል መኖሪያ።",
+        "hero.subtitle": "የትምህርት ቤትዎን አስተዳደር ሙሉ በሙሉ በዲጂታል መንገድ የሚያቀል ዘመናዊ ሲስተም።",
+        "hero.get_started": "አሁኑኑ ይጀምሩ",
+        "hero.read_docs": "ሰነዶችን ያንብቡ",
+        "hero.view_presentation": "ማብራሪያ ይመልከቱ"
     },
     om: {
         "nav.home": "Fuula Duraa",
@@ -104,17 +146,6 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.register": "Galmaa'i",
         "nav.dashboard": "Daashboordii",
         "nav.admin": "Bulchaa",
-        "nav.back_to_home": "Deebi'i Fuula Duraatti",
-
-        "auth.welcome_back": "Baga Nagaan Dhuftan",
-        "auth.access_workspace": "Akkaawuntii Keessan Seenaa",
-        "auth.email": "Teessoo Imeelii",
-        "auth.password": "Jechoota Darbiinsaa",
-        "auth.forgot_password": "Jechoota Darbiinsaa Dagattan?",
-        "auth.login_btn": "LUCY OS Seeni",
-        "auth.no_account": "Akkaawuntii Hin Qabdan?",
-        "auth.register_now": "Mana Barumsaa Galmeessi",
-
         "dash.overview": "Waliigala",
         "dash.students": "Barattoota",
         "dash.teachers": "Barsiisota",
@@ -123,13 +154,10 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.finance": "Fayinaansii",
         "dash.settings": "Sirna",
         "dash.logout": "Ba'i",
-
         "common.live": "KALATTIIN",
         "common.loading": "Fe'amaa jira...",
         "common.save": "Olkaayi",
-        "common.cancel": "Dhiisi",
-        "common.search": "Barbaadi...",
-        "common.active": "Hojii Irra"
+        "common.search": "Barbaadi..."
     },
     ti: {
         "nav.home": "መበገሲ",
@@ -140,13 +168,6 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.login": "እተዉ",
         "nav.register": "ተመዝገብ",
         "nav.dashboard": "ዳሽቦርድ",
-        "nav.admin": "አመሓዳሪ",
-
-        "auth.welcome_back": "እንቋዕ ብደሓን መጻእኩም",
-        "auth.email": "ኢሜይል አድራሻ",
-        "auth.password": "መሕለፊ ቃል",
-        "auth.login_btn": "ናብ LUCY OS እተዉ",
-
         "dash.overview": "ሓፈሻዊ ርእይቶ",
         "dash.students": "ተማሃሮ",
         "dash.teachers": "መምህራን",
@@ -155,6 +176,24 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.finance": "ፋይናንስ",
         "dash.settings": "ማዕረጎታት",
         "dash.logout": "ውፅእ"
+    },
+    sw: {
+        "nav.home": "Mwanzo",
+        "nav.features": "Vipengele",
+        "nav.pricing": "Bei",
+        "nav.schools": "Shule",
+        "nav.docs": "Nyaraka",
+        "nav.login": "Ingia",
+        "nav.register": "Sajili",
+        "nav.dashboard": "Dhibiti",
+        "dash.overview": "Muhtasari",
+        "dash.students": "Wanafunzi",
+        "dash.teachers": "Walimu",
+        "dash.classes": "Madarasa",
+        "dash.attendance": "Mahudhurio",
+        "dash.finance": "Fedha",
+        "dash.settings": "Mipangilio",
+        "dash.logout": "Ondoka"
     },
     fr: {
         "nav.home": "Accueil",
@@ -166,17 +205,6 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.register": "S'inscrire",
         "nav.dashboard": "Tableau de Bord",
         "nav.admin": "Admin",
-        "nav.back_to_home": "Retour à l'accueil",
-
-        "auth.welcome_back": "Bon retour",
-        "auth.access_workspace": "Accédez à votre espace",
-        "auth.email": "Adresse E-mail",
-        "auth.password": "Mot de Passe",
-        "auth.forgot_password": "Mot de passe oublié ?",
-        "auth.login_btn": "Se Connecter à LUCY OS",
-        "auth.no_account": "Pas encore de compte ?",
-        "auth.register_now": "Enregistrer un établissement",
-
         "dash.overview": "Aperçu",
         "dash.students": "Élèves",
         "dash.teachers": "Enseignants",
@@ -185,11 +213,9 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.finance": "Finances",
         "dash.settings": "Paramètres",
         "dash.logout": "Déconnexion",
-
         "common.live": "EN DIRECT",
         "common.loading": "Chargement...",
         "common.save": "Enregistrer",
-        "common.cancel": "Annuler",
         "common.search": "Rechercher..."
     },
     es: {
@@ -201,18 +227,6 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.login": "Iniciar Sesión",
         "nav.register": "Registrarse",
         "nav.dashboard": "Panel de Control",
-        "nav.admin": "Administrador",
-        "nav.back_to_home": "Volver al Inicio",
-
-        "auth.welcome_back": "Bienvenido de Nuevo",
-        "auth.access_workspace": "Accede a tu espacio de trabajo",
-        "auth.email": "Correo Electrónico",
-        "auth.password": "Contraseña",
-        "auth.forgot_password": "¿Olvidaste tu contraseña?",
-        "auth.login_btn": "Entrar a LUCY OS",
-        "auth.no_account": "¿No tienes una cuenta?",
-        "auth.register_now": "Registrar Institución",
-
         "dash.overview": "Resumen",
         "dash.students": "Estudiantes",
         "dash.teachers": "Profesores",
@@ -221,11 +235,9 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.finance": "Finanzas",
         "dash.settings": "Configuración",
         "dash.logout": "Cerrar Sesión",
-
         "common.live": "EN VIVO",
         "common.loading": "Cargando...",
         "common.save": "Guardar Cambios",
-        "common.cancel": "Cancelar",
         "common.search": "Buscar..."
     },
     ar: {
@@ -237,18 +249,6 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "nav.login": "تسجيل الدخول",
         "nav.register": "إنشاء حساب",
         "nav.dashboard": "لوحة التحكم",
-        "nav.admin": "المسؤول",
-        "nav.back_to_home": "العودة للرئيسية",
-
-        "auth.welcome_back": "مرحباً بعودتك",
-        "auth.access_workspace": "الوصول إلى مساحة العمل الخاصة بك",
-        "auth.email": "البريد الإلكتروني",
-        "auth.password": "كلمة المرور",
-        "auth.forgot_password": "هل نسيت كلمة المرور؟",
-        "auth.login_btn": "الدخول إلى نظام LUCY",
-        "auth.no_account": "ليس لديك حساب؟",
-        "auth.register_now": "تسجيل مؤسسة تعليمية",
-
         "dash.overview": "نظرة عامة",
         "dash.students": "الطلاب",
         "dash.teachers": "المعلمون",
@@ -257,23 +257,127 @@ export const TRANSLATIONS: Record<string, TranslationDictionary> = {
         "dash.finance": "المالية",
         "dash.settings": "الإعدادات",
         "dash.logout": "تسجيل الخروج",
-
         "common.live": "مباشر",
         "common.loading": "جاري التحميل...",
         "common.save": "حفظ التغييرات",
-        "common.cancel": "إلغاء",
         "common.search": "بحث..."
     }
 };
 
+// Global direct term translation mapping for raw UI strings across all software pages
+export const GLOBAL_TERM_MAP: Record<string, Record<string, string>> = {
+    am: {
+        "overview": "አጠቃላይ እይታ",
+        "students": "ተማሪዎች",
+        "teachers": "መምህራን",
+        "classes": "ክፍሎች",
+        "attendance": "የመገኘት ሁኔታ",
+        "finance": "ፋይናንስ",
+        "settings": "ቅንብሮች",
+        "reports": "ሪፖርቶች",
+        "messages": "መልእክቶች",
+        "analytics": "ትንታኔዎች",
+        "billing": "ክፍያዎች",
+        "logout": "ውጣ",
+        "sign out": "ውጣ",
+        "log in": "ግበሩ",
+        "register": "ተመዝገብ",
+        "dashboard": "ዳሽቦርድ",
+        "search": "ፈልግ",
+        "loading": "እየጫነ ነው...",
+        "save": "አስቀምጥ",
+        "cancel": "ሰርዝ",
+        "active": "ንቁ",
+        "pending": "በመጠባበቅ ላይ",
+        "welcome back": "እንኳን ደህና መጡ",
+        "home": "መነሻ"
+    },
+    om: {
+        "overview": "Waliigala",
+        "students": "Barattoota",
+        "teachers": "Barsiisota",
+        "classes": "Kutaawwan",
+        "attendance": "Hirmaannaa",
+        "finance": "Fayinaansii",
+        "settings": "Sirna",
+        "dashboard": "Daashboordii",
+        "logout": "Ba'i",
+        "sign out": "Ba'i",
+        "log in": "Seeni"
+    },
+    ti: {
+        "overview": "ሓፈሻዊ ርእይቶ",
+        "students": "ተማሃሮ",
+        "teachers": "መምህራን",
+        "classes": "ክፍልታት",
+        "attendance": "ምብጻሕ",
+        "finance": "ፋይናንስ",
+        "settings": "ማዕረጎታት",
+        "dashboard": "ዳሽቦርድ",
+        "logout": "ውፅእ"
+    },
+    sw: {
+        "overview": "Muhtasari",
+        "students": "Wanafunzi",
+        "teachers": "Walimu",
+        "classes": "Madarasa",
+        "attendance": "Mahudhurio",
+        "finance": "Fedha",
+        "settings": "Mipangilio",
+        "dashboard": "Dhibiti"
+    },
+    fr: {
+        "overview": "Aperçu",
+        "students": "Élèves",
+        "teachers": "Enseignants",
+        "classes": "Classes",
+        "attendance": "Présences",
+        "finance": "Finances",
+        "settings": "Paramètres",
+        "dashboard": "Tableau de Bord"
+    },
+    es: {
+        "overview": "Resumen",
+        "students": "Estudiantes",
+        "teachers": "Profesores",
+        "classes": "Clases",
+        "attendance": "Asistencia",
+        "finance": "Finanzas",
+        "settings": "Configuración",
+        "dashboard": "Panel de Control"
+    },
+    ar: {
+        "overview": "نظرة عامة",
+        "students": "الطلاب",
+        "teachers": "المعلمون",
+        "classes": "الفصول",
+        "attendance": "الحضور والغياب",
+        "finance": "المالية",
+        "settings": "الإعدادات",
+        "dashboard": "لوحة التحكم"
+    }
+};
+
 export function getTranslation(key: string, locale: string = 'en'): string {
+    if (!key) return '';
     const dict = TRANSLATIONS[locale] || TRANSLATIONS.en;
+    
+    // 1. Direct dictionary match
     if (dict && dict[key]) {
         return dict[key];
     }
-    // Fallback to English dictionary if key missing in target language
+    
+    // 2. Direct term mapping lookup
+    const termMap = GLOBAL_TERM_MAP[locale];
+    const normalizedKey = key.toLowerCase().trim();
+    if (termMap && termMap[normalizedKey]) {
+        return termMap[normalizedKey];
+    }
+
+    // 3. Fallback to English dictionary if key missing in target language
     if (TRANSLATIONS.en && TRANSLATIONS.en[key]) {
         return TRANSLATIONS.en[key];
     }
+
     return key;
 }
