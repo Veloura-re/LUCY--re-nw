@@ -99,8 +99,20 @@ export async function POST(req: Request) {
                         { status: 429, headers: { 'Retry-After': '3600' } }
                     );
                 }
-            } catch (e) {
-                // Rate limit function or table may not be initialized yet; continue safely
+            } catch (e: any) {
+                // Determine if error is an undefined function error (e.g., initial setup without full migration)
+                // If it is, log and fail-open to not brick the initial deployment
+                if (e?.message?.includes("enforce_login_rate_limit") && (e?.message?.includes("does not exist") || e?.message?.includes("Invalid `prisma.$queryRaw()`"))) {
+                    console.warn("[Login Rate Limit] DB function missing. Failing open to allow setup.", e.message);
+                } else {
+                    // Do not fail open on real database connection issues or malformed queries
+                    console.error("[Login Rate Limit Error]:", e);
+                    await recordAuditLog(clientIp, sanitizedEmail, 'RATE_LIMIT_ERROR');
+                    return NextResponse.json(
+                        { error: "Security validation failed. Please try again later." },
+                        { status: 429, headers: { 'Retry-After': '3600' } }
+                    );
+                }
             }
         }
 
