@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 
 interface DashboardSidebarProps {
     dbUser: any;
@@ -198,6 +199,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                         <div className="space-y-2">
                             <NavToggle mode="DOCK" />
                             <div className="flex items-center gap-2">
+                                <LanguageToggle className="!w-[38px] !h-[38px] !rounded-xl shrink-0" />
                                 <ThemeToggle className="!w-[38px] !h-[38px] !rounded-xl shrink-0" />
                                 <Button
                                     variant="ghost"
