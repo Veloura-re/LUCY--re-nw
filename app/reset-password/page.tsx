@@ -24,23 +24,48 @@ export default function ResetPasswordPage() {
     const supabase = createClient();
 
     useEffect(() => {
-        // Verify active recovery session
+        let isSubscribed = true;
+
+        // 1. Listen for Supabase auth events (e.g. PASSWORD_RECOVERY or SIGNED_IN)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (!isSubscribed) return;
+            if (session) {
+                setIsCheckingAuth(false);
+            }
+        });
+
+        // 2. Initial session check with 2.5s grace period for hash token parsing
         async function checkSession() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    // If no recovery session, redirect to login
-                    router.push("/forgot-password?error=session_expired");
+                if (session) {
+                    if (isSubscribed) setIsCheckingAuth(false);
                     return;
                 }
+                
+                // Allow grace period for hash fragment hydration
+                setTimeout(async () => {
+                    if (!isSubscribed) return;
+                    const { data: { session: delayedSession } } = await supabase.auth.getSession();
+                    if (!delayedSession) {
+                        setIsCheckingAuth(false);
+                    } else {
+                        setIsCheckingAuth(false);
+                    }
+                }, 2500);
             } catch (err) {
                 console.error("Session check error:", err);
-            } finally {
-                setIsCheckingAuth(false);
+                if (isSubscribed) setIsCheckingAuth(false);
             }
         }
+
         checkSession();
-    }, [router, supabase]);
+
+        return () => {
+            isSubscribed = false;
+            subscription.unsubscribe();
+        };
+    }, [supabase]);
 
     // Password strength metrics
     const hasMinLength = newPassword.length >= 8;

@@ -14,6 +14,7 @@ import { ParticleField } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { PromoPopup } from "@/components/marketing/promo-popup";
+import { useLanguage } from "@/components/providers/language-provider";
 
 
 
@@ -257,6 +258,7 @@ function SignalWallPreview() {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 export default function Home() {
+  const { t } = useLanguage();
 
   const [booting, setBooting] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -290,8 +292,8 @@ export default function Home() {
   const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -50]);
 
   // Using standard framer-motion fade-in that wraps the container
-  const heroLine1 = "YOUR SCHOOL'S";
-  const heroLine2 = "DIGITAL HOME.";
+  const heroLine1 = t("hero.line1", "YOUR SCHOOL'S");
+  const heroLine2 = t("hero.line2", "DIGITAL HOME.");
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
@@ -340,12 +342,12 @@ export default function Home() {
 
   const marqueeItems = ["EMPOWERING_EDUCATION", "LUCY_OS_v1", "HIGH_PERFORMANCE", "SECURE_STORAGE", "CONNECTED_CAMPUS", "CENTRAL_DASHBOARD", "ACADEMIC_SYSTEM", "SECURE_ACCESS", "STUDENT_PORTAL", "CLOUD_NATIVE"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
-    { href: "/intelligence", label: "intelligence" },
-    { href: "/network", label: "network" },
-    { href: "/security", label: "vault" },
-    { href: "/docs", label: "docs" },
-    { href: "/deck", label: "presentation" },
-    { href: "/community", label: "community" },
+    { href: "/intelligence", label: t("nav.intelligence", "intelligence") },
+    { href: "/network", label: t("nav.network", "network") },
+    { href: "/security", label: t("nav.vault", "vault") },
+    { href: "/docs", label: t("nav.docs", "docs") },
+    { href: "/deck", label: t("nav.presentation", "presentation") },
+    { href: "/community", label: t("nav.community", "community") },
   ];
   const companyLinks = [
     { href: "/careers", l: "careers" },
@@ -511,14 +513,14 @@ export default function Home() {
               </motion.div>
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-slate-500 dark:text-zinc-500 max-w-xl text-lg lowercase leading-relaxed font-medium">
-                a simple place you can call your own. drop the messy spreadsheets and build a digital home that's yours.
+                {t("hero.subtitle", "a simple place you can call your own. drop the messy spreadsheets and build a digital home that's yours.")}
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.3 }} className="flex flex-wrap gap-4">
                 <Link href="/register">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button className="h-12 px-8 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-widest font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
-                      <span className="relative z-10">get_started</span>
+                      <span className="relative z-10">{t("hero.get_started", "get_started")}</span>
                       <motion.div className="absolute inset-0 bg-slate-700 dark:bg-zinc-200 translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
                     </Button>
                   </motion.div>
@@ -526,14 +528,14 @@ export default function Home() {
                 <Link href="/docs">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[11px] uppercase tracking-widest transition-all font-bold">
-                      read_docs
+                      {t("hero.read_docs", "read_docs")}
                     </Button>
                   </motion.div>
                 </Link>
                 <Link href="/deck">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
                     <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[11px] uppercase tracking-widest transition-all font-bold">
-                      view_presentation
+                      {t("hero.view_presentation", "view_presentation")}
                     </Button>
                   </motion.div>
                 </Link>

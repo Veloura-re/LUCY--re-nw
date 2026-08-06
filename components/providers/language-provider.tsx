@@ -1,8 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { WORLD_LANGUAGES, Language, DEFAULT_LANGUAGE } from '@/lib/i18n/languages';
-import { getTranslation } from '@/lib/i18n/translations';
+import { getTranslation, GLOBAL_TERM_MAP } from '@/lib/i18n/translations';
 
 interface LanguageContextType {
     language: Language;
@@ -19,6 +19,35 @@ const LanguageContext = createContext<LanguageContextType>({
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
 
+    // Dynamic DOM auto-translator for all software pages
+    const translateDomNodes = useCallback((targetLang: Language) => {
+        if (typeof window === 'undefined' || targetLang.code === 'en') return;
+
+        const termMap = GLOBAL_TERM_MAP[targetLang.code];
+        if (!termMap) return;
+
+        const walkAndTranslate = (node: Node) => {
+            if (node.nodeType === Node.TEXT_NODE && node.nodeValue) {
+                const trimmed = node.nodeValue.trim().toLowerCase();
+                if (termMap[trimmed]) {
+                    node.nodeValue = node.nodeValue.replace(new RegExp(`\\b${trimmed}\\b`, 'gi'), termMap[trimmed]);
+                }
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                // Skip script/style/input elements
+                const tagName = (node as Element).tagName?.toUpperCase();
+                if (tagName !== 'SCRIPT' && tagName !== 'STYLE' && tagName !== 'INPUT' && tagName !== 'TEXTAREA') {
+                    for (let i = 0; i < node.childNodes.length; i++) {
+                        walkAndTranslate(node.childNodes[i]);
+                    }
+                }
+            }
+        };
+
+        requestAnimationFrame(() => {
+            walkAndTranslate(document.body);
+        });
+    }, []);
+
     useEffect(() => {
         // 1. Check saved language preference in localStorage or cookie
         const savedCode = localStorage.getItem('lucy_language');
@@ -27,6 +56,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
             if (found) {
                 setLanguageState(found);
                 document.documentElement.dir = found.dir;
+                document.documentElement.lang = found.code;
+                translateDomNodes(found);
                 return;
             }
         }
@@ -38,9 +69,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
             if (found) {
                 setLanguageState(found);
                 document.documentElement.dir = found.dir;
+                document.documentElement.lang = found.code;
+                translateDomNodes(found);
             }
         }
-    }, []);
+    }, [translateDomNodes]);
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang);
@@ -48,11 +81,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         document.cookie = `lucy_language=${lang.code}; path=/; max-age=31536000`;
         document.documentElement.dir = lang.dir;
         document.documentElement.lang = lang.code;
+        translateDomNodes(lang);
     };
 
     const t = (key: string, fallback?: string): string => {
         const translated = getTranslation(key, language.code);
-        if (translated !== key) return translated;
+        if (translated && translated !== key) return translated;
         return fallback || key;
     };
 
