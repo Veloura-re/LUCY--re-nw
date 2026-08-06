@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { AnimeCounterMetric } from "@/components/ui/anime-reveal";
 
 interface SchoolType {
     id: string;
@@ -232,7 +233,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                             </span>
                                         </div>
                                         <div className={cn("text-3xl font-black font-mono tracking-tight mb-1", stat.text)}>
-                                            {isLoading ? "..." : stat.value.toLocaleString()}
+                                            {isLoading ? "..." : <AnimeCounterMetric value={stat.value} duration={1600} />}
                                         </div>
                                         <div className="text-[10px] text-zinc-600 dark:text-zinc-500 font-mono font-semibold uppercase tracking-wider">
                                             {stat.sub}

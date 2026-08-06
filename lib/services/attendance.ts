@@ -20,47 +20,53 @@ export const getCachedTeacherClasses = (teacherId: string, schoolId: string) => 
             const isEdge = !_prismaCheck;
             
             if (isEdge) {
-                const supabase = getSupabase();
-                
-                // 1. Fetch assignments
-                const { data: assignments } = await supabase
-                    .from('TeacherAssignment')
-                    .select('*, class:Class(*, grade:Grade(*)), subject:Subject(*)')
-                    .eq('teacherId', teacherId);
+                try {
+                    const supabase = getSupabase();
+                    
+                    // 1. Fetch assignments
+                    const { data: assignments } = await supabase
+                        .from('TeacherAssignment')
+                        .select('*, class:Class(*, grade:Grade(*)), subject:Subject(*)')
+                        .eq('teacherId', teacherId);
 
-                // 2. Fetch homeroom assignments
-                const { data: homerooms } = await supabase
-                    .from('Class')
-                    .select('*, grade:Grade(*)')
-                    .eq('homeroomTeacherId', teacherId);
+                    // 2. Fetch homeroom assignments
+                    const { data: homerooms } = await supabase
+                        .from('Class')
+                        .select('*, grade:Grade(*)')
+                        .eq('homeroomTeacherId', teacherId);
 
-                const classesMap = new Map<string, any>();
+                    if (assignments || homerooms) {
+                        const classesMap = new Map<string, any>();
 
-                (assignments || []).forEach((a: any) => {
-                    if (!classesMap.has(a.classId)) {
-                        classesMap.set(a.classId, {
-                            classId: a.classId,
-                            className: `${a.class?.grade?.name || ''} ${a.class?.name || ''}`.trim(),
-                            subjects: []
+                        (assignments || []).forEach((a: any) => {
+                            if (!classesMap.has(a.classId)) {
+                                classesMap.set(a.classId, {
+                                    classId: a.classId,
+                                    className: `${a.class?.grade?.name || ''} ${a.class?.name || ''}`.trim(),
+                                    subjects: []
+                                });
+                            }
+                            if (a.subject) {
+                                classesMap.get(a.classId).subjects.push(a.subject);
+                            }
                         });
-                    }
-                    const cls = classesMap.get(a.classId);
-                    if (a.subject) {
-                        cls.subjects.push({ id: a.subject.id, name: a.subject.name });
-                    }
-                });
 
-                (homerooms || []).forEach((h: any) => {
-                    if (!classesMap.has(h.id)) {
-                        classesMap.set(h.id, {
-                            classId: h.id,
-                            className: `${h.grade?.name || ''} ${h.name || ''}`.trim(),
-                            subjects: []
+                        (homerooms || []).forEach((c: any) => {
+                            if (!classesMap.has(c.id)) {
+                                classesMap.set(c.id, {
+                                    classId: c.id,
+                                    className: `${c.grade?.name || ''} ${c.name || ''}`.trim(),
+                                    isHomeroom: true,
+                                    subjects: []
+                                });
+                            }
                         });
-                    }
-                });
 
-                return Array.from(classesMap.values());
+                        return Array.from(classesMap.values());
+                    }
+                } catch {
+                    // Fall through to Prisma query below
+                }
             }
 
             // Node.js Prisma Fallback
