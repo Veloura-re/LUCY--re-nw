@@ -11,7 +11,6 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Turnstile } from '@marsidev/react-turnstile';
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -82,8 +81,7 @@ function LoginContent() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-zinc-950 p-4 font-sans text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300">
             {/* Top Right Controls */}
-            <div className="absolute top-6 right-6 z-50 flex items-center gap-2">
-                <LanguageToggle />
+            <div className="absolute top-6 right-6 z-50">
                 <ThemeToggle />
             </div>
 
