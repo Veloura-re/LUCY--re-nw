@@ -46,15 +46,18 @@ export default function HomeroomDashboard() {
             const res = await fetch('/api/school/classes');
             const data = await res.json();
 
-            // Find class where I am homeroom teacher
+            // Find class where I am homeroom teacher or default to first class
             let found = null;
-            if (data.grades) {
+            if (data.grades && data.grades.length > 0) {
                 for (const grade of data.grades) {
                     const cls = grade.classes.find((c: any) => c.homeroomTeacher?.id === userId);
                     if (cls) {
                         found = { ...cls, gradeName: grade.name };
                         break;
                     }
+                }
+                if (!found && data.grades[0]?.classes?.length > 0) {
+                    found = { ...data.grades[0].classes[0], gradeName: data.grades[0].name };
                 }
             }
 
