@@ -17,33 +17,32 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
-    // Use actual database user ID (dbUser.id) for room memberships
     const userId = dbUser.id || authUser.id;
 
-    // Auto-sync group memberships (Global School, Teachers Group, Class Groups)
+    // 1. Synchronize group memberships FIRST so school group, teacher group, & class groups exist
     const { syncGroupMemberships } = await import('@/lib/messaging');
     await syncGroupMemberships(userId, dbUser.schoolId, dbUser.role as any);
 
-    // Fetch rooms using dbUser.id so all group memberships are matched
-    const initialRoomsTask = getCachedUserRooms(userId, dbUser.schoolId, dbUser.role);
+    // 2. Fetch freshly synced rooms
+    const rooms = await getCachedUserRooms(userId, dbUser.schoolId, dbUser.role);
     
     let initialMessages: any[] = [];
     let initialNextCursor: string | null = null;
     let initialActiveRoom: any = null;
 
-    // If chatRoomId is provided in URL, pre-fetch messages
+    // Pre-fetch active room messages if chatRoomId is present
     if (params.chatRoomId) {
-        const [rooms, messageData] = await Promise.all([
-            initialRoomsTask,
-            getCachedRoomMessages(params.chatRoomId)
-        ]);
-        
         initialActiveRoom = rooms.find((r: any) => r.id === params.chatRoomId);
+        const messageData = await getCachedRoomMessages(params.chatRoomId);
+        initialMessages = messageData.messages;
+        initialNextCursor = messageData.nextCursor;
+    } else if (rooms.length > 0) {
+        // Default to first group chat if none selected
+        initialActiveRoom = rooms[0];
+        const messageData = await getCachedRoomMessages(rooms[0].id);
         initialMessages = messageData.messages;
         initialNextCursor = messageData.nextCursor;
     }
-
-    const rooms = await initialRoomsTask;
 
     return (
         <Suspense fallback={
