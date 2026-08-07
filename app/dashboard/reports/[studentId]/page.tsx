@@ -3,16 +3,15 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { 
     Printer, GraduationCap, Award, CheckCircle2, 
     Calendar, User, ArrowLeft, RefreshCw, ShieldCheck, 
     Sparkles, BookOpen, Layers, QrCode as QrCodeIcon, 
-    Compass, School, AlertCircle, Eye, FileText
+    School, AlertCircle, FileText
 } from "lucide-react";
 import QRCode from "react-qr-code";
 import SpringingLoader from "@/components/dashboard/springing-loader";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function StudentReportCardPage() {
@@ -21,7 +20,6 @@ export default function StudentReportCardPage() {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isFlipped, setIsFlipped] = useState(false);
-    const reportRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -117,7 +115,7 @@ export default function StudentReportCardPage() {
                 </div>
             </div>
 
-            {/* 3D Flippable Container (Screen View) */}
+            {/* 3D Flippable Container (Screen Interactive View) */}
             <div className="max-w-5xl mx-auto perspective-[1800px] print:hidden">
                 <motion.div
                     className="w-full relative transition-all duration-700 preserve-3d"
@@ -361,38 +359,38 @@ export default function StudentReportCardPage() {
                 </motion.div>
             </div>
 
-            {/* PRINT-NATIVE A4 TRANSCRIPT (Visible ONLY during print/PDF export) */}
-            <div className="hidden print:block w-full max-w-[800px] mx-auto bg-white text-black p-8 border border-zinc-300 rounded-none shadow-none font-sans">
-                {/* Print Header */}
+            {/* PRINT-NATIVE 3D TRANSCRIPT (Rendered during Print / PDF Export) */}
+            <div className="hidden print:block w-full max-w-[850px] mx-auto bg-white text-black p-8 font-sans border-2 border-black rounded-3xl shadow-none">
+                {/* Official Crest Header */}
                 <div className="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
                     <div className="flex items-center gap-4">
                         {student?.school?.logoUrl && (
                             <img src={student.school.logoUrl} alt="Logo" className="w-16 h-16 object-contain" />
                         )}
                         <div>
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-700 block">Official Academic Record</span>
                             <h1 className="text-2xl font-black uppercase tracking-tight leading-none">{schoolName}</h1>
                             <p className="text-xs text-zinc-600 mt-1">{student?.school?.address || "Official Academic Campus"}</p>
-                            <p className="text-[10px] font-mono font-bold text-zinc-800 uppercase mt-0.5">Official Scholastic Transcript & Synthesis</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <span className="text-xs font-black uppercase">{term?.name || "2023/24 Term 2"}</span>
+                        <span className="text-xs font-black uppercase block">{term?.name || "2023/24 Term 2"}</span>
                         <p className="text-[10px] font-mono text-zinc-600">{term?.startDate} – {term?.endDate}</p>
                     </div>
                 </div>
 
-                {/* Print Student Profile */}
-                <div className="grid grid-cols-4 gap-4 p-4 border border-zinc-300 rounded-lg mb-6 text-xs">
+                {/* Scholar Profile Box */}
+                <div className="grid grid-cols-4 gap-4 p-4 border border-zinc-400 rounded-xl mb-6 text-xs bg-zinc-50">
                     <div>
-                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Student Scholar</span>
-                        <strong>{studentFullName}</strong>
+                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Scholar Name</span>
+                        <strong className="text-sm">{studentFullName}</strong>
                     </div>
                     <div>
-                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Student Code</span>
-                        <strong>{student?.studentCode}</strong>
+                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Student Identifier</span>
+                        <strong className="font-mono text-sm">{student?.studentCode}</strong>
                     </div>
                     <div>
-                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Cohort</span>
+                        <span className="text-[9px] font-mono uppercase text-zinc-500 block">Class Cohort</span>
                         <strong>Grade {student?.class?.grade?.level} • {student?.class?.name}</strong>
                     </div>
                     <div>
@@ -401,63 +399,63 @@ export default function StudentReportCardPage() {
                     </div>
                 </div>
 
-                {/* Print Quick Summary */}
+                {/* Vitals Breakdown */}
                 <div className="grid grid-cols-4 gap-4 mb-6 text-center border-y border-zinc-300 py-3">
                     <div>
                         <span className="text-[9px] uppercase text-zinc-500 block">Average</span>
-                        <span className="text-lg font-black">{summary?.overallPercentage}%</span>
+                        <span className="text-xl font-black">{summary?.overallPercentage}%</span>
                     </div>
                     <div>
-                        <span className="text-[9px] uppercase text-zinc-500 block">GPA</span>
-                        <span className="text-lg font-black">{summary?.gpa} / 4.0</span>
+                        <span className="text-[9px] uppercase text-zinc-500 block">Weighted GPA</span>
+                        <span className="text-xl font-black">{summary?.gpa} / 4.0</span>
                     </div>
                     <div>
-                        <span className="text-[9px] uppercase text-zinc-500 block">Class Rank</span>
-                        <span className="text-lg font-black">#{summary?.classRank} of {summary?.totalClassStudents}</span>
+                        <span className="text-[9px] uppercase text-zinc-500 block">Class Position</span>
+                        <span className="text-xl font-black">#{summary?.classRank} of {summary?.totalClassStudents}</span>
                     </div>
                     <div>
                         <span className="text-[9px] uppercase text-zinc-500 block">Attendance</span>
-                        <span className="text-lg font-black">{attendance?.rate}%</span>
+                        <span className="text-xl font-black">{attendance?.rate}%</span>
                     </div>
                 </div>
 
-                {/* Print Marks Table */}
-                <table className="w-full text-xs border-collapse border border-zinc-300 mb-6">
+                {/* Subject Marks Table */}
+                <table className="w-full text-xs border-collapse border border-zinc-400 mb-6">
                     <thead>
-                        <tr className="bg-zinc-100 text-[10px] font-mono uppercase">
-                            <th className="border border-zinc-300 p-2 text-left">Subject</th>
-                            <th className="border border-zinc-300 p-2 text-center">Score / 100</th>
-                            <th className="border border-zinc-300 p-2 text-center">Grade</th>
-                            <th className="border border-zinc-300 p-2 text-left">Remarks</th>
+                        <tr className="bg-zinc-100 font-mono text-[10px] uppercase">
+                            <th className="border border-zinc-400 p-2 text-left">Curriculum Subject</th>
+                            <th className="border border-zinc-400 p-2 text-center">Score / 100</th>
+                            <th className="border border-zinc-400 p-2 text-center">Grade</th>
+                            <th className="border border-zinc-400 p-2 text-left">Remarks & Observations</th>
                         </tr>
                     </thead>
                     <tbody>
                         {grades.map((g: any, i: number) => (
-                            <tr key={i} className="border border-zinc-300">
-                                <td className="border border-zinc-300 p-2 font-bold">{g.subject?.name}</td>
-                                <td className="border border-zinc-300 p-2 text-center font-mono font-bold">{g.score}%</td>
-                                <td className="border border-zinc-300 p-2 text-center font-black">{g.grade}</td>
-                                <td className="border border-zinc-300 p-2 text-[10px] italic text-zinc-600">{g.remarks || "Satisfactory"}</td>
+                            <tr key={i} className="border border-zinc-400">
+                                <td className="border border-zinc-400 p-2 font-bold">{g.subject?.name}</td>
+                                <td className="border border-zinc-400 p-2 text-center font-mono font-bold">{g.score}%</td>
+                                <td className="border border-zinc-400 p-2 text-center font-black">{g.grade}</td>
+                                <td className="border border-zinc-400 p-2 text-[10px] italic text-zinc-600">{g.remarks || "Satisfactory progress"}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
 
-                {/* Print Signatures */}
-                <div className="grid grid-cols-3 gap-6 pt-12 text-center text-xs">
+                {/* Verification Signatures & QR Code */}
+                <div className="grid grid-cols-3 gap-6 pt-6 border-t-2 border-black text-center text-xs items-end">
                     <div>
-                        <div className="border-b border-black pb-1 font-serif font-bold italic">{principal?.name || "School Principal"}</div>
-                        <span className="text-[9px] uppercase text-zinc-500 mt-1 block">Principal Signature</span>
+                        <div className="border-b border-black pb-1 font-serif font-bold italic text-sm">{principal?.name || "School Principal"}</div>
+                        <span className="text-[9px] uppercase text-zinc-600 mt-1 block">Principal Authentication</span>
                     </div>
                     <div>
-                        <div className="border-b border-black pb-1 font-serif font-bold italic">Homeroom Advisor</div>
-                        <span className="text-[9px] uppercase text-zinc-500 mt-1 block">Homeroom Teacher</span>
+                        <div className="border-b border-black pb-1 font-serif font-bold italic text-sm">Faculty Homeroom Advisor</div>
+                        <span className="text-[9px] uppercase text-zinc-600 mt-1 block">Class Teacher Signature</span>
                     </div>
                     <div className="flex flex-col items-center">
-                        <div className="p-1 border border-black rounded">
-                            <QRCode value={qrVerifyUrl || "https://lucy.app"} size={50} />
+                        <div className="p-1.5 border-2 border-black rounded-lg bg-white">
+                            <QRCode value={qrVerifyUrl || "https://lucy.app"} size={60} />
                         </div>
-                        <span className="text-[8px] font-mono text-zinc-500 uppercase mt-1">Registrar Verification</span>
+                        <span className="text-[8px] font-mono text-zinc-700 uppercase mt-1">Registrar Digital Seal</span>
                     </div>
                 </div>
             </div>
