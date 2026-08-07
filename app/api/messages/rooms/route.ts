@@ -4,7 +4,7 @@ import { getUserTag } from '@/lib/cache-keys';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError } from '@/lib/security';
-import { syncGroupMemberships, getOrCreatePrivateRoom } from '@/lib/messaging';
+import { syncGroupMemberships, syncAllSchoolMembers, getOrCreatePrivateRoom } from '@/lib/messaging';
 
 export async function GET(request: Request) {
     try {
@@ -14,9 +14,14 @@ export async function GET(request: Request) {
         await syncGroupMemberships(dbUser.id, dbUser.schoolId, dbUser.role);
 
         // Fetch using the optimized cached service
-        const rooms = await getCachedUserRooms(dbUser.id, dbUser.schoolId!, dbUser.role);
+        let rooms = await getCachedUserRooms(dbUser.id, dbUser.schoolId, dbUser.role);
 
-        return NextResponse.json({ rooms });
+        if (!rooms || rooms.length === 0) {
+            await syncAllSchoolMembers(dbUser.schoolId);
+            rooms = await getCachedUserRooms(dbUser.id, dbUser.schoolId, dbUser.role);
+        }
+
+        return NextResponse.json({ rooms: rooms || [] });
     } catch (e) {
         return handleApiError(e);
     }
@@ -37,16 +42,16 @@ export async function POST(request: Request) {
 
             // Students cannot message other students
             if (dbUser.role === 'STUDENT' && targetUser.role === 'STUDENT') {
-                return NextResponse.json({ error: 'thisis restricted on student mode' }, { status: 403 });
+                return NextResponse.json({ error: 'Direct transmission restricted on student mode' }, { status: 403 });
             }
 
             // Parents restrictions
             if (dbUser.role === 'PARENT') {
                 if (targetUser.role === 'STUDENT') {
-                    return NextResponse.json({ error: 'thisis restricted on parent mode' }, { status: 403 });
+                    return NextResponse.json({ error: 'Direct transmission restricted on parent mode' }, { status: 403 });
                 }
                 if (targetUser.role === 'PARENT') {
-                    return NextResponse.json({ error: 'thisis restricted on parent mode' }, { status: 403 });
+                    return NextResponse.json({ error: 'Direct transmission restricted on parent mode' }, { status: 403 });
                 }
             }
 
@@ -55,20 +60,10 @@ export async function POST(request: Request) {
             // Invalidate Inbox Cache
             revalidateTag(getUserTag(dbUser.id), 'max');
 
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'message', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ room });
+            return NextResponse.json({ room });
         }
 
-        return NextResponse.json({ error: 'Action not supported' }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     } catch (e) {
         return handleApiError(e);
     }
