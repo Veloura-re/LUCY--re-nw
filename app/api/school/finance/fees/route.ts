@@ -1,32 +1,34 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from "@/lib/security";
+import { FeeCategory, FeeFrequency } from "@prisma/client";
+
+const VALID_CATEGORIES: Record<string, FeeCategory> = {
+    TUITION: FeeCategory.TUITION,
+    TRANSPORT: FeeCategory.TRANSPORT,
+    SPORTS: FeeCategory.SPORTS,
+    LIBRARY: FeeCategory.LIBRARY,
+    LABORATORY: FeeCategory.LABORATORY,
+    ACTIVITIES: FeeCategory.ACTIVITIES,
+    OTHER: FeeCategory.OTHER,
+};
+
+const VALID_FREQUENCIES: Record<string, FeeFrequency> = {
+    ONCE: FeeFrequency.ONCE,
+    MONTHLY: FeeFrequency.MONTHLY,
+    TERM: FeeFrequency.TERM,
+    QUARTERLY: FeeFrequency.QUARTERLY,
+    SEMESTERLY: FeeFrequency.SEMESTERLY,
+    ANNUAL: FeeFrequency.ANNUAL,
+};
 
 export async function GET() {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
-
-        const { prisma } = require('@/lib/prisma');
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const [feesRes, gradesRes] = await Promise.all([
-                supabaseAdmin.from('FeeStructure').select('*').eq('schoolId', dbUser.schoolId!).order('createdAt', { ascending: false }),
-                supabaseAdmin.from('Grade').select('*').eq('schoolId', dbUser.schoolId!)
-            ]);
-            const gradeMap = new Map((gradesRes.data || []).map((g: any) => [g.id, g]));
-            const fees = (feesRes.data || []).map((fee: any) => ({
-                ...fee,
-                grade: fee.gradeId ? gradeMap.get(fee.gradeId) || null : null
-            }));
-            return NextResponse.json(fees);
-        }
+        const schoolId = dbUser.schoolId!;
 
         const fees = await prisma.feeStructure.findMany({
-            where: { schoolId: dbUser.schoolId! },
+            where: { schoolId },
             include: { grade: true },
             orderBy: { createdAt: 'desc' }
         });
@@ -40,47 +42,48 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const schoolId = dbUser.schoolId!;
 
         const body = await req.json();
         const { name, amount, category, frequency, gradeId, description } = body;
 
-        if (!name || amount === undefined || !category || !frequency) {
-            return new NextResponse("Missing required fields", { status: 400 });
+        if (!name || amount === undefined) {
+            return NextResponse.json({ error: "Name and Amount are required fields." }, { status: 400 });
         }
 
-        const { prisma } = require('@/lib/prisma');
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: fee, error } = await supabaseAdmin
-                .from('FeeStructure')
-                .insert({
-                    schoolId: dbUser.schoolId!,
-                    gradeId: gradeId || null,
-                    name,
-                    amount: parseFloat(amount),
-                    category,
-                    frequency,
-                    description: description || null
-                })
-                .select()
-                .single();
-            if (error) throw error;
-            return NextResponse.json(fee);
+        // Clean & Validate gradeId
+        let resolvedGradeId: string | null = null;
+        if (gradeId && gradeId !== 'ALL' && gradeId !== 'all' && gradeId.trim() !== '') {
+            const gradeExists = await prisma.grade.findFirst({
+                where: { id: gradeId, schoolId }
+            });
+            if (gradeExists) {
+                resolvedGradeId = gradeExists.id;
+            }
         }
+
+        // Clean & Map Category enum
+        const normalizedCategory = String(category || 'TUITION').toUpperCase();
+        const finalCategory = VALID_CATEGORIES[normalizedCategory] || FeeCategory.OTHER;
+
+        // Clean & Map Frequency enum
+        const normalizedFrequency = String(frequency || 'TERM').toUpperCase();
+        const finalFrequency = VALID_FREQUENCIES[normalizedFrequency] || FeeFrequency.TERM;
+
+        const parsedAmount = Math.max(0, parseFloat(String(amount || 0)));
 
         const fee = await prisma.feeStructure.create({
             data: {
-                schoolId: dbUser.schoolId!,
-                gradeId,
-                name,
-                amount: parseFloat(amount),
-                category,
-                frequency,
-                description
+                schoolId,
+                gradeId: resolvedGradeId,
+                name: String(name).trim(),
+                amount: parsedAmount,
+                category: finalCategory,
+                frequency: finalFrequency,
+                description: description ? String(description).trim() : null
+            },
+            include: {
+                grade: true
             }
         });
 

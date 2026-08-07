@@ -80,6 +80,30 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                 </div>
             </div>
 
+            {/* 📸 PARENT TO CHILD SCREENSHOT & NOTE TRANSMISSION CONSOLE */}
+            <div className="p-6 md:p-8 rounded-[2.5rem] bg-gradient-to-r from-eduGreen-950/20 via-zinc-950/40 to-emerald-950/20 border border-eduGreen-500/20 shadow-2xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="space-y-1">
+                        <span className="text-[9px] font-mono text-eduGreen-500 font-bold uppercase tracking-widest flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            Parent-to-Student Uplink
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-black uppercase text-zinc-900 dark:text-white tracking-tight">
+                            Transmit Study Screenshot or Note to {studentName}
+                        </h3>
+                        <p className="text-xs text-zinc-500">
+                            Upload a textbook screenshot, study card, or encouragement note directly to {studentName}&apos;s dashboard.
+                        </p>
+                    </div>
+
+                    <Link href={`/dashboard/messages`}>
+                        <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-2xl h-12 px-6 text-xs font-bold uppercase tracking-widest shadow-xl shadow-eduGreen-600/20">
+                            <MessageSquare className="w-4 h-4 mr-2" /> Open Direct Chat
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredAssignments.map((a) => (
                     <RegistryCard 
