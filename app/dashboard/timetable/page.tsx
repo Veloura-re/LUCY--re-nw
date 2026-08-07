@@ -320,7 +320,7 @@ export default function TimetableManagementPage() {
                             <div className="space-y-3 w-72">
                                 <label className="text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 ml-1">Class Cohort</label>
                                 <Select value={selectedClassId} onValueChange={setSelectedClassId}>
-                                    <SelectTrigger className="h-14 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium">
+                                    <SelectTrigger className="h-14 bg-zinc-200 dark:bg-zinc-950/50 border-2 border-zinc-200 dark:border-zinc-900 rounded-xl text-zinc-900 dark:text-white font-medium">
                                         <SelectValue placeholder="Select Class" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white">
@@ -333,7 +333,13 @@ export default function TimetableManagementPage() {
                                 </Select>
                             </div>
                             <div className="flex-1" />
-                            <div className="flex flex-col items-end gap-2">
+                            <div className="flex flex-wrap items-end gap-3">
+                                <Button
+                                    onClick={() => window.print()}
+                                    className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-xl h-10 px-5 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all"
+                                >
+                                    Export {classes.find(c => c.id === selectedClassId)?.name || 'Class'} Timetable (PDF)
+                                </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
@@ -405,6 +411,64 @@ export default function TimetableManagementPage() {
                         </table>
                     </div>
                 </TabsContent>
+
+                {/* --- Printable Class Timetable Sheet (Rendered during Print/Export) --- */}
+                <div className="hidden print:block w-full max-w-[900px] mx-auto bg-white text-black p-8 font-sans border border-zinc-300">
+                    <div className="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
+                        <div>
+                            <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">Official Class Schedule</span>
+                            <h2 className="text-2xl font-black uppercase tracking-tight">
+                                {classes.find(c => c.id === selectedClassId)?.name || 'Class Cohort'} ({classes.find(c => c.id === selectedClassId)?.gradeName || 'Grade'})
+                            </h2>
+                            <p className="text-xs text-zinc-600 mt-0.5">LUCY Centralized Institutional Timetable</p>
+                        </div>
+                        <div className="text-right">
+                            <span className="text-xs font-mono font-bold uppercase">{new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span>
+                            <p className="text-[9px] font-mono text-zinc-500">Verified System Schedule</p>
+                        </div>
+                    </div>
+
+                    <table className="w-full border-collapse border border-zinc-400 text-xs mb-8">
+                        <thead>
+                            <tr className="bg-zinc-100 font-mono text-[10px] uppercase">
+                                <th className="border border-zinc-400 p-2 text-left w-36">Period / Time</th>
+                                {DAYS.filter(d => showWeekends || !["SAT", "SUN"].includes(d.value)).map(day => (
+                                    <th key={day.value} className="border border-zinc-400 p-2 text-center">{day.label}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {periods.map(period => (
+                                <tr key={period.id} className="border border-zinc-400">
+                                    <td className="border border-zinc-400 p-2 font-bold bg-zinc-50">
+                                        <div>{period.name}</div>
+                                        <div className="text-[9px] font-mono text-zinc-500">{period.startTime} - {period.endTime}</div>
+                                    </td>
+                                    {DAYS.filter(d => showWeekends || !["SAT", "SUN"].includes(d.value)).map(day => {
+                                        const entry = timetableEntries.find(e => e.periodId === period.id && e.dayOfWeek === day.value);
+                                        return (
+                                            <td key={day.value} className="border border-zinc-400 p-2 text-center">
+                                                {entry ? (
+                                                    <div>
+                                                        <strong className="block font-bold">{entry.subject?.name}</strong>
+                                                        <span className="text-[9px] text-zinc-600 block">{entry.teacher?.name}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-zinc-400 italic text-[10px]">—</span>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 border-t border-zinc-300 pt-4">
+                        <span>Issued by Academic Administration</span>
+                        <span>Official Stamp & Signature Required for Alterations</span>
+                    </div>
+                </div>
 
                 {/* --- Period Structure --- */}
                 <TabsContent value="periods" className="animate-in slide-in-from-bottom-4">

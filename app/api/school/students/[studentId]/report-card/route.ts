@@ -109,7 +109,24 @@ export async function GET(
 
         const targetSchoolId = student.schoolId;
 
-        // 2. Fetch Principal / Director Name
+        // 2. Fetch Real Academic Term from Database
+        const activeTerm = await prisma.academicTerm.findFirst({
+            where: { schoolId: targetSchoolId, isActive: true },
+            orderBy: { createdAt: 'desc' }
+        }) || await prisma.academicTerm.findFirst({
+            where: { schoolId: targetSchoolId },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const termData = {
+            id: activeTerm?.id || 'current-term',
+            name: activeTerm?.name || `${new Date().getFullYear()}/${(new Date().getFullYear() + 1).toString().slice(-2)} Academic Term 2`,
+            startDate: activeTerm?.startDate ? new Date(activeTerm.startDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Sep 2023',
+            endDate: activeTerm?.endDate ? new Date(activeTerm.endDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Jun 2024',
+            isActive: activeTerm?.isActive ?? true
+        };
+
+        // 3. Fetch Principal / Director Name
         const principal = await prisma.user.findFirst({
             where: {
                 schoolId: targetSchoolId,
@@ -118,12 +135,12 @@ export async function GET(
             select: { name: true, role: true }
         });
 
-        // 3. Fetch Subjects in School / Class
+        // 4. Fetch Subjects in School / Class
         const subjects = await prisma.subject.findMany({
             where: { schoolId: targetSchoolId }
         });
 
-        // 4. Fetch Marklist Entries across all subjects for this student's class
+        // 5. Fetch Marklist Entries across all subjects for this student's class
         const marklistConfigs = await prisma.marklistConfig.findMany({
             where: {
                 classId: student.classId || undefined,
@@ -246,7 +263,7 @@ export async function GET(
             }));
         }
 
-        // 5. Calculate GPA & Cumulative Percentage
+        // 6. Calculate GPA & Cumulative Percentage
         let totalPctSum = 0;
         let validSubjectCount = 0;
         let totalGpaPoints = 0;
@@ -273,7 +290,7 @@ export async function GET(
         else if (overallPercentage >= 50) standing = "PASS";
         else standing = "ACADEMIC PROBATION";
 
-        // 6. Fetch Attendance Summary
+        // 7. Fetch Attendance Summary
         const attendanceRecords = await prisma.attendanceRecord.findMany({
             where: { studentId: student.id }
         });
@@ -282,7 +299,7 @@ export async function GET(
         const absentCount = attendanceRecords.filter(a => a.status === "ABSENT").length;
         const totalSessions = Math.max(attendanceRecords.length, 1);
 
-        // 7. Fetch Qualitative Faculty Remarks
+        // 8. Fetch Qualitative Faculty Remarks
         const remarks = await prisma.studentRemark.findMany({
             where: { studentId: student.id },
             include: {
@@ -297,6 +314,7 @@ export async function GET(
         return NextResponse.json({
             student,
             principal,
+            term: termData,
             grades,
             summary: {
                 overallPercentage,
