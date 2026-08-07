@@ -20,7 +20,7 @@ export async function ensureDbUser(userId: string, email?: string, role: Role = 
                 data: {
                     id: userId,
                     email: email || `${userId}@lucy.app`,
-                    name: 'School Member',
+                    name: 'Campus Member',
                     role: role || Role.OWNER,
                     schoolId: schoolId || null,
                     verified: true
@@ -35,21 +35,28 @@ export async function ensureDbUser(userId: string, email?: string, role: Role = 
 
         return user;
     } catch (e) {
-        console.warn('[ensureDbUser] Error ensuring user:', e);
+        console.warn('[ensureDbUser] Error:', e);
         return null;
     }
 }
 
 /**
- * Completely guaranteed group sync engine for a school.
- * Auto-creates:
- * 1. [School Name] Community Hub (School-wide)
- * 2. [School Name] Faculty & Staff (Staff & Admin)
- * 3. [School Name] Students Hub (All Students)
- * 4. [Grade] [Class] Official Class Group (for every class in the school)
+ * Universal School Channel Definition
  */
-export async function syncGroupMemberships(userId: string, schoolId: string, role: Role = Role.OWNER) {
-    if (!schoolId) return;
+export interface UniversalChannelDef {
+    slug: string;
+    name: string;
+    description: string;
+    icon: string;
+    category: 'CAMPUS' | 'FACULTY' | 'STUDENTS' | 'CLASS';
+    minRole?: Role[];
+}
+
+/**
+ * Ensures all universal institutional channels exist for a school.
+ */
+export async function ensureSchoolChannels(schoolId: string) {
+    if (!schoolId) return [];
 
     try {
         const school = await prisma.school.findUnique({
@@ -57,166 +64,205 @@ export async function syncGroupMemberships(userId: string, schoolId: string, rol
             select: { id: true, name: true }
         });
 
-        if (!school) return;
+        if (!school) return [];
 
-        const dbUser = await ensureDbUser(userId, undefined, role, schoolId);
-        const resolvedUserId = dbUser?.id || userId;
-        const schoolName = school.name || 'School';
+        const schoolName = school.name || 'Campus';
 
-        // 1. Ensure [School Name] Community Hub
-        const mainGroupName = `${schoolName} Community Hub`;
-        let mainRoom = await prisma.chatRoom.findFirst({
-            where: {
-                schoolId,
-                type: ChatRoomType.GROUP,
-                name: { in: [mainGroupName, `${schoolName} General`, 'Global School', 'Whole School', 'School Group'] }
+        // 1. Campus Universal Channels
+        const defaultChannels: UniversalChannelDef[] = [
+            {
+                slug: 'announcements',
+                name: `📢 #${schoolName.toLowerCase().replace(/\s+/g, '-')}-announcements`,
+                description: `Official campus-wide announcements and alerts from administration.`,
+                icon: 'megaphone',
+                category: 'CAMPUS'
+            },
+            {
+                slug: 'campus-general',
+                name: `💬 #${schoolName.toLowerCase().replace(/\s+/g, '-')}-general`,
+                description: `Open discussion and community updates for all school members.`,
+                icon: 'message',
+                category: 'CAMPUS'
+            },
+            {
+                slug: 'faculty-lounge',
+                name: `💼 #faculty-and-staff`,
+                description: `Private coordination space for teachers, department heads, and leadership.`,
+                icon: 'briefcase',
+                category: 'FACULTY',
+                minRole: [Role.TEACHER, Role.HOMEROOM, Role.PRINCIPAL, Role.OWNER, Role.SUPERADMIN]
+            },
+            {
+                slug: 'student-commons',
+                name: `🎓 #student-commons`,
+                description: `Student community space for homework help and campus activities.`,
+                icon: 'graduation',
+                category: 'STUDENTS'
             }
-        });
+        ];
 
-        if (!mainRoom) {
-            mainRoom = await prisma.chatRoom.create({
-                data: {
-                    schoolId,
-                    type: ChatRoomType.GROUP,
-                    name: mainGroupName,
-                    metadata: { description: `Official campus-wide announcements and discussion for ${schoolName}.` }
-                }
-            });
-        }
-
-        if (dbUser) {
-            await prisma.chatRoomMember.upsert({
-                where: { chatRoomId_userId: { chatRoomId: mainRoom.id, userId: resolvedUserId } },
-                update: {},
-                create: { chatRoomId: mainRoom.id, userId: resolvedUserId }
-            }).catch(() => {});
-        }
-
-        // 2. Ensure [School Name] Faculty & Teachers Group
-        const isStaff = role === Role.TEACHER || role === Role.HOMEROOM || role === Role.PRINCIPAL || role === Role.OWNER || role === Role.SUPERADMIN;
-        const facultyGroupName = `${schoolName} Faculty & Staff`;
-        let facultyRoom = await prisma.chatRoom.findFirst({
-            where: {
-                schoolId,
-                type: ChatRoomType.GROUP,
-                name: { in: [facultyGroupName, `${schoolName} Staff & Teachers`, 'Teachers Group', 'Teachers & Staff'] }
-            }
-        });
-
-        if (!facultyRoom) {
-            facultyRoom = await prisma.chatRoom.create({
-                data: {
-                    schoolId,
-                    type: ChatRoomType.GROUP,
-                    name: facultyGroupName,
-                    metadata: { description: `Private workspace for ${schoolName} faculty, teachers, and leadership.` }
-                }
-            });
-        }
-
-        if (isStaff && dbUser) {
-            await prisma.chatRoomMember.upsert({
-                where: { chatRoomId_userId: { chatRoomId: facultyRoom.id, userId: resolvedUserId } },
-                update: {},
-                create: { chatRoomId: facultyRoom.id, userId: resolvedUserId }
-            }).catch(() => {});
-        }
-
-        // 3. Ensure [School Name] Students Hub
-        const studentGroupName = `${schoolName} Students Hub`;
-        let studentRoom = await prisma.chatRoom.findFirst({
-            where: {
-                schoolId,
-                type: ChatRoomType.GROUP,
-                name: { in: [studentGroupName, `${schoolName} Students`, 'Students Group', 'Students'] }
-            }
-        });
-
-        if (!studentRoom) {
-            studentRoom = await prisma.chatRoom.create({
-                data: {
-                    schoolId,
-                    type: ChatRoomType.GROUP,
-                    name: studentGroupName,
-                    metadata: { description: `Official channel for all enrolled students at ${schoolName}.` }
-                }
-            });
-        }
-
-        if ((role === Role.STUDENT || isStaff) && dbUser) {
-            await prisma.chatRoomMember.upsert({
-                where: { chatRoomId_userId: { chatRoomId: studentRoom.id, userId: resolvedUserId } },
-                update: {},
-                create: { chatRoomId: studentRoom.id, userId: resolvedUserId }
-            }).catch(() => {});
-        }
-
-        // 4. Ensure All School Class Groups
-        const allClasses = await prisma.class.findMany({
-            where: { schoolId },
-            include: { grade: true }
-        });
-
-        for (const cls of allClasses) {
-            const classGroupName = `Class: Grade ${cls.grade?.level || cls.grade?.name || ''} ${cls.name}`;
-
-            let classRoom = await prisma.chatRoom.findFirst({
+        for (const def of defaultChannels) {
+            let room = await prisma.chatRoom.findFirst({
                 where: {
                     schoolId,
                     type: ChatRoomType.GROUP,
-                    name: { in: [classGroupName, `${cls.grade?.name || ''} ${cls.name} Class`] }
+                    name: def.name
                 }
             });
 
-            if (!classRoom) {
-                classRoom = await prisma.chatRoom.create({
-                    data: {
+            if (!room) {
+                // Also check by slug in metadata
+                room = await prisma.chatRoom.findFirst({
+                    where: {
                         schoolId,
                         type: ChatRoomType.GROUP,
-                        name: classGroupName,
-                        metadata: {
-                            classId: cls.id,
-                            description: `Official class room for Grade ${cls.grade?.level || ''} ${cls.name}`
-                        }
+                        name: { contains: def.slug }
                     }
                 });
             }
 
-            if (dbUser) {
-                await prisma.chatRoomMember.upsert({
-                    where: { chatRoomId_userId: { chatRoomId: classRoom.id, userId: resolvedUserId } },
-                    update: {},
-                    create: { chatRoomId: classRoom.id, userId: resolvedUserId }
-                }).catch(() => {});
+            if (!room) {
+                await prisma.chatRoom.create({
+                    data: {
+                        schoolId,
+                        type: ChatRoomType.GROUP,
+                        name: def.name,
+                        metadata: {
+                            slug: def.slug,
+                            category: def.category,
+                            description: def.description,
+                            icon: def.icon
+                        }
+                    }
+                });
+            }
+        }
+
+        // 2. Class Cohort Channels
+        const classes = await prisma.class.findMany({
+            where: { schoolId },
+            include: { grade: true }
+        });
+
+        for (const cls of classes) {
+            const classChannelName = `🏫 #class-${(cls.grade?.name || 'grade').toLowerCase().replace(/\s+/g, '-')}-${cls.name.toLowerCase().replace(/\s+/g, '-')}`;
+            
+            let classRoom = await prisma.chatRoom.findFirst({
+                where: {
+                    schoolId,
+                    type: ChatRoomType.GROUP,
+                    name: classChannelName
+                }
+            });
+
+            if (!classRoom) {
+                await prisma.chatRoom.create({
+                    data: {
+                        schoolId,
+                        type: ChatRoomType.GROUP,
+                        name: classChannelName,
+                        metadata: {
+                            slug: `class-${cls.id}`,
+                            classId: cls.id,
+                            category: 'CLASS',
+                            description: `Official room for Grade ${cls.grade?.level || ''} ${cls.name} students, parents, and teachers.`,
+                            icon: 'school'
+                        }
+                    }
+                });
             }
         }
     } catch (e) {
-        console.error('[syncGroupMemberships] Group Sync Error:', e);
+        console.error('[ensureSchoolChannels] Error:', e);
     }
 }
 
 /**
- * Bulk sync: ensures all users in a school are in their school's group chats.
+ * Returns structured channels, class cohorts, and direct chats for a user.
  */
-export async function syncAllSchoolMembers(schoolId: string) {
+export async function getStructuredSchoolRooms(userId: string, schoolId: string, role?: string) {
+    if (!schoolId) return { campusChannels: [], classCohorts: [], directChats: [], allRooms: [] };
+
+    await ensureSchoolChannels(schoolId);
+
     try {
-        const users = await prisma.user.findMany({
-            where: { schoolId },
-            select: { id: true, role: true }
+        const rooms = await prisma.chatRoom.findMany({
+            where: {
+                schoolId,
+                OR: [
+                    { type: ChatRoomType.GROUP },
+                    { members: { some: { userId } } }
+                ]
+            },
+            include: {
+                members: {
+                    include: {
+                        user: {
+                            select: { id: true, name: true, role: true, photoUrl: true }
+                        }
+                    }
+                },
+                messages: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 1,
+                    include: { fromUser: { select: { id: true, name: true, role: true } } }
+                },
+                _count: {
+                    select: { members: true, messages: true }
+                }
+            },
+            orderBy: [
+                { type: 'asc' },
+                { updatedAt: 'desc' }
+            ]
         });
 
-        for (const user of users) {
-            await syncGroupMemberships(user.id, schoolId, user.role);
+        const campusChannels: any[] = [];
+        const classCohorts: any[] = [];
+        const directChats: any[] = [];
+
+        for (const room of rooms) {
+            const meta = (room.metadata as any) || {};
+            const isGroup = room.type === ChatRoomType.GROUP;
+            const partnerMember = room.members?.find((m: any) => m.userId !== userId);
+
+            const enriched = {
+                ...room,
+                slug: meta.slug || room.name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || room.id,
+                category: meta.category || (isGroup ? 'CAMPUS' : 'DIRECT'),
+                description: meta.description || (isGroup ? 'Institutional channel' : 'Direct secure line'),
+                icon: meta.icon || (isGroup ? 'hash' : 'user'),
+                memberCount: room._count?.members || room.members?.length || 1,
+                unreadCount: 0,
+                lastMessage: room.messages?.[0] || null,
+                partner: !isGroup ? (partnerMember?.user || { name: 'Direct Contact', role: 'Staff' }) : null
+            };
+
+            if (!isGroup) {
+                directChats.push(enriched);
+            } else if (meta.category === 'CLASS' || room.name?.includes('#class-')) {
+                classCohorts.push(enriched);
+            } else {
+                campusChannels.push(enriched);
+            }
         }
+
+        return {
+            campusChannels,
+            classCohorts,
+            directChats,
+            allRooms: [...campusChannels, ...classCohorts, ...directChats]
+        };
     } catch (e) {
-        console.error('[syncAllSchoolMembers] Error:', e);
+        console.error('[getStructuredSchoolRooms] Error:', e);
+        return { campusChannels: [], classCohorts: [], directChats: [], allRooms: [] };
     }
 }
 
 /**
- * Finds or creates a private 1-on-1 chat room between two users in the SAME school.
+ * Finds or creates a direct 1-on-1 private room.
  */
-export async function getOrCreatePrivateRoom(schoolId: string, userAId: string, userBId: string) {
+export async function getOrCreateDirectRoom(schoolId: string, userAId: string, userBId: string) {
     const userA = await ensureDbUser(userAId, undefined, Role.OWNER, schoolId);
     const userB = await ensureDbUser(userBId, undefined, Role.TEACHER, schoolId);
 
@@ -230,6 +276,13 @@ export async function getOrCreatePrivateRoom(schoolId: string, userAId: string, 
             members: { some: { userId: validAId } },
             AND: {
                 members: { some: { userId: validBId } }
+            }
+        },
+        include: {
+            members: {
+                include: {
+                    user: { select: { id: true, name: true, role: true, photoUrl: true } }
+                }
             }
         }
     });
@@ -246,6 +299,30 @@ export async function getOrCreatePrivateRoom(schoolId: string, userAId: string, 
                     { userId: validBId }
                 ]
             }
+        },
+        include: {
+            members: {
+                include: {
+                    user: { select: { id: true, name: true, role: true, photoUrl: true } }
+                }
+            }
         }
     });
+}
+
+/**
+ * Bulk sync all school members into universal channels.
+ */
+export async function syncAllSchoolMembers(schoolId: string) {
+    if (!schoolId) return;
+    await ensureSchoolChannels(schoolId);
+}
+
+/**
+ * Sync single user group memberships.
+ */
+export async function syncGroupMemberships(userId: string, schoolId: string, role: Role = Role.OWNER) {
+    if (!schoolId) return;
+    await ensureSchoolChannels(schoolId);
+    await ensureDbUser(userId, undefined, role, schoolId);
 }
