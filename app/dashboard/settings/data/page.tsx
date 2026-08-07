@@ -418,7 +418,7 @@ export default function DataSecuritySettings() {
                             className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px] shadow-lg shadow-eduGreen-900/20"
                         >
                             <RefreshCw className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
-                            Generate Snapshot JSON
+                            Generate Security Snapshot
                         </Button>
                         <Button 
                             onClick={handleGenerateArchive}

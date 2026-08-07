@@ -38,36 +38,6 @@ export default function ReportsPage() {
         }
     };
 
-    const exportCoreData = () => {
-        if (!data) return;
-
-        const headers = ["Category", "Metric", "Value"];
-        const rows = [
-            ["Summary", "Average Attendance", data.summary?.avgAttendance || "100%"],
-            ["Summary", "Syllabus Saturation", data.summary?.examCompletion || "0%"],
-            ["Summary", "Active Nodes", data.summary?.activeNodes || "0"],
-            ["Summary", "Active Readers", data.summary?.activeReaders || "0"],
-            ["Architecture", "School Name", data.summary?.schoolInfo?.name || ""],
-            ["Architecture", "Status", data.summary?.schoolInfo?.status || ""],
-            ["Architecture", "System Domain", data.summary?.schoolInfo?.domain || "unassigned"],
-            ["Architecture", "Genesis Date", data.summary?.schoolInfo?.createdAt ? new Date(data.summary.schoolInfo.createdAt).toLocaleDateString() : ""],
-            ...(data.userRole === 'SUPERADMIN' ? [
-                ["Financial", "Capital Acquired", `$${data.summary?.collectedFees || 0}`],
-                ["Financial", "Pending Clearances", `$${data.summary?.pendingFees || 0}`]
-            ] : []),
-            ...data.performanceBySubject?.map((s: any) => ["Academic Performance", s.name, `${s.avg?.toFixed(1) || 0}%`]) || [],
-            ...data.teacherWorkload?.map((t: any) => ["Faculty Overload", t.name, `${t.periods} Weekly Periods`]) || []
-        ];
-
-        const csvContent = [headers, ...rows].map(r => r.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `LUCY_Institutional_Core_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
 
     if (loading) {
         return (
@@ -139,16 +109,6 @@ export default function ReportsPage() {
                         Predictive <span className="text-eduGreen-500 italic">Analytics</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Institutional Intelligence & Performance Synthesis</p>
-                </div>
-
-                <div className="flex items-center gap-4 mb-2">
-                    <Button 
-                        onClick={exportCoreData}
-                        variant="primary" 
-                        className="rounded-2xl bg-white text-zinc-950 hover:bg-zinc-200 transition-all h-12 px-6 shadow-xl shadow-white/10 text-xs font-semibold uppercase tracking-widest"
-                    >
-                        Export Core <Download className="w-4 h-4 ml-2" />
-                    </Button>
                 </div>
             </div>
 
