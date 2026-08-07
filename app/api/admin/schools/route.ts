@@ -101,10 +101,10 @@ export async function POST(request: Request) {
                 await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
             }
 
-            const crypto = require('crypto');
-
             // Create school via Prisma
-            const randomSuffix = crypto.randomInt(100, 1000);
+            const randArray = new Uint32Array(1);
+            globalThis.crypto.getRandomValues(randArray);
+            const randomSuffix = 100 + (randArray[0] % 900);
             const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + randomSuffix;
             const school = await prisma.school.create({
                 data: {
@@ -115,6 +115,7 @@ export async function POST(request: Request) {
             });
 
             // Create Invite Token
+            const crypto = require('crypto');
             const token = crypto.randomBytes(32).toString('hex');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -139,8 +140,9 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const crypto = require('crypto');
-        const randomSuffix = crypto.randomInt(100, 1000);
+        const randArray = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(randArray);
+        const randomSuffix = 100 + (randArray[0] % 900);
         const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + randomSuffix;
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
@@ -150,6 +152,7 @@ export async function POST(request: Request) {
 
         if (schErr) throw schErr;
 
+        const crypto = require('crypto');
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
