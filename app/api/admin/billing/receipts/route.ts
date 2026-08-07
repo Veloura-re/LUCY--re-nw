@@ -9,18 +9,39 @@ export async function GET(request: Request) {
 
     try {
         const { prisma: db } = require('@/lib/prisma');
-        let receipts = [];
+        let receipts: any[] = [];
 
         if (db && db.billingReceipt) {
             receipts = await db.billingReceipt.findMany({
                 orderBy: { createdAt: 'desc' },
                 include: {
-                    school: true,
+                    school: {
+                        select: { id: true, name: true, schoolCode: true }
+                    },
                     submittedBy: {
                         select: { id: true, name: true, email: true }
                     }
                 }
             });
+
+            // Backfill any missing school/submittedBy references
+            for (let r of receipts) {
+                if (!r.school && r.schoolId) {
+                    const foundSchool = await db.school.findUnique({
+                        where: { id: r.schoolId },
+                        select: { id: true, name: true }
+                    });
+                    if (foundSchool) r.school = foundSchool;
+                }
+                if (!r.submittedBy && r.submittedById) {
+                    const foundUser = await db.user.findUnique({
+                        where: { id: r.submittedById },
+                        select: { id: true, name: true, email: true }
+                    });
+                    if (foundUser) r.submittedBy = foundUser;
+                }
+            }
+
             return NextResponse.json({ receipts });
         }
 
@@ -33,7 +54,7 @@ export async function GET(request: Request) {
         
         const { data, error } = await supabaseAdmin
             .from('BillingReceipt')
-            .select('*');
+            .select('*, school:School(id, name), submittedBy:User(id, name, email)');
 
         if (!error && data) {
             receipts = data;
