@@ -19,6 +19,7 @@ export default function ResetPasswordPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [hasNoSession, setHasNoSession] = useState(false);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
     const supabase = createClient();
@@ -30,32 +31,40 @@ export default function ResetPasswordPage() {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (!isSubscribed) return;
             if (session) {
+                setHasNoSession(false);
                 setIsCheckingAuth(false);
             }
         });
 
-        // 2. Initial session check with 2.5s grace period for hash token parsing
+        // 2. Initial session check with fast 500ms grace period for hash token parsing
         async function checkSession() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
-                    if (isSubscribed) setIsCheckingAuth(false);
+                    if (isSubscribed) {
+                        setHasNoSession(false);
+                        setIsCheckingAuth(false);
+                    }
                     return;
                 }
                 
-                // Allow grace period for hash fragment hydration
+                // Allow fast grace period for hash fragment hydration
                 setTimeout(async () => {
                     if (!isSubscribed) return;
                     const { data: { session: delayedSession } } = await supabase.auth.getSession();
                     if (!delayedSession) {
-                        setIsCheckingAuth(false);
+                        setHasNoSession(true);
                     } else {
-                        setIsCheckingAuth(false);
+                        setHasNoSession(false);
                     }
-                }, 2500);
+                    setIsCheckingAuth(false);
+                }, 500);
             } catch (err) {
                 console.error("Session check error:", err);
-                if (isSubscribed) setIsCheckingAuth(false);
+                if (isSubscribed) {
+                    setHasNoSession(true);
+                    setIsCheckingAuth(false);
+                }
             }
         }
 
@@ -130,6 +139,32 @@ export default function ResetPasswordPage() {
                     <KeyRound className="w-5 h-5 text-emerald-500 animate-spin" />
                     <span>verifying_recovery_session...</span>
                 </div>
+            </div>
+        );
+    }
+
+    if (hasNoSession) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 p-4 font-sans text-zinc-900 dark:text-white relative overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-500/10 blur-[120px] rounded-full" />
+                </div>
+                <Card className="w-full max-w-md bg-zinc-50/90 dark:bg-zinc-900/90 border-zinc-200 dark:border-zinc-800 shadow-2xl relative z-10 overflow-hidden rounded-3xl p-6 text-center space-y-4">
+                    <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 text-red-500 flex items-center justify-center mx-auto">
+                        <AlertCircle className="w-7 h-7" />
+                    </div>
+                    <h3 className="text-xl font-bold font-mono uppercase text-red-500">
+                        Invalid or Expired Link
+                    </h3>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs mx-auto">
+                        Your password reset session could not be verified or has expired. Please request a new recovery link.
+                    </p>
+                    <Link href="/forgot-password" className="block pt-2">
+                        <Button className="w-full h-11 bg-emerald-500 hover:bg-emerald-600 text-black font-bold font-mono uppercase tracking-wider rounded-2xl">
+                            Request New Link
+                        </Button>
+                    </Link>
+                </Card>
             </div>
         );
     }
