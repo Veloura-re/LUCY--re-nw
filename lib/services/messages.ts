@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getStructuredSchoolRooms } from '@/lib/messaging';
 
 // Helper to get supabase client on Edge
 const getSupabase = () => {
@@ -9,85 +10,20 @@ const getSupabase = () => {
 };
 
 /**
- * Fetch all chat rooms (groups and private) for a user within their school.
- * Guaranteed to return all school group channels.
+ * Direct fetch for structured chat channels (Campus, Classes, Direct).
+ */
+export async function getCachedStructuredRooms(userId: string, schoolId: string, role?: string) {
+    if (!schoolId) return { campusChannels: [], classCohorts: [], directChats: [], allRooms: [] };
+    return await getStructuredSchoolRooms(userId, schoolId, role);
+}
+
+/**
+ * Fetch all chat rooms for a user.
  */
 export async function getCachedUserRooms(userId: string, schoolId: string, role?: string) {
     if (!schoolId) return [];
-
-    try {
-        const { prisma } = require('@/lib/prisma');
-
-        if (prisma) {
-            // Fetch all school groups AND all private rooms the user belongs to
-            let rooms = await prisma.chatRoom.findMany({
-                where: {
-                    schoolId,
-                    OR: [
-                        { type: 'GROUP' },
-                        { members: { some: { userId } } }
-                    ]
-                },
-                include: {
-                    members: {
-                        include: {
-                            user: {
-                                select: { id: true, name: true, role: true, photoUrl: true }
-                            }
-                        }
-                    },
-                    messages: {
-                        orderBy: { createdAt: 'desc' },
-                        take: 1,
-                        include: { fromUser: { select: { name: true } } }
-                    },
-                    _count: {
-                        select: { members: true, messages: true }
-                    }
-                },
-                orderBy: [
-                    { type: 'asc' }, // GROUP first
-                    { updatedAt: 'desc' }
-                ]
-            });
-
-            return rooms.map((room: any) => {
-                const partnerMember = room.members?.find((m: any) => m.userId !== userId);
-                return {
-                    ...room,
-                    unreadCount: 0,
-                    memberCount: room._count?.members || room.members?.length || 1,
-                    partner: room.type === 'PRIVATE' ? (partnerMember?.user || { name: 'Direct Contact', role: 'Staff' }) : null
-                };
-            });
-        }
-    } catch (e) {
-        console.warn('[getCachedUserRooms] Prisma error, falling back to Supabase:', e);
-    }
-
-    // Edge/Supabase fallback
-    try {
-        const supabase = getSupabase();
-        
-        const { data: fullRooms } = await supabase
-            .from('ChatRoom')
-            .select('*, members:ChatRoomMember(*, user:User(id, name, role, photoUrl)), messages:Message(*, fromUser:User(name))')
-            .eq('schoolId', schoolId)
-            .order('updatedAt', { ascending: false });
-
-        return (fullRooms || []).map((room: any) => {
-            return {
-                ...room,
-                unreadCount: 0,
-                memberCount: room.members?.length || 1,
-                partner: room.type === 'PRIVATE' ? room.members?.find((m: any) => m.userId !== userId)?.user : null,
-                messages: (room.messages || []).slice(0, 1)
-            };
-        });
-    } catch (e) {
-        console.error('[getCachedUserRooms] Supabase error:', e);
-        return [];
-    }
+    const structured = await getStructuredSchoolRooms(userId, schoolId, role);
+    return structured.allRooms;
 }
 
 /**
