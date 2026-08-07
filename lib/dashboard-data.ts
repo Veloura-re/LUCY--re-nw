@@ -129,11 +129,13 @@ const _getFamilyChildren = async (userId: string) => {
     return JSON.parse(JSON.stringify(studentsWithStats));
 };
 
-export const getFamilyChildren = unstable_cache(
-    _getFamilyChildren,
-    ['family-children-data'],
-    { revalidate: 60 }
-);
+export async function getFamilyChildren(userId: string) {
+    return unstable_cache(
+        () => _getFamilyChildren(userId),
+        ['family-children-data', userId],
+        { revalidate: 15 }
+    )();
+}
 
 // Refactor 2: getTeacherDashboardData
 const _getTeacherDashboardData = async (userId: string) => {
