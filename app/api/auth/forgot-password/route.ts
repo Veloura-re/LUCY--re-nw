@@ -64,12 +64,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: true, message: 'Recovery instructions dispatched if the account exists.' });
         }
 
-        if (!data?.properties?.action_link) {
-            console.error('Forgot password: generateLink returned no action_link for', email);
+        const hashedToken = data.properties.hashed_token;
+        const actionLink = data.properties.action_link;
+
+        if (!hashedToken && !actionLink) {
+            console.error('Forgot password: generateLink returned neither hashed_token nor action_link for', email);
             return NextResponse.json({ error: 'Failed to generate secure recovery protocol link.' }, { status: 500 });
         }
 
-        const recoveryLink = data.properties.action_link;
+        // Direct token_hash link ensures server-side verifyOtp sets session cookies without hash fragment loss
+        const recoveryLink = hashedToken
+            ? `${origin}/auth/callback?token_hash=${hashedToken}&type=recovery&next=/reset-password`
+            : actionLink;
 
         // 4. Send Custom Premium Email via Resend
         const emailResult = await sendRecoveryEmail(email, recoveryLink);
