@@ -62,6 +62,18 @@ export default function MessagesClientWrapper({
     const observerRef = useRef<IntersectionObserver | null>(null);
     const topMessageRef = useRef<HTMLDivElement>(null);
 
+    // Initial Mount Fetch for fresh rooms and active room
+    useEffect(() => {
+        fetchRooms();
+    }, []);
+
+    useEffect(() => {
+        if (!activeRoom && rooms.length > 0) {
+            setActiveRoom(rooms[0]);
+            fetchMessages(rooms[0].id);
+        }
+    }, [rooms, activeRoom]);
+
     // Initial Fetch (if needed)
     useEffect(() => {
         if (activeRoom && initialMessages.length === 0) {
