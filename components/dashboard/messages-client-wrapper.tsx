@@ -100,12 +100,18 @@ export default function MessagesClientWrapper({
                 'postgres_changes',
                 { event: 'INSERT', schema: 'public', table: 'Message' },
                 async (payload) => {
-                    const msg = payload.new;
+                    const msg = payload.new as any;
                     
                     if (activeRoom?.id === msg.chatRoomId) {
+                        const enrichedMsg = {
+                            ...msg,
+                            fromUser: msg.fromUser || (msg.fromUserId === me.id 
+                                ? { name: me.user_metadata?.name || me.dbUser?.name || 'Me', role: me.dbUser?.role || 'Campus Member' } 
+                                : (activeRoom.partner || { name: 'Campus Member', role: 'Staff' }))
+                        };
                         setMessages(prev => {
                             if (prev.some(m => m.id === msg.id)) return prev;
-                            return [...prev, msg];
+                            return [...prev, enrichedMsg];
                         });
                     }
                     
@@ -165,7 +171,7 @@ export default function MessagesClientWrapper({
             createdAt: new Date().toISOString(),
             fromUserId: me.id,
             chatRoomId: activeRoom.id,
-            fromUser: { name: me.user_metadata?.name || 'Me', role: me.dbUser?.role || 'OWNER' },
+            fromUser: { name: me.user_metadata?.name || me.dbUser?.name || 'Me', role: me.dbUser?.role || 'OWNER' },
             isOptimistic: true
         };
 
@@ -192,7 +198,7 @@ export default function MessagesClientWrapper({
                 setMessages(prev => prev.filter(m => m.id !== tempId));
             } else {
                 const sentData = await res.json();
-                setMessages(prev => prev.map(m => m.id === tempId ? sentData.message || m : m));
+                setMessages(prev => prev.map(m => m.id === tempId ? (sentData.message || m) : m));
             }
         } catch (err: any) {
             setAlertConfig({
@@ -222,10 +228,13 @@ export default function MessagesClientWrapper({
 
     const startChat = async (targetUser: any) => {
         try {
+            const targetId = typeof targetUser === 'string' ? targetUser : (targetUser?.id || targetUser?.userId);
+            if (!targetId) return;
+
             const res = await fetch('/api/messages/rooms', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ targetUserId: targetUser.id })
+                body: JSON.stringify({ targetUserId: targetId })
             });
 
             const data: any = await res.json();
@@ -237,7 +246,9 @@ export default function MessagesClientWrapper({
             if (data.room) {
                 setDirectChats(prev => {
                     const exists = prev.find(r => r.id === data.room.id);
-                    if (exists) return prev;
+                    if (exists) {
+                        return prev.map(r => r.id === data.room.id ? { ...r, ...data.room } : r);
+                    }
                     return [data.room, ...prev];
                 });
                 setActiveRoom(data.room);

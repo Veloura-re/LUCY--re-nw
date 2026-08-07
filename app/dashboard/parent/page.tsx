@@ -109,9 +109,16 @@ export default function ParentDashboard() {
                                                             </Badge>
                                                         )}
                                                         {student.class?.homeroomTeacher && (
-                                                            <span className="text-[9px] text-zinc-600 uppercase tracking-widest">
-                                                                Homeroom: {student.class.homeroomTeacher.name}
-                                                            </span>
+                                                            <div className="flex items-center gap-2 flex-wrap">
+                                                                <span className="text-[9px] text-zinc-600 uppercase tracking-widest">
+                                                                    Homeroom: {student.class.homeroomTeacher.name}
+                                                                </span>
+                                                                <Link href={`/dashboard/messages?userId=${student.class.homeroomTeacher.id}`}>
+                                                                    <Badge className="bg-eduGreen-950/20 text-eduGreen-500 hover:bg-eduGreen-950/40 hover:text-eduGreen-400 border-eduGreen-900/30 text-[8px] tracking-widest cursor-pointer transition-colors">
+                                                                        💬 Message Teacher
+                                                                    </Badge>
+                                                                </Link>
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>
@@ -141,9 +148,22 @@ export default function ParentDashboard() {
 
                                             {/* Action Links */}
                                             <div className="flex flex-col gap-2 min-w-[160px]">
+                                                {student.class?.homeroomTeacher ? (
+                                                    <Link href={`/dashboard/messages?userId=${student.class.homeroomTeacher.id}`}>
+                                                        <Button className="w-full h-11 rounded-xl bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium text-[10px] uppercase tracking-widest shadow-md">
+                                                            <MessageSquare className="w-4 h-4 mr-2" /> Message Teacher
+                                                        </Button>
+                                                    </Link>
+                                                ) : (
+                                                    <Link href="/dashboard/messages">
+                                                        <Button className="w-full h-11 rounded-xl bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium text-[10px] uppercase tracking-widest shadow-md">
+                                                            <MessageSquare className="w-4 h-4 mr-2" /> Campus Messages
+                                                        </Button>
+                                                    </Link>
+                                                )}
                                                 <Link href={`/dashboard/reports/${student.id}`}>
-                                                    <Button className="w-full h-11 rounded-xl bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-medium text-[10px] uppercase tracking-widest">
-                                                        <BookOpen className="w-4 h-4 mr-2" /> Report Card
+                                                    <Button variant="outline" className="w-full h-11 rounded-xl border-zinc-300 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white font-medium text-[10px] uppercase tracking-widest hover:border-eduGreen-500/50">
+                                                        <BookOpen className="w-4 h-4 mr-2 text-eduGreen-500" /> Report Card
                                                     </Button>
                                                 </Link>
                                                 <Link href="/dashboard/finance">

@@ -4,7 +4,7 @@ import { ChatRoomType, Role } from '@prisma/client';
 /**
  * Ensures the user exists in Prisma DB before linking to ChatRoomMember or Message.
  */
-export async function ensureDbUser(userId: string, email?: string, role: Role = Role.OWNER, schoolId?: string | null) {
+export async function ensureDbUser(userId: string, email?: string, role: Role = Role.PARENT, schoolId?: string | null) {
     try {
         let user = await prisma.user.findFirst({
             where: {
@@ -21,7 +21,7 @@ export async function ensureDbUser(userId: string, email?: string, role: Role = 
                     id: userId,
                     email: email || `${userId}@lucy.app`,
                     name: 'Campus Member',
-                    role: role || Role.OWNER,
+                    role: role || Role.PARENT,
                     schoolId: schoolId || null,
                     verified: true
                 }
@@ -198,7 +198,7 @@ export async function getStructuredSchoolRooms(userId: string, schoolId: string,
                 members: {
                     include: {
                         user: {
-                            select: { id: true, name: true, role: true, photoUrl: true }
+                            select: { id: true, name: true, role: true, photoUrl: true, email: true }
                         }
                     }
                 },
@@ -221,21 +221,32 @@ export async function getStructuredSchoolRooms(userId: string, schoolId: string,
         const classCohorts: any[] = [];
         const directChats: any[] = [];
 
+        const staffRoles = ['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'];
+
         for (const room of rooms) {
             const meta = (room.metadata as any) || {};
             const isGroup = room.type === ChatRoomType.GROUP;
             const partnerMember = room.members?.find((m: any) => m.userId !== userId);
+            const partner = !isGroup ? (partnerMember?.user || { name: 'Direct Contact', role: 'Staff' }) : null;
+
+            // Restrict faculty lounge from parents/students
+            if (isGroup && (meta.category === 'FACULTY' || room.name?.includes('faculty'))) {
+                if (role && !staffRoles.includes(role)) {
+                    continue;
+                }
+            }
 
             const enriched = {
                 ...room,
+                name: !isGroup ? (partner?.name || 'Direct Message') : room.name,
                 slug: meta.slug || room.name?.toLowerCase().replace(/[^a-z0-9]/g, '-') || room.id,
                 category: meta.category || (isGroup ? 'CAMPUS' : 'DIRECT'),
-                description: meta.description || (isGroup ? 'Institutional channel' : 'Direct secure line'),
+                description: meta.description || (isGroup ? 'Institutional channel' : `Direct line with ${partner?.name || 'Contact'} (${partner?.role || 'Staff'})`),
                 icon: meta.icon || (isGroup ? 'hash' : 'user'),
                 memberCount: room._count?.members || room.members?.length || 1,
                 unreadCount: 0,
                 lastMessage: room.messages?.[0] || null,
-                partner: !isGroup ? (partnerMember?.user || { name: 'Direct Contact', role: 'Staff' }) : null
+                partner
             };
 
             if (!isGroup) {
@@ -263,51 +274,86 @@ export async function getStructuredSchoolRooms(userId: string, schoolId: string,
  * Finds or creates a direct 1-on-1 private room.
  */
 export async function getOrCreateDirectRoom(schoolId: string, userAId: string, userBId: string) {
-    const userA = await ensureDbUser(userAId, undefined, Role.OWNER, schoolId);
-    const userB = await ensureDbUser(userBId, undefined, Role.TEACHER, schoolId);
+    const dbUserA = await prisma.user.findFirst({ where: { OR: [{ id: userAId }, { email: userAId }] } });
+    const dbUserB = await prisma.user.findFirst({ where: { OR: [{ id: userBId }, { email: userBId }] } });
+
+    const userA = dbUserA || await ensureDbUser(userAId, undefined, Role.PARENT, schoolId);
+    const userB = dbUserB || await ensureDbUser(userBId, undefined, Role.TEACHER, schoolId);
 
     const validAId = userA?.id || userAId;
     const validBId = userB?.id || userBId;
 
-    const existingRoom = await prisma.chatRoom.findFirst({
+    let existingRoom = await prisma.chatRoom.findFirst({
         where: {
             schoolId,
             type: ChatRoomType.PRIVATE,
-            members: { some: { userId: validAId } },
-            AND: {
-                members: { some: { userId: validBId } }
-            }
+            AND: [
+                { members: { some: { userId: validAId } } },
+                { members: { some: { userId: validBId } } }
+            ]
         },
         include: {
             members: {
                 include: {
-                    user: { select: { id: true, name: true, role: true, photoUrl: true } }
+                    user: { select: { id: true, name: true, role: true, photoUrl: true, email: true } }
                 }
+            },
+            messages: {
+                orderBy: { createdAt: 'desc' },
+                take: 1,
+                include: { fromUser: { select: { id: true, name: true, role: true } } }
+            },
+            _count: {
+                select: { members: true, messages: true }
             }
         }
     });
 
-    if (existingRoom) return existingRoom;
-
-    return await prisma.chatRoom.create({
-        data: {
-            schoolId,
-            type: ChatRoomType.PRIVATE,
-            members: {
-                create: [
-                    { userId: validAId },
-                    { userId: validBId }
-                ]
-            }
-        },
-        include: {
-            members: {
-                include: {
-                    user: { select: { id: true, name: true, role: true, photoUrl: true } }
+    if (!existingRoom) {
+        existingRoom = await prisma.chatRoom.create({
+            data: {
+                schoolId,
+                type: ChatRoomType.PRIVATE,
+                members: {
+                    create: [
+                        { userId: validAId },
+                        { userId: validBId }
+                    ]
+                }
+            },
+            include: {
+                members: {
+                    include: {
+                        user: { select: { id: true, name: true, role: true, photoUrl: true, email: true } }
+                    }
+                },
+                messages: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 1,
+                    include: { fromUser: { select: { id: true, name: true, role: true } } }
+                },
+                _count: {
+                    select: { members: true, messages: true }
                 }
             }
-        }
-    });
+        });
+    }
+
+    const partnerMember = existingRoom.members?.find((m: any) => m.userId !== validAId) || existingRoom.members?.find((m: any) => m.userId === validBId);
+    const partner = partnerMember?.user || (userB ? { id: userB.id, name: userB.name, role: userB.role, photoUrl: userB.photoUrl } : { name: 'Direct Contact', role: 'Staff' });
+
+    return {
+        ...existingRoom,
+        name: partner.name || 'Direct Message',
+        slug: `dm-${validAId}-${validBId}`,
+        category: 'DIRECT',
+        description: `Direct line with ${partner.name || 'Contact'} (${partner.role || 'Staff'})`,
+        icon: 'user',
+        memberCount: existingRoom.members?.length || 2,
+        unreadCount: 0,
+        lastMessage: existingRoom.messages?.[0] || null,
+        partner
+    };
 }
 
 /**

@@ -27,8 +27,8 @@ export async function POST(request: Request) {
         const { targetUserId } = await request.json();
 
         if (targetUserId) {
-            // Find target user
-            const targetUser = await prisma.user.findFirst({
+            // Find target user by ID, email, or linked student
+            let targetUser = await prisma.user.findFirst({
                 where: {
                     OR: [
                         { id: targetUserId },
@@ -37,8 +37,42 @@ export async function POST(request: Request) {
                 }
             });
 
-            if (!targetUser || (targetUser.schoolId && targetUser.schoolId !== dbUser.schoolId)) {
-                return NextResponse.json({ error: 'Target user not found in your school' }, { status: 404 });
+            if (!targetUser) {
+                // Check if targetUserId is a Student ID
+                const student = await prisma.student.findUnique({
+                    where: { id: targetUserId },
+                    include: { user: true, parentLinks: { include: { parent: true } } }
+                });
+                if (student) {
+                    if (student.user) {
+                        targetUser = student.user;
+                    } else if (student.parentLinks?.[0]?.parent) {
+                        targetUser = student.parentLinks[0].parent;
+                    }
+                }
+            }
+
+            if (!targetUser) {
+                return NextResponse.json({ error: 'Target user not found' }, { status: 404 });
+            }
+
+            // Sync target user school if missing
+            if (!targetUser.schoolId && dbUser.schoolId) {
+                await prisma.user.update({
+                    where: { id: targetUser.id },
+                    data: { schoolId: dbUser.schoolId }
+                }).catch(() => {});
+            } else if (targetUser.schoolId && dbUser.schoolId && targetUser.schoolId !== dbUser.schoolId) {
+                // If it's a parent, check if their child goes to this school
+                const isParentOfSchoolStudent = await prisma.parentStudentLink.findFirst({
+                    where: {
+                        parentId: targetUser.id,
+                        student: { schoolId: dbUser.schoolId }
+                    }
+                });
+                if (!isParentOfSchoolStudent) {
+                    return NextResponse.json({ error: 'Target user not found in your school' }, { status: 404 });
+                }
             }
 
             // Role guardrails

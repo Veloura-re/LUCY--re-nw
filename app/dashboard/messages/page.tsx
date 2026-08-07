@@ -36,13 +36,30 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
 
     // Fetch structured institutional rooms
     const structured = await getCachedStructuredRooms(userId, schoolId, role);
-    const rooms = structured.allRooms;
+    let rooms = structured.allRooms;
     
     let initialMessages: any[] = [];
     let initialNextCursor: string | null = null;
     let initialActiveRoom: any = null;
 
-    if (params.chatRoomId) {
+    if (params.userId) {
+        try {
+            const { getOrCreateDirectRoom } = await import("@/lib/messaging");
+            const directRoom = await getOrCreateDirectRoom(schoolId, userId, params.userId);
+            if (directRoom) {
+                initialActiveRoom = directRoom;
+                if (!rooms.some((r: any) => r.id === directRoom.id)) {
+                    rooms = [directRoom, ...rooms];
+                    structured.directChats = [directRoom, ...structured.directChats];
+                }
+                const messageData = await getCachedRoomMessages(directRoom.id);
+                initialMessages = messageData.messages;
+                initialNextCursor = messageData.nextCursor;
+            }
+        } catch (e) {
+            console.error('[MessagesPage] Direct room error:', e);
+        }
+    } else if (params.chatRoomId) {
         initialActiveRoom = rooms.find((r: any) => r.id === params.chatRoomId);
         if (initialActiveRoom) {
             const messageData = await getCachedRoomMessages(params.chatRoomId);
@@ -52,11 +69,13 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     } 
     
     if (!initialActiveRoom && rooms.length > 0) {
-        // Prefer #announcements or first campus channel
-        initialActiveRoom = structured.campusChannels[0] || rooms[0];
-        const messageData = await getCachedRoomMessages(initialActiveRoom.id);
-        initialMessages = messageData.messages;
-        initialNextCursor = messageData.nextCursor;
+        // Prefer first direct chat or first campus channel
+        initialActiveRoom = structured.campusChannels[0] || structured.directChats[0] || rooms[0];
+        if (initialActiveRoom?.id) {
+            const messageData = await getCachedRoomMessages(initialActiveRoom.id);
+            initialMessages = messageData.messages;
+            initialNextCursor = messageData.nextCursor;
+        }
     }
 
     return (
