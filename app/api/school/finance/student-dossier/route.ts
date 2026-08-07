@@ -16,6 +16,12 @@ export async function GET(request: Request) {
 
         const schoolId = user.schoolId!;
 
+        // Fetch school details
+        const school = await prisma.school.findUnique({
+            where: { id: schoolId },
+            select: { id: true, name: true, schoolCode: true, logoUrl: true }
+        });
+
         // Build student filter
         const studentWhere: any = {
             schoolId,
@@ -33,7 +39,7 @@ export async function GET(request: Request) {
         }
 
         // Get students with their invoices and payments
-        const [students, totalStudents, classes, grades] = await Promise.all([
+        const [students, totalStudents, classes, grades, allReceipts] = await Promise.all([
             prisma.student.findMany({
                 where: studentWhere,
                 orderBy: [{ class: { name: 'asc' } }, { lastName: 'asc' }, { firstName: 'asc' }],
@@ -46,7 +52,11 @@ export async function GET(request: Request) {
                         orderBy: { createdAt: 'desc' },
                         include: {
                             items: true,
-                            payments: true,
+                            payments: {
+                                include: {
+                                    parent: { select: { id: true, name: true, email: true, role: true } }
+                                }
+                            },
                         }
                     }
                 }
@@ -61,17 +71,37 @@ export async function GET(request: Request) {
                 where: { schoolId },
                 orderBy: { name: 'asc' },
                 select: { id: true, name: true }
-            })
+            }),
+            prisma.billingReceipt.findMany({
+                where: { schoolId },
+                orderBy: { createdAt: 'desc' },
+                take: 20
+            }).catch(() => [])
         ]);
 
         // Compute per-student financial summary
         const studentDossiers = students.map(student => {
-            const invoices = student.invoices;
-            const totalBilled = invoices.reduce((sum, inv) => sum + Number(inv.amount), 0);
-            const totalPaid = invoices.reduce((sum, inv) =>
-                sum + inv.payments.filter(p => p.status === 'SUCCESS').reduce((s, p) => s + Number(p.amount), 0), 0);
-            const totalPending = invoices.filter(i => i.status === 'PENDING').reduce((sum, i) => sum + Number(i.amount), 0);
-            const totalOverdue = invoices.filter(i => i.status === 'OVERDUE').reduce((sum, i) => sum + Number(i.amount), 0);
+            const invoices = student.invoices || [];
+            const totalBilled = invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+            
+            const allPayments = invoices.flatMap(inv => (inv.payments || []).map((p: any) => ({
+                id: p.id,
+                invoiceId: inv.id,
+                amount: Number(p.amount || 0),
+                status: p.status || 'SUCCESS',
+                paymentMethod: p.paymentMethod || 'MANUAL_RECEIPT',
+                referenceId: p.referenceId || p.transactionId || `REF-${p.id.slice(0, 10).toUpperCase()}`,
+                receiptUrl: p.receiptUrl || p.proofUrl || p.metadata?.receiptUrl || p.metadata?.proofUrl || null,
+                screenshotUrl: p.receiptUrl || p.proofUrl || p.metadata?.screenshotUrl || null,
+                paidAt: p.paidAt || p.createdAt,
+                submitterName: p.parent?.name || `${student.firstName}'s Family`,
+                submitterEmail: p.parent?.email || student.email,
+                schoolName: school?.name || 'Academic Institution'
+            })));
+
+            const totalPaid = allPayments.filter(p => p.status === 'SUCCESS').reduce((s, p) => s + p.amount, 0);
+            const totalPending = invoices.filter(i => i.status === 'PENDING').reduce((sum, i) => sum + Number(i.amount || 0), 0);
+            const totalOverdue = invoices.filter(i => i.status === 'OVERDUE').reduce((sum, i) => sum + Number(i.amount || 0), 0);
             const latestInvoice = invoices[0] || null;
 
             let overallStatus = 'NO_INVOICE';
@@ -98,39 +128,38 @@ export async function GET(request: Request) {
                     balance: totalBilled - totalPaid,
                     invoiceCount: invoices.length,
                     overallStatus,
-                    latestInvoice: latestInvoice ? {
-                        id: latestInvoice.id,
-                        amount: Number(latestInvoice.amount),
-                        status: latestInvoice.status,
-                        dueDate: latestInvoice.dueDate,
-                        createdAt: latestInvoice.createdAt,
-                    } : null,
+                    latestInvoice,
+                    invoices: invoices.map(inv => ({
+                        id: inv.id,
+                        amount: Number(inv.amount),
+                        status: inv.status,
+                        createdAt: inv.createdAt,
+                        dueDate: inv.dueDate,
+                        items: inv.items,
+                        payments: inv.payments
+                    })),
+                    payments: allPayments,
+                    receiptScreenshots: allPayments.filter(p => p.receiptUrl || p.screenshotUrl)
                 }
             };
         });
 
-        // Apply status filter after computing (since it's computed not DB)
-        const filtered = status
-            ? studentDossiers.filter(s => s.financials.overallStatus === status)
+        // Filter by status if provided
+        const filteredDossiers = status
+            ? studentDossiers.filter(d => d.financials.overallStatus === status)
             : studentDossiers;
 
-        // School-wide summary stats
-        const allStudentInvoices = await prisma.invoice.groupBy({
-            by: ['status'] as any,
-            where: { schoolId },
-            _count: { id: true },
-            _sum: { amount: true },
-        });
-
         return NextResponse.json({
-            students: filtered,
+            students: filteredDossiers,
             total: totalStudents,
             page,
-            limit,
+            totalPages: Math.ceil(totalStudents / limit),
             classes,
             grades,
-            summary: allStudentInvoices,
+            school,
+            recentReceipts: allReceipts
         });
+
     } catch (e) {
         return handleApiError(e);
     }
