@@ -244,13 +244,14 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
 
     const fetchPendingPayments = async () => {
         try {
-            const res = await fetch('/api/school/finance/pay/pending'); // I need to create this API
+            const res = await fetch('/api/school/finance/pay/pending');
             if (res.ok) {
                 const data = await res.json();
-                setPendingPayments(data as any);
+                const list = data.payments || (Array.isArray(data) ? data : []);
+                setPendingPayments(list);
             }
         } catch (e) {
-            console.error("Failed to fetch pending verifications");
+            console.error("Failed to fetch pending verifications", e);
         }
     };
 
@@ -288,14 +289,12 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             const res = await fetchWithResilience(`/api/school/finance/invoices?${params.toString()}`, {}, 8000);
             if (res.ok) {
                 const data = ((await res.json()) as any);
-                if (data.invoices) {
-                    setInvoices(data.invoices);
-                    if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
-                } else if (Array.isArray(data)) {
-                    setInvoices(data);
-                }
+                const invList = data.invoices || (Array.isArray(data) ? data : []);
+                setInvoices(invList);
+                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
+                
                 const invCacheKey = `finance_invoices_${page}_${statusFilter}_${searchQuery}`;
-                setClientCache(invCacheKey, data, 10 * 60 * 1000);
+                setClientCache(invCacheKey, invList, 10 * 60 * 1000);
             }
         } catch (e) {
             console.error("Invoice synchronizer failed:", e);
@@ -321,12 +320,12 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             const res = await fetchWithResilience('/api/school/finance/fees', {}, 8000);
             if (res.ok) {
                 const data = ((await res.json()) as any);
-                setFees(Array.isArray(data) ? data : []);
-                setClientCache('finance_fees_list', Array.isArray(data) ? data : [], 15 * 60 * 1000);
+                const feeList = data.fees || (Array.isArray(data) ? data : []);
+                setFees(feeList);
+                setClientCache('finance_fees_list', feeList, 15 * 60 * 1000);
             }
         } catch (e) {
             console.error(e);
-            toast.error("Failed to synchronize financial data");
         } finally {
             setLoading(false);
         }
@@ -571,14 +570,14 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6 relative z-10">
                                             <div className="flex items-center gap-3 sm:gap-6">
                                                 <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-amber-50 dark:bg-amber-950/20 flex items-center justify-center border border-amber-900/30 font-medium text-xs sm:text-base text-amber-600 dark:text-amber-500">
-                                                    {pay.invoice.student.firstName[0]}
+                                                    {pay.invoice?.student?.firstName?.[0] || 'S'}
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{pay.invoice.student.firstName} {pay.invoice.student.lastName}</div>
+                                                    <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{pay.invoice?.student?.firstName || 'Scholar'} {pay.invoice?.student?.lastName || ''}</div>
                                                     <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
-                                                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice.student.studentCode}</span>
+                                                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice?.student?.studentCode || 'ST-CODE'}</span>
                                                         <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-                                                        <span className="text-[8px] sm:text-[10px] font-medium text-amber-600 dark:text-amber-500/80 uppercase tracking-widest">{pay.method.replace('_', ' ')}</span>
+                                                        <span className="text-[8px] sm:text-[10px] font-medium text-amber-600 dark:text-amber-500/80 uppercase tracking-widest">{pay.method?.replace('_', ' ') || 'MANUAL'}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -590,7 +589,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                                 </div>
                                                 <div>
                                                     <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Quantum</div>
-                                                    <div className="text-[9px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(pay.amount).toLocaleString()}</div>
+                                                    <div className="text-[9px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(pay.amount || 0).toLocaleString()}</div>
                                                 </div>
                                                 <div className="col-span-2 md:col-span-1 flex items-center gap-2 sm:gap-3">
                                                     <Button
@@ -671,22 +670,22 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6 relative z-10">
                                         <div className="flex items-center gap-3 sm:gap-6">
                                             <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-xs sm:text-base text-zinc-600 group-hover:text-eduGreen-500 transition-colors">
-                                                {inv.student.firstName[0]}
+                                                {inv.student?.firstName?.[0] || 'S'}
                                             </div>
                                             <div>
-                                                <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{inv.student.firstName} {inv.student.lastName}</div>
-                                                <div className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{inv.student.studentCode}</div>
+                                                <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{inv.student?.firstName || 'Scholar'} {inv.student?.lastName || ''}</div>
+                                                <div className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{inv.student?.studentCode || 'ST-CODE'}</div>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 md:flex items-center gap-2.5 sm:gap-8 md:gap-12">
                                             <div>
                                                 <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Due Date</div>
-                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-600 dark:text-zinc-400">{new Date(inv.dueDate).toLocaleDateString()}</div>
+                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-600 dark:text-zinc-400">{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : 'N/A'}</div>
                                             </div>
                                             <div>
                                                 <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Quantum</div>
-                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(inv.amount).toLocaleString()}</div>
+                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(inv.amount || 0).toLocaleString()}</div>
                                             </div>
                                             <div>
                                                 <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Status</div>
