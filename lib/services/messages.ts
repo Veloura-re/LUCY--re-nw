@@ -9,7 +9,8 @@ const getSupabase = () => {
 };
 
 /**
- * Direct fetch for chat rooms for a user (ensures instant group visibility).
+ * Fetch all chat rooms (groups and private) for a user within their school.
+ * Always ensures group visibility.
  */
 export async function getCachedUserRooms(userId: string, schoolId: string, role: string) {
     if (!schoolId) return [];
@@ -39,9 +40,15 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role:
                         orderBy: { createdAt: 'desc' },
                         take: 1,
                         include: { fromUser: { select: { name: true } } }
+                    },
+                    _count: {
+                        select: { members: true }
                     }
                 },
-                orderBy: { updatedAt: 'desc' }
+                orderBy: [
+                    { type: 'asc' }, // Groups first
+                    { updatedAt: 'desc' }
+                ]
             });
 
             return rooms.map((room: any) => {
@@ -49,35 +56,30 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role:
                 return {
                     ...room,
                     unreadCount: 0,
+                    memberCount: room._count?.members || room.members?.length || 1,
                     partner: room.type === 'PRIVATE' ? partnerMember?.user : null
                 };
             });
         }
     } catch (e) {
-        console.warn('[getCachedUserRooms] Prisma query error, falling back to Supabase:', e);
+        console.warn('[getCachedUserRooms] Prisma error, falling back to Supabase:', e);
     }
 
     // Edge/Supabase fallback
     try {
         const supabase = getSupabase();
         
-        const { data: userMemberRooms } = await supabase
-            .from('ChatRoomMember')
-            .select('chatRoomId')
-            .eq('userId', userId);
-        
-        const roomIds = (userMemberRooms || []).map(r => r.chatRoomId);
-
         const { data: fullRooms } = await supabase
             .from('ChatRoom')
             .select('*, members:ChatRoomMember(*, user:User(id, name, role, photoUrl)), messages:Message(*, fromUser:User(name))')
             .eq('schoolId', schoolId)
             .order('updatedAt', { ascending: false });
 
-        return (fullRooms || []).filter((room: any) => room.type === 'GROUP' || roomIds.includes(room.id)).map((room: any) => {
+        return (fullRooms || []).map((room: any) => {
             return {
                 ...room,
                 unreadCount: 0,
+                memberCount: room.members?.length || 1,
                 partner: room.type === 'PRIVATE' ? room.members?.find((m: any) => m.userId !== userId)?.user : null,
                 messages: (room.messages || []).slice(0, 1)
             };
