@@ -10,22 +10,22 @@ const getSupabase = () => {
 
 /**
  * Fetch all chat rooms (groups and private) for a user within their school.
- * Always ensures group visibility.
+ * Guaranteed to return all school group channels.
  */
-export async function getCachedUserRooms(userId: string, schoolId: string, role: string) {
+export async function getCachedUserRooms(userId: string, schoolId: string, role?: string) {
     if (!schoolId) return [];
 
     try {
         const { prisma } = require('@/lib/prisma');
 
         if (prisma) {
-            // Node.js Prisma query
+            // Fetch all school groups AND all private rooms the user belongs to
             let rooms = await prisma.chatRoom.findMany({
                 where: {
                     schoolId,
                     OR: [
-                        { members: { some: { userId } } },
-                        { type: 'GROUP' }
+                        { type: 'GROUP' },
+                        { members: { some: { userId } } }
                     ]
                 },
                 include: {
@@ -42,11 +42,11 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role:
                         include: { fromUser: { select: { name: true } } }
                     },
                     _count: {
-                        select: { members: true }
+                        select: { members: true, messages: true }
                     }
                 },
                 orderBy: [
-                    { type: 'asc' }, // Groups first
+                    { type: 'asc' }, // GROUP first
                     { updatedAt: 'desc' }
                 ]
             });
@@ -57,7 +57,7 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role:
                     ...room,
                     unreadCount: 0,
                     memberCount: room._count?.members || room.members?.length || 1,
-                    partner: room.type === 'PRIVATE' ? partnerMember?.user : null
+                    partner: room.type === 'PRIVATE' ? (partnerMember?.user || { name: 'Direct Contact', role: 'Staff' }) : null
                 };
             });
         }
@@ -93,14 +93,14 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role:
 /**
  * Fetch messages for a specific chat room with cursor pagination.
  */
-export async function getCachedRoomMessages(chatRoomId: string, cursor?: string) {
+export async function getCachedRoomMessages(chatRoomId: string, cursor?: string, limit: number = 50) {
     if (!chatRoomId) return { messages: [], nextCursor: null };
 
     try {
         const { prisma } = require('@/lib/prisma');
 
         if (prisma) {
-            const take = 30;
+            const take = limit || 50;
             const messages = await prisma.message.findMany({
                 where: { chatRoomId },
                 orderBy: { createdAt: 'desc' },
@@ -135,7 +135,7 @@ export async function getCachedRoomMessages(chatRoomId: string, cursor?: string)
             .select('*, fromUser:User(id, name, photoUrl, role)')
             .eq('chatRoomId', chatRoomId)
             .order('createdAt', { ascending: true })
-            .limit(50);
+            .limit(limit || 50);
 
         return {
             messages: messages || [],

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth, handleApiError, secureJson } from '@/lib/security';
-
+import { requireSchoolLinked, handleApiError, secureJson } from '@/lib/security';
 import { getCachedRoomMessages } from '@/lib/services/messages';
+import { ensureDbUser } from '@/lib/messaging';
 
 export async function GET(request: Request) {
     try {
-        const authUser = await requireAuth();
+        const dbUser = await requireSchoolLinked();
 
         const { searchParams } = new URL(request.url);
         const chatRoomId = searchParams.get('chatRoomId');
@@ -17,13 +17,23 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });
         }
 
-        // Verify membership
-        const membership = await prisma.chatRoomMember.findUnique({
-            where: { chatRoomId_userId: { chatRoomId, userId: authUser.id } }
+        // Verify room belongs to this school
+        const room = await prisma.chatRoom.findUnique({
+            where: { id: chatRoomId },
+            select: { id: true, schoolId: true, type: true }
         });
 
-        if (!membership) {
-            return NextResponse.json({ error: 'Forbidden: You are not a member of this room' }, { status: 403 });
+        if (!room || (room.schoolId && dbUser.schoolId && room.schoolId !== dbUser.schoolId)) {
+            return NextResponse.json({ error: 'Room not found or forbidden' }, { status: 404 });
+        }
+
+        // Ensure user is registered as member
+        if (dbUser.id) {
+            await prisma.chatRoomMember.upsert({
+                where: { chatRoomId_userId: { chatRoomId, userId: dbUser.id } },
+                update: { lastReadAt: new Date() },
+                create: { chatRoomId, userId: dbUser.id }
+            }).catch(() => {});
         }
 
         // Fetch using the optimized cached service
@@ -37,45 +47,38 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const authUser = await requireAuth();
+        const dbUser = await requireSchoolLinked();
         const { chatRoomId, content, attachments } = await request.json();
 
         if (!chatRoomId || (!content && !attachments)) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Verify membership and fetch room/school context
-        const membership = await prisma.chatRoomMember.findUnique({
-            where: { chatRoomId_userId: { chatRoomId, userId: authUser.id } },
-            include: { chatRoom: true }
+        // Verify room belongs to this school
+        const room = await prisma.chatRoom.findUnique({
+            where: { id: chatRoomId }
         });
 
-        if (!membership) {
-            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        if (!room || (room.schoolId && dbUser.schoolId && room.schoolId !== dbUser.schoolId)) {
+            return NextResponse.json({ error: 'Forbidden: Room does not belong to your school' }, { status: 403 });
         }
 
-        // Specific Restrictions for existing rooms
-        if (membership.chatRoom.type === 'PRIVATE') {
-            const partner = await prisma.chatRoomMember.findFirst({
-                where: { chatRoomId, userId: { not: authUser.id } },
-                include: { user: true }
-            });
+        // Ensure user exists in prisma DB
+        const ensuredUser = await ensureDbUser(dbUser.id, undefined, dbUser.role as any, dbUser.schoolId);
+        const validUserId = ensuredUser?.id || dbUser.id;
 
-            if (partner?.user) {
-                if (authUser.user_metadata?.role === 'STUDENT' && partner.user.role === 'STUDENT') {
-                    return NextResponse.json({ error: 'thisis restricted on student mode' }, { status: 403 });
-                }
-                if (authUser.user_metadata?.role === 'PARENT' && (partner.user.role === 'STUDENT' || partner.user.role === 'PARENT')) {
-                    return NextResponse.json({ error: 'thisis restricted on parent mode' }, { status: 403 });
-                }
-            }
-        }
+        // Auto-join member to room
+        await prisma.chatRoomMember.upsert({
+            where: { chatRoomId_userId: { chatRoomId, userId: validUserId } },
+            update: { lastReadAt: new Date() },
+            create: { chatRoomId, userId: validUserId }
+        }).catch(() => {});
 
         const message = await prisma.message.create({
             data: {
                 chatRoomId,
-                fromUserId: authUser.id,
-                schoolId: membership.chatRoom.schoolId,
+                fromUserId: validUserId,
+                schoolId: room.schoolId || dbUser.schoolId,
                 content: content || '',
                 attachments: attachments || null
             },
@@ -90,52 +93,9 @@ export async function POST(request: Request) {
         await prisma.chatRoom.update({
             where: { id: chatRoomId },
             data: { updatedAt: new Date() }
-        });
+        }).catch(() => {});
 
-        // --- EMAIL ALERTS LOGIC ---
-        try {
-            // Find other members of this room
-            const otherMembers = await prisma.chatRoomMember.findMany({
-                where: { chatRoomId, userId: { not: authUser.id } },
-                include: { user: { select: { email: true, name: true, preferences: true } } }
-            });
-
-            // Dynamically import to avoid edge runtime issues if any
-            const { sendEmail } = await import('@/lib/email');
-
-            for (const member of otherMembers) {
-                if (!member.user.email) continue;
-                const prefs = member.user.preferences as any;
-                // Only send if explicitly enabled (default is false if not set in preferences, or whatever user checked)
-                // Actually, let's assume it's true unless explicitly set to false if we want it to be aggressive,
-                // but the UI sets it, so we check if emailAlerts is exactly true.
-                if (prefs?.emailAlerts === true) {
-                    await sendEmail({
-                        to: member.user.email,
-                        subject: `New Secure Message from ${authUser.user_metadata?.name || 'LUCY OS'}`,
-                        html: `
-                            <div style="font-family: sans-serif; color: #111; max-w-2xl mx-auto border: 1px solid #eaeaea; border-radius: 8px; padding: 24px;">
-                                <h2 style="color: #147A52;">Smart Connection Received</h2>
-                                <p>You have a new message from <strong>${authUser.user_metadata?.name || 'System'}</strong>:</p>
-                                <blockquote style="border-left: 4px solid #3BD68D; padding-left: 16px; color: #444; font-style: italic; background: #f9f9f9; padding: 12px; border-radius: 4px;">
-                                    ${content || '<i>[Attachment]</i>'}
-                                </blockquote>
-                                <p style="margin-top: 32px;">
-                                    <a href="https://www.5-cn.net/dashboard/messages?chatRoomId=${chatRoomId}" style="background-color: #147A52; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">View in LUCY OS</a>
-                                </p>
-                                <p style="font-size: 12px; color: #888; margin-top: 48px;">
-                                    You are receiving this because Email Alerts are enabled in your App Experience settings.
-                                </p>
-                            </div>
-                        `
-                    });
-                }
-            }
-        } catch (emailErr) {
-            console.error('Failed to send email alerts:', emailErr);
-        }
-
-        return secureJson({ message });
+        return NextResponse.json({ message });
     } catch (e) {
         return handleApiError(e);
     }
