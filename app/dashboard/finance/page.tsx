@@ -61,8 +61,8 @@ export default async function FinancePage() {
         });
 
         // Also fetch school info for the header
-        const school = studentLinks[0]?.student?.school || null;
         const students = studentLinks.map((link) => link.student).filter(Boolean);
+        const school = studentLinks[0]?.student?.school || (schoolId ? await prisma.school.findUnique({ where: { id: schoolId } }) : await prisma.school.findFirst());
 
         return (
             <ParentBillingView user={dbUser} students={students} school={school} />
