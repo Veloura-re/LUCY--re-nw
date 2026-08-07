@@ -5,6 +5,8 @@ import { getCachedUserRooms, getCachedRoomMessages } from "@/lib/services/messag
 import MessagesClientWrapper from "@/components/dashboard/messages-client-wrapper";
 import { Suspense } from "react";
 import SpringingLoader from "@/components/dashboard/springing-loader";
+import { prisma } from "@/lib/prisma";
+import { syncGroupMemberships, syncAllSchoolMembers } from "@/lib/messaging";
 
 export default async function MessagesPage({ searchParams }: { searchParams: Promise<{ userId?: string, chatRoomId?: string }> }) {
     const supabase = await createClient();
@@ -13,18 +15,35 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     if (!authUser) redirect("/login");
 
     const params = await searchParams;
-    const dbUser = await getCachedUser(authUser.id);
+    let dbUser = await getCachedUser(authUser.id);
     
-    if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
+    let schoolId = dbUser?.schoolId;
+    if (!schoolId) {
+        const activeSchool = await prisma.school.findFirst({
+            where: { status: 'ACTIVE' },
+            orderBy: { createdAt: 'desc' },
+            select: { id: true }
+        }) || await prisma.school.findFirst({
+            orderBy: { createdAt: 'desc' },
+            select: { id: true }
+        });
+        schoolId = activeSchool?.id;
+    }
 
-    const userId = dbUser.id || authUser.id;
+    if (!schoolId) redirect("/dashboard");
+
+    const userId = dbUser?.id || authUser.id;
+    const role = dbUser?.role || 'OWNER';
 
     // 1. Synchronize group memberships FIRST so school group, teacher group, & class groups exist
-    const { syncGroupMemberships } = await import('@/lib/messaging');
-    await syncGroupMemberships(userId, dbUser.schoolId, dbUser.role as any);
+    await syncGroupMemberships(userId, schoolId, role as any);
 
     // 2. Fetch freshly synced rooms
-    const rooms = await getCachedUserRooms(userId, dbUser.schoolId, dbUser.role);
+    let rooms = await getCachedUserRooms(userId, schoolId, role);
+    if (!rooms || rooms.length === 0) {
+        await syncAllSchoolMembers(schoolId);
+        rooms = await getCachedUserRooms(userId, schoolId, role);
+    }
     
     let initialMessages: any[] = [];
     let initialNextCursor: string | null = null;
@@ -52,7 +71,7 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
             </div>
         }>
             <MessagesClientWrapper 
-                me={{ ...authUser, id: userId, dbUser }}
+                me={{ ...authUser, id: userId, dbUser: { ...dbUser, schoolId, role } }}
                 initialRooms={rooms}
                 initialActiveRoom={initialActiveRoom}
                 initialMessages={initialMessages}

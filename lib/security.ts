@@ -129,14 +129,29 @@ export async function requireSchoolLinked() {
         const { data } = await supabaseAdmin
             .from('User')
             .select('id, role, schoolId')
-            .eq('id', user.id)
-            .single();
+            .or(`id.eq.${user.id},email.eq.${user.email}`)
+            .limit(1)
+            .maybeSingle();
         dbUser = data;
     } else {
-        dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+        dbUser = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { id: user.id },
+                    { email: user.email || '' }
+                ]
+            },
             select: { id: true, role: true, schoolId: true }
         });
+    }
+
+    if (!dbUser) {
+        // Fallback: Use auth user profile
+        dbUser = {
+            id: user.id,
+            role: user.user_metadata?.role || 'OWNER',
+            schoolId: user.user_metadata?.schoolId || null
+        };
     }
 
     if (!dbUser?.schoolId) {
