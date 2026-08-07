@@ -7,97 +7,101 @@ export async function GET(request: Request) {
         const currentUser = await requireSchoolLinked();
 
         const { searchParams } = new URL(request.url);
-        const query = searchParams.get('q');
+        const query = searchParams.get('q')?.trim();
 
-        if (!query || query.length < 2) return NextResponse.json({ users: [] });
+        if (!query || query.length < 1) return NextResponse.json({ users: [] });
 
-        const canSearchStudentCode = ['OWNER', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN'].includes(currentUser.role);
+        const isStaff = ['OWNER', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN'].includes(currentUser.role);
+        const isParent = currentUser.role === 'PARENT';
+        const isStudent = currentUser.role === 'STUDENT';
 
         let results: any[] = [];
 
-        // --- Student Code Search (for staff only) ---
-        if (canSearchStudentCode) {
-            const studentMatch = await prisma.student.findFirst({
+        // 1. If staff, allow finding students by studentCode or name, returning linked parents
+        if (isStaff) {
+            const studentMatches = await prisma.student.findMany({
                 where: {
                     schoolId: currentUser.schoolId!,
-                    studentCode: { contains: query, mode: 'insensitive' }
+                    OR: [
+                        { studentCode: { contains: query, mode: 'insensitive' } },
+                        { firstName: { contains: query, mode: 'insensitive' } },
+                        { lastName: { contains: query, mode: 'insensitive' } }
+                    ]
                 },
                 include: {
-                    user: { select: { id: true, name: true, role: true, photoUrl: true } },
+                    user: { select: { id: true, name: true, role: true, photoUrl: true, email: true } },
                     class: { select: { name: true } },
                     parentLinks: {
                         include: {
                             parent: {
-                                select: { id: true, name: true, role: true, photoUrl: true }
+                                select: { id: true, name: true, role: true, photoUrl: true, email: true }
                             }
                         }
                     }
-                }
+                },
+                take: 5
             });
 
-            if (studentMatch) {
-                // Build an entry for the student themselves (if they have a user account)
-                if (studentMatch.user) {
+            for (const s of studentMatches) {
+                // Add student
+                if (s.user) {
                     results.push({
-                        id: studentMatch.user.id,
-                        name: studentMatch.user.name || `${studentMatch.firstName} ${studentMatch.lastName}`,
+                        id: s.user.id,
+                        name: s.user.name || `${s.firstName} ${s.lastName}`,
                         role: 'STUDENT',
-                        photoUrl: studentMatch.user.photoUrl,
-                        studentCode: studentMatch.studentCode,
-                        className: studentMatch.class?.name,
-                        // Attach all linked parents for the UI to offer "chat with parent"
-                        parents: studentMatch.parentLinks.map(link => ({
-                            id: link.parent.id,
-                            name: link.parent.name,
-                            role: 'PARENT',
-                            photoUrl: link.parent.photoUrl
-                        }))
-                    });
-                } else {
-                    // Student has no user account yet — show as unlinked placeholder
-                    results.push({
-                        id: null,
-                        name: `${studentMatch.firstName} ${studentMatch.lastName}`,
-                        role: 'STUDENT',
-                        studentCode: studentMatch.studentCode,
-                        className: studentMatch.class?.name,
-                        noAccount: true,
-                        parents: studentMatch.parentLinks.map(link => ({
-                            id: link.parent.id,
-                            name: link.parent.name,
-                            role: 'PARENT',
-                            photoUrl: link.parent.photoUrl
-                        }))
+                        photoUrl: s.user.photoUrl,
+                        email: s.user.email,
+                        studentCode: s.studentCode,
+                        className: s.class?.name
                     });
                 }
-                return NextResponse.json({ users: results, type: 'studentCode' });
+                // Add linked parents directly to results so teachers can click to message parents instantly
+                for (const pl of s.parentLinks) {
+                    if (pl.parent && !results.some(r => r.id === pl.parent.id)) {
+                        results.push({
+                            id: pl.parent.id,
+                            name: `${pl.parent.name} (Parent of ${s.firstName})`,
+                            role: 'PARENT',
+                            photoUrl: pl.parent.photoUrl,
+                            email: pl.parent.email,
+                            studentCode: s.studentCode
+                        });
+                    }
+                }
             }
         }
 
-        // --- Name Search (general) ---
+        // 2. Direct User Search (name, email)
         const whereClause: any = {
             schoolId: currentUser.schoolId!,
-            name: { contains: query, mode: 'insensitive' },
-            id: { not: currentUser.id }
+            id: { not: currentUser.id },
+            OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } }
+            ]
         };
 
-        // Students cannot see other students
-        if (currentUser.role === 'STUDENT') {
-            whereClause.role = { not: 'STUDENT' };
+        if (isParent) {
+            // Parents can search teachers, homeroom, principal, owners
+            whereClause.role = { in: ['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'] };
+        } else if (isStudent) {
+            // Students can search teachers, homeroom, principal
+            whereClause.role = { in: ['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER'] };
         }
 
-        // Parents cannot see other parents
-        if (currentUser.role === 'PARENT') {
-            whereClause.role = { not: 'PARENT' };
-        }
-
-        const users = await prisma.user.findMany({
+        const directUsers = await prisma.user.findMany({
             where: whereClause,
-            select: { id: true, name: true, role: true, photoUrl: true },
+            select: { id: true, name: true, role: true, photoUrl: true, email: true },
             take: 10
         });
 
-        return NextResponse.json({ users });
+        for (const u of directUsers) {
+            if (!results.some(r => r.id === u.id)) {
+                results.push(u);
+            }
+        }
+
+        return NextResponse.json({ users: results });
     } catch (e) {
         return handleApiError(e);
     }

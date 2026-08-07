@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { Logo } from "@/components/ui/logo";
+import { SchoolLogo } from "@/components/ui/school-logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface DashboardSidebarProps {
@@ -96,11 +97,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                 )}>
                     {collapsed ? (
                         <div className="flex items-center justify-center mb-1" title={dbUser.school?.name || "LUCY OS"}>
-                            {dbUser.school?.logoUrl ? (
-                                <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-0.5" />
-                            ) : (
-                                <Logo className="w-7 h-7" />
-                            )}
+                            <SchoolLogo logoUrl={dbUser.school?.logoUrl} className="w-8 h-8 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-0.5" fallbackSize="w-7 h-7" />
                         </div>
                     ) : (
                         <AnimatePresence mode="wait">
@@ -113,11 +110,7 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 className="flex flex-col gap-1"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    {dbUser.school?.logoUrl ? (
-                                        <img src={dbUser.school.logoUrl} alt="School Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" />
-                                    ) : (
-                                        <Logo className="w-8 h-8 sm:w-10 sm:h-10" />
-                                    )}
+                                    <SchoolLogo logoUrl={dbUser.school?.logoUrl} className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 p-1" fallbackSize="w-8 h-8 sm:w-10 sm:h-10" />
                                     <div className="flex flex-col min-w-0">
                                         <span className="font-orbitron font-black text-sm tracking-wider text-zinc-900 dark:text-white leading-tight">LUCY</span>
                                         {dbUser.school && (

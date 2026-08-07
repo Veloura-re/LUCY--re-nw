@@ -214,6 +214,23 @@ async function fetchUserFromSupabase(value: string, field: 'id' | 'email') {
             _count: { students: 0, users: 0 }
         } : null;
 
+        // Fallback for PARENT linked via ParentStudentLink
+        if (!school && data.role === 'PARENT') {
+            const { data: parentLinks } = await supabaseAdmin
+                .from('ParentStudentLink')
+                .select('student:Student(school:School(*))')
+                .eq('parentId', data.id)
+                .limit(1);
+            const studentObj = (parentLinks as any)?.[0]?.student;
+            const schoolObj = Array.isArray(studentObj?.school) ? studentObj.school[0] : studentObj?.school;
+            if (schoolObj) {
+                school = {
+                    ...schoolObj,
+                    _count: { students: 0, users: 0 }
+                };
+            }
+        }
+
         // Fallback for SUPERADMIN or missing school in Supabase
         if (!school && (data.role === 'SUPERADMIN' || !data.schoolId)) {
             const { data: firstSchool } = await supabaseAdmin
