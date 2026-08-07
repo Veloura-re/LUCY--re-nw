@@ -36,8 +36,29 @@ export default function StudentReportCardPage() {
     );
 
     if (!data?.student) return (
-        <div className="min-h-screen flex items-center justify-center text-zinc-600 dark:text-zinc-400 font-black uppercase tracking-widest text-sm">
-            Scholastic Record Discovery Failed
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center p-6">
+            <GraduationCap className="w-12 h-12 text-eduGreen-500 animate-bounce" />
+            <p className="text-zinc-900 dark:text-white font-black uppercase tracking-widest text-base">
+                {data?.error || "Scholastic Record Discovery Failed"}
+            </p>
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs max-w-md">
+                No matching student profile found for key "{studentId}". Please ensure a valid student profile is selected.
+            </p>
+            <div className="flex gap-3 mt-2">
+                <Button 
+                    onClick={() => { setLoading(true); window.location.reload(); }}
+                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl px-6 text-xs font-bold uppercase tracking-widest"
+                >
+                    Retry Synthesis
+                </Button>
+                <Button 
+                    onClick={() => window.location.href = '/dashboard/reports/students'}
+                    variant="outline"
+                    className="rounded-xl px-6 text-xs font-bold uppercase tracking-widest"
+                >
+                    View All Students
+                </Button>
+            </div>
         </div>
     );
 
