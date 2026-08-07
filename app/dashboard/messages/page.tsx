@@ -17,18 +17,21 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
-    // Auto-sync memberships to ensure Global School and Teachers groups exist
-    const { syncGroupMemberships } = await import('@/lib/messaging');
-    await syncGroupMemberships(dbUser.id, dbUser.schoolId, dbUser.role as any);
+    // Use actual database user ID (dbUser.id) for room memberships
+    const userId = dbUser.id || authUser.id;
 
-    // Parallelize room fetching and active conversation loading
-    const initialRoomsTask = getCachedUserRooms(authUser.id, dbUser.schoolId, dbUser.role);
+    // Auto-sync group memberships (Global School, Teachers Group, Class Groups)
+    const { syncGroupMemberships } = await import('@/lib/messaging');
+    await syncGroupMemberships(userId, dbUser.schoolId, dbUser.role as any);
+
+    // Fetch rooms using dbUser.id so all group memberships are matched
+    const initialRoomsTask = getCachedUserRooms(userId, dbUser.schoolId, dbUser.role);
     
     let initialMessages: any[] = [];
     let initialNextCursor: string | null = null;
     let initialActiveRoom: any = null;
 
-    // If chatRoomId is provided in URL, pre-fetch messages for sub-second delivery
+    // If chatRoomId is provided in URL, pre-fetch messages
     if (params.chatRoomId) {
         const [rooms, messageData] = await Promise.all([
             initialRoomsTask,
@@ -50,7 +53,7 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
             </div>
         }>
             <MessagesClientWrapper 
-                me={authUser}
+                me={{ ...authUser, id: userId, dbUser }}
                 initialRooms={rooms}
                 initialActiveRoom={initialActiveRoom}
                 initialMessages={initialMessages}

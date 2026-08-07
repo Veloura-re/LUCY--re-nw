@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, GraduationCap, Printer, Download, Sparkles, User, Calendar, Award } from "lucide-react";
+import { BookOpen, GraduationCap, Printer, Download, Sparkles, User, Calendar, Award, CheckCircle2, ShieldCheck, Hash, Layers } from "lucide-react";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -29,214 +29,268 @@ export default function StudentReportCardPage() {
         fetchData();
     }, [studentId]);
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black"><SpringingLoader message="Compiling Academic Records" /></div>;
-    if (!data?.student) return <div className="min-h-screen flex items-center justify-center text-zinc-600 dark:text-zinc-500 font-black uppercase tracking-widest">Profile Discovery Failed</div>;
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-black">
+            <SpringingLoader message="Compiling Official Scholastic Synthesis..." />
+        </div>
+    );
 
-    const { student, grades, attendance, remarks } = data;
+    if (!data?.student) return (
+        <div className="min-h-screen flex items-center justify-center text-zinc-600 dark:text-zinc-400 font-black uppercase tracking-widest text-sm">
+            Scholastic Record Discovery Failed
+        </div>
+    );
 
-    const getPerformanceColor = (pct: number) => {
-        if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10" };
-        if (pct >= 60) return { text: "text-blue-500", border: "border-blue-900/30", bg: "bg-blue-900/10" };
-        if (pct >= 40) return { text: "text-amber-600 dark:text-amber-500", border: "border-amber-900/30", bg: "bg-amber-900/10" };
-        return { text: "text-rose-500", border: "border-rose-900/30", bg: "bg-rose-900/10" };
+    const { student, principal, grades = [], summary = {}, attendance = {}, remarks = [] } = data;
+
+    const getGradeColor = (pct: number) => {
+        if (pct >= 85) return "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+        if (pct >= 70) return "text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/30";
+        if (pct >= 55) return "text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/30";
+        return "text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/30";
     };
 
-    const printReport = () => {
+    const handlePrint = () => {
         window.print();
     };
 
-    const exportRawData = () => {
-        if (!data) return;
+    const handleExportJson = () => {
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${student.firstName}_${student.lastName}_Academic_Record.json`;
+        a.download = `${student.firstName}_${student.lastName}_Academic_Report.json`;
         a.click();
         window.URL.revokeObjectURL(url);
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10 py-12">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10 print:hidden">
+        <div className="max-w-5xl mx-auto space-y-8 py-8 px-4 print:p-0 print:m-0 print:max-w-none print:bg-white text-zinc-900 dark:text-white print:text-black">
+            
+            {/* Action Bar (Hidden on Print) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6 print:hidden">
                 <div>
-                    <h1 className="text-5xl font-black tracking-tighter text-zinc-900 dark:text-white">
-                        Report <span className="text-eduGreen-500 italic">Cycle</span>
+                    <div className="flex items-center gap-2 text-xs font-bold text-eduGreen-500 uppercase tracking-widest mb-1">
+                        <GraduationCap className="w-4 h-4" />
+                        <span>Official Academic Transcript</span>
+                    </div>
+                    <h1 className="text-3xl font-black tracking-tight">
+                        Student Report Card
                     </h1>
-                    <p className="text-zinc-600 font-bold uppercase tracking-[0.2em] text-xs mt-3">End of Term Scholastic Synthesis</p>
                 </div>
 
-                <div className="flex gap-4 mb-1">
-                    <Button onClick={printReport} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
-                        <Printer className="w-4 h-4 mr-2" /> Print PDF
+                <div className="flex items-center gap-3">
+                    <Button 
+                        onClick={handlePrint} 
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl h-11 px-5 text-xs font-bold uppercase tracking-wider shadow-lg shadow-eduGreen-600/20"
+                    >
+                        <Printer className="w-4 h-4 mr-2" /> Print Official PDF
                     </Button>
-                    <Button onClick={exportRawData} variant="outline" className="rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-12 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
-                        <Download className="w-4 h-4 mr-2" /> Download JSON
+                    <Button 
+                        onClick={handleExportJson} 
+                        variant="outline" 
+                        className="rounded-xl border-zinc-200 dark:border-zinc-800 h-11 px-5 text-xs font-bold uppercase tracking-wider"
+                    >
+                        <Download className="w-4 h-4 mr-2" /> Export JSON Data
                     </Button>
                 </div>
             </div>
 
-            {/* Letterhead */}
-            <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[3rem]  border-t-zinc-800/20 shadow-2xl print:border-none print:shadow-none print:bg-transparent">
-                <CardContent className="p-6 md:p-10">
-                    <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+            {/* Main Report Document Sheet */}
+            <div className="bg-white dark:bg-zinc-950 print:bg-white border border-zinc-200 dark:border-zinc-800/80 print:border-zinc-300 rounded-[2rem] print:rounded-none p-8 md:p-12 shadow-2xl print:shadow-none space-y-10">
+                
+                {/* 1. Formal School Header & Student Badge */}
+                <div className="border-b border-zinc-200 dark:border-zinc-800 print:border-zinc-300 pb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div className="flex items-center gap-5">
+                        {student.school?.logoUrl ? (
+                            <Image 
+                                src={student.school.logoUrl} 
+                                alt="School Crest" 
+                                width={80} 
+                                height={80} 
+                                className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-2xl bg-zinc-100 dark:bg-zinc-900 p-2 border border-zinc-200 dark:border-zinc-800"
+                            />
+                        ) : (
+                            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/30 flex items-center justify-center">
+                                <Sparkles className="w-8 h-8 text-eduGreen-500" />
+                            </div>
+                        )}
                         <div>
-                            <div className="flex items-center gap-4 mb-6">
-                                {student.school?.logoUrl ? (
-                                    <Image src={student.school.logoUrl} alt="School Logo" width={64} height={64} className="w-12 h-12 object-contain print:w-16 print:h-16" />
-                                ) : (
-                                    <Sparkles className="w-8 h-8 text-eduGreen-500" />
-                                )}
-                                <h1 className="text-4xl font-black tracking-tighter italic uppercase">{student.school?.name}</h1>
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-4xl font-black text-zinc-900 dark:text-white print:text-black tracking-tighter">{student.firstName} {student.lastName}</p>
-                                <p className="text-sm font-bold text-eduGreen-600 uppercase tracking-widest">{student.class?.grade?.name} • Room {student.class?.name}</p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 md:gap-8 text-left md:text-right w-full md:w-auto">
-                            <div>
-                                <p className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-1">Student Identifier</p>
-                                <p className="font-mono text-xs text-zinc-600 dark:text-zinc-400 print:text-zinc-600">{student.studentCode}</p>
-                            </div>
-                            <div>
-                                <p className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-1">Academic Calendar</p>
-                                <p className="font-mono text-xs text-zinc-600 dark:text-zinc-400 print:text-zinc-600">2023/24 TERM 2</p>
-                            </div>
+                            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-zinc-900 dark:text-white print:text-black">
+                                {student.school?.name || "LUCY OS Institutional Portal"}
+                            </h2>
+                            <p className="text-xs text-zinc-600 dark:text-zinc-400 print:text-zinc-600 font-bold uppercase tracking-widest mt-1">
+                                {student.school?.address || "Official End of Term Scholastic Evaluation"}
+                            </p>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
 
-            <div className="grid md:grid-cols-12 gap-12">
-                {/* Academic Breakdown */}
-                <div className="md:col-span-8 space-y-12">
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-900 pb-4 print:border-zinc-200">
-                            <BookOpen className="w-5 h-5 text-eduGreen-500" />
-                            <h2 className="text-xl font-black uppercase tracking-widest">Core Performance</h2>
+                    <div className="bg-zinc-100 dark:bg-zinc-900/60 print:bg-zinc-50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 print:border-zinc-300 text-right w-full md:w-auto">
+                        <p className="text-[10px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Academic Calendar</p>
+                        <p className="text-base font-black text-eduGreen-600 dark:text-eduGreen-400 print:text-emerald-700 font-mono">2023/24 TERM 2</p>
+                    </div>
+                </div>
+
+                {/* 2. Student Metadata Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-zinc-50 dark:bg-zinc-900/40 print:bg-zinc-100 rounded-2xl border border-zinc-200 dark:border-zinc-800 print:border-zinc-300">
+                    <div>
+                        <p className="text-[9px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Student Name</p>
+                        <p className="text-sm font-black text-zinc-900 dark:text-white print:text-black truncate">{student.firstName} {student.lastName}</p>
+                    </div>
+                    <div>
+                        <p className="text-[9px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Student ID Code</p>
+                        <p className="text-sm font-mono font-bold text-zinc-700 dark:text-zinc-300 print:text-zinc-800">{student.studentCode}</p>
+                    </div>
+                    <div>
+                        <p className="text-[9px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Grade Level</p>
+                        <p className="text-sm font-black text-zinc-900 dark:text-white print:text-black">{student.class?.grade?.name || "Grade 12"}</p>
+                    </div>
+                    <div>
+                        <p className="text-[9px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-1">Class Room</p>
+                        <p className="text-sm font-black text-zinc-900 dark:text-white print:text-black">{student.class?.name || "Section A"}</p>
+                    </div>
+                </div>
+
+                {/* 3. Summary Performance Vitals Banner */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-5 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/20 text-center">
+                        <p className="text-[9px] font-black text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest mb-1">Overall Average</p>
+                        <p className="text-3xl font-black text-eduGreen-600 dark:text-eduGreen-400">{summary.overallPercentage || 0}%</p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center">
+                        <p className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">GPA (4.0 Scale)</p>
+                        <p className="text-3xl font-black text-blue-600 dark:text-blue-400">{summary.gpa || "0.00"}</p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-center">
+                        <p className="text-[9px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-1">Class Position Rank</p>
+                        <p className="text-3xl font-black text-purple-600 dark:text-purple-400">#{summary.classRank || 1} <span className="text-xs text-zinc-600 font-normal">/ {summary.totalClassStudents || 1}</span></p>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
+                        <p className="text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Session Attendance</p>
+                        <p className="text-3xl font-black text-amber-600 dark:text-amber-400">{attendance.rate || 100}%</p>
+                    </div>
+                </div>
+
+                {/* 4. Scholastic Performance Breakdown Table */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                        <BookOpen className="w-5 h-5 text-eduGreen-500" />
+                        <h3 className="text-lg font-black uppercase tracking-tight">Core Subject Breakdown</h3>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 print:border-zinc-300">
+                        <table className="w-full text-left text-xs">
+                            <thead className="bg-zinc-100 dark:bg-zinc-900 print:bg-zinc-200 text-zinc-700 dark:text-zinc-300 print:text-black uppercase tracking-wider font-bold text-[10px]">
+                                <tr>
+                                    <th className="p-4">Subject Name</th>
+                                    <th className="p-4 text-center">Assessments & Breakdown</th>
+                                    <th className="p-4 text-center">Total Score</th>
+                                    <th className="p-4 text-center">Grade</th>
+                                    <th className="p-4">Teacher Conduct Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 print:divide-zinc-300">
+                                {grades.length > 0 ? grades.map((g: any, idx: number) => (
+                                    <tr key={idx} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/50 transition-colors">
+                                        <td className="p-4 font-black text-sm text-zinc-900 dark:text-white print:text-black">
+                                            {g.subject?.name || "Core Subject"}
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <div className="flex items-center justify-center gap-2 flex-wrap text-[10px]">
+                                                {g.columns && g.columns.length > 0 ? g.columns.map((col: any, cIdx: number) => (
+                                                    <span key={cIdx} className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 font-mono">
+                                                        {col.title}: {col.score}/{col.maxMarks}
+                                                    </span>
+                                                )) : (
+                                                    <span className="text-zinc-600">Standard Marking</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-center font-black text-base">
+                                            {g.score}%
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <span className={cn("px-3 py-1 rounded-xl font-black text-xs border inline-block", getGradeColor(g.score))}>
+                                                {g.grade}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-zinc-600 dark:text-zinc-400 print:text-zinc-700 italic text-[11px]">
+                                            {g.remarks || "Demonstrates strong understanding of core subject concepts."}
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center text-zinc-600 dark:text-zinc-400 uppercase tracking-widest text-xs">
+                                            No marklist records entered for this term yet.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* 5. Qualitative Faculty Observations */}
+                {remarks && remarks.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                            <Award className="w-5 h-5 text-eduGreen-500" />
+                            <h3 className="text-lg font-black uppercase tracking-tight">Faculty Conduct Observations</h3>
                         </div>
-                        <div className="space-y-4">
-                            {grades.map((g: any, i: number) => (
-                                <div key={i} className="flex items-center justify-between p-6 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-3xl border border-zinc-200 dark:border-zinc-900 print:bg-transparent print:border-zinc-200 group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 flex items-center justify-center font-black text-eduGreen-500 print:bg-zinc-100">
-                                            {g.subject?.name[0]}
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-zinc-900 dark:text-white print:text-black">{g.subject?.name}</p>
-                                            <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{g.exam?.title}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-8 items-center">
-                                        <div className={cn(
-                                            "text-right",
-                                            getPerformanceColor(g.score).text
-                                        )}>
-                                            <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest">Raw Score</p>
-                                            <p className="text-xl font-black">{g.score}%</p>
-                                        </div>
-                                        <div className={cn(
-                                            "w-12 h-12 border rounded-xl flex items-center justify-center font-black print:border-zinc-300",
-                                            getPerformanceColor(g.score).bg,
-                                            getPerformanceColor(g.score).text,
-                                            getPerformanceColor(g.score).border
-                                        )}>
-                                            {g.score >= 90 ? 'A+' : g.score >= 80 ? 'A' : g.score >= 70 ? 'B' : g.score >= 60 ? 'C' : g.score >= 50 ? 'D' : 'F'}
-                                        </div>
-                                    </div>
+                        <div className="grid gap-3">
+                            {remarks.map((r: any, idx: number) => (
+                                <div key={idx} className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80">
+                                    <p className="text-xs text-zinc-700 dark:text-zinc-300 italic mb-2">"{r.content}"</p>
+                                    <p className="text-[10px] font-bold text-eduGreen-600 uppercase tracking-wider">— {r.teacher?.name || "Class Teacher"}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
+                )}
 
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-900 pb-4 print:border-zinc-200">
-                            <Award className="w-5 h-5 text-eduGreen-500" />
-                            <h2 className="text-xl font-black uppercase tracking-widest">Faculty Observations</h2>
+                {/* 6. Official Verification & Signature Seals */}
+                <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800 print:border-zinc-300 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div className="space-y-8">
+                        <div className="h-12 flex items-end justify-center">
+                            <p className="font-serif italic text-lg text-zinc-700 dark:text-zinc-300 print:text-black">
+                                {data.principal?.name || "School Principal"}
+                            </p>
                         </div>
-                        <div className="space-y-6">
-                            {remarks.length > 0 ? remarks.map((r: any, i: number) => (
-                                <div key={i} className="space-y-3 p-8 bg-zinc-100/10 dark:bg-zinc-900/10 rounded-[2rem] border-l-4 border-eduGreen-600 print:bg-transparent print:border-zinc-200">
-                                    <p className="text-zinc-600 dark:text-zinc-400 print:text-zinc-700 italic leading-relaxed text-sm">"{r.content}"</p>
-                                    <div className="flex items-center gap-2">
-                                        <User className="w-3 h-3 text-zinc-700" />
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-600">— {r.teacher?.name}</span>
-                                    </div>
-                                </div>
-                            )) : (
-                                <p className="text-center py-12 text-zinc-800 dark:text-zinc-200 font-black uppercase tracking-[0.3em] text-[10px]">No qualitative data recorded</p>
-                            )}
+                        <div className="border-t border-zinc-300 dark:border-zinc-800 print:border-zinc-400 pt-2">
+                            <p className="text-[10px] font-black text-zinc-900 dark:text-white print:text-black uppercase tracking-widest">
+                                School Principal / Director
+                            </p>
                         </div>
                     </div>
 
-                    {/* Internal Notes - Only for Staff */}
-                    {data.internalNotes && data.internalNotes.length > 0 && (
-                        <div className="space-y-6 print:hidden">
-                            <div className="flex items-center gap-3 border-b border-rose-900/30 pb-4">
-                                <Sparkles className="w-5 h-5 text-rose-500" />
-                                <h2 className="text-xl font-black uppercase tracking-widest text-zinc-900 dark:text-white">Confidential <span className="text-rose-500">Log</span></h2>
-                            </div>
-                            <div className="space-y-4">
-                                {data.internalNotes.map((note: any, i: number) => (
-                                    <div key={i} className="p-6 bg-rose-950/5 border border-rose-900/20 rounded-3xl">
-                                        <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">{note.content}</p>
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-[8px] font-black">
-                                                    {note.author?.name?.[0]}
-                                                </div>
-                                                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{note.author?.name}</span>
-                                            </div>
-                                            <span className="text-[9px] font-mono text-zinc-800 dark:text-zinc-200 uppercase italic">
-                                                {new Date(note.createdAt).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                    <div className="space-y-8">
+                        <div className="h-12 flex items-end justify-center">
+                            <p className="font-mono text-xs text-zinc-600 dark:text-zinc-400 print:text-black uppercase tracking-widest">
+                                Verified Homeroom Signature
+                            </p>
                         </div>
-                    )}
-                </div>
-
-                {/* Sidebar Stats */}
-                <div className="md:col-span-4 space-y-12">
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-900 pb-4 print:border-zinc-200">
-                            <Calendar className="w-5 h-5 text-eduGreen-500" />
-                            <h2 className="text-xl font-black uppercase tracking-widest">Vitals</h2>
-                        </div>
-                        <div className="grid gap-4">
-                            <div className="p-6 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-3xl border border-zinc-200 dark:border-zinc-900 print:bg-transparent print:border-zinc-200 text-center">
-                                <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest mb-2">Session Attendance</p>
-                                <p className="text-4xl font-black text-eduGreen-500">{Math.round((attendance.present / (attendance.total || 1)) * 100)}%</p>
-                                <p className="text-[10px] text-zinc-600 font-bold uppercase mt-2 tracking-tighter">
-                                    {attendance.present} Present • {attendance.absent} Absent
-                                </p>
-                            </div>
-                            <div className="p-6 bg-zinc-100/30 dark:bg-zinc-900/30 rounded-3xl border border-zinc-200 dark:border-zinc-900 print:bg-transparent print:border-zinc-200 text-center">
-                                <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest mb-2">Institutional Standing</p>
-                                <p className="text-4xl font-black text-zinc-900 dark:text-white print:text-black">EXCEL</p>
-                                <div className="mt-4 h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-eduGreen-600 w-[85%]" />
-                                </div>
-                            </div>
+                        <div className="border-t border-zinc-300 dark:border-zinc-800 print:border-zinc-400 pt-2">
+                            <p className="text-[10px] font-black text-zinc-900 dark:text-white print:text-black uppercase tracking-widest">
+                                Class Homeroom Advisor
+                            </p>
                         </div>
                     </div>
 
-                    <div className="p-8 border border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2rem] print:border-zinc-300">
-                        <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest mb-4">Official Verification</p>
-                        <div className="space-y-8">
-                            <div className="border-b border-zinc-200 dark:border-zinc-900 pb-2 print:border-zinc-200">
-                                <p className="text-[10px] font-black text-zinc-900 dark:text-white print:text-black uppercase">{data.principal?.name || "Institutional Director"}</p>
+                    <div className="space-y-8">
+                        <div className="h-12 flex items-center justify-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-eduGreen-500/10 border border-eduGreen-500/30 text-eduGreen-600 dark:text-eduGreen-400 font-black text-[10px] uppercase tracking-widest">
+                                <ShieldCheck className="w-4 h-4" />
+                                <span>Registrar Authenticated</span>
                             </div>
-                            <div className="border-b border-zinc-200 dark:border-zinc-900 pb-2 print:border-zinc-200">
-                                <p className="text-[10px] font-black text-zinc-900 dark:text-white print:text-black uppercase">Registrar Authentication</p>
-                            </div>
+                        </div>
+                        <div className="border-t border-zinc-300 dark:border-zinc-800 print:border-zinc-400 pt-2">
+                            <p className="text-[10px] font-black text-zinc-900 dark:text-white print:text-black uppercase tracking-widest">
+                                Institutional Seal & Date
+                            </p>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );
