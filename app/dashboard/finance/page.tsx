@@ -14,20 +14,22 @@ export default async function FinancePage() {
     const dbUser = await getCachedUser(user.id) as any;
     if (!dbUser) redirect("/login");
 
-    if (!dbUser.schoolId && dbUser.role === 'SUPERADMIN') {
-        dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
+    let schoolId = dbUser.schoolId;
+    if (!schoolId) {
+        const firstSchool = await prisma.school.findFirst();
+        schoolId = firstSchool?.id || null;
     }
-
-    const schoolId = dbUser.schoolId;
 
     if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
         const [school, grades] = await Promise.all([
-            prisma.school.findUnique({
-                where: { id: schoolId || '' },
+            schoolId ? prisma.school.findUnique({
+                where: { id: schoolId },
+                include: { grades: { orderBy: { level: 'asc' } } }
+            }) : prisma.school.findFirst({
                 include: { grades: { orderBy: { level: 'asc' } } }
             }),
             prisma.grade.findMany({
-                where: { schoolId: schoolId || '' },
+                where: schoolId ? { schoolId } : {},
                 orderBy: { level: 'asc' }
             })
         ]);
