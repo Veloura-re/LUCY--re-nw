@@ -375,28 +375,29 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             setDeleteId(null);
         }
     };
-
-    const handleGenerateInvoices = async (dueDate: string) => {
-        setShowInvoiceModal(false);
+    const handleGenerateInvoices = async () => {
         setIsGenerating(true);
         try {
             const res = await fetch('/api/school/finance/invoices/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ dueDate, term: "Term 1 2024" })
+                method: 'POST'
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error((data as any).message || "Failed to generate");
-            toast.success((data as any).message);
-        } catch (e: any) {
-            toast.error(e.message || "Institutional protocol failure");
+
+            if (res.ok) {
+                toast.success("All student bills successfully synchronized.");
+                fetchInitialData();
+                setShowInvoiceModal(false);
+            } else {
+                toast.error("Failed to generate invoices.");
+            }
+        } catch (err) {
+            toast.error("Network synchronization failed.");
         } finally {
             setIsGenerating(false);
         }
     };
 
     if (loading) return (
-        <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex items-center justify-center min-h-[60vh]">
             <SpringingLoader message="Retrieving Institutional Ledger" />
         </div>
     );
@@ -407,39 +408,52 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-3 sm:pb-10">
                 <div>
                     <h1 className="text-xl sm:text-3xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
-                        Transactions
+                        Transactions & Finance
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[8px] sm:text-xs mt-1 sm:mt-3">Resource & Billing Controller</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[8px] sm:text-xs mt-1 sm:mt-3">Institutional Revenue, Payroll & Billing Controller</p>
                 </div>
 
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 mb-1">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 mb-1">
+                    <Link href="/dashboard/finance/revenue" className="flex-1 sm:flex-initial">
+                        <Button
+                            variant="outline"
+                            className="w-full rounded-lg sm:rounded-2xl border-eduGreen-500/30 bg-eduGreen-50/50 dark:bg-eduGreen-950/30 hover:bg-eduGreen-100 dark:hover:bg-eduGreen-950/60 text-eduGreen-600 dark:text-eduGreen-400 h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-sm"
+                        >
+                            <DollarSign className="mr-1.5 h-3.5 w-3.5" /> Revenue Hub
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/finance/payroll" className="flex-1 sm:flex-initial">
+                        <Button
+                            variant="outline"
+                            className="w-full rounded-lg sm:rounded-2xl border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-950/60 text-amber-600 dark:text-amber-400 h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-sm"
+                        >
+                            <Briefcase className="mr-1.5 h-3.5 w-3.5" /> Payroll
+                        </Button>
+                    </Link>
                     <Button
                         variant="ghost"
                         onClick={() => setShowInvoiceModal(true)}
                         disabled={isGenerating}
-                        className="flex-1 sm:flex-initial rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-8 sm:h-12 md:h-14 px-2.5 sm:px-6 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white shadow-sm"
+                        className="flex-1 sm:flex-initial rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white shadow-sm"
                     >
-                        <Zap className={cn("mr-1.5 sm:mr-2 h-3.5 w-3.5 text-amber-600 dark:text-amber-500", isGenerating && "animate-pulse")} />
-                        {isGenerating ? "Executing..." : "Invoicing Cycle"}
+                        <Zap className={cn("mr-1.5 h-3.5 w-3.5 text-amber-600 dark:text-amber-500", isGenerating && "animate-pulse")} />
+                        {isGenerating ? "Executing..." : "Invoicing"}
                     </Button>
-                    <Link href="/dashboard/finance/students" className="flex-1 sm:flex-initial">
-                        <Button
-                            variant="ghost"
-                            className="w-full rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-8 sm:h-12 md:h-14 px-2.5 sm:px-6 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white shadow-sm"
-                        >
-                            <Users className="mr-1.5 sm:mr-2 h-3.5 w-3.5 text-eduGreen-500" /> Dossiers
-                        </Button>
-                    </Link>
-                    {!isCreating && (
-                        <Button
-                            onClick={() => setIsCreating(true)}
-                            className="w-full sm:w-auto bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-8 sm:h-12 md:h-14 px-3.5 sm:px-8 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shadow-lg sm:shadow-2xl transition-all active:scale-95 shadow-eduGreen-900/20"
-                        >
-                            <Plus className="mr-1.5 sm:mr-2 h-3.5 w-3.5" /> Structure
-                        </Button>
-                    )}
+                    <Button
+                        onClick={() => setIsCreating(true)}
+                        className="w-full sm:w-auto bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-8 sm:h-12 md:h-14 px-3.5 sm:px-6 rounded-lg sm:rounded-2xl font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-lg sm:shadow-2xl transition-all active:scale-95 shadow-eduGreen-900/20 flex items-center gap-1.5"
+                    >
+                        <Plus className="w-3.5 h-3.5" /> Structure
+                    </Button>
                 </div>
             </div>
+
+            <FeeStructureModal 
+                isOpen={isCreating} 
+                onClose={() => setIsCreating(false)}
+                grades={grades}
+                onSuccess={fetchInitialData}
+            />
 
             {/* Financial Intelligence Dashboard */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-8">
@@ -513,111 +527,6 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 </div>
             </div>
 
-            {isCreating && (
-                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900 animate-in slide-in-from-top-4 duration-300 rounded-xl sm:rounded-3xl lg:rounded-[2.5rem] overflow-hidden">
-                    <CardHeader className="p-4 sm:p-10 border-b border-zinc-200 dark:border-zinc-900/50">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2.5 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-eduGreen-950/20 rounded-lg sm:rounded-xl border border-eduGreen-900/30 text-eduGreen-500">
-                                    <Settings2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-base sm:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight">Fee Configuration</CardTitle>
-                                    <CardDescription className="text-[8px] sm:text-[10px] font-medium uppercase tracking-widest text-zinc-600 mt-0.5 sm:mt-1">Establishing new billing protocol</CardDescription>
-                                </div>
-                            </div>
-                            <Button variant="ghost" onClick={() => setIsCreating(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-medium text-[8px] sm:text-[10px] uppercase tracking-widest">
-                                Cancel
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-4 sm:p-10">
-                        <form onSubmit={handleCreateFee} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-                            <div className="space-y-3 sm:space-y-6">
-                                <div className="space-y-1 sm:space-y-2">
-                                    <label className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Structure Name</label>
-                                    <Input
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="e.g. Annual Tuition Fee"
-                                        className="h-10 sm:h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl focus:border-eduGreen-500 transition-all font-medium text-xs sm:text-sm"
-                                    />
-                                </div>
-                                <div className="space-y-1 sm:space-y-2">
-                                    <label className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Target Grade</label>
-                                    <select
-                                        value={formData.gradeId}
-                                        onChange={e => setFormData({ ...formData, gradeId: e.target.value })}
-                                        className="w-full h-10 sm:h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl px-3 sm:px-4 text-zinc-900 dark:text-white font-medium text-xs sm:text-sm focus:border-eduGreen-500 outline-none appearance-none"
-                                    >
-                                        <option value="ALL">Institutional Universal (All Grades)</option>
-                                        {grades.map(grade => (
-                                            <option key={grade.id} value={grade.id}>Grade {grade.level} - {grade.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="space-y-3 sm:space-y-6">
-                                <div className="space-y-1 sm:space-y-2">
-                                    <label className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Quantum (Amount)</label>
-                                    <div className="relative">
-                                        <DollarSign className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-eduGreen-500" />
-                                        <Input
-                                            required
-                                            type="number"
-                                            value={formData.amount}
-                                            onChange={e => setFormData({ ...formData, amount: e.target.value })}
-                                            placeholder="0.00"
-                                            className="h-10 sm:h-14 pl-9 sm:pl-12 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl focus:border-eduGreen-500 transition-all font-medium text-sm sm:text-xl text-zinc-900 dark:text-white"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                                    <div className="space-y-1 sm:space-y-2">
-                                        <label className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Cycle</label>
-                                        <select
-                                            value={formData.frequency}
-                                            onChange={e => setFormData({ ...formData, frequency: e.target.value })}
-                                            className="w-full h-10 sm:h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl px-2.5 sm:px-4 text-zinc-900 dark:text-white font-medium text-xs sm:text-sm focus:border-eduGreen-500 outline-none"
-                                        >
-                                            <option value="TERM">Per Term</option>
-                                            <option value="MONTHLY">Monthly</option>
-                                            <option value="ANNUAL">Annual</option>
-                                            <option value="ONCE">Single Event</option>
-                                        </select>
-                                    </div>
-                                    <div className="space-y-1 sm:space-y-2">
-                                        <label className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Classification</label>
-                                        <select
-                                            value={formData.category}
-                                            onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full h-10 sm:h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl px-2.5 sm:px-4 text-zinc-900 dark:text-white font-medium text-xs sm:text-sm focus:border-eduGreen-500 outline-none"
-                                        >
-                                            <option value="TUITION">Tuition</option>
-                                            <option value="TRANSPORT">Transport</option>
-                                            <option value="SPORTS">Sports</option>
-                                            <option value="LIBRARY">Library</option>
-                                            <option value="OTHER">Other</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="md:col-span-2 pt-2 sm:pt-4">
-                                <Button type="submit" disabled={creatingFee} className="w-full h-10 sm:h-16 bg-white text-black hover:bg-zinc-200 rounded-lg sm:rounded-2xl font-medium text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-all flex items-center justify-center gap-2 sm:gap-3">
-                                    {creatingFee ? (
-                                        <><span className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-zinc-400 border-t-black rounded-full animate-spin" /> Authorizing...</>
-                                    ) : (
-                                        "Authorize Fee Structure"
-                                    )}
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
-            )}
 
             {/* Tab Controller */}
             <div className="flex items-center gap-1 sm:gap-2 p-0.5 sm:p-1 bg-white dark:bg-zinc-950 rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 w-fit mx-auto shadow-sm">
