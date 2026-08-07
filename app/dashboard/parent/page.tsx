@@ -146,6 +146,11 @@ export default function ParentDashboard() {
                                                         <BookOpen className="w-4 h-4 mr-2" /> Report Card
                                                     </Button>
                                                 </Link>
+                                                <Link href="/dashboard/finance">
+                                                    <Button variant="outline" className="w-full h-11 rounded-xl border-zinc-300 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white font-bold text-[10px] uppercase tracking-widest hover:border-eduGreen-500/50">
+                                                        <CreditCard className="w-4 h-4 mr-2 text-eduGreen-500" /> Settle Invoices
+                                                    </Button>
+                                                </Link>
                                                 <Link href={`/dashboard/parent/authorizations?studentId=${student.id}`}>
                                                     <Button variant="ghost" className="w-full h-11 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-900 text-[10px] uppercase tracking-widest">
                                                         <ClipboardCheck className="w-4 h-4 mr-2" /> Absence Permit
