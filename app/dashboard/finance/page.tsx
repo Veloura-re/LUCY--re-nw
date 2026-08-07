@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
 import { FinanceView } from "@/components/dashboard/finance-view";
 import { ParentBillingView } from "@/components/dashboard/parent-billing-view";
-import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { prisma } from "@/lib/prisma";
 
 export default async function FinancePage() {
     const supabase = await createClient();
@@ -18,38 +18,50 @@ export default async function FinancePage() {
         dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
     }
 
-    const supabaseAdmin = createSupabaseAdmin(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    // Fetch school with grades
-    const { data: school } = await supabaseAdmin
-        .from('School')
-        .select('*, grades:Grade(*, orderBy:level.asc)')
-        .eq('id', dbUser.schoolId)
-        .maybeSingle();
-
-    // Fetch grades separately for cleaner query
-    const { data: grades } = await supabaseAdmin
-        .from('Grade')
-        .select('*')
-        .eq('schoolId', dbUser.schoolId)
-        .order('level', { ascending: true });
-
-    const schoolWithGrades = school ? { ...(school as any), grades: grades || [] } : null;
+    const schoolId = dbUser.schoolId;
 
     if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
-        return <FinanceView user={dbUser} school={schoolWithGrades} grades={grades || []} />;
+        const [school, grades] = await Promise.all([
+            prisma.school.findUnique({
+                where: { id: schoolId || '' },
+                include: { grades: { orderBy: { level: 'asc' } } }
+            }),
+            prisma.grade.findMany({
+                where: { schoolId: schoolId || '' },
+                orderBy: { level: 'asc' }
+            })
+        ]);
+        return <FinanceView user={dbUser} school={school} grades={grades || []} />;
     }
 
     if (dbUser.role === 'PARENT') {
-        const { data: studentLinks } = await supabaseAdmin
-            .from('ParentStudentLink')
-            .select('*, student:Student(*, school:School(*), grade:Grade(*), invoices:Invoice(*, items:InvoiceItem(*), payments:Payment(*)))')
-            .eq('parentId', dbUser.id);
+        // Fetch student links and all nested invoices using Prisma for 100% relational integrity
+        const studentLinks = await prisma.parentStudentLink.findMany({
+            where: { parentId: dbUser.id },
+            include: {
+                student: {
+                    include: {
+                        school: true,
+                        grade: true,
+                        class: true,
+                        invoices: {
+                            orderBy: { createdAt: 'desc' },
+                            include: {
+                                items: true,
+                                payments: {
+                                    orderBy: { createdAt: 'desc' }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-        const students = (studentLinks || []).map((link: any) => link.student);
+        // Also fetch school info for the header
+        const school = studentLinks[0]?.student?.school || null;
+        const students = studentLinks.map((link) => link.student).filter(Boolean);
+
         return (
             <ParentBillingView user={dbUser} students={students} school={school} />
         );
