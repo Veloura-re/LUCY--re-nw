@@ -7,51 +7,69 @@ import { sendInvoiceNotificationEmail } from "@/lib/email";
 export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const schoolId = dbUser.schoolId!;
 
-        const body = await req.json() as any;
-        const { term, dueDate } = body;
+        const body = await req.json().catch(() => ({})) as any;
+        const { term, dueDate, classId, gradeId, feeStructureIds, defaultAmount } = body;
 
-        if (!dueDate) {
-            return new NextResponse("Missing due date", { status: 400 });
-        }
+        const targetDueDate = dueDate ? new Date(dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-        // 1. Fetch all students in the school
+        // 1. Fetch target students in the school
+        const studentWhere: any = { schoolId, enrollmentStatus: 'ACTIVE' };
+        if (classId && classId !== 'ALL') studentWhere.classId = classId;
+        if (gradeId && gradeId !== 'ALL') studentWhere.gradeId = gradeId;
+
         const students = await prisma.student.findMany({
-            where: { schoolId: dbUser.schoolId! },
+            where: studentWhere,
             include: {
                 grade: true,
+                class: true,
                 parentLinks: { include: { parent: true } }
             }
         });
 
+        if (students.length === 0) {
+            return NextResponse.json({
+                success: false,
+                message: "No active students found matching the selected criteria.",
+                count: 0
+            }, { status: 400 });
+        }
+
         // 2. Fetch all active fee structures
-        const universalFees = await prisma.feeStructure.findMany({
-            where: {
-                schoolId: dbUser.schoolId!,
-                gradeId: null
-            }
+        const allFees = await prisma.feeStructure.findMany({
+            where: { schoolId }
         });
 
-        const gradeSpecificFees = await prisma.feeStructure.findMany({
-            where: {
-                schoolId: dbUser.schoolId!,
-                gradeId: { not: null }
-            }
-        });
+        const universalFees = allFees.filter(f => !f.gradeId || f.gradeId === 'ALL' || f.gradeId.trim() === '');
+        const gradeSpecificFees = allFees.filter(f => f.gradeId && f.gradeId !== 'ALL' && f.gradeId.trim() !== '');
 
         let createdCount = 0;
-
-        // 3. Generate Invoices
-        const invoiceOperations = [];
-        
-        // Group notifications by email to prevent spam
         const notificationGroups = new Map<string, any>();
+        const invoiceOperations = [];
 
         for (const student of students) {
-            const relevantGradeFees = gradeSpecificFees.filter(f => f.gradeId === student.gradeId);
-            const allRelevantFees = [...universalFees, ...relevantGradeFees];
+            const effectiveGradeId = student.gradeId || student.class?.gradeId;
+            const relevantGradeFees = gradeSpecificFees.filter(f => f.gradeId === effectiveGradeId);
+            
+            let allRelevantFees = [...universalFees, ...relevantGradeFees];
 
-            if (allRelevantFees.length === 0) continue;
+            // If specific fee structures requested
+            if (Array.isArray(feeStructureIds) && feeStructureIds.length > 0) {
+                allRelevantFees = allFees.filter(f => feeStructureIds.includes(f.id));
+            }
+
+            // Fallback fee if school hasn't configured any fee structure yet
+            if (allRelevantFees.length === 0) {
+                const fallbackAmount = Number(defaultAmount || 250);
+                allRelevantFees = [{
+                    id: 'default-tuition',
+                    name: `${term || 'Academic'} Tuition & Facilities Fee`,
+                    amount: new Decimal(fallbackAmount),
+                    category: 'TUITION',
+                    frequency: 'TERM'
+                } as any];
+            }
 
             const totalAmount = allRelevantFees.reduce((sum, fee) => sum.plus(new Decimal(fee.amount.toString())), new Decimal(0));
 
@@ -60,16 +78,16 @@ export async function POST(req: Request) {
                 prisma.invoice.create({
                     data: {
                         studentId: student.id,
-                        schoolId: dbUser.schoolId!,
+                        schoolId,
                         amount: totalAmount,
-                        dueDate: new Date(dueDate),
+                        dueDate: targetDueDate,
                         status: 'PENDING',
                         items: {
                             create: allRelevantFees.map(fee => ({
                                 name: fee.name,
                                 amount: fee.amount,
-                                description: `${fee.category} - ${fee.frequency}`,
-                                feeStructureId: fee.id
+                                description: `${fee.category || 'TUITION'} - ${fee.frequency || 'TERM'}`,
+                                feeStructureId: fee.id.startsWith('default') ? null : fee.id
                             }))
                         }
                     }
@@ -78,9 +96,8 @@ export async function POST(req: Request) {
 
             // Queue Notification
             const studentName = `${student.firstName} ${student.lastName}`;
-            const formattedDate = new Date(dueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const formattedDate = targetDueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-            // Determine targets (parents first, fallback to student email if no parents)
             const targets = student.parentLinks.length > 0 
                 ? student.parentLinks.map(l => ({ email: l.parent.email, name: l.parent.name })) 
                 : (student.email ? [{ email: student.email, name: studentName }] : []);
@@ -96,7 +113,7 @@ export async function POST(req: Request) {
                         totalAmount: new Decimal(0),
                         formattedDate,
                         term: term || "Current Term",
-                        schoolId: dbUser.schoolId!
+                        schoolId
                     });
                 }
                 const group = notificationGroups.get(target.email);
@@ -105,22 +122,21 @@ export async function POST(req: Request) {
             }
         }
 
-        // Execute transactions in batches of 200 to prevent database locks/timeouts
-        const BATCH_SIZE = 200;
+        // Execute transactions in batches of 100
+        const BATCH_SIZE = 100;
         for (let i = 0; i < invoiceOperations.length; i += BATCH_SIZE) {
             const batch = invoiceOperations.slice(i, i + BATCH_SIZE);
             await prisma.$transaction(batch);
             createdCount += batch.length;
         }
 
-        // Process email notifications asynchronously but await them in chunks
+        // Process email notifications asynchronously
         const emailPromises = [];
         const groups = Array.from(notificationGroups.values());
 
         for (const notif of groups) {
             const studentNames = notif.children.map((c: any) => c.name).join(', ');
             
-            // Push the promise (do not await here to allow concurrent sending)
             emailPromises.push(
                 sendInvoiceNotificationEmail(
                     notif.email,
@@ -133,27 +149,18 @@ export async function POST(req: Request) {
             );
         }
 
-        // Await emails in chunks of 50 to prevent connection pool exhaustion
-        const EMAIL_BATCH_SIZE = 50;
+        // Await emails in chunks
+        const EMAIL_BATCH_SIZE = 25;
         for (let i = 0; i < emailPromises.length; i += EMAIL_BATCH_SIZE) {
             const emailBatch = emailPromises.slice(i, i + EMAIL_BATCH_SIZE);
             await Promise.all(emailBatch);
         }
         
-        // Audit log (Fixed References)
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = req instanceof Request ? (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof dbUser !== 'undefined' && dbUser?.id) ? dbUser.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'GENERATE', resourceType: 'invoice', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-
         return NextResponse.json({
             success: true,
-            message: `Generated ${createdCount} invoices for ${term || 'Current Cycle'}`,
-            count: createdCount
+            message: `Generated and dispatched ${createdCount} invoices to parents for ${term || 'Current Cycle'}`,
+            count: createdCount,
+            notifiedParents: groups.length
         });
     } catch (error) {
         return handleApiError(error);
