@@ -20,15 +20,17 @@ export async function GET(request: Request) {
     }
 
     // 2. Handle OTP token verification (Recovery / Magic Link / Email verification)
-    if (token_hash && type) {
+    if (token_hash) {
+        const otpType = (type || 'recovery') as any;
         const { error } = await supabase.auth.verifyOtp({
-            type: type as any,
+            type: otpType,
             token_hash,
         });
         if (!error) {
             return NextResponse.redirect(`${origin}${next}`);
         }
         console.error('[Auth Callback] OTP verification error:', error.message);
+        return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message || 'Password reset link is invalid or has expired.')}`);
     }
 
     // 3. Fallback for recovery redirect: if next is /reset-password, proceed to /reset-password so client listener can process hash tokens
