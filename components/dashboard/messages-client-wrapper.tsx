@@ -118,8 +118,10 @@ export default function MessagesClientWrapper({
         try {
             const res = await fetch('/api/messages/rooms');
             const data: any = await res.json();
-            if (data.rooms) {
+            if (data.rooms && data.rooms.length > 0) {
                 setRooms(data.rooms);
+                setActiveRoom((current: any) => current || data.rooms[0]);
+                fetchMessages(data.rooms[0].id);
             }
         } catch (e) {
             console.error("Failed to fetch rooms", e);
