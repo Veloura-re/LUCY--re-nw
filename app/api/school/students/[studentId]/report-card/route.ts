@@ -1,18 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireSchoolLinked, handleApiError } from "@/lib/security";
+import { requireAuth, handleApiError } from "@/lib/security";
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ studentId: string }> }
 ) {
     try {
-        const dbUser = await requireSchoolLinked();
+        const dbUser = await requireAuth();
         const { studentId } = await params;
 
-        // 1. Fetch Student Details
-        const student = await prisma.student.findUnique({
-            where: { id: studentId },
+        // 1. Flexible Student Discovery (by id, userId, or studentCode)
+        let student = await prisma.student.findFirst({
+            where: {
+                OR: [
+                    { id: studentId },
+                    { userId: studentId },
+                    { studentCode: studentId }
+                ]
+            },
             include: {
                 school: {
                     select: {
@@ -32,14 +38,40 @@ export async function GET(
             }
         });
 
-        if (!student || student.schoolId !== dbUser.schoolId) {
-            return NextResponse.json({ error: "Student not found or forbidden" }, { status: 404 });
+        // Fallback: If user passed 'me' or studentId matches logged in user's ID
+        if (!student && (studentId === "me" || dbUser.role === "STUDENT")) {
+            student = await prisma.student.findFirst({
+                where: { userId: dbUser.id },
+                include: {
+                    school: {
+                        select: {
+                            id: true,
+                            name: true,
+                            logoUrl: true,
+                            address: true,
+                            phone: true,
+                            email: true
+                        }
+                    },
+                    class: {
+                        include: {
+                            grade: true
+                        }
+                    }
+                }
+            });
         }
+
+        if (!student) {
+            return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
+        }
+
+        const targetSchoolId = student.schoolId;
 
         // 2. Fetch Principal / Director Name
         const principal = await prisma.user.findFirst({
             where: {
-                schoolId: student.schoolId,
+                schoolId: targetSchoolId,
                 role: { in: ["PRINCIPAL", "OWNER", "SUPERADMIN"] }
             },
             select: { name: true, role: true }
@@ -49,7 +81,7 @@ export async function GET(
         const marklistConfigs = await prisma.marklistConfig.findMany({
             where: {
                 classId: student.classId || "",
-                schoolId: student.schoolId
+                schoolId: targetSchoolId
             },
             include: {
                 subject: true,
@@ -74,7 +106,7 @@ export async function GET(
             where: {
                 config: {
                     classId: student.classId || "",
-                    schoolId: student.schoolId
+                    schoolId: targetSchoolId
                 }
             },
             select: {
