@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { Printer, ChevronDown, Wallet, Users, ArrowUpCircle } from "lucide-react";
 import { PayrollDashboard } from "./payroll-dashboard";
 
+import { FeeStructureModal } from "./fee-structure-modal";
 import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
 
 interface FinanceViewProps {
