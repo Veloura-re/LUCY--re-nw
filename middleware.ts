@@ -45,31 +45,37 @@ export async function middleware(request: NextRequest) {
         },
     })
 
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll()
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value)
-                    )
-                    response = NextResponse.next({
-                        request,
-                    })
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        response.cookies.set(name, value, options)
-                    )
-                },
-            },
+    let user: any = null;
+    try {
+        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            const supabase = createServerClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL,
+                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+                {
+                    cookies: {
+                        getAll() {
+                            return request.cookies.getAll()
+                        },
+                        setAll(cookiesToSet) {
+                            cookiesToSet.forEach(({ name, value }) =>
+                                request.cookies.set(name, value)
+                            )
+                            response = NextResponse.next({
+                                request,
+                            })
+                            cookiesToSet.forEach(({ name, value, options }) =>
+                                response.cookies.set(name, value, options)
+                            )
+                        },
+                    },
+                }
+            );
+            const { data } = await supabase.auth.getUser();
+            user = data?.user ?? null;
         }
-    )
-
-    // 1. Refresh session safely
-    const { data: { user } } = await supabase.auth.getUser()
+    } catch (e) {
+        console.error('[Middleware Auth Exception]', e);
+    }
 
     // 2. Define protected paths
     const url = request.nextUrl.clone()
