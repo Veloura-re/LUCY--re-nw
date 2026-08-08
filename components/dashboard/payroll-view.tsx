@@ -2,29 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     Briefcase,
     DollarSign,
     Users,
-    Clock,
-    Printer,
-    CheckCircle2,
-    CalendarDays,
-    ArrowRight,
     Search,
-    Receipt,
     Wallet,
-    Sparkles,
-    ShieldCheck,
-    Coins
+    Coins,
+    Loader2,
+    RefreshCw
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import SpringingLoader from "@/components/dashboard/springing-loader";
 
 interface PayrollViewProps {
     user: any;
@@ -135,6 +129,14 @@ export function PayrollView({ user, school }: PayrollViewProps) {
         (s.email && s.email.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
+    if (loading && staff.length === 0 && payrollHistory.length === 0) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <SpringingLoader message="Synthesizing Faculty Compensation & Payroll Ledger..." />
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6 sm:space-y-10 pb-16 max-w-7xl mx-auto px-3 sm:px-6">
             {/* Header Telemetry */}
@@ -155,7 +157,7 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                     <Link href="/dashboard/finance">
                         <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-eduGreen-500/50">
                             <Coins className="w-4 h-4 mr-2 text-eduGreen-500" /> Fee Architecture
@@ -166,6 +168,15 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                             <DollarSign className="w-4 h-4 mr-2 text-eduGreen-500" /> Revenue Hub
                         </Button>
                     </Link>
+                    <Button
+                        variant="outline"
+                        onClick={fetchPayrollData}
+                        disabled={loading}
+                        className="h-10 sm:h-11 px-3 rounded-xl border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                        title="Sync Payroll Ledger"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                    </Button>
                 </div>
             </div>
 
@@ -244,58 +255,85 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredStaff.map((member) => {
-                        const history = payrollHistory.filter(p => p.userId === member.id);
-                        const lastDisbursed = history[0];
-
-                        return (
-                            <Card key={member.id} className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 shadow-sm hover:border-amber-500/40 transition-all flex flex-col justify-between">
-                                <div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[8px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-md border border-amber-500/20">
-                                            {member.role}
-                                        </span>
-                                        {lastDisbursed && (
-                                            <span className="text-[9px] text-zinc-400 font-mono">
-                                                Paid {format(new Date(lastDisbursed.createdAt), 'MMM dd')}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="mt-3 flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center font-bold text-zinc-900 dark:text-white uppercase text-sm border border-zinc-200 dark:border-zinc-800">
-                                            {member.name[0]}
-                                        </div>
-                                        <div className="overflow-hidden">
-                                            <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight truncate">
-                                                {member.name}
-                                            </h3>
-                                            <p className="text-[10px] text-zinc-500 truncate">
-                                                {member.email || "Campus Accredited"}
-                                            </p>
-                                        </div>
+                    {loading ? (
+                        Array.from({ length: 6 }).map((_, i) => (
+                            <Card key={i} className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 shadow-sm animate-pulse">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-16" />
+                                    <div className="h-3 bg-zinc-100 dark:bg-zinc-900 rounded w-20" />
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800" />
+                                    <div className="space-y-2 flex-1">
+                                        <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4" />
+                                        <div className="h-3 bg-zinc-100 dark:bg-zinc-900 rounded w-1/2" />
                                     </div>
                                 </div>
-
-                                <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-900 flex items-center justify-between">
-                                    <div>
-                                        <span className="text-[8px] font-mono text-zinc-400 uppercase">Last Packet</span>
-                                        <div className="text-sm font-bold font-mono text-zinc-900 dark:text-white">
-                                            {lastDisbursed ? `$${parseFloat(lastDisbursed.amount).toLocaleString()}` : "Not Disbursed"}
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        onClick={() => handleOpenDisbursement(member)}
-                                        size="sm"
-                                        className="h-9 px-4 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-md shadow-amber-900/20"
-                                    >
-                                        Issue Salary
-                                    </Button>
+                                <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-900 flex justify-between items-center">
+                                    <div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded w-16" />
+                                    <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded-xl w-24" />
                                 </div>
                             </Card>
-                        );
-                    })}
+                        ))
+                    ) : filteredStaff.length === 0 ? (
+                        <div className="col-span-full py-12 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
+                            <Users className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
+                            <p className="text-xs font-bold uppercase tracking-widest text-zinc-500">No Staff Members Found</p>
+                        </div>
+                    ) : (
+                        filteredStaff.map((member) => {
+                            const history = payrollHistory.filter(p => p.userId === member.id);
+                            const lastDisbursed = history[0];
+
+                            return (
+                                <Card key={member.id} className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 shadow-sm hover:border-amber-500/40 transition-all flex flex-col justify-between">
+                                    <div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[8px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-md border border-amber-500/20">
+                                                {member.role}
+                                            </span>
+                                            {lastDisbursed && (
+                                                <span className="text-[9px] text-zinc-400 font-mono">
+                                                    Paid {format(new Date(lastDisbursed.createdAt), 'MMM dd')}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="mt-3 flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center font-bold text-zinc-900 dark:text-white uppercase text-sm border border-zinc-200 dark:border-zinc-800">
+                                                {member.name?.[0] || 'U'}
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight truncate">
+                                                    {member.name}
+                                                </h3>
+                                                <p className="text-[10px] text-zinc-500 truncate">
+                                                    {member.email || "Campus Accredited"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-900 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-[8px] font-mono text-zinc-400 uppercase">Last Packet</span>
+                                            <div className="text-sm font-bold font-mono text-zinc-900 dark:text-white">
+                                                {lastDisbursed ? `$${parseFloat(lastDisbursed.amount).toLocaleString()}` : "Not Disbursed"}
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            onClick={() => handleOpenDisbursement(member)}
+                                            size="sm"
+                                            className="h-9 px-4 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-md shadow-amber-900/20 active:scale-95 transition-all"
+                                        >
+                                            Issue Salary
+                                        </Button>
+                                    </div>
+                                </Card>
+                            );
+                        })
+                    )}
                 </div>
             </div>
 
@@ -325,27 +363,45 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-900 text-xs">
-                                {payrollHistory.map((record) => (
-                                    <tr key={record.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors">
-                                        <td className="p-4 font-bold text-zinc-900 dark:text-white uppercase">
-                                            {record.user?.name || "Campus Educator"}
-                                        </td>
-                                        <td className="p-4 text-zinc-500 font-mono text-[10px]">
-                                            {record.reference || `PAY-${record.id.slice(0, 8)}`}
-                                        </td>
-                                        <td className="p-4 font-mono font-bold text-amber-600 dark:text-amber-400">
-                                            ${parseFloat(record.amount).toLocaleString()}
-                                        </td>
-                                        <td className="p-4 text-zinc-500 font-mono text-[10px]">
-                                            {format(new Date(record.createdAt), 'MMM dd, yyyy • HH:mm')}
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest font-mono bg-eduGreen-50 dark:bg-eduGreen-950/50 text-eduGreen-600 border border-eduGreen-500/30">
-                                                {record.status || "SETTLED"}
-                                            </span>
+                                {loading ? (
+                                    Array.from({ length: 4 }).map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-28" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-20" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-16" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-24" /></td>
+                                            <td className="p-4"><div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded-full w-16" /></td>
+                                        </tr>
+                                    ))
+                                ) : payrollHistory.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="p-8 text-center text-xs text-zinc-500 uppercase tracking-widest">
+                                            No salary disbursements recorded on ledger.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    payrollHistory.map((record) => (
+                                        <tr key={record.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors">
+                                            <td className="p-4 font-bold text-zinc-900 dark:text-white uppercase">
+                                                {record.user?.name || "Campus Educator"}
+                                            </td>
+                                            <td className="p-4 text-zinc-500 font-mono text-[10px]">
+                                                {record.reference || `PAY-${record.id.slice(0, 8)}`}
+                                            </td>
+                                            <td className="p-4 font-mono font-bold text-amber-600 dark:text-amber-400">
+                                                ${parseFloat(record.amount).toLocaleString()}
+                                            </td>
+                                            <td className="p-4 text-zinc-500 font-mono text-[10px]">
+                                                {format(new Date(record.createdAt), 'MMM dd, yyyy • HH:mm')}
+                                            </td>
+                                            <td className="p-4">
+                                                <span className="px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest font-mono bg-eduGreen-50 dark:bg-eduGreen-950/50 text-eduGreen-600 border border-eduGreen-500/30">
+                                                    {record.status || "SETTLED"}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -430,7 +486,7 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                                         <select
                                             value={disbursementForm.paymentMethod}
                                             onChange={e => setDisbursementForm({ ...disbursementForm, paymentMethod: e.target.value })}
-                                            className="h-11 w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 text-xs font-medium text-zinc-800 dark:text-zinc-200 outline-none"
+                                            className="h-11 w-full bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 text-xs font-medium text-zinc-800 dark:text-zinc-200 outline-none cursor-pointer"
                                         >
                                             <option value="BANK_TRANSFER">Direct Bank Transfer</option>
                                             <option value="CHAPA">Chapa Electronic Gateway</option>
@@ -463,9 +519,16 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                                     <Button
                                         type="submit"
                                         disabled={isIssuing}
-                                        className="h-11 px-6 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-amber-900/30"
+                                        className="h-11 px-6 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-amber-900/30 flex items-center gap-2 active:scale-95 transition-all"
                                     >
-                                        {isIssuing ? "Processing..." : "Authorize Disbursement"}
+                                        {isIssuing ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            "Authorize Disbursement"
+                                        )}
                                     </Button>
                                 </div>
                             </form>

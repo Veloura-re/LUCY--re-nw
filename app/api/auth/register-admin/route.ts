@@ -37,6 +37,16 @@ export async function POST(request: Request) {
 
         if (error) throw error;
 
+        // Asynchronous Welcome Email Dispatch
+        try {
+            const { sendWelcomeEmail } = await import('@/lib/email');
+            sendWelcomeEmail({
+                toEmail: email,
+                name: name,
+                role: 'SUPERADMIN'
+            }).catch((emailErr) => console.warn('[register-admin] Welcome email failed:', emailErr));
+        } catch { /* non-blocking */ }
+
         return secureJson({ user });
     } catch (e: any) {
         console.error(e);

@@ -535,12 +535,17 @@ export default function BillingClientWrapper({
 
                         {isSubscribed && (
                             <div className="space-y-4 pt-2">
-                                <div className="flex items-center gap-3 text-eduGreen-500 bg-eduGreen-950/10 border border-eduGreen-500/20 rounded-xl p-4">
-                                    <ShieldCheck className="w-6 h-6 flex-shrink-0" />
-                                    <div className="text-xs">
-                                        <span className="font-bold block uppercase tracking-tight">Active Node License</span>
-                                        Your system subscription is live. Auto-debits occur monthly.
+                                <div className="flex items-center justify-between gap-3 text-eduGreen-500 bg-eduGreen-950/10 border border-eduGreen-500/20 rounded-xl p-4">
+                                    <div className="flex items-center gap-3">
+                                        <ShieldCheck className="w-6 h-6 flex-shrink-0" />
+                                        <div className="text-xs">
+                                            <span className="font-bold block uppercase tracking-tight">Active Node License</span>
+                                            {isExpired ? 'License expired. Please submit monthly payment.' : `License valid through ${trialEndsAt.toLocaleDateString()} (${daysRemaining} days remaining).`}
+                                        </div>
                                     </div>
+                                    <span className="px-2.5 py-1 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/30 text-[10px] font-mono font-bold uppercase tracking-wider">
+                                        {daysRemaining}d Active
+                                    </span>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                                     <div className="bg-white/40 dark:bg-zinc-950/40 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800">
@@ -548,8 +553,8 @@ export default function BillingClientWrapper({
                                         <code className="text-zinc-900 dark:text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeCustomerId || 'cus_manual_ledger'}</code>
                                     </div>
                                     <div className="bg-white/40 dark:bg-zinc-950/40 p-3 rounded-xl border border-zinc-300 dark:border-zinc-800">
-                                        <span className="text-zinc-600 dark:text-zinc-500 block uppercase text-[10px] tracking-wider font-mono">Subscription ID</span>
-                                        <code className="text-zinc-900 dark:text-white text-[11px] font-mono mt-1 block select-all truncate">{schoolInfo.stripeSubscriptionId || 'sub_manual_ledger'}</code>
+                                        <span className="text-zinc-600 dark:text-zinc-500 block uppercase text-[10px] tracking-wider font-mono">Next Renewal Due</span>
+                                        <code className="text-zinc-900 dark:text-white text-[11px] font-mono mt-1 block select-all truncate">{trialEndsAt.toLocaleDateString()}</code>
                                     </div>
                                 </div>
                             </div>

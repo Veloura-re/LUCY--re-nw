@@ -288,3 +288,32 @@ h6 {
   font-weight: 700;
 }
 
+/* ─────────────────────────────────────────────────────────────
+ * PRINT CLEANLINESS STYLESHEET (Removes Docks & Web Nav)
+ * ───────────────────────────────────────────────────────────── */
+@media print {
+  [data-floating-dock],
+  .floating-dock-container,
+  nav,
+  header,
+  aside,
+  [role="navigation"],
+  .no-print,
+  .print-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+

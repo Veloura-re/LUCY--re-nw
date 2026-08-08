@@ -50,9 +50,21 @@ export async function PATCH(
 
             if (updateReceiptErr) throw updateReceiptErr;
 
-            // 3. If approved, activate subscription and extend trial
+            // 3. If approved, activate subscription and additively extend trial/subscription by 30 days
             if (status === 'APPROVED') {
-                const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+                const { data: school } = await supabaseAdmin
+                    .from('School')
+                    .select('trialEndsAt, createdAt')
+                    .eq('id', receipt.schoolId)
+                    .maybeSingle();
+
+                const currentExpiry = school?.trialEndsAt 
+                    ? new Date(school.trialEndsAt).getTime()
+                    : (school?.createdAt ? new Date(school.createdAt).getTime() + 120 * 24 * 60 * 60 * 1000 : 0);
+                
+                const baseTime = Math.max(Date.now(), currentExpiry);
+                const extendedTrialDate = new Date(baseTime + 30 * 24 * 60 * 60 * 1000); // Add +30 days on top of remaining balance
+
                 const { error: updateSchoolErr } = await supabaseAdmin
                     .from('School')
                     .update({
@@ -75,7 +87,18 @@ export async function PATCH(
                 });
 
                 if (status === 'APPROVED') {
-                    const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+                    const school = await tx.school.findUnique({
+                        where: { id: receipt.schoolId },
+                        select: { trialEndsAt: true, createdAt: true }
+                    });
+
+                    const currentExpiry = school?.trialEndsAt 
+                        ? new Date(school.trialEndsAt).getTime()
+                        : (school?.createdAt ? new Date(school.createdAt).getTime() + 120 * 24 * 60 * 60 * 1000 : 0);
+
+                    const baseTime = Math.max(Date.now(), currentExpiry);
+                    const extendedTrialDate = new Date(baseTime + 30 * 24 * 60 * 60 * 1000); // Add +30 days on top of remaining balance
+
                     await tx.school.update({
                         where: { id: receipt.schoolId },
                         data: {

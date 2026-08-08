@@ -39,10 +39,10 @@ export default function ParentDashboard() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
-                        Family <span className="text-eduGreen-500 italic">Command</span>
+                        Family <span className="text-eduGreen-500 italic">Portal</span>
                     </h1>
                     <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">
-                        {students.length} Linked Node{students.length !== 1 ? 's' : ''} · Live Academic Feed
+                        {students.length} Enrolled Student{students.length !== 1 ? 's' : ''} · Academic Overview
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -62,8 +62,8 @@ export default function ParentDashboard() {
             {students.length === 0 ? (
                 <div className="text-center py-32 border-2 border-dashed border-zinc-200 dark:border-zinc-900 rounded-[3rem]">
                     <Users className="w-16 h-16 text-zinc-900 dark:text-white mx-auto mb-6" />
-                    <h3 className="text-zinc-600 font-black uppercase tracking-[0.5em] text-lg italic">No Nodes Linked</h3>
-                    <p className="text-zinc-800 dark:text-zinc-200 mt-4 text-[10px] font-bold uppercase tracking-[0.4em]">Contact your school to link your children to this account.</p>
+                    <h3 className="text-zinc-600 font-black uppercase tracking-[0.5em] text-lg italic">No Students Enrolled</h3>
+                    <p className="text-zinc-800 dark:text-zinc-200 mt-4 text-[10px] font-bold uppercase tracking-[0.4em]">No active student records are currently associated with this account.</p>
                 </div>
             ) : (
                 <div className="grid gap-6">
