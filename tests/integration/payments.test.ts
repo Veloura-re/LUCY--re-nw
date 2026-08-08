@@ -164,4 +164,13 @@ describe('Payment Critical Path & Schema Integrity', () => {
             expect(invalidated).toBeNull();
         });
     });
+
+    describe('6. User Session Cache & Runtime Edge Isolation', () => {
+        it('should safely export user cache methods without reference errors', async () => {
+            const { getCachedUser, getCachedUserByEmail } = await import('@/lib/users');
+            expect(typeof getCachedUser).toBe('function');
+            expect(typeof getCachedUserByEmail).toBe('function');
+        });
+    });
 });
+
