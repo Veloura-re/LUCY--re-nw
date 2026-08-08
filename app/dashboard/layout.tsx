@@ -111,10 +111,9 @@ export default async function DashboardLayout({
             ? new Date(dbUser.school.trialEndsAt)
             : new Date(createdAt.getTime() + 120 * 24 * 60 * 60 * 1000);
 
-        const isTrialExpired = now > trialEndsAt;
-        const isSubscribed = dbUser.school.subscriptionStatus === 'active';
+        const isLicenseExpired = now > trialEndsAt;
 
-        if (isTrialExpired && !isSubscribed) {
+        if (isLicenseExpired) {
             const headersList = await headers();
             const pathname = headersList.get("x-pathname") || "";
 
@@ -125,7 +124,7 @@ export default async function DashboardLayout({
                 if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL') {
                     redirect('/dashboard/billing');
                 } else {
-                    redirect('/school-suspended?reason=trial_expired');
+                    redirect('/school-suspended?reason=license_expired');
                 }
             }
         }

@@ -59,7 +59,10 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
             <form ref={signOutFormRef} action="/auth/signout" method="post" className="hidden" />
 
             {/* Use a plain div with NO transform so child fixed-position portals work correctly */}
-            <div className="fixed bottom-2 sm:bottom-4 md:bottom-6 left-0 right-0 flex justify-center z-[100] pointer-events-none px-1 sm:px-2">
+            <div 
+                className="fixed bottom-2 sm:bottom-4 md:bottom-6 left-0 right-0 flex justify-center z-[100] pointer-events-none px-1 sm:px-2 print:hidden floating-dock-container" 
+                data-floating-dock="true"
+            >
                 <motion.div
                     onMouseMove={(e) => mouseX.set(e.pageX)}
                     onMouseLeave={() => mouseX.set(Infinity)}
@@ -117,7 +120,7 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
     });
 
     const widthSync = useTransform(distance, [-DISTANCE_THRESHOLD, 0, DISTANCE_THRESHOLD], [42, 42 * SCALING_FACTOR, 42]);
-    const width = useSpring(widthSync, { mass: 0.1, stiffness: 450, damping: 18 });
+    const width = useSpring(widthSync, { mass: 0.1, stiffness: 280, damping: 20 });
 
     const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {

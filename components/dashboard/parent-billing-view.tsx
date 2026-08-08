@@ -21,7 +21,7 @@ import { InputModal, ConfirmationModal } from "@/components/ui/confirmation-moda
 import { toast } from "sonner";
 import { useReactToPrint } from "react-to-print";
 import { InvoicePrint } from "./invoice-print";
-import { FileDown, Printer } from "lucide-react";
+import { FileDown, Printer, Loader2 } from "lucide-react";
 
 interface ParentBillingViewProps {
     user: any;
@@ -38,17 +38,42 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
     const [receiptImage, setReceiptImage] = React.useState<string | null>(null);
     const [printInvoice, setPrintInvoice] = React.useState<any>(null);
     const [printStudent, setPrintStudent] = React.useState<any>(null);
+    const [printingId, setPrintingId] = React.useState<string | null>(null);
 
     const printRef = React.useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({
         contentRef: printRef,
+        documentTitle: `Receipt_${printInvoice?.id?.slice(0, 8) || 'Official'}`,
+        onAfterPrint: () => {
+            setPrintingId(null);
+        }
     });
 
     const triggerPrint = (invoice: any, student: any) => {
         setPrintInvoice(invoice);
         setPrintStudent(student);
-        setTimeout(() => handlePrint(), 100);
+        setPrintingId(invoice.id);
     };
+
+    React.useEffect(() => {
+        if (printingId && printInvoice && printRef.current) {
+            const timer = setTimeout(() => {
+                try {
+                    if (typeof handlePrint === 'function') {
+                        handlePrint();
+                    } else {
+                        window.print();
+                    }
+                } catch (err) {
+                    console.error("Parent print failure:", err);
+                    window.print();
+                } finally {
+                    setTimeout(() => setPrintingId(null), 1000);
+                }
+            }, 150);
+            return () => clearTimeout(timer);
+        }
+    }, [printingId, printInvoice, handlePrint]);
 
     const handleInitialPay = (invoiceId: string) => {
         setSelectingPaymentId(invoiceId);
@@ -142,21 +167,17 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                     </div>
                     <div className="px-5 py-3 rounded-2xl bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 flex items-center gap-3">
                         <ShieldCheck className="w-4 h-4 text-eduGreen-500" />
-                        <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Secure Link Established</span>
+                        <span className="text-[10px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">Institutional Ledger</span>
                     </div>
                 </div>
             </div>
 
             {students.length === 0 ? (
-                // ... Empty State ...
                 <div className="py-32 text-center bg-white/20 dark:bg-zinc-950/20 rounded-[3rem] border border-dashed border-zinc-200 dark:border-zinc-900">
                     <div className="w-16 h-16 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-6">
                         <User className="w-8 h-8 text-zinc-800 dark:text-zinc-200" />
                     </div>
-                    <p className="text-zinc-700 font-medium uppercase tracking-[0.3em] text-[10px]">No Student Profiles Linked to Account</p>
-                    <Link href="/dashboard">
-                        <Button variant="ghost" className="text-eduGreen-500 mt-4 font-medium uppercase tracking-widest text-[9px]">Establish Student Link</Button>
-                    </Link>
+                    <p className="text-zinc-700 dark:text-zinc-300 font-medium uppercase tracking-[0.3em] text-[10px]">No Active Student Records Found</p>
                 </div>
             ) : (
                 <div className="grid gap-12">
@@ -164,36 +185,37 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                         <div key={student.id} className="space-y-8">
                             <div className="flex items-center gap-4 ml-4">
                                 <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center shadow-xl">
-                                    <span className="text-xl font-medium text-eduGreen-500">{student.firstName[0]}</span>
+                                    <span className="text-xl font-medium text-eduGreen-500">{student?.firstName?.[0] || 'S'}</span>
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight leading-none">{student.firstName} {student.lastName}</h2>
-                                    <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1">ID: {student.studentCode} • Grade {student.grade?.level || "N/A"}</p>
+                                    <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight leading-none">{student?.firstName || 'Student'} {student?.lastName || ''}</h2>
+                                    <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1">ID: {student?.studentCode || '---'} • Grade {student?.grade?.level || "N/A"}</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {(() => {
-                                    const filteredInvoices = student.invoices?.filter((invoice: any) => {
+                                    const filteredInvoices = (student?.invoices || []).filter((invoice: any) => {
                                         if (activeTab === 'receipts') {
-                                            return invoice.status === 'PAID';
+                                            return invoice?.status === 'PAID';
                                         } else {
-                                            return invoice.status !== 'PAID';
+                                            return invoice?.status !== 'PAID';
                                         }
-                                    }) || [];
+                                    });
 
                                     if (filteredInvoices.length === 0) {
                                         return (
-                                            <Card className="md:col-span-3 bg-white/30 dark:bg-zinc-950/30 border-zinc-200 dark:border-zinc-900 border-dashed rounded-[2.5rem] py-16 text-center">
-                                                <p className="text-zinc-800 dark:text-zinc-200 font-medium uppercase tracking-[0.4em] text-[10px]">
-                                                    {activeTab === 'receipts' ? "No Receipts Available" : "No Active Invoices Detectable"}
+                                            <div className="col-span-full py-16 text-center bg-white/10 dark:bg-zinc-950/10 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-900/50">
+                                                <p className="text-[9px] font-medium text-zinc-600 uppercase tracking-widest">
+                                                    {activeTab === 'receipts' ? "No verified receipts found." : "All tuition and invoices are currently settled."}
                                                 </p>
-                                            </Card>
+                                            </div>
                                         );
                                     }
 
                                     return filteredInvoices.map((invoice: any) => {
-                                        const hasPendingPayment = invoice.payments?.some((p: any) => p.status === 'PENDING');
+                                        const hasPendingPayment = (invoice?.payments || []).some((p: any) => p?.status === 'PENDING');
+                                        const items = invoice?.items || [];
                                         return (
                                             <Card key={invoice.id} className="group bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-2xl relative">
                                                 <div className={cn(
@@ -214,13 +236,19 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="icon"
+                                                                    disabled={printingId === invoice.id}
                                                                     onClick={() => triggerPrint(invoice, student)}
-                                                                    className="h-8 w-8 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 rounded-lg"
+                                                                    className="h-8 w-8 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-500 rounded-lg active:scale-95 transition-all"
+                                                                    title="Print Official Receipt"
                                                                 >
-                                                                    <Printer className="w-4 h-4" />
+                                                                    {printingId === invoice.id ? (
+                                                                        <Loader2 className="w-3.5 h-3.5 animate-spin text-eduGreen-500" />
+                                                                    ) : (
+                                                                        <Printer className="w-4 h-4" />
+                                                                    )}
                                                                 </Button>
                                                             </div>
-                                                            <div className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">${Number(invoice.amount).toLocaleString()}</div>
+                                                            <div className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">${Number(invoice?.amount || 0).toLocaleString()}</div>
                                                             <div className={cn(
                                                                 "text-[8px] font-medium uppercase tracking-widest mt-1 px-2 py-0.5 rounded-full inline-block",
                                                                 invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-600 dark:text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500")
@@ -234,14 +262,14 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                         {activeTab === 'receipts' ? "Official Receipt" : "Institutional Dues"}
                                                     </h3>
                                                     <div className="space-y-2">
-                                                        {invoice.items.slice(0, 3).map((item: any, idx: number) => (
+                                                        {items.slice(0, 3).map((item: any, idx: number) => (
                                                             <div key={idx} className="flex justify-between items-center text-[10px] font-medium text-zinc-600">
-                                                                <span className="uppercase tracking-widest truncate mr-2">{item.name}</span>
-                                                                <span className="text-zinc-600 dark:text-zinc-500 flex-shrink-0">${Number(item.amount).toLocaleString()}</span>
+                                                                <span className="uppercase tracking-widest truncate mr-2">{item?.name || 'Fee'}</span>
+                                                                <span className="text-zinc-600 dark:text-zinc-500 flex-shrink-0">${Number(item?.amount || 0).toLocaleString()}</span>
                                                             </div>
                                                         ))}
-                                                        {invoice.items.length > 3 && (
-                                                            <p className="text-[8px] text-zinc-700 uppercase tracking-widest pt-1">+{invoice.items.length - 3} more items</p>
+                                                        {items.length > 3 && (
+                                                            <p className="text-[8px] text-zinc-700 uppercase tracking-widest pt-1">+{items.length - 3} more items</p>
                                                         )}
                                                     </div>
                                                 </CardHeader>
@@ -251,7 +279,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                         <div className="flex justify-between items-center mb-6">
                                                             <p className="text-[8px] font-medium text-zinc-700 uppercase tracking-widest">Deadline</p>
                                                             <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
-                                                                {new Date(invoice.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                {invoice?.dueDate ? new Date(invoice.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '---'}
                                                             </p>
                                                         </div>
 
@@ -340,13 +368,16 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
             />
 
             {/* Hidden Print Template */}
-            <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
-                <InvoicePrint
-                    ref={printRef}
-                    invoice={printInvoice}
-                    student={printStudent}
-                    school={students[0]?.school || (user as any)?.school}
-                />
+            <div className="fixed -left-[99999px] top-0 opacity-0 pointer-events-none print:opacity-100 print:static print:left-0 print:pointer-events-auto" aria-hidden="true">
+                <div ref={printRef}>
+                    {printInvoice && (
+                        <InvoicePrint
+                            invoice={printInvoice}
+                            student={printStudent}
+                            school={students[0]?.school || (user as any)?.school}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     );

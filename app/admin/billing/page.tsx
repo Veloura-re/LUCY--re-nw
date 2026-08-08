@@ -114,8 +114,9 @@ export default function BillingControlsPage() {
     const handleExtendTrial = async (schoolId: string, days: number) => {
         try {
             const targetSchool = schools.find(s => s.id === schoolId) as any;
-            const currentTrial = targetSchool?.trialEndsAt ? new Date(targetSchool.trialEndsAt) : new Date();
-            const newTrial = new Date(currentTrial.getTime() + days * 24 * 60 * 60 * 1000);
+            const currentTrial = targetSchool?.trialEndsAt ? new Date(targetSchool.trialEndsAt).getTime() : 0;
+            const baseTime = Math.max(Date.now(), currentTrial);
+            const newTrial = new Date(baseTime + days * 24 * 60 * 60 * 1000);
             
             const res = await fetch(`/api/admin/schools/${schoolId}`, {
                 method: 'PATCH',
