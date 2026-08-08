@@ -39,8 +39,8 @@ export function useEdgeHealth() {
                 });
                 if (isMountedRef.current) {
                     setLatency(rtt);
-                    if (rtt < 150) setStatus('stable');
-                    else if (rtt < 500) setStatus('optimizing');
+                    if (rtt < 400) setStatus('stable');
+                    else if (rtt < 1200) setStatus('optimizing');
                     else setStatus('degraded');
                 }
             } else {

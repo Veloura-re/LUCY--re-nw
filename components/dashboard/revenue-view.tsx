@@ -22,7 +22,8 @@ import {
     CheckCircle2,
     Clock,
     AlertCircle,
-    Download
+    Download,
+    Coins
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -193,7 +194,12 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap">
-                    <Link href="/dashboard/finance/payroll">
+                    <Link href="/dashboard/finance">
+                        <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-eduGreen-500/50">
+                            <Coins className="w-4 h-4 mr-2 text-eduGreen-500" /> Fee Architecture
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/payroll">
                         <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-amber-500/50">
                             <Briefcase className="w-4 h-4 mr-2 text-amber-500" /> Payroll Center
                         </Button>
