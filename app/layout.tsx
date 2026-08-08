@@ -16,8 +16,11 @@ function getSafeMetadataBase(): URL {
   }
 }
 
+const safeBase = getSafeMetadataBase();
+const SAFE_BASE_URL = safeBase.toString();
+
 export const metadata: Metadata = {
-  metadataBase: getSafeMetadataBase(),
+  metadataBase: safeBase,
   title: {
     default: "LUCY OS | Next-Generation School Management & Cognitive Learning Platform",
     template: "%s | LUCY OS",
@@ -51,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: BASE_URL,
+    url: SAFE_BASE_URL,
     siteName: "LUCY OS",
     title: "LUCY OS — Next-Generation School Management Platform",
     description: "The intelligent operating system built for forward-thinking schools, academies, teachers, students, and parents.",
