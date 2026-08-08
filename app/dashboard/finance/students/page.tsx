@@ -8,7 +8,7 @@ import {
     Search, ArrowLeft, User, BookOpen, Clock, 
     AlertCircle, CheckCircle, Wallet, FileText, ChevronRight, 
     Download, Image as ImageIcon, Eye, ExternalLink, ShieldCheck, 
-    Receipt, Sparkles, X
+    Receipt, Sparkles, X, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -146,62 +146,84 @@ export default function StudentFinanceDossier() {
 
             {/* Dossier Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {students.map((student) => {
-                    const fin = student.financials;
-                    const receipts = fin.receiptScreenshots || [];
-                    return (
-                        <Card 
-                            key={student.id}
-                            onClick={() => setSelectedStudent(student)}
-                            className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/60 rounded-3xl p-6 hover:border-eduGreen-500/40 transition-all cursor-pointer group hover:shadow-2xl flex flex-col justify-between"
-                        >
-                            <div>
-                                <div className="flex items-start justify-between gap-4 mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center font-bold text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 shrink-0">
-                                            {student.firstName[0]}
+                {loading ? (
+                    Array.from({ length: 6 }).map((_, i) => (
+                        <Card key={i} className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/60 rounded-3xl p-6 animate-pulse">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-12 h-12 rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+                                <div className="space-y-2 flex-1">
+                                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4" />
+                                    <div className="h-3 bg-zinc-100 dark:bg-zinc-900 rounded w-1/2" />
+                                </div>
+                            </div>
+                            <div className="h-16 bg-zinc-100 dark:bg-zinc-900 rounded-2xl mb-4" />
+                            <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3 pt-3 border-t border-zinc-200 dark:border-zinc-900" />
+                        </Card>
+                    ))
+                ) : students.length === 0 ? (
+                    <div className="col-span-full py-16 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 bg-white/20 dark:bg-zinc-950/20">
+                        <User className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
+                        <p className="text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400">No Student Dossiers Found</p>
+                        <p className="text-[10px] text-zinc-500 mt-1">Try adjusting your search query or grade/class filters.</p>
+                    </div>
+                ) : (
+                    students.map((student) => {
+                        const fin = student.financials;
+                        const receipts = fin.receiptScreenshots || [];
+                        return (
+                            <Card 
+                                key={student.id}
+                                onClick={() => setSelectedStudent(student)}
+                                className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900/60 rounded-3xl p-6 hover:border-eduGreen-500/40 transition-all cursor-pointer group hover:shadow-2xl flex flex-col justify-between"
+                            >
+                                <div>
+                                    <div className="flex items-start justify-between gap-4 mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center font-bold text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                                {student.firstName[0]}
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <h3 className="font-bold text-base text-zinc-900 dark:text-white uppercase truncate group-hover:text-eduGreen-500 transition-colors">
+                                                    {student.firstName} {student.lastName}
+                                                </h3>
+                                                <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">{student.studentCode}</p>
+                                            </div>
                                         </div>
-                                        <div className="overflow-hidden">
-                                            <h3 className="font-bold text-base text-zinc-900 dark:text-white uppercase truncate group-hover:text-eduGreen-500 transition-colors">
-                                                {student.firstName} {student.lastName}
-                                            </h3>
-                                            <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">{student.studentCode}</p>
+                                        <span className={cn("px-2.5 py-1 rounded-xl text-[9px] font-bold uppercase tracking-widest border", getStatusColor(fin.overallStatus))}>
+                                            {fin.overallStatus}
+                                        </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 p-3 bg-zinc-100/50 dark:bg-zinc-900/40 rounded-2xl border border-zinc-200 dark:border-zinc-800/40 text-xs mb-4">
+                                        <div>
+                                            <span className="text-[9px] font-mono text-zinc-500 uppercase block">Total Billed</span>
+                                            <strong className="text-zinc-900 dark:text-white">${fin.totalBilled.toLocaleString()}</strong>
+                                        </div>
+                                        <div>
+                                            <span className="text-[9px] font-mono text-zinc-500 uppercase block">Balance Due</span>
+                                            <strong className={fin.balance > 0 ? "text-amber-500" : "text-emerald-500"}>${fin.balance.toLocaleString()}</strong>
                                         </div>
                                     </div>
-                                    <span className={cn("px-2.5 py-1 rounded-xl text-[9px] font-bold uppercase tracking-widest border", getStatusColor(fin.overallStatus))}>
-                                        {fin.overallStatus}
+
+                                    {/* Proof Screenshots Badge */}
+                                    {receipts.length > 0 && (
+                                        <div className="flex items-center gap-2 p-2 px-3 rounded-xl bg-eduGreen-500/10 border border-eduGreen-500/20 text-[10px] font-bold text-eduGreen-600 dark:text-eduGreen-400 mb-3">
+                                            <ImageIcon className="w-3.5 h-3.5" />
+                                            <span>{receipts.length} Payment Screenshot{receipts.length > 1 ? 's' : ''} Attached</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500 pt-3 border-t border-zinc-200 dark:border-zinc-900">
+                                    <span>{student.class?.name || student.grade?.name || 'Class Cohort'}</span>
+                                    <span className="text-eduGreen-500 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                        Inspect Dossier <ChevronRight className="w-3.5 h-3.5" />
                                     </span>
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-3 p-3 bg-zinc-100/50 dark:bg-zinc-900/40 rounded-2xl border border-zinc-200 dark:border-zinc-800/40 text-xs mb-4">
-                                    <div>
-                                        <span className="text-[9px] font-mono text-zinc-500 uppercase block">Total Billed</span>
-                                        <strong className="text-zinc-900 dark:text-white">${fin.totalBilled.toLocaleString()}</strong>
-                                    </div>
-                                    <div>
-                                        <span className="text-[9px] font-mono text-zinc-500 uppercase block">Balance Due</span>
-                                        <strong className={fin.balance > 0 ? "text-amber-500" : "text-emerald-500"}>${fin.balance.toLocaleString()}</strong>
-                                    </div>
-                                </div>
-
-                                {/* Proof Screenshots Badge */}
-                                {receipts.length > 0 && (
-                                    <div className="flex items-center gap-2 p-2 px-3 rounded-xl bg-eduGreen-500/10 border border-eduGreen-500/20 text-[10px] font-bold text-eduGreen-600 dark:text-eduGreen-400 mb-3">
-                                        <ImageIcon className="w-3.5 h-3.5" />
-                                        <span>{receipts.length} Payment Screenshot{receipts.length > 1 ? 's' : ''} Attached</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500 pt-3 border-t border-zinc-200 dark:border-zinc-900">
-                                <span>{student.class?.name || student.grade?.name || 'Class Cohort'}</span>
-                                <span className="text-eduGreen-500 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                    Inspect Dossier <ChevronRight className="w-3.5 h-3.5" />
-                                </span>
-                            </div>
-                        </Card>
-                    );
-                })}
+                            </Card>
+                        );
+                    })
+                )}
             </div>
 
             {/* Modal Detail View with Full Screenshot Preview */}

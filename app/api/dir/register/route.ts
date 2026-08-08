@@ -173,6 +173,19 @@ return NextResponse.json({ success: true, userId });
         // 7. Burn Token
         await supabaseAdmin.from('InviteToken').update({ usedAt: new Date().toISOString() }).eq('token', token);
         
+        // 8. Asynchronous Welcome Email Dispatch
+        if (finalEmail && !finalEmail.endsWith('@lucy.local')) {
+            try {
+                const { sendWelcomeEmail } = await import('@/lib/email');
+                sendWelcomeEmail({
+                    toEmail: finalEmail,
+                    name: name,
+                    role: invite.role,
+                    schoolId: invite.schoolId || undefined
+                }).catch((emailErr) => console.warn('[dir-register] Welcome email failed:', emailErr));
+            } catch { /* non-blocking */ }
+        }
+
         if (invite.schoolId) {
             const { revalidateTag } = require('next/cache');
             revalidateTag(`school-${invite.schoolId}`, 'max');

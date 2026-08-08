@@ -463,3 +463,92 @@ export async function sendRecoveryEmail(toEmail: string, resetUrl: string) {
     return sendEmail({ to: toEmail, subject: "LUCY: Reset your password", html });
 }
 
+export async function sendWelcomeEmail({
+    toEmail,
+    name,
+    role = 'USER',
+    schoolName,
+    schoolId
+}: {
+    toEmail: string;
+    name?: string;
+    role?: string;
+    schoolName?: string;
+    schoolId?: string;
+}) {
+    console.log(`🎉 [WELCOME] sendWelcomeEmail called: to=${toEmail}, name=${name}, role=${role}, school=${schoolName}`);
+
+    let replyTo = "";
+    if (schoolId) {
+        try {
+            const school = await getSchoolConfig(schoolId);
+            const config = school?.communicationsConfig as any;
+            replyTo = config?.replyTo || "";
+        } catch { /* non-blocking */ }
+    }
+
+    const formattedRole = role === 'PRINCIPAL' 
+        ? 'School Director' 
+        : role === 'OWNER' 
+            ? 'School Owner'
+            : role === 'SUPERADMIN'
+                ? 'System Administrator'
+                : role.charAt(0) + role.slice(1).toLowerCase();
+
+    const recipientName = name?.trim() || formattedRole;
+
+    const html = `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 24px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #eef2f0; box-shadow: 0 4px 24px rgba(0,0,0,0.04);">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <div style="display: inline-block; padding: 12px; border-radius: 16px; background-color: #f0fdf4; border: 1px solid #dcfce7; margin-bottom: 12px;">
+                    <span style="font-size: 36px; line-height: 1;">🎓</span>
+                </div>
+                <h1 style="color: #147A52; margin: 8px 0 0 0; font-size: 28px; font-weight: 900; letter-spacing: -0.04em;">LUCY OS</h1>
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: 700; color: #6E7377; text-transform: uppercase; letter-spacing: 0.15em;">Next-Generation Academic Infrastructure</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%); padding: 32px; border-radius: 20px; border: 1px solid #dcfce7; margin-bottom: 32px; text-align: center;">
+                <h2 style="font-size: 24px; font-weight: 800; color: #101314; margin: 0 0 8px 0;">Welcome to the Platform!</h2>
+                <p style="font-size: 15px; line-height: 1.6; color: #4A4E52; margin: 0;">
+                    Hello <strong>${recipientName}</strong>, your account has been successfully initialized on <strong>LUCY OS</strong>.
+                </p>
+            </div>
+
+            <div style="background-color: #f8faf9; padding: 24px; border-radius: 16px; margin-bottom: 32px; border: 1px solid #eef2f0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #6E7377; text-transform: uppercase; letter-spacing: 0.05em;">Assigned Role</span>
+                    <span style="font-size: 12px; font-weight: 800; color: #147A52; background: #dcfce7; padding: 2px 8px; border-radius: 9999px;">${formattedRole}</span>
+                </div>
+                ${schoolName ? `
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="font-size: 12px; font-weight: 700; color: #6E7377; text-transform: uppercase; letter-spacing: 0.05em;">Institutional Node</span>
+                    <span style="font-size: 12px; font-weight: 800; color: #101314;">${schoolName}</span>
+                </div>
+                ` : ''}
+            </div>
+
+            <div style="text-align: center; margin: 36px 0;">
+                <a href="${APP_URL}/dashboard" style="background-color: #147A52; color: #ffffff; padding: 18px 36px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block; box-shadow: 0 4px 14px rgba(20, 122, 82, 0.35);">
+                    Enter LUCY OS
+                </a>
+            </div>
+
+            <p style="font-size: 13px; line-height: 1.6; color: #6E7377; text-align: center;">
+                You can access your personalized dashboard, track academic workflows, and communicate with your institution anytime.
+            </p>
+            
+            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 32px 0;" />
+            <p style="font-size: 11px; text-align: center; color: #9EA3A7; text-transform: uppercase; letter-spacing: 0.1em;">
+                LUCY School Management Ecosystem &copy; 2026
+            </p>
+        </div>
+    `;
+
+    return sendEmail({
+        to: toEmail,
+        subject: `Welcome to LUCY OS - Your Institutional Academic Interface`,
+        html,
+        replyTo
+    });
+}
+

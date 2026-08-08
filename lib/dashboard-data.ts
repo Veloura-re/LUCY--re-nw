@@ -2,12 +2,14 @@ import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 
 /**
- * Resilient, Type-Safe Dashboard Data Layer with robust JSON serialization.
+ * Resilient, Type-Safe High-Performance Dashboard Data Layer with robust query batching and JSON serialization.
  */
 
-// Refactor 1: getFamilyChildren
+// Refactor 1: getFamilyChildren (Batched O(1) queries instead of N*7 loop)
 const _getFamilyChildren = async (userId: string) => {
     try {
+        if (!prisma) return [];
+
         const links = await prisma.parentStudentLink.findMany({
             where: { parentId: userId },
             include: {
@@ -26,79 +28,120 @@ const _getFamilyChildren = async (userId: string) => {
         });
 
         const students = links.map((l: any) => l.student).filter(Boolean);
+        if (students.length === 0) return [];
 
-        const studentsWithStats = await Promise.all(
-            students.map(async (student: any) => {
-                try {
-                    const [allAttendance, gradeRecords, pendingInvoiceCount, totalAssignments, completedAssignments, recentInvoices, outstandingInvoices] = await Promise.all([
-                        prisma.attendanceRecord.findMany({
-                            where: { studentId: student.id },
-                            select: { status: true }
-                        }).catch(() => []),
-                        prisma.gradeRecord.findMany({
-                            where: { studentId: student.id },
-                            include: { exam: { select: { totalMarks: true } } }
-                        }).catch(() => []),
-                        prisma.invoice.count({
-                            where: { studentId: student.id, status: { in: ['PENDING', 'OVERDUE'] } }
-                        }).catch(() => 0),
-                        student.classId ? prisma.assignment.count({
-                            where: { classId: student.classId, isPublished: true }
-                        }).catch(() => 0) : Promise.resolve(0),
-                        prisma.assignmentSubmission.count({
-                            where: { studentId: student.id, status: { in: ['SUBMITTED', 'GRADED'] } }
-                        }).catch(() => 0),
-                        prisma.invoice.findMany({
-                            where: { studentId: student.id },
-                            orderBy: { createdAt: 'desc' },
-                            take: 3,
-                            select: { id: true, amount: true, status: true, createdAt: true }
-                        }).catch(() => []),
-                        prisma.invoice.findMany({
-                            where: { studentId: student.id, status: { in: ['PENDING', 'OVERDUE'] } },
-                            select: { amount: true }
-                        }).catch(() => [])
-                    ]);
+        const studentIds = students.map((s: any) => s.id);
+        const classIds = Array.from(new Set(students.map((s: any) => s.classId).filter(Boolean))) as string[];
 
-                    const totalPresent = allAttendance.filter((a: any) => a.status === 'PRESENT' || a.status === 'LATE').length;
-                    const attendancePct = allAttendance.length > 0
-                        ? ((totalPresent / allAttendance.length) * 100).toFixed(1)
-                        : '100.0';
+        // Parallel batch queries for all children at once
+        const [
+            allAttendance,
+            allGradeRecords,
+            allInvoices,
+            allSubmissions,
+            allAssignments
+        ] = await Promise.all([
+            prisma.attendanceRecord.findMany({
+                where: { studentId: { in: studentIds } },
+                select: { studentId: true, status: true }
+            }).catch(() => []),
+            prisma.gradeRecord.findMany({
+                where: { studentId: { in: studentIds } },
+                select: { studentId: true, score: true, exam: { select: { totalMarks: true } } }
+            }).catch(() => []),
+            prisma.invoice.findMany({
+                where: { studentId: { in: studentIds } },
+                orderBy: { createdAt: 'desc' },
+                select: { id: true, studentId: true, amount: true, status: true, createdAt: true }
+            }).catch(() => []),
+            prisma.assignmentSubmission.findMany({
+                where: { studentId: { in: studentIds }, status: { in: ['SUBMITTED', 'GRADED'] } },
+                select: { studentId: true }
+            }).catch(() => []),
+            classIds.length > 0
+                ? prisma.assignment.findMany({
+                    where: { classId: { in: classIds }, isPublished: true },
+                    select: { classId: true }
+                }).catch(() => [])
+                : Promise.resolve([])
+        ]);
 
-                    let totalScore = 0;
-                    let totalMax = 0;
-                    gradeRecords.forEach((gr: any) => {
-                        const max = gr.exam?.totalMarks || 100;
-                        totalScore += Number(gr.score || 0);
-                        totalMax += Number(max || 100);
-                    });
-                    const averageScore = totalMax > 0
-                        ? ((totalScore / totalMax) * 100).toFixed(1)
-                        : '0.0';
+        // Group by studentId in memory (O(N))
+        const attendanceByStudent = new Map<string, any[]>();
+        allAttendance.forEach((att: any) => {
+            const list = attendanceByStudent.get(att.studentId) || [];
+            list.push(att);
+            attendanceByStudent.set(att.studentId, list);
+        });
 
-                    const totalOutstanding = (outstandingInvoices as any[])
-                        .reduce((acc: number, inv: any) => acc + Number(inv.amount || 0), 0)
-                        .toFixed(2);
+        const gradesByStudent = new Map<string, any[]>();
+        allGradeRecords.forEach((gr: any) => {
+            const list = gradesByStudent.get(gr.studentId) || [];
+            list.push(gr);
+            gradesByStudent.set(gr.studentId, list);
+        });
 
-                    return {
-                        ...student,
-                        recentInvoices,
-                        stats: {
-                            attendancePct,
-                            averageScore,
-                            invoiceCount: pendingInvoiceCount,
-                            totalOutstanding,
-                            assignmentStats: {
-                                total: totalAssignments,
-                                completed: completedAssignments
-                            }
-                        }
-                    };
-                } catch (e) {
-                    return student;
+        const invoicesByStudent = new Map<string, any[]>();
+        allInvoices.forEach((inv: any) => {
+            const list = invoicesByStudent.get(inv.studentId) || [];
+            list.push(inv);
+            invoicesByStudent.set(inv.studentId, list);
+        });
+
+        const submissionsByStudent = new Map<string, number>();
+        allSubmissions.forEach((sub: any) => {
+            submissionsByStudent.set(sub.studentId, (submissionsByStudent.get(sub.studentId) || 0) + 1);
+        });
+
+        const assignmentsByClass = new Map<string, number>();
+        allAssignments.forEach((assign: any) => {
+            assignmentsByClass.set(assign.classId, (assignmentsByClass.get(assign.classId) || 0) + 1);
+        });
+
+        const studentsWithStats = students.map((student: any) => {
+            const studentAttendance = attendanceByStudent.get(student.id) || [];
+            const studentGrades = gradesByStudent.get(student.id) || [];
+            const studentInvoices = invoicesByStudent.get(student.id) || [];
+            
+            const totalPresent = studentAttendance.filter((a: any) => a.status === 'PRESENT' || a.status === 'LATE').length;
+            const attendancePct = studentAttendance.length > 0
+                ? ((totalPresent / studentAttendance.length) * 100).toFixed(1)
+                : '100.0';
+
+            let totalScore = 0;
+            let totalMax = 0;
+            studentGrades.forEach((gr: any) => {
+                const max = gr.exam?.totalMarks || 100;
+                totalScore += Number(gr.score || 0);
+                totalMax += Number(max || 100);
+            });
+            const averageScore = totalMax > 0
+                ? ((totalScore / totalMax) * 100).toFixed(1)
+                : '0.0';
+
+            const pendingInvoices = studentInvoices.filter((inv: any) => inv.status === 'PENDING' || inv.status === 'OVERDUE');
+            const totalOutstanding = pendingInvoices
+                .reduce((acc: number, inv: any) => acc + Number(inv.amount || 0), 0)
+                .toFixed(2);
+
+            const totalAssignments = student.classId ? (assignmentsByClass.get(student.classId) || 0) : 0;
+            const completedAssignments = submissionsByStudent.get(student.id) || 0;
+
+            return {
+                ...student,
+                recentInvoices: studentInvoices.slice(0, 3),
+                stats: {
+                    attendancePct,
+                    averageScore,
+                    invoiceCount: pendingInvoices.length,
+                    totalOutstanding,
+                    assignmentStats: {
+                        total: totalAssignments,
+                        completed: completedAssignments
+                    }
                 }
-            })
-        );
+            };
+        });
 
         return JSON.parse(JSON.stringify(studentsWithStats));
     } catch (e) {
@@ -118,6 +161,10 @@ export async function getFamilyChildren(userId: string) {
 // Refactor 2: getTeacherDashboardData
 const _getTeacherDashboardData = async (userId: string) => {
     try {
+        if (!prisma) {
+            return { classes: [], exams: [], isClockedIn: false, attendanceSummary: [] };
+        }
+
         const [assignments, recentExams, clockInRecord] = await Promise.all([
             prisma.teacherAssignment.findMany({
                 where: { teacherId: userId },
@@ -159,15 +206,28 @@ const _getTeacherDashboardData = async (userId: string) => {
     }
 };
 
-export const getTeacherDashboardData = unstable_cache(
-    _getTeacherDashboardData,
-    ['teacher-dashboard-data'],
-    { revalidate: 60 }
-);
+export async function getTeacherDashboardData(userId: string) {
+    return unstable_cache(
+        () => _getTeacherDashboardData(userId),
+        ['teacher-dashboard-data', userId],
+        { revalidate: 30 }
+    )();
+}
 
 // Refactor 3: getSchoolAnalytics
 const _getSchoolAnalytics = async (schoolId: string) => {
     try {
+        if (!prisma) {
+            return {
+                summary: {
+                    studentCount: 0, classCount: 0, avgAttendance: "100%", activeNodes: 0,
+                    staffPresence: { present: 0, total: 0 }, principalCount: 0, pendingApprovals: 0,
+                    examCompletion: "0%", collectedFees: 0, pendingFees: 0, activeReaders: 0
+                },
+                attendance: [], performanceBySubject: [], recentActivity: []
+            };
+        }
+
         const [schoolInfo, studentCount, classCount, teacherCount, principalCount, pendingApprovals, invoices] = await Promise.all([
             prisma.school.findUnique({
                 where: { id: schoolId },
@@ -275,8 +335,10 @@ const _getSchoolAnalytics = async (schoolId: string) => {
     }
 };
 
-export const getSchoolAnalytics = unstable_cache(
-    _getSchoolAnalytics,
-    ['school-analytics-data'],
-    { revalidate: 60 }
-);
+export async function getSchoolAnalytics(schoolId: string) {
+    return unstable_cache(
+        () => _getSchoolAnalytics(schoolId),
+        ['school-analytics-data', schoolId],
+        { revalidate: 30 }
+    )();
+}

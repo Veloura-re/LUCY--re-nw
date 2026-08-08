@@ -2,37 +2,34 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     CreditCard,
     Plus,
-    Trash2,
     DollarSign,
     Calculator,
     Briefcase,
     Search,
-    Filter,
-    ShieldCheck,
     Printer,
-    ArrowRight,
     Users,
-    Layers,
     CheckCircle2,
     Clock,
     AlertCircle,
     Download,
-    Coins
+    Coins,
+    Loader2,
+    RefreshCw
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { FeeStructureModal } from "@/components/dashboard/fee-structure-modal";
 import { InvoicePrint } from "./invoice-print";
 import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
+import SpringingLoader from "@/components/dashboard/springing-loader";
 
 interface RevenueViewProps {
     user: any;
@@ -43,10 +40,12 @@ interface RevenueViewProps {
 export function RevenueView({ user, school, grades }: RevenueViewProps) {
     const [fees, setFees] = useState<any[]>([]);
     const [invoices, setInvoices] = useState<any[]>([]);
-    const [pendingPayments, setPendingPayments] = useState<any[]>([]);
     const [financialAnalytics, setFinancialAnalytics] = useState<any>(null);
+    const [pendingPayments, setPendingPayments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    
+    const [loadingInvoices, setLoadingInvoices] = useState(false);
+    const [generatingInvoices, setGeneratingInvoices] = useState(false);
+
     // Fee Structure Modal State
     const [showFeeModal, setShowFeeModal] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -61,22 +60,49 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
 
     // Verification and Print State
     const [verifyingPayment, setVerifyingPayment] = useState<string | null>(null);
+    const [printingId, setPrintingId] = useState<string | null>(null);
     const [printInvoice, setPrintInvoice] = useState<any>(null);
     const [printStudent, setPrintStudent] = useState<any>(null);
     const printRef = useRef<HTMLDivElement>(null);
 
     const handlePrint = useReactToPrint({
         contentRef: printRef,
-        documentTitle: `Institutional_Invoice_${printInvoice?.id?.slice(0, 8) || 'Receipt'}`
+        documentTitle: `Institutional_Invoice_${printInvoice?.id?.slice(0, 8) || 'Receipt'}`,
+        onAfterPrint: () => {
+            setPrintingId(null);
+        }
     });
 
     const triggerPrint = (inv: any, student: any) => {
+        const targetStudent = student || inv.student || {
+            firstName: "Enrolled",
+            lastName: "Scholar",
+            studentCode: "N/A"
+        };
         setPrintInvoice(inv);
-        setPrintStudent(student);
-        setTimeout(() => {
-            if (handlePrint) handlePrint();
-        }, 150);
+        setPrintStudent(targetStudent);
+        setPrintingId(inv.id);
     };
+
+    useEffect(() => {
+        if (printingId && printInvoice && printRef.current) {
+            const timer = setTimeout(() => {
+                try {
+                    if (typeof handlePrint === 'function') {
+                        handlePrint();
+                    } else {
+                        window.print();
+                    }
+                } catch (err) {
+                    console.error("Print invocation fallback:", err);
+                    window.print();
+                } finally {
+                    setTimeout(() => setPrintingId(null), 1000);
+                }
+            }, 150);
+            return () => clearTimeout(timer);
+        }
+    }, [printingId, printInvoice, handlePrint]);
 
     useEffect(() => {
         fetchInitialData();
@@ -107,12 +133,13 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
     };
 
     const fetchInvoices = async (targetPage = page, status = statusFilter, query = searchQuery) => {
+        setLoadingInvoices(true);
         try {
             const params = new URLSearchParams({
                 page: targetPage.toString(),
                 limit: limit.toString(),
                 status,
-                q: query
+                search: query
             });
             const res = await fetch(`/api/school/finance/invoices?${params.toString()}`);
             const data = await res.json();
@@ -122,6 +149,8 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
             }
         } catch (e) {
             console.error("Failed to load invoices", e);
+        } finally {
+            setLoadingInvoices(false);
         }
     };
 
@@ -129,49 +158,75 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
         if (!deleteId) return;
         setDeletingFee(true);
         try {
-            const res = await fetch(`/api/school/finance/fees/${deleteId}`, { method: 'DELETE' });
+            const res = await fetch(`/api/school/finance/fees/${deleteId}`, {
+                method: 'DELETE'
+            });
             if (res.ok) {
+                toast.success("Fee structure decommissioned.");
                 setFees(fees.filter(f => f.id !== deleteId));
-                toast.success("Fee structure successfully dismantled.");
                 setDeleteId(null);
             } else {
                 toast.error("Failed to dismantle fee structure.");
             }
         } catch (e) {
-            toast.error("Network synchronization failed.");
+            toast.error("Network communication failure.");
         } finally {
             setDeletingFee(false);
         }
     };
 
-    const handleVerifyPayment = async (paymentId: string, status: 'SUCCESS' | 'FAILED') => {
+    const handleGenerateInvoices = async () => {
+        setGeneratingInvoices(true);
+        try {
+            const res = await fetch('/api/school/finance/invoices/generate', {
+                method: 'POST'
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(`Generated ${data.generatedCount || 0} invoices successfully.`);
+                fetchInvoices(1, statusFilter, searchQuery);
+                fetchInitialData();
+            } else {
+                toast.error(data.error || "Failed to generate invoices.");
+            }
+        } catch (e) {
+            toast.error("Invoice run execution failure.");
+        } finally {
+            setGeneratingInvoices(false);
+        }
+    };
+
+    const handleVerifyPayment = async (paymentId: string) => {
         setVerifyingPayment(paymentId);
         try {
             const res = await fetch('/api/school/finance/pay/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ paymentId, status })
+                body: JSON.stringify({ paymentId, action: 'APPROVE' })
             });
 
             if (res.ok) {
-                toast.success(`Payment transaction marked as ${status}.`);
+                toast.success("Payment transaction verified & reconciled.");
                 setPendingPayments(pendingPayments.filter(p => p.id !== paymentId));
                 fetchInitialData();
                 fetchInvoices(page, statusFilter, searchQuery);
             } else {
-                const errData = await res.json();
-                toast.error(errData.error || "Failed to reconcile payment.");
+                toast.error("Failed to verify transaction.");
             }
         } catch (e) {
-            toast.error("Reconciliation pipeline offline.");
+            toast.error("Verification processing failed.");
         } finally {
             setVerifyingPayment(null);
         }
     };
 
-    const totalCollected = financialAnalytics?.totalCollected || 0;
-    const totalInvoiced = financialAnalytics?.totalInvoiced || 0;
-    const totalOutstanding = Math.max(0, totalInvoiced - totalCollected);
+    if (loading && fees.length === 0 && invoices.length === 0) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <SpringingLoader message="Initializing Institutional Revenue Hub..." />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6 sm:space-y-10 pb-16 max-w-7xl mx-auto px-3 sm:px-6">
@@ -187,13 +242,13 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                                 Institutional Revenue Hub
                             </h1>
                             <p className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-widest mt-0.5">
-                                Real-Time Cash Flow, Tuition Streams & Reconciliation
+                                Invoices, Payment Settlement Verification & Ledger Auditing
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                     <Link href="/dashboard/finance">
                         <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-eduGreen-500/50">
                             <Coins className="w-4 h-4 mr-2 text-eduGreen-500" /> Fee Architecture
@@ -201,130 +256,148 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                     </Link>
                     <Link href="/dashboard/payroll">
                         <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-amber-500/50">
-                            <Briefcase className="w-4 h-4 mr-2 text-amber-500" /> Payroll Center
+                            <Briefcase className="w-4 h-4 mr-2 text-amber-500" /> Staff Payroll
                         </Button>
                     </Link>
                     <Button
-                        onClick={() => setShowFeeModal(true)}
-                        className="h-10 sm:h-11 px-5 rounded-xl bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-eduGreen-900/30 flex items-center gap-2"
+                        onClick={handleGenerateInvoices}
+                        disabled={generatingInvoices}
+                        className="h-10 sm:h-11 px-4 sm:px-5 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-md shadow-eduGreen-900/20 active:scale-95 transition-all"
                     >
-                        <Plus className="w-4 h-4" /> Create Structure
+                        {generatingInvoices ? (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Generating Invoices...
+                            </>
+                        ) : (
+                            <>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Run Billing Cycle
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>
 
-            {/* Revenue Analytics Cards */}
+            {/* Top Revenue Analytics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 p-5 rounded-2xl shadow-sm relative overflow-hidden">
+                <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 p-5 rounded-2xl shadow-sm">
                     <div className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-1">
-                        Gross Invoiced Quantum
+                        Total Invoiced
                     </div>
                     <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
-                        ${totalInvoiced.toLocaleString()}
+                        ${(financialAnalytics?.summary?.totalInvoiced || 0).toLocaleString()}
                     </div>
                     <div className="text-[10px] text-zinc-400 mt-2 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-eduGreen-500" /> Authorized billable tuition
+                        <Calculator className="w-3.5 h-3.5 text-eduGreen-500" /> Total tuition quantum
                     </div>
                 </Card>
 
-                <Card className="bg-white dark:bg-zinc-950 border-eduGreen-500/30 p-5 rounded-2xl shadow-sm relative overflow-hidden bg-gradient-to-br from-eduGreen-950/10 to-transparent">
+                <Card className="bg-white dark:bg-zinc-950 border-eduGreen-500/30 p-5 rounded-2xl shadow-sm bg-gradient-to-br from-eduGreen-950/10 to-transparent">
                     <div className="text-[9px] font-mono font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest mb-1">
-                        Collected Revenue
+                        Settled & Verified Revenue
                     </div>
                     <div className="text-2xl sm:text-3xl font-black text-eduGreen-600 dark:text-eduGreen-400 tracking-tight">
-                        ${totalCollected.toLocaleString()}
+                        ${(financialAnalytics?.summary?.totalPaid || 0).toLocaleString()}
                     </div>
                     <div className="text-[10px] text-zinc-400 mt-2">
-                        Reconciled and settled funds
+                        {financialAnalytics?.summary?.efficiency || "100%"} Efficiency Rate
                     </div>
                 </Card>
 
-                <Card className="bg-white dark:bg-zinc-950 border-amber-500/30 p-5 rounded-2xl shadow-sm relative overflow-hidden">
+                <Card className="bg-white dark:bg-zinc-950 border-amber-500/30 p-5 rounded-2xl shadow-sm bg-gradient-to-br from-amber-950/10 to-transparent">
                     <div className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">
-                        Outstanding Receivables
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tracking-tight">
-                        ${totalOutstanding.toLocaleString()}
-                    </div>
-                    <div className="text-[10px] text-zinc-400 mt-2">
-                        Pending scholar tuition balances
-                    </div>
-                </Card>
-
-                <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 p-5 rounded-2xl shadow-sm relative overflow-hidden">
-                    <div className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-1">
                         Pending Verification
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
-                        {pendingPayments.length}
+                    <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tracking-tight">
+                        ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
                     </div>
                     <div className="text-[10px] text-zinc-400 mt-2">
-                        Bank transfers awaiting audit
+                        {pendingPayments.length} Proofs awaiting approval
+                    </div>
+                </Card>
+
+                <Card className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 p-5 rounded-2xl shadow-sm">
+                    <div className="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-1">
+                        Configured Structures
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+                        {fees.length}
+                    </div>
+                    <div className="text-[10px] text-zinc-400 mt-2 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-zinc-400" /> Active Fee Protocols
                     </div>
                 </Card>
             </div>
 
-            {/* Pending Verification Queue */}
+            {/* Pending Proofs Verification Queue */}
             {pendingPayments.length > 0 && (
                 <div className="space-y-4">
-                    <div className="flex items-center gap-2.5">
-                        <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-500/30 text-amber-600 dark:text-amber-400">
-                            <ShieldCheck className="w-4 h-4" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-black text-zinc-900 dark:text-white uppercase tracking-tight">
-                                Payment Verification Queue
-                            </h2>
-                            <p className="text-[9px] text-zinc-500 uppercase tracking-widest">
-                                Reconcile Manual Bank Transfers & Direct Deposits
-                            </p>
-                        </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+                        <h2 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-widest">
+                            Pending Payment Receipts Verification ({pendingPayments.length})
+                        </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {pendingPayments.map((pay) => (
-                            <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-500/20 rounded-2xl p-4 sm:p-5 shadow-sm">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3.5">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-500/30 flex items-center justify-center font-bold text-amber-600">
-                                            {pay.invoice?.student?.firstName?.[0] || 'S'}
-                                        </div>
+                            <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-500/40 p-4 rounded-2xl shadow-sm flex flex-col justify-between">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-start">
                                         <div>
-                                            <div className="text-sm font-bold text-zinc-900 dark:text-white uppercase">
-                                                {pay.invoice?.student?.firstName} {pay.invoice?.student?.lastName}
+                                            <div className="text-xs font-bold text-zinc-900 dark:text-white uppercase">
+                                                {pay.student?.firstName} {pay.student?.lastName}
                                             </div>
                                             <div className="text-[9px] text-zinc-500 font-mono">
-                                                {pay.invoice?.student?.studentCode} • Ref: {pay.reference || 'NO_REF'}
+                                                ID: {pay.student?.studentCode} • Grade {pay.student?.grade?.name || "12"}
                                             </div>
                                         </div>
+                                        <span className="px-2 py-0.5 rounded-md text-[8px] font-mono font-bold uppercase bg-amber-50 dark:bg-amber-950/60 text-amber-600 border border-amber-500/30">
+                                            {pay.method || "TRANSFER"}
+                                        </span>
                                     </div>
 
-                                    <div className="flex items-center gap-6">
-                                        <div className="text-right">
-                                            <div className="text-[8px] font-mono text-zinc-400 uppercase">Amount</div>
-                                            <div className="text-base font-black text-zinc-900 dark:text-white">
-                                                ${parseFloat(pay.amount).toLocaleString()}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                onClick={() => handleVerifyPayment(pay.id, 'SUCCESS')}
-                                                disabled={verifyingPayment === pay.id}
-                                                className="h-9 px-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest"
-                                            >
-                                                Confirm
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                onClick={() => handleVerifyPayment(pay.id, 'FAILED')}
-                                                disabled={verifyingPayment === pay.id}
-                                                className="h-9 px-3 text-red-500 hover:bg-red-500/10 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-red-500/20"
-                                            >
-                                                Dispute
-                                            </Button>
-                                        </div>
+                                    <div className="text-lg font-black text-zinc-900 dark:text-white font-mono">
+                                        ${Number(pay.amount || 0).toLocaleString()}
                                     </div>
+
+                                    {pay.reference && (
+                                        <div className="text-[9px] font-mono text-zinc-500 bg-zinc-50 dark:bg-zinc-900/60 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 break-all">
+                                            Ref: {pay.reference}
+                                        </div>
+                                    )}
+
+                                    {pay.receiptUrl && (
+                                        <a
+                                            href={pay.receiptUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center text-[10px] text-eduGreen-600 dark:text-eduGreen-400 font-bold uppercase hover:underline mt-1"
+                                        >
+                                            <Download className="w-3.5 h-3.5 mr-1" /> View Bank Slip / Proof
+                                        </a>
+                                    )}
+                                </div>
+
+                                <div className="pt-4 mt-3 border-t border-zinc-100 dark:border-zinc-900 flex gap-2">
+                                    <Button
+                                        size="sm"
+                                        disabled={verifyingPayment === pay.id}
+                                        onClick={() => handleVerifyPayment(pay.id)}
+                                        className="w-full bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest h-8"
+                                    >
+                                        {verifyingPayment === pay.id ? (
+                                            <>
+                                                <Loader2 className="w-3 h-3 animate-spin mr-1.5" />
+                                                Verifying...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> Verify & Reconcile
+                                            </>
+                                        )}
+                                    </Button>
                                 </div>
                             </Card>
                         ))}
@@ -332,78 +405,23 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 </div>
             )}
 
-            {/* Fee Structures Grid */}
+            {/* Invoices Ledger Table */}
             <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-lg font-black text-zinc-900 dark:text-white uppercase tracking-tight">
-                            Institutional Fee Structures
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-widest">
+                            Institutional Invoices Ledger
                         </h2>
-                        <p className="text-[9px] text-zinc-500 uppercase tracking-widest">
-                            Authorized Tuition Matrices by Grade Level
-                        </p>
-                    </div>
-                    <Button
-                        onClick={() => setShowFeeModal(true)}
-                        size="sm"
-                        variant="outline"
-                        className="h-9 rounded-xl border-zinc-300 dark:border-zinc-800 text-[10px] font-bold uppercase tracking-widest"
-                    >
-                        <Plus className="w-3.5 h-3.5 mr-1 text-eduGreen-500" /> New Structure
-                    </Button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {fees.map((fee) => (
-                        <Card key={fee.id} className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-2xl p-5 shadow-sm hover:border-eduGreen-500/40 transition-all group relative">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <span className="text-[8px] font-mono font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest bg-eduGreen-50 dark:bg-eduGreen-950/50 px-2 py-0.5 rounded-md border border-eduGreen-500/20">
-                                        {fee.category}
-                                    </span>
-                                    <h3 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight mt-2.5">
-                                        {fee.name}
-                                    </h3>
-                                    <p className="text-[10px] text-zinc-500 mt-0.5">
-                                        {fee.grade ? `Grade ${fee.grade.level} - ${fee.grade.name}` : "All Campus Grades"} • {fee.frequency}
-                                    </p>
-                                </div>
-                                <button
-                                    onClick={() => setDeleteId(fee.id)}
-                                    className="p-1.5 text-zinc-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-900 flex items-center justify-between">
-                                <span className="text-[9px] text-zinc-400 uppercase tracking-widest">Rate</span>
-                                <span className="text-lg font-black text-zinc-900 dark:text-white font-mono">
-                                    ${parseFloat(fee.amount).toLocaleString()}
-                                </span>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-
-            {/* Institutional Invoices Ledger */}
-            <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-zinc-900">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                    <div>
-                        <h2 className="text-lg font-black text-zinc-900 dark:text-white uppercase tracking-tight">
-                            Scholar Invoices Ledger
-                        </h2>
-                        <p className="text-[9px] text-zinc-500 uppercase tracking-widest">
-                            Automated Billing Ledger & Receipts
-                        </p>
+                        {loadingInvoices && (
+                            <Loader2 className="w-3.5 h-3.5 text-eduGreen-500 animate-spin" />
+                        )}
                     </div>
 
-                    <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
-                        <div className="relative flex-1 sm:w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                        <div className="relative min-w-[200px]">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
                             <Input
-                                placeholder="Search scholar..."
+                                placeholder="Search scholar / student code..."
                                 value={searchQuery}
                                 onChange={e => {
                                     setSearchQuery(e.target.value);
@@ -419,13 +437,23 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                                 setStatusFilter(e.target.value);
                                 fetchInvoices(1, e.target.value, searchQuery);
                             }}
-                            className="h-10 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl px-3 text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest outline-none"
+                            className="h-10 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl px-3 text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-widest outline-none cursor-pointer"
                         >
                             <option value="ALL">All Statuses</option>
                             <option value="PAID">Paid</option>
                             <option value="PENDING">Pending</option>
                             <option value="OVERDUE">Overdue</option>
                         </select>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => fetchInvoices(page, statusFilter, searchQuery)}
+                            className="h-10 px-3 rounded-xl border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                            title="Refresh Invoices"
+                        >
+                            <RefreshCw className={cn("w-3.5 h-3.5", loadingInvoices && "animate-spin")} />
+                        </Button>
                     </div>
                 </div>
 
@@ -444,54 +472,94 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-900 text-xs">
-                                {invoices.map((inv) => {
-                                    const total = parseFloat(inv.totalAmount || 0);
-                                    const paid = parseFloat(inv.paidAmount || 0);
-                                    const isPaid = inv.status === 'PAID' || paid >= total;
-
-                                    return (
-                                        <tr key={inv.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors">
+                                {loadingInvoices ? (
+                                    Array.from({ length: 5 }).map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
                                             <td className="p-4">
-                                                <div className="font-bold text-zinc-900 dark:text-white uppercase">
-                                                    {inv.student?.firstName} {inv.student?.lastName}
-                                                </div>
-                                                <div className="text-[9px] text-zinc-500 font-mono">
-                                                    {inv.student?.studentCode}
-                                                </div>
+                                                <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-32 mb-1" />
+                                                <div className="h-3 bg-zinc-100 dark:bg-zinc-900 rounded w-20" />
                                             </td>
-                                            <td className="p-4 text-zinc-600 dark:text-zinc-400">
-                                                {inv.student?.grade?.name || "Grade 12"}
-                                            </td>
-                                            <td className="p-4 text-zinc-600 dark:text-zinc-400">
-                                                {inv.term}
-                                            </td>
-                                            <td className="p-4 font-mono font-bold text-zinc-900 dark:text-white">
-                                                ${total.toLocaleString()}
-                                            </td>
-                                            <td className="p-4 font-mono font-bold text-eduGreen-600 dark:text-eduGreen-400">
-                                                ${paid.toLocaleString()}
-                                            </td>
-                                            <td className="p-4">
-                                                <span className={cn(
-                                                    "px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest font-mono",
-                                                    isPaid ? "bg-eduGreen-50 dark:bg-eduGreen-950/50 text-eduGreen-600 border border-eduGreen-500/30" : "bg-amber-50 dark:bg-amber-950/50 text-amber-600 border border-amber-500/30"
-                                                )}>
-                                                    {inv.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 text-right">
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    onClick={() => triggerPrint(inv, inv.student)}
-                                                    className="h-8 px-2.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500 text-[10px] font-bold uppercase tracking-widest"
-                                                >
-                                                    <Printer className="w-3.5 h-3.5 mr-1" /> Receipt
-                                                </Button>
-                                            </td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-16" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-20" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-16" /></td>
+                                            <td className="p-4"><div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-16" /></td>
+                                            <td className="p-4"><div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded-full w-16" /></td>
+                                            <td className="p-4 text-right"><div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded-lg w-20 ml-auto" /></td>
                                         </tr>
-                                    );
-                                })}
+                                    ))
+                                ) : invoices.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="p-12 text-center">
+                                            <div className="flex flex-col items-center justify-center space-y-2 text-zinc-400">
+                                                <CreditCard className="w-8 h-8 stroke-[1.5] text-zinc-400" />
+                                                <p className="text-xs font-bold uppercase tracking-widest">No Invoices Found</p>
+                                                <p className="text-[10px] text-zinc-500">Run a billing cycle or refine your search filters.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    invoices.map((inv) => {
+                                        const total = parseFloat(inv.totalAmount || inv.amount || 0);
+                                        const paid = parseFloat(inv.paidAmount || 0);
+                                        const isPaid = inv.status === 'PAID' || paid >= total;
+                                        const isPrintingThis = printingId === inv.id;
+
+                                        return (
+                                            <tr key={inv.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors">
+                                                <td className="p-4">
+                                                    <div className="font-bold text-zinc-900 dark:text-white uppercase">
+                                                        {inv.student?.firstName} {inv.student?.lastName}
+                                                    </div>
+                                                    <div className="text-[9px] text-zinc-500 font-mono">
+                                                        {inv.student?.studentCode || 'N/A'}
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-zinc-600 dark:text-zinc-400">
+                                                    {inv.student?.grade?.name || "Universal Tier"}
+                                                </td>
+                                                <td className="p-4 text-zinc-600 dark:text-zinc-400">
+                                                    {inv.term || "Current Term"}
+                                                </td>
+                                                <td className="p-4 font-mono font-bold text-zinc-900 dark:text-white">
+                                                    ${total.toLocaleString()}
+                                                </td>
+                                                <td className="p-4 font-mono font-bold text-eduGreen-600 dark:text-eduGreen-400">
+                                                    ${paid.toLocaleString()}
+                                                </td>
+                                                <td className="p-4">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest font-mono",
+                                                        isPaid
+                                                            ? "bg-eduGreen-50 dark:bg-eduGreen-950/50 text-eduGreen-600 border border-eduGreen-500/30"
+                                                            : "bg-amber-50 dark:bg-amber-950/50 text-amber-600 border border-amber-500/30"
+                                                    )}>
+                                                        {inv.status || (isPaid ? "PAID" : "PENDING")}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-right">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        disabled={isPrintingThis}
+                                                        onClick={() => triggerPrint(inv, inv.student)}
+                                                        className="h-8 px-2.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500 text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-all"
+                                                    >
+                                                        {isPrintingThis ? (
+                                                            <>
+                                                                <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin text-eduGreen-500" />
+                                                                Generating...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Printer className="w-3.5 h-3.5 mr-1" /> Receipt
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -521,14 +589,16 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 isLoading={deletingFee}
             />
 
-            {/* Hidden Printable Invoice Element */}
-            <div className="hidden">
+            {/* Hidden Printable Invoice Element with proper print visibility */}
+            <div className="fixed -left-[99999px] top-0 opacity-0 pointer-events-none print:opacity-100 print:static print:left-0 print:pointer-events-auto" aria-hidden="true">
                 <div ref={printRef}>
-                    <InvoicePrint
-                        invoice={printInvoice}
-                        student={printStudent}
-                        school={school}
-                    />
+                    {printInvoice && (
+                        <InvoicePrint
+                            invoice={printInvoice}
+                            student={printStudent || printInvoice.student}
+                            school={school}
+                        />
+                    )}
                 </div>
             </div>
         </div>

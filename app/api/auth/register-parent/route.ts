@@ -233,6 +233,17 @@ export async function POST(request: Request) {
             }
         });
 
+        // 6. Asynchronous Welcome Email Dispatch
+        try {
+            const { sendWelcomeEmail } = await import('@/lib/email');
+            sendWelcomeEmail({
+                toEmail: transactionResult.user.email,
+                name: transactionResult.user.name,
+                role: 'PARENT',
+                schoolId: studentInfo?.schoolId || transactionResult.user.schoolId || undefined
+            }).catch((emailErr) => console.warn('[register-parent] Welcome email non-blocking failed:', emailErr));
+        } catch { /* non-blocking */ }
+
         return secureJson({ 
             success: true, 
             user: transactionResult.user, 
