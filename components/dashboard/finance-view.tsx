@@ -112,12 +112,17 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     };
 
 
-    useEffect(() => {
+    const fetchInitialData = () => {
         fetchFees();
         fetchFinancialAnalytics();
         fetchPendingPayments();
         fetchStaff();
         fetchPayrollHistory();
+        fetchInvoices();
+    };
+
+    useEffect(() => {
+        fetchInitialData();
     }, []);
 
     useEffect(() => {

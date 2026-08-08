@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { logError } from '@/lib/audit';
 import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
     try {
@@ -16,7 +17,6 @@ export async function POST(request: Request) {
             if (user) {
                 userId = user.id;
                 // Get schoolId from user metadata or db
-                const { prisma } = require('@/lib/prisma');
                 if (prisma) {
                     const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { schoolId: true } });
                     schoolId = dbUser?.schoolId || undefined;

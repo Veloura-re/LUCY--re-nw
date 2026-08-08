@@ -1,3 +1,4 @@
+import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
@@ -16,8 +17,7 @@ const getSupabase = () => {
 export const getCachedClassAssignments = (schoolId: string, classId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -36,7 +36,6 @@ export const getCachedClassAssignments = (schoolId: string, classId: string) => 
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const data = await prisma.assignment.findMany({
                 where: { classId, schoolId },
                 include: {
@@ -67,8 +66,7 @@ export const getCachedClassAssignments = (schoolId: string, classId: string) => 
 export const getCachedStudentAssignments = (schoolId: string, classId: string, studentId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -88,7 +86,6 @@ export const getCachedStudentAssignments = (schoolId: string, classId: string, s
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const assignments = await prisma.assignment.findMany({
                 where: { classId, schoolId, isPublished: true },
                 include: {
@@ -127,8 +124,7 @@ export const getCachedStudentAssignments = (schoolId: string, classId: string, s
 export const getCachedAssignmentDetails = (schoolId: string, assignmentId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -142,7 +138,6 @@ export const getCachedAssignmentDetails = (schoolId: string, assignmentId: strin
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const data = await prisma.assignment.findUnique({
                 where: { id: assignmentId, schoolId },
                 include: {
@@ -183,8 +178,7 @@ export const getCachedAssignmentDetails = (schoolId: string, assignmentId: strin
  * Fetch a summary of pending assignments for a student.
  */
 export const getStudentAssignmentSummary = async (schoolId: string, classId: string, studentId: string) => {
-    const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
     if (isEdge) {
         const supabase = getSupabase();
@@ -213,7 +207,6 @@ export const getStudentAssignmentSummary = async (schoolId: string, classId: str
     }
 
     // Node.js Prisma Fallback
-    const { prisma } = require('@/lib/prisma');
     const assignments = await prisma.assignment.findMany({
         where: { 
             classId, 
@@ -250,8 +243,7 @@ export const getStudentAssignmentSummary = async (schoolId: string, classId: str
 export const getSchoolAssignmentAnalytics = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 // Simplified Analytics for Edge
@@ -265,7 +257,6 @@ export const getSchoolAssignmentAnalytics = (schoolId: string) => {
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const sevenDaysAgo = new Date();
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -328,8 +319,7 @@ export const getSchoolAssignmentAnalytics = (schoolId: string) => {
 export const getDirectorAssignmentOversight = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -348,7 +338,6 @@ export const getDirectorAssignmentOversight = (schoolId: string) => {
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const data = await prisma.assignment.findMany({
                 where: { schoolId, isPublished: true },
                 include: {

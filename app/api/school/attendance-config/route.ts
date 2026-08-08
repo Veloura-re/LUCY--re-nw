@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
-        const config = await request.json();
+        const config = (await request.json()) as any;
 
         const updated = await prisma.school.update({
             where: { id: dbUser.schoolId! },
@@ -30,8 +30,8 @@ export async function POST(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'attendance', ip: _ip || undefined });
             }

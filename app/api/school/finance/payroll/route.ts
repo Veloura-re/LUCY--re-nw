@@ -9,7 +9,6 @@ export async function GET() {
 
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

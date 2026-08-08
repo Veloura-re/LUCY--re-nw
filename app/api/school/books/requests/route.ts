@@ -12,7 +12,6 @@ export async function GET(req: Request) {
         // Directors see all requests for the school, others see only their own
         const isDirector = dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN';
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -150,7 +149,6 @@ export async function POST(req: Request) {
 
         if (!title) return NextResponse.json({ error: "Title required" }, { status: 400 });
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -206,7 +204,6 @@ export async function PATCH(req: Request) {
         const validStatuses = ['PENDING', 'APPROVED', 'REJECTED', 'FULFILLED'];
         if (!validStatuses.includes(status)) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

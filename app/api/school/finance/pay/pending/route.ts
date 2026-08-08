@@ -6,7 +6,6 @@ export async function GET() {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -22,7 +21,7 @@ export async function GET() {
             if (invErr) throw invErr;
 
             const invoiceIds = (invoicesData || []).map((inv: any) => inv.id);
-            const invoiceMap = new Map((invoicesData || []).map((inv: any) => [inv.id, inv]));
+            const invoiceMap = new Map<string, any>((invoicesData || []).map((inv: any) => [inv.id, inv]));
 
             // Fetch students
             const { data: studentsData, error: sErr } = await supabaseAdmin
@@ -30,7 +29,7 @@ export async function GET() {
                 .select('id, firstName, lastName, studentCode')
                 .eq('schoolId', dbUser.schoolId!);
             if (sErr) throw sErr;
-            const studentMap = new Map((studentsData || []).map((s: any) => [s.id, s]));
+            const studentMap = new Map<string, any>((studentsData || []).map((s: any) => [s.id, s]));
 
             // Fetch pending payments
             let pendingPayments: any[] = [];

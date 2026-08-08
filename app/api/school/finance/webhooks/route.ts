@@ -13,7 +13,6 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "Ignoring non-success event" });
         }
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

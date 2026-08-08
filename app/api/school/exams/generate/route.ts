@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { generateExamQuestions } from '@/lib/ai';
+import { requireRole, handleApiError } from '@/lib/security';
 
 export async function POST(request: Request) {
     try {
+        // Auth guard: only teachers and above can generate AI exams
+        const authUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
+
         const body = await request.json();
         const { subject, topic, gradeLevel, count, type } = body;
 
@@ -20,19 +24,15 @@ export async function POST(request: Request) {
             type: type || 'MIXED'
         });
 
-        
-        // Audit log
+        // Non-blocking audit
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'GENERATE', resourceType: 'exam', ip: _ip || undefined });
-            }
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            await logActivity({ userId: authUser.id, action: 'GENERATE', resourceType: 'exam', ip: _ip });
         } catch { /* non-blocking */ }
-return NextResponse.json({ questions });
+
+        return NextResponse.json({ questions });
     } catch (error: any) {
-        console.error("AI Generation Error:", error);
-        return NextResponse.json({ error: error.message || 'Failed to generate questions' }, { status: 500 });
+        return handleApiError(error);
     }
 }

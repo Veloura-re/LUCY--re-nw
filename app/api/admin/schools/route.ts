@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sendInviteEmail } from '@/lib/email';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { prisma } from '@/lib/prisma';
 
 // GET - List all schools safely
 export async function GET(request: Request) {
@@ -12,7 +13,6 @@ export async function GET(request: Request) {
     }
 
     try {
-        const { prisma } = require('@/lib/prisma');
         
         // 1. Primary: Try Prisma ORM
         if (prisma) {
@@ -88,7 +88,6 @@ export async function POST(request: Request) {
     try {
         console.log(`[AdminAPI] Provisioning school: ${name} (Owner: ${ownerEmail})`);
         
-        const { prisma } = require('@/lib/prisma');
 
         if (prisma) {
             const existingUser = await prisma.user.findUnique({ where: { email: ownerEmail } });

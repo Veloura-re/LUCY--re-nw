@@ -45,8 +45,8 @@ export default function StudentTimetablePage() {
             try {
                 const res = await fetch("/api/student/timetable");
                 if (res.ok) {
-                    const data = await res.json();
-                    setTimetable(data);
+                    const data = (await res.json()) as Record<string, TimetablePeriod[]>;
+                    setTimetable(data || {});
                 } else {
                     toast.error("Failed to sync temporal coordinates");
                 }

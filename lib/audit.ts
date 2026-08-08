@@ -2,6 +2,17 @@ import { prisma } from './prisma';
 
 export type LogLevel = 'INFO' | 'WARN' | 'ERROR';
 
+/** Extract client IP from a NextRequest / standard Request header chain */
+export function getIp(req?: Request | null): string | undefined {
+    if (!req) return undefined;
+    return (
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        req.headers.get('cf-connecting-ip') ||
+        undefined
+    );
+}
+
+
 export async function logActivity({
     userId,
     schoolId,

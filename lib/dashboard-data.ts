@@ -76,7 +76,7 @@ const _getFamilyChildren = async (userId: string) => {
                         ? ((totalScore / totalMax) * 100).toFixed(1)
                         : '0.0';
 
-                    const totalOutstanding = outstandingInvoices
+                    const totalOutstanding = (outstandingInvoices as any[])
                         .reduce((acc: number, inv: any) => acc + Number(inv.amount || 0), 0)
                         .toFixed(2);
 

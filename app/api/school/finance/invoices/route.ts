@@ -13,7 +13,6 @@ export async function GET(request: Request) {
         const status = searchParams.get('status') || 'ALL';
         const offset = (page - 1) * limit;
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
