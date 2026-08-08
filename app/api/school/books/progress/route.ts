@@ -13,7 +13,6 @@ export async function POST(req: Request) {
 
         let targetUserId = dbUser.id;
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -133,7 +132,6 @@ export async function GET(req: Request) {
 
         let targetUserId = dbUser.id;
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

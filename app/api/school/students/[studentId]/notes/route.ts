@@ -56,8 +56,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ stu
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = undefined; // requireRole result not captured
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'student_note', ip: _ip || undefined });
             }

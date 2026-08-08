@@ -345,7 +345,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                     ref={printRef}
                     invoice={printInvoice}
                     student={printStudent}
-                    school={school || students[0]?.school}
+                    school={students[0]?.school || (user as any)?.school}
                 />
             </div>
         </div>

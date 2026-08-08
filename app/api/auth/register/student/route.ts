@@ -93,7 +93,7 @@ export async function POST(req: Request) {
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = req instanceof Request ? (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _userId = undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'REGISTER', resourceType: 'registration', ip: _ip || undefined });
             }

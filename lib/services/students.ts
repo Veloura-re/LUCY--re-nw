@@ -1,3 +1,4 @@
+import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
@@ -16,8 +17,7 @@ const getSupabase = () => {
 export const getCachedSchoolStudents = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 try {
@@ -48,7 +48,6 @@ export const getCachedSchoolStudents = (schoolId: string) => {
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const students = await prisma.student.findMany({
                 where: { schoolId },
                 include: {
@@ -97,8 +96,7 @@ export const getCachedSchoolStudents = (schoolId: string) => {
 export const getCachedStudentDossier = (studentId: string, schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -117,7 +115,6 @@ export const getCachedStudentDossier = (studentId: string, schoolId: string) => 
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             const result = await prisma.student.findUnique({
                 where: { id: studentId, schoolId },
                 include: {
@@ -168,8 +165,7 @@ export interface StudentQueryParams {
  * Service to fetch paginated students with dynamic filtering.
  */
 export const getPaginatedSchoolStudents = async (schoolId: string, params: StudentQueryParams = {}) => {
-    const { prisma: _prismaCheck } = require('@/lib/prisma');
-    const isEdge = !_prismaCheck;
+const isEdge = !prisma;
     
     const page = params.page || 1;
     const limit = params.limit || 50;
@@ -223,7 +219,6 @@ export const getPaginatedSchoolStudents = async (schoolId: string, params: Stude
     }
 
     // Node.js Prisma Fallback
-    const { prisma } = require('@/lib/prisma');
     
     const where: any = { schoolId };
     if (params.classId && params.classId !== 'ALL') {

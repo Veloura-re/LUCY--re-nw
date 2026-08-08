@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/lib/admin-auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
     const dbUser = await verifySuperAdmin();
@@ -8,11 +9,10 @@ export async function GET(request: Request) {
     }
 
     try {
-        const { prisma: db } = require('@/lib/prisma');
         let receipts: any[] = [];
 
-        if (db && db.billingReceipt) {
-            receipts = await db.billingReceipt.findMany({
+        if (prisma) {
+            receipts = await prisma.billingReceipt.findMany({
                 orderBy: { createdAt: 'desc' },
                 include: {
                     school: {
@@ -27,14 +27,14 @@ export async function GET(request: Request) {
             // Backfill any missing school/submittedBy references
             for (let r of receipts) {
                 if (!r.school && r.schoolId) {
-                    const foundSchool = await db.school.findUnique({
+                    const foundSchool = await prisma.school.findUnique({
                         where: { id: r.schoolId },
                         select: { id: true, name: true }
                     });
                     if (foundSchool) r.school = foundSchool;
                 }
                 if (!r.submittedBy && r.submittedById) {
-                    const foundUser = await db.user.findUnique({
+                    const foundUser = await prisma.user.findUnique({
                         where: { id: r.submittedById },
                         select: { id: true, name: true, email: true }
                     });

@@ -48,15 +48,16 @@ export async function GET(request: Request) {
                 include: {
                     class: { select: { id: true, name: true } },
                     grade: { select: { id: true, name: true } },
+                    parentLinks: {
+                        include: {
+                            parent: { select: { id: true, name: true, email: true, role: true } }
+                        }
+                    },
                     invoices: {
                         orderBy: { createdAt: 'desc' },
                         include: {
                             items: true,
-                            payments: {
-                                include: {
-                                    parent: { select: { id: true, name: true, email: true, role: true } }
-                                }
-                            },
+                            payments: true,
                         }
                     }
                 }
@@ -83,19 +84,20 @@ export async function GET(request: Request) {
         const studentDossiers = students.map(student => {
             const invoices = student.invoices || [];
             const totalBilled = invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+            const primaryParent = student.parentLinks?.[0]?.parent;
             
             const allPayments = invoices.flatMap(inv => (inv.payments || []).map((p: any) => ({
                 id: p.id,
                 invoiceId: inv.id,
                 amount: Number(p.amount || 0),
                 status: p.status || 'SUCCESS',
-                paymentMethod: p.paymentMethod || 'MANUAL_RECEIPT',
-                referenceId: p.referenceId || p.transactionId || `REF-${p.id.slice(0, 10).toUpperCase()}`,
+                paymentMethod: p.method || p.paymentMethod || 'MANUAL_RECEIPT',
+                referenceId: p.reference || p.referenceId || p.transactionId || `REF-${p.id.slice(0, 10).toUpperCase()}`,
                 receiptUrl: p.receiptUrl || p.proofUrl || p.metadata?.receiptUrl || p.metadata?.proofUrl || null,
                 screenshotUrl: p.receiptUrl || p.proofUrl || p.metadata?.screenshotUrl || null,
-                paidAt: p.paidAt || p.createdAt,
-                submitterName: p.parent?.name || `${student.firstName}'s Family`,
-                submitterEmail: p.parent?.email || student.email,
+                paidAt: p.createdAt || p.paidAt,
+                submitterName: primaryParent?.name || `${student.firstName}'s Family`,
+                submitterEmail: primaryParent?.email || student.email,
                 schoolName: school?.name || 'Academic Institution'
             })));
 

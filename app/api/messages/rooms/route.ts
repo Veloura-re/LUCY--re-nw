@@ -75,10 +75,16 @@ export async function POST(request: Request) {
                 }
             }
 
-            // Role guardrails
+            // 🛡️ Warding Spell: DM role guardrails
+            // Students can only DM teachers/staff — not other students
             if (dbUser.role === 'STUDENT' && targetUser.role === 'STUDENT') {
                 return NextResponse.json({ error: 'Direct transmission restricted on student mode' }, { status: 403 });
             }
+            // Parents can only DM teachers/staff or principals — not other parents
+            if (dbUser.role === 'PARENT' && targetUser.role === 'PARENT') {
+                return NextResponse.json({ error: 'Parent-to-parent direct messaging is not permitted' }, { status: 403 });
+            }
+            // Students can't DM other school's users (cross-school check already done above)
 
             const room = await getOrCreateDirectRoom(dbUser.schoolId, dbUser.id, targetUser.id);
             return NextResponse.json({ room });

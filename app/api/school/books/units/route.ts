@@ -9,7 +9,6 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const studentId = searchParams.get("studentId");
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -131,7 +130,6 @@ export async function POST(req: Request) {
 
         if (!title) return new NextResponse("Title required", { status: 400 });
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -181,8 +179,8 @@ export async function POST(req: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'book', ip: _ip || undefined });
             }

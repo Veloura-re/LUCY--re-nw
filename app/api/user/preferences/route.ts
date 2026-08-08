@@ -5,7 +5,7 @@ import { handleApiError, requireRole } from '@/lib/security';
 export async function PATCH(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT', 'SUPERADMIN']);
-        const body = await request.json();
+        const body = (await request.json()) as any;
 
         // Fetch current preferences
         const dbUser = await prisma.user.findUnique({
@@ -18,7 +18,7 @@ export async function PATCH(request: Request) {
         }
 
         const currentPrefs = (dbUser.preferences as any) || {};
-        const updatedPrefs = { ...currentPrefs, ...body };
+        const updatedPrefs = { ...currentPrefs, ...(body || {}) };
 
         await prisma.user.update({
             where: { id: user.id },
@@ -29,8 +29,8 @@ export async function PATCH(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = user?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE_PREFERENCES', resourceType: 'user', ip: _ip || undefined });
             }

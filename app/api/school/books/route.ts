@@ -16,7 +16,6 @@ export async function GET(req: Request) {
         let targetGradeId = gradeId;
         let targetClassId = classId;
 
-        const { prisma } = require('@/lib/prisma');
 
         // Role-based Access & Auto-filtering
         if (studentId) {
@@ -215,7 +214,6 @@ export async function POST(req: Request) {
             return new NextResponse("Missing mandatory fields (Title, File, Grade, Section, Subject)", { status: 400 });
         }
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

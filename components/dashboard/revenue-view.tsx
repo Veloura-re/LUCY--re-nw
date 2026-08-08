@@ -509,7 +509,7 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 onClose={() => setDeleteId(null)}
                 onConfirm={handleDeleteFee}
                 title="Dismantle Fee Structure"
-                message="Are you sure you want to deactivate this fee structure? Existing invoices linked to it will be preserved."
+                description="Are you sure you want to deactivate this fee structure? Existing invoices linked to it will be preserved."
                 confirmText="Dismantle Structure"
                 variant="danger"
                 isLoading={deletingFee}
