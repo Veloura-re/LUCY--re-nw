@@ -93,8 +93,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'exam', ip: _ip || undefined });
             }

@@ -37,17 +37,14 @@ export async function POST(req: Request) {
         if (!isAuthorized) return new NextResponse("Forbidden", { status: 403 });
 
         if (invoice.status === 'PAID') {
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'payment', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ message: "Already Paid" });
+            try {
+                const { logActivity } = await import('@/lib/audit');
+                const _ip = typeof req !== 'undefined' && req instanceof Request ? (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || undefined) : undefined;
+                if (authUser?.id) {
+                    await logActivity({ userId: authUser.id, action: 'CREATE', resourceType: 'payment', ip: _ip });
+                }
+            } catch { /* non-blocking */ }
+            return NextResponse.json({ message: "Already Paid" });
         }
 
         // Check if there's already a pending payment for this invoice

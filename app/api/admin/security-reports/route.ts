@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/lib/admin-auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
     const dbUser = await verifySuperAdmin();
@@ -9,7 +10,6 @@ export async function GET(request: Request) {
     }
 
     try {
-        const { prisma } = require('@/lib/prisma');
         if (prisma && prisma.securityReport) {
             const reports = await prisma.securityReport.findMany({
                 orderBy: { createdAt: 'desc' }

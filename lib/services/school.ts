@@ -1,3 +1,4 @@
+import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { createClient } from '@supabase/supabase-js';
@@ -16,8 +17,7 @@ const getSupabase = () => {
 export const getCachedSchoolStructure = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -37,7 +37,6 @@ export const getCachedSchoolStructure = (schoolId: string) => {
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             return await prisma.grade.findMany({
                 where: { schoolId },
                 include: {
@@ -69,8 +68,7 @@ export const getCachedSchoolStructure = (schoolId: string) => {
 export const getCachedSchoolConfig = (schoolId: string) => {
     return unstable_cache(
         async () => {
-            const { prisma: _prismaCheck } = require('@/lib/prisma');
-            const isEdge = !_prismaCheck;
+const isEdge = !prisma;
 
             if (isEdge) {
                 const supabase = getSupabase();
@@ -83,7 +81,6 @@ export const getCachedSchoolConfig = (schoolId: string) => {
             }
 
             // Node.js Prisma Fallback
-            const { prisma } = require('@/lib/prisma');
             return await prisma.school.findUnique({
                 where: { id: schoolId },
                 select: {

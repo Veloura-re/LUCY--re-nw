@@ -6,7 +6,6 @@ export async function GET() {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

@@ -9,7 +9,6 @@ import { createClient } from '@supabase/supabase-js';
  * Prefers Supabase HTTP lookup on Edge for stability.
  */
 export const getCachedUser = cache(async (userId: string) => {
-    const { prisma: _p } = require('@/lib/prisma');
     const isEdge = !_p;
 
     // On Edge, we prefer Supabase SDK immediately to avoid Prisma bundling issues
@@ -128,7 +127,6 @@ export const getCachedUser = cache(async (userId: string) => {
 });
 
 export const getCachedUserByEmail = cache(async (email: string) => {
-    const { prisma: _p2 } = require('@/lib/prisma');
     const isEdge = !_p2;
 
     if (isEdge) {

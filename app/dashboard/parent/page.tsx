@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
     GraduationCap, TrendingUp, Calendar, CreditCard,
     ChevronRight, Loader2, AlertCircle, Users, ArrowRight,
-    BookOpen, ClipboardCheck
+    BookOpen, ClipboardCheck, MessageSquare
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";

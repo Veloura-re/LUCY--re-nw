@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError, secureJson } from '@/lib/security';
-import { getCachedRoomMessages } from '@/lib/services/messages';
+import { getCachedRoomMessages, invalidateRoomCache } from '@/lib/services/messages';
 import { ensureDbUser } from '@/lib/messaging';
 
 export async function GET(request: Request) {
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
-        const { chatRoomId, content, attachments } = await request.json();
+        const { chatRoomId, content, attachments } = (await request.json()) as any;
 
         if (!chatRoomId || (!content && !attachments)) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -94,6 +94,9 @@ export async function POST(request: Request) {
             where: { id: chatRoomId },
             data: { updatedAt: new Date() }
         }).catch(() => {});
+
+        // Instant Redis/LRU cache invalidation for this room
+        await invalidateRoomCache(chatRoomId).catch(() => {});
 
         return NextResponse.json({ message });
     } catch (e) {

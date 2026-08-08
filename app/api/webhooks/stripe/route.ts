@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { prisma } from '@/lib/prisma';
 
 // Initialize with a dummy key if env var is missing during build time
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy123', {
@@ -29,7 +30,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
         }
 
-        const { prisma: db } = require('@/lib/prisma');
 
         switch (event.type) {
             case 'checkout.session.completed': {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
                 // Grant 35 days (1 month + grace) to avoid race conditions with next billing cycle
                 const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000); 
 
-                if (!db) {
+                if (!prisma) {
                     const { createClient } = require('@supabase/supabase-js');
                     const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
                     
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
                         trialEndsAt: extendedTrialDate.toISOString()
                     }).eq('id', schoolId);
                 } else {
-                    await db.school.update({
+                    await prisma.school.update({
                         where: { id: schoolId },
                         data: {
                             subscriptionStatus: 'active',
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
                 // Whenever a recurring payment succeeds, push out the expiration
                 const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000); 
 
-                if (!db) {
+                if (!prisma) {
                     const { createClient } = require('@supabase/supabase-js');
                     const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
                     
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
                         trialEndsAt: extendedTrialDate.toISOString()
                     }).eq('stripeCustomerId', customerId);
                 } else {
-                    await db.school.updateMany({
+                    await prisma.school.updateMany({
                         where: { stripeCustomerId: customerId },
                         data: {
                             subscriptionStatus: 'active',
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
                 const subscription = event.data.object as Stripe.Subscription;
                 const customerId = subscription.customer as string;
 
-                if (!db) {
+                if (!prisma) {
                     const { createClient } = require('@supabase/supabase-js');
                     const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
                     
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
                         subscriptionStatus: 'inactive',
                     }).eq('stripeCustomerId', customerId);
                 } else {
-                    await db.school.updateMany({
+                    await prisma.school.updateMany({
                         where: { stripeCustomerId: customerId },
                         data: {
                             subscriptionStatus: 'inactive',

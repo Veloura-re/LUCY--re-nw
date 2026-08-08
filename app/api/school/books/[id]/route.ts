@@ -10,9 +10,12 @@ export async function PATCH(
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await req.json() as any;
+        const body = (await req.json()) as Record<string, any>;
+        const updateData: Record<string, any> = {};
+        for (const [key, value] of Object.entries(body)) {
+            if (value !== undefined) updateData[key] = value;
+        }
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -31,7 +34,7 @@ export async function PATCH(
 
             const { data: updatedBook, error } = await supabaseAdmin
                 .from('Book')
-                .update({ ...body })
+                .update(updateData)
                 .eq('id', id)
                 .select()
                 .single();
@@ -50,7 +53,7 @@ export async function PATCH(
 
         const updatedBook = await prisma.book.update({
             where: { id },
-            data: { ...body }
+            data: updateData
         });
 
         return NextResponse.json(updatedBook);
@@ -67,7 +70,6 @@ export async function DELETE(
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(

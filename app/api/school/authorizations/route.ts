@@ -10,7 +10,6 @@ export async function GET(request: Request) {
         const studentId = searchParams.get('studentId');
         const status = searchParams.get('status') as any;
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -132,7 +131,6 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: 'ID and Status required' }, { status: 400 });
         }
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -150,8 +148,8 @@ export async function PATCH(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'authorization', ip: _ip || undefined });
             }

@@ -11,7 +11,6 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const gradeId = searchParams.get('gradeId');
 
-        const { prisma } = require('@/lib/prisma');
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
             const supabaseAdmin = createSupabaseAdmin(
@@ -168,7 +167,7 @@ export async function PATCH(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
@@ -203,7 +202,7 @@ export async function POST(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
@@ -278,7 +277,7 @@ export async function DELETE(request: Request) {
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });

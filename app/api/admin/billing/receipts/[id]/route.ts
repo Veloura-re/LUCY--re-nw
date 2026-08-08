@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/lib/admin-auth';
+import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
     request: Request,
@@ -19,9 +20,8 @@ export async function PATCH(
     }
 
     try {
-        const { prisma: db } = require('@/lib/prisma');
 
-        if (!db) {
+        if (!prisma) {
             // Edge runtime fallback using Supabase
             const { createClient } = require('@supabase/supabase-js');
             const supabaseAdmin = createClient(
@@ -65,7 +65,7 @@ export async function PATCH(
             }
         } else {
             // Node runtime using Prisma
-            await db.$transaction(async (tx: any) => {
+            await prisma.$transaction(async (tx: any) => {
                 const receipt = await tx.billingReceipt.update({
                     where: { id },
                     data: { 
@@ -91,8 +91,8 @@ export async function PATCH(
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'billing', ip: _ip || undefined });
             }

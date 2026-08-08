@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { requireRole } from '@/lib/security';
+import { requireRole, handleApiError } from '@/lib/security';
+import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
 // Initialize with a dummy key if env var is missing during build time
@@ -11,19 +12,9 @@ export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
         const user = await requireRole(['OWNER', 'PRINCIPAL']);
-        
-        const { prisma: db } = require('@/lib/prisma');
 
-        // Fetch the school to get its name and current Stripe Customer ID if it exists
-        let school;
-        if (!db) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin.from('School').select('*').eq('id', user.schoolId).single();
-            school = data;
-        } else {
-            school = await db.school.findUnique({ where: { id: user.schoolId } });
-        }
+        // 🔮 Crystal Ball: use top-level prisma import — no more dynamic require() cold-start failures
+        const school = await prisma.school.findUnique({ where: { id: user.schoolId! } });
 
         if (!school) {
             return NextResponse.json({ error: 'School not found' }, { status: 404 });
@@ -37,7 +28,7 @@ export async function POST(request: Request) {
 
         // Set up the checkout session for a $149/month subscription
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'], // Stripe automatically enables Google Pay and Apple Pay
+            payment_method_types: ['card'],
             customer_email: user.email,
             client_reference_id: school.id,
             line_items: [
@@ -64,22 +55,18 @@ export async function POST(request: Request) {
             }
         });
 
-        
-        // Audit log
+        // Non-blocking audit
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'INITIATE_PAYMENT', resourceType: 'billing', ip: _ip || undefined });
-            }
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            await logActivity({ userId: user.id, action: 'INITIATE_PAYMENT', resourceType: 'billing', ip: _ip });
         } catch { /* non-blocking */ }
-return NextResponse.json({ 
-            success: true, 
+
+        return NextResponse.json({
+            success: true,
             checkoutUrl: session.url
         });
     } catch (error: any) {
-        console.error('[BillingCheckout/POST] Error:', error.message);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return handleApiError(error);
     }
 }

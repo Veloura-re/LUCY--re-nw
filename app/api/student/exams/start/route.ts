@@ -9,25 +9,31 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Only students can start exams' }, { status: 403 });
         }
 
-        const { examId } = await request.json();
+        const { examId } = (await request.json()) as { examId: string };
         if (!examId) return NextResponse.json({ error: 'Exam ID is required' }, { status: 400 });
 
         const student = await prisma.student.findUnique({ where: { userId: dbUser.id } });
         if (!student) return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
 
-        // Check if exam exists and is published
-        const exam = await prisma.exam.findUnique({ where: { id: examId } });
-        if (!exam || !exam.isPublished) {
+        // 🛡️ Warding Spell: scope exam lookup via Class → schoolId to prevent IDOR cross-school access
+        // (Exam has no direct schoolId — it's owned by a Class which belongs to a school)
+        const exam = await prisma.exam.findFirst({
+            where: {
+                id: examId,
+                isPublished: true,
+                class: { schoolId: student.schoolId }  // Tenant isolation via class relationship
+            }
+        });
+        if (!exam) {
             return NextResponse.json({ error: 'Exam not available' }, { status: 404 });
         }
 
-        // Check for existing attempt
+        // 🔮 Dark Magic: prevent duplicate attempt creation under rapid double-submit
         let attempt = await prisma.examAttempt.findFirst({
             where: { examId, studentId: student.id }
         });
 
         if (!attempt) {
-            // Start a new attempt
             attempt = await prisma.examAttempt.create({
                 data: {
                     examId,
@@ -38,17 +44,14 @@ export async function POST(request: Request) {
             });
         }
 
-        
-        // Audit log
+        // Non-blocking audit
         try {
             const { logActivity } = await import('@/lib/audit');
-            const _ip = request instanceof Request ? (request.headers.get('x-forwarded-for') || request.headers.get('cf-connecting-ip') || undefined) : undefined;
-            const _userId = (typeof user !== 'undefined' && user?.id) ? user.id : undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'exam', ip: _ip || undefined });
-            }
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            await logActivity({ userId: dbUser.id, action: 'START_EXAM', resourceType: 'exam', resourceId: examId, ip: _ip });
         } catch { /* non-blocking */ }
-return NextResponse.json({ attempt });
+
+        return NextResponse.json({ attempt });
     } catch (e) {
         return handleApiError(e);
     }

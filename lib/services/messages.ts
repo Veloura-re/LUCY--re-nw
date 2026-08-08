@@ -1,13 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { prisma } from '@/lib/prisma';
 import { getStructuredSchoolRooms } from '@/lib/messaging';
-
-// Helper to get supabase client on Edge
-const getSupabase = () => {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-};
+import { roomCache } from '@/lib/cache/redis';
 
 /**
  * Direct fetch for structured chat channels (Campus, Classes, Direct).
@@ -27,58 +20,62 @@ export async function getCachedUserRooms(userId: string, schoolId: string, role?
 }
 
 /**
- * Fetch messages for a specific chat room with cursor pagination.
+ * Fetch messages for a specific chat room with cursor pagination and Redis/LRU caching.
+ * Caches messages per chatRoomId with 30s TTL and instant invalidation on write.
  */
 export async function getCachedRoomMessages(chatRoomId: string, cursor?: string, limit: number = 50) {
     if (!chatRoomId) return { messages: [], nextCursor: null };
 
-    try {
-        const { prisma } = require('@/lib/prisma');
+    // Check Redis/LRU Cache Tier
+    const cached = await roomCache.getRoomMessages(chatRoomId, cursor, limit);
+    if (cached) {
+        return cached;
+    }
 
-        if (prisma) {
-            const take = limit || 50;
-            const messages = await prisma.message.findMany({
-                where: { chatRoomId },
-                orderBy: { createdAt: 'desc' },
-                take: take + 1,
-                cursor: cursor ? { id: cursor } : undefined,
-                include: {
-                    fromUser: {
-                        select: { id: true, name: true, photoUrl: true, role: true }
-                    }
-                }
-            });
-
-            let nextCursor: string | null = null;
-            if (messages.length > take) {
-                const nextItem = messages.pop();
-                nextCursor = nextItem.id;
-            }
-
-            return {
-                messages: messages.reverse(),
-                nextCursor
-            };
-        }
-    } catch (e) {
-        console.warn('[getCachedRoomMessages] Prisma error, using Supabase fallback:', e);
+    if (!prisma) {
+        console.error('[getCachedRoomMessages] prisma is not available');
+        return { messages: [], nextCursor: null };
     }
 
     try {
-        const supabase = getSupabase();
-        const { data: messages } = await supabase
-            .from('Message')
-            .select('*, fromUser:User(id, name, photoUrl, role)')
-            .eq('chatRoomId', chatRoomId)
-            .order('createdAt', { ascending: true })
-            .limit(limit || 50);
+        const take = Math.min(limit || 50, 200); // cap at 200 to prevent runaway queries
+        const messages = await prisma.message.findMany({
+            where: { chatRoomId },
+            orderBy: { createdAt: 'desc' },
+            take: take + 1,
+            cursor: cursor ? { id: cursor } : undefined,
+            include: {
+                fromUser: {
+                    select: { id: true, name: true, photoUrl: true, role: true }
+                }
+            }
+        });
 
-        return {
-            messages: messages || [],
-            nextCursor: null
+        let nextCursor: string | null = null;
+        if (messages.length > take) {
+            const nextItem = messages.pop();
+            nextCursor = nextItem!.id;
+        }
+
+        const result = {
+            messages: messages.reverse(),
+            nextCursor
         };
+
+        // Cache result for 30s
+        await roomCache.setRoomMessages(chatRoomId, result, cursor, limit);
+
+        return result;
     } catch (e) {
-        console.error('[getCachedRoomMessages] Supabase error:', e);
+        console.error('[getCachedRoomMessages] DB error:', e);
         return { messages: [], nextCursor: null };
     }
 }
+
+/**
+ * Invalidate cached messages for a chat room on mutation (new message, delete, etc.)
+ */
+export async function invalidateRoomCache(chatRoomId: string) {
+    await roomCache.invalidateRoom(chatRoomId);
+}
+

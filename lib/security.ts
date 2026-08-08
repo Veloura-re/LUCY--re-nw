@@ -1,3 +1,4 @@
+import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { NextResponse } from 'next/server';
 
@@ -52,7 +53,6 @@ export async function requireAuth() {
 export async function requireRole(allowedRoles: Role[]) {
     const user = await requireAuth();
 
-    const { prisma } = require('@/lib/prisma');
     let dbUser: any = null;
 
     if (!prisma) {
@@ -121,7 +121,6 @@ export async function requireSchoolLinked() {
     const user = await requireAuth();
     
     let dbUser: any = null;
-    const { prisma } = require('@/lib/prisma');
 
     if (!prisma) {
         const { createClient } = require('@supabase/supabase-js');
@@ -199,7 +198,6 @@ export async function requireHomeroomAccess(classId: string) {
     const user = await requireRole(['TEACHER', 'HOMEROOM', 'OWNER', 'PRINCIPAL', 'SUPERADMIN']);
     if (user.role === 'OWNER' || user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
 
-    const { prisma } = require('@/lib/prisma');
     let classRecord: any = null;
 
     if (!prisma) {
@@ -226,7 +224,6 @@ export async function requireHomeroomAccess(classId: string) {
 }
 
 export async function isHomeroomTeacher(userId: string, classId: string) {
-    const { prisma } = require('@/lib/prisma');
     let classRecord: any = null;
 
     if (!prisma) {

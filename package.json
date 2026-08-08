@@ -9,6 +9,9 @@
     "build:local": "npm run build",
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "eslint",
+    "test": "jest",
+    "audit:administrator": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts",
+    "audit:administrator:fix": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts --fix",
     "postinstall": "node scripts/patch-opennext.js"
   },
   "dependencies": {
@@ -70,6 +73,7 @@
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.17.1",
     "@tailwindcss/postcss": "^4",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.11",
     "@types/pg": "^8.18.0",
@@ -79,8 +83,10 @@
     "baseline-browser-mapping": "^2.10.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
+    "jest": "^30.4.2",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "wrangler": "^4.90.0"
