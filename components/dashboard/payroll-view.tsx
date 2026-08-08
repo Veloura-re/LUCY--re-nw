@@ -18,7 +18,8 @@ import {
     Receipt,
     Wallet,
     Sparkles,
-    ShieldCheck
+    ShieldCheck,
+    Coins
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -154,8 +155,13 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <Link href="/dashboard/finance/revenue">
+                <div className="flex items-center gap-3 flex-wrap">
+                    <Link href="/dashboard/finance">
+                        <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-eduGreen-500/50">
+                            <Coins className="w-4 h-4 mr-2 text-eduGreen-500" /> Fee Architecture
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/revenue">
                         <Button variant="outline" className="h-10 sm:h-11 px-4 rounded-xl border-zinc-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest hover:border-eduGreen-500/50">
                             <DollarSign className="w-4 h-4 mr-2 text-eduGreen-500" /> Revenue Hub
                         </Button>
