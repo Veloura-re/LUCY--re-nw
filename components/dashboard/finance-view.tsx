@@ -18,19 +18,21 @@ import {
     Filter,
     Zap,
     CalendarDays,
-    ShieldCheck
+    ShieldCheck,
+    Coins,
+    Users,
+    Receipt,
+    Sparkles,
+    CheckCircle2,
+    Layers,
+    Clock,
+    FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { toast } from "sonner";
-import { ConfirmationModal, InputModal, PaymentModal } from "@/components/ui/confirmation-modal";
-import { useReactToPrint } from "react-to-print";
-import { InvoicePrint } from "./invoice-print";
-import { format } from "date-fns";
-import { Printer, ChevronDown, Wallet, Users, ArrowUpCircle } from "lucide-react";
-import { PayrollDashboard } from "./payroll-dashboard";
-
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { FeeStructureModal } from "./fee-structure-modal";
 import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
 
@@ -43,321 +45,45 @@ interface FinanceViewProps {
 export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const cachedFees = typeof window !== 'undefined' ? getClientCache<any[]>('finance_fees_list') : null;
     const cachedAnalytics = typeof window !== 'undefined' ? getClientCache<any>('finance_analytics') : null;
-    const cachedStaff = typeof window !== 'undefined' ? getClientCache<any[]>('finance_staff_list') : null;
 
     const [fees, setFees] = useState<any[]>(cachedFees || []);
     const [loading, setLoading] = useState(!cachedFees);
-    const [isCreating, setIsCreating] = useState(false);
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [showFeeModal, setShowFeeModal] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-    const [financialAnalytics, setFinancialAnalytics] = useState<any>(cachedAnalytics || null);
-    const [invoices, setInvoices] = useState<any[]>([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState("ALL");
-    const [activeTab, setActiveTab] = useState<"REVENUE" | "EXPENSES">("REVENUE");
-    
-    // Pagination state for invoices
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const limit = 50;
-    const [staff, setStaff] = useState<any[]>(cachedStaff || []);
-    const [payrollHistory, setPayrollHistory] = useState<any[]>([]);
-    const [isPaying, setIsPaying] = useState<string | null>(null);
-
-    const [formData, setFormData] = useState({
-        name: "",
-        amount: "",
-        category: "TUITION",
-        frequency: "TERM",
-        gradeId: "ALL",
-        description: ""
-    });
-
-    const [pendingPayments, setPendingPayments] = useState<any[]>([]);
-    const [printInvoice, setPrintInvoice] = useState<any>(null);
-    const [printStudent, setPrintStudent] = useState<any>(null);
-
-    const [verifyingPayment, setVerifyingPayment] = useState<string | null>(null);
-    const [creatingFee, setCreatingFee] = useState(false);
     const [deletingFee, setDeletingFee] = useState(false);
-    const [simulatingPay, setSimulatingPay] = useState<string | null>(null);
-
-    const [paymentContext, setPaymentContext] = useState<{
-        isOpen: boolean;
-        type: 'PAYROLL' | 'INVOICE';
-        memberId?: string;
-        invoiceId?: string;
-        title: string;
-        description: string;
-        defaultAmount?: string;
-    }>({
-        isOpen: false,
-        type: 'PAYROLL',
-        title: "",
-        description: ""
-    });
-
-    const printRef = React.useRef<HTMLDivElement>(null);
-    const handlePrint = useReactToPrint({
-        contentRef: printRef,
-    });
-
-    const triggerPrint = (invoice: any) => {
-        setPrintInvoice(invoice);
-        setPrintStudent(invoice.student);
-        setTimeout(() => {
-            handlePrint();
-        }, 100);
-    };
-
-
-    const fetchInitialData = () => {
-        fetchFees();
-        fetchFinancialAnalytics();
-        fetchPendingPayments();
-        fetchStaff();
-        fetchPayrollHistory();
-        fetchInvoices();
-    };
+    const [financialAnalytics, setFinancialAnalytics] = useState<any>(cachedAnalytics || null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("ALL");
+    const [gradeFilter, setGradeFilter] = useState("ALL");
 
     useEffect(() => {
         fetchInitialData();
     }, []);
 
-    useEffect(() => {
-        const invCacheKey = `finance_invoices_${page}_${statusFilter}_${searchQuery}`;
-        const cachedInv = getClientCache<any>(invCacheKey);
-        if (cachedInv) {
-            setInvoices(cachedInv.invoices || cachedInv);
-            if (cachedInv.pagination) setTotalPages(cachedInv.pagination.totalPages || 1);
-        }
-        fetchInvoices();
-    }, [page, searchQuery, statusFilter]);
-
-    const fetchStaff = async () => {
+    const fetchInitialData = async () => {
+        setLoading(true);
         try {
-            const res = await fetchWithResilience('/api/school/teachers', {}, 8000);
-            if (res.ok) {
-                const data = await res.json();
-                const teacherList = (data as any).teachers || [];
-                setStaff(teacherList);
-                setClientCache('finance_staff_list', teacherList, 15 * 60 * 1000);
-            }
-        } catch (e) { console.error(e); }
-    };
+            const [feesRes, analyticsRes] = await Promise.all([
+                fetchWithResilience('/api/school/finance/fees', {}, 8000),
+                fetchWithResilience('/api/school/finance/analytics', {}, 8000)
+            ]);
 
-    const fetchPayrollHistory = async () => {
-        try {
-            const res = await fetchWithResilience('/api/director/payroll', {}, 8000);
-            if (res.ok) {
-                const data = await res.json();
-                setPayrollHistory(Array.isArray(data) ? data : []);
-            }
-        } catch (e) {
-            console.error(e);
-            setPayrollHistory([]);
-        }
-    };
-
-    const handleIssuePayment = async (staffId: string) => {
-        const member = staff.find(s => s.id === staffId);
-        const lastPay = payrollHistory.find(p => p.userId === staffId);
-
-        setPaymentContext({
-            isOpen: true,
-            type: 'PAYROLL',
-            memberId: staffId,
-            title: `Issue Payroll: ${member?.name || 'Personnel'}`,
-            description: "Authorize institutional resource disbursement for this personnel node.",
-            defaultAmount: lastPay?.amount?.toString() || ""
-        });
-    };
-
-    const processPayrollPayment = async (data: { amount: number; method: string; note: string }) => {
-        if (!paymentContext.memberId) return;
-
-        setIsPaying(paymentContext.memberId);
-        try {
-            const res = await fetch('/api/director/payroll', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: paymentContext.memberId,
-                    amount: data.amount,
-                    periodStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-                    periodEnd: new Date(),
-                    method: data.method,
-                    note: data.note
-                })
-            });
-            if (res.ok) {
-                toast.success("Payment Dispatched");
-                fetchPayrollHistory();
-                setPaymentContext(prev => ({ ...prev, isOpen: false }));
-            } else {
-                const errorData: any = await res.json().catch(() => ({}));
-                toast.error(`Failed: ${errorData.error || res.statusText}`);
-            }
-        } catch (e: any) {
-            toast.error(e.message || "Connection Failure");
-        } finally {
-            setIsPaying(null);
-        }
-    };
-
-    const handleRecordManualPayment = (invoice: any) => {
-        setPaymentContext({
-            isOpen: true,
-            type: 'INVOICE',
-            invoiceId: invoice.id,
-            title: `Settle Invoice: ${invoice.student.firstName}`,
-            description: `Manually record fulfillment for Invoice #${invoice.id.slice(0, 8)}`,
-            defaultAmount: invoice.amount.toString()
-        });
-    };
-
-    const processInvoicePayment = async (data: { amount: number; method: string; note: string }) => {
-        if (!paymentContext.invoiceId) return;
-
-        setSimulatingPay(paymentContext.invoiceId);
-        try {
-            const res = await fetch('/api/school/finance/webhooks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    invoiceId: paymentContext.invoiceId,
-                    status: 'SUCCESS',
-                    transactionReference: `MANUAL_${data.method}_${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
-                    amount: data.amount,
-                    note: data.note
-                })
-            });
-            if (res.ok) {
-                toast.success("Settlement Recorded");
-                fetchInvoices();
-                fetchFinancialAnalytics();
-                setPaymentContext(prev => ({ ...prev, isOpen: false }));
-            } else {
-                toast.error(`Failed to process payment: ${res.statusText}`);
-            }
-        } catch (e) {
-            toast.error("Internal sync error");
-        } finally {
-            setSimulatingPay(null);
-        }
-    };
-
-    const fetchPendingPayments = async () => {
-        try {
-            const res = await fetch('/api/school/finance/pay/pending');
-            if (res.ok) {
-                const data = await res.json();
-                const list = data.payments || (Array.isArray(data) ? data : []);
-                setPendingPayments(list);
-            }
-        } catch (e) {
-            console.error("Failed to fetch pending verifications", e);
-        }
-    };
-
-    const handleVerifyPayment = async (paymentId: string, status: 'SUCCESS' | 'FAILED') => {
-        setVerifyingPayment(paymentId);
-        try {
-            const res = await fetch('/api/school/finance/pay/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ paymentId, status })
-            });
-            if (res.ok) {
-                toast.success(status === 'SUCCESS' ? "Payment Verified" : "Payment Rejected");
-                fetchPendingPayments();
-                fetchInvoices();
-                fetchFinancialAnalytics();
-            } else {
-                toast.error(`Verification Failed: ${await res.text()}`);
-            }
-        } catch (e: any) {
-            toast.error(e.message || "System error");
-        } finally {
-            setVerifyingPayment(null);
-        }
-    };
-
-    const fetchInvoices = async () => {
-        try {
-            const params = new URLSearchParams({
-                page: page.toString(),
-                limit: limit.toString(),
-                status: statusFilter,
-                ...(searchQuery && { search: searchQuery })
-            });
-            const res = await fetchWithResilience(`/api/school/finance/invoices?${params.toString()}`, {}, 8000);
-            if (res.ok) {
-                const data = ((await res.json()) as any);
-                const invList = data.invoices || (Array.isArray(data) ? data : []);
-                setInvoices(invList);
-                if (data.pagination) setTotalPages(data.pagination.totalPages || 1);
-                
-                const invCacheKey = `finance_invoices_${page}_${statusFilter}_${searchQuery}`;
-                setClientCache(invCacheKey, invList, 10 * 60 * 1000);
-            }
-        } catch (e) {
-            console.error("Invoice synchronizer failed:", e);
-        }
-    };
-
-    const fetchFinancialAnalytics = async () => {
-        try {
-            const res = await fetchWithResilience('/api/school/finance/analytics', {}, 8000);
-            if (res.ok) {
-                const data = await res.json();
-                setFinancialAnalytics(data);
-                setClientCache('finance_analytics', data, 15 * 60 * 1000);
-            }
-        } catch (e) {
-            console.error("Finance analytics connection failed:", e);
-        }
-    };
-
-    const fetchFees = async () => {
-        if (!cachedFees) setLoading(true);
-        try {
-            const res = await fetchWithResilience('/api/school/finance/fees', {}, 8000);
-            if (res.ok) {
-                const data = ((await res.json()) as any);
-                const feeList = data.fees || (Array.isArray(data) ? data : []);
+            if (feesRes.ok) {
+                const data = await feesRes.json();
+                const feeList = data.fees || [];
                 setFees(feeList);
-                setClientCache('finance_fees_list', feeList, 15 * 60 * 1000);
+                setClientCache('finance_fees_list', feeList, 60000);
+            }
+
+            if (analyticsRes.ok) {
+                const data = await analyticsRes.json();
+                setFinancialAnalytics(data);
+                setClientCache('finance_analytics', data, 60000);
             }
         } catch (e) {
-            console.error(e);
+            console.error("[FinanceView] Fetch error:", e);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleCreateFee = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setCreatingFee(true);
-        try {
-            const res = await fetch('/api/school/finance/fees', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    gradeId: formData.gradeId === "ALL" ? null : formData.gradeId
-                })
-            });
-            if (!res.ok) throw new Error("Failed to create fee");
-            toast.success("Fee structure established");
-            setIsCreating(false);
-            setFormData({ name: "", amount: "", category: "TUITION", frequency: "TERM", gradeId: "ALL", description: "" });
-            fetchFees();
-        } catch (e) {
-            toast.error("Institutional protocol failure");
-        } finally {
-            setCreatingFee(false);
         }
     };
 
@@ -369,551 +95,361 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
         if (!deleteId) return;
         setDeletingFee(true);
         try {
-            const res = await fetch(`/api/school/finance/fees/${deleteId}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error("Failed to delete");
-            toast.success("Structure decommissioned");
-            fetchFees();
+            const res = await fetch(`/api/school/finance/fees/${deleteId}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                toast.success("Fee structure decommissioned.");
+                setFees(prev => prev.filter(f => f.id !== deleteId));
+                setDeleteId(null);
+            } else {
+                toast.error("Failed to delete fee structure.");
+            }
         } catch (e) {
-            toast.error("Failed to delete fee structure");
+            toast.error("Connection failure.");
         } finally {
             setDeletingFee(false);
-            setDeleteId(null);
-        }
-    };
-    const handleGenerateInvoices = async () => {
-        setIsGenerating(true);
-        try {
-            const res = await fetch('/api/school/finance/invoices/generate', {
-                method: 'POST'
-            });
-
-            if (res.ok) {
-                toast.success("All student bills successfully synchronized.");
-                fetchInitialData();
-                setShowInvoiceModal(false);
-            } else {
-                toast.error("Failed to generate invoices.");
-            }
-        } catch (err) {
-            toast.error("Network synchronization failed.");
-        } finally {
-            setIsGenerating(false);
         }
     };
 
-    if (loading) return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-            <SpringingLoader message="Retrieving Institutional Ledger" />
-        </div>
-    );
+    const handleFeeCreated = (newFee: any) => {
+        setFees(prev => [newFee, ...prev]);
+        setShowFeeModal(false);
+    };
+
+    const filteredFees = fees.filter(fee => {
+        const matchesSearch = fee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            fee.category.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = categoryFilter === "ALL" || fee.category === categoryFilter;
+        const matchesGrade = gradeFilter === "ALL" || 
+            (gradeFilter === "UNIVERSAL" ? !fee.gradeId : fee.gradeId === gradeFilter);
+        return matchesSearch && matchesCategory && matchesGrade;
+    });
+
+    if (loading && fees.length === 0) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center">
+                <SpringingLoader message="Synthesizing Institutional Finance Matrix..." />
+            </div>
+        );
+    }
 
     return (
-        <div className="max-w-5xl mx-auto space-y-3.5 sm:space-y-8 md:space-y-12 animate-in fade-in duration-300 relative z-10 pb-20 sm:pb-0">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-3 sm:pb-10">
+        <div className="space-y-6 sm:space-y-10 max-w-7xl mx-auto pb-16 px-2 sm:px-4">
+            {/* Header Section */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-6 sm:pb-8">
                 <div>
-                    <h1 className="text-xl sm:text-3xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white uppercase italic">
-                        Transactions & Finance
-                    </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[8px] sm:text-xs mt-1 sm:mt-3">Institutional Revenue, Payroll & Billing Controller</p>
+                    <div className="flex items-center gap-2.5 sm:gap-3 mb-1">
+                        <div className="p-2 sm:p-2.5 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500">
+                            <Coins className="w-5 h-5 sm:w-6 sm:h-6" />
+                        </div>
+                        <h1 className="text-xl sm:text-3xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">
+                            Fee Architecture & <span className="text-eduGreen-500">Financial Hub</span>
+                        </h1>
+                    </div>
+                    <p className="text-[9px] sm:text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest pl-1">
+                        Define institutional tuition tiers, manage fee protocols, and access financial portals.
+                    </p>
                 </div>
 
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 mb-1">
-                    <Link href="/dashboard/finance/revenue" className="flex-1 sm:flex-initial">
-                        <Button
-                            variant="outline"
-                            className="w-full rounded-lg sm:rounded-2xl border-eduGreen-500/30 bg-eduGreen-50/50 dark:bg-eduGreen-950/30 hover:bg-eduGreen-100 dark:hover:bg-eduGreen-950/60 text-eduGreen-600 dark:text-eduGreen-400 h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-sm"
-                        >
-                            <DollarSign className="mr-1.5 h-3.5 w-3.5" /> Revenue Hub
-                        </Button>
-                    </Link>
-                    <Link href="/dashboard/finance/payroll" className="flex-1 sm:flex-initial">
-                        <Button
-                            variant="outline"
-                            className="w-full rounded-lg sm:rounded-2xl border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-950/60 text-amber-600 dark:text-amber-400 h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-sm"
-                        >
-                            <Briefcase className="mr-1.5 h-3.5 w-3.5" /> Payroll
-                        </Button>
-                    </Link>
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                     <Button
-                        variant="ghost"
-                        onClick={() => setShowInvoiceModal(true)}
-                        disabled={isGenerating}
-                        className="flex-1 sm:flex-initial rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-8 sm:h-12 md:h-14 px-2.5 sm:px-5 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white shadow-sm"
+                        onClick={() => setShowFeeModal(true)}
+                        className="h-10 sm:h-12 px-4 sm:px-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-eduGreen-900/20 flex items-center gap-2 active:scale-95"
                     >
-                        <Zap className={cn("mr-1.5 h-3.5 w-3.5 text-amber-600 dark:text-amber-500", isGenerating && "animate-pulse")} />
-                        {isGenerating ? "Executing..." : "Invoicing"}
-                    </Button>
-                    <Button
-                        onClick={() => setIsCreating(true)}
-                        className="w-full sm:w-auto bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-8 sm:h-12 md:h-14 px-3.5 sm:px-6 rounded-lg sm:rounded-2xl font-bold text-[8px] sm:text-[10px] uppercase tracking-widest shadow-lg sm:shadow-2xl transition-all active:scale-95 shadow-eduGreen-900/20 flex items-center gap-1.5"
-                    >
-                        <Plus className="w-3.5 h-3.5" /> Structure
+                        <Plus className="w-4 h-4" />
+                        New Fee Protocol
                     </Button>
                 </div>
             </div>
 
-            <FeeStructureModal 
-                isOpen={isCreating} 
-                onClose={() => setIsCreating(false)}
-                grades={grades}
-                onSuccess={fetchInitialData}
-            />
-
-            {/* Financial Intelligence Dashboard */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-8">
-                {/* Revenue Trend Graph */}
-                <Card className="lg:col-span-8 bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-xl sm:shadow-2xl border-t-zinc-800/20">
-                    <CardHeader className="p-3.5 sm:p-8 md:p-10 pb-2">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="text-base sm:text-xl md:text-2xl font-medium text-zinc-900 dark:text-white uppercase italic">Revenue <span className="text-eduGreen-500 not-italic">Temporal Shift</span></CardTitle>
-                                <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 sm:mt-1">12-Month Liquidity Flux</p>
-                            </div>
-                            <div className="px-2 sm:px-3 py-0.5 sm:py-1 bg-eduGreen-500/10 border border-eduGreen-500/20 rounded-md sm:rounded-lg">
-                                <span className="text-[8px] sm:text-[10px] font-medium text-eduGreen-500 uppercase tracking-widest italic">Live Delta</span>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-3.5 sm:p-8 md:p-10 pt-3 sm:pt-8">
-                        <RevenueFluxChart data={financialAnalytics?.trends} />
-                    </CardContent>
+            {/* Financial Health KPIs */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-2xl p-4 sm:p-6 shadow-sm border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
+                    <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Active Protocols</span>
+                        <Calculator className="w-4 h-4 text-eduGreen-500" />
+                    </div>
+                    <div className="text-2xl sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
+                        {fees.length}
+                    </div>
+                    <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">Configured Fee Tiers</p>
                 </Card>
 
-                {/* Efficiency & Liquidity */}
-                <div className="lg:col-span-4 space-y-3.5 sm:space-y-8">
-                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl lg:rounded-[2.5rem] p-3.5 sm:p-8 shadow-xl sm:shadow-2xl border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
-                        <div className="flex items-center justify-between mb-2 sm:mb-6">
-                            <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Efficiency Index</span>
-                            <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-eduGreen-500" />
-                        </div>
-                        <div className="flex items-end justify-between">
-                            <div>
-                                <div className="text-2xl sm:text-5xl font-medium text-zinc-900 dark:text-white tracking-tighter">{financialAnalytics?.summary?.efficiency || 0}%</div>
-                                <div className="text-[8px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mt-1 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse" />
-                                    Collection Yield
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-2xl p-4 sm:p-6 shadow-sm border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
+                    <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Total Invoiced</span>
+                        <Receipt className="w-4 h-4 text-eduGreen-500" />
+                    </div>
+                    <div className="text-2xl sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
+                        ${(financialAnalytics?.summary?.totalInvoiced || 0).toLocaleString()}
+                    </div>
+                    <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">Generated Invoices</p>
+                </Card>
+
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-2xl p-4 sm:p-6 shadow-sm border-t-zinc-800/20 group hover:border-eduGreen-900/30 transition-all">
+                    <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Collection Rate</span>
+                        <CheckCircle2 className="w-4 h-4 text-eduGreen-500" />
+                    </div>
+                    <div className="text-2xl sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
+                        {financialAnalytics?.summary?.efficiency || "100%"}
+                    </div>
+                    <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">Settlement Efficiency</p>
+                </Card>
+
+                <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-2xl p-4 sm:p-6 shadow-sm border-t-zinc-800/20 group hover:border-amber-900/30 transition-all">
+                    <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Pending Liquidity</span>
+                        <DollarSign className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-2xl sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
+                        ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
+                    </div>
+                    <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">Uncollected Tuition</p>
+                </Card>
+            </div>
+
+            {/* Dedicated Financial Operation Portals */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xs sm:text-sm font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
+                        Dedicated Financial Portals
+                    </h2>
+                    <span className="text-[9px] font-mono text-zinc-600 uppercase">Independent Modules</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                    {/* Portal 1: Revenue Hub */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-eduGreen-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500 group-hover:scale-110 transition-transform">
+                                    <DollarSign className="w-5 h-5" />
                                 </div>
+                                <span className="px-2.5 py-1 rounded-full bg-eduGreen-500/10 text-eduGreen-500 text-[8px] font-medium uppercase tracking-widest border border-eduGreen-500/20">
+                                    Billing & Ledgers
+                                </span>
                             </div>
-                            <div className="h-10 w-10 sm:h-16 sm:w-16 relative">
-                                <svg className="w-full h-full transform -rotate-90">
-                                    <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-zinc-900 dark:text-white" />
-                                    <motion.circle
-                                        cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent"
-                                        strokeDasharray="175.9"
-                                        initial={{ strokeDashoffset: 175.9 }}
-                                        animate={{ strokeDashoffset: 175.9 - (Math.min(parseFloat(financialAnalytics?.summary?.efficiency || 0), 100) / 100) * 175.9 }}
-                                        transition={{ duration: 1.3, ease: "easeOut" }}
-                                        strokeLinecap="round"
-                                        className="text-eduGreen-500 drop-shadow-[0_0_8px_rgba(20,184,115,0.4)]"
-                                    />
-                                </svg>
-                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-eduGreen-500 transition-colors">
+                                Revenue & Invoices Hub
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Run billing cycles, inspect the institutional ledger, verify manual payments, and print formal invoices.
+                            </p>
                         </div>
+                        <Link href="/dashboard/revenue" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Open Revenue Hub
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
                     </Card>
 
-                    <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl lg:rounded-[2.5rem] p-3.5 sm:p-8 shadow-xl sm:shadow-2xl border-t-zinc-800/20 group hover:border-amber-900/30 transition-all">
-                        <div className="flex items-center justify-between mb-2 sm:mb-6">
-                            <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Pending Liquidity</span>
-                            <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600 dark:text-amber-500" />
+                    {/* Portal 2: Staff Payroll */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-amber-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-500 group-hover:scale-110 transition-transform">
+                                    <Briefcase className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[8px] font-medium uppercase tracking-widest border border-amber-500/20">
+                                    Staff Compensation
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-amber-500 transition-colors">
+                                Staff Payroll Center
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Disburse monthly educator and staff compensation, track payout history, and export payroll slips.
+                            </p>
                         </div>
-                        <div className="text-xl sm:text-4xl font-medium text-zinc-900 dark:text-white tracking-tighter italic">
-                            ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
+                        <Link href="/dashboard/payroll" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-amber-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Open Payroll Center
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </Card>
+
+                    {/* Portal 3: Student Billing Dossiers */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-blue-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-500 group-hover:scale-110 transition-transform">
+                                    <Users className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[8px] font-medium uppercase tracking-widest border border-blue-500/20">
+                                    Student Accounts
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-blue-500 transition-colors">
+                                Student Dossiers
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Individual scholar financial profiles, parent payment links, receipt proof uploads, and balance statements.
+                            </p>
                         </div>
-                        <p className="text-[8px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mt-1 sm:mt-3">Uncollected Assets</p>
-                        <div className="mt-3 sm:mt-6 h-1 w-full bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: "60%" }}
-                                className="h-full bg-amber-500/50"
-                            />
-                        </div>
+                        <Link href="/dashboard/finance/students" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-blue-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Inspect Student Ledgers
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
                     </Card>
                 </div>
             </div>
 
-
-            {/* Tab Controller */}
-            <div className="flex items-center gap-1 sm:gap-2 p-0.5 sm:p-1 bg-white dark:bg-zinc-950 rounded-lg sm:rounded-2xl border border-zinc-200 dark:border-zinc-900 w-fit mx-auto shadow-sm">
-                <button
-                    onClick={() => setActiveTab("REVENUE")}
-                    className={cn(
-                        "px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-md sm:rounded-xl text-[8px] sm:text-[10px] font-medium uppercase tracking-widest transition-all",
-                        activeTab === "REVENUE" ? "bg-eduGreen-600 text-white shadow-md sm:shadow-lg" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    Revenue Hub
-                </button>
-                <button
-                    onClick={() => setActiveTab("EXPENSES")}
-                    className={cn(
-                        "px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-md sm:rounded-xl text-[8px] sm:text-[10px] font-medium uppercase tracking-widest transition-all",
-                        activeTab === "EXPENSES" ? "bg-amber-600 text-zinc-900 dark:text-white shadow-md sm:shadow-lg" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
-                    )}
-                >
-                    Payroll & Expenses
-                </button>
-            </div>
-
-            {activeTab === "REVENUE" ? (
-                <>
-                    {/* Verification Nexus */}
-                    {pendingPayments.length > 0 && (
-                        <div className="space-y-3 sm:space-y-8">
-                            <div className="flex items-center gap-2.5 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg sm:rounded-xl border border-amber-900/30 text-amber-600 dark:text-amber-500">
-                                    <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
-                                </div>
-                                <div>
-                                    <h2 className="text-base sm:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase italic">Payment <span className="text-amber-600 dark:text-amber-500 not-italic">Verification</span></h2>
-                                    <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Awaiting Reconciliation</p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-2.5 sm:gap-4">
-                                {pendingPayments.map((pay) => (
-                                    <Card key={pay.id} className="bg-white dark:bg-zinc-950 border-amber-900/20 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 hover:border-amber-300 dark:hover:border-amber-900/40 transition-all group overflow-hidden relative border-dashed shadow-sm">
-                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6 relative z-10">
-                                            <div className="flex items-center gap-3 sm:gap-6">
-                                                <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-amber-50 dark:bg-amber-950/20 flex items-center justify-center border border-amber-900/30 font-medium text-xs sm:text-base text-amber-600 dark:text-amber-500">
-                                                    {pay.invoice?.student?.firstName?.[0] || 'S'}
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{pay.invoice?.student?.firstName || 'Scholar'} {pay.invoice?.student?.lastName || ''}</div>
-                                                    <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
-                                                        <span className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest">{pay.invoice?.student?.studentCode || 'ST-CODE'}</span>
-                                                        <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-                                                        <span className="text-[8px] sm:text-[10px] font-medium text-amber-600 dark:text-amber-500/80 uppercase tracking-widest">{pay.method?.replace('_', ' ') || 'MANUAL'}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 md:flex items-center gap-3 sm:gap-8 md:gap-12">
-                                                <div>
-                                                    <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Reference</div>
-                                                    <div className="text-[9px] sm:text-[11px] font-medium text-zinc-600 dark:text-zinc-400 font-mono tracking-tighter truncate">{pay.reference || "NO_REF"}</div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Quantum</div>
-                                                    <div className="text-[9px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(pay.amount || 0).toLocaleString()}</div>
-                                                </div>
-                                                <div className="col-span-2 md:col-span-1 flex items-center gap-2 sm:gap-3">
-                                                    <Button
-                                                        onClick={() => handleVerifyPayment(pay.id, 'SUCCESS')}
-                                                        isLoading={verifyingPayment === pay.id}
-                                                        disabled={verifyingPayment === pay.id}
-                                                        className="h-8 sm:h-10 px-3 sm:px-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[9px] uppercase tracking-widest transition-all shadow-md sm:shadow-xl shadow-eduGreen-900/20"
-                                                    >
-                                                        Confirm
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={() => handleVerifyPayment(pay.id, 'FAILED')}
-                                                        isLoading={verifyingPayment === pay.id}
-                                                        disabled={verifyingPayment === pay.id}
-                                                        className="h-8 sm:h-10 px-2.5 sm:px-4 text-zinc-600 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-lg sm:rounded-xl transition-all font-medium text-[8px] sm:text-[9px] uppercase tracking-widest border border-zinc-200 dark:border-zinc-900"
-                                                    >
-                                                        Dispute
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Institutional Invoice Ledger */}
-                    <div className="space-y-3.5 sm:space-y-8">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
-                            <div className="flex items-center gap-2.5 sm:gap-4">
-                                <div className="p-2 sm:p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg sm:rounded-xl border border-zinc-300 dark:border-zinc-800">
-                                    <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-900 dark:text-white" />
-                                </div>
-                                <div>
-                                    <h2 className="text-base sm:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">Institutional Ledger</h2>
-                                    <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">Automated Reconciliation Registry</p>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4">
-                                <div className="relative group/export flex-1 sm:flex-initial">
-                                    <Button
-                                        variant="outline"
-                                        className="w-full sm:w-auto h-8 sm:h-12 px-3 sm:px-6 rounded-lg sm:rounded-xl border-eduGreen-600 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm"
-                                    >
-                                        <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-eduGreen-500" /> Print
-                                    </Button>
-                                </div>
-                                <div className="relative flex-1 sm:flex-initial">
-                                    <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-zinc-600" />
-                                    <Input
-                                        placeholder="Search Scholar..."
-                                        value={searchQuery}
-                                        onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
-                                        className="h-8 sm:h-12 w-full sm:w-64 pl-8 sm:pl-12 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-lg sm:rounded-xl focus:border-eduGreen-500 transition-all font-medium text-[10px] sm:text-xs"
-                                    />
-                                </div>
-                                <select
-                                    value={statusFilter}
-                                    onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                                    className="h-8 sm:h-12 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-lg sm:rounded-xl px-2.5 sm:px-4 text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest focus:border-eduGreen-500 outline-none hover:border-zinc-800 transition-all appearance-none cursor-pointer"
-                                >
-                                    <option value="ALL">All Statuses</option>
-                                    <option value="PAID">Confirmed</option>
-                                    <option value="PENDING">Pending</option>
-                                    <option value="OVERDUE">Overdue</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-2.5 sm:gap-4">
-                            {invoices.map((inv, i) => (
-                                <Card key={inv.id} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-3xl p-3 sm:p-6 hover:border-zinc-800 transition-all group overflow-hidden relative shadow-sm">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-eduGreen-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6 relative z-10">
-                                        <div className="flex items-center gap-3 sm:gap-6">
-                                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800 font-medium text-xs sm:text-base text-zinc-600 group-hover:text-eduGreen-500 transition-colors">
-                                                {inv.student?.firstName?.[0] || 'S'}
-                                            </div>
-                                            <div>
-                                                <div className="text-xs sm:text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-tight">{inv.student?.firstName || 'Scholar'} {inv.student?.lastName || ''}</div>
-                                                <div className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">{inv.student?.studentCode || 'ST-CODE'}</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 md:flex items-center gap-2.5 sm:gap-8 md:gap-12">
-                                            <div>
-                                                <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Due Date</div>
-                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-600 dark:text-zinc-400">{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : 'N/A'}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Quantum</div>
-                                                <div className="text-[8px] sm:text-[11px] font-medium text-zinc-900 dark:text-white">${parseFloat(inv.amount || 0).toLocaleString()}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-[7px] sm:text-[9px] font-medium text-zinc-700 uppercase tracking-widest mb-0.5 sm:mb-1">Status</div>
-                                                <div className={cn(
-                                                    "text-[7px] sm:text-[9px] font-medium uppercase tracking-[0.15em] sm:tracking-[0.2em] px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border inline-block italic",
-                                                    inv.status === 'PAID' ? "bg-eduGreen-500/10 border-eduGreen-500/20 text-eduGreen-500" :
-                                                        inv.status === 'OVERDUE' ? "bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500" :
-                                                            "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-500"
-                                                )}>
-                                                    {inv.status}
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2 sm:gap-3">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => triggerPrint(inv)}
-                                                    className="h-7 w-7 sm:h-10 sm:w-10 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 hover:text-eduGreen-500 rounded-lg sm:rounded-xl transition-all"
-                                                >
-                                                    <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    isLoading={simulatingPay === inv.id}
-                                                    onClick={() => handleRecordManualPayment(inv)}
-                                                    className="h-7 sm:h-10 px-2.5 sm:px-4 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-zinc-900 dark:text-white hover:text-white border border-zinc-300 dark:border-zinc-800 rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[9px] uppercase tracking-widest transition-all"
-                                                >
-                                                    Record
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Card>
-                            ))}
-                        </div>
-
-                        {totalPages > 1 && (
-                            <div className="flex items-center justify-between bg-white/40 dark:bg-zinc-950/40 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-200 dark:border-zinc-900/50 backdrop-blur-md">
-                                <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
-                                    Page {page} of {totalPages}
-                                </p>
-                                <div className="flex items-center gap-1.5 sm:gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setPage(p => Math.max(1, p - 1))}
-                                        disabled={page === 1}
-                                        className="h-7 sm:h-9 px-2 sm:px-3 text-[8px] sm:text-xs bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white rounded-md sm:rounded-lg"
-                                    >
-                                        Prev
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                        disabled={page === totalPages}
-                                        className="h-7 sm:h-9 px-2 sm:px-3 text-[8px] sm:text-xs bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white rounded-md sm:rounded-lg"
-                                    >
-                                        Next
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
+            {/* Active Fee Structure Protocols Registry */}
+            <div className="space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-zinc-200 dark:border-zinc-900 pt-8">
+                    <div>
+                        <h2 className="text-base sm:text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">
+                            Fee Structure Protocols
+                        </h2>
+                        <p className="text-[8px] sm:text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">
+                            Grade-Scoped Tuition & Auxiliary Billing Templates
+                        </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-6">
-                        {fees.map((fee) => (
-                            <Card key={fee.id} className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-xl sm:rounded-[2.5rem] overflow-hidden hover:border-eduGreen-900/30 transition-all border-t-zinc-800/10 shadow-xl sm:shadow-2xl">
+
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-3">
+                        <div className="relative flex-1 sm:flex-initial">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600" />
+                            <Input
+                                placeholder="Search Protocol..."
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                className="h-9 sm:h-11 w-full sm:w-56 pl-9 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 rounded-xl text-[10px] sm:text-xs"
+                            />
+                        </div>
+
+                        <select
+                            value={categoryFilter}
+                            onChange={e => setCategoryFilter(e.target.value)}
+                            className="h-9 sm:h-11 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl px-3 text-[9px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest outline-none hover:border-zinc-800 transition-all cursor-pointer"
+                        >
+                            <option value="ALL">All Categories</option>
+                            <option value="TUITION">Tuition</option>
+                            <option value="REGISTRATION">Registration</option>
+                            <option value="FACILITY">Facility</option>
+                            <option value="TRANSPORT">Transport</option>
+                            <option value="EXAMINATION">Exam</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+
+                        <select
+                            value={gradeFilter}
+                            onChange={e => setGradeFilter(e.target.value)}
+                            className="h-9 sm:h-11 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-xl px-3 text-[9px] sm:text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest outline-none hover:border-zinc-800 transition-all cursor-pointer"
+                        >
+                            <option value="ALL">All Grades</option>
+                            <option value="UNIVERSAL">Universal (All Grades)</option>
+                            {grades.map(g => (
+                                <option key={g.id} value={g.id}>Grade {g.level}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                {filteredFees.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        {filteredFees.map((fee) => (
+                            <Card key={fee.id} className="group relative bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-2xl overflow-hidden hover:border-eduGreen-500/40 transition-all shadow-sm flex flex-col justify-between">
                                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-eduGreen-600 via-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <CardHeader className="p-3.5 sm:p-8 pb-2 sm:pb-4">
+                                
+                                <CardHeader className="p-5 pb-3">
                                     <div className="flex justify-between items-start">
-                                        <div className="p-2 sm:p-3 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-lg sm:rounded-xl border border-zinc-300 dark:border-zinc-800 text-eduGreen-500 group-hover:border-eduGreen-900/30 transition-all">
+                                        <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 text-eduGreen-500 group-hover:border-eduGreen-500/30 transition-all">
                                             <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-xl sm:text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter">
+                                            <div className="text-xl sm:text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">
                                                 ${parseFloat(fee.amount).toLocaleString()}
                                             </div>
-                                            <div className="text-[7px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5 sm:mt-1">
-                                                {fee.frequency} Quantum
+                                            <div className="text-[8px] font-medium text-zinc-600 uppercase tracking-widest mt-0.5">
+                                                {fee.frequency}
                                             </div>
                                         </div>
                                     </div>
-                                    <CardTitle className="text-base sm:text-xl font-medium text-zinc-900 dark:text-white mt-3 sm:mt-6 tracking-tight group-hover:text-eduGreen-500 transition-colors">
+
+                                    <CardTitle className="text-base font-medium text-zinc-900 dark:text-white mt-4 tracking-tight group-hover:text-eduGreen-500 transition-colors line-clamp-1">
                                         {fee.name}
                                     </CardTitle>
-                                    <div className="flex items-center gap-1.5 sm:gap-3 mt-1.5 sm:mt-2">
-                                        <span className="text-[7px] sm:text-[9px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-1.5 sm:px-2 py-0.5 sm:py-1 bg-zinc-100 dark:bg-zinc-900 rounded-md sm:rounded-lg border border-zinc-300 dark:border-zinc-800 group-hover:border-eduGreen-900/20 transition-all">
+
+                                    {fee.description && (
+                                        <p className="text-[10px] text-zinc-600 dark:text-zinc-400 mt-1 line-clamp-2">
+                                            {fee.description}
+                                        </p>
+                                    )}
+
+                                    <div className="flex flex-wrap items-center gap-2 mt-3">
+                                        <span className="text-[8px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded-md border border-zinc-200 dark:border-zinc-800">
                                             {fee.category}
                                         </span>
-                                        <span className="text-[7px] sm:text-[9px] font-medium text-eduGreen-900 uppercase tracking-tighter">
-                                            {fee.grade ? `Target: Grade ${fee.grade.level}` : "Universal"}
+                                        <span className="text-[8px] font-medium text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest px-2 py-0.5 bg-eduGreen-500/10 rounded-md border border-eduGreen-500/20">
+                                            {fee.grade ? `Grade ${fee.grade.level}` : "Universal Tier"}
                                         </span>
                                     </div>
                                 </CardHeader>
-                                <CardFooter className="px-3.5 sm:px-8 pb-3.5 sm:pb-8 pt-3 sm:pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
-                                    <span className="text-[7px] sm:text-[8px] font-medium text-zinc-700 uppercase tracking-widest">
-                                        ID: {fee.id.slice(0, 8)}...
+
+                                <CardFooter className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-900/60 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-900/20">
+                                    <span className="text-[8px] font-mono text-zinc-600">
+                                        #{fee.id.slice(0, 8)}
                                     </span>
                                     <Button
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => handleDeleteFee(fee.id)}
-                                        className="h-8 sm:h-10 px-2.5 sm:px-4 text-zinc-600 hover:text-red-600 dark:text-red-500 hover:bg-red-500/10 rounded-lg sm:rounded-xl transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest"
+                                        className="h-8 px-3 text-zinc-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all font-medium text-[8px] uppercase tracking-widest gap-1.5"
                                     >
-                                        <Trash2 className="w-3.5 h-3.5 mr-1.5 sm:mr-2" /> Decommission
+                                        <Trash2 className="w-3 h-3" />
+                                        Decommission
                                     </Button>
                                 </CardFooter>
                             </Card>
                         ))}
-
-                        {fees.length === 0 && !isCreating && (
-                            <div className="md:col-span-2 py-16 sm:py-32 text-center">
-                                <div className="w-12 h-12 sm:w-20 sm:h-20 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center border border-zinc-200 dark:border-zinc-900 mx-auto mb-3 sm:mb-6 opacity-30">
-                                    <CreditCard className="w-6 h-6 sm:w-10 sm:h-10 text-zinc-600 dark:text-zinc-500" />
-                                </div>
-                                <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] sm:tracking-[0.4em] text-[10px] sm:text-xs">No Fee Protocols Active</p>
-                                <Button variant="ghost" onClick={() => setIsCreating(true)} className="text-eduGreen-500 mt-2 sm:mt-4 font-medium uppercase tracking-widest text-[8px] sm:text-[10px]">
-                                    Establish Initial Structure
-                                </Button>
-                            </div>
-                        )}
                     </div>
-
-                    <ConfirmationModal
-                        isOpen={!!deleteId}
-                        onClose={() => setDeleteId(null)}
-                        onConfirm={executeDeleteFee}
-                        isLoading={deletingFee}
-                        title="Decommission Structure"
-                        description="This action will permanently remove this fee structure from the institutional ledger. All associated billing records will be archived."
-                        confirmText="Decommission"
-                        variant="danger"
-                    />
-
-                    <InputModal
-                        isOpen={showInvoiceModal}
-                        onClose={() => setShowInvoiceModal(false)}
-                        onConfirm={handleGenerateInvoices}
-                        title="Launch Invoicing Cycle"
-                        description="Specify the financial period deadline for generated invoices."
-                        placeholder="YYYY-MM-DD"
-                        defaultValue="2024-01-31"
-                        inputType="date"
-                        confirmText="Execute Cycle"
-                    />
-
-                    {/* Hidden Print Template */}
-                    <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
-                        <InvoicePrint
-                            ref={printRef}
-                            invoice={printInvoice}
-                            student={printStudent}
-                            school={school}
-                        />
+                ) : (
+                    <div className="py-20 text-center bg-white/20 dark:bg-zinc-950/20 border border-dashed border-zinc-200 dark:border-zinc-900 rounded-3xl p-8">
+                        <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-200 dark:border-zinc-800 text-zinc-600">
+                            <CreditCard className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-sm font-medium text-zinc-900 dark:text-white uppercase tracking-wider mb-1">
+                            No Fee Protocols Configured
+                        </h3>
+                        <p className="text-[10px] text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto mb-6">
+                            Create your first fee structure to define tuition rates, lab fees, and registration costs for each grade.
+                        </p>
+                        <Button
+                            onClick={() => setShowFeeModal(true)}
+                            className="h-10 px-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest shadow-lg shadow-eduGreen-900/20"
+                        >
+                            <Plus className="w-4 h-4 mr-1.5" />
+                            Establish Fee Structure
+                        </Button>
                     </div>
+                )}
+            </div>
 
-                </>
-            ) : (
-                    <PayrollDashboard 
-                        staff={staff} 
-                        payrollHistory={payrollHistory} 
-                        handleIssuePayment={handleIssuePayment} 
-                        isPaying={isPaying} 
-                    />
-            )}
+            {/* Fee Structure Modal Popup */}
+            <FeeStructureModal
+                isOpen={showFeeModal}
+                onClose={() => setShowFeeModal(false)}
+                onSuccess={handleFeeCreated}
+                grades={grades}
+            />
 
-            <PaymentModal
-                isOpen={paymentContext.isOpen}
-                onClose={() => setPaymentContext(prev => ({ ...prev, isOpen: false }))}
-                onConfirm={paymentContext.type === 'PAYROLL' ? processPayrollPayment : processInvoicePayment}
-                title={paymentContext.title}
-                description={paymentContext.description}
-                defaultAmount={paymentContext.defaultAmount}
-                isLoading={!!(isPaying || simulatingPay)}
-                confirmText={paymentContext.type === 'PAYROLL' ? "Authorize Disbursement" : "Record Fulfillment"}
+            {/* Delete Fee Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={executeDeleteFee}
+                isLoading={deletingFee}
+                title="Decommission Fee Structure"
+                description="This action will permanently remove this fee structure. Existing past invoices will retain their historical records."
+                confirmText="Decommission"
+                variant="danger"
             />
         </div>
     );
 }
-
-function RevenueFluxChart({ data }: { data: any }) {
-    if (!data) return <div className="h-64 flex items-center justify-center text-[10px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Initializing Smart Stream...</div>;
-
-    const maxVal = Math.max(...data.datasets[0].data, ...data.datasets[1].data, 1000);
-
-    return (
-        <div className="relative h-64 w-full group pt-4">
-            <div className="absolute inset-0 flex items-end justify-between gap-4 px-2">
-                {data.labels.map((label: string, i: number) => {
-                    const revHeight = (data.datasets[0].data[i] / maxVal) * 100;
-                    const penHeight = (data.datasets[1].data[i] / maxVal) * 100;
-
-                    return (
-                        <div key={i} className="flex-1 flex flex-col justify-end gap-1 group/bar relative">
-                            {/* Pending Bar */}
-                            <motion.div
-                                initial={{ height: 0 }}
-                                animate={{ height: `${penHeight}%` }}
-                                transition={{ duration: 0.8, delay: i * 0.05 }}
-                                className="w-full bg-zinc-100/80 dark:bg-zinc-900/80 rounded-t-sm border-x border-t border-zinc-300 dark:border-zinc-800 group-hover/bar:bg-zinc-200 dark:bg-zinc-800 transition-colors"
-                            />
-                            {/* Revenue Bar */}
-                            <motion.div
-                                initial={{ height: 0 }}
-                                animate={{ height: `${revHeight}%` }}
-                                transition={{ duration: 0.8, delay: i * 0.05 + 0.2 }}
-                                className="w-full bg-gradient-to-t from-eduGreen-600 to-eduGreen-400 rounded-t-sm shadow-[0_0_15px_rgba(20,184,115,0.2)]"
-                            />
-
-                            {/* Tooltip on hover */}
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-white text-black text-[8px] font-medium px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none uppercase tracking-tighter">
-                                Rev: ${data.datasets[0].data[i].toLocaleString()}
-                            </div>
-
-                            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[8px] font-medium text-zinc-700 uppercase tracking-tighter">
-                                {label}
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-}
-

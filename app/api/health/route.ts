@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { appendDebugSessionNdjson } from '@/lib/debug-session-log';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 /**
  * Ultra-lightweight health check endpoint to verify Edge Worker connectivity and latency.
