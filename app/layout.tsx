@@ -4,10 +4,20 @@ import "@fontsource/cinzel";
 import "@fontsource/permanent-marker";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lucy-re-nw.vercel.app';
+function getSafeMetadataBase(): URL {
+  const rawUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || 'https://lucy-re-nw.vercel.app';
+  const cleanUrl = rawUrl.startsWith('http://') || rawUrl.startsWith('https://') 
+    ? rawUrl 
+    : `https://${rawUrl}`;
+  try {
+    return new URL(cleanUrl);
+  } catch {
+    return new URL('https://lucy-re-nw.vercel.app');
+  }
+}
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: getSafeMetadataBase(),
   title: {
     default: "LUCY OS | Next-Generation School Management & Cognitive Learning Platform",
     template: "%s | LUCY OS",
