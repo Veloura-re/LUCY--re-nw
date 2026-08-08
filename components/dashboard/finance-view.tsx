@@ -152,6 +152,33 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                    <Link href="/dashboard/revenue">
+                        <Button
+                            variant="outline"
+                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                        >
+                            <DollarSign className="w-4 h-4 text-eduGreen-500" />
+                            Revenue Hub
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/payroll">
+                        <Button
+                            variant="outline"
+                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-amber-500/50 hover:bg-amber-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                        >
+                            <Briefcase className="w-4 h-4 text-amber-500" />
+                            Staff Payroll
+                        </Button>
+                    </Link>
+                    <Link href="/dashboard/finance/students">
+                        <Button
+                            variant="outline"
+                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-blue-500/50 hover:bg-blue-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                        >
+                            <Users className="w-4 h-4 text-blue-500" />
+                            Student Dossiers
+                        </Button>
+                    </Link>
                     <Button
                         onClick={() => setShowFeeModal(true)}
                         className="h-10 sm:h-12 px-4 sm:px-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-eduGreen-900/20 flex items-center gap-2 active:scale-95"
@@ -159,15 +186,6 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         <Plus className="w-4 h-4" />
                         New Fee Protocol
                     </Button>
-                    <Link href="/dashboard/finance/students">
-                        <Button
-                            variant="outline"
-                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
-                        >
-                            <Users className="w-4 h-4 text-eduGreen-500" />
-                            Student Dossiers
-                        </Button>
-                    </Link>
                 </div>
             </div>
 
@@ -216,6 +234,96 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     </div>
                     <p className="text-[8px] sm:text-[9px] font-medium text-zinc-600 uppercase tracking-widest mt-1 sm:mt-2">Uncollected Tuition</p>
                 </Card>
+            </div>
+
+            {/* Dedicated Financial Operation Portals */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xs sm:text-sm font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
+                        Dedicated Financial Portals
+                    </h2>
+                    <span className="text-[9px] font-mono text-zinc-600 uppercase">Independent Modules</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                    {/* Portal 1: Revenue Hub */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-eduGreen-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500 group-hover:scale-110 transition-transform">
+                                    <DollarSign className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-eduGreen-500/10 text-eduGreen-500 text-[8px] font-medium uppercase tracking-widest border border-eduGreen-500/20">
+                                    Billing & Ledgers
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-eduGreen-500 transition-colors">
+                                Revenue & Invoices Hub
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Run billing cycles, inspect the institutional ledger, verify manual payments, and print formal invoices.
+                            </p>
+                        </div>
+                        <Link href="/dashboard/revenue" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Open Revenue Hub
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </Card>
+
+                    {/* Portal 2: Staff Payroll */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-amber-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-500 group-hover:scale-110 transition-transform">
+                                    <Briefcase className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[8px] font-medium uppercase tracking-widest border border-amber-500/20">
+                                    Staff Compensation
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-amber-500 transition-colors">
+                                Staff Payroll Center
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Disburse monthly educator and staff compensation, track payout history, and export payroll slips.
+                            </p>
+                        </div>
+                        <Link href="/dashboard/payroll" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-amber-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Open Payroll Center
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </Card>
+
+                    {/* Portal 3: Student Billing Dossiers */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-blue-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-500 group-hover:scale-110 transition-transform">
+                                    <Users className="w-5 h-5" />
+                                </div>
+                                <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[8px] font-medium uppercase tracking-widest border border-blue-500/20">
+                                    Student Accounts
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-blue-500 transition-colors">
+                                Student Dossiers
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Individual scholar financial profiles, parent payment links, receipt proof uploads, and balance statements.
+                            </p>
+                        </div>
+                        <Link href="/dashboard/finance/students" className="w-full">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-blue-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                                Inspect Student Ledgers
+                                <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </Card>
+                </div>
             </div>
 
             {/* Active Fee Structure Protocols Registry */}
