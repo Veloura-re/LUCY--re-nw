@@ -1,0 +1,4 @@
+## 2024-05-15 - [Insecure Randomness in Identifiers]
+**Vulnerability:** The application was using `Math.random()` to generate student codes (acting as registration tokens), school codes, and mock billing IDs. `Math.random()` is not cryptographically secure and its outputs can be predicted, potentially allowing attackers to guess sensitive identifiers.
+**Learning:** `Math.random()` should never be used for security-sensitive purposes like tokens, IDs, or passwords. Edge environments like Cloudflare Workers may not have the Node.js `crypto` module available, so standard solutions might fail.
+**Prevention:** Always use the Web Crypto API (`globalThis.crypto.randomUUID()` or `globalThis.crypto.getRandomValues()`) for generating secure identifiers, as it is cryptographically secure and compatible with Edge runtimes (V8 isolates).

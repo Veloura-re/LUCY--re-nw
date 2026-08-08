@@ -101,7 +101,10 @@ export async function POST(request: Request) {
             }
 
             // Create school via Prisma
-            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+            const cryptoArray = new Uint32Array(1);
+            globalThis.crypto.getRandomValues(cryptoArray);
+            const randomNum = 100 + (cryptoArray[0] % 900);
+            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + randomNum;
             const school = await prisma.school.create({
                 data: {
                     name,
@@ -136,7 +139,10 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+        const cryptoArray2 = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(cryptoArray2);
+        const randomNum2 = 100 + (cryptoArray2[0] % 900);
+        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + randomNum2;
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
             .insert([{ name, schoolCode, status: 'ACTIVE' }])
