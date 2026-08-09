@@ -303,7 +303,7 @@ export default function PresentationDeck() {
     {
       id: "edu_05",
       tag: "empowering // educators",
-      title: "ai-assisted exam generation",
+      title: "curriculum management",
       sub: "built-in AI assistant automatically generates high-fidelity, curriculum-aligned exam questions.",
       content: (
         <div className="space-y-6 w-full text-left">

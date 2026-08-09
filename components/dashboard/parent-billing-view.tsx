@@ -99,6 +99,10 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
 
     const handleConfirmPayment = async (reference: string) => {
         if (!selectingPaymentId) return;
+        if (!receiptImage) {
+            toast.error("Please upload a receipt to proceed.");
+            return;
+        }
         setProcessingId(selectingPaymentId);
         setShowConfirmation(false);
         try {
@@ -347,7 +351,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                         </div>
                         
                         <div className="space-y-2 text-left">
-                            <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Upload Receipt (Optional)</label>
+                            <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Upload Receipt (Required)</label>
                             <div className="relative">
                                 <Input 
                                     type="file" 
@@ -361,7 +365,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-[8px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Our AI will automatically verify your receipt if provided.</p>
+                            <p className="text-[8px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">An administrator will manually verify your receipt after submission.</p>
                         </div>
                     </div>
                 }
