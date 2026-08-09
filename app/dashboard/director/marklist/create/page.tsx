@@ -61,7 +61,7 @@ export default function MarklistConfigPage() {
         try {
             const res = await fetch("/api/school/classes");
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 const flatClasses = data.grades?.flatMap((g: any) => g.classes) || [];
                 setClasses(flatClasses);
             }
@@ -72,7 +72,7 @@ export default function MarklistConfigPage() {
         try {
             const res = await fetch("/api/school/subjects");
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 setSubjects(data.subjects || []);
             }
         } catch (e) { console.error("Subjects fetch failed", e); }
@@ -82,7 +82,7 @@ export default function MarklistConfigPage() {
         try {
             const res = await fetch("/api/school/terms");
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 setTerms(data.terms || []);
                 const active = (data.terms || []).find((t: any) => t.isActive);
                 if (active && !selectedTermId) setSelectedTermId(active.id);
@@ -97,7 +97,7 @@ export default function MarklistConfigPage() {
         try {
             const res = await fetch(`/api/marklist/config?classId=${selectedClassId}&subjectId=${selectedSubjectId}`);
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 if (data && data.columns) {
                     setConfigId(data.id);
                     if (data.termId && !selectedTermId) setSelectedTermId(data.termId);
@@ -178,7 +178,7 @@ export default function MarklistConfigPage() {
             });
 
             if (res.ok) {
-                const data = await res.json();
+                const data: any = await res.json();
                 setConfigId(data.id);
                 toast.success("Design Saved Successfully");
             } else {

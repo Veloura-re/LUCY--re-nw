@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth, handleApiError } from '@/lib/security';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function POST(req: Request) {
     try {
@@ -137,6 +138,10 @@ Respond strictly in JSON format:
 
             return payment;
         });
+
+        revalidatePath('/dashboard/finance', 'page');
+        revalidatePath('/dashboard/parent', 'page');
+        revalidateTag('family-children-data');
 
         return NextResponse.json({ success: true, payment: result, pending: needsVerification });
 

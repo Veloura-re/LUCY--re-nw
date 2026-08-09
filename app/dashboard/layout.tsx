@@ -170,8 +170,7 @@ export default async function DashboardLayout({
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
                             <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
                             <span className="relative text-base sm:text-xl md:text-3xl font-black tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-1.5 sm:ml-2 md:ml-3">
-                                LUCY
-                                <span className="absolute -top-1 -right-2 text-[7px] sm:text-[8px] md:text-[10px] text-eduGreen-500 tracking-tighter">OS</span>
+                                {dbUser.school?.name?.toUpperCase() || "LUCY"}
                             </span>
                             <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1.5 sm:ml-2 md:ml-3">]</span>
                         </div>

@@ -730,7 +730,7 @@ export default function Home() {
                 <DataBar value={99} label="auth_success_rate" delay={0} />
                 <DataBar value={94} label="attendance_sync_accuracy" delay={200} />
                 <DataBar value={100} label="vault_encryption_coverage" delay={400} />
-                <DataBar value={97} label="ai_response_satisfaction" delay={600} />
+                <DataBar value={99} label="system_uptime_sla" delay={600} />
               </div>
             </motion.div>
 
@@ -743,7 +743,7 @@ export default function Home() {
                   { ts: "08:22:30", msg: "exam locked by teacher_07", col: "text-slate-600 dark:text-zinc-600" },
                   { ts: "08:21:15", msg: "new scholar enrolled — school_id: 4f2a", col: "text-slate-600 dark:text-zinc-600" },
                   { ts: "08:20:02", msg: "vault backup completed — 0 errors", col: "text-slate-400 dark:text-zinc-700" },
-                  { ts: "08:19:44", msg: "ai session started — persona: core", col: "text-slate-400 dark:text-zinc-700" },
+                  { ts: "08:19:44", msg: "session initialized — routing active", col: "text-slate-400 dark:text-zinc-700" },
                 ].map((log, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="flex gap-4">
                     <span className="text-slate-400 dark:text-zinc-800 shrink-0 font-bold">{log.ts}</span>
@@ -844,7 +844,7 @@ export default function Home() {
                 { step: "01", title: "Create Account", desc: "Register your institution in under 5 minutes. Choose your plan, verify your domain, and initialize the system.", icon: "⬡" },
                 { step: "02", title: "Import Data", desc: "Upload existing student rosters, faculty records, and timetables via CSV or invite users directly by email.", icon: "⬡" },
                 { step: "03", title: "Assign Roles", desc: "Grant Director, Teacher, Student, and Parent access. Role-based permissions enforce data isolation automatically.", icon: "⬡" },
-                { step: "04", title: "Go Live", desc: "The system activates. Attendance flows, AI responds, alerts dispatch. Real-time institutional intelligence begins.", icon: "⬡" },
+                { step: "04", title: "Go Live", desc: "The system activates. Attendance flows, alerts dispatch. Real-time institutional intelligence begins.", icon: "⬡" },
               ].map((s, i) => (
                 <TiltCard key={i}>
                   <motion.div
@@ -891,9 +891,9 @@ export default function Home() {
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { role: "Director", id: "ROLE_01", desc: "Full institutional command. View all metrics, manage staff, and oversee every dimension of the school in one dashboard.", perks: ["full analytics", "staff management", "parent portal control", "audit logs", "ai console"] },
-                { role: "Teacher", id: "ROLE_02", desc: "Take attendance, grade work, message parents, and access AI assistance — all from a streamlined teacher interface.", perks: ["attendance capture", "grade book", "exam locking", "ai subject assistant", "class analytics"] },
-                { role: "Student", id: "ROLE_03", desc: "View personal record, track grades, communicate with teachers, and access AI-powered academic support instantly.", perks: ["grade tracking", "ai tutor access", "timetable view", "attendance history", "direct messaging"] },
+                { role: "Director", id: "ROLE_01", desc: "Full institutional command. View all metrics, manage staff, and oversee every dimension of the school in one dashboard.", perks: ["full analytics", "staff management", "parent portal control", "audit logs", "system settings"] },
+                { role: "Teacher", id: "ROLE_02", desc: "Take attendance, grade work, and message parents — all from a streamlined teacher interface.", perks: ["attendance capture", "grade book", "exam locking", "class analytics", "parent messaging"] },
+                { role: "Student", id: "ROLE_03", desc: "View personal record, track grades, and communicate with teachers instantly.", perks: ["grade tracking", "timetable view", "attendance history", "direct messaging"] },
                 { role: "Parent", id: "ROLE_04", desc: "Real-time visibility into your child's academic performance, attendance, and teacher communications — with instant alerts.", perks: ["absence alerts", "grade reports", "teacher contact", "progress tracking", "event notifications"] },
               ].map((r, i) => (
                 <TiltCard key={i} className="h-full">
@@ -938,7 +938,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { quote: "We went from 3 admin staff manually tracking attendance spreadsheets to zero. The system does it, alerts parents, and logs everything. Took us 3 days to deploy.", author: "T. Mokoena", role: "School Director, Western Cape", id: "OP_01" },
-                { quote: "The AI actually understands the curriculum. My students get real answers to maths problems, not generic LLM responses. It knows the subject.", author: "L. Dlamini", role: "Grade 10 Teacher, Johannesburg", id: "OP_02" },
+                { quote: "The platform handles everything seamlessly. Attendance is faster, and communicating with parents is effortless. It knows exactly what we need.", author: "L. Dlamini", role: "Grade 10 Teacher, Johannesburg", id: "OP_02" },
                 { quote: "As a parent I get a notification the second my child is marked absent. Before LUCY, I'd find out at 6pm when they got home. That peace of mind is priceless.", author: "N. Osei", role: "Parent, Accra Campus", id: "OP_03" },
               ].map((t, i) => (
                 <TiltCard key={i} className="h-full">
@@ -991,7 +991,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { tier: "Pilot Plan", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
-                { tier: "Core Platform", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management and AI assistance.", features: ["unlimited students", "all roles + ai", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
+                { tier: "Core Platform", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management.", features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
                 { tier: "Enterprise", price: "Custom", period: "per institution", desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
               ].map((p, i) => (
                 <TiltCard key={i} className="h-full">

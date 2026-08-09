@@ -13,7 +13,7 @@ const milestones = [
     { year: "2023", title: "Genesis Protocol", desc: "Initial research into modular academic operating systems begins. Core smart routing algorithms drafted." },
     { year: "2024", title: "Alpha Deployment", desc: "First institutional pilot with a single test school. Attendance and scheduling modules operational." },
     { year: "2025", title: "Vault Architecture", desc: "Security layer rewritten from scratch. RBAC enforcement, AES-256 vaults, and audit ledgers deployed." },
-    { year: "2026", title: "Public Launch v1.0", desc: "Full public launch. Multi-school support, AI persona system, parent integration, and compliance certifications achieved." },
+    { year: "2026", title: "Public Launch v1.0", desc: "Full public launch. Multi-school support, parent integration, and compliance certifications achieved." },
 ];
 
 const techStack = [
@@ -21,7 +21,7 @@ const techStack = [
     { label: "smart_db", val: "postgresql" },
     { label: "vault_logic", val: "aes_256" },
     { label: "auth", val: "supabase" },
-    { label: "ai_layer", val: "openai_api" },
+
     { label: "deploy", val: "vercel_edge" },
 ];
 
@@ -73,7 +73,7 @@ export default function About() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
                             { id: "ORIGIN_PROTOCOL", title: "The Genesis", body: "lucy was initiated to solve the latency between data ingestion and academic output. the protocol bypasses traditional administrative overhead in favor of direct smart coordination between roles." },
-                            { id: "OPERATIONAL_DIR", title: "System Goals", items: ["zero-friction scheduling for high-concurrency environments.", "cryptographically secured scholar identity matrices.", "distributed data consistency for isolated institutions.", "ai-driven cognitive routing for academic intelligence."] }
+                            { id: "OPERATIONAL_DIR", title: "System Goals", items: ["zero-friction scheduling for high-concurrency environments.", "cryptographically secured scholar identity matrices.", "distributed data consistency for isolated institutions.", "intelligent routing for academic insights."] }
                         ].map((block, i) => (
                             <TiltCard key={i}>
                                 <motion.div

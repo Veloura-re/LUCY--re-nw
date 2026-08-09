@@ -96,8 +96,8 @@ export default function Pricing() {
                                 price: "$149",
                                 originalPrice: "$250",
                                 period: "/ month",
-                                desc: "Production-grade deployment for full-scale institutional management and AI assistance.",
-                                features: ["unlimited students", "all roles + AI helper", "parent portal", "priority support", "99.9% uptime SLA"],
+                                desc: "Production-grade deployment for full-scale institutional management.",
+                                features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"],
                                 highlight: true,
                                 href: "/register/admin?plan=core",
                                 buttonText: "Start 120-Day Trial"

@@ -16,12 +16,6 @@ const posts = [
         featured: true,
     },
     {
-        id: "02", category: "ai & personas", date: "2026-02-20", readTime: "5 min",
-        title: "Building AI Personas That Actually Understand School Context",
-        excerpt: "How we trained subject-specific AI schools — and why a generic LLM wrapper isn't enough for academic instruction.",
-        featured: false,
-    },
-    {
         id: "03", category: "security", date: "2026-02-10", readTime: "6 min",
         title: "Zero-Trust in a School: What BOLA Attacks Taught Us",
         excerpt: "We found 12 BOLA vulnerabilities in our own API. Here's how we remediated them and what every edtech founder should check.",

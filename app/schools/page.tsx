@@ -10,7 +10,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 
 const schoolTypes = [
     { type: "Primary School", icon: BookOpen, id: "PRIM", desc: "Foundation management — class registers, homework tracking, parent alerts, and grade-level analytics.", features: ["attendance tracking", "parent portal", "grade book", "timetable"] },
-    { type: "High School", icon: School, id: "HIGH", desc: "Subject-based scheduling, department analytics, exam management, and individual teacher dashboards.", features: ["subject allocation", "exam locking", "attendance + analytics", "ai academic assistant"] },
+    { type: "High School", icon: School, id: "HIGH", desc: "Subject-based scheduling, department analytics, exam management, and individual teacher dashboards.", features: ["subject allocation", "exam locking", "attendance + analytics", "academic insights"] },
     { type: "University / College", icon: Users, id: "UNIV", desc: "Multi-faculty architecture, lecture scheduling, student enrollment management, and cross-department reporting.", features: ["department schools", "enrollment tracking", "cross-faculty analytics", "permission layers"] },
 ];
 
@@ -18,7 +18,7 @@ const useCases = [
     { stat: "94%", label: "avg_attendance_improvement", desc: "Schools report significantly higher daily attendance rates after 3 months on LUCY." },
     { stat: "60%", label: "admin_time_saved", desc: "Admin staff spend 60% less time on manual data entry, scheduling, and reporting." },
     { stat: "3x", label: "parent_engagement", desc: "Parent involvement tripled due to real-time notifications and transparent progress tracking." },
-    { stat: "99%", label: "teacher_adoption_rate", desc: "Faculty adoption rate within first 4 weeks — attributed to intuitive UI and AI support." },
+    { stat: "99%", label: "teacher_adoption_rate", desc: "Faculty adoption rate within first 4 weeks — attributed to intuitive UI and smart tools." },
 ];
 
 export default function Schools() {
