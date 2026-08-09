@@ -35,7 +35,7 @@ async function main() {
             data: {
                 schoolId: school.id,
                 submittedById: owner.id,
-                amount: 149.00,
+                amount: 49.00,
                 reference,
                 receiptUrl: 'https://example.com/receipts/proof.png',
                 status: 'PENDING',

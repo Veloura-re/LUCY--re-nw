@@ -624,41 +624,29 @@ export default function Home() {
           ))}
         </div>
 
-        {/* ── Stats Bar ── */}
+        {/* ── Promo Banner ── */}
         <section ref={statsRef} className="py-24 px-6 bg-slate-50 dark:bg-[#050505] transition-colors duration-300">
           <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-slate-200 dark:bg-white/5 overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
-              {[
-                { label: "institutions", val: loaded ? animCounters.schools.toLocaleString() : "—", unit: " schools" },
-                { label: "enrolled_students", val: loaded ? animCounters.students.toLocaleString() : "—", unit: " students" },
-                { label: "faculty_roster", val: loaded ? animCounters.teachers.toLocaleString() : "—", unit: " teachers" },
-              ].map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.3 }}
-                  whileHover={{ backgroundColor: "rgba(0,0,0,0.02)" }}
-                  className="bg-white dark:bg-black p-12 space-y-4 cursor-default group dark:hover:bg-white/[0.02] transition-colors"
-                >
-                  <div className="text-[9px] text-slate-500 dark:text-zinc-400 uppercase tracking-widest font-bold">{stat.label}</div>
-                  <motion.div key={stat.val} initial={{ opacity: 0.5 }} animate={{ opacity: 1 }} className="text-4xl font-bold tracking-tighter text-slate-900 dark:text-white">
-                    {stat.val}<span className="text-slate-500 dark:text-zinc-500 text-xl font-medium ml-1">{loaded ? stat.unit : ""}</span>
-                  </motion.div>
-                  {/* Animated underline progress bar */}
-                  <div className="h-px bg-slate-100 dark:bg-zinc-900 w-full overflow-hidden relative">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "100%" }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                      className="h-full bg-slate-300 dark:bg-white/20"
-                    />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="bg-slate-900 dark:bg-white/5 border border-slate-800 dark:border-white/10 p-12 md:p-20 text-center rounded-xl relative overflow-hidden"
+            >
+              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.15),transparent_50%)]" />
+              <div className="relative z-10 space-y-6">
+                <div className="text-emerald-400 font-bold tracking-[0.3em] uppercase text-xs md:text-sm">
+                  Limited Time Offer
+                </div>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white font-orbitron">
+                  80% Discount
+                </h2>
+                <p className="text-slate-400 text-lg md:text-2xl font-medium max-w-2xl mx-auto">
+                  Core Platform pricing dropped from <span className="line-through text-slate-500">$250</span> down to <span className="text-emerald-400 font-bold">$49</span> / month.
+                </p>
+              </div>
+            </motion.div>
           </div>
         </section>
 
