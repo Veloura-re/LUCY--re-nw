@@ -14,7 +14,7 @@ const partners = [
     { name: "Nova International", region: "London, UK", tier: "International", id: "INTL_01", desc: "Multi-campus deployment spanning 4 schools with unified director analytics." },
     { name: "TechGrow Foundation", region: "Lagos, NG", tier: "NGO", id: "NGO_01", desc: "Non-profit deploying LUCY in low-bandwidth environments to improve educator tooling." },
     { name: "Atlantic Learning", region: "Miami, USA", tier: "Charter", id: "CHRT_01", desc: "Charter school network using LUCY to manage 8 schools under one institutional umbrella." },
-    { name: "Montessori Future", region: "Berlin, DE", tier: "Private", id: "PRIV_02", desc: "Bilingual Montessori environment using AI personas for multilingual instruction support." },
+    { name: "Montessori Future", region: "Berlin, DE", tier: "Private", id: "PRIV_02", desc: "Bilingual Montessori environment using our platform for multilingual instruction support." },
 ];
 
 const tiers = [

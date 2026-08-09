@@ -12,7 +12,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal,
 const demoSteps = [
     { id: "01", title: "Director Logs In", desc: "School director authenticates with multi-factor token. Dashboard instantly renders real-time institutional metrics.", terminal: ["> auth.verify(director_id)", "> mfa.challenge(): passed", "> session.spawn(role=DIRECTOR)", "> dashboard.render(): 14ms"] },
     { id: "02", title: "Attendance Ingested", desc: "A teacher marks class attendance. System records every entry with timestamp, dispatches parent alerts for absences.", terminal: ["> attendance.ingest(class_07A)", "> records.write(47 scholars)", "> absent.flag(ids=[4,12,33])", "> email.dispatch(3 parents): sent"] },
-    { id: "03", title: "AI Responds", desc: "A struggling student queries the AI assistant. Lucy routes to the appropriate subject persona and responds instantly.", terminal: ["> ai.route(student_29, 'math')", "> persona.load(MATH_EXPERT)", "> context.inject(student_history)", "> response.stream(): 340ms"] },
+    { id: "03", title: "Teacher Messaging", desc: "A parent receives an update directly from a teacher regarding performance. Communication is swift and reliable.", terminal: ["> chat.route(parent_29, 'math')", "> session.load()", "> context.inject(student_history)", "> response.stream(): 340ms"] },
     { id: "04", title: "Director Reviews Analytics", desc: "Daily summary compiled: attendance rate, grade distribution, teacher performance — all in one command view.", terminal: ["> analytics.compile(today)", "> attendance_rate: 94.3%", "> avg_grade: B+", "> flagged_teachers: 0"] },
 ];
 
@@ -67,7 +67,7 @@ export default function Demo() {
                             {[
                                 { label: "avg_session_speed", val: 14, suffix: "ms" },
                                 { label: "uptime_today", val: 100, suffix: "%" },
-                                { label: "ai_response_avg", val: 340, suffix: "ms" },
+                                { label: "response_avg", val: 340, suffix: "ms" },
                                 { label: "data_processed", val: 48, suffix: "k_records" },
                             ].map((s, i) => (
                                 <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} transition={{ delay: i * 0.08 }} className="space-y-1">

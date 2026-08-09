@@ -16,17 +16,17 @@ const quarters = [
             { title: "Attendance module with parent alerts", done: true },
             { title: "Grading + exam locking engine", done: true },
             { title: "Timetable generator v1", done: true },
-            { title: "AI assistant (core persona)", done: true },
+            { title: "Advanced analytics module", done: true },
         ]
     },
     {
         label: "Q1 2026 — current", done: false,
         items: [
             { title: "Public website expansion + animations", done: true },
-            { title: "Geography, Math, Science AI personas", done: true },
+            { title: "Geography, Math, Science enhanced reports", done: true },
             { title: "Parent portal mobile optimization", done: false },
             { title: "Offline attendance sync for low-bandwidth", done: false },
-            { title: "AI-generated progress reports", done: false },
+            { title: "Automated progress reports", done: false },
         ]
     },
     {
@@ -34,7 +34,7 @@ const quarters = [
         items: [
             { title: "Custom exam templates per subject", done: false },
             { title: "Real-time collaborative markbook", done: false },
-            { title: "Director analytics v2 with trend AI", done: false },
+            { title: "Director analytics v2 with trends", done: false },
             { title: "FERPA & GDPR compliance certification", done: false },
         ]
     },
