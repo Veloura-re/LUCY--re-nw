@@ -10,7 +10,7 @@ import { NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { FloatingDock } from "@/components/dashboard/floating-dock";
-import { DynamicAIAssistant, InteractiveTour, NetworkBanner } from "@/app/dashboard/dynamic-components";
+import { InteractiveTour, NetworkBanner } from "@/app/dashboard/dynamic-components";
 import { PreferencesProvider } from "@/components/dashboard/preferences-provider";
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";

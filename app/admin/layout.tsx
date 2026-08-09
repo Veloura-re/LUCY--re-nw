@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Shield, LayoutDashboard, Activity, Zap } from "lucide-react";
-import { DynamicAIAssistant } from "@/components/dashboard/dynamic-ai-assistant";
 import { AdminNav } from "@/components/admin/admin-nav";
 
 export const metadata: Metadata = {

@@ -11,10 +11,9 @@ import { useState } from "react";
 import { Logo } from "@/components/ui/logo";
 
 const sections = [
-    { id: "01", title: "Getting Started", items: ["System Overview", "Provisioning Your Node", "Role Setup", "First Login"] },
+    { id: "01", title: "Getting Started", items: ["System Overview", "Setting up your School", "Role Setup", "First Login"] },
     { id: "02", title: "Attendance System", items: ["Marking Attendance", "Automated Alerts", "Late Thresholds", "Parent Notifications"] },
-    { id: "03", title: "Grading System", items: ["Creating Exam Records", "Grade Entry", "Locking Results", "Report Export"] },
-    { id: "04", title: "AI Assistant", items: ["Persona Overview", "Switching Personas", "Chat Sessions", "Privacy & Isolation"] },
+    { id: "03", title: "Grading System", items: ["Creating Exams", "Grade Entry", "Locking Results", "Report Export"] },
     { id: "05", title: "Timetable Engine", items: ["Creating Periods", "Assigning Teachers", "Student View", "Conflicts"] },
     { id: "06", title: "API Reference", items: ["Authentication", "Endpoints", "Rate Limits", "Webhook Events"] },
     { id: "07", title: "Legal & Compliance", items: ["Terms of Service", "Privacy Policy", "Data Processing Agreement", "Service Level Agreement", "Cyber Liability Insurance"] },
