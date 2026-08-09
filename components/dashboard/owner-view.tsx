@@ -219,8 +219,8 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                                     label="Current Monthly Revenue"
                                                     value={`$${(analytics?.summary?.collectedFees || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
                                                     icon={<DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-500" />}
-                                                    percentage={92}
-                                                    trend="Positive Yield"
+                                                    percentage={(analytics?.summary?.collectedFees || 0) > 0 ? 12 : undefined}
+                                                    trend={(analytics?.summary?.collectedFees || 0) > 0 ? "Positive Yield" : undefined}
                                                     featured
                                                 />
                                             </div>
@@ -248,10 +248,9 @@ export function OwnerView({ user, school: initialSchool, initialAnalytics }: Own
                                             </div>
                                             <div className="col-span-1 lg:col-span-1">
                                                 <MetricNode
-                                                    label="System State"
-                                                    value="Optimal"
-                                                    icon={<Activity className="w-4 h-4 sm:w-5 sm:h-5" />}
-                                                    trend="Online"
+                                                    label="Pending Receivables"
+                                                    value={`$${(analytics?.summary?.pendingFees || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                                                    icon={<DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />}
                                                 />
                                             </div>
                                         </div>
