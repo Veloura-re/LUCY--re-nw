@@ -214,7 +214,7 @@ export default function PresentationDeck() {
       id: "finance_01",
       tag: "financial // superiority",
       title: "instant financial reconciliation",
-      sub: "never manually cross-reference a bank slip again. automated ledgers via telebirr, cbe birr, or stripe.",
+      sub: "Never manually check a bank slip again. Automated fee tracking via Telebirr, CBE Birr, or Stripe.",
       content: (
         <div className="space-y-6 w-full text-left">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
@@ -228,8 +228,8 @@ export default function PresentationDeck() {
         </div>
       ),
       technicalAppendix: [
-        "Cryptographic webhooks connected directly to national payment gateways.",
-        "USSD push authorization confirms transaction in milliseconds without duplicate billing."
+        "Secure, direct connections to national payment providers.",
+        "Instant payment confirmations on parent phones to prevent duplicate charges."
       ]
     },
     {
@@ -245,7 +245,7 @@ export default function PresentationDeck() {
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
             <FeatureItem icon={FileText} title="digital documents" desc="visually stunning, legally compliant digital documents generated on the fly." delay={0.1} />
-            <FeatureItem icon={Lock} title="cryptographic signatures" desc="secure hashes bind parent identity to consent forms." delay={0.2} />
+            <FeatureItem icon={Lock} title="cryptographic signatures" desc="Digital signatures securely verify parent consent for digital forms." delay={0.2} />
           </div>
         </div>
       ),

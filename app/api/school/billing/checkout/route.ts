@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-        // Set up the checkout session for a $149/month subscription
+        // Set up the checkout session for a $49/month subscription
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             customer_email: user.email,
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
                             name: 'Enterprise Node Tier (Monthly)',
                             description: `Platform access for ${school.name}`,
                         },
-                        unit_amount: 14900, // $149.00 in cents
+                        unit_amount: 4900, // $49.00 in cents
                         recurring: {
                             interval: 'month',
                         },
