@@ -328,12 +328,12 @@ export default function Home() {
   }, [liveStats]);
 
   const featureCards = [
-    { icon: Command, title: "core_control", desc: "direct command abstraction of all institutional variables." },
-    { icon: Shield, title: "vault_security", desc: "quantum-resistant silos for high-sensitivity scholar data." },
-    { icon: Activity, title: "live_telemetry", desc: "real-time ingestion of attendance and behavioral vectors." },
-    { icon: Database, title: "data_sync", desc: "distributed data consistency across the network." },
-    { icon: Network, title: "smart_routing", desc: "autonomous scheduling via heuristic temporal mapping." },
-    { icon: Search, title: "deep_audit", desc: "cryptographically verifiable logs for all operations." }
+    { icon: Command, title: "Central Control", desc: "Manage all school operations from a single, easy-to-use dashboard." },
+    { icon: Shield, title: "Secure Storage", desc: "Secure, encrypted storage to keep student and staff data completely private." },
+    { icon: Activity, title: "Live Dashboard", desc: "Real-time updates on attendance, grades, and daily school activities." },
+    { icon: Database, title: "Data Sync", desc: "Instant synchronization across all web and mobile devices." },
+    { icon: Network, title: "Smart Scheduling", desc: "Automated timetable generation that avoids teacher and room conflicts." },
+    { icon: Search, title: "Activity Audit", desc: "Detailed, secure logs tracking every action and change on the platform." }
   ];
 
   const marqueeItems = ["EMPOWERING_EDUCATION", "LUCY_OS_v1", "HIGH_PERFORMANCE", "SECURE_STORAGE", "CONNECTED_CAMPUS", "CENTRAL_DASHBOARD", "ACADEMIC_SYSTEM", "SECURE_ACCESS", "STUDENT_PORTAL", "CLOUD_NATIVE"];
@@ -627,12 +627,11 @@ export default function Home() {
         {/* ── Stats Bar ── */}
         <section ref={statsRef} className="py-24 px-6 bg-slate-50 dark:bg-[#050505] transition-colors duration-300">
           <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 dark:bg-white/5 overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-slate-200 dark:bg-white/5 overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
               {[
                 { label: "institutions", val: loaded ? animCounters.schools.toLocaleString() : "—", unit: " schools" },
                 { label: "enrolled_students", val: loaded ? animCounters.students.toLocaleString() : "—", unit: " students" },
                 { label: "faculty_roster", val: loaded ? animCounters.teachers.toLocaleString() : "—", unit: " teachers" },
-                { label: "active_schools", val: loaded ? animCounters.totalSchools.toLocaleString() : "—", unit: " active" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -668,7 +667,7 @@ export default function Home() {
           <div className="max-w-[1400px] mx-auto space-y-16">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
               <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
-              <span className="text-[10px] uppercase tracking-[0.4em]">core_features</span>
+              <span className="text-sm md:text-base uppercase tracking-widest">core_features</span>
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-[1px] bg-slate-200 dark:bg-white/10 overflow-hidden border border-slate-200 dark:border-white/10 rounded-xl dark:rounded-none">
@@ -779,7 +778,7 @@ export default function Home() {
                 distributed <br /><span className="text-slate-400 dark:text-zinc-800">architecture.</span>
               </h2>
               <p className="text-slate-500 dark:text-zinc-500 text-lg leading-relaxed max-w-md font-medium">
-                deploy isolated instances locally or through our cloud server. complete data sovereignty over your academic system.
+                Use LUCY on the cloud or install it directly on your school's servers. You retain 100% ownership and control of your data.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/network">
@@ -887,7 +886,7 @@ export default function Home() {
           <div className="max-w-[1400px] mx-auto space-y-20">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }} className="flex items-center gap-4 text-slate-500 dark:text-zinc-600 font-bold">
               <motion.div animate={{ width: ["48px", "96px", "48px"] }} transition={{ duration: 3.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-800" />
-              <span className="text-[10px] uppercase tracking-[0.4em]">user_roles // who_uses_lucy</span>
+              <span className="text-sm md:text-base uppercase tracking-widest">user_roles // who_uses_lucy</span>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
@@ -991,7 +990,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { tier: "Pilot Plan", price: "Free", period: "up to 3 months", desc: "Full access for a single institution during your evaluation period. No credit card required.", features: ["1 institution", "up to 500 students", "all core features", "email support"], highlight: false },
-                { tier: "Core Platform", price: "$149", period: "/ month", desc: "Production-grade deployment for full-scale institutional management.", features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
+                { tier: "Core Platform", price: "$49", period: "/ month", desc: "Production-grade deployment for full-scale institutional management.", features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"], highlight: true },
                 { tier: "Enterprise", price: "Custom", period: "per institution", desc: "Multi-school networks, custom integrations, on-premise deployment, and dedicated account management.", features: ["unlimited schools", "custom integrations", "on-premise option", "dedicated manager", "99.99% SLA"], highlight: false },
               ].map((p, i) => (
                 <TiltCard key={i} className="h-full">
