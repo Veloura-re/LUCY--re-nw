@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SpringingLoader from "./springing-loader";
 import { toast } from "sonner";
 import { SmartConnectivity } from "./smart-connectivity";
-import { FinancialAnalyticsChart } from "./financial-analytics-chart";
+
 
 import { Gender, School, Role } from "@prisma/client";
 
@@ -283,9 +283,7 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                                     </CardContent>
                                 </Card>
                             </div>
-                            <div className="lg:col-span-12">
-                                <FinancialAnalyticsChart />
-                            </div>
+
                             <div className="lg:col-span-12">
                                 <SmartConnectivity />
                             </div>

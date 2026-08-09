@@ -64,7 +64,7 @@ export default function BillingClientWrapper({
     const [paymentMode, setPaymentMode] = useState<'STRIPE' | 'CHAPA' | 'BANK'>('STRIPE');
     
     // Manual Payment Form States
-    const [amount, setAmount] = useState('149.00');
+    const [amount, setAmount] = useState('49.00');
     const [reference, setReference] = useState('');
     const [receiptUrl, setReceiptUrl] = useState('');
     const [notes, setNotes] = useState('');
@@ -606,7 +606,7 @@ export default function BillingClientWrapper({
                                 <div className="space-y-2">
                                     <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Connect with Stripe Gateway</h3>
                                     <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
-                                        Authorize pre-approved credit card debits directly through Stripe&apos;s secure portal. You will be billed <strong>$149.00 per month</strong> to sustain platform operations.
+                                        Authorize pre-approved credit card debits directly through Stripe&apos;s secure portal. You will be billed <strong>$49.00 per month</strong> to sustain platform operations.
                                     </p>
                                 </div>
                                 <button
@@ -801,7 +801,7 @@ export default function BillingClientWrapper({
                         </span>
                         
                         <div className="flex items-baseline gap-2 text-zinc-900 dark:text-white">
-                            <span className="text-4xl font-extrabold tracking-tight font-orbitron text-eduGreen-500">$149</span>
+                            <span className="text-4xl font-extrabold tracking-tight font-orbitron text-eduGreen-500">$49</span>
                             <span className="text-lg line-through text-zinc-600 dark:text-zinc-500 font-medium">$250</span>
                             <span className="ml-1 text-sm font-semibold text-zinc-600 dark:text-zinc-400">/month</span>
                         </div>

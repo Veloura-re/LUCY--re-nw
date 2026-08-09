@@ -20,8 +20,8 @@ export async function POST(request: Request) {
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-        // Convert $149 USD to ETB (Approximate rate: 1 USD = ~120 ETB, so roughly 17880 ETB)
-        const amountETB = '17880';
+        // Convert $49 USD to ETB (Approximate rate: 1 USD = ~120 ETB, so roughly 5880 ETB)
+        const amountETB = '5880';
         const tx_ref = `tx-${school.id}-${Date.now()}`;
 
         // Initialize Chapa Transaction
