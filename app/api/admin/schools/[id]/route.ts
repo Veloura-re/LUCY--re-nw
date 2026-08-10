@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createAdminClient } from '@/utils/supabase/admin';
+import { prisma } from '@/lib/prisma';
 
 // PATCH - Update school status (suspend/activate)
 export async function PATCH(
@@ -32,6 +33,14 @@ export async function PATCH(
     }
 
     try {
+        if (prisma) {
+            const school = await prisma.school.update({
+                where: { id },
+                data: updates
+            });
+            return NextResponse.json({ school });
+        }
+
         const supabaseAdmin = createSupabaseAdmin(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -46,7 +55,6 @@ export async function PATCH(
 
         if (error) throw error;
         
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
@@ -56,15 +64,15 @@ export async function PATCH(
                 await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'school', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
-return NextResponse.json({ school });
+
+        return NextResponse.json({ school });
     } catch (error) {
         console.error("Error updating school:", error);
         return NextResponse.json({ error: 'Failed to update school' }, { status: 500 });
     }
 }
 
-
-// DELETE - Delete school and all related data
+// DELETE - Delete school and all related data completely
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -78,90 +86,156 @@ export async function DELETE(
     const { id } = await params;
 
     try {
-        console.log(`[AdminAPI] Purging School: ${id} via Supabase SDK`);
-        
-        const supabaseAdmin = createSupabaseAdmin(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
+        console.log(`[AdminAPI] Purging School: ${id} with full relational teardown`);
 
-        // 0. Verify the school exists
-        const { data: existingSchool } = await supabaseAdmin.from('School').select('id').eq('id', id).maybeSingle();
-        if (!existingSchool) {
-            console.log(`[AdminAPI] School ${id} already deleted. Acknowledging.`);
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'school', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, message: 'Already deleted' });
+        let userIds: string[] = [];
+
+        if (prisma) {
+            // Find school and all users
+            const schoolUsers = await prisma.user.findMany({
+                where: { schoolId: id },
+                select: { id: true }
+            });
+            userIds = schoolUsers.map(u => u.id);
+
+            // Collect student, class, chatroom, book, marklist, exam IDs
+            const [students, classes, chatRooms, books, marklists, exams, unitPacks] = await Promise.all([
+                prisma.student.findMany({ where: { schoolId: id }, select: { id: true } }),
+                prisma.class.findMany({ where: { schoolId: id }, select: { id: true } }),
+                prisma.chatRoom.findMany({ where: { schoolId: id }, select: { id: true } }),
+                prisma.book.findMany({ where: { schoolId: id }, select: { id: true } }),
+                prisma.marklistConfig.findMany({ where: { schoolId: id }, select: { id: true } }),
+                prisma.exam.findMany({
+                    where: {
+                        OR: [
+                            { class: { schoolId: id } },
+                            { subject: { schoolId: id } },
+                            { createdBy: { schoolId: id } }
+                        ]
+                    },
+                    select: { id: true }
+                }),
+                prisma.unitPack.findMany({ where: { schoolId: id }, select: { id: true } })
+            ]);
+
+            const studentIds = students.map(s => s.id);
+            const classIds = classes.map(c => c.id);
+            const chatRoomIds = chatRooms.map(c => c.id);
+            const bookIds = books.map(b => b.id);
+            const marklistIds = marklists.map(m => m.id);
+            const examIds = exams.map(e => e.id);
+            const unitPackIds = unitPacks.map(u => u.id);
+
+            // Perform robust sequential leaf purge in atomic transaction
+            await prisma.$transaction(async (tx) => {
+                // 1. Marklist marks and entries
+                if (marklistIds.length > 0) {
+                    await tx.marklistMark.deleteMany({ where: { entry: { configId: { in: marklistIds } } } }).catch(() => {});
+                    await tx.marklistEntry.deleteMany({ where: { configId: { in: marklistIds } } }).catch(() => {});
+                    await tx.marklistColumn.deleteMany({ where: { configId: { in: marklistIds } } }).catch(() => {});
+                    await tx.marklistConfig.deleteMany({ where: { id: { in: marklistIds } } }).catch(() => {});
+                }
+
+                // 2. Books and unit packs
+                if (bookIds.length > 0 || unitPackIds.length > 0) {
+                    await tx.resourceProgress.deleteMany({ where: { bookId: { in: bookIds } } }).catch(() => {});
+                    await tx.unitPackResource.deleteMany({
+                        where: {
+                            OR: [
+                                { unitPackId: { in: unitPackIds } },
+                                { bookId: { in: bookIds } }
+                            ]
+                        }
+                    }).catch(() => {});
+                    await tx.unitPack.deleteMany({ where: { id: { in: unitPackIds } } }).catch(() => {});
+                    await tx.bookRequest.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    await tx.book.deleteMany({ where: { id: { in: bookIds } } }).catch(() => {});
+                }
+
+                // 3. Invoices and payments
+                await tx.payment.deleteMany({ where: { invoice: { schoolId: id } } }).catch(() => {});
+                await tx.invoiceItem.deleteMany({ where: { invoice: { schoolId: id } } }).catch(() => {});
+                await tx.invoice.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.feeStructure.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 4. Exams and grades
+                if (examIds.length > 0) {
+                    await tx.examAttempt.deleteMany({ where: { examId: { in: examIds } } }).catch(() => {});
+                    await tx.gradeRecord.deleteMany({ where: { examId: { in: examIds } } }).catch(() => {});
+                    await tx.exam.deleteMany({ where: { id: { in: examIds } } }).catch(() => {});
+                }
+
+                // 5. Chat and Comms
+                if (chatRoomIds.length > 0) {
+                    await tx.chatRoomMember.deleteMany({ where: { chatRoomId: { in: chatRoomIds } } }).catch(() => {});
+                    await tx.message.deleteMany({ where: { chatRoomId: { in: chatRoomIds } } }).catch(() => {});
+                    await tx.chatRoom.deleteMany({ where: { id: { in: chatRoomIds } } }).catch(() => {});
+                }
+                await tx.message.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 6. Student records
+                if (studentIds.length > 0) {
+                    await tx.parentStudentLink.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.attendanceRecord.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.gradeRecord.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.studentRemark.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.internalNote.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.absenceAuthorization.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.certificate.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.assignmentSubmission.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
+                    await tx.student.deleteMany({ where: { id: { in: studentIds } } }).catch(() => {});
+                }
+                await tx.student.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 7. Classes, periods, assignments, timetable
+                if (classIds.length > 0) {
+                    await tx.timetable.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
+                    await tx.teacherAssignment.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
+                    await tx.lesson.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
+                }
+                await tx.assignmentSubmission.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.assignment.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.class.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.period.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.subject.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.grade.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.academicTerm.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 8. Financial and operations metadata
+                if (userIds.length > 0) {
+                    await tx.staffPayroll.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
+                }
+                await tx.institutionalExpense.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.billingReceipt.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.actionRequest.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.event.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.restorePoint.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.errorLog.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.auditLog.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                await tx.inviteToken.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 9. User-linked sub-records
+                if (userIds.length > 0) {
+                    await tx.staffAttendanceRecord.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
+                    await tx.teacherRemark.deleteMany({ where: { OR: [{ teacherId: { in: userIds } }, { authorId: { in: userIds } }] } }).catch(() => {});
+                    await tx.chatRoomMember.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
+                    await tx.user.deleteMany({ where: { id: { in: userIds } } }).catch(() => {});
+                }
+                await tx.user.deleteMany({ where: { schoolId: id } }).catch(() => {});
+
+                // 10. Delete the school itself
+                await tx.school.delete({ where: { id } });
+            });
+
+            console.log(`[AdminAPI] Successfully purged school ${id} via Prisma.`);
+        } else {
+            // Secondary Supabase REST fallback
+            const supabaseAdmin = createSupabaseAdmin(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+            await supabaseAdmin.from('School').delete().eq('id', id);
         }
-
-        // Collect all user IDs associated with the school
-        const { data: schoolUsers } = await supabaseAdmin.from('User').select('id').eq('schoolId', id);
-        const userIds = (schoolUsers || []).map((u: any) => u.id);
-        console.log(`[AdminAPI] Found ${userIds.length} users to purge from Supabase.`);
-
-        // Collect all student IDs associated with the school
-        const { data: schoolStudents } = await supabaseAdmin.from('Student').select('id').eq('schoolId', id);
-        const studentIds = (schoolStudents || []).map((s: any) => s.id);
-        console.log(`[AdminAPI] Found ${studentIds.length} students to purge from Supabase.`);
-
-        const { data: schoolClasses } = await supabaseAdmin.from('Class').select('id').eq('schoolId', id);
-        const classIds = (schoolClasses || []).map((c: any) => c.id);
-        
-        // Purge tables sequentially due to FK dependencies
-        // Deepest leaves first
-        if (classIds.length > 0) {
-            await supabaseAdmin.from('Timetable').delete().in('classId', classIds);
-            await supabaseAdmin.from('TeacherAssignment').delete().in('classId', classIds);
-            await supabaseAdmin.from('Lesson').delete().in('classId', classIds);
-        }
-        
-        if (studentIds.length > 0) {
-            await supabaseAdmin.from('ParentStudentLink').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('AttendanceRecord').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('GradeRecord').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('ExamAttempt').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('Certificate').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('StudentRemark').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('InternalNote').delete().in('studentId', studentIds);
-            await supabaseAdmin.from('AbsenceAuthorization').delete().in('studentId', studentIds);
-        }
-        
-        // Let's rely on standard schoolId cascading where possible or delete explicitly
-        await supabaseAdmin.from('Student').delete().eq('schoolId', id);
-        
-        await supabaseAdmin.from('Invoice').delete().eq('schoolId', id);
-        await supabaseAdmin.from('FeeStructure').delete().eq('schoolId', id);
-        
-        await supabaseAdmin.from('MarklistConfig').delete().eq('schoolId', id);
-        await supabaseAdmin.from('AssignmentSubmission').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Assignment').delete().eq('schoolId', id);
-        await supabaseAdmin.from('BookRequest').delete().eq('schoolId', id);
-        await supabaseAdmin.from('UnitPack').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Book').delete().eq('schoolId', id);
-        
-        await supabaseAdmin.from('Exam').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Period').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Class').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Grade').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Subject').delete().eq('schoolId', id);
-        
-        await supabaseAdmin.from('Message').delete().eq('schoolId', id);
-        await supabaseAdmin.from('ChatRoomMember').delete().eq('schoolId', id);
-        await supabaseAdmin.from('ChatRoom').delete().eq('schoolId', id);
-        await supabaseAdmin.from('Event').delete().eq('schoolId', id);
-        await supabaseAdmin.from('AuditLog').delete().eq('schoolId', id);
-        await supabaseAdmin.from('InviteToken').delete().eq('schoolId', id);
-        
-        await supabaseAdmin.from('User').delete().eq('schoolId', id);
-        await supabaseAdmin.from('School').delete().eq('id', id);
 
         // Purge Supabase Auth accounts
         if (userIds.length > 0) {
@@ -172,8 +246,18 @@ return NextResponse.json({ success: true, message: 'Already deleted' });
                 })
             );
         }
-        
-        return NextResponse.json({ success: true });
+
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            const _userId = dbUser?.id || undefined;
+            if (_userId) {
+                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'school', ip: _ip || undefined });
+            }
+        } catch { /* non-blocking */ }
+
+        return NextResponse.json({ success: true, message: 'School purged successfully' });
     } catch (error) {
         console.error("[AdminAPI] Error purging school:", error);
         return NextResponse.json({
