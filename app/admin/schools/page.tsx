@@ -134,12 +134,15 @@ export default function SchoolsLedgerPage() {
     };
 
     const executeDelete = async () => {
+        const targetId = confirmAction.schoolId;
         setIsLoading(true);
         try {
-            const res = await fetch(`/api/admin/schools/${confirmAction.schoolId}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Failed to delete school');
+            const res = await fetch(`/api/admin/schools/${targetId}`, { method: 'DELETE' });
+            const data = (await res.json().catch(() => ({}))) as any;
+            if (!res.ok) throw new Error(data.details || data.error || 'Failed to delete school');
             toast.success("School purged successfully");
-            fetchSchools();
+            setSchools(prev => prev.filter(s => s.id !== targetId));
+            await fetchSchools();
         } catch (err: any) {
             setAlertConfig({ title: "Deletion Failed", message: err.message, isOpen: true, variant: "error" });
         } finally {
