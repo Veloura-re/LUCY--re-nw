@@ -149,7 +149,7 @@ export async function POST(request: Request) {
             // Insert new records
             if (records.length > 0) {
                 const insertData = records.map((record: any) => ({
-                    id: crypto.randomUUID(),
+                    id: globalThis.crypto.randomUUID(),
                     studentId: record.studentId,
                     classId,
                     subjectId: subjectId || null,
