@@ -1,20 +1,14 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 
-export async function PATCH(
+export async function GET(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
-
-        const body = (await req.json()) as Record<string, any>;
-        const updateData: Record<string, any> = {};
-        for (const [key, value] of Object.entries(body)) {
-            if (value !== undefined) updateData[key] = value;
-        }
+        const dbUser = await requireRole(['STUDENT', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN']);
 
         if (!prisma) {
             const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
@@ -22,41 +16,33 @@ export async function PATCH(
                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
             );
-            const { data: book } = await supabaseAdmin
+            const { data: book, error } = await supabaseAdmin
                 .from('Book')
                 .select('*')
                 .eq('id', id)
                 .maybeSingle();
 
+            if (error) throw error;
             if (!book || book.schoolId !== dbUser.schoolId) {
                 return new NextResponse("Book not found", { status: 404 });
             }
-
-            const { data: updatedBook, error } = await supabaseAdmin
-                .from('Book')
-                .update(updateData)
-                .eq('id', id)
-                .select()
-                .single();
-
-            if (error) throw error;
-            return NextResponse.json(updatedBook);
+            return NextResponse.json(book);
         }
 
         const book = await prisma.book.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                class: true,
+                grade: true,
+                subject: true
+            }
         });
 
         if (!book || book.schoolId !== dbUser.schoolId) {
             return new NextResponse("Book not found", { status: 404 });
         }
 
-        const updatedBook = await prisma.book.update({
-            where: { id },
-            data: updateData
-        });
-
-        return NextResponse.json(updatedBook);
+        return NextResponse.json(book);
     } catch (e) {
         return handleApiError(e);
     }
@@ -70,44 +56,22 @@ export async function DELETE(
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: book } = await supabaseAdmin
-                .from('Book')
-                .select('*')
-                .eq('id', id)
-                .maybeSingle();
-
-            if (!book || book.schoolId !== dbUser.schoolId) {
-                return new NextResponse("Book not found", { status: 404 });
-            }
-
-            // Programmatically resolve potential cascade deletion blocks
-            await Promise.all([
-                supabaseAdmin.from('ResourceProgress').delete().eq('bookId', id),
-                supabaseAdmin.from('UnitPackResource').delete().eq('bookId', id)
-            ]);
-
-            const { error } = await supabaseAdmin
-                .from('Book')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw error;
-            return new NextResponse("Book deleted", { status: 200 });
-        }
-
         const book = await prisma.book.findUnique({
             where: { id }
         });
 
-        if (!book || book.schoolId !== dbUser.schoolId) {
+        if (!book || (book.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
             return new NextResponse("Book not found", { status: 404 });
         }
+
+        // Clean up dependencies and self-referencing prerequisites
+        await prisma.book.updateMany({
+            where: { prerequisiteId: id },
+            data: { prerequisiteId: null }
+        });
+        await prisma.resourceProgress.deleteMany({ where: { bookId: id } });
+        await prisma.unitPackResource.deleteMany({ where: { bookId: id } });
+        await prisma.bookRequest.deleteMany({ where: { schoolId: book.schoolId } });
 
         await prisma.book.delete({
             where: { id }

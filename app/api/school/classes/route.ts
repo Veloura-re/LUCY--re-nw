@@ -244,10 +244,24 @@ export async function DELETE(request: Request) {
             }
 
             await prisma.$transaction(async (tx) => {
+                // Break prerequisites & clean leaf dependencies
+                await tx.exam.updateMany({ where: { classId: id }, data: { prerequisiteId: null } });
+                await tx.examAttempt.deleteMany({ where: { exam: { classId: id } } });
+                await tx.gradeRecord.deleteMany({ where: { exam: { classId: id } } });
+                await tx.exam.deleteMany({ where: { classId: id } });
                 await tx.teacherAssignment.deleteMany({ where: { classId: id } });
                 await tx.timetable.deleteMany({ where: { classId: id } });
-                await tx.exam.deleteMany({ where: { classId: id } });
                 await tx.lesson.deleteMany({ where: { classId: id } });
+                await tx.assignmentSubmission.deleteMany({ where: { assignment: { classId: id } } });
+                await tx.assignment.deleteMany({ where: { classId: id } });
+                await tx.attendanceRecord.deleteMany({ where: { classId: id } });
+                await tx.resourceProgress.deleteMany({ where: { book: { classId: id } } });
+                await tx.unitPackResource.deleteMany({ where: { book: { classId: id } } });
+                await tx.book.deleteMany({ where: { classId: id } });
+                await tx.marklistMark.deleteMany({ where: { entry: { config: { classId: id } } } });
+                await tx.marklistEntry.deleteMany({ where: { config: { classId: id } } });
+                await tx.marklistColumn.deleteMany({ where: { config: { classId: id } } });
+                await tx.marklistConfig.deleteMany({ where: { classId: id } });
                 await tx.student.updateMany({ where: { classId: id }, data: { classId: null } });
                 await tx.class.delete({ where: { id } });
             });
@@ -259,11 +273,36 @@ export async function DELETE(request: Request) {
             }
 
             await prisma.$transaction(async (tx) => {
-                // Cascading deletes usually handled by DB, but here we do it explicitly for complex links
+                // Find all classes in this grade
+                const classesInGrade = await tx.class.findMany({ where: { gradeId: id }, select: { id: true } });
+                const classIds = classesInGrade.map(c => c.id);
+
+                if (classIds.length > 0) {
+                    await tx.exam.updateMany({ where: { classId: { in: classIds } }, data: { prerequisiteId: null } });
+                    await tx.examAttempt.deleteMany({ where: { exam: { classId: { in: classIds } } } });
+                    await tx.gradeRecord.deleteMany({ where: { exam: { classId: { in: classIds } } } });
+                    await tx.exam.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.teacherAssignment.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.timetable.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.lesson.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.assignmentSubmission.deleteMany({ where: { assignment: { classId: { in: classIds } } } });
+                    await tx.assignment.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.attendanceRecord.deleteMany({ where: { classId: { in: classIds } } });
+                    await tx.resourceProgress.deleteMany({ where: { book: { classId: { in: classIds } } } });
+                    await tx.unitPackResource.deleteMany({ where: { book: { classId: { in: classIds } } } });
+                    await tx.book.deleteMany({ where: { classId: { in: classIds } } });
+                }
+
+                await tx.invoiceItem.updateMany({ where: { feeStructure: { gradeId: id } }, data: { feeStructureId: null } });
+                await tx.feeStructure.deleteMany({ where: { gradeId: id } });
                 await tx.parentStudentLink.deleteMany({ where: { student: { gradeId: id } } });
                 await tx.attendanceRecord.deleteMany({ where: { student: { gradeId: id } } });
                 await tx.gradeRecord.deleteMany({ where: { student: { gradeId: id } } });
                 await tx.examAttempt.deleteMany({ where: { student: { gradeId: id } } });
+                await tx.studentRemark.deleteMany({ where: { student: { gradeId: id } } });
+                await tx.internalNote.deleteMany({ where: { student: { gradeId: id } } });
+                await tx.absenceAuthorization.deleteMany({ where: { student: { gradeId: id } } });
+                await tx.certificate.deleteMany({ where: { student: { gradeId: id } } });
                 await tx.student.deleteMany({ where: { gradeId: id } });
                 await tx.class.deleteMany({ where: { gradeId: id } });
                 await tx.grade.delete({ where: { id } });
