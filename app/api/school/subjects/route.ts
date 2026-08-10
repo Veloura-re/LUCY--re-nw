@@ -133,6 +133,24 @@ return NextResponse.json({ success: true });
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
+        // Clean up dependent mappings in leaf-to-root order to prevent FK violations
+        await prisma.teacherAssignment.deleteMany({ where: { subjectId: id } });
+        await prisma.timetable.deleteMany({ where: { subjectId: id } });
+        await prisma.lesson.deleteMany({ where: { subjectId: id } });
+        await prisma.attendanceRecord.deleteMany({ where: { subjectId: id } });
+        await prisma.gradeRecord.deleteMany({ where: { subjectId: id } });
+        await prisma.assignmentSubmission.deleteMany({ where: { assignment: { subjectId: id } } });
+        await prisma.assignment.deleteMany({ where: { subjectId: id } });
+        await prisma.examAttempt.deleteMany({ where: { exam: { subjectId: id } } });
+        await prisma.exam.deleteMany({ where: { subjectId: id } });
+        await prisma.resourceProgress.deleteMany({ where: { book: { subjectId: id } } });
+        await prisma.unitPackResource.deleteMany({ where: { book: { subjectId: id } } });
+        await prisma.book.deleteMany({ where: { subjectId: id } });
+        await prisma.marklistMark.deleteMany({ where: { entry: { config: { subjectId: id } } } });
+        await prisma.marklistEntry.deleteMany({ where: { config: { subjectId: id } } });
+        await prisma.marklistColumn.deleteMany({ where: { config: { subjectId: id } } });
+        await prisma.marklistConfig.deleteMany({ where: { subjectId: id } });
+
         await prisma.subject.delete({ where: { id } });
 
         // Trigger Cache Invalidation

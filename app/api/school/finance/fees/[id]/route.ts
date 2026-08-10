@@ -10,6 +10,12 @@ export async function DELETE(
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
+        // Nullify foreign key reference on invoice line items to preserve historical bills while allowing protocol deletion
+        await prisma.invoiceItem.updateMany({
+            where: { feeStructureId: feeId },
+            data: { feeStructureId: null }
+        });
+
         await prisma.feeStructure.delete({
             where: {
                 id: feeId,
