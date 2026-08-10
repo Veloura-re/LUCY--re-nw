@@ -72,7 +72,7 @@ export async function PATCH(
     }
 }
 
-// DELETE - Delete school and all related data completely
+// DELETE - Purge school and all dependent relational records cleanly
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -85,149 +85,112 @@ export async function DELETE(
 
     const { id } = await params;
 
+    // Validate UUID format to protect SQL safety
+    const uuidRegex = /^[0-9a-fA-F-]{8}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{4}-[0-9a-fA-F-]{12}$/;
+    if (!uuidRegex.test(id)) {
+        return NextResponse.json({ error: 'Invalid school ID format' }, { status: 400 });
+    }
+
     try {
-        console.log(`[AdminAPI] Purging School: ${id} with full relational teardown`);
+        console.log(`[AdminAPI] Purging School: ${id} via atomic SQL cascade`);
 
         let userIds: string[] = [];
 
         if (prisma) {
-            // Find school and all users
-            const schoolUsers = await prisma.user.findMany({
-                where: { schoolId: id },
-                select: { id: true }
-            });
-            userIds = schoolUsers.map(u => u.id);
-
-            // Collect student, class, chatroom, book, marklist, exam IDs
-            const [students, classes, chatRooms, books, marklists, exams, unitPacks] = await Promise.all([
-                prisma.student.findMany({ where: { schoolId: id }, select: { id: true } }),
-                prisma.class.findMany({ where: { schoolId: id }, select: { id: true } }),
-                prisma.chatRoom.findMany({ where: { schoolId: id }, select: { id: true } }),
-                prisma.book.findMany({ where: { schoolId: id }, select: { id: true } }),
-                prisma.marklistConfig.findMany({ where: { schoolId: id }, select: { id: true } }),
-                prisma.exam.findMany({
-                    where: {
-                        OR: [
-                            { class: { schoolId: id } },
-                            { subject: { schoolId: id } },
-                            { createdBy: { schoolId: id } }
-                        ]
-                    },
+            // Collect user IDs for Supabase Auth cleanup
+            try {
+                const schoolUsers = await prisma.user.findMany({
+                    where: { schoolId: id, role: { not: 'SUPERADMIN' } },
                     select: { id: true }
-                }),
-                prisma.unitPack.findMany({ where: { schoolId: id }, select: { id: true } })
-            ]);
+                });
+                userIds = schoolUsers.map(u => u.id);
+            } catch (e) {
+                console.warn("[AdminAPI] User collection error (continuing):", e);
+            }
 
-            const studentIds = students.map(s => s.id);
-            const classIds = classes.map(c => c.id);
-            const chatRoomIds = chatRooms.map(c => c.id);
-            const bookIds = books.map(b => b.id);
-            const marklistIds = marklists.map(m => m.id);
-            const examIds = exams.map(e => e.id);
-            const unitPackIds = unitPacks.map(u => u.id);
+            // Single atomic Postgres DO block executes all deletions in exact topological leaf-to-root order
+            const purgeSql = `
+                DO $$
+                DECLARE
+                    s_id text := '${id}';
+                BEGIN
+                    -- 1. Marklists
+                    DELETE FROM "MarklistMark" WHERE "entryId" IN (SELECT id FROM "MarklistEntry" WHERE "configId" IN (SELECT id FROM "MarklistConfig" WHERE "schoolId" = s_id));
+                    DELETE FROM "MarklistEntry" WHERE "configId" IN (SELECT id FROM "MarklistConfig" WHERE "schoolId" = s_id);
+                    DELETE FROM "MarklistColumn" WHERE "configId" IN (SELECT id FROM "MarklistConfig" WHERE "schoolId" = s_id);
+                    DELETE FROM "MarklistConfig" WHERE "schoolId" = s_id;
 
-            // Perform robust sequential leaf purge in atomic transaction
-            await prisma.$transaction(async (tx) => {
-                // 1. Marklist marks and entries
-                if (marklistIds.length > 0) {
-                    await tx.marklistMark.deleteMany({ where: { entry: { configId: { in: marklistIds } } } }).catch(() => {});
-                    await tx.marklistEntry.deleteMany({ where: { configId: { in: marklistIds } } }).catch(() => {});
-                    await tx.marklistColumn.deleteMany({ where: { configId: { in: marklistIds } } }).catch(() => {});
-                    await tx.marklistConfig.deleteMany({ where: { id: { in: marklistIds } } }).catch(() => {});
-                }
+                    -- 2. Curriculum & Books
+                    DELETE FROM "ResourceProgress" WHERE "bookId" IN (SELECT id FROM "Book" WHERE "schoolId" = s_id);
+                    DELETE FROM "UnitPackResource" WHERE "unitPackId" IN (SELECT id FROM "UnitPack" WHERE "schoolId" = s_id) OR "bookId" IN (SELECT id FROM "Book" WHERE "schoolId" = s_id);
+                    DELETE FROM "UnitPack" WHERE "schoolId" = s_id;
+                    DELETE FROM "BookRequest" WHERE "schoolId" = s_id;
+                    UPDATE "Book" SET "prerequisiteId" = NULL WHERE "schoolId" = s_id;
+                    DELETE FROM "Book" WHERE "schoolId" = s_id;
 
-                // 2. Books and unit packs
-                if (bookIds.length > 0 || unitPackIds.length > 0) {
-                    await tx.resourceProgress.deleteMany({ where: { bookId: { in: bookIds } } }).catch(() => {});
-                    await tx.unitPackResource.deleteMany({
-                        where: {
-                            OR: [
-                                { unitPackId: { in: unitPackIds } },
-                                { bookId: { in: bookIds } }
-                            ]
-                        }
-                    }).catch(() => {});
-                    await tx.unitPack.deleteMany({ where: { id: { in: unitPackIds } } }).catch(() => {});
-                    await tx.bookRequest.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                    await tx.book.deleteMany({ where: { id: { in: bookIds } } }).catch(() => {});
-                }
+                    -- 3. Invoices & Fees
+                    DELETE FROM "Payment" WHERE "invoiceId" IN (SELECT id FROM "Invoice" WHERE "schoolId" = s_id);
+                    DELETE FROM "InvoiceItem" WHERE "invoiceId" IN (SELECT id FROM "Invoice" WHERE "schoolId" = s_id);
+                    DELETE FROM "Invoice" WHERE "schoolId" = s_id;
+                    DELETE FROM "FeeStructure" WHERE "schoolId" = s_id;
 
-                // 3. Invoices and payments
-                await tx.payment.deleteMany({ where: { invoice: { schoolId: id } } }).catch(() => {});
-                await tx.invoiceItem.deleteMany({ where: { invoice: { schoolId: id } } }).catch(() => {});
-                await tx.invoice.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.feeStructure.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 4. Exams & Grades
+                    DELETE FROM "ExamAttempt" WHERE "examId" IN (SELECT id FROM "Exam" WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id));
+                    DELETE FROM "GradeRecord" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    UPDATE "Exam" SET "prerequisiteId" = NULL WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id);
+                    DELETE FROM "Exam" WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id);
 
-                // 4. Exams and grades
-                if (examIds.length > 0) {
-                    await tx.examAttempt.deleteMany({ where: { examId: { in: examIds } } }).catch(() => {});
-                    await tx.gradeRecord.deleteMany({ where: { examId: { in: examIds } } }).catch(() => {});
-                    await tx.exam.deleteMany({ where: { id: { in: examIds } } }).catch(() => {});
-                }
+                    -- 5. Chat & Communication
+                    DELETE FROM "ChatRoomMember" WHERE "chatRoomId" IN (SELECT id FROM "ChatRoom" WHERE "schoolId" = s_id);
+                    DELETE FROM "Message" WHERE "schoolId" = s_id OR "chatRoomId" IN (SELECT id FROM "ChatRoom" WHERE "schoolId" = s_id);
+                    DELETE FROM "ChatRoom" WHERE "schoolId" = s_id;
 
-                // 5. Chat and Comms
-                if (chatRoomIds.length > 0) {
-                    await tx.chatRoomMember.deleteMany({ where: { chatRoomId: { in: chatRoomIds } } }).catch(() => {});
-                    await tx.message.deleteMany({ where: { chatRoomId: { in: chatRoomIds } } }).catch(() => {});
-                    await tx.chatRoom.deleteMany({ where: { id: { in: chatRoomIds } } }).catch(() => {});
-                }
-                await tx.message.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 6. Students & Guardians
+                    DELETE FROM "ParentStudentLink" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "AttendanceRecord" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "StudentRemark" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "InternalNote" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "AbsenceAuthorization" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "Certificate" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
+                    DELETE FROM "AssignmentSubmission" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "schoolId" = s_id;
+                    DELETE FROM "Student" WHERE "schoolId" = s_id;
 
-                // 6. Student records
-                if (studentIds.length > 0) {
-                    await tx.parentStudentLink.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.attendanceRecord.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.gradeRecord.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.studentRemark.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.internalNote.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.absenceAuthorization.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.certificate.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.assignmentSubmission.deleteMany({ where: { studentId: { in: studentIds } } }).catch(() => {});
-                    await tx.student.deleteMany({ where: { id: { in: studentIds } } }).catch(() => {});
-                }
-                await tx.student.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 7. Classes, Timetables, Lessons, Subjects, Terms
+                    DELETE FROM "Timetable" WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id);
+                    DELETE FROM "TeacherAssignment" WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id);
+                    DELETE FROM "Lesson" WHERE "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id);
+                    DELETE FROM "Assignment" WHERE "schoolId" = s_id;
+                    DELETE FROM "Class" WHERE "schoolId" = s_id;
+                    DELETE FROM "Period" WHERE "schoolId" = s_id;
+                    DELETE FROM "Subject" WHERE "schoolId" = s_id;
+                    DELETE FROM "Grade" WHERE "schoolId" = s_id;
+                    DELETE FROM "AcademicTerm" WHERE "schoolId" = s_id;
 
-                // 7. Classes, periods, assignments, timetable
-                if (classIds.length > 0) {
-                    await tx.timetable.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
-                    await tx.teacherAssignment.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
-                    await tx.lesson.deleteMany({ where: { classId: { in: classIds } } }).catch(() => {});
-                }
-                await tx.assignmentSubmission.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.assignment.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.class.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.period.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.subject.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.grade.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.academicTerm.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 8. Institutional Operations & Logs
+                    DELETE FROM "StaffPayroll" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "InstitutionalExpense" WHERE "schoolId" = s_id;
+                    DELETE FROM "BillingReceipt" WHERE "schoolId" = s_id;
+                    DELETE FROM "ActionRequest" WHERE "schoolId" = s_id;
+                    DELETE FROM "Event" WHERE "schoolId" = s_id;
+                    DELETE FROM "RestorePoint" WHERE "schoolId" = s_id;
+                    DELETE FROM "ErrorLog" WHERE "schoolId" = s_id;
+                    DELETE FROM "AuditLog" WHERE "schoolId" = s_id;
+                    DELETE FROM "InviteToken" WHERE "schoolId" = s_id;
 
-                // 8. Financial and operations metadata
-                if (userIds.length > 0) {
-                    await tx.staffPayroll.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
-                }
-                await tx.institutionalExpense.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.billingReceipt.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.actionRequest.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.event.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.restorePoint.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.errorLog.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.auditLog.deleteMany({ where: { schoolId: id } }).catch(() => {});
-                await tx.inviteToken.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 9. Users & Faculty
+                    DELETE FROM "StaffAttendanceRecord" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "TeacherRemark" WHERE "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "authorId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "ChatRoomMember" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "User" WHERE "schoolId" = s_id AND "role" != 'SUPERADMIN';
+                    UPDATE "User" SET "schoolId" = NULL WHERE "schoolId" = s_id;
 
-                // 9. User-linked sub-records
-                if (userIds.length > 0) {
-                    await tx.staffAttendanceRecord.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
-                    await tx.teacherRemark.deleteMany({ where: { OR: [{ teacherId: { in: userIds } }, { authorId: { in: userIds } }] } }).catch(() => {});
-                    await tx.chatRoomMember.deleteMany({ where: { userId: { in: userIds } } }).catch(() => {});
-                    await tx.user.deleteMany({ where: { id: { in: userIds } } }).catch(() => {});
-                }
-                await tx.user.deleteMany({ where: { schoolId: id } }).catch(() => {});
+                    -- 10. School
+                    DELETE FROM "School" WHERE "id" = s_id;
+                END $$;
+            `;
 
-                // 10. Delete the school itself
-                await tx.school.delete({ where: { id } });
-            });
-
-            console.log(`[AdminAPI] Successfully purged school ${id} via Prisma.`);
+            await prisma.$executeRawUnsafe(purgeSql);
+            console.log(`[AdminAPI] Successfully purged school ${id} via atomic SQL cascade.`);
         } else {
             // Secondary Supabase REST fallback
             const supabaseAdmin = createSupabaseAdmin(
@@ -237,14 +200,18 @@ export async function DELETE(
             await supabaseAdmin.from('School').delete().eq('id', id);
         }
 
-        // Purge Supabase Auth accounts
+        // Purge Supabase Auth accounts for deleted users
         if (userIds.length > 0) {
-            const supabaseAdminAuth = createAdminClient();
-            await Promise.all(
-                userIds.map(async (uid: string) => {
-                    await supabaseAdminAuth.auth.admin.deleteUser(uid).catch(() => {});
-                })
-            );
+            try {
+                const supabaseAdminAuth = createAdminClient();
+                await Promise.all(
+                    userIds.map(async (uid: string) => {
+                        await supabaseAdminAuth.auth.admin.deleteUser(uid).catch(() => {});
+                    })
+                );
+            } catch (authErr) {
+                console.warn("[AdminAPI] Supabase Auth cleanup error (non-fatal):", authErr);
+            }
         }
 
         // Audit log
