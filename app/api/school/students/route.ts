@@ -6,6 +6,7 @@ import { sendInviteEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getPaginatedSchoolStudents } from '@/lib/services/students';
+import { getCachedUser } from '@/lib/users';
 import { Gender } from '@prisma/client';
 import { z } from 'zod';
 
@@ -98,7 +99,6 @@ export async function POST(request: Request) {
         let targetSchoolId = user.schoolId;
         if (!targetSchoolId) {
             try {
-                const { getCachedUser } = require('@/lib/users');
                 const enriched = await getCachedUser(user.id);
                 targetSchoolId = enriched?.schoolId || null;
             } catch {}

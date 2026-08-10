@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
+import { createClient as createEdgeClient } from '@supabase/supabase-js';
 
 async function verifyOwner() {
     const supabase = await createClient();
@@ -13,7 +14,6 @@ async function verifyOwner() {
         if (!dbUser || dbUser.role !== 'OWNER' || !dbUser.schoolId) return null;
         return dbUser;
     } else {
-        const { createClient: createEdgeClient } = require('@supabase/supabase-js');
         const edgeSupabase = createEdgeClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -30,7 +30,6 @@ export async function GET(request: Request) {
 
     try {
         if (!prisma) {
-            const { createClient: createEdgeClient } = require('@supabase/supabase-js');
             const supabase = createEdgeClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -102,7 +101,6 @@ export async function POST(request: Request) {
         let schoolName = "Institution";
         
         if (!prisma) {
-            const { createClient: createEdgeClient } = require('@supabase/supabase-js');
             const supabase = createEdgeClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
                 process.env.SUPABASE_SERVICE_ROLE_KEY!

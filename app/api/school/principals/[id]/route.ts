@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
+import { createClient as createEdgeClient } from '@supabase/supabase-js';
+import { revalidateTag } from 'next/cache';
 
 async function verifyOwner() {
     const supabase = await createClient();
@@ -12,7 +14,6 @@ async function verifyOwner() {
         if (!dbUser || dbUser.role !== 'OWNER' || !dbUser.schoolId) return null;
         return dbUser;
     } else {
-        const { createClient: createEdgeClient } = require('@supabase/supabase-js');
         const edgeSupabase = createEdgeClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -34,7 +35,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         if (body.action === 'DEMOTE') {
             if (isEdge) {
-                const { createClient: createEdgeClient } = require('@supabase/supabase-js');
                 const supabase = createEdgeClient(
                     process.env.NEXT_PUBLIC_SUPABASE_URL!,
                     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -53,7 +53,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             }
         } else if (typeof body.fullAccess === 'boolean') {
             if (isEdge) {
-                const { createClient: createEdgeClient } = require('@supabase/supabase-js');
                 const supabase = createEdgeClient(
                     process.env.NEXT_PUBLIC_SUPABASE_URL!,
                     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -92,9 +91,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             }
         }
         
-        const { revalidateTag } = require('next/cache');
-        revalidateTag(`school-${owner.schoolId}`, 'max');
-        revalidateTag(`users-${owner.schoolId}`, 'max');
+        revalidateTag(`school-${owner.schoolId}`);
+        revalidateTag(`users-${owner.schoolId}`);
 
         
         // Audit log
@@ -123,7 +121,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         const isEdge = !prisma;
 
         if (isEdge) {
-            const { createClient: createEdgeClient } = require('@supabase/supabase-js');
             const supabase = createEdgeClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
                 process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -157,9 +154,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
             }
         }
         
-        const { revalidateTag } = require('next/cache');
-        revalidateTag(`school-${owner.schoolId}`, 'max');
-        revalidateTag(`users-${owner.schoolId}`, 'max');
+        revalidateTag(`school-${owner.schoolId}`);
+        revalidateTag(`users-${owner.schoolId}`);
 
         
         // Audit log
