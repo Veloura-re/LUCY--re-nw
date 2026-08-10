@@ -346,9 +346,6 @@ export default function Home() {
     { href: "/community", label: "community" },
   ];
   const companyLinks = [
-    { href: "/careers", l: "careers" },
-    { href: "/partners", l: "partners" },
-    { href: "/press", l: "press" },
     { href: "/blog", l: "signal log" },
     { href: "/contact", l: "contact" },
     { href: "/support", l: "support" },

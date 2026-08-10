@@ -66,21 +66,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.7,
         },
         {
-            url: `${BASE_URL}/partners`,
-            lastModified,
-            changeFrequency: 'monthly',
-            priority: 0.7,
-        },
-        {
             url: `${BASE_URL}/security`,
             lastModified,
             changeFrequency: 'monthly',
-            priority: 0.7,
-        },
-        {
-            url: `${BASE_URL}/careers`,
-            lastModified,
-            changeFrequency: 'weekly',
             priority: 0.7,
         },
         {
@@ -127,12 +115,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
         {
             url: `${BASE_URL}/deck`,
-            lastModified,
-            changeFrequency: 'monthly',
-            priority: 0.6,
-        },
-        {
-            url: `${BASE_URL}/press`,
             lastModified,
             changeFrequency: 'monthly',
             priority: 0.6,
