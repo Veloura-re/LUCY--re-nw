@@ -133,7 +133,7 @@ export async function DELETE(
                     DELETE FROM "BookRequest" WHERE "schoolId" = s_id;
                     DELETE FROM "Book" WHERE "schoolId" = s_id OR "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id);
 
-                    -- 3. Teaching Assignments, Timetables, Lessons (Must delete BEFORE Subject and Class)
+                    -- 3. Teaching Assignments, Timetables, Lessons
                     DELETE FROM "TeacherAssignment" WHERE "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id) OR "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id)) OR "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "Timetable" WHERE "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id) OR "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id)) OR "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "periodId" IN (SELECT id FROM "Period" WHERE "schoolId" = s_id);
                     DELETE FROM "Lesson" WHERE "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id) OR "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id)) OR "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "periodId" IN (SELECT id FROM "Period" WHERE "schoolId" = s_id);
@@ -160,14 +160,14 @@ export async function DELETE(
 
                     -- 8. Students & Sub-records
                     DELETE FROM "ParentStudentLink" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
-                    DELETE FROM "AttendanceRecord" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id)) OR "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id) OR "markedById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "AttendanceRecord" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "classId" IN (SELECT id FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id)) OR "subjectId" IN (SELECT id FROM "Subject" WHERE "schoolId" = s_id) OR "createdById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "StudentRemark" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "InternalNote" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "authorId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
-                    DELETE FROM "AbsenceAuthorization" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "approvedById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "AbsenceAuthorization" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id) OR "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "requestorId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "Certificate" WHERE "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = s_id);
                     DELETE FROM "Student" WHERE "schoolId" = s_id;
 
-                    -- 9. Classes, Periods, Subjects, Grades, Terms (Now 100% safe to delete in order)
+                    -- 9. Classes, Periods, Subjects, Grades, Terms
                     DELETE FROM "Class" WHERE "schoolId" = s_id OR "gradeId" IN (SELECT id FROM "Grade" WHERE "schoolId" = s_id);
                     DELETE FROM "Period" WHERE "schoolId" = s_id;
                     DELETE FROM "Subject" WHERE "schoolId" = s_id;
@@ -186,7 +186,7 @@ export async function DELETE(
                     DELETE FROM "InviteToken" WHERE "schoolId" = s_id;
 
                     -- 11. Faculty & Users
-                    DELETE FROM "StaffAttendanceRecord" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "StaffAttendanceRecord" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "createdById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "TeacherRemark" WHERE "teacherId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "authorId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "User" WHERE "schoolId" = s_id AND "role" != 'SUPERADMIN';
                     UPDATE "User" SET "schoolId" = NULL WHERE "schoolId" = s_id;
