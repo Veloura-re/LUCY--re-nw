@@ -176,13 +176,13 @@ export async function DELETE(
 
                     -- 10. Operations & Logs
                     DELETE FROM "StaffPayroll" WHERE "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
-                    DELETE FROM "InstitutionalExpense" WHERE "schoolId" = s_id;
-                    DELETE FROM "BillingReceipt" WHERE "schoolId" = s_id;
-                    DELETE FROM "ActionRequest" WHERE "schoolId" = s_id;
-                    DELETE FROM "Event" WHERE "schoolId" = s_id;
+                    DELETE FROM "InstitutionalExpense" WHERE "schoolId" = s_id OR "loggedById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "BillingReceipt" WHERE "schoolId" = s_id OR "submittedById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "ActionRequest" WHERE "schoolId" = s_id OR "requesterId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id) OR "targetUserId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "Event" WHERE "schoolId" = s_id OR "createdById" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "RestorePoint" WHERE "schoolId" = s_id;
-                    DELETE FROM "ErrorLog" WHERE "schoolId" = s_id;
-                    DELETE FROM "AuditLog" WHERE "schoolId" = s_id;
+                    DELETE FROM "ErrorLog" WHERE "schoolId" = s_id OR "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
+                    DELETE FROM "AuditLog" WHERE "schoolId" = s_id OR "userId" IN (SELECT id FROM "User" WHERE "schoolId" = s_id);
                     DELETE FROM "InviteToken" WHERE "schoolId" = s_id;
 
                     -- 11. Faculty & Users
