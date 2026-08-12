@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { prisma } from '@/lib/prisma'; // Assuming lib/prisma is set up properly
+
+// Helper to convert array buffer to hex string
+function buf2hex(buffer: ArrayBuffer) {
+  return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+}
 
 export async function POST(request: Request) {
     try {
@@ -17,8 +21,21 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
         }
 
-        // Validate the signature using HMAC SHA256
-        const hash = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+        // Validate the signature using HMAC SHA256 (Web Crypto API)
+        const encoder = new TextEncoder();
+        const key = await globalThis.crypto.subtle.importKey(
+            'raw',
+            encoder.encode(secret),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign', 'verify']
+        );
+        const signatureBuffer = await globalThis.crypto.subtle.sign(
+            'HMAC',
+            key,
+            encoder.encode(rawBody)
+        );
+        const hash = buf2hex(signatureBuffer);
         
         if (hash !== signature) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
