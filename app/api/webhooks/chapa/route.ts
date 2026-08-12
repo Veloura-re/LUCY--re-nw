@@ -3,7 +3,9 @@ import { prisma } from '@/lib/prisma'; // Assuming lib/prisma is set up properly
 
 // Helper to convert array buffer to hex string
 function buf2hex(buffer: ArrayBuffer) {
-  return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+  return Array.from(new Uint8Array(buffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 export async function POST(request: Request) {

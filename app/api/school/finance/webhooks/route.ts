@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
             // 1. Create Payment Record
             await supabaseAdmin.from('Payment').insert({
-                id: crypto.randomUUID(),
+                id: globalThis.crypto.randomUUID(),
                 invoiceId: invoice.id,
                 amount: invoice.amount,
                 method: method || 'CARD', // Or dynamic based on provider
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
             if (auditUserId) {
                 await supabaseAdmin.from('AuditLog').insert({
-                    id: crypto.randomUUID(),
+                    id: globalThis.crypto.randomUUID(),
                     userId: auditUserId,
                     action: "AUTO_PAYMENT_CONFIRMATION",
                     resourceType: "INVOICE",

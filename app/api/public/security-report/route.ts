@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+
+// Helper to convert array buffer to hex string
+function buf2hex(buffer: ArrayBuffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 export async function POST(req: Request) {
     try {
@@ -11,8 +17,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const reportId = crypto.randomUUID();
-        const hash = crypto.createHash("sha256").update(reportId + description).digest("hex");
+        const reportId = globalThis.crypto.randomUUID();
+        const encoder = new TextEncoder();
+        const data = encoder.encode(reportId + description);
+        const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', data);
+        const hash = buf2hex(hashBuffer);
 
         // Save to database
         const report = await (prisma as any).securityReport.create({
