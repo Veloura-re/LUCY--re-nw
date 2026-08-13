@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Play, Monitor, Zap, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, Counter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, Counter } from "@/components/public/animations";
 
 const demoSteps = [
     { id: "01", title: "Director Logs In", desc: "School director authenticates with multi-factor token. Dashboard instantly renders real-time institutional metrics.", terminal: ["> auth.verify(director_id)", "> mfa.challenge(): passed", "> session.spawn(role=DIRECTOR)", "> dashboard.render(): 14ms"] },
@@ -24,6 +24,7 @@ export default function Demo() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -45,7 +46,6 @@ export default function Demo() {
 
                     {/* Hero */}
                     <section className="relative overflow-hidden space-y-6 sm:space-y-10">
-                        <ParticleField count={40} />
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
                             <Monitor className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />

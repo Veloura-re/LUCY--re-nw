@@ -470,8 +470,8 @@ export default function BillingClientWrapper({
 
             {/* Pending Receipt Notification Banner */}
             {hasPendingReceipt && !isSubscribed && (
-                <div className="bg-amber-950/25 border border-amber-500/30 rounded-2xl p-6 flex gap-4 items-center">
-                    <div className="w-12 h-12 bg-amber-950/40 rounded-xl flex items-center justify-center border border-amber-500/20">
+                <div className="bg-amber-50 dark:bg-amber-950/25 border border-amber-300 dark:border-amber-500/30 rounded-2xl p-6 flex gap-4 items-center shadow-sm">
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-950/40 rounded-xl flex items-center justify-center border border-amber-300 dark:border-amber-500/20 shrink-0">
                         <Loader2 className="w-6 h-6 text-amber-600 dark:text-amber-500 animate-spin" />
                     </div>
                     <div>

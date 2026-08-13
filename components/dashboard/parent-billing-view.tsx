@@ -231,7 +231,11 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                     <div className="flex justify-between items-start mb-6">
                                                         <div className={cn(
                                                             "p-3 rounded-xl border transition-all",
-                                                            invoice.status === 'PAID' ? "bg-eduGreen-950/20 border-eduGreen-900/30 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-50 dark:bg-amber-950/20 border-amber-900/30 text-amber-600 dark:text-amber-500" : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500")
+                                                            invoice.status === 'PAID'
+                                                                ? "bg-eduGreen-100 dark:bg-eduGreen-950/20 border-eduGreen-300 dark:border-eduGreen-900/30 text-eduGreen-700 dark:text-eduGreen-400"
+                                                                : (hasPendingPayment
+                                                                    ? "bg-amber-100/90 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800/40 text-amber-700 dark:text-amber-400 shadow-sm"
+                                                                    : "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500")
                                                         )}>
                                                             {invoice.status === 'PAID' ? <CheckCircle2 className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
                                                         </div>
@@ -254,8 +258,12 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                             </div>
                                                             <div className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tighter">${Number(invoice?.amount || 0).toLocaleString()}</div>
                                                             <div className={cn(
-                                                                "text-[8px] font-medium uppercase tracking-widest mt-1 px-2 py-0.5 rounded-full inline-block",
-                                                                invoice.status === 'PAID' ? "bg-eduGreen-950 text-eduGreen-500" : (hasPendingPayment ? "bg-amber-950 text-amber-600 dark:text-amber-500 animate-pulse" : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-500")
+                                                                "text-[8px] font-medium uppercase tracking-widest mt-1 px-2.5 py-0.5 rounded-full inline-block border",
+                                                                invoice.status === 'PAID'
+                                                                    ? "bg-eduGreen-100 dark:bg-eduGreen-950/80 text-eduGreen-700 dark:text-eduGreen-400 border-eduGreen-300 dark:border-eduGreen-800/50"
+                                                                    : (hasPendingPayment
+                                                                        ? "bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700/50 animate-pulse font-bold"
+                                                                        : "bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800")
                                                             )}>
                                                                 {hasPendingPayment ? "Pending Verification" : invoice.status}
                                                             </div>
@@ -297,11 +305,19 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                             </Button>
                                                         ) : (
                                                             <div className="flex flex-col gap-2">
-                                                                <Button variant="ghost" className="w-full h-14 bg-zinc-100/40 dark:bg-zinc-900/40 text-eduGreen-500 rounded-2xl font-medium text-[10px] uppercase tracking-widest cursor-default">
-                                                                    {invoice.status === 'PAID' ? "Transacton Verified" : "Verification in Progress"}
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    className={cn(
+                                                                        "w-full h-14 rounded-2xl font-bold text-[10px] uppercase tracking-widest cursor-default border transition-all",
+                                                                        invoice.status === 'PAID'
+                                                                            ? "bg-eduGreen-50 dark:bg-eduGreen-950/20 text-eduGreen-700 dark:text-eduGreen-400 border-eduGreen-200 dark:border-eduGreen-900/30"
+                                                                            : "bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/30"
+                                                                    )}
+                                                                >
+                                                                    {invoice.status === 'PAID' ? "Transaction Verified" : "Verification in Progress"}
                                                                 </Button>
                                                                 {hasPendingPayment && (
-                                                                    <p className="text-[8px] text-zinc-600 text-center uppercase tracking-widest">Awaiting Admin Confirmation</p>
+                                                                    <p className="text-[8px] text-amber-700 dark:text-zinc-400 font-semibold text-center uppercase tracking-widest">Awaiting Admin Confirmation</p>
                                                                 )}
                                                             </div>
                                                         )}

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Brain, Zap, Target, Sparkles, Network } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 
 const behaviors = [
@@ -41,6 +41,7 @@ export default function Intelligence() {
             <CustomCursor />
             <AnimatedGrid />
             <GlitchOverlay />
+            <InteractiveParticleSimulation count={125} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -60,7 +61,6 @@ export default function Intelligence() {
 
                     {/* Hero with SmartWeb */}
                     <section className="relative min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center space-y-6 sm:space-y-10 overflow-hidden">
-                        <div className="absolute inset-0 opacity-10 dark:opacity-40"><SmartWeb nodeCount={28} /></div>
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-400">

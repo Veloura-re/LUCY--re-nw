@@ -16,6 +16,7 @@ const DynamicPrintRegistry = dynamic(
 
 export default function MarklistManagerPage() {
     const [configs, setConfigs] = useState<any[]>([]);
+    const [termsCount, setTermsCount] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
@@ -24,7 +25,20 @@ export default function MarklistManagerPage() {
 
     useEffect(() => {
         fetchConfigs();
+        fetchTerms();
     }, []);
+
+    const fetchTerms = async () => {
+        try {
+            const res = await fetch('/api/school/terms');
+            if (res.ok) {
+                const data = await res.json() as any;
+                setTermsCount((data.terms || []).length);
+            }
+        } catch (e) {
+            console.error("Terms check failed", e);
+        }
+    };
 
     const fetchConfigs = async (pageNum = 1) => {
         if (pageNum === 1) setLoading(true);
@@ -77,6 +91,25 @@ export default function MarklistManagerPage() {
                     </Link>
                 </div>
             </div>
+
+            {/* Academic Terms Guard Banner */}
+            {termsCount === 0 && (
+                <div className="p-6 bg-amber-500/10 border border-amber-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                            ⚠️ No Academic Terms Configured
+                        </h3>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                            Your institution has not set up academic terms. Please create at least one academic term in Settings before configuring or generating marklists.
+                        </p>
+                    </div>
+                    <Link href="/dashboard/settings" prefetch={false}>
+                        <Button className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0">
+                            Create Academic Term
+                        </Button>
+                    </Link>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (

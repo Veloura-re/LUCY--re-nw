@@ -56,6 +56,8 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const [categoryFilter, setCategoryFilter] = useState("ALL");
     const [gradeFilter, setGradeFilter] = useState("ALL");
 
+    const [syncing, setSyncing] = useState(false);
+
     useEffect(() => {
         fetchInitialData();
     }, []);
@@ -87,6 +89,24 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
         }
     };
 
+    const handleSyncInvoices = async () => {
+        setSyncing(true);
+        try {
+            const res = await fetch('/api/school/finance/sync', { method: 'POST' });
+            const data: any = await res.json();
+            if (res.ok && data.success) {
+                toast.success(data.message || "Synced fee structures to student invoices successfully.");
+                fetchInitialData();
+            } else {
+                toast.error(data.message || "Failed to sync fee structures.");
+            }
+        } catch (e) {
+            toast.error("Connection interrupted during sync.");
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     const handleDeleteFee = (id: string) => {
         setDeleteId(id);
     };
@@ -115,6 +135,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const handleFeeCreated = (newFee: any) => {
         setFees(prev => [newFee, ...prev]);
         setShowFeeModal(false);
+        fetchInitialData();
     };
 
     const filteredFees = fees.filter(fee => {
@@ -152,6 +173,15 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                    <Button
+                        onClick={handleSyncInvoices}
+                        disabled={syncing}
+                        variant="outline"
+                        className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-eduGreen-500/30 bg-eduGreen-500/10 hover:bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                    >
+                        <Zap className={cn("w-4 h-4 text-eduGreen-500", syncing && "animate-spin")} />
+                        {syncing ? "Syncing Ledgers..." : "Sync Billing Ledgers"}
+                    </Button>
                     <Link href="/dashboard/revenue">
                         <Button
                             variant="outline"

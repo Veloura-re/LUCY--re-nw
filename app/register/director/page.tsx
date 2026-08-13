@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Building2, KeyRound, Mail, Lock, User, Check, AlertCircle, ArrowRight, Loader2, Sparkles } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { InteractiveParticleSimulation } from "@/components/public/animations";
 
 export default function DirectorRegister() {
     const [step, setStep] = useState(1); // 1: Validate Key, 2: Register Details
@@ -122,6 +123,8 @@ export default function DirectorRegister() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-zinc-950 p-4 font-sans text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300">
+            <InteractiveParticleSimulation count={115} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} showTriangles={true} />
+
             {/* Top Right Theme Toggle */}
             <div className="absolute top-6 right-6 z-50">
                 <ThemeToggle />
@@ -256,10 +259,10 @@ export default function DirectorRegister() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 accent-eduGreen-500 checked:bg-eduGreen-600 focus:ring-eduGreen-500 cursor-pointer transition-all"
                                 />
-                                <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
-                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight cursor-pointer select-none">
+                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Privacy Policy</Link>.
                                 </label>
                             </div>
 

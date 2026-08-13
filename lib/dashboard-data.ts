@@ -10,7 +10,7 @@ const _getFamilyChildren = async (userId: string) => {
     try {
         if (!prisma) return [];
 
-        const links = await prisma.parentStudentLink.findMany({
+        let links = await prisma.parentStudentLink.findMany({
             where: { parentId: userId },
             include: {
                 student: {
@@ -26,6 +26,63 @@ const _getFamilyChildren = async (userId: string) => {
                 }
             }
         });
+
+        if (links.length === 0) {
+            const parentUser = await prisma.user.findUnique({ where: { id: userId } }).catch(() => null);
+            if (parentUser) {
+                const autoConditions: any[] = [];
+                if (parentUser.phone) {
+                    autoConditions.push({ guardianPhone: { contains: parentUser.phone } });
+                    autoConditions.push({ secondaryPhone: { contains: parentUser.phone } });
+                }
+                if (parentUser.email) {
+                    autoConditions.push({ email: { equals: parentUser.email, mode: 'insensitive' } });
+                }
+                if (parentUser.name) {
+                    autoConditions.push({ guardianName: { equals: parentUser.name, mode: 'insensitive' } });
+                }
+
+                if (autoConditions.length > 0) {
+                    const discovered = await prisma.student.findMany({
+                        where: {
+                            OR: autoConditions,
+                            ...(parentUser.schoolId ? { schoolId: parentUser.schoolId } : {})
+                        },
+                        include: {
+                            grade: true,
+                            school: true,
+                            class: {
+                                include: {
+                                    homeroomTeacher: { select: { id: true, name: true } }
+                                }
+                            }
+                        }
+                    }).catch(() => []);
+
+                    for (const st of discovered) {
+                        await prisma.parentStudentLink.upsert({
+                            where: {
+                                parentId_studentId: {
+                                    parentId: userId,
+                                    studentId: st.id
+                                }
+                            },
+                            update: {},
+                            create: {
+                                parentId: userId,
+                                studentId: st.id,
+                                pairingMethod: 'ADMIN',
+                                verifiedAt: new Date()
+                            }
+                        }).catch(() => {});
+                    }
+
+                    if (discovered.length > 0) {
+                        links = discovered.map((st: any) => ({ student: st })) as any;
+                    }
+                }
+            }
+        }
 
         const students = links.map((l: any) => l.student).filter(Boolean);
         if (students.length === 0) return [];

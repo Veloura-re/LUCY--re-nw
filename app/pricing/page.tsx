@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, SystemRain, Typewriter } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, Reveal, PageFooter, SystemRain, Typewriter, InteractiveParticleSimulation } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 
 const terminalLines = [
@@ -24,6 +24,7 @@ export default function Pricing() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">

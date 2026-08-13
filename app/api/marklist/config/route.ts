@@ -15,6 +15,29 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required identity fields" }, { status: 400 });
         }
 
+        // Validate that school has at least one academic term configured
+        const termCount = await prisma.academicTerm.count({ where: { schoolId } });
+        if (termCount === 0) {
+            return NextResponse.json({ 
+                error: "No academic terms found. Please create an academic term first in Settings.", 
+                code: "NO_ACADEMIC_TERMS" 
+            }, { status: 400 });
+        }
+
+        // Resolve termId (if not provided, auto-link to active term or latest term)
+        let resolvedTermId = termId && termId !== "none" ? termId : null;
+        if (!resolvedTermId) {
+            const defaultTerm = await prisma.academicTerm.findFirst({
+                where: { schoolId, isActive: true },
+                select: { id: true }
+            }) || await prisma.academicTerm.findFirst({
+                where: { schoolId },
+                orderBy: { createdAt: "desc" },
+                select: { id: true }
+            });
+            resolvedTermId = defaultTerm?.id || null;
+        }
+
         // 1. Creation or Update of Configuration
         const config = await (prisma as any).$transaction(async (tx: any) => {
             // Find existing config
@@ -27,7 +50,7 @@ export async function POST(req: Request) {
                 // Update basic info
                 await tx.marklistConfig.update({
                     where: { id: existing.id },
-                    data: { teacherId, termId: termId || null, updatedAt: new Date() }
+                    data: { teacherId, termId: resolvedTermId, updatedAt: new Date() }
                 });
 
                 // Reconcile columns

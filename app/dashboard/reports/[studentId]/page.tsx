@@ -157,11 +157,13 @@ export default function StudentReportCardPage() {
                             <div className="flex flex-col sm:items-end bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 px-5">
                                 <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Active Academic Term</span>
                                 <span className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider mt-0.5">
-                                    {term?.name || "2023/24 Academic Term 2"}
+                                    {term?.name || "No Active Term"}
                                 </span>
-                                <span className="text-[9px] text-eduGreen-500 font-bold uppercase tracking-wider mt-0.5">
-                                    {term?.startDate} – {term?.endDate}
-                                </span>
+                                {term?.startDate && term?.endDate && (
+                                    <span className="text-[9px] text-eduGreen-500 font-bold uppercase tracking-wider mt-0.5">
+                                        {term.startDate} – {term.endDate}
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -173,17 +175,17 @@ export default function StudentReportCardPage() {
                             </div>
                             <div>
                                 <span className="text-[8px] font-mono uppercase tracking-widest text-zinc-500">Scholar Code</span>
-                                <p className="text-sm font-mono font-bold text-zinc-900 dark:text-white mt-0.5">{student?.studentCode || "ST-2024-001"}</p>
+                                <p className="text-sm font-mono font-bold text-zinc-900 dark:text-white mt-0.5">{student?.studentCode || "N/A"}</p>
                             </div>
                             <div>
                                 <span className="text-[8px] font-mono uppercase tracking-widest text-zinc-500">Assigned Cohort</span>
                                 <p className="text-sm font-bold text-zinc-900 dark:text-white uppercase mt-0.5">
-                                    Grade {student?.class?.grade?.level || "10"} • {student?.class?.name || "Room A"}
+                                    Grade {student?.class?.grade?.level || "—"} • {student?.class?.name || "Unassigned"}
                                 </p>
                             </div>
                             <div>
                                 <span className="text-[8px] font-mono uppercase tracking-widest text-zinc-500">Evaluation Standing</span>
-                                <p className="text-sm font-black text-eduGreen-500 uppercase mt-0.5">{summary?.standing || "EXCEL"}</p>
+                                <p className="text-sm font-black text-eduGreen-500 uppercase mt-0.5">{summary?.standing || "NO RECORD"}</p>
                             </div>
                         </div>
 
@@ -191,19 +193,19 @@ export default function StudentReportCardPage() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                             <div className="p-4 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/20">
                                 <span className="text-[9px] font-mono text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest font-bold">Cumulative Average</span>
-                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{summary?.overallPercentage || 88}%</div>
+                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{summary?.overallPercentage ?? 0}%</div>
                             </div>
                             <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                                 <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-bold">Weighted GPA</span>
-                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{summary?.gpa || "3.75"} <span className="text-xs font-normal text-zinc-500">/ 4.0</span></div>
+                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{summary?.gpa ?? "0.00"} <span className="text-xs font-normal text-zinc-500">/ 4.0</span></div>
                             </div>
                             <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                                 <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-bold">Class Position</span>
-                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">#{summary?.classRank || 1} <span className="text-xs font-normal text-zinc-500">of {summary?.totalClassStudents || 32}</span></div>
+                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">#{summary?.classRank ?? "-"} <span className="text-xs font-normal text-zinc-500">of {summary?.totalClassStudents ?? 0}</span></div>
                             </div>
                             <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                                 <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-bold">Attendance Rate</span>
-                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{attendance?.rate || 95}%</div>
+                                <div className="text-3xl font-black text-zinc-900 dark:text-white mt-1">{attendance?.rate ?? 0}%</div>
                             </div>
                         </div>
 
@@ -217,7 +219,11 @@ export default function StudentReportCardPage() {
                             </div>
 
                             <div className="divide-y divide-zinc-200 dark:divide-zinc-800/60 bg-white/40 dark:bg-zinc-950/40">
-                                {grades.map((g: any, i: number) => (
+                                {grades.length === 0 ? (
+                                    <div className="py-10 text-center text-zinc-500 text-xs uppercase tracking-widest font-medium">
+                                        No subjects or marklists recorded for this student
+                                    </div>
+                                ) : grades.map((g: any, i: number) => (
                                     <div key={i} className="grid grid-cols-12 px-5 py-3.5 items-center hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors text-xs">
                                         <div className="col-span-5 sm:col-span-4">
                                             <p className="font-bold text-zinc-900 dark:text-white">{g.subject?.name || "Subject"}</p>
@@ -227,15 +233,19 @@ export default function StudentReportCardPage() {
                                         </div>
 
                                         <div className="col-span-3 sm:col-span-4 flex items-center justify-center gap-1.5 flex-wrap">
-                                            {g.columns?.map((col: any, ci: number) => (
-                                                <span key={ci} className="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[9px] font-mono text-zinc-600 dark:text-zinc-400">
-                                                    {col.title}: <strong className="ml-1 text-zinc-900 dark:text-white">{col.score}</strong>/{col.maxMarks}
-                                                </span>
-                                            ))}
+                                            {g.columns && g.columns.length > 0 ? (
+                                                g.columns.map((col: any, ci: number) => (
+                                                    <span key={ci} className="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[9px] font-mono text-zinc-600 dark:text-zinc-400">
+                                                        {col.title}: <strong className="ml-1 text-zinc-900 dark:text-white">{col.score ?? 0}</strong>/{col.maxMarks}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="text-[9px] font-mono text-zinc-500 italic">No breakdown columns</span>
+                                            )}
                                         </div>
 
                                         <div className="col-span-2 text-center font-mono font-bold text-zinc-900 dark:text-white">
-                                            {g.score}%
+                                            {g.score ?? 0}%
                                         </div>
 
                                         <div className="col-span-2 text-right">
@@ -244,9 +254,10 @@ export default function StudentReportCardPage() {
                                                 g.grade?.startsWith('A') ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30" :
                                                 g.grade?.startsWith('B') ? "bg-blue-500/10 text-blue-500 border border-blue-500/30" :
                                                 g.grade?.startsWith('C') ? "bg-amber-500/10 text-amber-500 border border-amber-500/30" :
+                                                g.grade === '-' ? "bg-zinc-500/10 text-zinc-400 border border-zinc-500/30" :
                                                 "bg-rose-500/10 text-rose-500 border border-rose-500/30"
                                             )}>
-                                                {g.grade || "A"}
+                                                {g.grade || "-"}
                                             </span>
                                         </div>
                                     </div>
@@ -293,12 +304,12 @@ export default function StudentReportCardPage() {
                                 <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Attendance Metric</span>
                                 <div className="flex items-center justify-between mt-3">
                                     <div>
-                                        <div className="text-3xl font-black text-zinc-900 dark:text-white">{attendance?.rate || 95}%</div>
+                                        <div className="text-3xl font-black text-zinc-900 dark:text-white">{attendance?.rate ?? 0}%</div>
                                         <p className="text-[10px] text-zinc-500 uppercase mt-0.5">Total Academic Compliance</p>
                                     </div>
                                     <div className="space-y-1 text-right text-[10px] font-mono">
-                                        <p className="text-emerald-500 font-bold">{attendance?.present || 18} Present Days</p>
-                                        <p className="text-rose-500 font-bold">{attendance?.absent || 1} Absent</p>
+                                        <p className="text-emerald-500 font-bold">{attendance?.present ?? 0} Present Days</p>
+                                        <p className="text-rose-500 font-bold">{attendance?.absent ?? 0} Absent</p>
                                     </div>
                                 </div>
                             </div>
@@ -307,9 +318,9 @@ export default function StudentReportCardPage() {
                             <div className="p-5 rounded-2xl bg-zinc-100 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800">
                                 <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Faculty Observations</span>
                                 <p className="text-xs text-zinc-700 dark:text-zinc-300 italic mt-2">
-                                    "{remarks?.[0]?.content || "Demonstrates exemplary scholastic rigor and continuous active engagement across all curriculum modules."}"
+                                    "{remarks?.[0]?.content || "No formal qualitative observations recorded for this term."}"
                                 </p>
-                                <p className="text-[9px] font-mono text-zinc-500 mt-2">— {remarks?.[0]?.teacher?.name || "Homeroom Advisory Committee"}</p>
+                                <p className="text-[9px] font-mono text-zinc-500 mt-2">— {remarks?.[0]?.teacher?.name || "Academic Advisory Committee"}</p>
                             </div>
                         </div>
 

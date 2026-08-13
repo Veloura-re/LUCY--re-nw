@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, ArrowRight, ShieldCheck, KeyRound, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { InteractiveParticleSimulation } from "@/components/public/animations";
 
 export default function StudentRegisterPage() {
     const router = useRouter();
@@ -28,9 +29,10 @@ export default function StudentRegisterPage() {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!agreedToTerms) return;
 
         if (formData.password !== formData.confirmPassword) {
-            toast.error("Security Keyphrase mismatch");
+            toast.error("Passwords do not match");
             return;
         }
 
@@ -50,10 +52,10 @@ export default function StudentRegisterPage() {
             const data = await res.json() as { error?: string };
 
             if (!res.ok) {
-                throw new Error(data.error || "Registration failed");
+                throw new Error(data.error || "Failed to initialize student node");
             }
 
-            toast.success("Identity Verified. Access Granted.");
+            toast.success("Identity established successfully!");
             router.push("/dashboard");
         } catch (error: any) {
             toast.error(error.message);
@@ -64,6 +66,7 @@ export default function StudentRegisterPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 relative overflow-hidden">
+            <InteractiveParticleSimulation count={115} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} showTriangles={true} />
             {/* Background Ambience */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-white dark:via-black to-white dark:to-black" />
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-eduGreen-500/50 to-transparent opacity-50" />
@@ -197,10 +200,10 @@ export default function StudentRegisterPage() {
                                                 id="terms"
                                                 checked={agreedToTerms}
                                                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                                className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                                className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 accent-eduGreen-500 checked:bg-eduGreen-600 focus:ring-eduGreen-500 cursor-pointer transition-all"
                                             />
-                                            <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight">
-                                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                            <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight cursor-pointer select-none">
+                                                I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Privacy Policy</Link>.
                                             </label>
                                         </div>
 

@@ -369,11 +369,11 @@ export function PaymentModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open: boolean) => !open && !isLoading && onClose()}>
-            <DialogContent className="max-w-sm sm:max-w-md shadow-[0_0_80px_rgba(245,158,11,0.1)] border-amber-900/20">
+            <DialogContent className="max-w-sm sm:max-w-md shadow-[0_0_80px_rgba(245,158,11,0.1)] border-amber-200 dark:border-amber-900/20 bg-white dark:bg-zinc-950">
                 <DialogHeader>
                     <div className={cn(
                         "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 mx-auto",
-                        "border-2 transition-all duration-300 bg-amber-50 dark:bg-amber-950/20 border-amber-900/30 text-amber-600 dark:text-amber-500"
+                        "border-2 transition-all duration-300 bg-amber-100/80 dark:bg-amber-950/20 border-amber-300 dark:border-amber-900/30 text-amber-700 dark:text-amber-500 shadow-sm"
                     )}>
                         <CreditCard className="w-10 h-10" />
                     </div>
