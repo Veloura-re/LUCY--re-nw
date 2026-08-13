@@ -4,10 +4,13 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain, Zap, Target, Sparkles, Network } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowLeft, Brain, Zap, Target, Sparkles, Network, Layers, Activity } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
+import { SoftwareNeuralGraph } from "@/components/brain/software-neural-graph";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const behaviors = [
     { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query reaches the right engine within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
@@ -35,8 +38,10 @@ const thoughtStream = [
 ];
 
 export default function Intelligence() {
+    const [brainMode, setBrainMode] = useState(true);
+
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
@@ -45,40 +50,78 @@ export default function Intelligence() {
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 group">
+                    <Link href="/" className="flex items-center gap-2.5 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
+                        <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">LUCY<span className="text-emerald-500 font-black ml-1">OS</span></span>
                     </Link>
                     <div className="flex items-center gap-4">
+                        {/* Live Brain Mode Toggle Button */}
+                        <Button 
+                            onClick={() => setBrainMode(!brainMode)} 
+                            variant="outline" 
+                            className={cn(
+                                "h-9 px-4 text-xs uppercase tracking-wider font-bold rounded-lg transition-all flex items-center gap-2 border",
+                                brainMode 
+                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-lg shadow-emerald-500/10" 
+                                    : "bg-zinc-900/50 text-zinc-400 border-zinc-700 hover:text-white"
+                            )}
+                        >
+                            <Brain className={cn("w-4 h-4", brainMode && "animate-pulse text-emerald-400")} />
+                            {brainMode ? "Brain Mode: ON" : "Toggle Brain Mode"}
+                        </Button>
+
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[12px] uppercase tracking-wider hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />Home</Button></Link>
                     </div>
                 </div>
             </nav>
 
             <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
-                <div className="max-w-5xl mx-auto space-y-16 sm:space-y-32">
+                <div className="max-w-6xl mx-auto space-y-16 sm:space-y-24">
 
-                    {/* Hero with SmartWeb */}
-                    <section className="relative min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center space-y-6 sm:space-y-10 overflow-hidden">
+                    {/* INTERACTIVE BRAIN MODE LIVE SECTION */}
+                    {brainMode && (
+                        <motion.section 
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.4 }}
+                            className="space-y-4"
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                                        <Activity className="w-5 h-5 animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Interactive Software Brain Matrix</h2>
+                                        <p className="text-xs text-slate-500 dark:text-zinc-400">Click any node to inspect endpoints, DB models, and live triggers. Use the packet simulator to test data flows.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <SoftwareNeuralGraph />
+                        </motion.section>
+                    )}
+
+                    {/* Hero Section */}
+                    <section className="relative min-h-[40vh] flex flex-col justify-center space-y-6 sm:space-y-8 overflow-hidden">
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-400">
-                            <Sparkles className="w-4 h-4 shrink-0" />
+                            <Sparkles className="w-4 h-4 shrink-0 text-emerald-400" />
                             <motion.div animate={{ width: ["32px", "72px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-600" />
-                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">cognitive_layer // intelligence_engine_active</span>
-                            <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full" />
+                            <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-semibold text-emerald-500">Autonomous Intelligence & Engine Topology</span>
+                            <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.3 }} className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                         </Reveal>
 
                         <Reveal delay={0.1}>
-                            <h1 className="text-3xl sm:text-6xl md:text-[7.5rem] font-bold uppercase tracking-tighter leading-none text-slate-900 dark:text-white">
-                                smart<br /><GlitchText className="text-slate-400 dark:text-zinc-800">logic.</GlitchText>
+                            <h1 className="text-3xl sm:text-6xl md:text-[6.5rem] font-bold uppercase tracking-tight leading-none text-slate-900 dark:text-white">
+                                Cognitive<br /><span className="text-slate-400 dark:text-zinc-700">Architecture.</span>
                             </h1>
                         </Reveal>
 
                         <Reveal delay={0.2} className="max-w-2xl">
-                            <p className="text-slate-500 dark:text-zinc-500 text-base sm:text-xl leading-relaxed">
-                                the intelligence engine is the central processing core of lucy_os. it orchestrates the behavioral patterns of all specialized personas and manages the cognitive routing of institutional data.
+                            <p className="text-slate-600 dark:text-zinc-400 text-base sm:text-lg leading-relaxed">
+                                The intelligence engine is the central nervous core of LUCY OS. It routes institutional workflows across academic marklists, real-time fee ledgers, parent absence authorizations, and director governance.
                             </p>
                         </Reveal>
 
