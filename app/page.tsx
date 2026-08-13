@@ -272,12 +272,12 @@ export default function Home() {
 
   const marqueeItems = ["AUTONOMOUS_SCHOOL_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "HIGH_PERFORMANCE_EDGE"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
+    { href: "/brain", label: "Brain Matrix" },
     { href: "/intelligence", label: "Intelligence" },
     { href: "/network", label: "Network" },
     { href: "/security", label: "Security" },
     { href: "/docs", label: "Docs" },
     { href: "/deck", label: "Presentation" },
-    { href: "/community", label: "Community" },
   ];
   const companyLinks = [
     { href: "/blog", l: "Changelog" },
