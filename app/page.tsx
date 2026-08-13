@@ -297,14 +297,6 @@ export default function Home() {
       <motion.div style={{ x: cursorX, y: cursorY }} className="fixed top-0 left-0 z-[900] pointer-events-none w-2 h-2 -ml-1 -mt-1 bg-emerald-500 dark:bg-white rounded-full mix-blend-multiply dark:mix-blend-difference will-change-transform" />
       <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-8 h-8 -ml-4 -mt-4 border border-emerald-500/20 dark:border-white/20 rounded-full mix-blend-multiply dark:mix-blend-difference will-change-transform" />
 
-      {/* ── Page Drop Container (Drops into view with spring bounce when web snaps) ── */}
-      <motion.div
-        initial={false}
-        animate={booting ? { y: -80, opacity: 0 } : { y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.9 }}
-        className="w-full relative z-10"
-      >
-
       {/* ── CRT Scanlines ── */}
       <div className="fixed inset-0 z-[50] pointer-events-none dark:opacity-100 opacity-20" style={{
         background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)"
@@ -319,7 +311,7 @@ export default function Home() {
       {/* ── Grid ── */}
       <div className="fixed inset-0 z-0 bg-[linear-gradient(to_right,#00000004_1px,transparent_1px),linear-gradient(to_bottom,#00000004_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none transition-colors duration-300" />
       
-      {/* ── Full Page Antigravity Universe Simulation ── */}
+      {/* ── Full Page Antigravity Universe Simulation (Fixed directly to viewport) ── */}
       <InteractiveParticleSimulation count={140} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} />
 
       <motion.div
@@ -334,6 +326,14 @@ export default function Home() {
         transition={{ duration: 7.8, repeat: Infinity, ease: "linear" }}
         style={{ background: "radial-gradient(circle at 50% 50%, rgba(0,0,0,0.02) 0%, transparent 70%)", backgroundSize: "64px 64px" }}
       />
+
+      {/* ── Page Drop Container (Drops content smoothly into view without affecting fixed canvas) ── */}
+      <motion.div
+        initial={false}
+        animate={booting ? { y: -40, opacity: 0 } : { y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20, mass: 0.8 }}
+        className="w-full relative z-10"
+      >
 
       {/* ── Top Ticker ── */}
       <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-white dark:bg-white dark:text-black text-[9px] uppercase tracking-widest overflow-hidden py-1.5 transition-colors">
