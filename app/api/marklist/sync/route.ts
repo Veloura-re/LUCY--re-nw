@@ -1,22 +1,26 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
+import { requireRole } from "@/lib/security";
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS, getSchoolTag } from "@/lib/cache-keys";
 
 export async function POST(req: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM', 'SUPERADMIN']);
+        const schoolId = dbUser.schoolId;
 
-        const body = (await req.json()) as any;
+        const body = (await req.json()) as { configId?: string; examId?: string };
         const { configId, examId } = body;
 
         if (!configId) {
             return NextResponse.json({ error: "Missing configId" }, { status: 400 });
         }
 
-        const config = await (prisma as any).marklistConfig.findUnique({
-            where: { id: configId },
+        const config = await (prisma as any).marklistConfig.findFirst({
+            where: { 
+                id: configId,
+                ...(dbUser.role === 'SUPERADMIN' ? {} : { class: { schoolId: schoolId! } })
+            },
             include: {
                 entries: true,
                 class: true,
@@ -25,17 +29,18 @@ export async function POST(req: Request) {
         });
 
         if (!config) {
-            return NextResponse.json({ error: "Marklist configuration not found" }, { status: 404 });
+            return NextResponse.json({ error: "Marklist configuration not found or unauthorized" }, { status: 404 });
         }
 
         let targetExamId = examId;
 
         if (!targetExamId) {
-            // Try to find a suitable exam to sync to
+            // Try to find a suitable exam to sync to within the school
             const potentialExam = await (prisma as any).exam.findFirst({
                 where: {
                     classId: config.classId,
                     subjectId: config.subjectId,
+                    ...(dbUser.role === 'SUPERADMIN' ? {} : { class: { schoolId: schoolId! } }),
                     OR: [
                         { category: 'FINAL_EXAM' },
                         { title: { contains: 'Final', mode: 'insensitive' } },
@@ -57,7 +62,7 @@ export async function POST(req: Request) {
                         availableFrom: new Date(),
                         classId: config.classId,
                         subjectId: config.subjectId,
-                        createdById: config.teacherId || authUser.id,
+                        createdById: config.teacherId || dbUser.id,
                         isPublished: true
                     }
                 });
@@ -66,10 +71,24 @@ export async function POST(req: Request) {
         }
 
         const stats = await (prisma as any).$transaction(async (tx: any) => {
-            const targetExam = await tx.exam.findUnique({
-                where: { id: targetExamId },
-                select: { totalMarks: true }
+            const targetExam = await tx.exam.findFirst({
+                where: { 
+                    id: targetExamId,
+                    classId: config.classId,
+                    subjectId: config.subjectId,
+                    ...(dbUser.role === 'SUPERADMIN' ? {} : { class: { schoolId: schoolId! } })
+                },
+                select: { totalMarks: true, isLocked: true }
             });
+
+            if (!targetExam) {
+                throw new Error("Target exam not found, not matching class/subject, or unauthorized");
+            }
+
+            if (targetExam.isLocked) {
+                throw new Error("Cannot sync grades to a locked/sealed exam");
+            }
+
             const examMaxMarks = targetExam?.totalMarks || 100;
 
             let updatedCount = 0;
@@ -89,7 +108,7 @@ export async function POST(req: Request) {
                             studentId: entry.studentId,
                             examId: targetExamId,
                             subjectId: config.subjectId,
-                            createdById: authUser.id,
+                            createdById: dbUser.id,
                             remark: entry.remarks || "Synced from Marklist",
                             status: 'SUBMITTED'
                         },
@@ -102,15 +121,20 @@ export async function POST(req: Request) {
                     updatedCount++;
                 }
             }
-            return { updatedCount };
+
+            return { updatedCount, examId: targetExamId };
         });
 
-        
+        // Invalidate grades cache
+        if (schoolId) {
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, schoolId), 'max');
+        }
+
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = authUser?.id ?? undefined;
+            const _userId = dbUser?.id ?? undefined;
             if (_userId) {
                 await logActivity({ userId: _userId, action: 'SYNC', resourceType: 'marklist', ip: _ip || undefined });
             }

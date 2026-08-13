@@ -252,7 +252,8 @@ model Student {
 
   @@index([schoolId, classId])
   @@index([schoolId, studentCode])
-  @@index([lastName, firstName])
+  @@index([schoolId, lastName, firstName])
+  @@index([schoolId, enrollmentStatus])
 }
 
 model ParentStudentLink {
@@ -342,6 +343,7 @@ model GradeRecord {
   @@index([studentId, subjectId])
   @@index([studentId])
   @@index([examId])
+  @@index([examId, score])
   @@index([subjectId])
   @@index([subjectId, createdAt])
 }
@@ -491,6 +493,7 @@ model AuditLog {
   user         User     @relation(fields: [userId], references: [id])
   school       School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
 
+  @@index([schoolId, createdAt])
   @@index([schoolId])
   @@index([userId])
   @@index([level])
@@ -725,6 +728,10 @@ model Payment {
   status    PaymentStatus @default(PENDING)
   createdAt DateTime      @default(now())
   invoice   Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([status, createdAt])
+  @@index([reference])
 }
 
 model Lesson {
@@ -1169,4 +1176,23 @@ model BillingReceipt {
   updatedAt     DateTime @updatedAt
 
   @@index([schoolId])
+}
+
+model AuthRateLimit {
+  ipAddress    String    @id @map("ip_address") @db.Inet
+  attempts     Int?      @default(1)
+  lastAttempt  DateTime? @default(now()) @map("last_attempt") @db.Timestamptz(6)
+  lockedUntil  DateTime? @map("locked_until") @db.Timestamptz(6)
+
+  @@map("auth_rate_limits")
+}
+
+model AuthAuditLog {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ipAddress  String?   @map("ip_address") @db.Inet
+  email      String?   @db.VarChar(255)
+  status     String?   @db.VarChar(50)
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("auth_audit_logs")
 }

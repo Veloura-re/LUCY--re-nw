@@ -150,11 +150,8 @@ export async function POST(request: Request) {
             const classUuidValid = isUuid(resolvedClassId);
             const cls = await prisma.class.findFirst({
                 where: {
-                    ...(classUuidValid ? { id: resolvedClassId } : { name: { equals: resolvedClassId, mode: 'insensitive' } }),
-                    OR: [
-                        { schoolId: targetSchoolId },
-                        { grade: { schoolId: targetSchoolId } }
-                    ]
+                    schoolId: targetSchoolId,
+                    ...(classUuidValid ? { id: resolvedClassId } : { name: { equals: resolvedClassId, mode: 'insensitive' } })
                 }
             });
             if (cls) {
@@ -339,25 +336,20 @@ export async function POST(request: Request) {
             console.error("[Student Create Fee Auto-Provision Warning]:", feeErr);
         }
 
-        // 8. Auto-Link Existing Parent Accounts matching phone/email/guardianName
+        // 8. Explicit Parent Linking (Strict Exact Match on School-Scoped Accounts)
         try {
             const parentConditions: any[] = [];
-            if (guardianPhone) {
-                parentConditions.push({ phone: { contains: guardianPhone } });
-            }
-            if (secondaryPhone) {
-                parentConditions.push({ phone: { contains: secondaryPhone } });
-            }
-            if (guardianName) {
-                parentConditions.push({ name: { equals: guardianName, mode: 'insensitive' } });
+            const cleanPhone = (guardianPhone || secondaryPhone)?.trim();
+            if (cleanPhone && cleanPhone.length >= 8) {
+                parentConditions.push({ phone: cleanPhone });
             }
 
-            if (parentConditions.length > 0) {
+            if (parentConditions.length > 0 && targetSchoolId) {
                 const matchingParents = await prisma.user.findMany({
                     where: {
                         role: 'PARENT',
-                        OR: parentConditions,
-                        ...(targetSchoolId ? { schoolId: targetSchoolId } : {})
+                        schoolId: targetSchoolId,
+                        OR: parentConditions
                     }
                 });
 
@@ -582,15 +574,26 @@ export async function DELETE(request: Request) {
 
         if (student.userId) {
             try {
-                const { createClient: createSupabaseAdmin } = await import('@supabase/supabase-js');
-                const supabaseAdmin = createSupabaseAdmin(
-                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                    process.env.SUPABASE_SERVICE_ROLE_KEY!
-                );
-                await supabaseAdmin.auth.admin.deleteUser(student.userId);
-                await prisma.user.delete({ where: { id: student.userId } }).catch(() => {});
+                // Check if user has other student profiles or active memberships before deleting identity
+                const otherStudents = await prisma.student.count({
+                    where: { userId: student.userId, id: { not: id } }
+                });
+                const userObj = await prisma.user.findUnique({
+                    where: { id: student.userId },
+                    select: { role: true }
+                });
+
+                if (otherStudents === 0 && userObj?.role === 'STUDENT') {
+                    const { createClient: createSupabaseAdmin } = await import('@supabase/supabase-js');
+                    const supabaseAdmin = createSupabaseAdmin(
+                        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                        process.env.SUPABASE_SERVICE_ROLE_KEY!
+                    );
+                    await supabaseAdmin.auth.admin.deleteUser(student.userId).catch(() => {});
+                    await prisma.user.delete({ where: { id: student.userId } }).catch(() => {});
+                }
             } catch (err) {
-                console.error("Failed to delete user account:", err);
+                console.error("Failed to safely delete student auth user account:", err);
             }
         }
 

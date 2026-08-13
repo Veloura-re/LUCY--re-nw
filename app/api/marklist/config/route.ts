@@ -1,18 +1,30 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/security";
+import { requireRole, requireSchoolLinked, handleApiError } from "@/lib/security";
 
 export async function POST(req: Request) {
     try {
-        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
         const body = await req.json() as { classId: string; subjectId: string; teacherId: string; columns: any[]; termId?: string; schoolId?: string };
         const { classId, subjectId, teacherId, columns, termId } = body;
 
-        // Auto-assign schoolId from the authenticated user's session to prevent UI spoofing/errors
-        const schoolId = user.schoolId || body.schoolId;
+        // Strict schoolId resolution based on authenticated role
+        const schoolId = user.role === 'SUPERADMIN' ? (body.schoolId || user.schoolId) : user.schoolId;
 
         if (!schoolId || !classId || !subjectId) {
             return NextResponse.json({ error: "Missing required identity fields" }, { status: 400 });
+        }
+
+        // Validate that target class belongs to this school
+        const targetClass = await prisma.class.findFirst({
+            where: {
+                id: classId,
+                ...(user.role === 'SUPERADMIN' ? {} : { schoolId })
+            }
+        });
+
+        if (!targetClass) {
+            return NextResponse.json({ error: "Class not found or unauthorized" }, { status: 404 });
         }
 
         // Validate that school has at least one academic term configured
@@ -153,24 +165,34 @@ export async function GET(req: Request) {
     const id = searchParams.get("id");
 
     try {
+        const user = await requireSchoolLinked();
+        const schoolId = user.schoolId;
+
         let config;
 
         if (id) {
-            config = await (prisma as any).marklistConfig.findUnique({
-                where: { id },
+            config = await (prisma as any).marklistConfig.findFirst({
+                where: { 
+                    id,
+                    class: { schoolId }
+                },
                 include: {
                     columns: { orderBy: { order: 'asc' } },
-                    class: { select: { name: true } },
+                    class: { select: { name: true, schoolId: true } },
                     subject: { select: { name: true } },
                     teacher: { select: { name: true } }
                 }
             });
         } else if (classId && subjectId) {
-            config = await (prisma as any).marklistConfig.findUnique({
-                where: { classId_subjectId: { classId, subjectId } },
+            config = await (prisma as any).marklistConfig.findFirst({
+                where: { 
+                    classId, 
+                    subjectId,
+                    class: { schoolId }
+                },
                 include: {
                     columns: { orderBy: { order: 'asc' } as any },
-                    class: { select: { name: true } },
+                    class: { select: { name: true, schoolId: true } },
                     subject: { select: { name: true } },
                     teacher: { select: { name: true } }
                 }
