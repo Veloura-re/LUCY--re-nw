@@ -7,6 +7,7 @@ import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getPaginatedSchoolStudents } from '@/lib/services/students';
 import { Gender } from '@prisma/client';
+import { Decimal } from 'decimal.js';
 import { z } from 'zod';
 
 const StudentCreateSchema = z.object({
@@ -296,6 +297,91 @@ export async function POST(request: Request) {
                 gradeId: result.student.gradeId
             }
         }).catch(() => {});
+
+        // 7. Auto-Provision Existing Fee Structures so new student receives all active school fees
+        try {
+            const activeFees = await prisma.feeStructure.findMany({
+                where: {
+                    schoolId: targetSchoolId,
+                    OR: [
+                        { gradeId: null },
+                        { gradeId: result.student.gradeId },
+                        { gradeId: 'ALL' }
+                    ]
+                }
+            });
+
+            if (activeFees.length > 0) {
+                let totalAmount = new Decimal(0);
+                for (const f of activeFees) {
+                    totalAmount = totalAmount.plus(new Decimal(f.amount.toString()));
+                }
+
+                await prisma.invoice.create({
+                    data: {
+                        studentId: result.student.id,
+                        schoolId: targetSchoolId!,
+                        amount: totalAmount,
+                        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                        status: 'PENDING',
+                        items: {
+                            create: activeFees.map(fee => ({
+                                name: fee.name,
+                                amount: fee.amount,
+                                description: `${fee.category} - ${fee.frequency}`,
+                                feeStructureId: fee.id
+                            }))
+                        }
+                    }
+                });
+            }
+        } catch (feeErr) {
+            console.error("[Student Create Fee Auto-Provision Warning]:", feeErr);
+        }
+
+        // 8. Auto-Link Existing Parent Accounts matching phone/email/guardianName
+        try {
+            const parentConditions: any[] = [];
+            if (guardianPhone) {
+                parentConditions.push({ phone: { contains: guardianPhone } });
+            }
+            if (secondaryPhone) {
+                parentConditions.push({ phone: { contains: secondaryPhone } });
+            }
+            if (guardianName) {
+                parentConditions.push({ name: { equals: guardianName, mode: 'insensitive' } });
+            }
+
+            if (parentConditions.length > 0) {
+                const matchingParents = await prisma.user.findMany({
+                    where: {
+                        role: 'PARENT',
+                        OR: parentConditions,
+                        ...(targetSchoolId ? { schoolId: targetSchoolId } : {})
+                    }
+                });
+
+                for (const parent of matchingParents) {
+                    await prisma.parentStudentLink.upsert({
+                        where: {
+                            parentId_studentId: {
+                                parentId: parent.id,
+                                studentId: result.student.id
+                            }
+                        },
+                        update: {},
+                        create: {
+                            parentId: parent.id,
+                            studentId: result.student.id,
+                            pairingMethod: 'ADMIN',
+                            verifiedAt: new Date()
+                        }
+                    }).catch(() => {});
+                }
+            }
+        } catch (linkErr) {
+            console.error("[Student Create Parent Auto-Link Warning]:", linkErr);
+        }
 
         // Invalidate tags safely
         try {

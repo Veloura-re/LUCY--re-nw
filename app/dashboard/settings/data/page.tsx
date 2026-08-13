@@ -2,12 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Database, ShieldAlert, Download, RefreshCw, HardDrive, Upload, Loader2, CheckCircle2, FileArchive } from "lucide-react";
+import { Database, ShieldAlert, RefreshCw, HardDrive, Upload, Loader2, CheckCircle2, Download } from "lucide-react";
 import { ConfirmationModal, AlertModal } from "@/components/ui/confirmation-modal";
-import JSZip from "jszip";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { saveAs } from "file-saver";
 
 interface RestorePoint {
     id: string;
@@ -21,7 +17,6 @@ export default function DataSecuritySettings() {
     const [restorePoints, setRestorePoints] = useState<RestorePoint[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [isArchiving, setIsArchiving] = useState(false);
     const [isRestoring, setIsRestoring] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -36,7 +31,7 @@ export default function DataSecuritySettings() {
     const fetchRestorePoints = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch('/api/school/backups/list'); // Need to implement this API
+            const res = await fetch('/api/school/backups/list');
             if (res.ok) {
                 const data = (await res.json()) as any;
                 setRestorePoints(data.restorePoints || []);
@@ -80,268 +75,6 @@ export default function DataSecuritySettings() {
         }
     };
 
-    const handleGenerateArchive = async () => {
-        setIsArchiving(true);
-        setError(null);
-        try {
-            const res = await fetch('/api/school/data-export');
-            if (!res.ok) throw new Error("Failed to fetch export data");
-            const responseData = await res.json() as any;
-            const data = responseData.data;
-            const schoolName = responseData.schoolName || "LUCY Educational Institute";
-            const logoUrl = responseData.logoUrl;
-
-            let logoBase64: string | null = null;
-            if (logoUrl) {
-                 const { fetchImageAsBase64 } = await import("@/lib/image-utils");
-                 logoBase64 = await fetchImageAsBase64(logoUrl);
-            }
-
-            const zip = new JSZip();
-
-            // 1. Helper for Master Tables
-            const addPdfToZip = (filename: string, title: string, records: any[]) => {
-                if (!records || records.length === 0) return;
-                const doc = new jsPDF();
-                const pageWidth = doc.internal.pageSize.width;
-                const pageHeight = doc.internal.pageSize.height;
-                
-                // Header Background
-                doc.setFillColor(15, 23, 42); 
-                doc.rect(0, 0, pageWidth, 35, 'F');
-                
-                // Custom Logo
-                if (logoBase64) {
-                    try {
-                        doc.addImage(logoBase64, 'PNG', 14, 7.5, 20, 20);
-                    } catch (e) {
-                        console.error("Could not render logo in PDF", e);
-                    }
-                }
-
-                // School Name
-                doc.setTextColor(255, 255, 255);
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(22);
-                doc.text(schoolName.toUpperCase(), pageWidth / 2, 16, { align: 'center' });
-                
-                // Subtitle
-                doc.setTextColor(156, 163, 175);
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(10);
-                doc.text("OFFICIAL ARCHIVE EXPORT", pageWidth / 2, 24, { align: 'center' });
-                
-                // Document Title
-                doc.setTextColor(16, 185, 129);
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(14);
-                doc.text(title.toUpperCase(), pageWidth / 2, 30, { align: 'center' });
-
-                // Generation Info
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(8);
-                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 42);
-
-                // Divider Line
-                doc.setDrawColor(226, 232, 240);
-                doc.line(14, 45, pageWidth - 14, 45);
-                
-                const columns = Object.keys(records[0]).map(key => ({ header: key, dataKey: key }));
-
-                autoTable(doc, {
-                    head: [columns.map(c => c.header)],
-                    body: records.map(row => columns.map(c => String(row[c.dataKey]))),
-                    startY: 50,
-                    theme: 'grid',
-                    styles: { fontSize: 8, font: 'helvetica', cellPadding: 3, textColor: [51, 65, 85], lineColor: [226, 232, 240], lineWidth: 0.1 },
-                    headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold', halign: 'center' },
-                    alternateRowStyles: { fillColor: [248, 250, 252] },
-                    margin: { top: 50, bottom: 20 },
-                    didDrawPage: function () {
-                        const str = "Page " + (doc.internal as any).getNumberOfPages();
-                        doc.setFontSize(8);
-                        doc.setTextColor(148, 163, 184);
-                        doc.text(str, pageWidth / 2, pageHeight - 10, { align: "center" });
-                        doc.text("SECURE LUCY OS EXPORT", 14, pageHeight - 10);
-                    }
-                });
-                
-                zip.file(`Master_Records/${filename}`, doc.output('blob'));
-            };
-
-            addPdfToZip("Students_Master.pdf", "Enrolled Students", data.students);
-            addPdfToZip("Personnel_Master.pdf", "School Personnel", data.personnel);
-            addPdfToZip("Parents_Master.pdf", "Registered Parents", data.parents);
-            addPdfToZip("Classes_Master.pdf", "Classes & Capacities", data.classes);
-            addPdfToZip("Subjects_Master.pdf", "Subjects Registry", data.subjects);
-            addPdfToZip("Exams_Master.pdf", "Exams Log", data.exams);
-            addPdfToZip("Grades_Master.pdf", "Gradebook Records", data.grades);
-            addPdfToZip("Attendance_Master.pdf", "Attendance Records", data.attendance);
-            addPdfToZip("Invoices_Master.pdf", "Financial Invoices", data.invoices);
-            addPdfToZip("Books_Master.pdf", "Library Books", data.books);
-            addPdfToZip("Events_Master.pdf", "School Events", data.events);
-            addPdfToZip("Payrolls_Master.pdf", "Staff Payrolls", data.payrolls);
-            addPdfToZip("Assignments_Master.pdf", "Class Assignments", data.assignments);
-            addPdfToZip("Lessons_Master.pdf", "Lesson Plans", data.lessons);
-            addPdfToZip("Timetables_Master.pdf", "School Timetables", data.timetables);
-
-            // 2. Generate Individual Enrollment Certificates
-            if (data.students && data.students.length > 0) {
-                data.students.forEach((student: any) => {
-                    const doc = new jsPDF('landscape');
-                    const pageWidth = doc.internal.pageSize.width;
-                    const pageHeight = doc.internal.pageSize.height;
-                    
-                    doc.setDrawColor(30, 41, 59);
-                    doc.setLineWidth(5);
-                    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-                    doc.setDrawColor(16, 185, 129);
-                    doc.setLineWidth(1);
-                    doc.rect(14, 14, pageWidth - 28, pageHeight - 28);
-
-                    if (logoBase64) {
-                        try {
-                            doc.addImage(logoBase64, 'PNG', pageWidth / 2 - 15, 25, 30, 30);
-                        } catch (e) {}
-                    }
-
-                    doc.setFont("times", "bold");
-                    doc.setFontSize(36);
-                    doc.setTextColor(30, 41, 59);
-                    doc.text("CERTIFICATE OF ENROLLMENT", pageWidth / 2, 60, { align: 'center' });
-                    
-                    doc.setFont("times", "italic");
-                    doc.setFontSize(16);
-                    doc.text("This is to certify that", pageWidth / 2, 85, { align: 'center' });
-
-                    doc.setFont("times", "bold");
-                    doc.setFontSize(28);
-                    doc.setTextColor(16, 185, 129);
-                    doc.text(student.Name, pageWidth / 2, 105, { align: 'center' });
-
-                    doc.setFont("times", "normal");
-                    doc.setFontSize(14);
-                    doc.setTextColor(30, 41, 59);
-                    doc.text(`is officially enrolled in ${student.Grade} - ${student.Class}`, pageWidth / 2, 125, { align: 'center' });
-                    doc.text(`at ${schoolName}`, pageWidth / 2, 135, { align: 'center' });
-
-                    doc.setFont("helvetica", "normal");
-                    doc.setFontSize(10);
-                    doc.setTextColor(100, 116, 139);
-                    doc.text(`Student ID: ${student.Code}`, pageWidth / 2, 155, { align: 'center' });
-                    doc.text(`Date of Record: ${new Date().toLocaleDateString()}`, pageWidth / 2, 165, { align: 'center' });
-
-                    zip.file(`Certificates/${student.Code}_${student.Name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`, doc.output('blob'));
-                });
-            }
-
-            // 3. Generate Individual Academic Transcripts
-            if (data.grades && data.grades.length > 0) {
-                const gradesByStudent = new Map();
-                data.grades.forEach((g: any) => {
-                    if (!gradesByStudent.has(g.StudentCode)) {
-                        gradesByStudent.set(g.StudentCode, { name: g.StudentName, grades: [] });
-                    }
-                    gradesByStudent.get(g.StudentCode).grades.push(g);
-                });
-
-                gradesByStudent.forEach((studentInfo, code) => {
-                    const doc = new jsPDF();
-                    const pageWidth = doc.internal.pageSize.width;
-                    
-                    doc.setFillColor(30, 41, 59);
-                    doc.rect(0, 0, pageWidth, 40, 'F');
-
-                    if (logoBase64) {
-                        try {
-                            doc.addImage(logoBase64, 'PNG', 14, 10, 20, 20);
-                        } catch(e) {}
-                    }
-
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFont("helvetica", "bold");
-                    doc.setFontSize(20);
-                    doc.text(schoolName.toUpperCase(), pageWidth / 2, 18, { align: 'center' });
-                    doc.setTextColor(16, 185, 129);
-                    doc.setFontSize(14);
-                    doc.text("OFFICIAL ACADEMIC TRANSCRIPT", pageWidth / 2, 28, { align: 'center' });
-
-                    doc.setTextColor(30, 41, 59);
-                    doc.setFontSize(12);
-                    doc.text(`Student Name: ${studentInfo.name}`, 14, 55);
-                    doc.text(`Student Code: ${code}`, 14, 65);
-                    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 14, 55, { align: 'right' });
-
-                    const columns = [{ header: "Date", dataKey: "Date" }, { header: "Subject", dataKey: "Subject" }, { header: "Exam", dataKey: "ExamTitle" }, { header: "Score", dataKey: "Score" }, { header: "Status", dataKey: "Status" }];
-                    const formattedGrades = studentInfo.grades.map((g: any) => ({ ...g, Date: g.Date.split('T')[0] }));
-
-                    autoTable(doc, {
-                        head: [columns.map(c => c.header)],
-                        body: formattedGrades.map((row: any) => columns.map(c => String(row[c.dataKey]))),
-                        startY: 75,
-                        theme: 'grid',
-                        headStyles: { fillColor: [30, 41, 59] },
-                        styles: { fontSize: 9 }
-                    });
-
-                    zip.file(`Transcripts/${code}_${studentInfo.name.replace(/[^a-zA-Z0-9]/g, '_')}_Transcript.pdf`, doc.output('blob'));
-                });
-            }
-
-
-            // 4. Generate Personnel Dossiers
-            if (data.personnel && data.personnel.length > 0) {
-                data.personnel.forEach((p: any) => {
-                    if(p.Role === "STUDENT" || p.Role === "PARENT") return; 
-                    const doc = new jsPDF();
-                    const pageWidth = doc.internal.pageSize.width;
-                    
-                    doc.setFillColor(30, 41, 59);
-                    doc.rect(0, 0, pageWidth, 40, 'F');
-
-                    if (logoBase64) {
-                        try {
-                            doc.addImage(logoBase64, 'PNG', 14, 10, 20, 20);
-                        } catch(e) {}
-                    }
-
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFont("helvetica", "bold");
-                    doc.setFontSize(20);
-                    doc.text(schoolName.toUpperCase(), pageWidth / 2, 18, { align: 'center' });
-                    doc.setTextColor(16, 185, 129);
-                    doc.setFontSize(14);
-                    doc.text("PERSONNEL DOSSIER", pageWidth / 2, 28, { align: 'center' });
-
-                    doc.setTextColor(30, 41, 59);
-                    doc.setFontSize(14);
-                    doc.text("STAFF INFORMATION", 14, 60);
-                    doc.setLineWidth(0.5);
-                    doc.line(14, 62, 80, 62);
-
-                    doc.setFontSize(11);
-                    doc.setFont("helvetica", "normal");
-                    doc.text(`Full Name: ${p.Name}`, 14, 75);
-                    doc.text(`Official Email: ${p.Email}`, 14, 85);
-                    doc.text(`Designation: ${p.Role}`, 14, 95);
-                    doc.text(`Account Status: ${p.Status}`, 14, 105);
-                    doc.text(`System ID: ${p.ID}`, 14, 115);
-                    
-                    zip.file(`Personnel_Dossiers/${p.Role}_${p.Name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`, doc.output('blob'));
-                });
-            }
-
-            const content = await zip.generateAsync({ type: "blob" });
-            saveAs(content, "LUCY OS_Complete_Archive.zip");
-            
-            setAlertConfig({ title: "Archive Generated", message: "Your complete PDF archive with all formal documents has been successfully downloaded.", isOpen: true, variant: "success" });
-        } catch (err: any) {
-            setAlertConfig({ title: "Archive Failed", message: err.message, isOpen: true, variant: "error" });
-        } finally {
-            setIsArchiving(false);
-        }
-    };
-
     const handleRestore = async () => {
         if (!uploadFile) return;
         setIsRestoring(true);
@@ -368,6 +101,7 @@ export default function DataSecuritySettings() {
                     const data = (await res.json()) as any;
                     setAlertConfig({ title: "Restore Successful", message: data.message, isOpen: true, variant: "success" });
                     setUploadFile(null);
+                    fetchRestorePoints();
                 } catch (err: any) {
                     setAlertConfig({ title: "Restore Failed", message: err.message, isOpen: true, variant: "error" });
                 } finally {
@@ -393,7 +127,7 @@ export default function DataSecuritySettings() {
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300 pb-20">
             <div>
                 <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Data & Security</h1>
-                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">Manage system backups and disaster recovery</p>
+                <p className="text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest text-[10px] mt-1">Manage system snapshots and disaster recovery</p>
             </div>
 
             {/* Backup Generation Panel */}
@@ -408,7 +142,7 @@ export default function DataSecuritySettings() {
                         System Snapshots
                     </h2>
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
-                        Generate a complete snapshot of your school's database. This includes all students, staff, classes, grades, and financial records. Snapshots are stored securely and can be downloaded for your records.
+                        Generate a secure snapshot of your school's database. Snapshots capture the complete institutional state for disaster recovery and system integrity verification.
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -419,14 +153,6 @@ export default function DataSecuritySettings() {
                         >
                             <RefreshCw className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
                             Generate Security Snapshot
-                        </Button>
-                        <Button 
-                            onClick={handleGenerateArchive}
-                            isLoading={isArchiving}
-                            className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-400 dark:border-zinc-700 rounded-xl h-12 px-6 font-semibold uppercase tracking-widest text-[11px]"
-                        >
-                            <FileArchive className={`w-4 h-4 mr-2 ${isArchiving ? 'animate-bounce' : ''}`} />
-                            Download Global Archive (ZIP/PDF)
                         </Button>
                     </div>
                 </div>
@@ -467,7 +193,7 @@ export default function DataSecuritySettings() {
                                     onClick={() => forceDownload(rp.fileUrl, `LUCY_Snapshot_${rp.createdAt.split('T')[0]}.json`)}
                                     className="h-10 px-4 rounded-xl bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-900 dark:text-white text-[10px] font-semibold uppercase tracking-widest flex items-center gap-2 transition-all"
                                 >
-                                    <Download className="w-4 h-4" /> Download
+                                    <Download className="w-4 h-4" /> Download Snapshot
                                 </Button>
                             </div>
                         ))}
@@ -484,7 +210,7 @@ export default function DataSecuritySettings() {
                     <div>
                         <h2 className="text-lg font-medium text-zinc-900 dark:text-white">Disaster Recovery (Restore)</h2>
                         <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed max-w-2xl">
-                            Upload a downloaded snapshot file (.json) to restore missing data. This will recreate deleted students, staff, classes, and grades. 
+                            Upload a saved snapshot file (.json) to restore missing data. This will recreate deleted students, staff, classes, and grades. 
                             <strong> Warning:</strong> Restoring will also send password-reset emails to any staff members whose accounts were permanently deleted.
                         </p>
 

@@ -5,10 +5,10 @@ import { format } from "date-fns";
 import { calculateAge } from "@/lib/utils";
 
 interface StudentData {
-    id: string;
-    firstName: string;
-    lastName: string;
-    studentCode: string;
+    id?: string;
+    firstName?: string;
+    lastName?: string;
+    studentCode?: string;
     email?: string;
     dob?: string;
     gender?: string;
@@ -19,42 +19,64 @@ interface StudentData {
     guardianRelation?: string;
     secondaryPhone?: string;
     createdAt?: string;
-    school?: { name: string; logoUrl?: string };
-    class?: { name: string; grade?: { name: string } };
+    enrolledAt?: string;
+    school?: { name?: string; logoUrl?: string };
+    class?: { name?: string; grade?: { name?: string } };
 }
 
 interface GradeRecord {
-    score: string;
-    exam?: { title: string; totalMarks: number };
-    subject?: { name: string };
+    score?: string | number;
+    exam?: { title?: string; totalMarks?: number };
+    subject?: { name?: string };
     createdAt?: string;
 }
 
 interface AttendanceData {
-    total: number;
-    present: number;
-    late: number;
-    absent: number;
-    history: { date: string; status: string }[];
+    total?: number;
+    present?: number;
+    late?: number;
+    absent?: number;
+    history?: { date: string; status: string }[];
 }
 
 interface StudentDossierPrintProps {
-    student: StudentData;
-    grades: GradeRecord[];
-    assignments: any[];
-    attendance: AttendanceData;
-    remarks: { content: string; teacher?: { name: string }; createdAt?: string }[];
+    student?: StudentData;
+    grades?: GradeRecord[];
+    assignments?: any[];
+    attendance?: AttendanceData;
+    remarks?: { content?: string; teacher?: { name?: string }; createdAt?: string }[];
+}
+
+function safeFormat(dateVal: any, fmt: string, fallback = "—"): string {
+    if (!dateVal) return fallback;
+    try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return fallback;
+        return format(d, fmt);
+    } catch {
+        return fallback;
+    }
 }
 
 export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrintProps>(
-    ({ student, grades, assignments = [], attendance, remarks }, ref) => {
-        const fullName = `${student.firstName} ${student.lastName}`;
-        const attendancePct = attendance.total > 0 ? Math.round((attendance.present / attendance.total) * 100) : 100;
+    ({ student = {}, grades = [], assignments = [], attendance, remarks = [] }, ref) => {
+        const fullName = `${student.firstName || ''} ${student.lastName || ''}`.trim() || "Student Dossier";
+        const att = attendance || { total: 0, present: 0, late: 0, absent: 0, history: [] };
+        const attTotal = att.total || 0;
+        const attPresent = att.present || 0;
+        const attAbsent = att.absent || 0;
+        const attLate = att.late || 0;
+        const attHistory = Array.isArray(att.history) ? att.history : [];
+        const attendancePct = attTotal > 0 ? Math.round((attPresent / attTotal) * 100) : 0;
         const schoolName = student.school?.name || "LUCY ACADEMY";
         const schoolLogo = student.school?.logoUrl;
         const now = new Date();
 
-        const bySubject = grades.reduce((acc: Record<string, GradeRecord[]>, g: GradeRecord) => {
+        const gradeList = Array.isArray(grades) ? grades : [];
+        const assignList = Array.isArray(assignments) ? assignments : [];
+        const remarkList = Array.isArray(remarks) ? remarks : [];
+
+        const bySubject = gradeList.reduce((acc: Record<string, GradeRecord[]>, g: GradeRecord) => {
             const key = g.subject?.name || "General";
             if (!acc[key]) acc[key] = [];
             acc[key].push(g);
@@ -70,16 +92,15 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
             return { letter: "F", color: "#dc2626" };
         };
 
-        const overallPct = grades.length > 0
-            ? Math.round(grades.reduce((acc: number, g: GradeRecord) => {
-                const scoreNum = parseFloat(g.score) || 0;
+        const overallPct = gradeList.length > 0
+            ? Math.round(gradeList.reduce((acc: number, g: GradeRecord) => {
+                const scoreNum = typeof g.score === 'number' ? g.score : parseFloat(String(g.score || 0)) || 0;
                 const p = g.exam?.totalMarks ? (scoreNum / g.exam.totalMarks) * 100 : scoreNum;
                 return acc + p;
-            }, 0) / grades.length)
+            }, 0) / gradeList.length)
             : null;
 
         const overall = overallPct !== null ? getGrade(overallPct) : null;
-
 
         const TH: React.CSSProperties = {
             padding: "4px 8px",
@@ -140,21 +161,21 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                         <div style={{ width: 52, height: 52, flexShrink: 0, borderRadius: 8, overflow: "hidden", background: "#27272a", border: "1px solid #3f3f46", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             {student.photoUrl
                                 ? <img src={student.photoUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                : <span style={{ fontSize: "18pt", fontWeight: 900, color: "#3f3f46" }}>{student.firstName?.[0]}{student.lastName?.[0]}</span>}
+                                : <span style={{ fontSize: "18pt", fontWeight: 900, color: "#3f3f46" }}>{student.firstName?.[0] || 'S'}{student.lastName?.[0] || 'T'}</span>}
                         </div>
 
                         {/* Name + meta */}
                         <div style={{ flex: 1 }}>
                             <div style={{ fontSize: "15pt", fontWeight: 900, letterSpacing: "-0.02em", textTransform: "uppercase", lineHeight: 1 }}>
-                                {student.firstName} <span style={{ color: "#52525b" }}>{student.lastName}</span>
+                                {student.firstName || "Student"} <span style={{ color: "#52525b" }}>{student.lastName || ""}</span>
                             </div>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: 5 }}>
                                 {[
-                                    ["ID", student.studentCode],
+                                    ["ID", student.studentCode || "—"],
                                     ["Class", `${student.class?.grade?.name || "—"} · ${student.class?.name || "—"}`],
                                     ["Gender", student.gender || "—"],
                                     ["Age", student.dob ? `${calculateAge(student.dob)}Y` : "—"],
-                                    ["Enrolled", student.createdAt ? format(new Date(student.createdAt), "MMM yyyy") : "—"],
+                                    ["Enrolled", safeFormat(student.enrolledAt || student.createdAt, "MMM yyyy")],
                                 ].map(([label, value]) => (
                                     <div key={label}>
                                         <div style={{ fontSize: "5.5pt", color: "#71717a", letterSpacing: "0.15em", textTransform: "uppercase" }}>{label}</div>
@@ -178,7 +199,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                         {/* Right stamps */}
                         <div style={{ textAlign: "right", flexShrink: 0 }}>
                             <div style={{ fontSize: "5.5pt", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.12em" }}>{schoolName}</div>
-                            <div style={{ fontSize: "6pt", fontWeight: 700, color: "#a1a1aa", marginTop: 2 }}>{format(now, "dd MMM yyyy")}</div>
+                            <div style={{ fontSize: "6pt", fontWeight: 700, color: "#a1a1aa", marginTop: 2 }}>{safeFormat(now, "dd MMM yyyy")}</div>
                             <div style={{ marginTop: 4, display: "inline-block", padding: "1px 7px", background: "#22c55e15", border: "1px solid #22c55e40", borderRadius: 99, fontSize: "5pt", color: "#22c55e", letterSpacing: "0.15em", textTransform: "uppercase" }}>Confidential</div>
                         </div>
                     </div>
@@ -186,9 +207,9 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     {/* ── STAT BAR ── */}
                     <div className="no-break" style={{ display: "flex", background: "#f5f5f5", border: "1px solid #e5e5e5", borderRadius: 6, marginBottom: "5mm" }}>
                         {[
-                            ["Attendance", `${attendancePct}%`, `${attendance.present}/${attendance.total} days`],
-                            ["Completeness", assignments.length > 0 ? `${Math.round((assignments.filter((a: any) => ['SUBMITTED', 'GRADED', 'LATE'].includes(a.status)).length / assignments.length) * 100)}%` : "100%", "Homework completion"],
-                            ["Faculty Remarks", String(remarks.length), "Written observations"],
+                            ["Attendance", `${attendancePct}%`, `${attPresent}/${attTotal} days`],
+                            ["Completeness", assignList.length > 0 ? `${Math.round((assignList.filter((a: any) => ['SUBMITTED', 'GRADED', 'LATE'].includes(a.status)).length / assignList.length) * 100)}%` : "100%", "Homework completion"],
+                            ["Faculty Remarks", String(remarkList.length), "Written observations"],
                             ["Guardian", student.guardianName || "—", student.guardianPhone || ""],
                         ].map(([label, value, sub], i) => (
                             <div key={i} style={{ flex: 1, padding: "5px 10px", borderLeft: i > 0 ? "1px solid #e0e0e0" : "none" }}>
@@ -205,7 +226,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "3px 16px" }}>
                             <F label="Full Name" value={fullName} />
                             <F label="Email" value={student.email || "—"} />
-                            <F label="Date of Birth" value={student.dob ? format(new Date(student.dob), "dd MMM yyyy") : "—"} />
+                            <F label="Date of Birth" value={safeFormat(student.dob, "dd MMM yyyy")} />
                             <F label="Address" value={student.address || "—"} />
                             <F label="Guardian" value={`${student.guardianName || "—"} (${student.guardianRelation || "Guardian"})`} />
                             <F label="Phone" value={`${student.guardianPhone || "—"}${student.secondaryPhone ? ` / ${student.secondaryPhone}` : ""}`} />
@@ -215,7 +236,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     {/* ── ACADEMIC PERFORMANCE ── */}
                     <div style={{ marginBottom: "5mm" }}>
                         <SectionHeader title="Academic Performance" color="#3b82f6" />
-                        {grades.length === 0 ? (
+                        {gradeList.length === 0 ? (
                             <p style={{ fontSize: "7.5pt", color: "#aaa", fontStyle: "italic" }}>No academic records available.</p>
                         ) : (
                             <>
@@ -233,10 +254,10 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                         <tbody>
                                             {Object.entries(bySubject).map(([subj, gs], i) => {
                                                 const avg = Math.round(gs.reduce((acc: number, g: GradeRecord) => {
-                                                    const scoreNum = parseFloat(g.score) || 0;
+                                                    const scoreNum = typeof g.score === 'number' ? g.score : parseFloat(String(g.score || 0)) || 0;
                                                     const p = g.exam?.totalMarks ? (scoreNum / g.exam.totalMarks) * 100 : scoreNum;
                                                     return acc + p;
-                                                }, 0) / gs.length);
+                                                }, 0) / (gs.length || 1));
                                                 const g = getGrade(avg);
                                                 return (
                                                     <tr key={subj} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
@@ -273,18 +294,19 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {grades.map((g, i) => {
-                                            const pct = g.exam?.totalMarks ? Math.round((parseFloat(g.score) / g.exam.totalMarks) * 100) : null;
+                                        {gradeList.map((g, i) => {
+                                            const scoreNum = typeof g.score === 'number' ? g.score : parseFloat(String(g.score || 0)) || 0;
+                                            const pct = g.exam?.totalMarks ? Math.round((scoreNum / g.exam.totalMarks) * 100) : null;
                                             const gr = pct !== null ? getGrade(pct) : null;
                                             return (
                                                 <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
                                                     <td style={{ ...TD, fontWeight: 600 }}>{g.exam?.title || "Assessment"}</td>
-                                                    <td style={TD}>{g.subject?.name}</td>
-                                                    <td style={{ ...TD, fontWeight: 700 }}>{g.score}</td>
+                                                    <td style={TD}>{g.subject?.name || "Subject"}</td>
+                                                    <td style={{ ...TD, fontWeight: 700 }}>{String(g.score ?? "—")}</td>
                                                     <td style={{ ...TD, color: "#888" }}>{g.exam?.totalMarks || "—"}</td>
                                                     <td style={{ ...TD, fontWeight: 700, color: gr?.color || "#111" }}>{pct !== null ? `${pct}%` : "—"}</td>
                                                     <td style={{ ...TD, fontWeight: 900, color: gr?.color || "#111" }}>{gr?.letter || "—"}</td>
-                                                    <td style={{ ...TD, color: "#888" }}>{g.createdAt ? format(new Date(g.createdAt), "dd MMM yy") : "—"}</td>
+                                                    <td style={{ ...TD, color: "#888" }}>{safeFormat(g.createdAt, "dd MMM yy")}</td>
                                                 </tr>
                                             );
                                         })}
@@ -297,7 +319,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     {/* ── HOMEWORK & PROJECTS ── */}
                     <div style={{ marginBottom: "5mm" }}>
                         <SectionHeader title="Formative Progress & Homework" color="#10b981" />
-                        {assignments.length === 0 ? (
+                        {assignList.length === 0 ? (
                             <p style={{ fontSize: "7.5pt", color: "#aaa", fontStyle: "italic" }}>No continuous assessment records available.</p>
                         ) : (
                             <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -311,10 +333,10 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {assignments.map((a, i) => (
+                                    {assignList.map((a, i) => (
                                         <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
                                             <td style={{ ...TD, fontWeight: 600 }}>{a.assignment?.title || "Assignment"}</td>
-                                            <td style={TD}>{a.assignment?.subject?.name}</td>
+                                            <td style={TD}>{a.assignment?.subject?.name || "General"}</td>
                                             <td style={{ ...TD, fontWeight: 700 }}>
                                                 {a.score !== null ? `${a.score}${a.assignment?.maxPoints ? ` / ${a.assignment.maxPoints}` : ''}` : '—'}
                                             </td>
@@ -329,10 +351,10 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                                     border: `1px solid ${a.status === 'GRADED' ? '#10b98130' : a.status === 'LATE' ? '#f59e0b30' : '#e4e4e7'}`,
                                                     textTransform: "uppercase"
                                                 }}>
-                                                    {a.status}
+                                                    {a.status || 'PENDING'}
                                                 </span>
                                             </td>
-                                            <td style={{ ...TD, color: "#888" }}>{a.submittedAt ? format(new Date(a.submittedAt), "dd MMM yy") : "Pending"}</td>
+                                            <td style={{ ...TD, color: "#888" }}>{safeFormat(a.submittedAt, "dd MMM yy", "Pending")}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -345,10 +367,10 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                         <SectionHeader title="Attendance" color="#f59e0b" />
                         <div className="no-break" style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                             {([
-                                ["Total", attendance.total, "#111"],
-                                ["Present", attendance.present, "#22c55e"],
-                                ["Absent", attendance.absent, "#dc2626"],
-                                ["Late", attendance.late, "#ea580c"],
+                                ["Total", attTotal, "#111"],
+                                ["Present", attPresent, "#22c55e"],
+                                ["Absent", attAbsent, "#dc2626"],
+                                ["Late", attLate, "#ea580c"],
                                 ["Rate", `${attendancePct}%`, attendancePct >= 80 ? "#22c55e" : attendancePct >= 60 ? "#ca8a04" : "#dc2626"],
                             ] as [string, string | number, string][]).map(([lbl, val, col]) => (
                                 <div key={lbl} style={{ flex: 1, padding: "6px 8px", background: "#f8f8f8", border: "1px solid #ebebeb", borderRadius: 6, textAlign: "center" }}>
@@ -358,7 +380,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                             ))}
                         </div>
 
-                        {attendance.history.length > 0 && (
+                        {attHistory.length > 0 && (
                             <table style={{ width: "100%", borderCollapse: "collapse" }}>
                                 <thead>
                                     <tr>
@@ -367,9 +389,9 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {attendance.history.map((rec, i) => (
+                                    {attHistory.map((rec: any, i: number) => (
                                         <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
-                                            <td style={TD}>{format(new Date(rec.date), "EEE, dd MMM yyyy")}</td>
+                                            <td style={TD}>{safeFormat(rec.date, "EEE, dd MMM yyyy")}</td>
                                             <td style={{ ...TD, fontWeight: 700, color: rec.status === "PRESENT" ? "#22c55e" : rec.status === "ABSENT" ? "#dc2626" : "#ea580c" }}>{rec.status}</td>
                                         </tr>
                                     ))}
@@ -379,14 +401,14 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     </div>
 
                     {/* ── REMARKS ── */}
-                    {remarks.length > 0 && (
+                    {remarkList.length > 0 && (
                         <div style={{ marginBottom: "5mm" }}>
                             <SectionHeader title="Faculty Remarks" color="#8b5cf6" />
-                            {remarks.map((r, i) => (
+                            {remarkList.map((r: any, i: number) => (
                                 <div className="no-break" key={i} style={{ marginBottom: 5, padding: "5px 8px", background: "#fafafa", borderLeft: "3px solid #8b5cf650", borderRadius: "0 5px 5px 0" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
                                         <span style={{ fontSize: "6.5pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#555" }}>{r.teacher?.name || "Faculty"}</span>
-                                        <span style={{ fontSize: "6pt", color: "#aaa" }}>{r.createdAt ? format(new Date(r.createdAt), "dd MMM yyyy") : ""}</span>
+                                        <span style={{ fontSize: "6pt", color: "#aaa" }}>{safeFormat(r.createdAt, "dd MMM yyyy", "")}</span>
                                     </div>
                                     <p style={{ fontSize: "7.5pt", color: "#444", margin: 0, fontStyle: "italic" }}>&ldquo;{r.content}&rdquo;</p>
                                 </div>
@@ -397,7 +419,7 @@ export const StudentDossierPrint = forwardRef<HTMLDivElement, StudentDossierPrin
                     {/* ── FOOTER ── */}
                     <div style={{ marginTop: "6mm", paddingTop: "4mm", borderTop: "1px solid #e8e8e8", display: "flex", justifyContent: "space-between", fontSize: "6pt", color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                         <span>{schoolName} · Official Academic Dossier · Confidential</span>
-                        <span>Generated {format(now, "dd MMM yyyy, HH:mm")} · LUCY OS</span>
+                        <span>Generated {safeFormat(now, "dd MMM yyyy, HH:mm")} · LUCY OS</span>
                     </div>
                 </div>
             </div>

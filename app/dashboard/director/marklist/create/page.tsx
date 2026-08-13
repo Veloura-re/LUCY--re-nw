@@ -182,11 +182,12 @@ export default function MarklistConfigPage() {
                 setConfigId(data.id);
                 toast.success("Design Saved Successfully");
             } else {
-                toast.error("Failed to save design");
+                const errData: any = await res.json().catch(() => ({}));
+                toast.error(errData.error || "Failed to save design");
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            toast.error("Error saving");
+            toast.error(e?.message || "Error saving");
         } finally {
             setIsSaving(false);
         }
@@ -209,6 +210,26 @@ export default function MarklistConfigPage() {
                     </Button>
                 )}
             </div>
+
+            {/* Academic Terms Guard Banner */}
+            {terms.length === 0 && (
+                <div className="p-6 bg-amber-500/10 border border-amber-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                            ⚠️ No Academic Terms Configured
+                        </h3>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                            Your institution has not set up academic terms or seasons. You must create at least one academic term before you can generate marklists.
+                        </p>
+                    </div>
+                    <Button
+                        onClick={() => router.push('/dashboard/settings')}
+                        className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0"
+                    >
+                        Create Academic Term
+                    </Button>
+                </div>
+            )}
 
             <Card className="bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/50 rounded-[2.5rem]  shadow-none">
                 <CardHeader className="p-10 border-b border-zinc-200 dark:border-zinc-900/30 flex flex-row items-center justify-between">

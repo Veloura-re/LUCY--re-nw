@@ -11,6 +11,34 @@ export async function GET(
         const { studentId } = await params;
 
         // 1. Robust Student Lookup (by id, userId, studentCode, or 'me')
+        const studentInclude = {
+            school: {
+                select: {
+                    id: true,
+                    name: true,
+                    logoUrl: true,
+                    address: true
+                }
+            },
+            class: {
+                include: {
+                    grade: true
+                }
+            },
+            parentLinks: {
+                include: {
+                    parent: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            phone: true
+                        }
+                    }
+                }
+            }
+        };
+
         let student = await prisma.student.findFirst({
             where: {
                 OR: [
@@ -19,42 +47,14 @@ export async function GET(
                     { studentCode: { equals: studentId, mode: 'insensitive' } }
                 ]
             },
-            include: {
-                school: {
-                    select: {
-                        id: true,
-                        name: true,
-                        logoUrl: true,
-                        address: true
-                    }
-                },
-                class: {
-                    include: {
-                        grade: true
-                    }
-                }
-            }
+            include: studentInclude
         });
 
         // Fallback A: If studentId === 'me' or logged in user is a STUDENT
         if (!student && (studentId === "me" || dbUser.role === "STUDENT")) {
             student = await prisma.student.findFirst({
                 where: { userId: dbUser.id },
-                include: {
-                    school: {
-                        select: {
-                            id: true,
-                            name: true,
-                            logoUrl: true,
-                            address: true
-                        }
-                    },
-                    class: {
-                        include: {
-                            grade: true
-                        }
-                    }
-                }
+                include: studentInclude
             });
         }
 
@@ -66,19 +66,7 @@ export async function GET(
             if (link?.studentId) {
                 student = await prisma.student.findUnique({
                     where: { id: link.studentId },
-                    include: {
-                        school: {
-                            select: {
-                                id: true,
-                                name: true,
-                                logoUrl: true,
-                                address: true
-                            }
-                        },
-                        class: {
-                            include: { grade: true }
-                        }
-                    }
+                    include: studentInclude
                 });
             }
         }
@@ -87,19 +75,7 @@ export async function GET(
         if (!student && dbUser.schoolId) {
             student = await prisma.student.findFirst({
                 where: { schoolId: dbUser.schoolId },
-                include: {
-                    school: {
-                        select: {
-                            id: true,
-                            name: true,
-                            logoUrl: true,
-                            address: true
-                        }
-                    },
-                    class: {
-                        include: { grade: true }
-                    }
-                }
+                include: studentInclude
             });
         }
 
@@ -109,82 +85,129 @@ export async function GET(
 
         const targetSchoolId = student.schoolId;
 
-        // 2. Fetch Real Academic Term from Database
-        const activeTerm = await prisma.academicTerm.findFirst({
-            where: { schoolId: targetSchoolId, isActive: true },
-            orderBy: { createdAt: 'desc' }
-        }) || await prisma.academicTerm.findFirst({
-            where: { schoolId: targetSchoolId },
-            orderBy: { createdAt: 'desc' }
-        });
+        // 2. High-Performance Parallel Queries (Promise.all)
+        const [
+            activeTerm,
+            principal,
+            subjects,
+            marklistConfigs,
+            allClassEntries,
+            attendanceRecords,
+            remarks,
+            internalNotes
+        ] = await Promise.all([
+            // Real Academic Term
+            prisma.academicTerm.findFirst({
+                where: { schoolId: targetSchoolId, isActive: true },
+                orderBy: { createdAt: 'desc' }
+            }).then(async (term) => {
+                if (term) return term;
+                return prisma.academicTerm.findFirst({
+                    where: { schoolId: targetSchoolId },
+                    orderBy: { createdAt: 'desc' }
+                });
+            }),
 
-        const termData = {
-            id: activeTerm?.id || 'current-term',
-            name: activeTerm?.name || `${new Date().getFullYear()}/${(new Date().getFullYear() + 1).toString().slice(-2)} Academic Term 2`,
-            startDate: activeTerm?.startDate ? new Date(activeTerm.startDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Sep 2023',
-            endDate: activeTerm?.endDate ? new Date(activeTerm.endDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'Jun 2024',
-            isActive: activeTerm?.isActive ?? true
-        };
-
-        // 3. Fetch Principal / Director Name
-        const principal = await prisma.user.findFirst({
-            where: {
-                schoolId: targetSchoolId,
-                role: { in: ["PRINCIPAL", "OWNER", "SUPERADMIN"] }
-            },
-            select: { name: true, role: true }
-        });
-
-        // 4. Fetch Subjects in School / Class
-        const subjects = await prisma.subject.findMany({
-            where: { schoolId: targetSchoolId }
-        });
-
-        // 5. Fetch Marklist Entries across all subjects for this student's class
-        const marklistConfigs = await prisma.marklistConfig.findMany({
-            where: {
-                classId: student.classId || undefined,
-                schoolId: targetSchoolId
-            },
-            include: {
-                subject: true,
-                columns: {
-                    orderBy: { order: "asc" }
+            // Principal / Director Info
+            prisma.user.findFirst({
+                where: {
+                    schoolId: targetSchoolId,
+                    role: { in: ["PRINCIPAL", "OWNER", "SUPERADMIN"] }
                 },
-                entries: {
-                    where: { studentId: student.id },
-                    include: {
-                        marks: {
-                            include: {
-                                column: true
+                select: { name: true, role: true }
+            }),
+
+            // Subjects
+            prisma.subject.findMany({
+                where: { schoolId: targetSchoolId },
+                orderBy: { name: 'asc' }
+            }),
+
+            // Marklist Configs & Marks for Student's Class Only
+            student.classId ? prisma.marklistConfig.findMany({
+                where: {
+                    classId: student.classId,
+                    schoolId: targetSchoolId
+                },
+                include: {
+                    subject: true,
+                    columns: {
+                        orderBy: { order: "asc" }
+                    },
+                    entries: {
+                        where: { studentId: student.id },
+                        include: {
+                            marks: {
+                                include: {
+                                    column: true
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            }) : Promise.resolve([]),
+
+            // Class-Scoped Marklist Entries (for ranking within class only)
+            student.classId ? prisma.marklistEntry.findMany({
+                where: {
+                    config: {
+                        classId: student.classId,
+                        schoolId: targetSchoolId
+                    }
+                },
+                select: {
+                    studentId: true,
+                    percentage: true,
+                    total: true
+                }
+            }) : Promise.resolve([]),
+
+            // Attendance Log
+            prisma.attendanceRecord.findMany({
+                where: { studentId: student.id }
+            }),
+
+            // Faculty Remarks
+            prisma.studentRemark.findMany({
+                where: { studentId: student.id },
+                include: {
+                    teacher: {
+                        select: { name: true }
+                    }
+                },
+                orderBy: { createdAt: "desc" },
+                take: 5
+            }),
+
+            // Internal Notes
+            prisma.internalNote.findMany({
+                where: { studentId: student.id },
+                include: {
+                    author: {
+                        select: { name: true, role: true }
+                    }
+                },
+                orderBy: { createdAt: "desc" },
+                take: 5
+            })
+        ]);
+
+        const termData = activeTerm ? {
+            id: activeTerm.id,
+            name: activeTerm.name,
+            startDate: activeTerm.startDate ? new Date(activeTerm.startDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : null,
+            endDate: activeTerm.endDate ? new Date(activeTerm.endDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : null,
+            isActive: activeTerm.isActive
+        } : null;
 
         // Calculate Class Position Rank
-        const allClassEntries = await prisma.marklistEntry.findMany({
-            where: {
-                config: {
-                    classId: student.classId || undefined,
-                    schoolId: targetSchoolId
-                }
-            },
-            select: {
-                studentId: true,
-                percentage: true,
-                total: true
-            }
-        });
-
         const studentTotalsMap = new Map<string, { totalPct: number; count: number }>();
-        allClassEntries.forEach(entry => {
-            if (entry.percentage != null) {
+        allClassEntries.forEach((entry: any) => {
+            const val = entry.percentage ?? entry.total;
+            if (val != null) {
                 const current = studentTotalsMap.get(entry.studentId) || { totalPct: 0, count: 0 };
                 studentTotalsMap.set(entry.studentId, {
-                    totalPct: current.totalPct + entry.percentage,
+                    totalPct: current.totalPct + val,
                     count: current.count + 1
                 });
             }
@@ -196,143 +219,117 @@ export async function GET(
         })).sort((a, b) => b.avg - a.avg);
 
         const rankIndex = studentAverages.findIndex(s => s.studentId === student.id);
-        const classRank = rankIndex !== -1 ? rankIndex + 1 : 1;
-        const totalClassStudents = Math.max(studentAverages.length, 1);
+        const classRank = rankIndex !== -1 ? rankIndex + 1 : "-";
+        const totalClassStudents = studentAverages.length;
 
-        // Build Grade Rows (from Marklists or Subjects list)
+        // Build Grade Rows purely from authentic records (zero synthetic/fake marks)
         let grades: any[] = [];
+        let totalPctSum = 0;
+        let validRecordedCount = 0;
+        let totalGpaPoints = 0;
 
         if (marklistConfigs.length > 0) {
-            grades = marklistConfigs.map(config => {
+            grades = marklistConfigs.map((config: any) => {
                 const entry = config.entries[0];
-                const pct = entry?.percentage ?? entry?.total ?? 0;
+                const hasMarks = entry != null && (entry.percentage != null || entry.total != null || entry.marks?.length > 0);
+                const score = hasMarks ? Math.round(entry.percentage ?? entry.total ?? 0) : 0;
 
-                let letterGrade = entry?.grade;
-                if (!letterGrade) {
-                    if (pct >= 90) letterGrade = "A+";
-                    else if (pct >= 85) letterGrade = "A";
-                    else if (pct >= 80) letterGrade = "A-";
-                    else if (pct >= 75) letterGrade = "B+";
-                    else if (pct >= 70) letterGrade = "B";
-                    else if (pct >= 65) letterGrade = "C+";
-                    else if (pct >= 60) letterGrade = "C";
-                    else if (pct >= 50) letterGrade = "D";
+                let letterGrade = "-";
+                if (hasMarks) {
+                    if (entry?.grade) {
+                        letterGrade = entry.grade;
+                    } else if (score >= 90) letterGrade = "A+";
+                    else if (score >= 85) letterGrade = "A";
+                    else if (score >= 80) letterGrade = "A-";
+                    else if (score >= 75) letterGrade = "B+";
+                    else if (score >= 70) letterGrade = "B";
+                    else if (score >= 65) letterGrade = "C+";
+                    else if (score >= 60) letterGrade = "C";
+                    else if (score >= 50) letterGrade = "D";
                     else letterGrade = "F";
+
+                    totalPctSum += score;
+                    validRecordedCount++;
+
+                    if (score >= 90) totalGpaPoints += 4.0;
+                    else if (score >= 80) totalGpaPoints += 3.7;
+                    else if (score >= 70) totalGpaPoints += 3.0;
+                    else if (score >= 60) totalGpaPoints += 2.0;
+                    else if (score >= 50) totalGpaPoints += 1.0;
+                    else totalGpaPoints += 0.0;
                 }
 
                 return {
                     subject: config.subject,
-                    score: Math.round(pct),
+                    score: score,
                     grade: letterGrade,
-                    remarks: entry?.remarks || null,
-                    columns: config.columns.map(col => {
-                        const mark = entry?.marks.find(m => m.columnId === col.id);
+                    hasRecord: hasMarks,
+                    remarks: entry?.remarks || (hasMarks ? null : "No marks recorded"),
+                    columns: config.columns.map((col: any) => {
+                        const mark = entry?.marks?.find((m: any) => m.columnId === col.id);
                         return {
                             title: col.title,
                             maxMarks: col.maxMarks,
-                            score: mark?.score ?? 0
+                            score: mark?.score ?? 0,
+                            hasMark: mark?.score != null
                         };
                     })
                 };
             });
         } else if (subjects.length > 0) {
-            // Placeholder subject rows if marklists have not been populated yet
-            grades = subjects.map(sbj => ({
+            grades = subjects.map((sbj: any) => ({
                 subject: sbj,
-                score: 85,
-                grade: "A",
-                remarks: "Continuous Evaluation Active",
-                columns: [
-                    { title: "Assignments", maxMarks: 20, score: 18 },
-                    { title: "Midterm Exam", maxMarks: 30, score: 25 },
-                    { title: "Final Exam", maxMarks: 50, score: 42 }
-                ]
+                score: 0,
+                grade: "-",
+                hasRecord: false,
+                remarks: "No marklist generated for this subject yet",
+                columns: []
             }));
         } else {
-            // Default core subject curriculum
-            const defaultSubjects = ["Mathematics", "English Language", "Physics", "Chemistry", "Biology", "History & Civics"];
-            grades = defaultSubjects.map(name => ({
-                subject: { name },
-                score: 88,
-                grade: "A",
-                remarks: "Demonstrates consistent academic excellence.",
-                columns: [
-                    { title: "Continuous Assessment", maxMarks: 40, score: 35 },
-                    { title: "Final Synthesis", maxMarks: 60, score: 53 }
-                ]
-            }));
+            grades = [];
         }
 
-        // 6. Calculate GPA & Cumulative Percentage
-        let totalPctSum = 0;
-        let validSubjectCount = 0;
-        let totalGpaPoints = 0;
+        // 3. Cumulative Percentage & GPA calculation (strictly real data)
+        const overallPercentage = validRecordedCount > 0 ? Math.round(totalPctSum / validRecordedCount) : 0;
+        const gpa = validRecordedCount > 0 ? (totalGpaPoints / validRecordedCount).toFixed(2) : "0.00";
 
-        grades.forEach(g => {
-            totalPctSum += g.score;
-            validSubjectCount++;
+        let standing = "NO EVALUATION RECORDED";
+        if (validRecordedCount > 0) {
+            if (overallPercentage >= 85) standing = "FIRST CLASS HONORS";
+            else if (overallPercentage >= 75) standing = "SECOND CLASS HONORS";
+            else if (overallPercentage >= 60) standing = "SATISFACTORY";
+            else if (overallPercentage >= 50) standing = "PASS";
+            else standing = "ACADEMIC PROBATION";
+        }
 
-            if (g.score >= 90) totalGpaPoints += 4.0;
-            else if (g.score >= 80) totalGpaPoints += 3.7;
-            else if (g.score >= 70) totalGpaPoints += 3.0;
-            else if (g.score >= 60) totalGpaPoints += 2.0;
-            else if (g.score >= 50) totalGpaPoints += 1.0;
-            else totalGpaPoints += 0.0;
-        });
-
-        const overallPercentage = validSubjectCount > 0 ? Math.round(totalPctSum / validSubjectCount) : 85;
-        const gpa = validSubjectCount > 0 ? (totalGpaPoints / validSubjectCount).toFixed(2) : "3.75";
-
-        let standing = "EXCEL";
-        if (overallPercentage >= 85) standing = "FIRST CLASS HONORS";
-        else if (overallPercentage >= 75) standing = "SECOND CLASS HONORS";
-        else if (overallPercentage >= 60) standing = "SATISFACTORY";
-        else if (overallPercentage >= 50) standing = "PASS";
-        else standing = "ACADEMIC PROBATION";
-
-        // 7. Fetch Attendance Summary
-        const attendanceRecords = await prisma.attendanceRecord.findMany({
-            where: { studentId: student.id }
-        });
-
-        const presentCount = attendanceRecords.filter(a => a.status === "PRESENT" || a.status === "LATE").length;
-        const absentCount = attendanceRecords.filter(a => a.status === "ABSENT").length;
-        const totalSessions = Math.max(attendanceRecords.length, 1);
-
-        // 8. Fetch Qualitative Faculty Remarks
-        const remarks = await prisma.studentRemark.findMany({
-            where: { studentId: student.id },
-            include: {
-                teacher: {
-                    select: { name: true }
-                }
-            },
-            orderBy: { createdAt: "desc" },
-            take: 5
-        });
+        // 4. Attendance Summary
+        const presentCount = attendanceRecords.filter((a: any) => a.status === "PRESENT" || a.status === "LATE").length;
+        const absentCount = attendanceRecords.filter((a: any) => a.status === "ABSENT").length;
+        const attendanceRate = attendanceRecords.length > 0 ? Math.round((presentCount / attendanceRecords.length) * 100) : 0;
 
         return NextResponse.json({
             student,
             principal,
             term: termData,
             grades,
+            userRole: dbUser.role,
             summary: {
                 overallPercentage,
                 gpa,
                 standing,
                 classRank,
-                totalClassStudents
+                totalClassStudents,
+                evaluatedSubjects: validRecordedCount,
+                totalSubjects: grades.length
             },
             attendance: {
-                present: presentCount || 18,
-                absent: absentCount || 1,
-                total: totalSessions > 1 ? totalSessions : 19,
-                rate: Math.round(((presentCount || 18) / (totalSessions > 1 ? totalSessions : 19)) * 100)
+                rate: attendanceRate,
+                present: presentCount,
+                absent: absentCount,
+                total: attendanceRecords.length
             },
-            remarks: remarks.map(r => ({
-                content: r.content,
-                teacher: r.teacher
-            }))
+            remarks,
+            internalNotes
         });
     } catch (e) {
         return handleApiError(e);

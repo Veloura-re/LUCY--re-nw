@@ -285,7 +285,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                    className="relative w-full max-w-2xl bg-white/40 dark:bg-zinc-950/40 border border-zinc-300 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group"
+                    className="relative w-full max-w-2xl bg-white/95 dark:bg-zinc-950/95 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl dark:shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden group backdrop-blur-2xl"
                 >
                     {/* Glass Surface Scanline */}
                     <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,transparent_45%,rgba(255,255,255,0.05)_50%,transparent_55%,transparent)] bg-[length:200%_200%] animate-[shimmer_5s_infinite] pointer-events-none" />
@@ -294,17 +294,17 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                         {/* Header Area */}
                         <div className="flex items-center justify-between mb-12">
                             <div className="flex items-center gap-4">
-                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 shadow-2xl")}>
+                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 shadow-md")}>
                                     <Sparkles className={cn("w-6 h-6", steps[currentStep].color.replace('bg-', 'text-'))} />
                                 </div>
                                 <div>
-                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-900 dark:text-white/40">Smart Protocol</h2>
-                                    <h1 className="text-xl font-black uppercase tracking-widest text-zinc-900 dark:text-white italic">Onboarding v1</h1>
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 dark:text-white/40">Smart Protocol</h2>
+                                    <h1 className="text-xl font-black uppercase tracking-widest text-zinc-900 dark:text-white italic">Onboarding Guidance</h1>
                                 </div>
                             </div>
                             <button
                                 onClick={handleComplete}
-                                className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-200 dark:bg-white/5 hover:bg-zinc-300 dark:hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-600 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white"
+                                className="w-10 h-10 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 border border-zinc-200 dark:border-white/5 transition-all text-zinc-600 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -323,7 +323,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     >
                                         <div className={cn("inline-flex px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border mb-6",
                                             steps[currentStep].color.replace('bg-', 'border-').replace('text-', 'border-'),
-                                            steps[currentStep].color.replace('bg-', 'bg-').replace('bg-', 'bg-opacity-10 bg-'),
+                                            "bg-zinc-100 dark:bg-zinc-900/50",
                                             steps[currentStep].color.replace('bg-', 'text-')
                                         )}>
                                             Module {currentStep + 1} of {steps.length}
@@ -331,7 +331,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                         <h3 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white uppercase tracking-tight italic mb-4 leading-none">
                                             {steps[currentStep].title}
                                         </h3>
-                                        <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base font-medium leading-relaxed tracking-wide italic">
+                                        <p className="text-zinc-700 dark:text-zinc-300 text-sm md:text-base font-medium leading-relaxed tracking-wide">
                                             {steps[currentStep].description}
                                         </p>
                                     </motion.div>
@@ -349,7 +349,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                     />
 
                                     <div className={cn(
-                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-white/60 dark:bg-black/40 border border-zinc-300 dark:border-white/10 backdrop-blur-md shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
+                                        "relative w-32 h-32 md:w-48 md:h-48 rounded-2xl flex items-center justify-center p-8 bg-zinc-50 dark:bg-black/40 border border-zinc-200 dark:border-white/10 backdrop-blur-md shadow-xl overflow-hidden group-hover:scale-105 transition-transform duration-300",
                                     )}>
                                         <div className={cn("absolute inset-0 opacity-10", steps[currentStep].color)} />
                                         <AnimatePresence mode="wait">
@@ -388,9 +388,9 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                             <Button
                                 onClick={handleNext}
                                 className={cn(
-                                    "px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] font-orbitron transition-all active:scale-95 shadow-2xl",
+                                    "px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] font-orbitron transition-all active:scale-95 shadow-xl",
                                     steps[currentStep].color,
-                                    "text-black hover:opacity-90 grayscale-[0.2] hover:grayscale-0"
+                                    "text-white font-bold hover:opacity-90"
                                 )}
                             >
                                 {currentStep === steps.length - 1 ? "Initialize Portal" : "Next Protocol"}

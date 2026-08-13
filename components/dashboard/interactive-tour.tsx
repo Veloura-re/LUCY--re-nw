@@ -259,36 +259,27 @@ function TourOverlay({ role, onClose }: { role: string; onClose: () => void }) {
                         }}
                     />
 
-                    <div style={{
-                        position: 'relative', zIndex: 1,
-                        background: `linear-gradient(135deg, ${palette.bg} 0%, rgba(9,9,11,0.97) 100%)`,
-                        border: `1px solid ${palette.border}`,
-                        borderRadius: 24,
-                        boxShadow: `0 32px 60px rgba(0,0,0,0.75), inset 0 1px 0 ${palette.border}, 0 0 50px ${palette.glow}`,
-                        backdropFilter: 'blur(28px)',
-                        overflow: 'hidden',
-                        padding: '1.5rem',
-                    }}>
+                    <div className="relative z-10 bg-white/95 dark:bg-zinc-950/95 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl dark:shadow-[0_32px_60px_rgba(0,0,0,0.75)] backdrop-blur-2xl overflow-hidden p-6 text-zinc-900 dark:text-white">
                         {/* Animated top bar */}
                         <motion.div
                             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
                             transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
                             style={{
                                 position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                                background: `linear-gradient(90deg, transparent, ${palette.accent}, ${palette.text}, ${palette.accent}, transparent)`,
+                                background: `linear-gradient(90deg, transparent, ${palette.accent}, #10b981, ${palette.accent}, transparent)`,
                                 backgroundSize: '200% 100%',
                             }}
                         />
 
                         {/* Header row */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
                                 <WobblyIcon Icon={Icon} color={palette.accent} />
                                 <div>
-                                    <p style={{ fontSize: '0.6rem', fontWeight: 700, color: palette.accent, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 3, opacity: 0.8 }}>
-                                        {current + 1} / {steps.length}
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-0.5">
+                                        Step {current + 1} of {steps.length}
                                     </p>
-                                    <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#f4f4f5', letterSpacing: '-0.01em', lineHeight: 1.2, margin: 0 }}>
+                                    <h3 className="text-base font-black tracking-tight text-zinc-900 dark:text-white m-0">
                                         {step.title}
                                     </h3>
                                 </div>
@@ -298,23 +289,19 @@ function TourOverlay({ role, onClose }: { role: string; onClose: () => void }) {
                                 whileTap={{ scale: 0.9 }}
                                 transition={{ type: 'spring', stiffness: 500, damping: 20 }}
                                 onClick={onClose}
-                                style={{
-                                    width: 30, height: 30, borderRadius: 9, border: `1px solid rgba(255,255,255,0.08)`,
-                                    background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', cursor: 'pointer', color: '#71717a', flexShrink: 0,
-                                }}
+                                className="w-8 h-8 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 flex items-center justify-center cursor-pointer text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
                             >
-                                <X size={13} />
+                                <X size={14} />
                             </motion.button>
                         </div>
 
                         {/* Description */}
-                        <p style={{ fontSize: '0.82rem', color: '#a1a1aa', lineHeight: 1.7, margin: '0 0 1.1rem 0', fontWeight: 400 }}>
+                        <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed mb-4 font-normal">
                             {step.description}
                         </p>
 
                         {/* Progress dots */}
-                        <div style={{ display: 'flex', gap: 5, marginBottom: '1.1rem', alignItems: 'center' }}>
+                        <div className="flex gap-1.5 mb-4 items-center">
                             {steps.map((_, i) => {
                                 const p = PALETTES[i % PALETTES.length];
                                 return (
@@ -322,14 +309,14 @@ function TourOverlay({ role, onClose }: { role: string; onClose: () => void }) {
                                         key={i}
                                         onClick={() => goTo(i)}
                                         animate={{
-                                            width: i === current ? 26 : 8,
-                                            background: i === current ? p.accent : 'rgba(255,255,255,0.12)',
+                                            width: i === current ? 24 : 6,
+                                            background: i === current ? p.accent : 'rgba(120,120,128,0.25)',
                                             scale: i === current ? 1 : 0.85,
                                         }}
                                         transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                                         whileHover={{ scale: 1.3 }}
+                                        className="h-1.5 rounded-full border-none cursor-pointer p-0"
                                         style={{
-                                            height: 5, borderRadius: 99, border: 'none', cursor: 'pointer',
                                             boxShadow: i === current ? `0 0 8px ${p.accent}` : 'none',
                                         }}
                                     />
@@ -338,50 +325,25 @@ function TourOverlay({ role, onClose }: { role: string; onClose: () => void }) {
                         </div>
 
                         {/* Buttons */}
-                        <div style={{ display: 'flex', gap: '0.6rem' }}>
+                        <div className="flex gap-2.5">
                             {!isFirst && (
                                 <motion.button
                                     whileHover={{ scale: 1.04, x: -2 }}
                                     whileTap={{ scale: 0.95 }}
                                     transition={{ type: 'spring', stiffness: 600, damping: 22 }}
                                     onClick={handlePrev}
-                                    style={{
-                                        flex: '0 0 auto', padding: '0.55rem 1rem', borderRadius: 12, cursor: 'pointer',
-                                        border: `1px solid rgba(255,255,255,0.1)`,
-                                        background: 'rgba(255,255,255,0.04)',
-                                        color: '#71717a', fontSize: '0.7rem', fontWeight: 700,
-                                        letterSpacing: '0.1em', textTransform: 'uppercase',
-                                        display: 'flex', alignItems: 'center', gap: 5,
-                                    }}
+                                    className="px-4 py-2.5 rounded-xl cursor-pointer border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
                                 >
                                     <ChevronLeft size={13} /> Back
                                 </motion.button>
                             )}
                             <motion.button
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.94 }}
+                                whileHover={{ scale: 1.03, y: -1 }}
+                                whileTap={{ scale: 0.96 }}
                                 transition={{ type: 'spring', stiffness: 600, damping: 22 }}
                                 onClick={handleNext}
-                                style={{
-                                    flex: 1, padding: '0.6rem 1.2rem', borderRadius: 12, cursor: 'pointer',
-                                    border: `1px solid ${palette.border}`,
-                                    background: `linear-gradient(135deg, ${palette.bg}, rgba(9,9,11,0.6))`,
-                                    color: palette.text, fontSize: '0.72rem', fontWeight: 800,
-                                    letterSpacing: '0.14em', textTransform: 'uppercase',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                                    boxShadow: `0 0 20px ${palette.glow}`,
-                                    position: 'relative', overflow: 'hidden',
-                                }}
+                                className="flex-1 py-2.5 px-5 rounded-xl cursor-pointer bg-eduGreen-600 hover:bg-eduGreen-500 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-eduGreen-900/20 border border-eduGreen-500 transition-all"
                             >
-                                <motion.div
-                                    animate={{ x: ['-110%', '120%'] }}
-                                    transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
-                                    style={{
-                                        position: 'absolute', top: 0, left: 0, width: '40%', height: '100%',
-                                        background: `linear-gradient(90deg, transparent, ${palette.accent}40, transparent)`,
-                                        pointerEvents: 'none',
-                                    }}
-                                />
                                 {isLast ? <><Zap size={13} /> Get Started</> : <>Next <ChevronRight size={13} /></>}
                             </motion.button>
                         </div>

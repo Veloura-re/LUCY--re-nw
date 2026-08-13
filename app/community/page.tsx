@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Terminal, Send, Youtube, Mail, Video, Instagram } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/ui/logo";
-import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, SystemRain, TiltCard } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, SystemRain, TiltCard, InteractiveParticleSimulation } from "@/components/public/animations";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -113,10 +113,11 @@ export default function CommunityPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight overflow-x-hidden relative transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300 relative overflow-hidden">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} showTriangles={true} />
             
             {/* Background Digital Rain */}
             <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-10 pointer-events-none">

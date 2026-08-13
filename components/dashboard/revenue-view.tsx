@@ -118,9 +118,9 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 fetch('/api/school/finance/pay/pending')
             ]);
 
-            const feesData = await feesRes.json();
-            const analyticsData = await analyticsRes.json();
-            const pendingData = await pendingRes.json();
+            const feesData: any = await feesRes.json();
+            const analyticsData: any = await analyticsRes.json();
+            const pendingData: any = await pendingRes.json();
 
             if (feesData.fees) setFees(feesData.fees);
             if (analyticsData) setFinancialAnalytics(analyticsData);
@@ -142,7 +142,7 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                 search: query
             });
             const res = await fetch(`/api/school/finance/invoices?${params.toString()}`);
-            const data = await res.json();
+            const data: any = await res.json();
             if (data.invoices) {
                 setInvoices(data.invoices);
                 setTotalPages(data.totalPages || 1);
@@ -181,7 +181,7 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
             const res = await fetch('/api/school/finance/invoices/generate', {
                 method: 'POST'
             });
-            const data = await res.json();
+            const data: any = await res.json();
             if (res.ok) {
                 toast.success(`Generated ${data.generatedCount || 0} invoices successfully.`);
                 fetchInvoices(1, statusFilter, searchQuery);
@@ -305,14 +305,14 @@ export function RevenueView({ user, school, grades }: RevenueViewProps) {
                     </div>
                 </Card>
 
-                <Card className="bg-white dark:bg-zinc-950 border-amber-500/30 p-5 rounded-2xl shadow-sm bg-gradient-to-br from-amber-950/10 to-transparent">
-                    <div className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">
+                <Card className="bg-white dark:bg-zinc-950 border-amber-300 dark:border-amber-500/30 p-5 rounded-2xl shadow-sm bg-gradient-to-br from-amber-50 dark:from-amber-950/10 to-white dark:to-transparent">
+                    <div className="text-[9px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-1">
                         Pending Verification
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tracking-tight">
+                    <div className="text-2xl sm:text-3xl font-black text-amber-700 dark:text-amber-400 tracking-tight">
                         ${(financialAnalytics?.summary?.totalPending || 0).toLocaleString()}
                     </div>
-                    <div className="text-[10px] text-zinc-400 mt-2">
+                    <div className="text-[10px] text-zinc-600 dark:text-zinc-400 mt-2 font-medium">
                         {pendingPayments.length} Proofs awaiting approval
                     </div>
                 </Card>

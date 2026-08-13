@@ -74,15 +74,32 @@ function StudentProfileContent() {
         documentTitle: data?.student ? `${data.student.firstName}_${data.student.lastName}_Dossier` : 'Student_Dossier',
     });
 
+    const isFetchingRef = useRef(false);
+
     useEffect(() => {
         const tab = searchParams.get('tab');
         if (tab) setActiveTab(tab);
-        fetchStudentData();
-    }, [studentId, searchParams]);
+    }, [searchParams]);
 
-    const fetchStudentData = async () => {
+    useEffect(() => {
+        if (!studentId) return;
+        fetchStudentData();
+    }, [studentId]);
+
+    const fetchStudentData = async (retryAttempt = 0) => {
+        if (isFetchingRef.current && retryAttempt === 0) return;
+        isFetchingRef.current = true;
         try {
-            const res = await fetch(`/api/school/students/${studentId}/report-card?_t=${Date.now()}`);
+            const res = await fetch(`/api/school/students/${studentId}/report-card`);
+            if (!res.ok) {
+                if (retryAttempt < 2) {
+                    await new Promise(resolve => setTimeout(resolve, 800 * (retryAttempt + 1)));
+                    return fetchStudentData(retryAttempt + 1);
+                }
+                const errData: any = await res.json().catch(() => ({}));
+                setData({ error: errData.error || "Student Record Not Found" });
+                return;
+            }
             const d: any = await res.json();
             setData(d);
             setRemarks(d.remarks || []);
@@ -109,9 +126,15 @@ function StudentProfileContent() {
                 });
                 setEditSelectedGradeId(d.student.gradeId || "");
             }
-        } catch (e) {
-            console.error(e);
+        } catch (e: any) {
+            console.error("fetchStudentData error:", e);
+            if (retryAttempt < 2) {
+                await new Promise(resolve => setTimeout(resolve, 800 * (retryAttempt + 1)));
+                return fetchStudentData(retryAttempt + 1);
+            }
+            setData({ error: "Cold-Start Interruption: Click Retry to re-connect." });
         } finally {
+            isFetchingRef.current = false;
             setLoading(false);
         }
     };
@@ -217,9 +240,40 @@ function StudentProfileContent() {
     };
 
     if (loading) return <div className="min-h-screen flex items-center justify-center"><SpringingLoader message="Synthesizing Student Dossier" /></div>;
-    if (!data?.student) return <div className="p-20 text-center text-zinc-600 dark:text-zinc-500 font-bold uppercase tracking-widest">Connection Lost: Entity Not Found</div>;
+    
+    if (!data?.student) return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center p-8">
+            <div className="w-16 h-16 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/30 flex items-center justify-center text-eduGreen-500 mb-2">
+                <GraduationCap className="w-8 h-8" />
+            </div>
+            <h2 className="text-xl font-bold uppercase tracking-wide text-zinc-900 dark:text-white">
+                {data?.error || "Student Record Unavailable"}
+            </h2>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-md">
+                The institutional connection is re-establishing or the scholar record is unassigned.
+            </p>
+            <div className="flex items-center gap-3 mt-4">
+                <Button
+                    onClick={() => { setLoading(true); fetchStudentData(); }}
+                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
+                >
+                    Retry Connection
+                </Button>
+                <Button
+                    onClick={() => router.push('/dashboard/students')}
+                    variant="outline"
+                    className="rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
+                >
+                    Return to Registry
+                </Button>
+            </div>
+        </div>
+    );
 
-    const { student, grades, assignments, attendance } = data;
+    const student = data.student || {};
+    const grades = Array.isArray(data.grades) ? data.grades : [];
+    const assignments = Array.isArray(data.assignments) ? data.assignments : [];
+    const attendance = data.attendance || { rate: 0, present: 0, absent: 0, total: 0 };
 
     const getPerformanceColor = (pct: number) => {
         if (pct >= 80) return { text: "text-emerald-500", border: "border-emerald-900/30", bg: "bg-emerald-900/10" };
@@ -231,15 +285,15 @@ function StudentProfileContent() {
     return (
         <div className="space-y-10 animate-in fade-in duration-300 pb-20">
             {/* Hidden Print Target */}
-            {data && (
+            {data && data.student && (
                 <div className="absolute -left-[9999px] top-0 overflow-hidden" aria-hidden="true">
                     <StudentDossierPrint
                         ref={dossierRef}
-                        student={data.student}
-                        grades={data.grades}
-                        assignments={data.assignments}
-                        attendance={data.attendance}
-                        remarks={data.remarks}
+                        student={student}
+                        grades={grades}
+                        assignments={assignments}
+                        attendance={attendance}
+                        remarks={data.remarks || []}
                     />
                 </div>
             )}
@@ -252,10 +306,16 @@ function StudentProfileContent() {
                 >
                     <ArrowLeft className="w-4 h-4" /> Return to Registry
                 </Button>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                        onClick={() => setShowIDCard(true)}
+                        className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 shadow-sm transition-all flex items-center gap-2"
+                    >
+                        <CreditCard className="w-4 h-4 text-eduGreen-400 dark:text-eduGreen-600" /> Print ID Card
+                    </Button>
                     <Button
                         onClick={() => handleExportDossier()}
-                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6"
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 flex items-center gap-2"
                     >
                         Export Full Dossier
                     </Button>
@@ -265,14 +325,6 @@ function StudentProfileContent() {
                             className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-700 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 shadow-sm transition-all"
                         >
                             Edit Profile
-                        </Button>
-                    )}
-                    {isDirector && (
-                        <Button
-                            onClick={() => setShowIDCard(true)}
-                            className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 px-6 shadow-sm transition-all"
-                        >
-                            <CreditCard className="w-4 h-4 mr-2" /> Generate ID
                         </Button>
                     )}
                 </div>
@@ -396,7 +448,7 @@ function StudentProfileContent() {
                             {student.photoUrl ? (
                                 <Image src={student.photoUrl} alt="" fill sizes="128px" className="object-cover" />
                             ) : (
-                                <>{student.firstName[0]}{student.lastName[0]}</>
+                                <>{student.firstName?.[0] || "S"}{student.lastName?.[0] || "T"}</>
                             )}
                             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-eduGreen-500 shadow-[0_0_15px_rgba(59,214,141,0.5)]" />
                         </div>
@@ -428,14 +480,21 @@ function StudentProfileContent() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="p-6 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-3xl border border-zinc-300 dark:border-zinc-800/80 text-center">
+                    <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="p-6 bg-zinc-100/40 dark:bg-zinc-900/40 rounded-3xl border border-zinc-300 dark:border-zinc-800/80 text-center min-w-[120px]">
                             <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">Attendance</div>
                             <div className="text-2xl font-black text-zinc-900 dark:text-white italic">
                                 {attendance.total > 0 ? Math.round((attendance.present / attendance.total) * 100) : 0}%
                             </div>
                         </div>
-
+                        <Button
+                            onClick={() => setShowIDCard(true)}
+                            variant="outline"
+                            className="h-full py-6 px-5 rounded-3xl border border-zinc-300 dark:border-zinc-800 bg-zinc-100/40 dark:bg-zinc-900/40 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white flex flex-col items-center justify-center gap-1.5 shadow-sm transition-all"
+                        >
+                            <CreditCard className="w-5 h-5 text-eduGreen-500" />
+                            <span className="text-[9px] font-black uppercase tracking-widest">Print ID Card</span>
+                        </Button>
                     </div>
                 </div>
 
