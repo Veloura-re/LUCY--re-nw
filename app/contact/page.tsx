@@ -7,7 +7,7 @@ import { ArrowLeft, Terminal, Send, Mail, ShieldCheck, Loader2, CheckCircle2, Ch
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
-import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, GlitchText } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, PageFooter, GlitchText, InteractiveParticleSimulation } from "@/components/public/animations";
 
 type Category = 'support' | 'sales' | 'billing' | 'security' | null;
 
@@ -49,6 +49,7 @@ export default function ContactPage() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} showTriangles={true} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">

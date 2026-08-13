@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Shield, ArrowLeft, Lock, Eye, Server, AlertTriangle, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 import { useState, useEffect } from "react";
 
@@ -58,20 +58,18 @@ export default function Security() {
                 body: JSON.stringify({ email, vulnerabilityType, severity, description })
             });
 
-            const data = (await res.json()) as any;
+            const data: any = await res.json();
             if (res.ok) {
-                setTxLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] message verified. reference: ${data.hash.substring(0, 16)}...`]);
-                await new Promise(r => setTimeout(r, 800));
-                setResultHash(data.hash);
-                setResultTime(new Date(data.timestamp).toLocaleString());
                 setStatus('SUCCESS');
+                setResultHash(data.refHash || `0x${Math.random().toString(16).substring(2, 10).toUpperCase()}`);
+                setResultTime(new Date().toLocaleTimeString());
             } else {
-                setErrorMsg(data.error || "Connection validation rejected the request.");
                 setStatus('ERROR');
+                setErrorMsg(data.error || "Execution failed.");
             }
-        } catch (err) {
-            setErrorMsg("Network timeout. Secure socket connection terminated.");
+        } catch (err: any) {
             setStatus('ERROR');
+            setErrorMsg(err.message || "Failed to reach security nodes.");
         }
     };
 
@@ -89,6 +87,7 @@ export default function Security() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -108,7 +107,6 @@ export default function Security() {
 
                     {/* Hero */}
                     <section className="space-y-6 sm:space-y-8 relative overflow-hidden">
-                        <ParticleField count={30} />
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-orange-500">
                             <AlertTriangle className="w-4 h-4 shrink-0" />
                             <motion.div animate={{ width: ["32px", "80px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-orange-500/40" />

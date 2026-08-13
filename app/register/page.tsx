@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { motion } from "framer-motion";
+import { InteractiveParticleSimulation } from "@/components/public/animations";
 
 export default function RegisterPage() {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -52,6 +53,8 @@ export default function RegisterPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-zinc-950 font-sans text-slate-900 dark:text-white py-10 sm:py-20 px-4 selection:bg-emerald-500/30 transition-colors duration-300">
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} showTriangles={true} />
+
             {/* Top Right Theme Toggle */}
             <div className="absolute top-6 right-6 z-50">
                 <ThemeToggle />

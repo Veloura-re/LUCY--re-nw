@@ -551,3 +551,7 @@ export function PageFooter({ id, links }: { id: string; links: { href: string; l
         </footer>
     );
 }
+
+// ─── Export Interactive Particle Simulation & Spider Web Intro ───────────
+export { InteractiveParticleSimulation } from "./interactive-particle-simulation";
+export { SpiderWebIntro } from "./spider-web-intro";

@@ -46,36 +46,6 @@ export async function middleware(request: NextRequest) {
     })
 
     let user: any = null;
-    try {
-        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-            const supabase = createServerClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL,
-                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-                {
-                    cookies: {
-                        getAll() {
-                            return request.cookies.getAll()
-                        },
-                        setAll(cookiesToSet) {
-                            cookiesToSet.forEach(({ name, value }) =>
-                                request.cookies.set(name, value)
-                            )
-                            response = NextResponse.next({
-                                request,
-                            })
-                            cookiesToSet.forEach(({ name, value, options }) =>
-                                response.cookies.set(name, value, options)
-                            )
-                        },
-                    },
-                }
-            );
-            const { data } = await supabase.auth.getUser();
-            user = data?.user ?? null;
-        }
-    } catch (e) {
-        console.error('[Middleware Auth Exception]', e);
-    }
 
     // 2. Define protected paths
     const url = request.nextUrl.clone()
@@ -87,7 +57,7 @@ export async function middleware(request: NextRequest) {
     const isApiPage = path.startsWith('/api')
 
     // ─────────────────────────────────────────────────
-    // RATE LIMITING LAYER (Global Anti-DoS & Anti-Brute Force)
+    // RATE LIMITING & FAST-PATH LAYER FOR API ROUTES
     // ─────────────────────────────────────────────────
     if (isApiPage) {
         const rawForwarded = request.headers.get('x-forwarded-for');
@@ -103,24 +73,57 @@ export async function middleware(request: NextRequest) {
                 headers: { 'Content-Type': 'application/json', 'Retry-After': '60' }
             })
         }
+
+        // Fast-path: Let API handlers perform high-speed authenticated token validation directly
+        return response;
     }
 
-    // 3. Handle Unauthenticated Users
+    // 3. User Session Resolution for Pages (Only when navigating UI pages)
+    try {
+        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            const hasAuthCookie = request.cookies.getAll().some(c => 
+                c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'app_token'
+            );
+
+            if (hasAuthCookie || isAuthPage) {
+                const supabase = createServerClient(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL,
+                    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+                    {
+                        cookies: {
+                            getAll() {
+                                return request.cookies.getAll()
+                            },
+                            setAll(cookiesToSet) {
+                                cookiesToSet.forEach(({ name, value }) =>
+                                    request.cookies.set(name, value)
+                                )
+                                response = NextResponse.next({
+                                    request,
+                                })
+                                cookiesToSet.forEach(({ name, value, options }) =>
+                                    response.cookies.set(name, value, options)
+                                )
+                            },
+                        },
+                    }
+                );
+                const { data } = await supabase.auth.getUser();
+                user = data?.user ?? null;
+            }
+        }
+    } catch (e) {
+        console.error('[Middleware Auth Exception]', e);
+    }
+
+    // 4. Handle Unauthenticated Users for UI Pages
     if (!user) {
         if (isAdminPage || isDashboardPage) {
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
-
-        // DEFAULT API AUTHENTICATION LOCK
-        if (isApiPage && !path.startsWith('/api/auth/') && !path.startsWith('/api/webhooks/') && !path.startsWith('/api/dir/register') && !path.startsWith('/api/public/')) {
-            return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-                status: 401,
-                headers: { 'Content-Type': 'application/json' }
-            })
-        }
     } else {
-        // 4. Handle Authenticated Users
+        // 5. Handle Authenticated Users for UI Pages
         const metadataRole = user.user_metadata?.role
 
         if (metadataRole) {

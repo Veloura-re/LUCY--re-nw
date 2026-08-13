@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, CheckCircle2, ArrowLeft, School, Loader2, AlertCircle, ShieldCheck, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InteractiveParticleSimulation } from "@/components/public/animations";
 
 // Types
 type Step = 'CODE' | 'CONFIRM' | 'DETAILS' | 'SUCCESS';
@@ -164,6 +165,8 @@ export default function ParentRegister() {
 
     return (
         <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white dark:bg-zinc-950 font-sans p-3 sm:p-4 text-zinc-900 dark:text-white">
+            <InteractiveParticleSimulation count={115} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} showTriangles={true} />
+
             {/* Ambient Background */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
                 <div className="absolute top-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-eduGreen-500/15 blur-[100px]" />
@@ -325,10 +328,10 @@ export default function ParentRegister() {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="mt-0.5 w-3.5 h-3.5 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 focus:ring-eduGreen-600"
+                                    className="mt-0.5 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-eduGreen-600 accent-eduGreen-500 checked:bg-eduGreen-600 focus:ring-eduGreen-500 cursor-pointer transition-all"
                                 />
-                                <label htmlFor="terms" className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-tight">
-                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline">Privacy Policy</Link>.
+                                <label htmlFor="terms" className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-tight cursor-pointer select-none">
+                                    I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Privacy Policy</Link>.
                                 </label>
                             </div>
 

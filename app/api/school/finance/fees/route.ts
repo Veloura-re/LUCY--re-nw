@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const schoolId = dbUser.schoolId!;
 
-        const body = await req.json();
+        const body: any = await req.json();
         const { name, amount, category, frequency, gradeId, description } = body;
 
         if (!name || amount === undefined) {
@@ -86,6 +86,69 @@ export async function POST(req: Request) {
                 grade: true
             }
         });
+
+        // 2. Automatically sync this new fee into student invoices for immediate parent visibility
+        try {
+            const studentWhere: any = { schoolId, enrollmentStatus: 'ACTIVE' };
+            if (resolvedGradeId) studentWhere.gradeId = resolvedGradeId;
+
+            const targetStudents = await prisma.student.findMany({
+                where: studentWhere,
+                include: {
+                    invoices: {
+                        where: { status: 'PENDING' },
+                        include: { items: true },
+                        orderBy: { createdAt: 'desc' }
+                    }
+                }
+            });
+
+            for (const student of targetStudents) {
+                const pendingInv = student.invoices[0];
+                if (!pendingInv) {
+                    await prisma.invoice.create({
+                        data: {
+                            studentId: student.id,
+                            schoolId,
+                            amount: fee.amount,
+                            dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                            status: 'PENDING',
+                            items: {
+                                create: [{
+                                    name: fee.name,
+                                    amount: fee.amount,
+                                    description: `${fee.category} - ${fee.frequency}`,
+                                    feeStructureId: fee.id
+                                }]
+                            }
+                        }
+                    });
+                } else {
+                    const alreadyHas = pendingInv.items.some(
+                        (it: any) => it.feeStructureId === fee.id || it.name.trim().toLowerCase() === fee.name.trim().toLowerCase()
+                    );
+                    if (!alreadyHas) {
+                        await prisma.invoiceItem.create({
+                            data: {
+                                invoiceId: pendingInv.id,
+                                name: fee.name,
+                                amount: fee.amount,
+                                description: `${fee.category} - ${fee.frequency}`,
+                                feeStructureId: fee.id
+                            }
+                        });
+                        await prisma.invoice.update({
+                            where: { id: pendingInv.id },
+                            data: {
+                                amount: { increment: fee.amount }
+                            }
+                        });
+                    }
+                }
+            }
+        } catch (syncErr) {
+            console.error("[Fee Auto-Sync Warning]:", syncErr);
+        }
 
         return NextResponse.json(fee);
     } catch (error) {

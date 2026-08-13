@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageSquare, Send } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, MagneticButton } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, GlitchText, MagneticButton, InteractiveParticleSimulation } from "@/components/public/animations";
 
 interface Comment { id: string; callsign: string; message: string; emoji: string; createdAt: string; }
 
@@ -72,6 +72,7 @@ export default function Wall() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">

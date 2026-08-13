@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Info, ArrowLeft, Cpu, Globe, Shield, Layers } from "lucide-react";
 import { motion } from "framer-motion";
-import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, Reveal, PageFooter, GlitchText, ScanBar } from "@/components/public/animations";
+import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText, ScanBar } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
 
 const milestones = [
@@ -31,6 +31,7 @@ export default function About() {
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
+            <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -50,7 +51,6 @@ export default function About() {
 
                     {/* Hero */}
                     <section className="space-y-6 sm:space-y-8 relative overflow-hidden">
-                        <ParticleField count={35} />
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-500">
                             <motion.div animate={{ width: ["32px", "64px", "32px"] }} transition={{ duration: 2.8, repeat: Infinity }} className="h-px bg-slate-300 dark:bg-zinc-700" />
                             <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold">system_origin // genesis_directive</span>

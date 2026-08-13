@@ -233,7 +233,47 @@ export async function POST(request: Request) {
             }
         });
 
-        // 6. Asynchronous Welcome Email Dispatch
+        // 6. Auto-discover and link matching students
+        try {
+            const autoConditions: any[] = [];
+            if (transactionResult.user.email) {
+                autoConditions.push({ email: { equals: transactionResult.user.email, mode: 'insensitive' } });
+            }
+            if (transactionResult.user.name) {
+                autoConditions.push({ guardianName: { equals: transactionResult.user.name, mode: 'insensitive' } });
+            }
+
+            if (autoConditions.length > 0) {
+                const matchedStudents = await prisma.student.findMany({
+                    where: {
+                        OR: autoConditions,
+                        ...(transactionResult.user.schoolId ? { schoolId: transactionResult.user.schoolId } : {})
+                    }
+                });
+
+                for (const st of matchedStudents) {
+                    await prisma.parentStudentLink.upsert({
+                        where: {
+                            parentId_studentId: {
+                                parentId: transactionResult.user.id,
+                                studentId: st.id
+                            }
+                        },
+                        update: {},
+                        create: {
+                            parentId: transactionResult.user.id,
+                            studentId: st.id,
+                            pairingMethod: 'ADMIN',
+                            verifiedAt: new Date()
+                        }
+                    }).catch(() => {});
+                }
+            }
+        } catch (linkErr) {
+            console.warn('[register-parent] Auto-link error:', linkErr);
+        }
+
+        // 7. Asynchronous Welcome Email Dispatch
         try {
             const { sendWelcomeEmail } = await import('@/lib/email');
             sendWelcomeEmail({

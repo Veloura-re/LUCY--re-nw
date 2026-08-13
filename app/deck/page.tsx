@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { 
   ScanLines, CustomCursor, AnimatedGrid, HexGrid, 
   GlitchOverlay, ParticleField, TiltCard, Reveal, GlitchText,
-  Counter, SystemRain, Typewriter
+  Counter, SystemRain, Typewriter, InteractiveParticleSimulation
 } from "@/components/public/animations";
 
 // ─── Custom Confetti Particle System ──────────────────────────────────────────
@@ -709,7 +709,7 @@ export default function PresentationDeck() {
       <AnimatedGrid />
       <HexGrid />
       <GlitchOverlay />
-      <ParticleField count={45} />
+      <InteractiveParticleSimulation count={120} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} showTriangles={true} />
       <PresentationConfetti trigger={showConfetti} />
 
       {/* ── Navbar ── */}

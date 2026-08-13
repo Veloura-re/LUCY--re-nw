@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import { ParticleField } from "@/components/public/animations";
+import { ParticleField, InteractiveParticleSimulation, SpiderWebIntro } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { PromoPopup } from "@/components/marketing/promo-popup";
 
@@ -91,72 +91,6 @@ function DataBar({ value, label, delay = 0 }: { value: number; label: string; de
         />
       </div>
     </div>
-  );
-}
-
-// ─── Boot Sequence ─────────────────────────────────────────────────────────────
-function BootSequence({ onDone }: { onDone: () => void }) {
-  const [done, setDone] = useState(false);
-  const [percent, setPercent] = useState(0);
-
-  useEffect(() => {
-    const hasBooted = sessionStorage.getItem("lucy_booted");
-    if (hasBooted) {
-      setDone(true);
-      onDone();
-      return;
-    }
-
-    let startTime = Date.now();
-    const duration = 2000;
-    
-    const animate = () => {
-      const now = Date.now();
-      const elapsed = now - startTime;
-      const progress = Math.min(1, elapsed / duration);
-      
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      setPercent(Math.floor(easeProgress * 100));
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        sessionStorage.setItem("lucy_booted", "true");
-        setTimeout(() => {
-          setDone(true);
-          setTimeout(onDone, 600);
-        }, 300);
-      }
-    };
-    
-    requestAnimationFrame(animate);
-  }, [onDone]);
-
-  return (
-    <AnimatePresence>
-      {!done && (
-        <motion.div
-          exit={{ opacity: 0, filter: "blur(10px)" }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="fixed inset-0 z-[999] bg-white dark:bg-black flex flex-col items-center justify-center font-mono"
-        >
-          <div className="relative inline-block text-5xl sm:text-7xl md:text-[12rem] font-bold tracking-tighter text-slate-100 dark:text-zinc-900 select-none uppercase leading-none">
-            LUCY
-            <div 
-              className="absolute bottom-0 left-0 right-0 overflow-hidden"
-              style={{ height: `${percent}%` }}
-            >
-              <div className="absolute bottom-0 left-0 right-0 text-slate-900 dark:text-white text-center flex justify-center whitespace-nowrap">
-                LUCY
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 text-slate-400 dark:text-zinc-500 text-sm md:text-base tracking-widest font-bold">
-            {percent.toString().padStart(3, '0')}%
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }
 
@@ -356,12 +290,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
-      {/* ── Boot Sequence ── */}
-      {mounted && booting && <BootSequence onDone={handleBootDone} />}
+      {/* ── Spider Web Intro Sequence ── */}
+      {mounted && booting && <SpiderWebIntro onDone={handleBootDone} />}
 
       {/* ── Custom Cursor ── */}
       <motion.div style={{ x: cursorX, y: cursorY }} className="fixed top-0 left-0 z-[900] pointer-events-none w-2 h-2 -ml-1 -mt-1 bg-emerald-500 dark:bg-white rounded-full mix-blend-multiply dark:mix-blend-difference will-change-transform" />
       <motion.div style={{ x: trailX, y: trailY }} className="fixed top-0 left-0 z-[899] pointer-events-none w-8 h-8 -ml-4 -mt-4 border border-emerald-500/20 dark:border-white/20 rounded-full mix-blend-multiply dark:mix-blend-difference will-change-transform" />
+
+      {/* ── Page Drop Container (Drops into view with spring bounce when web snaps) ── */}
+      <motion.div
+        initial={false}
+        animate={booting ? { y: -80, opacity: 0 } : { y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 90, damping: 18, mass: 0.9 }}
+        className="w-full relative z-10"
+      >
 
       {/* ── CRT Scanlines ── */}
       <div className="fixed inset-0 z-[50] pointer-events-none dark:opacity-100 opacity-20" style={{
@@ -376,6 +318,10 @@ export default function Home() {
 
       {/* ── Grid ── */}
       <div className="fixed inset-0 z-0 bg-[linear-gradient(to_right,#00000004_1px,transparent_1px),linear-gradient(to_bottom,#00000004_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none transition-colors duration-300" />
+      
+      {/* ── Full Page Antigravity Universe Simulation ── */}
+      <InteractiveParticleSimulation count={140} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={145} />
+
       <motion.div
         className="fixed inset-0 z-0 pointer-events-none hidden dark:block"
         animate={{ backgroundPosition: ["0px 0px", "32px 32px"] }}
@@ -441,7 +387,6 @@ export default function Home() {
       <main className="relative z-10">
         {/* ── HERO ── */}
         <section className="min-h-screen flex flex-col justify-center px-6 pt-28 relative overflow-hidden">
-          <ParticleField />
 
           {/* Glowing orb background */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none hidden dark:block">
@@ -1145,6 +1090,7 @@ export default function Home() {
           <motion.p animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ repeat: Infinity, duration: 2.8 }}>server_id: lucy-47-x-beta // uptime: nominal</motion.p>
         </div>
       </footer>
+      </motion.div>
       <PromoPopup />
     </div>
   );
