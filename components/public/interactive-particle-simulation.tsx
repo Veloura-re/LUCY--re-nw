@@ -103,12 +103,15 @@ export function InteractiveParticleSimulation({
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        let width = fullScreen ? window.innerWidth : canvas.offsetWidth;
-        let height = fullScreen ? window.innerHeight : canvas.offsetHeight;
+        let width = fullScreen ? window.innerWidth : (canvas.offsetWidth || window.innerWidth);
+        let height = fullScreen ? window.innerHeight : (canvas.offsetHeight || window.innerHeight);
 
-        const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 2);
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
+        const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
         // Adjust particle density for mobile devices vs high-res screens
@@ -557,11 +560,15 @@ export function InteractiveParticleSimulation({
 
         const handleResize = () => {
             if (!canvas) return;
-            width = fullScreen ? window.innerWidth : canvas.offsetWidth;
-            height = fullScreen ? window.innerHeight : canvas.offsetHeight;
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            ctx.scale(dpr, dpr);
+            width = fullScreen ? window.innerWidth : (canvas.offsetWidth || window.innerWidth);
+            height = fullScreen ? window.innerHeight : (canvas.offsetHeight || window.innerHeight);
+            const curDpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);
+            canvas.width = Math.floor(width * curDpr);
+            canvas.height = Math.floor(height * curDpr);
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(curDpr, curDpr);
         };
 
         const handleMouseMove = (e: MouseEvent) => {
