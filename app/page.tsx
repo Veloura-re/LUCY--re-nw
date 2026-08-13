@@ -270,7 +270,7 @@ export default function Home() {
     { icon: Search, title: "Activity Audit", desc: "Detailed, secure logs tracking every action and change on the platform." }
   ];
 
-  const marqueeItems = ["AUTONOMOUS_SCHOOL_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "100_LANGUAGES_I18N"];
+  const marqueeItems = ["AUTONOMOUS_SCHOOL_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "HIGH_PERFORMANCE_EDGE"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
     { href: "/intelligence", label: "Intelligence" },
     { href: "/network", label: "Network" },

@@ -251,17 +251,7 @@ LUCY OS uses Next.js Tagged Cache revalidation to ensure near-zero database load
 | `CACHE_TAGS.SCHOOL_ATTENDANCE` | `school:{id}:attendance` | Absence authorized or daily clock-in recorded. |
 | `CACHE_TAGS.FINANCE` | `school:{id}:finance` | Invoice paid, fee created, or receipt verified. |
 
----
-
-## 🌐 9. Internationalization Engine (100+ Languages)
-
-- **Language Registry**: `lib/translations.ts`
-- **RTL Support**: Built-in dynamic direction switching (`dir="rtl"`) for Arabic (`ar`), Hebrew (`he`), Urdu (`ur`).
-- **African Language Support**: Full dictionary coverage for Amharic (`am`), Oromo (`om`), Tigrinya (`ti`), Swahili (`sw`), Somali (`so`).
-
----
-
-## 📂 10. Core Repository Map for Obsidian Links
+## 📂 9. Core Repository Map for Obsidian Links
 
 - 🏛️ **Schema Definition**: [[prisma/schema.prisma]]
 - 🛡️ **Security Guards**: [[lib/security.ts]]
