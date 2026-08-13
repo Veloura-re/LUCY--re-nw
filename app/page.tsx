@@ -270,26 +270,26 @@ export default function Home() {
     { icon: Search, title: "Activity Audit", desc: "Detailed, secure logs tracking every action and change on the platform." }
   ];
 
-  const marqueeItems = ["EMPOWERING_EDUCATION", "LUCY_OS_v1", "HIGH_PERFORMANCE", "SECURE_STORAGE", "CONNECTED_CAMPUS", "CENTRAL_DASHBOARD", "ACADEMIC_SYSTEM", "SECURE_ACCESS", "STUDENT_PORTAL", "CLOUD_NATIVE"];
+  const marqueeItems = ["AUTONOMOUS_SCHOOL_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "100_LANGUAGES_I18N"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
-    { href: "/intelligence", label: "intelligence" },
-    { href: "/network", label: "network" },
-    { href: "/security", label: "vault" },
-    { href: "/docs", label: "docs" },
-    { href: "/deck", label: "presentation" },
-    { href: "/community", label: "community" },
+    { href: "/intelligence", label: "Intelligence" },
+    { href: "/network", label: "Network" },
+    { href: "/security", label: "Security" },
+    { href: "/docs", label: "Docs" },
+    { href: "/deck", label: "Presentation" },
+    { href: "/community", label: "Community" },
   ];
   const companyLinks = [
-    { href: "/blog", l: "signal log" },
-    { href: "/contact", l: "contact" },
-    { href: "/support", l: "support" },
-    { href: "/community", l: "community" }
+    { href: "/blog", l: "Changelog" },
+    { href: "/contact", l: "Contact" },
+    { href: "/support", l: "Support" },
+    { href: "/community", l: "Community" }
   ];
 
   const loaded = liveStats.schools > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden font-mono lowercase tracking-tight transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black overflow-x-hidden tracking-tight transition-colors duration-300">
       {/* ── Spider Web Intro Sequence ── */}
       {mounted && booting && <SpiderWebIntro onDone={handleBootDone} />}
 
@@ -347,18 +347,20 @@ export default function Home() {
       {/* ── Navbar ── */}
       <nav className={cn("fixed left-0 right-0 z-50 transition-all duration-300 px-6", scrolled ? "top-7 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none" : "top-8 bg-transparent")}>
         <div className="max-w-[1400px] mx-auto flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <Logo className="w-8 h-8" />
-            <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">LUCY<span className="text-emerald-500 font-black ml-1">OS</span></span>
+            </div>
           </Link>
-          <div className="hidden lg:flex items-center gap-12 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-zinc-500">
+          <div className="hidden lg:flex items-center gap-10 text-[12px] font-medium tracking-wide text-slate-600 dark:text-zinc-400">
             {navLinks.map(link => (
               <Link
                 key={link.href}
                 href={link.href}
                 target={link.ext ? "_blank" : undefined}
                 rel={link.ext ? "noopener noreferrer" : undefined}
-                className="relative group hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-bold"
+                className="relative group hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-semibold"
               >
                 {link.label}
                 <span className="absolute -bottom-0.5 left-0 h-px bg-slate-900 dark:bg-white w-0 group-hover:w-full transition-all duration-300" />
@@ -366,8 +368,8 @@ export default function Home() {
             ))}
           </div>
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-3 text-[10px] text-slate-400 dark:text-zinc-700 uppercase tracking-widest font-bold">
-              <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-1 h-1 bg-emerald-500 dark:bg-white rounded-full" />
+            <div className="hidden md:flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-zinc-500 tracking-wide font-medium">
+              <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-1.5 h-1.5 bg-emerald-500 dark:bg-white rounded-full" />
               <span>{time}</span>
             </div>
             
@@ -375,8 +377,8 @@ export default function Home() {
 
             <Link href="/login">
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-                <Button variant="ghost" className="h-9 px-4 text-[11px] uppercase tracking-widest text-slate-900 dark:text-white hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-900 dark:hover:border-white font-bold">
-                  access_login
+                <Button variant="ghost" className="h-9 px-5 text-[12px] uppercase tracking-wider text-slate-900 dark:text-white hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-900 dark:hover:border-white font-bold">
+                  Sign In
                 </Button>
               </motion.div>
             </Link>
@@ -408,7 +410,7 @@ export default function Home() {
             <div className="lg:col-span-8 space-y-10">
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="flex items-center gap-4 text-slate-500 dark:text-zinc-500 font-bold">
                 <motion.div animate={{ width: ["12px", "48px", "12px"] }} transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }} className="h-px bg-slate-300 dark:bg-zinc-700" />
-                <span className="text-[10px] uppercase tracking-[0.4em]">system_v1.0_stable</span>
+                <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-emerald-600 dark:text-emerald-400">Institutional School OS • v1.0 Production</span>
                 <motion.div animate={{ opacity: [1, 0, 1], scale: [1, 1.5, 1] }} transition={{ repeat: Infinity, duration: 1.8 }} className="w-1.5 h-1.5 bg-emerald-500 dark:bg-white rounded-full" />
               </motion.div>
 
@@ -419,7 +421,7 @@ export default function Home() {
                 transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
                 style={{ transformStyle: "preserve-3d" }}
               >
-                <h1 className="text-[11vw] lg:text-[8.5rem] font-bold leading-[0.85] tracking-tighter uppercase perspective-[1000px]">
+                <h1 className="text-[11vw] lg:text-[7.8rem] font-black leading-[0.88] tracking-tight uppercase perspective-[1000px]">
                   <motion.div 
                     whileHover={{ 
                         rotateY: 15, 
@@ -440,44 +442,44 @@ export default function Home() {
                         textShadow: "0 20px 50px rgba(0,0,0,0.05)"
                     }}
                     transition={{ type: "spring", stiffness: 150, damping: 15 }}
-                    className="text-slate-400 dark:text-zinc-800 cursor-default transition-all duration-300 transform-gpu dark:hover:drop-shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:drop-shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
+                    className="text-slate-400 dark:text-zinc-700 cursor-default transition-all duration-300 transform-gpu dark:hover:drop-shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:drop-shadow-[0_20px_50px_rgba(0,0,0,0.05)]"
                   >
                     {heroLine2 || "DIGITAL HOME."}
                   </motion.div>
                 </h1>
               </motion.div>
 
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-slate-500 dark:text-zinc-500 max-w-xl text-lg lowercase leading-relaxed font-medium">
-                a simple place you can call your own. drop the messy spreadsheets and build a digital home that's yours.
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-slate-600 dark:text-zinc-400 max-w-xl text-lg leading-relaxed font-normal">
+                The all-in-one autonomous school operating system. Replace fragmented spreadsheets and legacy portals with automated academic marklists, real-time fee ledgers, and institutional governance.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.3 }} className="flex flex-wrap gap-4">
                 <Link href="/register">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button className="h-12 px-8 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[11px] uppercase tracking-widest font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
-                      <span className="relative z-10">get_started</span>
+                    <Button className="h-12 px-8 bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-md dark:rounded-none text-[12px] uppercase tracking-wider font-bold relative overflow-hidden group shadow-md dark:shadow-none transition-colors">
+                      <span className="relative z-10">Get Started</span>
                       <motion.div className="absolute inset-0 bg-slate-700 dark:bg-zinc-200 translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
                     </Button>
                   </motion.div>
                 </Link>
                 <Link href="/docs">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[11px] uppercase tracking-widest transition-all font-bold">
-                      read_docs
+                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[12px] uppercase tracking-wider transition-all font-bold">
+                      Read Docs
                     </Button>
                   </motion.div>
                 </Link>
                 <Link href="/deck">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[11px] uppercase tracking-widest transition-all font-bold">
-                      view_presentation
+                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[12px] uppercase tracking-wider transition-all font-bold">
+                      Presentation
                     </Button>
                   </motion.div>
                 </Link>
                 <Link href="/community">
                   <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
-                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[11px] uppercase tracking-widest transition-all gap-2 font-bold">
-                      join_community
+                    <Button variant="ghost" className="h-12 px-8 rounded-md dark:rounded-none border border-slate-300 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-100 dark:hover:bg-white/5 text-[12px] uppercase tracking-wider transition-all gap-2 font-bold">
+                      Community
                     </Button>
                   </motion.div>
                 </Link>
