@@ -20,31 +20,31 @@ const quarters = [
         ]
     },
     {
-        label: "Q1 2026 — current", done: false,
+        label: "Q1 2026 — done", done: true,
         items: [
             { title: "Public website expansion + animations", done: true },
             { title: "Geography, Math, Science enhanced reports", done: true },
-            { title: "Parent portal mobile optimization", done: false },
-            { title: "Offline attendance sync for low-bandwidth", done: false },
-            { title: "Automated progress reports", done: false },
+            { title: "Parent portal mobile optimization", done: true },
+            { title: "Offline attendance sync for low-bandwidth", done: true },
+            { title: "Automated progress reports", done: true },
         ]
     },
     {
-        label: "Q2 2026 — planned", done: false,
+        label: "Q2 2026 — done", done: true,
         items: [
-            { title: "Custom exam templates per subject", done: false },
-            { title: "Real-time collaborative markbook", done: false },
-            { title: "Director analytics v2 with trends", done: false },
-            { title: "FERPA & GDPR compliance certification", done: false },
+            { title: "Custom exam templates per subject", done: true },
+            { title: "Real-time collaborative markbook", done: true },
+            { title: "Director analytics v2 with trends", done: true },
+            { title: "Open API for third-party integrations", done: true },
         ]
     },
     {
         label: "Q3 2026 — vision", done: false,
         items: [
             { title: "On-premise deployment toolkit", done: false },
-            { title: "Multi-language interface", done: false },
+            { title: "Automated institutional data vault & snapshots", done: true },
             { title: "Predictive dropout risk scoring", done: false },
-            { title: "Open API for third-party integrations", done: false },
+            { title: "High-concurrency edge node clusters", done: false },
         ]
     }
 ];

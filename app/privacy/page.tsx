@@ -89,7 +89,7 @@ export default function Privacy() {
                 </div>
             </main>
 
-            <PageFooter id="PRIVACY_POLICY" links={[{ href: "/terms", label: "terms" }, { href: "/compliance", label: "compliance" }, { href: "/security", label: "vault" }]} />
+            <PageFooter id="PRIVACY_POLICY" links={[{ href: "/terms", label: "terms" }, { href: "/security", label: "security" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

@@ -357,7 +357,7 @@ export default function Security() {
                 </div>
             </main>
 
-            <PageFooter id="VAULT_PROTOCOL" links={[{ href: "/compliance", label: "compliance" }, { href: "/privacy", label: "privacy" }, { href: "/contact", label: "contact" }]} />
+            <PageFooter id="VAULT_PROTOCOL" links={[{ href: "/terms", label: "terms" }, { href: "/privacy", label: "privacy" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

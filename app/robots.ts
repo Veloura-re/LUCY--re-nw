@@ -21,7 +21,6 @@ export default function robots(): MetadataRoute.Robots {
                     '/community',
                     '/changelog',
                     '/roadmap',
-                    '/compliance',
                     '/status',
                     '/support',
                     '/intelligence',

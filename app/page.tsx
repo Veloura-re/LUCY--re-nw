@@ -270,9 +270,8 @@ export default function Home() {
     { icon: Search, title: "Activity Audit", desc: "Detailed, secure logs tracking every action and change on the platform." }
   ];
 
-  const marqueeItems = ["AUTONOMOUS_SCHOOL_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "HIGH_PERFORMANCE_EDGE"];
+  const marqueeItems = ["DIGITAL_CAMPUS_OS", "INSTITUTIONAL_INTELLIGENCE", "PRECISION_MARKLISTS", "FINANCIAL_LEDGERS", "DIRECTOR_GOVERNANCE", "CONNECTED_CAMPUS", "SECURE_MULTI_TENANT", "GLOBAL_ACADEMIA", "ENTERPRISE_GRADE", "HIGH_PERFORMANCE_EDGE"];
   const navLinks: { href: string; label: string; ext?: boolean }[] = [
-    { href: "/brain", label: "Brain Matrix" },
     { href: "/intelligence", label: "Intelligence" },
     { href: "/network", label: "Network" },
     { href: "/security", label: "Security" },
@@ -450,7 +449,7 @@ export default function Home() {
               </motion.div>
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-slate-600 dark:text-zinc-400 max-w-xl text-lg leading-relaxed font-normal">
-                The all-in-one autonomous school operating system. Replace fragmented spreadsheets and legacy portals with automated academic marklists, real-time fee ledgers, and institutional governance.
+                Create your digital school&apos;s home with us. Replace fragmented spreadsheets and clunky legacy portals with automated marklists, real-time fee ledgers, and a seamless campus rhythm that just clicks.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.3 }} className="flex flex-wrap gap-4">
@@ -1081,7 +1080,7 @@ export default function Home() {
           <div className="space-y-4">
             <div className="text-slate-900 dark:text-white font-bold">legal</div>
             <ul className="space-y-2 font-bold">
-              {[{ href: "/privacy", l: "privacy" }, { href: "/terms", l: "terms" }, { href: "/compliance", l: "compliance" }].map(i => (
+              {[{ href: "/privacy", l: "privacy" }, { href: "/terms", l: "terms" }, { href: "/security", l: "security" }].map(i => (
                 <li key={i.href}><Link href={i.href} className="hover:text-slate-900 dark:hover:text-white transition-colors">{i.l}</Link></li>
               ))}
             </ul>
