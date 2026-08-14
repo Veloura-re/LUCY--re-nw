@@ -93,7 +93,7 @@ export default function Terms() {
                 </div>
             </main>
 
-            <PageFooter id="TERMS_OF_SERVICE" links={[{ href: "/privacy", label: "privacy" }, { href: "/compliance", label: "compliance" }, { href: "/contact", label: "contact" }]} />
+            <PageFooter id="TERMS_OF_SERVICE" links={[{ href: "/privacy", label: "privacy" }, { href: "/security", label: "security" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }
