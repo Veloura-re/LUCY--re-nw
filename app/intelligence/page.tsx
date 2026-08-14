@@ -4,17 +4,13 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Brain, Zap, Target, Sparkles, Network, Layers, Activity } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Brain, Zap, Target, Sparkles, Network } from "lucide-react";
+import { motion } from "framer-motion";
 import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, ParticleField, InteractiveParticleSimulation, Reveal, PageFooter, GlitchText, SmartWeb, SystemRain, MagneticButton, Typewriter, OrbitRing, HexGrid, GlitchOverlay, Counter } from "@/components/public/animations";
 import { Logo } from "@/components/ui/logo";
-import { SoftwareNeuralGraph } from "@/components/brain/software-neural-graph";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 
 const behaviors = [
     { title: "Cognitive Routing", desc: "Dynamically allocates processing power based on task urgency and institutional impact. Every query reaches the right engine within milliseconds.", icon: Zap, id: "BEH_01", metric: "14ms", metricLabel: "avg_response" },
-    { title: "AI Synthesizing", desc: "Aggregates fragmented data points — attendance, grades, behavior — into actionable insights for faculty and administration.", icon: Brain, id: "BEH_02", metric: "99.9%", metricLabel: "data_accuracy" },
     { title: "Tactical Response", desc: "Real-time adjustments to scheduling and resource allocation. The system detects friction points and reroutes before they compound.", icon: Target, id: "BEH_03", metric: "3s", metricLabel: "alert_latency" },
 ];
 
@@ -38,72 +34,32 @@ const thoughtStream = [
 ];
 
 export default function Intelligence() {
-    const [brainMode, setBrainMode] = useState(true);
-
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black tracking-tight transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-white selection:bg-emerald-500 selection:text-white dark:selection:bg-white dark:selection:text-black font-mono lowercase tracking-tight transition-colors duration-300">
             <ScanLines />
             <CustomCursor />
             <AnimatedGrid />
             <GlitchOverlay />
-            <InteractiveParticleSimulation count={125} interactive={true} burstOnLoad={true} fullScreen={true} connectionDistance={140} />
+            <InteractiveParticleSimulation count={48} interactive={true} fullScreen={true} />
 
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 dark:border-white/10 bg-white/85 dark:bg-black/85 backdrop-blur-md px-6 py-4 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2.5 group">
+                    <Link href="/" className="flex items-center gap-2 group">
                         <Logo className="w-8 h-8" />
-                        <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">LUCY<span className="text-emerald-500 font-black ml-1">OS</span></span>
+                        <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
                     </Link>
                     <div className="flex items-center gap-4">
-                        {/* Live Brain Mode Toggle Button */}
-                        <Button 
-                            onClick={() => setBrainMode(!brainMode)} 
-                            variant="outline" 
-                            className={cn(
-                                "h-9 px-4 text-xs uppercase tracking-wider font-bold rounded-lg transition-all flex items-center gap-2 border",
-                                brainMode 
-                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-lg shadow-emerald-500/10" 
-                                    : "bg-zinc-900/50 text-zinc-400 border-zinc-700 hover:text-white"
-                            )}
-                        >
-                            <Brain className={cn("w-4 h-4", brainMode && "animate-pulse text-emerald-400")} />
-                            {brainMode ? "Brain Mode: ON" : "Toggle Brain Mode"}
-                        </Button>
-
                         <ThemeToggle className="scale-90" />
-                        <Link href="/"><Button variant="ghost" className="text-[12px] uppercase tracking-wider hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />Home</Button></Link>
+                        <Link href="/"><Button variant="ghost" className="text-[11px] uppercase tracking-widest hover:text-slate-900 dark:hover:text-white group"><ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />back_to_home</Button></Link>
                     </div>
                 </div>
             </nav>
 
             <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-40 px-4 sm:px-6">
-                <div className="max-w-6xl mx-auto space-y-16 sm:space-y-24">
+                <div className="max-w-5xl mx-auto space-y-16 sm:space-y-32">
 
-                    {/* INTERACTIVE BRAIN MODE LIVE SECTION */}
-                    {brainMode && (
-                        <motion.section 
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4 }}
-                            className="space-y-4"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                                        <Activity className="w-5 h-5 animate-pulse" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Interactive Software Brain Matrix</h2>
-                                        <p className="text-xs text-slate-500 dark:text-zinc-400">Click any node to inspect endpoints, DB models, and live triggers. Use the packet simulator to test data flows.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <SoftwareNeuralGraph />
-                        </motion.section>
-                    )}
-
-                    {/* Hero Section */}
-                    <section className="relative min-h-[40vh] flex flex-col justify-center space-y-6 sm:space-y-8 overflow-hidden">
+                    {/* Hero with SmartWeb */}
+                    <section className="relative min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center space-y-6 sm:space-y-10 overflow-hidden">
                         <HexGrid />
 
                         <Reveal className="flex items-center gap-3 sm:gap-4 text-slate-400 dark:text-zinc-400">
@@ -173,7 +129,7 @@ export default function Intelligence() {
                             <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
                             <span className="text-[10px] uppercase tracking-[0.4em]">behavioral_patterns // core_directives</span>
                         </Reveal>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-[1px] bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-[1px] bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/10 overflow-hidden rounded-xl dark:rounded-none">
                             {behaviors.map((b, i) => (
                                 <TiltCard key={i}>
                                     <motion.div

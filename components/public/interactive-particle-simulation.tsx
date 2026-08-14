@@ -18,9 +18,10 @@ interface Particle {
     color: string;
     pulseSpeed: number;
     pulseVal: number;
-    layer: number; // 0 = ambient dust, 1 = mid star, 2 = soft beacon
+    layer: number;
     wobbleSpeed: number;
     wobbleVal: number;
+    side: "left" | "right";
 }
 
 interface Shockwave {
@@ -46,16 +47,16 @@ interface InteractiveParticleSimulationProps {
 }
 
 export function InteractiveParticleSimulation({
-    count = 85,
+    count = 28,
     interactive = true,
     showConnections = true,
     showTriangles = false,
-    showCornerWebs = false,
+    showCornerWebs = true,
     burstOnLoad = false,
     fullScreen = true,
-    className = "fixed inset-0 w-full h-full pointer-events-none z-0",
-    speedMultiplier = 0.7,
-    connectionDistance = 120
+    className = "fixed inset-0 w-full h-full pointer-events-none z-0 hidden lg:block",
+    speedMultiplier = 0.5,
+    connectionDistance = 95
 }: InteractiveParticleSimulationProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const prefersReduced = useReducedMotion();
@@ -74,7 +75,7 @@ export function InteractiveParticleSimulation({
         x: -9999,
         y: -9999,
         active: false,
-        radius: 140,
+        radius: 120,
         lastX: -9999,
         lastY: -9999,
         vx: 0,
@@ -106,6 +107,12 @@ export function InteractiveParticleSimulation({
         let width = fullScreen ? window.innerWidth : (canvas.offsetWidth || window.innerWidth);
         let height = fullScreen ? window.innerHeight : (canvas.offsetHeight || window.innerHeight);
 
+        // Strictly PC / Desktop only (Screen width >= 1024px)
+        if (width < 1024) {
+            ctx.clearRect(0, 0, width, height);
+            return;
+        }
+
         const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);
         canvas.width = Math.floor(width * dpr);
         canvas.height = Math.floor(height * dpr);
@@ -114,51 +121,37 @@ export function InteractiveParticleSimulation({
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
-        // Adjust particle density for mobile devices
-        const isMobile = width < 768;
-        const actualCount = isMobile ? Math.floor(count * 0.5) : count;
-
-        // Elegant, muted starlight palette — high readability, non-intrusive
+        // Refined, subtle starlight palette
         const colorsDark = [
-            "rgba(255, 255, 255, 0.45)",   // Soft Starlight White
-            "rgba(148, 163, 184, 0.35)",   // Muted Slate Star
-            "rgba(203, 213, 225, 0.30)",   // Subtle Silver
-            "rgba(110, 231, 183, 0.25)",   // Whispering Mint Tint
-            "rgba(147, 197, 253, 0.25)"    // Whispering Azure Tint
+            "rgba(255, 255, 255, 0.45)",
+            "rgba(148, 163, 184, 0.35)",
+            "rgba(203, 213, 225, 0.30)",
+            "rgba(110, 231, 183, 0.25)"
         ];
 
         const colorsLight = [
-            "rgba(100, 116, 139, 0.25)",   // Muted Slate
-            "rgba(148, 163, 184, 0.20)",   // Subtle Slate Dust
-            "rgba(16, 185, 129, 0.20)",    // Soft Emerald Accent
-            "rgba(37, 99, 235, 0.18)"      // Soft Academic Blue Accent
+            "rgba(100, 116, 139, 0.25)",
+            "rgba(148, 163, 184, 0.20)",
+            "rgba(16, 185, 129, 0.20)"
         ];
 
+        // Narrow subtle side margin (only outer 12% of screen)
+        const sideMargin = Math.min(180, width * 0.12);
         const particles: Particle[] = [];
 
-        // Particles are evenly distributed across the entire screen — NO clumping in the center
-        for (let i = 0; i < actualCount; i++) {
-            const layer = Math.random() < 0.2 ? 2 : Math.random() < 0.6 ? 1 : 0;
-            const baseRadius = layer === 2 
-                ? (1.5 + Math.random() * 0.8) 
-                : layer === 1 
-                ? (1.0 + Math.random() * 0.5) 
-                : (0.6 + Math.random() * 0.4);
+        for (let i = 0; i < count; i++) {
+            const side: "left" | "right" = i % 2 === 0 ? "left" : "right";
+            const layer = Math.random() < 0.25 ? 2 : 1;
+            const baseRadius = layer === 2 ? 1.3 + Math.random() * 0.5 : 0.7 + Math.random() * 0.4;
+            const maxAlpha = layer === 2 ? 0.35 + Math.random() * 0.15 : 0.20 + Math.random() * 0.10;
 
-            // Muted, gentle opacity for zero text interference
-            const maxAlpha = layer === 2 
-                ? (0.28 + Math.random() * 0.08) 
-                : layer === 1 
-                ? (0.18 + Math.random() * 0.08) 
-                : (0.08 + Math.random() * 0.06);
-
-            // Uniform screen distribution across width and height
-            const startX = Math.random() * width;
+            const startX = side === "left" 
+                ? Math.random() * sideMargin 
+                : (width - sideMargin) + Math.random() * sideMargin;
             const startY = Math.random() * height;
-            
-            // Calm, ambient floating drift
-            const baseVx = (Math.random() - 0.5) * 0.22 * speedMultiplier;
-            const baseVy = (-0.12 - Math.random() * 0.20) * speedMultiplier;
+
+            const baseVx = (side === "left" ? (Math.random() * 0.12 - 0.04) : (Math.random() * -0.12 + 0.04)) * speedMultiplier;
+            const baseVy = (-0.10 - Math.random() * 0.15) * speedMultiplier;
 
             particles.push({
                 x: startX,
@@ -172,18 +165,99 @@ export function InteractiveParticleSimulation({
                 alpha: maxAlpha * (0.6 + Math.random() * 0.4),
                 maxAlpha,
                 color: colorsDark[Math.floor(Math.random() * colorsDark.length)],
-                pulseSpeed: 0.01 + Math.random() * 0.02,
+                pulseSpeed: 0.01 + Math.random() * 0.018,
                 pulseVal: Math.random() * Math.PI * 2,
                 layer,
-                wobbleSpeed: 0.008 + Math.random() * 0.015,
-                wobbleVal: Math.random() * Math.PI * 2
+                wobbleSpeed: 0.008 + Math.random() * 0.012,
+                wobbleVal: Math.random() * Math.PI * 2,
+                side
             });
         }
 
         let animationFrameId: number;
         let lastTimestamp = performance.now();
 
+        // ─── Subtle Micro Spider Web Drawing ─────────────────────────────────
+        const drawMicroWeb = (
+            originX: number, 
+            originY: number, 
+            maxRadius: number, 
+            startAngle: number, 
+            endAngle: number, 
+            isDark: boolean, 
+            now: number
+        ) => {
+            const spokesCount = 4;
+            const ringsCount = 3;
+            const spokeAngles: number[] = [];
+            const mouse = mouseRef.current;
+
+            let webVibration = 0;
+            if (mouse.active) {
+                const mdx = mouse.x - originX;
+                const mdy = mouse.y - originY;
+                const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+                if (mDist < maxRadius + 40) {
+                    webVibration = (1 - mDist / (maxRadius + 40)) * 4.0;
+                }
+            }
+
+            // Radial Spokes
+            for (let s = 0; s <= spokesCount; s++) {
+                const angle = startAngle + (s / spokesCount) * (endAngle - startAngle);
+                spokeAngles.push(angle);
+                const endX = originX + Math.cos(angle) * maxRadius;
+                const endY = originY + Math.sin(angle) * maxRadius;
+
+                ctx.beginPath();
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(endX, endY);
+                ctx.strokeStyle = isDark
+                    ? "rgba(255, 255, 255, 0.12)"
+                    : "rgba(16, 185, 129, 0.14)";
+                ctx.lineWidth = 0.55;
+                ctx.stroke();
+            }
+
+            // Concentric Silk Arcs
+            for (let r = 1; r <= ringsCount; r++) {
+                const ringDist = (r / ringsCount) * maxRadius;
+                for (let s = 0; s < spokesCount; s++) {
+                    const a1 = spokeAngles[s];
+                    const a2 = spokeAngles[s + 1];
+
+                    const p1x = originX + Math.cos(a1) * ringDist;
+                    const p1y = originY + Math.sin(a1) * ringDist;
+                    const p2x = originX + Math.cos(a2) * ringDist;
+                    const p2y = originY + Math.sin(a2) * ringDist;
+
+                    const midA = (a1 + a2) / 2;
+                    const sagRadius = ringDist * 0.90 + Math.sin(now * 0.002 + r) * (1 + webVibration);
+                    const midX = originX + Math.cos(midA) * sagRadius;
+                    const midY = originY + Math.sin(midA) * sagRadius;
+
+                    ctx.beginPath();
+                    ctx.moveTo(p1x, p1y);
+                    ctx.quadraticCurveTo(midX, midY, p2x, p2y);
+                    ctx.strokeStyle = isDark
+                        ? `rgba(255, 255, 255, ${0.08 + (r / ringsCount) * 0.10})`
+                        : `rgba(16, 185, 129, ${0.09 + (r / ringsCount) * 0.11})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+
+                    // Pinpoint micro-dewdrop on vertex
+                    if (r === ringsCount) {
+                        ctx.beginPath();
+                        ctx.arc(p1x, p1y, 0.9, 0, Math.PI * 2);
+                        ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.45)" : "rgba(16, 185, 129, 0.45)";
+                        ctx.fill();
+                    }
+                }
+            }
+        };
+
         const render = (now: number) => {
+            if (width < 1024) return;
             const dt = Math.min((now - lastTimestamp) / 1000, 0.08);
             lastTimestamp = now;
 
@@ -193,7 +267,16 @@ export function InteractiveParticleSimulation({
             const colorPalette = isDark ? colorsDark : colorsLight;
             const mouse = mouseRef.current;
 
-            // 1. Process & Render Shockwaves (Subtle ripples)
+            // ─── 1. Minimal Delicate Micro Corner Webs (Tiny: 75px - 90px) ────
+            if (showCornerWebs) {
+                const microSize = Math.min(85, sideMargin * 0.7);
+                drawMicroWeb(0, 0, microSize, 0, Math.PI / 2, isDark, now); // Top-Left
+                drawMicroWeb(width, 0, microSize, Math.PI / 2, Math.PI, isDark, now); // Top-Right
+                drawMicroWeb(0, height, microSize, -Math.PI / 2, 0, isDark, now); // Bottom-Left
+                drawMicroWeb(width, height, microSize, Math.PI, (3 * Math.PI) / 2, isDark, now); // Bottom-Right
+            }
+
+            // ─── 2. Subtle Shockwaves ─────────────────────────────────────────
             const shockwaves = shockwavesRef.current;
             for (let sIdx = shockwaves.length - 1; sIdx >= 0; sIdx--) {
                 const sw = shockwaves[sIdx];
@@ -205,9 +288,9 @@ export function InteractiveParticleSimulation({
                     ctx.beginPath();
                     ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
                     ctx.strokeStyle = isDark
-                        ? `rgba(255, 255, 255, ${sw.alpha * 0.15})`
-                        : `rgba(100, 116, 139, ${sw.alpha * 0.12})`;
-                    ctx.lineWidth = 1.0;
+                        ? `rgba(255, 255, 255, ${sw.alpha * 0.12})`
+                        : `rgba(100, 116, 139, ${sw.alpha * 0.10})`;
+                    ctx.lineWidth = 0.8;
                     ctx.stroke();
                     ctx.restore();
                 } else {
@@ -217,15 +300,13 @@ export function InteractiveParticleSimulation({
 
             const maxDistSq = connectionDistance * connectionDistance;
 
-            // 2. Draw Subtle Filament Connections between nearby particles
+            // ─── 3. Delicate Fine Filament Connections on Side Margins ────────
             if (showConnections) {
                 for (let i = 0; i < particles.length; i++) {
                     const p1 = particles[i];
-                    if (p1.layer === 0) continue; // Skip ambient dust
-
                     for (let j = i + 1; j < particles.length; j++) {
                         const p2 = particles[j];
-                        if (p2.layer === 0) continue;
+                        if (p1.side !== p2.side) continue;
 
                         const dx = p1.x - p2.x;
                         const dy = p1.y - p2.y;
@@ -234,8 +315,7 @@ export function InteractiveParticleSimulation({
                         if (distSq < maxDistSq) {
                             const dist = Math.sqrt(distSq);
                             const proximityFactor = 1 - dist / connectionDistance;
-                            
-                            const lineAlpha = proximityFactor * (isDark ? 0.07 : 0.05) * Math.min(p1.alpha, p2.alpha);
+                            const lineAlpha = proximityFactor * (isDark ? 0.10 : 0.07) * Math.min(p1.alpha, p2.alpha);
 
                             ctx.beginPath();
                             ctx.moveTo(p1.x, p1.y);
@@ -243,12 +323,12 @@ export function InteractiveParticleSimulation({
                             ctx.strokeStyle = isDark 
                                 ? `rgba(255, 255, 255, ${lineAlpha})` 
                                 : `rgba(100, 116, 139, ${lineAlpha})`;
-                            ctx.lineWidth = 0.6;
+                            ctx.lineWidth = 0.5;
                             ctx.stroke();
                         }
                     }
 
-                    // Gentle interactive filament to mouse cursor
+                    // Gentle interactive string to mouse if nearby on the side
                     if (interactive && mouse.active) {
                         const mdx = mouse.x - p1.x;
                         const mdy = mouse.y - p1.y;
@@ -256,7 +336,7 @@ export function InteractiveParticleSimulation({
 
                         if (mDist < mouse.radius && mDist > 0) {
                             const mouseProximity = 1 - mDist / mouse.radius;
-                            const stringAlpha = mouseProximity * (isDark ? 0.12 : 0.08) * p1.alpha;
+                            const stringAlpha = mouseProximity * (isDark ? 0.15 : 0.10) * p1.alpha;
 
                             ctx.beginPath();
                             ctx.moveTo(mouse.x, mouse.y);
@@ -264,30 +344,27 @@ export function InteractiveParticleSimulation({
                             ctx.strokeStyle = isDark 
                                 ? `rgba(255, 255, 255, ${stringAlpha})` 
                                 : `rgba(100, 116, 139, ${stringAlpha})`;
-                            ctx.lineWidth = 0.6;
+                            ctx.lineWidth = 0.5;
                             ctx.stroke();
                         }
                     }
                 }
             }
 
-            // 3. Update & Draw Subtle Starlight Floating Particles
+            // ─── 4. Update & Draw Subtle Starlight Dewdrop Nodes ───────────────
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
 
-                // Gentle pulsation
                 p.pulseVal += p.pulseSpeed;
                 p.wobbleVal += p.wobbleSpeed;
                 const pulse = Math.sin(p.pulseVal);
                 const wobble = Math.sin(p.wobbleVal);
                 
-                p.radius = p.baseRadius + pulse * 0.2;
+                p.radius = p.baseRadius + pulse * 0.15;
 
-                // Natural floating drift with gentle wave
-                p.vx += (p.baseVx + wobble * 0.08 - p.vx) * 0.03;
-                p.vy += (p.baseVy - p.vy) * 0.03;
+                p.vx += (p.baseVx + wobble * 0.04 - p.vx) * 0.02;
+                p.vy += (p.baseVy - p.vy) * 0.02;
 
-                // Subtle Mouse Repulsion
                 if (interactive && mouse.active) {
                     const mdx = mouse.x - p.x;
                     const mdy = mouse.y - p.y;
@@ -296,28 +373,40 @@ export function InteractiveParticleSimulation({
                     if (mDist < mouse.radius && mDist > 0) {
                         const force = (1 - mDist / mouse.radius);
                         const angle = Math.atan2(mdy, mdx);
-                        const pushStrength = force * 2.0;
+                        const pushStrength = force * 1.8;
                         p.x -= Math.cos(angle) * pushStrength;
                         p.y -= Math.sin(angle) * pushStrength;
                     }
                 }
 
-                // Apply velocity
                 p.x += p.vx * dt * 60;
                 p.y += p.vy * dt * 60;
 
-                // Seamless Screen Boundary Wrap
-                if (p.x < -10) p.x = width + 10;
-                if (p.x > width + 10) p.x = -10;
+                // Keep strictly bounded inside flank side margins
+                if (p.side === "left") {
+                    if (p.x < -5) p.x = 0;
+                    if (p.x > sideMargin) {
+                        p.vx = -Math.abs(p.vx);
+                        p.x = sideMargin;
+                    }
+                } else {
+                    if (p.x > width + 5) p.x = width;
+                    if (p.x < width - sideMargin) {
+                        p.vx = Math.abs(p.vx);
+                        p.x = width - sideMargin;
+                    }
+                }
+
+                // Vertical seamless wrap
                 if (p.y < -10) {
                     p.y = height + 10;
-                    p.x = Math.random() * width;
+                    p.x = p.side === "left" 
+                        ? Math.random() * sideMargin 
+                        : (width - sideMargin) + Math.random() * sideMargin;
                 }
                 if (p.y > height + 10) p.y = -10;
 
-                // Draw Particle Core
                 const activeColor = colorPalette[i % colorPalette.length];
-                
                 ctx.save();
                 ctx.globalAlpha = p.alpha;
                 ctx.fillStyle = activeColor;
@@ -336,6 +425,11 @@ export function InteractiveParticleSimulation({
             if (!canvas) return;
             width = fullScreen ? window.innerWidth : (canvas.offsetWidth || window.innerWidth);
             height = fullScreen ? window.innerHeight : (canvas.offsetHeight || window.innerHeight);
+            if (width < 1024) {
+                const c = canvas.getContext("2d");
+                if (c) c.clearRect(0, 0, width, height);
+                return;
+            }
             const curDpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2);
             canvas.width = Math.floor(width * curDpr);
             canvas.height = Math.floor(height * curDpr);
@@ -367,14 +461,14 @@ export function InteractiveParticleSimulation({
         };
 
         const handleMouseDown = (e: MouseEvent) => {
-            if (shockwavesRef.current.length < 3) {
+            if (shockwavesRef.current.length < 2) {
                 shockwavesRef.current.push({
                     x: e.clientX,
                     y: e.clientY,
-                    radius: 8,
-                    maxRadius: 120,
-                    alpha: 0.6,
-                    strength: 1.2
+                    radius: 5,
+                    maxRadius: 80,
+                    alpha: 0.4,
+                    strength: 1.0
                 });
             }
         };
@@ -395,7 +489,7 @@ export function InteractiveParticleSimulation({
                 window.removeEventListener("mousedown", handleMouseDown);
             }
         };
-    }, [count, interactive, showConnections, showTriangles, showCornerWebs, burstOnLoad, fullScreen, speedMultiplier, connectionDistance, prefersReduced, lowPower]);
+    }, [count, interactive, showConnections, showCornerWebs, fullScreen, speedMultiplier, connectionDistance, prefersReduced, lowPower]);
 
     useEffect(() => {
         const cleanup = initSimulation();
