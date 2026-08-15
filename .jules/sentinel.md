@@ -1,0 +1,4 @@
+## 2024-05-16 - Prevent Fallback Bypasses in Authentication Integrations
+**Vulnerability:** The application was using `1x0000000000000000000000000000000AA` as a fallback for Cloudflare Turnstile's secret key. This value is a Cloudflare-provided test secret that always succeeds. If the environment variable was missing, the application would "fail open", allowing attackers to bypass bot protection entirely with any token value.
+**Learning:** Fallback values for security integrations, especially "test" keys that always pass verification, must not be used in production code paths. They silently suppress configuration errors and leave systems unprotected.
+**Prevention:** Explicitly check for the existence of required security credentials (like `TURNSTILE_SECRET_KEY`) before invoking external verification endpoints. If they are missing, the application should "fail closed" by returning a 500 error instead of defaulting to a test credential that bypasses the check.
