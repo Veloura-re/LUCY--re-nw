@@ -71,7 +71,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.17.1",
+    "@opennextjs/cloudflare": "^1.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",

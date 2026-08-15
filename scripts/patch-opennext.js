@@ -29,21 +29,21 @@ function safePatch(relativeFilePath, target, replacement) {
 safePatch(
     'node_modules/@opennextjs/cloudflare/dist/cli/build/bundle-server.js',
     'external: ["cloudflare:sockets", "./middleware/handler.mjs",',
-    'external: ["cloudflare:sockets", "./middleware/handler.mjs"],'
+    'external: ["cloudflare:sockets", "pg-cloudflare", "./middleware/handler.mjs",',
 );
 
 // 2. Patch helper.js
 safePatch(
     'node_modules/@opennextjs/aws/dist/build/helper.js',
     'external: ["cloudflare:sockets", ...(esbuildOptions.external ?? [])],',
-    'external: ["cloudflare:sockets", ...(esbuildOptions.external ?? [])],'
+    'external: ["cloudflare:sockets", "pg-cloudflare", ...(esbuildOptions.external ?? [])],'
 );
 
 // 3. Patch bundleNextServer.js
 safePatch(
     'node_modules/@opennextjs/aws/dist/build/bundleNextServer.js',
     'external: [...externals, "cloudflare:sockets"],',
-    'external: [...externals, "cloudflare:sockets"],'
+    'external: [...externals, "cloudflare:sockets", "pg-cloudflare"],'
 );
 
 console.log('🚀 OpenNext patches applied with Cloudflare Sockets Shim (v3)');
