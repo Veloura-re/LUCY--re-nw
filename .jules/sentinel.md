@@ -1,0 +1,4 @@
+## 2024-05-24 - Removed Turnstile test key fallbacks
+**Vulnerability:** The codebase had fallback values for Turnstile keys `TURNSTILE_SECRET_KEY` and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` that were using dummy/test keys (`1x0000000000000000000000000000000AA` and `1x00000000000000000000AA`). This creates a 'fail open' security vulnerability if the environment variables are missing, as these test keys bypass the Turnstile check entirely.
+**Learning:** Do not use test keys (e.g., Cloudflare Turnstile dummy keys) as fallback defaults for missing environment variables, as this creates 'fail open' security vulnerabilities that bypass intended protections entirely.
+**Prevention:** If environment variables are missing, the application should fail securely (e.g., throw an error or reject the request) rather than falling back to a test key that disables the security measure.
