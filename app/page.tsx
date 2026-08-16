@@ -1043,7 +1043,10 @@ export default function Home() {
       <footer className="bg-slate-50 dark:bg-black border-t border-slate-200 dark:border-white/5 py-24 px-6 text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-zinc-600 transition-colors duration-300">
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="space-y-6">
-            <div className="flex items-center gap-2 text-slate-900 dark:text-white"><Cpu className="w-4 h-4" /><span className="font-bold tracking-tighter">lucy_os</span></div>
+            <div className="flex items-center gap-3 text-slate-900 dark:text-white">
+              <Logo className="w-8 h-8 text-slate-900 dark:text-white" />
+              <span className="font-bold tracking-tighter text-sm">lucy_os</span>
+            </div>
             <p className="leading-relaxed font-bold">distributed intelligence for institutional coordination.</p>
           </div>
           <div className="space-y-4">

@@ -249,6 +249,16 @@ export function handleApiError(error: unknown) {
     const message = error instanceof Error ? error.message : "Internal Server Error";
     if (message.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
     if (message.startsWith("Forbidden")) return secureJson({ error: "Forbidden" }, 403);
+    if (
+        message.toLowerCase().includes("timed out") || 
+        message.toLowerCase().includes("connection pool") || 
+        message.toLowerCase().includes("timeout") || 
+        message.includes("ETIMEDOUT") || 
+        message.includes("ECONNREFUSED") ||
+        message.includes("504")
+    ) {
+        return secureJson({ error: "Campus ledger connection busy or timed out. Please retry.", code: "DB_TIMEOUT" }, 504);
+    }
     return secureJson({ error: "Internal Server Error" }, 500);
 }
 
