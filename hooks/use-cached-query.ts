@@ -2,6 +2,21 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getClientCache, setClientCache, invalidateClientCache } from '@/lib/cache-client';
+import { useNetworkQuality, getAdaptiveNetworkConfig } from '@/hooks/use-network-quality';
+
+export class NetworkTimeoutError extends Error {
+    isTimeout: boolean;
+    isOffline: boolean;
+    isNotFound: boolean;
+
+    constructor(message: string, isTimeout = true, isOffline = false) {
+        super(message);
+        this.name = isTimeout ? 'NetworkTimeoutError' : isOffline ? 'OfflineError' : 'NetworkError';
+        this.isTimeout = isTimeout;
+        this.isOffline = isOffline;
+        this.isNotFound = false;
+    }
+}
 
 export interface UseCachedQueryOptions<T> {
     /** Unique cache key for this resource */
@@ -14,13 +29,13 @@ export interface UseCachedQueryOptions<T> {
     ttlMs?: number;
     /** Whether query execution is enabled (default: true) */
     enabled?: boolean;
-    /** Persist cache to localStorage in addition to sessionStorage (default: false) */
+    /** Persist cache to localStorage in addition to sessionStorage (default: true for resilient offline) */
     persistToLocal?: boolean;
-    /** Number of automatic retries on transient network errors (default: 2) */
+    /** Number of automatic retries on transient network errors (default: adaptive, up to 3) */
     retries?: number;
-    /** Base delay between retries in milliseconds (default: 1200) */
+    /** Base delay between retries in milliseconds (default: adaptive, 1200 - 2500ms) */
     retryDelayMs?: number;
-    /** Max request timeout in milliseconds before aborting (default: 10000) */
+    /** Max request timeout in milliseconds before aborting (default: adaptive, up to 28000ms on 2G/3G) */
     timeoutMs?: number;
     /** Optional callback on successful fetch */
     onSuccess?: (data: T) => void;
@@ -42,7 +57,13 @@ export interface UseCachedQueryResult<T> {
     /** True if currently displaying cached data */
     isFromCache: boolean;
     /** Error object if the latest request failed */
-    error: Error | null;
+    error: (Error & { isTimeout?: boolean; isNotFound?: boolean; isOffline?: boolean }) | null;
+    /** Current retry attempt in flight (0 = initial, 1 = retry 1, etc.) */
+    retryAttempt: number;
+    /** Maximum configured retries */
+    maxRetries: number;
+    /** Whether request timed out during last attempt */
+    isTimeout: boolean;
     /** Manually trigger a fresh network fetch */
     refetch: (isManual?: boolean) => Promise<T | undefined>;
     /** Optimistically update local data and cache */
@@ -57,14 +78,21 @@ export function useCachedQuery<T>({
     initialData,
     ttlMs = 10 * 60 * 1000,
     enabled = true,
-    persistToLocal = false,
-    retries = 2,
-    retryDelayMs = 1200,
-    timeoutMs = 10000,
+    persistToLocal = true,
+    retries,
+    retryDelayMs,
+    timeoutMs,
     onSuccess,
     onError
 }: UseCachedQueryOptions<T>): UseCachedQueryResult<T> {
-    // 1. Synchronously inspect cache for instant rendering
+    const networkQuality = useNetworkQuality();
+    const adaptiveConfig = getAdaptiveNetworkConfig(networkQuality);
+
+    const resolvedTimeoutMs = timeoutMs ?? adaptiveConfig.timeoutMs;
+    const resolvedRetries = retries ?? adaptiveConfig.retries;
+    const resolvedRetryDelayMs = retryDelayMs ?? adaptiveConfig.retryDelayMs;
+
+    // 1. Synchronously inspect cache for instant zero-latency rendering
     const cachedInitial = typeof window !== 'undefined' ? getClientCache<T>(key) : null;
     const resolvedInitial = cachedInitial ?? initialData;
 
@@ -72,12 +100,15 @@ export function useCachedQuery<T>({
     const [loading, setLoading] = useState<boolean>(!resolvedInitial && enabled);
     const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
     const [isFromCache, setIsFromCache] = useState<boolean>(!!cachedInitial);
-    const [isOffline, setIsOffline] = useState<boolean>(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [isOffline, setIsOffline] = useState<boolean>(networkQuality === 'offline');
+    const [isTimeout, setIsTimeout] = useState<boolean>(false);
+    const [retryAttempt, setRetryAttempt] = useState<number>(0);
+    const [error, setError] = useState<(Error & { isTimeout?: boolean; isNotFound?: boolean; isOffline?: boolean }) | null>(null);
 
     const retryCountRef = useRef(0);
     const abortControllerRef = useRef<AbortController | null>(null);
     const isMountedRef = useRef(true);
+    const isManualTimeoutRef = useRef(false);
 
     // Online / Offline synchronization
     useEffect(() => {
@@ -116,6 +147,15 @@ export function useCachedQuery<T>({
         async (isManual = false): Promise<T | undefined> => {
             if (!enabled) return undefined;
 
+            if (typeof navigator !== 'undefined' && !navigator.onLine) {
+                setIsOffline(true);
+                const offlineErr = new NetworkTimeoutError('Device is currently offline. Showing cached campus ledger snapshot.', false, true);
+                setError(offlineErr);
+                setLoading(false);
+                setIsRevalidating(false);
+                return data;
+            }
+
             // Abort previous in-flight request if any
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
@@ -123,12 +163,13 @@ export function useCachedQuery<T>({
 
             const controller = new AbortController();
             abortControllerRef.current = controller;
+            isManualTimeoutRef.current = false;
 
             const timeoutId = setTimeout(() => {
+                isManualTimeoutRef.current = true;
                 controller.abort();
-            }, timeoutMs);
+            }, resolvedTimeoutMs);
 
-            // If we already have data (from cache or previous fetch), mark revalidating
             if (data !== undefined) {
                 setIsRevalidating(true);
             } else {
@@ -143,10 +184,12 @@ export function useCachedQuery<T>({
                 clearTimeout(timeoutId);
                 setData(freshData);
                 setError(null);
+                setIsTimeout(false);
                 setIsFromCache(false);
                 retryCountRef.current = 0;
+                setRetryAttempt(0);
 
-                // Save to persistent cache
+                // Save to persistent cache (localStorage + sessionStorage)
                 setClientCache(key, freshData, ttlMs, persistToLocal);
 
                 if (onSuccess) {
@@ -159,18 +202,29 @@ export function useCachedQuery<T>({
 
                 clearTimeout(timeoutId);
 
-                // If cancelled / aborted due to newer request, ignore
-                if (err.name === 'AbortError' && !isManual) {
-                    // Check if it was genuine timeout vs supersede
+                const wasTimeout = isManualTimeoutRef.current || err.name === 'AbortError' || err.message?.toLowerCase().includes('timeout') || err.message?.toLowerCase().includes('aborted');
+
+                // If aborted normally due to component unmount or rapid refetch, ignore silently
+                if (err.name === 'AbortError' && !isManualTimeoutRef.current && !isManual) {
                     return undefined;
                 }
 
-                console.warn(`[useCachedQuery:${key}] Fetch warning:`, err.message);
+                if (wasTimeout) {
+                    setIsTimeout(true);
+                }
+
+                // Check if genuine 404 (Resource Not Found) vs transient network error
+                const is404 = err.status === 404 || err.message?.includes('404') || err.message?.toLowerCase().includes('not found in your institution');
 
                 // Auto-retry transient failures if under limit
-                if (!isManual && retryCountRef.current < retries && navigator.onLine) {
+                if (!isManual && !is404 && retryCountRef.current < resolvedRetries && (typeof navigator === 'undefined' || navigator.onLine)) {
                     retryCountRef.current += 1;
-                    const backoff = retryCountRef.current * retryDelayMs;
+                    setRetryAttempt(retryCountRef.current);
+                    
+                    // Jittered backoff: baseDelay * 1.5^retry + (0-400ms jitter)
+                    const jitter = Math.floor(Math.random() * 400);
+                    const backoff = Math.floor(resolvedRetryDelayMs * Math.pow(1.5, retryCountRef.current - 1)) + jitter;
+
                     setTimeout(() => {
                         if (isMountedRef.current) {
                             executeFetch(false);
@@ -179,11 +233,34 @@ export function useCachedQuery<T>({
                     return undefined;
                 }
 
-                const resolvedError = err instanceof Error ? err : new Error(String(err));
+                let resolvedError: Error & { isTimeout?: boolean; isNotFound?: boolean; isOffline?: boolean };
+                if (wasTimeout) {
+                    resolvedError = new NetworkTimeoutError(
+                        'Campus ledger connection is slow or taking longer than expected. Retrying in background...',
+                        true,
+                        false
+                    );
+                } else if (is404) {
+                    resolvedError = err instanceof Error ? err : new Error(String(err));
+                    resolvedError.isNotFound = true;
+                    resolvedError.isTimeout = false;
+                } else {
+                    resolvedError = err instanceof Error ? err : new Error(String(err));
+                    resolvedError.isNotFound = false;
+                    resolvedError.isTimeout = false;
+                }
+
                 setError(resolvedError);
 
                 if (onError) {
                     onError(resolvedError);
+                }
+
+                // Keep cached data active so UI doesn't collapse into empty screen!
+                const existingCache = getClientCache<T>(key);
+                if (existingCache !== null && existingCache !== undefined) {
+                    setData(existingCache);
+                    setIsFromCache(true);
                 }
 
                 return undefined;
@@ -194,12 +271,11 @@ export function useCachedQuery<T>({
                 }
             }
         },
-        [enabled, key, fetcher, data, ttlMs, persistToLocal, retries, retryDelayMs, timeoutMs, onSuccess, onError]
+        [enabled, key, fetcher, data, ttlMs, persistToLocal, resolvedRetries, resolvedRetryDelayMs, resolvedTimeoutMs, onSuccess, onError]
     );
 
     // Initial mount trigger
     useEffect(() => {
-        // If not cached, or enabled on mount, trigger background revalidation
         if (enabled) {
             executeFetch(false);
         }
@@ -240,6 +316,9 @@ export function useCachedQuery<T>({
         isOffline,
         isFromCache,
         error,
+        retryAttempt,
+        maxRetries: resolvedRetries,
+        isTimeout,
         refetch: executeFetch,
         mutate,
         invalidate

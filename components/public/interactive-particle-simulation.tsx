@@ -47,7 +47,7 @@ interface InteractiveParticleSimulationProps {
 }
 
 export function InteractiveParticleSimulation({
-    count = 28,
+    count = 48,
     interactive = true,
     showConnections = true,
     showTriangles = false,
@@ -55,8 +55,8 @@ export function InteractiveParticleSimulation({
     burstOnLoad = false,
     fullScreen = true,
     className = "fixed inset-0 w-full h-full pointer-events-none z-0 hidden lg:block",
-    speedMultiplier = 0.5,
-    connectionDistance = 95
+    speedMultiplier = 0.55,
+    connectionDistance = 110
 }: InteractiveParticleSimulationProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const prefersReduced = useReducedMotion();
@@ -75,7 +75,7 @@ export function InteractiveParticleSimulation({
         x: -9999,
         y: -9999,
         active: false,
-        radius: 120,
+        radius: 140,
         lastX: -9999,
         lastY: -9999,
         vx: 0,
@@ -121,37 +121,40 @@ export function InteractiveParticleSimulation({
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
-        // Refined, subtle starlight palette
+        // Richer, luminous green and emerald tones with starlight accents
         const colorsDark = [
-            "rgba(255, 255, 255, 0.45)",
-            "rgba(148, 163, 184, 0.35)",
-            "rgba(203, 213, 225, 0.30)",
-            "rgba(110, 231, 183, 0.25)"
+            "rgba(52, 211, 153, 0.75)",   // Vibrant Emerald Mint
+            "rgba(16, 185, 129, 0.80)",   // Core Lucy Emerald
+            "rgba(110, 231, 183, 0.65)",  // Soft Light Mint
+            "rgba(5, 150, 105, 0.70)",    // Deep Emerald Green
+            "rgba(167, 243, 208, 0.60)",  // Dewdrop Jade
+            "rgba(255, 255, 255, 0.50)"   // Starlight Highlight
         ];
 
         const colorsLight = [
-            "rgba(100, 116, 139, 0.25)",
-            "rgba(148, 163, 184, 0.20)",
-            "rgba(16, 185, 129, 0.20)"
+            "rgba(16, 185, 129, 0.75)",   // Core Lucy Emerald
+            "rgba(5, 150, 105, 0.70)",    // Deep Forest Green
+            "rgba(52, 211, 153, 0.60)",   // Emerald Mint
+            "rgba(167, 243, 208, 0.50)"   // Soft Mint
         ];
 
-        // Narrow subtle side margin (only outer 12% of screen)
-        const sideMargin = Math.min(180, width * 0.12);
+        // Refined side margin for desktop (outer 16% on left and right)
+        const sideMargin = Math.min(220, width * 0.16);
         const particles: Particle[] = [];
 
         for (let i = 0; i < count; i++) {
             const side: "left" | "right" = i % 2 === 0 ? "left" : "right";
-            const layer = Math.random() < 0.25 ? 2 : 1;
-            const baseRadius = layer === 2 ? 1.3 + Math.random() * 0.5 : 0.7 + Math.random() * 0.4;
-            const maxAlpha = layer === 2 ? 0.35 + Math.random() * 0.15 : 0.20 + Math.random() * 0.10;
+            const layer = Math.random() < 0.3 ? 2 : 1;
+            const baseRadius = layer === 2 ? 1.5 + Math.random() * 0.6 : 0.8 + Math.random() * 0.5;
+            const maxAlpha = layer === 2 ? 0.55 + Math.random() * 0.20 : 0.30 + Math.random() * 0.15;
 
             const startX = side === "left" 
                 ? Math.random() * sideMargin 
                 : (width - sideMargin) + Math.random() * sideMargin;
             const startY = Math.random() * height;
 
-            const baseVx = (side === "left" ? (Math.random() * 0.12 - 0.04) : (Math.random() * -0.12 + 0.04)) * speedMultiplier;
-            const baseVy = (-0.10 - Math.random() * 0.15) * speedMultiplier;
+            const baseVx = (side === "left" ? (Math.random() * 0.14 - 0.05) : (Math.random() * -0.14 + 0.05)) * speedMultiplier;
+            const baseVy = (-0.12 - Math.random() * 0.18) * speedMultiplier;
 
             particles.push({
                 x: startX,
@@ -165,10 +168,10 @@ export function InteractiveParticleSimulation({
                 alpha: maxAlpha * (0.6 + Math.random() * 0.4),
                 maxAlpha,
                 color: colorsDark[Math.floor(Math.random() * colorsDark.length)],
-                pulseSpeed: 0.01 + Math.random() * 0.018,
+                pulseSpeed: 0.012 + Math.random() * 0.02,
                 pulseVal: Math.random() * Math.PI * 2,
                 layer,
-                wobbleSpeed: 0.008 + Math.random() * 0.012,
+                wobbleSpeed: 0.009 + Math.random() * 0.014,
                 wobbleVal: Math.random() * Math.PI * 2,
                 side
             });
@@ -177,7 +180,7 @@ export function InteractiveParticleSimulation({
         let animationFrameId: number;
         let lastTimestamp = performance.now();
 
-        // ─── Subtle Micro Spider Web Drawing ─────────────────────────────────
+        // ─── Subtle Green-Tinted Micro Corner Web Drawing ───────────────────
         const drawMicroWeb = (
             originX: number, 
             originY: number, 
@@ -197,12 +200,12 @@ export function InteractiveParticleSimulation({
                 const mdx = mouse.x - originX;
                 const mdy = mouse.y - originY;
                 const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-                if (mDist < maxRadius + 40) {
-                    webVibration = (1 - mDist / (maxRadius + 40)) * 4.0;
+                if (mDist < maxRadius + 45) {
+                    webVibration = (1 - mDist / (maxRadius + 45)) * 4.5;
                 }
             }
 
-            // Radial Spokes
+            // Radial Spokes (Green Tinted Silk)
             for (let s = 0; s <= spokesCount; s++) {
                 const angle = startAngle + (s / spokesCount) * (endAngle - startAngle);
                 spokeAngles.push(angle);
@@ -213,13 +216,13 @@ export function InteractiveParticleSimulation({
                 ctx.moveTo(originX, originY);
                 ctx.lineTo(endX, endY);
                 ctx.strokeStyle = isDark
-                    ? "rgba(255, 255, 255, 0.12)"
-                    : "rgba(16, 185, 129, 0.14)";
-                ctx.lineWidth = 0.55;
+                    ? "rgba(52, 211, 153, 0.22)"
+                    : "rgba(16, 185, 129, 0.25)";
+                ctx.lineWidth = 0.65;
                 ctx.stroke();
             }
 
-            // Concentric Silk Arcs
+            // Concentric Green Silk Arcs
             for (let r = 1; r <= ringsCount; r++) {
                 const ringDist = (r / ringsCount) * maxRadius;
                 for (let s = 0; s < spokesCount; s++) {
@@ -232,7 +235,7 @@ export function InteractiveParticleSimulation({
                     const p2y = originY + Math.sin(a2) * ringDist;
 
                     const midA = (a1 + a2) / 2;
-                    const sagRadius = ringDist * 0.90 + Math.sin(now * 0.002 + r) * (1 + webVibration);
+                    const sagRadius = ringDist * 0.90 + Math.sin(now * 0.0025 + r) * (1.2 + webVibration);
                     const midX = originX + Math.cos(midA) * sagRadius;
                     const midY = originY + Math.sin(midA) * sagRadius;
 
@@ -240,16 +243,16 @@ export function InteractiveParticleSimulation({
                     ctx.moveTo(p1x, p1y);
                     ctx.quadraticCurveTo(midX, midY, p2x, p2y);
                     ctx.strokeStyle = isDark
-                        ? `rgba(255, 255, 255, ${0.08 + (r / ringsCount) * 0.10})`
-                        : `rgba(16, 185, 129, ${0.09 + (r / ringsCount) * 0.11})`;
-                    ctx.lineWidth = 0.5;
+                        ? `rgba(52, 211, 153, ${0.14 + (r / ringsCount) * 0.14})`
+                        : `rgba(16, 185, 129, ${0.15 + (r / ringsCount) * 0.16})`;
+                    ctx.lineWidth = 0.60;
                     ctx.stroke();
 
-                    // Pinpoint micro-dewdrop on vertex
+                    // Pinpoint emerald dewdrop on outer vertex
                     if (r === ringsCount) {
                         ctx.beginPath();
-                        ctx.arc(p1x, p1y, 0.9, 0, Math.PI * 2);
-                        ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.45)" : "rgba(16, 185, 129, 0.45)";
+                        ctx.arc(p1x, p1y, 1.1, 0, Math.PI * 2);
+                        ctx.fillStyle = isDark ? "rgba(167, 243, 208, 0.75)" : "rgba(16, 185, 129, 0.75)";
                         ctx.fill();
                     }
                 }
@@ -267,16 +270,16 @@ export function InteractiveParticleSimulation({
             const colorPalette = isDark ? colorsDark : colorsLight;
             const mouse = mouseRef.current;
 
-            // ─── 1. Minimal Delicate Micro Corner Webs (Tiny: 75px - 90px) ────
+            // ─── 1. Minimal Green-Tinted Micro Corner Webs (Tiny: 85px) ──────
             if (showCornerWebs) {
-                const microSize = Math.min(85, sideMargin * 0.7);
+                const microSize = Math.min(90, sideMargin * 0.75);
                 drawMicroWeb(0, 0, microSize, 0, Math.PI / 2, isDark, now); // Top-Left
                 drawMicroWeb(width, 0, microSize, Math.PI / 2, Math.PI, isDark, now); // Top-Right
                 drawMicroWeb(0, height, microSize, -Math.PI / 2, 0, isDark, now); // Bottom-Left
                 drawMicroWeb(width, height, microSize, Math.PI, (3 * Math.PI) / 2, isDark, now); // Bottom-Right
             }
 
-            // ─── 2. Subtle Shockwaves ─────────────────────────────────────────
+            // ─── 2. Subtle Emerald Shockwaves ─────────────────────────────────
             const shockwaves = shockwavesRef.current;
             for (let sIdx = shockwaves.length - 1; sIdx >= 0; sIdx--) {
                 const sw = shockwaves[sIdx];
@@ -288,9 +291,9 @@ export function InteractiveParticleSimulation({
                     ctx.beginPath();
                     ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
                     ctx.strokeStyle = isDark
-                        ? `rgba(255, 255, 255, ${sw.alpha * 0.12})`
-                        : `rgba(100, 116, 139, ${sw.alpha * 0.10})`;
-                    ctx.lineWidth = 0.8;
+                        ? `rgba(52, 211, 153, ${sw.alpha * 0.25})`
+                        : `rgba(16, 185, 129, ${sw.alpha * 0.20})`;
+                    ctx.lineWidth = 0.9;
                     ctx.stroke();
                     ctx.restore();
                 } else {
@@ -300,7 +303,7 @@ export function InteractiveParticleSimulation({
 
             const maxDistSq = connectionDistance * connectionDistance;
 
-            // ─── 3. Delicate Fine Filament Connections on Side Margins ────────
+            // ─── 3. Luminous Emerald Filament Connections on Side Margins ─────
             if (showConnections) {
                 for (let i = 0; i < particles.length; i++) {
                     const p1 = particles[i];
@@ -315,20 +318,20 @@ export function InteractiveParticleSimulation({
                         if (distSq < maxDistSq) {
                             const dist = Math.sqrt(distSq);
                             const proximityFactor = 1 - dist / connectionDistance;
-                            const lineAlpha = proximityFactor * (isDark ? 0.10 : 0.07) * Math.min(p1.alpha, p2.alpha);
+                            const lineAlpha = proximityFactor * (isDark ? 0.18 : 0.14) * Math.min(p1.alpha, p2.alpha);
 
                             ctx.beginPath();
                             ctx.moveTo(p1.x, p1.y);
                             ctx.lineTo(p2.x, p2.y);
                             ctx.strokeStyle = isDark 
-                                ? `rgba(255, 255, 255, ${lineAlpha})` 
-                                : `rgba(100, 116, 139, ${lineAlpha})`;
-                            ctx.lineWidth = 0.5;
+                                ? `rgba(52, 211, 153, ${lineAlpha})` 
+                                : `rgba(16, 185, 129, ${lineAlpha})`;
+                            ctx.lineWidth = 0.6;
                             ctx.stroke();
                         }
                     }
 
-                    // Gentle interactive string to mouse if nearby on the side
+                    // Interactive green string to mouse when hovering nearby in side margin
                     if (interactive && mouse.active) {
                         const mdx = mouse.x - p1.x;
                         const mdy = mouse.y - p1.y;
@@ -336,22 +339,22 @@ export function InteractiveParticleSimulation({
 
                         if (mDist < mouse.radius && mDist > 0) {
                             const mouseProximity = 1 - mDist / mouse.radius;
-                            const stringAlpha = mouseProximity * (isDark ? 0.15 : 0.10) * p1.alpha;
+                            const stringAlpha = mouseProximity * (isDark ? 0.28 : 0.20) * p1.alpha;
 
                             ctx.beginPath();
                             ctx.moveTo(mouse.x, mouse.y);
                             ctx.lineTo(p1.x, p1.y);
                             ctx.strokeStyle = isDark 
-                                ? `rgba(255, 255, 255, ${stringAlpha})` 
-                                : `rgba(100, 116, 139, ${stringAlpha})`;
-                            ctx.lineWidth = 0.5;
+                                ? `rgba(52, 211, 153, ${stringAlpha})` 
+                                : `rgba(16, 185, 129, ${stringAlpha})`;
+                            ctx.lineWidth = 0.65;
                             ctx.stroke();
                         }
                     }
                 }
             }
 
-            // ─── 4. Update & Draw Subtle Starlight Dewdrop Nodes ───────────────
+            // ─── 4. Update & Draw Emerald Particles in Side Margins ───────────
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
 
@@ -360,7 +363,7 @@ export function InteractiveParticleSimulation({
                 const pulse = Math.sin(p.pulseVal);
                 const wobble = Math.sin(p.wobbleVal);
                 
-                p.radius = p.baseRadius + pulse * 0.15;
+                p.radius = p.baseRadius + pulse * 0.2;
 
                 p.vx += (p.baseVx + wobble * 0.04 - p.vx) * 0.02;
                 p.vy += (p.baseVy - p.vy) * 0.02;
@@ -373,7 +376,7 @@ export function InteractiveParticleSimulation({
                     if (mDist < mouse.radius && mDist > 0) {
                         const force = (1 - mDist / mouse.radius);
                         const angle = Math.atan2(mdy, mdx);
-                        const pushStrength = force * 1.8;
+                        const pushStrength = force * 2.2;
                         p.x -= Math.cos(angle) * pushStrength;
                         p.y -= Math.sin(angle) * pushStrength;
                     }
@@ -409,9 +412,22 @@ export function InteractiveParticleSimulation({
                 const activeColor = colorPalette[i % colorPalette.length];
                 ctx.save();
                 ctx.globalAlpha = p.alpha;
+
+                // Subtle emerald corona glow on larger particles
+                if (p.layer === 2 && isDark) {
+                    const haloRadius = p.radius * 2.8;
+                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, haloRadius);
+                    grad.addColorStop(0, "rgba(52, 211, 153, 0.40)");
+                    grad.addColorStop(1, "rgba(52, 211, 153, 0)");
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, haloRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
                 ctx.fillStyle = activeColor;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, Math.max(0.6, p.radius), 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, Math.max(0.7, p.radius), 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }
@@ -466,8 +482,8 @@ export function InteractiveParticleSimulation({
                     x: e.clientX,
                     y: e.clientY,
                     radius: 5,
-                    maxRadius: 80,
-                    alpha: 0.4,
+                    maxRadius: 90,
+                    alpha: 0.5,
                     strength: 1.0
                 });
             }

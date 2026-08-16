@@ -27,6 +27,9 @@ import Image from "next/image";
 import { StudentDossierPrint } from "@/components/dashboard/student-dossier-print";
 import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 import { StudentTermSummary } from "@/components/dashboard/student-term-summary";
+import { NetworkRetryState } from "@/components/ui/network-retry-state";
+import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
+import { getClientCache, setClientCache } from "@/lib/cache-client";
 
 function StudentProfileContent() {
     const formatDate = (dateString: any, fmt: string) => {
@@ -42,9 +45,28 @@ function StudentProfileContent() {
 
     const { studentId } = useParams();
     const router = useRouter();
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState("academic");
+    const [data, setData] = useState<any>(() => {
+        if (typeof window !== "undefined" && studentId) {
+            return getClientCache<any>(`student_dossier_${studentId}`) || null;
+        }
+        return null;
+    });
+    const [loading, setLoading] = useState<boolean>(() => {
+        if (typeof window !== "undefined" && studentId) {
+            return !getClientCache<any>(`student_dossier_${studentId}`);
+        }
+        return true;
+    });
+    const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
+    const [isFromCache, setIsFromCache] = useState<boolean>(() => {
+        if (typeof window !== "undefined" && studentId) {
+            return !!getClientCache<any>(`student_dossier_${studentId}`);
+        }
+        return false;
+    });
+    const [isTimeoutError, setIsTimeoutError] = useState<boolean>(false);
+    const [currentRetryAttempt, setCurrentRetryAttempt] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState("overview");
     const [remarks, setRemarks] = useState<any[]>([]);
     const [notes, setNotes] = useState<any[]>([]);
     const [newRemark, setNewRemark] = useState("");
@@ -89,22 +111,48 @@ function StudentProfileContent() {
     const fetchStudentData = async (retryAttempt = 0) => {
         if (isFetchingRef.current && retryAttempt === 0) return;
         isFetchingRef.current = true;
+        setCurrentRetryAttempt(retryAttempt);
+        if (data?.student) setIsRevalidating(true);
+        else setLoading(true);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for resilient connections
+
         try {
-            const res = await fetch(`/api/school/students/${studentId}/report-card`);
+            const res = await fetch(`/api/school/students/${studentId}/report-card`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (!res.ok) {
-                if (retryAttempt < 2) {
-                    await new Promise(resolve => setTimeout(resolve, 800 * (retryAttempt + 1)));
+                // If 404, the scholar genuinely does not exist in this tenant
+                if (res.status === 404) {
+                    const errData: any = await res.json().catch(() => ({}));
+                    setData({ error: errData.error || "Student Record Not Found", is404: true });
+                    setIsTimeoutError(false);
+                    return;
+                }
+
+                // If transient (504, 503, 500, network), auto-retry with backoff
+                if (retryAttempt < 3) {
+                    await new Promise(resolve => setTimeout(resolve, 1500 * Math.pow(1.5, retryAttempt)));
                     return fetchStudentData(retryAttempt + 1);
                 }
+
                 const errData: any = await res.json().catch(() => ({}));
-                setData({ error: errData.error || "Student Record Not Found" });
+                setIsTimeoutError(true);
+                setData((prev: any) => prev?.student ? prev : { error: errData.error || "Connection timed out. Retrying...", isTimeout: true });
                 return;
             }
             const d: any = await res.json();
+            clearTimeout(timeoutId);
             setData(d);
             setRemarks(d.remarks || []);
             setNotes(d.internalNotes || []);
             setUserRole(d.userRole || "");
+            setIsTimeoutError(false);
+            setIsFromCache(false);
+
+            // Persist to client cache
+            setClientCache(`student_dossier_${studentId}`, d, 15 * 60 * 1000, true);
 
             // Pre-fill edit form
             if (d.student) {
@@ -127,15 +175,18 @@ function StudentProfileContent() {
                 setEditSelectedGradeId(d.student.gradeId || "");
             }
         } catch (e: any) {
+            clearTimeout(timeoutId);
             console.error("fetchStudentData error:", e);
-            if (retryAttempt < 2) {
-                await new Promise(resolve => setTimeout(resolve, 800 * (retryAttempt + 1)));
+            if (retryAttempt < 3) {
+                await new Promise(resolve => setTimeout(resolve, 1500 * Math.pow(1.5, retryAttempt)));
                 return fetchStudentData(retryAttempt + 1);
             }
-            setData({ error: "Cold-Start Interruption: Click Retry to re-connect." });
+            setIsTimeoutError(true);
+            setData((prev: any) => prev?.student ? prev : { error: "Campus ledger connection is slow. Please tap retry.", isTimeout: true });
         } finally {
             isFetchingRef.current = false;
             setLoading(false);
+            setIsRevalidating(false);
         }
     };
 
@@ -239,36 +290,49 @@ function StudentProfileContent() {
         }
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center"><SpringingLoader message="Synthesizing Student Dossier" /></div>;
+    if (loading && !data?.student) return <div className="min-h-screen flex items-center justify-center"><SpringingLoader message="Synthesizing Student Dossier" /></div>;
     
-    if (!data?.student) return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center p-8">
-            <div className="w-16 h-16 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/30 flex items-center justify-center text-eduGreen-500 mb-2">
-                <GraduationCap className="w-8 h-8" />
+    if (!data?.student) {
+        if (isTimeoutError || data?.isTimeout) {
+            return (
+                <div className="min-h-[60vh] flex items-center justify-center p-6">
+                    <NetworkRetryState
+                        retryAttempt={currentRetryAttempt}
+                        onRetry={() => { setLoading(true); fetchStudentData(0); }}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center p-8">
+                <div className="w-16 h-16 rounded-2xl bg-eduGreen-500/10 border border-eduGreen-500/30 flex items-center justify-center text-eduGreen-500 mb-2">
+                    <GraduationCap className="w-8 h-8" />
+                </div>
+                <h2 className="text-xl font-bold uppercase tracking-wide text-zinc-900 dark:text-white">
+                    {data?.error || "Scholar Record Not Found"}
+                </h2>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-md">
+                    This scholar ID could not be located in your school ledger. Please verify the enrollment code or return to registry.
+                </p>
+                <div className="flex items-center gap-3 mt-4">
+                    <Button
+                        onClick={() => { setLoading(true); fetchStudentData(0); }}
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
+                    >
+                        Retry Connection
+                    </Button>
+                    <Button
+                        onClick={() => router.push('/dashboard/students')}
+                        variant="outline"
+                        className="rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
+                    >
+                        Return to Registry
+                    </Button>
+                </div>
             </div>
-            <h2 className="text-xl font-bold uppercase tracking-wide text-zinc-900 dark:text-white">
-                {data?.error || "Student Record Unavailable"}
-            </h2>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-md">
-                The institutional connection is re-establishing or the scholar record is unassigned.
-            </p>
-            <div className="flex items-center gap-3 mt-4">
-                <Button
-                    onClick={() => { setLoading(true); fetchStudentData(); }}
-                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
-                >
-                    Retry Connection
-                </Button>
-                <Button
-                    onClick={() => router.push('/dashboard/students')}
-                    variant="outline"
-                    className="rounded-xl px-6 font-bold uppercase text-[10px] tracking-widest h-11"
-                >
-                    Return to Registry
-                </Button>
-            </div>
-        </div>
-    );
+        );
+    }
 
     const student = data.student || {};
     const grades = Array.isArray(data.grades) ? data.grades : [];
@@ -298,14 +362,22 @@ function StudentProfileContent() {
                 </div>
             )}
             {/* Header / Navigation */}
-            <div className="flex items-center justify-between">
-                <Button
-                    onClick={() => router.back()}
-                    variant="ghost"
-                    className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
-                >
-                    <ArrowLeft className="w-4 h-4" /> Return to Registry
-                </Button>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <Button
+                        onClick={() => router.back()}
+                        variant="ghost"
+                        className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white font-black uppercase tracking-widest text-[10px] gap-2"
+                    >
+                        <ArrowLeft className="w-4 h-4" /> Return to Registry
+                    </Button>
+                    <CachedSyncBadge
+                        isRevalidating={isRevalidating}
+                        isFromCache={isFromCache}
+                        retryAttempt={currentRetryAttempt}
+                        onSync={() => fetchStudentData(0)}
+                    />
+                </div>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
                         onClick={() => setShowIDCard(true)}

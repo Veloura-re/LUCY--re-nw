@@ -246,7 +246,10 @@ export default function Network() {
 
             <footer className="border-t border-slate-200 dark:border-white/5 py-12 px-6 text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-zinc-700 transition-colors">
                 <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <p className="font-bold">© 2026 LUCY_SYS // NETWORK_OVERVIEW // LIVE_DATA</p>
+                    <div className="flex items-center gap-3">
+                        <Logo className="w-5 h-5 text-slate-900 dark:text-white" />
+                        <p className="font-bold">© 2026 LUCY_SYS // NETWORK_OVERVIEW // LIVE_DATA</p>
+                    </div>
                     <div className="flex items-center gap-8 font-bold">
                         <Link href="/intelligence" className="hover:text-slate-900 dark:hover:text-white transition-colors">intelligence</Link>
                         <Link href="/docs" className="hover:text-slate-900 dark:hover:text-white transition-colors">docs</Link>

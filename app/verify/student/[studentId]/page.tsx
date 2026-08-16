@@ -10,32 +10,80 @@ import { ShieldCheck, User, Calendar, MapPin, Phone, Clock, AlertTriangle, Spark
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import Image from "next/image";
 
+import { NetworkRetryState } from "@/components/ui/network-retry-state";
+
 export default function StudentVerificationPage() {
     const { studentId } = useParams();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isTimeout, setIsTimeout] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
+
+    const fetchData = async (attempt = 0) => {
+        setRetryCount(attempt);
+        setLoading(true);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+        try {
+            const res = await fetch(`/api/school/students/${studentId}/report-card`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!res.ok) {
+                if (res.status === 404) {
+                    setIsTimeout(false);
+                    setError("Identity credentials could not be verified in the institutional ledger.");
+                    return;
+                }
+
+                if (attempt < 3) {
+                    await new Promise(resolve => setTimeout(resolve, 1500 * Math.pow(1.5, attempt)));
+                    return fetchData(attempt + 1);
+                }
+
+                setIsTimeout(true);
+                setError("Connection timed out while querying the ledger.");
+                return;
+            }
+
+            const result = await res.json();
+            clearTimeout(timeoutId);
+            setData(result);
+            setError(null);
+            setIsTimeout(false);
+        } catch (e: any) {
+            clearTimeout(timeoutId);
+            console.error(e);
+            if (attempt < 3) {
+                await new Promise(resolve => setTimeout(resolve, 1500 * Math.pow(1.5, attempt)));
+                return fetchData(attempt + 1);
+            }
+            setIsTimeout(true);
+            setError("Connection slow or timed out. Please tap retry.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Using the report-card endpoint for now as it contains the required data.
-                // In a real scenario, this might be a specialized public verification endpoint.
-                const res = await fetch(`/api/school/students/${studentId}/report-card`);
-                if (!res.ok) throw new Error("Verification Failed: Entity not found or access denied.");
-                const result = await res.json();
-                setData(result);
-            } catch (e: any) {
-                console.error(e);
-                setError(e.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
+        if (studentId) fetchData(0);
     }, [studentId]);
 
     if (loading) return <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black"><SpringingLoader message="Authenticating Identity Credentials" /></div>;
+
+    if (isTimeout) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black p-6">
+                <NetworkRetryState
+                    title="Verification Latency Detected"
+                    description="The student credential verification request is taking longer than expected. Please retry."
+                    retryAttempt={retryCount}
+                    onRetry={() => fetchData(0)}
+                />
+            </div>
+        );
+    }
 
     if (error || !data?.student) {
         return (
@@ -45,8 +93,8 @@ export default function StudentVerificationPage() {
                         <AlertTriangle className="w-10 h-10 text-rose-500" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-black text-zinc-900 dark:text-white italic uppercase">Access Denied</h1>
-                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "Connection Lost"}</p>
+                        <h1 className="text-2xl font-black text-zinc-900 dark:text-white italic uppercase">Credential Not Found</h1>
+                        <p className="text-zinc-600 dark:text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">{error || "No active record found for this ID"}</p>
                     </div>
                 </Card>
             </div>

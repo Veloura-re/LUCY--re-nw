@@ -4,6 +4,7 @@
 import { useRef, useCallback, useEffect, useState, useMemo } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 import { useIsLowPower } from "@/hooks/use-network-quality";
+import { Logo } from "@/components/ui/logo";
 
 // ─── CRT Scanline Overlay ─────────────────────────────────────────────────────
 // Pure CSS – no JS animation, no repaints. Removed on slow connections.
@@ -539,7 +540,10 @@ export function PageFooter({ id, links }: { id: string; links: { href: string; l
     return (
         <footer className="border-t border-zinc-200 dark:border-white/5 py-12 px-6 text-[10px] uppercase tracking-[0.2em] text-zinc-700">
             <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                <p>© 2026 LUCY_SYS // {id}</p>
+                <div className="flex items-center gap-3">
+                    <Logo className="w-5 h-5 text-slate-900 dark:text-white" />
+                    <p className="font-bold text-slate-800 dark:text-zinc-300">© 2026 LUCY_SYS // {id}</p>
+                </div>
                 <div className="flex items-center gap-8 flex-wrap justify-center md:justify-end">
                     {links.map(l => <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>)}
                     <Link href="/community" className="hover:text-white transition-colors text-zinc-600 dark:text-zinc-400 hover:text-white font-bold">community</Link>
