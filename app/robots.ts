@@ -14,7 +14,6 @@ export default function robots(): MetadataRoute.Robots {
                     '/pricing',
                     '/schools',
                     '/contact',
-                    '/demo',
                     '/blog',
                     '/docs',
                     '/security',

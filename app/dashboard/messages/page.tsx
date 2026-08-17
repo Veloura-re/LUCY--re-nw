@@ -17,18 +17,6 @@ export default async function MessagesPage({ searchParams }: { searchParams: Pro
     let dbUser = await getCachedUser(authUser.id);
     
     let schoolId = dbUser?.schoolId;
-    if (!schoolId) {
-        const activeSchool = await prisma.school.findFirst({
-            where: { status: 'ACTIVE' },
-            orderBy: { createdAt: 'desc' },
-            select: { id: true }
-        }) || await prisma.school.findFirst({
-            orderBy: { createdAt: 'desc' },
-            select: { id: true }
-        });
-        schoolId = activeSchool?.id;
-    }
-
     if (!schoolId) redirect("/dashboard");
 
     const userId = dbUser?.id || authUser.id;

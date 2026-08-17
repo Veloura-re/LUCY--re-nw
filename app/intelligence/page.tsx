@@ -201,7 +201,7 @@ export default function Intelligence() {
                 </div>
             </main>
 
-            <PageFooter id="INTELLIGENCE_NODE" links={[{ href: "/network", label: "network" }, { href: "/docs", label: "docs" }, { href: "/demo", label: "demo" }]} />
+            <PageFooter id="INTELLIGENCE_NODE" links={[{ href: "/network", label: "network" }, { href: "/docs", label: "docs" }, { href: "/deck", label: "deck" }]} />
         </div>
     );
 }

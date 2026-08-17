@@ -172,20 +172,20 @@ export default function PresentationDeck() {
   const [showAppendix, setShowAppendix] = useState(false);
 
   const slides: Slide[] = [
-    // ──────────────────── SLIDE 01: THE FLYWHEEL ────────────────────
+    // ──────────────────── 1. THE BIG PICTURE ────────────────────
     {
       id: "flywheel",
-      tag: "strategic_core // concept",
-      title: "the lucy flywheel effect",
-      sub: "technology as a revenue-generating, time-saving asset that creates a continuous loop of institutional improvement.",
+      tag: "How Lucy Helps Your School",
+      title: "Everything Your School Needs In One Place",
+      sub: "Save hours every week, stop losing fee money, and make parents love your school.",
       content: (
         <div className="space-y-6 w-full text-left">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { num: "01", title: "operational efficiency", desc: "automated billing and grading free up massive amounts of administrative time and capital." },
-              { num: "02", title: "educator empowerment", desc: "the saved time is reinvested into teachers, reducing burnout and drastically improving instructional quality." },
-              { num: "03", title: "unmatched parent trust", desc: "better teaching combined with total digital transparency creates highly engaged, loyal parents." },
-              { num: "04", title: "premium brand growth", desc: "high parent satisfaction justifies premium tuition rates and drives rapid new student enrollment." }
+              { num: "01", title: "Less Paperwork", desc: "Teachers and office staff save up to 40 hours a week on grading, fees, and attendance." },
+              { num: "02", title: "Happy Teachers", desc: "Teachers spend more time helping students instead of doing boring manual paperwork." },
+              { num: "03", title: "Happy Parents", desc: "Parents see grades and attendance on their phones right away. No surprises." },
+              { num: "04", title: "More Students", desc: "A modern, well-run school attracts more families and grows faster every year." }
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -193,469 +193,379 @@ export default function PresentationDeck() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
                 transition={{ delay: i * 0.15, duration: 0.5 }}
-                className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 space-y-4 rounded-xl dark:rounded-none shadow-sm dark:shadow-none"
+                className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 space-y-4 rounded-2xl shadow-sm"
               >
-                <div className="text-2xl font-bold text-slate-200 dark:text-white/20 font-mono">{item.num}</div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tighter">{item.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-sans">{item.desc}</p>
+                <div className="text-2xl font-bold text-slate-300 dark:text-white/20 font-mono">{item.num}</div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">{item.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-sans">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Traditional administration views tech as a cost center.",
-        "LUCY shifts the paradigm: automation feeds directly into brand growth."
+        "Old way: Lost paper sheets, endless phone calls, and messy spreadsheets.",
+        "Lucy way: Everything runs smoothly in one simple, easy app."
       ]
     },
 
-    // ──────────────────── FINANCIAL & OPERATIONAL SUPERIORITY ────────────────────
+    // ──────────────────── 2. SIMPLE FEE PAYMENTS ────────────────────
     {
       id: "finance_01",
-      tag: "financial // superiority",
-      title: "instant financial reconciliation",
-      sub: "Never manually check a bank slip again. Automated fee tracking via Telebirr, CBE Birr, or Stripe.",
+      tag: "Simple Fee Payments",
+      title: "No More Chasing Bank Slips",
+      sub: "Parents pay school fees straight from their phones. Money goes directly to the school account.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">By eliminating manual ledger entry, finance teams reclaim up to 40 hours a week. This allows institutions to reallocate headcount from data entry to strategic financial planning.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Parents pay in 10 seconds from home using Telebirr, CBE Birr, or bank card. The school gets paid on time with zero calculation errors.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="hours_saved_weekly" value={40} suffix="h" delay={0.1} />
-            <StatBlock label="ledger_accuracy" value={99.99} suffix="%" delay={0.2} />
+            <StatBlock label="Hours Saved Weekly" value={40} suffix="h" delay={0.1} />
+            <StatBlock label="Payment Accuracy" value={100} suffix="%" delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Secure, direct connections to national payment providers.",
-        "Instant payment confirmations on parent phones to prevent duplicate charges."
+        "Works directly with major mobile money and bank services.",
+        "Sends a clean digital receipt to parents as soon as they pay."
       ]
     },
     {
       id: "finance_02",
-      tag: "financial // superiority",
-      title: "elimination of paper & printing",
-      sub: "transitioning to digital permission slips, assignments, and electronic records saves massive amounts of capital.",
+      tag: "Save Money On Paper",
+      title: "Say Goodbye To Piles Of Paper",
+      sub: "Permission slips, report cards, and forms are all digital and signed on mobile.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Mid-sized institutions historically spend thousands of dollars annually on physical supplies. Digitizing workflows boosts bottom-line profitability and positions the school as an ESG leader.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Stop spending thousands of dollars on paper, forms, and printer ink every year. Everything is safely stored and easy to find.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={FileText} title="digital documents" desc="visually stunning, legally compliant digital documents generated on the fly." delay={0.1} />
-            <FeatureItem icon={Lock} title="cryptographic signatures" desc="Digital signatures securely verify parent consent for digital forms." delay={0.2} />
+            <FeatureItem icon={FileText} title="Sign On Phone" desc="Parents sign permission slips with one simple tap on their phone." delay={0.1} />
+            <FeatureItem icon={Lock} title="Never Lost" desc="No more lost homework papers or crumpled permission forms in backpacks." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Built-in PDF rendering engine.",
-        "Digital signatures captured via mobile app using secure cryptographic hashes."
+        "Creates clean digital PDF forms for parents.",
+        "Saves exact signature time and date so records are always safe."
       ]
     },
     {
       id: "finance_03",
-      tag: "financial // superiority",
-      title: "real-time profit & loss tracking",
-      sub: "log daily expenses against incoming tuition revenue for a live view of the school's financial health.",
+      tag: "Financial Clarity // Executive View",
+      title: "Real-Time Financial Visibility",
+      sub: "Monitor tuition revenue, outstanding balances, and daily expenses live in one place.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Principals no longer wait for end-of-month reports. Immediate visibility prevents overspending and allows agile, data-driven campus management.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Directors and board members get immediate clarity on cash flow and budgets without waiting for delayed month-end reports.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Activity} title="live dashboard" desc="instant visual charts." delay={0.1} />
-            <FeatureItem icon={Database} title="query engine" desc="aggregates thousands of micro-transactions." delay={0.2} />
+            <FeatureItem icon={Activity} title="Executive Dashboard" desc="Track incoming tuition, pending fees, and operational costs on clean charts." delay={0.1} />
+            <FeatureItem icon={Database} title="Zero Financial Leakage" desc="Every transaction, receipt, and expense is securely audited and accounted for." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Powered by a high-performance analytics query engine on PostgreSQL cluster.",
-        "Aggregates micro-transactions instantly via React/Next.js frontend."
+        "Live telemetry on tuition revenue, pending balances, and expenses.",
+        "Reconciles accounts automatically with zero spreadsheet errors."
       ]
     },
     {
       id: "finance_04",
-      tag: "financial // superiority",
-      title: "eradication of lost revenue",
-      sub: "automated sms and push notification fee reminders drastically increase on-time payments.",
+      tag: "On-Time Payments",
+      title: "Friendly Auto Reminders For Parents",
+      sub: "Automatic text messages remind parents before fee deadlines so you don't have to make awkward phone calls.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Consistent cash flow is the lifeblood of any private institution. Automating collections avoids awkward phone calls and increases on-time payments by up to 25%.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Gentle automated text reminders help parents pay on time, increasing fee collection by 25% without staff having to call families.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="payment_increase" value={25} suffix="%" delay={0.1} />
-            <FeatureItem icon={Bell} title="push & sms" desc="localized reminders straight to parent devices." delay={0.2} />
+            <StatBlock label="Faster Fee Payments" value={25} suffix="%" delay={0.1} />
+            <FeatureItem icon={Bell} title="Direct Text Alerts" desc="Sent straight to mom or dad's phone with a quick pay link." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Automated background cron jobs running on edge servers.",
-        "Programmatically fires personalized, localized SMS and push notifications to parent devices."
+        "Sends polite text reminders before payment deadlines.",
+        "Parents can tap a link in the message to pay immediately."
       ]
     },
 
-    // ──────────────────── EMPOWERING EDUCATORS ────────────────────
+    // ──────────────────── 3. EMPOWERING TEACHERS ────────────────────
     {
       id: "edu_05",
-      tag: "empowering // educators",
-      title: "curriculum management",
-      sub: "built-in AI assistant automatically generates high-fidelity, curriculum-aligned exam questions.",
+      tag: "AI Exam Helper",
+      title: "Make Tests In Minutes, Not Weekends",
+      sub: "Our smart assistant helps teachers write great quiz and exam questions in seconds.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Teacher burnout is the highest hidden cost in education. State-of-the-art AI tools improve retention rates, reduce hiring costs, and elevate instructional quality.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Teachers don't have to stay up all night writing tests. Pick a subject and grade level, and get ready-to-print questions immediately.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Cpu} title="LLM integration" desc="generates pedagogy-aligned questions." delay={0.1} />
-            <FeatureItem icon={Shield} title="zero data retention" desc="strict privacy APIs." delay={0.2} />
+            <FeatureItem icon={Cpu} title="Ready Questions" desc="Multiple choice, short answers, and full answer keys." delay={0.1} />
+            <FeatureItem icon={Shield} title="Print Ready" desc="Download clean test papers ready for class in one click." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Integrates directly with enterprise LLMs via zero-data-retention APIs.",
-        "Pre-configured prompt engineering aligned with national standards, exportable to PDF."
+        "Creates tests tailored to the curriculum for any grade level.",
+        "Exports neat, printable exam sheets ready for the classroom."
       ]
     },
     {
       id: "edu_06",
-      tag: "empowering // educators",
-      title: "lightning-fast digital roll call",
-      sub: "take attendance in seconds from any phone or laptop. instantly synced to central database.",
+      tag: "Fast Attendance",
+      title: "Take Roll Call In 10 Seconds",
+      sub: "Teachers tap Present or Absent on their phone. Works even when the internet is down.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Reclaiming just 10 minutes per class equates to hundreds of hours of recovered instructional time per year. Classes start faster; front office is never bottlenecked.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Classes start right away without wasting 10 minutes calling names. The main office knows who is in school instantly.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="time_recovered_daily" value={10} suffix="m" delay={0.1} />
-            <FeatureItem icon={Zap} title="offline-first sync" desc="works even if school Wi-Fi drops." delay={0.2} />
+            <StatBlock label="Class Time Saved" value={10} suffix="m/day" delay={0.1} />
+            <FeatureItem icon={Zap} title="Works Offline" desc="Take attendance even with no Wi-Fi. It syncs when you're back online." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Offline-first Progressive Web App architecture.",
-        "Local cache stores data and background-syncs the moment connectivity is restored."
+        "Saves data on the phone so you never lose attendance if Wi-Fi drops.",
+        "Syncs with the main school office the moment the connection returns."
       ]
     },
     {
       id: "edu_07",
-      tag: "empowering // educators",
-      title: "automated grade computation",
-      sub: "engine automatically calculates weighted averages, curves, and updates database in real-time.",
+      tag: "Easy Grading",
+      title: "Grades Calculated Automatically",
+      sub: "Just type the scores. Lucy calculates the totals, averages, and ranks for you.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Automating the underlying mathematics eliminates friction, removes human error, and empowers teachers to finalize class scores effortlessly.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">No more calculator mistakes or broken Excel formulas. Grades and student rankings are ready in seconds.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={BarChart3} title="dynamic curves" desc="mathematical uniformity across classrooms." delay={0.1} />
-            <FeatureItem icon={Settings} title="algorithm builder" desc="flexible grading weight formulas." delay={0.2} />
+            <FeatureItem icon={BarChart3} title="Auto Math" desc="Averages, test weights, and curves done automatically." delay={0.1} />
+            <FeatureItem icon={Settings} title="Student Rankings" desc="Instantly see top performers and who needs extra help." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Grading engine utilizes a highly flexible algorithm builder.",
-        "Administrators pre-define formulas globally (e.g., 30% Assessment, 70% Final)."
+        "Handles weighted formulas (e.g. 20% quizzes, 30% midterm, 50% final).",
+        "Shows instant rank lists and performance breakdowns."
       ]
     },
     {
       id: "edu_08",
-      tag: "empowering // educators",
-      title: "tamper-proof academic integrity",
-      sub: "strict row-level security and immutable audit logs prevent unauthorized tampering of grades.",
+      tag: "Safe & Honest Records",
+      title: "Grades Can Never Be Changed In Secret",
+      sub: "Only authorized teachers can enter marks, and every single change is safely recorded.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing that grades cannot be maliciously altered builds immense trust with accreditation bodies and university admissions boards.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Parents and universities can 100% trust your school's grades because records are locked and tamper-proof.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Shield} title="row-level security" desc="blocked unauthorized queries." delay={0.1} />
-            <FeatureItem icon={TerminalIcon} title="audit logs" desc="immutable forensic tracking." delay={0.2} />
+            <FeatureItem icon={Shield} title="Teacher Only" desc="Teachers can only edit their own assigned classes." delay={0.1} />
+            <FeatureItem icon={TerminalIcon} title="Full History" desc="See who changed what score and at what exact time." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Implemented natively at the PostgreSQL database kernel with RLS.",
-        "Every mutation triggers an immutable audit log storing User ID, Timestamp, Old/New Value."
+        "Only assigned subject teachers and principals have editing access.",
+        "Audit history shows every edit with exact timestamp and user name."
       ]
     },
 
-    // ──────────────────── UNMATCHED PARENT ENGAGEMENT ────────────────────
+    // ──────────────────── 4. CONNECTED PARENTS & STUDENTS ────────────────────
     {
       id: "parent_09",
-      tag: "parent // engagement",
-      title: "real-time academic transparency",
-      sub: "proactive visibility into current grades, assignments, and attendance via parent portal.",
+      tag: "For Parents",
+      title: "Their Child's Journey, Live In Their Pocket",
+      sub: "Parents can see grades, daily attendance, and teacher notes right on their phone.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Continuous feedback loops result in home-based encouragement, drastically improving school pass rates, student confidence, and prestige.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">When parents see how their kids are doing every day, they help them study at home and feel proud of the school.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Eye} title="live visibility" desc="grades pushed with zero delay." delay={0.1} />
-            <FeatureItem icon={Database} title="unified database" desc="instant synchronization." delay={0.2} />
+            <FeatureItem icon={Eye} title="Live Grades" desc="Parents see test results as soon as the teacher enters them." delay={0.1} />
+            <FeatureItem icon={Database} title="All In One App" desc="See all children on one single family account." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Operates on a single unified database.",
-        "WebSocket connections push live data directly to the Parent's mobile dashboard."
+        "Simple mobile login where parents can switch between all their children.",
+        "Sends instant notifications when new test marks or notes are posted."
       ]
     },
     {
       id: "parent_10",
-      tag: "parent // engagement",
-      title: "centralized, secure communication",
-      sub: "secure internal messaging replaces chaotic WhatsApp groups, protecting teacher privacy.",
+      tag: "No More WhatsApp Chaos",
+      title: "Private, Professional School Chat",
+      sub: "Parents message teachers inside the school app. No need to share personal phone numbers.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Protecting off-hours peace of staff is crucial. Centralizing communication ensures professional, logged, and moderated interactions.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Teachers get peaceful evenings with automatic quiet hours, while school leaders can review message history if needed.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={MessageSquare} title="secure chat" desc="end-to-end encrypted protocols." delay={0.1} />
-            <FeatureItem icon={Clock} title="do not disturb" desc="automated muting for off-hours." delay={0.2} />
+            <FeatureItem icon={MessageSquare} title="Private Numbers" desc="Teachers keep their personal WhatsApp number private." delay={0.1} />
+            <FeatureItem icon={Clock} title="Quiet Hours" desc="Messages sent late at night wait peacefully until morning." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "End-to-end encrypted chat protocols.",
-        "High-level oversight capabilities and 'Do Not Disturb' hours."
+        "Keeps all communication professional and inside the school system.",
+        "Sets quiet hours so teachers aren't disturbed late in the evening."
       ]
     },
     {
       id: "parent_11",
-      tag: "parent // engagement",
-      title: "instant absence alerts",
-      sub: "automated push notifications immediately inform parents if a student is absent or late.",
+      tag: "Student Safety",
+      title: "Instant Text If A Student Is Absent",
+      sub: "Parents get a text within 3 seconds if their child is not in class.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Student safety is the ultimate liability. Instant alerts provide peace of mind, cementing long-term institutional loyalty.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Parents know their children are safe, and students can't skip class without mom and dad finding out right away.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="delivery_speed" value={3} suffix="s" delay={0.1} />
-            <FeatureItem icon={Bell} title="FCM & SMS" desc="bypasses standard processing queues." delay={0.2} />
+            <StatBlock label="Alert Speed" value={3} suffix="s" delay={0.1} />
+            <FeatureItem icon={Bell} title="Direct Text Alert" desc="Sent straight to mom and dad's phone immediately." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "High-priority queue architecture.",
-        "Executes Firebase Cloud Messaging (FCM) and SMS gateways within 3 seconds of input."
+        "Instant SMS sent directly to parent phone numbers.",
+        "Automatically marks excused if parent already sent a doctor note."
       ]
     },
-    {
-      id: "parent_12",
-      tag: "parent // engagement",
-      title: "secure digital authorizations",
-      sub: "legally sign field trip slips, medical waivers, and transport agreements directly via mobile.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Digital authorizations achieve 100% compliance in a fraction of the time, reducing legal and operational friction.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Lock} title="binding signatures" desc="exact UTC timestamps and IP records." delay={0.1} />
-            <StatBlock label="compliance_rate" value={100} suffix="%" delay={0.2} />
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Legally binding digital signature protocols.",
-        "Records exact UTC timestamp, IP address, and authenticated user token immutably."
-      ]
-    },
-
-    // ──────────────────── STUDENT AGENCY ────────────────────
     {
       id: "student_13",
-      tag: "student // agency",
-      title: "the gamified student hub",
-      sub: "beautifully designed dashboard for tracking gpa, assignments, and educational trajectory.",
+      tag: "For Students",
+      title: "A Cool App Students Love To Use",
+      sub: "Students check their homework, see upcoming tests, and watch their grades go up.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Gamification shifts the burden of motivation. App-like interfaces raise internal accountability and school-wide performance.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">A clean, modern app makes school fun and motivates students to do their homework on time.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Palette} title="consumer UI" desc="fluid, engaging react/framer motion apps." delay={0.1} />
-            <FeatureItem icon={BarChart3} title="data visualizers" desc="interactive timeline and grade charts." delay={0.2} />
+            <FeatureItem icon={Palette} title="Clean Timetable" desc="Daily schedule so students know which classroom to go to next." delay={0.1} />
+            <FeatureItem icon={BarChart3} title="Track Progress" desc="Fun visual charts show improvement in every subject." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Student UI built using React/Framer Motion.",
-        "Data visualizers render complex grade arrays into highly readable, interactive mobile charts."
-      ]
-    },
-    {
-      id: "student_14",
-      tag: "student // agency",
-      title: "dynamic digital timetables",
-      sub: "live timetables update instantly if a room changes or a substitute teacher is assigned.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Hallway confusion is eliminated. An informed student body moves efficiently, optimizing every minute of the school day.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Calendar} title="relational graph" desc="mutations propagate instantly." delay={0.1} />
-            <FeatureItem icon={Zap} title="zero refresh" desc="UI updates without page reloads." delay={0.2} />
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Scheduling engine uses a relational database.",
-        "Mutations propagate instantly across the network updating UI without page refreshes."
+        "Students can see homework tasks and submit work easily.",
+        "Shows real-time room numbers and class schedules."
       ]
     },
 
-    // ──────────────────── ULTIMATE ADMIN CONTROL ────────────────────
+    // ──────────────────── 5. SCHOOL MANAGEMENT & PEACE OF MIND ────────────────────
     {
       id: "admin_15",
-      tag: "administrative // control",
-      title: "one-click report cards",
-      sub: "standardized transcripts generated for the entire school instantly.",
+      tag: "Fast Report Cards",
+      title: "Print All Report Cards In 60 Seconds",
+      sub: "Create beautiful, stamped report cards for the whole school with just one click.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates three days of administrative overtime, wipes out transcription errors, and delivers flawless documents to parents.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">No more spending the entire weekend printing and checking report cards. Lucy makes clean PDFs with your school logo ready to print or send.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="generation_time" value={60} suffix="s" delay={0.1} />
-            <FeatureItem icon={FileText} title="vectorized PDFs" desc="compiles thousands of data points." delay={0.2} />
+            <StatBlock label="Whole School Print Time" value={60} suffix="s" delay={0.1} />
+            <FeatureItem icon={FileText} title="Clean PDF Cards" desc="Includes school logo, teacher remarks, and QR stamp." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Scalable headless browser architecture on the server side.",
-        "Compiles thousands of data points into perfectly formatted PDFs in parallel under 60 seconds."
+        "Renders hundreds of report cards in seconds without crashing.",
+        "Includes a verification QR code so nobody can forge a report card."
       ]
     },
     {
       id: "admin_16",
-      tag: "administrative // control",
-      title: "total hardware agnosticism",
-      sub: "modern cloud application runs flawlessly on any device with an internet connection.",
+      tag: "Zero IT Headaches",
+      title: "No Servers To Buy. Works On Any Phone Or PC.",
+      sub: "Open your browser and log in. Lucy runs anywhere with an internet connection.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">No need for expensive IT departments or server rooms. Capital expenditure on infrastructure drops to zero.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">You don't need to buy expensive computer servers or hire IT technicians. Everything is saved safely in the cloud.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <StatBlock label="infrastructure_cost" value={0} prefix="$" delay={0.1} />
-            <FeatureItem icon={Globe} title="global edge network" desc="responsive on any device." delay={0.2} />
+            <StatBlock label="Server Cost" value={0} prefix="$" delay={0.1} />
+            <FeatureItem icon={Globe} title="Always Backed Up" desc="All student records and money history are backed up safely every hour." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Deployed as a serverless web application via Vercel's global edge network.",
-        "Serves optimized code directly to user browser across PC, Mac, iOS, Android."
-      ]
-    },
-    {
-      id: "admin_17",
-      tag: "administrative // control",
-      title: "granular staff accountability",
-      sub: "microscopic visibility into staff performance, grading speeds, and attendance compliance.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Management transitions from reactive to proactive, identifying bottlenecks early to intervene before parent satisfaction is impacted.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Activity} title="analytics data" desc="tracking exact API request timestamps." delay={0.1} />
-            <FeatureItem icon={BarChart3} title="KPI visualizer" desc="indisputable compliance metrics." delay={0.2} />
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "Backend analytics aggregates exact timestamps for API requests (grading, attendance).",
-        "Data feeds into an objective KPI visualizer for leadership dashboards."
-      ]
-    },
-    {
-      id: "admin_18",
-      tag: "administrative // control",
-      title: "zero data loss & backups",
-      sub: "heavily encrypted and backed up in real-time to enterprise-grade cloud databases.",
-      content: (
-        <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Guaranteeing absolute permanence of decades of records protects the school from catastrophic liability and natural disasters.</p>
-          </motion.div>
-          <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Database} title="continuous PITR" desc="point-in-time recovery." delay={0.1} />
-            <FeatureItem icon={Lock} title="geographic distribution" desc="survives regional failures." delay={0.2} />
-          </div>
-        </div>
-      ),
-      technicalAppendix: [
-        "PostgreSQL backend utilizes continuous Point-in-Time Recovery (PITR).",
-        "Automated hourly snapshots distributed across multiple geographic availability zones."
+        "Runs securely in the cloud with 99.9% uptime.",
+        "Automatic hourly backups so your school data is always safe."
       ]
     },
     {
       id: "admin_19",
-      tag: "administrative // control",
-      title: "conflict-free timetables",
-      sub: "digital scheduling engine prevents double-booking teachers or assigning two classes to one room.",
+      tag: "Class Schedules",
+      title: "Make Class Schedules With Zero Clashes",
+      sub: "Never put two classes in the same room or give one teacher two classes at once.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Eliminates weeks of trial and error, optimizes campus space, and guarantees balanced and fair teacher workloads.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">Making school timetables by hand takes weeks. Lucy creates a balanced schedule for all grades in minutes.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Calendar} title="constraint algorithm" desc="evaluates capacity and availability." delay={0.1} />
-            <FeatureItem icon={Zap} title="instant flagging" desc="identifies impossible configurations." delay={0.2} />
+            <FeatureItem icon={Calendar} title="No Room Clashes" desc="Makes sure every teacher and class has an open room." delay={0.1} />
+            <FeatureItem icon={Zap} title="Fair Workload" desc="Balances teaching hours fairly among all teachers." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Schedule builder incorporates a constraint-satisfaction algorithm.",
-        "Evaluates hard constraints simultaneously to suggest optimal academic week routing."
+        "Smart checker finds and fixes schedule clashes automatically.",
+        "Updates teacher and student schedules immediately."
       ]
     },
     {
       id: "admin_20",
-      tag: "administrative // control",
-      title: "premium brand perception",
-      sub: "a state-of-the-art digital ecosystem elevates the status of the entire institution.",
+      tag: "A Modern School",
+      title: "Make Your School The Best In Town",
+      sub: "Parents love modern schools. Give your school the tech tools it deserves.",
       content: (
         <div className="space-y-6 w-full text-left">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">strategic business impact</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400">Technology is a massive differentiator. It justifies premium tuition rates and drives enrollment by signaling modern, secure excellence.</p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="p-6 border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-900/60 rounded-2xl shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase mb-2">Why This Helps Your School</h3>
+            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">When parents see how modern and organized your school is, they tell their friends, helping your school grow year after year.</p>
           </motion.div>
           <div className="grid grid-cols-2 gap-4">
-            <FeatureItem icon={Palette} title="premium UI/UX" desc="silicon valley design standards." delay={0.1} />
-            <FeatureItem icon={Eye} title="institutional prestige" desc="subconscious reinforcement of trust." delay={0.2} />
+            <FeatureItem icon={Palette} title="Modern Look" desc="Clean, beautiful design that parents and teachers are proud of." delay={0.1} />
+            <FeatureItem icon={Eye} title="More Enrolments" desc="Attracts great families who want the best education for their kids." delay={0.2} />
           </div>
         </div>
       ),
       technicalAppendix: [
-        "UI/UX built on premium design systems used by Silicon Valley tech giants.",
-        "Smooth animations and crystal-clear typography subconsciously reinforce quality."
+        "Clean, modern design that is easy for anyone to use.",
+        "Bank-level security keeps all student and family data private."
       ]
     }
   ];
@@ -714,21 +624,31 @@ export default function PresentationDeck() {
 
       {/* ── Navbar ── */}
       <nav className="border-b border-slate-200 dark:border-white/5 px-6 py-4 flex items-center justify-between relative z-10 bg-white/85 dark:bg-black/85 backdrop-blur-md transition-colors">
-        <Link href="/" className="flex items-center gap-2 group">
-          <Logo className="w-8 h-8" />
-          <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">LUCY OS</span>
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <Logo className="w-7 h-7 text-slate-900 dark:text-white" />
+          <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">lucy_os</span>
         </Link>
-        <div className="flex items-center gap-4">
-          <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest hidden md:flex items-center gap-2 font-bold">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link href="/features">
+            <Button variant="ghost" className="hidden sm:flex text-[11px] uppercase tracking-widest font-bold text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white">
+              Features
+            </Button>
+          </Link>
+          <Link href="/register">
+            <Button className="h-9 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] uppercase tracking-widest font-bold rounded-xl shadow-sm transition-all">
+              Start Free Trial
+            </Button>
+          </Link>
+          <div className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest hidden lg:flex items-center gap-2 font-bold ml-2">
             <Keyboard className="w-4 h-4" />
-            use [arrow keys] to navigate
+            [arrow keys]
           </div>
           <motion.span
             animate={{ borderColor: ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.25)", "rgba(255,255,255,0.1)"] }}
             transition={{ repeat: Infinity, duration: 3 }}
-            className="px-3 py-1 border border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-zinc-950/50 text-[10px] text-slate-600 dark:text-zinc-400 uppercase font-bold font-mono rounded-md dark:rounded-none"
+            className="px-3 py-1 border border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-zinc-950/50 text-[10px] text-slate-600 dark:text-zinc-400 uppercase font-bold font-mono rounded-lg"
           >
-            slide_{String(currentSlide + 1).padStart(2, "0")}/{String(slides.length).padStart(2, "0")}
+            Slide {String(currentSlide + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
           </motion.span>
         </div>
       </nav>
@@ -738,7 +658,7 @@ export default function PresentationDeck() {
         <motion.div
           animate={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="h-full bg-gradient-to-r from-slate-300 via-slate-500 to-slate-300 dark:from-white/20 dark:via-white/40 dark:to-white/20"
+          className="h-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500"
         />
       </div>
 
@@ -761,7 +681,7 @@ export default function PresentationDeck() {
                 transition={{ delay: 0.1 }}
                 className="flex items-center gap-3 text-slate-500 dark:text-zinc-500 text-[10px] font-mono tracking-widest font-bold"
               >
-                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-1.5 h-1.5 bg-slate-400 dark:bg-white/50 rounded-full" />
+                <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                 {slide.tag}
               </motion.div>
               
@@ -778,7 +698,7 @@ export default function PresentationDeck() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.4 }}
-                className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-lg font-sans font-medium"
+                className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed max-w-lg font-sans font-medium"
               >
                 {slide.sub}
               </motion.p>
@@ -791,7 +711,7 @@ export default function PresentationDeck() {
                   className="p-0 h-auto text-[10px] uppercase text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2 group tracking-widest font-bold"
                 >
                   <Info className="w-3.5 h-3.5" />
-                  {showAppendix ? "close_specifications" : "view_system_specifications"}
+                  {showAppendix ? "Hide Technical Details" : "See How It Works"}
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${showAppendix ? "rotate-180" : ""}`} />
                 </Button>
               </motion.div>
@@ -805,12 +725,12 @@ export default function PresentationDeck() {
                     exit={{ opacity: 0, height: 0, y: -10 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-4 mt-2 border-l-2 border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-white/5 space-y-2 rounded-r-md dark:rounded-none">
-                      <div className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-white/40 font-bold mb-3">sys_specifications //</div>
+                    <div className="p-4 mt-2 border-l-2 border-emerald-500 bg-slate-100 dark:bg-zinc-900/60 space-y-2 rounded-r-xl">
+                      <div className="text-[9px] uppercase tracking-widest text-emerald-500 font-bold mb-3">How It Works //</div>
                       <ul className="space-y-2 text-xs font-mono text-slate-600 dark:text-zinc-400">
                         {slide.technicalAppendix.map((line, i) => (
                           <li key={i} className="flex gap-2 items-start">
-                            <span className="text-slate-400 dark:text-white/30">{">"}</span> {line}
+                            <span className="text-emerald-500">{">"}</span> {line}
                           </li>
                         ))}
                       </ul>
@@ -829,13 +749,13 @@ export default function PresentationDeck() {
       </div>
 
       {/* ── Footer Controls ── */}
-      <footer className="border-t border-slate-200 dark:border-white/5 px-6 py-6 relative z-10 bg-zinc-200 dark:bg-white/50 dark:bg-black/50 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
+      <footer className="border-t border-slate-200 dark:border-white/5 px-6 py-6 relative z-10 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 transition-colors">
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
             size="icon"
             onClick={handlePrev}
-            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-all"
           >
             <ChevronLeft className="w-5 h-5" />
           </Button>
@@ -843,7 +763,7 @@ export default function PresentationDeck() {
             variant="outline"
             size="icon"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-all"
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </Button>
@@ -851,7 +771,7 @@ export default function PresentationDeck() {
             variant="outline"
             size="icon"
             onClick={handleNext}
-            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-md dark:rounded-none transition-all"
+            className="w-10 h-10 border-slate-300 dark:border-white/20 text-slate-600 dark:text-zinc-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-white/10 rounded-xl transition-all"
           >
             <ChevronRight className="w-5 h-5" />
           </Button>
@@ -868,7 +788,7 @@ export default function PresentationDeck() {
               }}
               className={`h-1 transition-all rounded-full ${
                 i === currentSlide 
-                  ? "w-8 bg-slate-900 dark:bg-white" 
+                  ? "w-8 bg-emerald-500" 
                   : "w-2 bg-slate-300 dark:bg-white/20 hover:bg-slate-400 dark:hover:bg-white/40"
               }`}
             />
@@ -876,22 +796,23 @@ export default function PresentationDeck() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button
-            onClick={() => {
-              if (currentSlide === slides.length - 1) {
-                setShowConfetti(true);
-              } else {
-                handleNext();
-              }
-            }}
-            className="h-10 px-6 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-md dark:rounded-none transition-all"
-          >
-            {currentSlide === slides.length - 1 ? (
-              <>deploy_system <ArrowUpRight className="w-3.5 h-3.5" /></>
-            ) : (
-              <>next_sequence <ChevronRight className="w-3.5 h-3.5" /></>
-            )}
-          </Button>
+          {currentSlide === slides.length - 1 ? (
+            <Link href="/register">
+              <Button
+                onClick={() => setShowConfetti(true)}
+                className="h-10 px-6 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-xl shadow-lg shadow-emerald-900/20 transition-all"
+              >
+                Launch Your Campus <ArrowUpRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              onClick={handleNext}
+              className="h-10 px-6 bg-slate-900 text-white dark:bg-white dark:text-black hover:bg-slate-800 dark:hover:bg-zinc-200 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 rounded-xl transition-all"
+            >
+              Next Slide <ChevronRight className="w-3.5 h-3.5" />
+            </Button>
+          )}
         </div>
       </footer>
     </div>
