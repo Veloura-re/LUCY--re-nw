@@ -43,12 +43,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'monthly',
             priority: 0.8,
         },
-        {
-            url: `${BASE_URL}/demo`,
-            lastModified,
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
     ];
 
     // Secondary Public Pages (Content, Ecosystem, Community)

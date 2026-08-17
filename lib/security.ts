@@ -83,7 +83,7 @@ export async function requireRole(allowedRoles: Role[]) {
 
     if (!dbUser.schoolId) {
         try {
-            const { getCachedUser } = require('@/lib/users');
+            const { getCachedUser } = await import('@/lib/users');
             const enriched = await getCachedUser(user.id);
             if (enriched?.schoolId) {
                 dbUser.schoolId = enriched.schoolId;
@@ -92,23 +92,7 @@ export async function requireRole(allowedRoles: Role[]) {
     }
 
     if (!dbUser.schoolId) {
-        try {
-            const activeSchool = await prisma.school.findFirst({
-                where: { status: 'ACTIVE' },
-                orderBy: { createdAt: 'desc' },
-                select: { id: true }
-            }) || await prisma.school.findFirst({
-                orderBy: { createdAt: 'desc' },
-                select: { id: true }
-            });
-            if (activeSchool) {
-                dbUser.schoolId = activeSchool.id;
-                await prisma.user.update({
-                    where: { id: dbUser.id },
-                    data: { schoolId: activeSchool.id }
-                }).catch(() => {});
-            }
-        } catch {}
+        throw new Error("Forbidden: User is not linked to any school tenant");
     }
 
     return dbUser;
@@ -123,7 +107,7 @@ export async function requireSchoolLinked() {
     let dbUser: any = null;
 
     if (!prisma) {
-        const { createClient } = require('@supabase/supabase-js');
+        const { createClient } = await import('@supabase/supabase-js');
         const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
         const { data } = await supabaseAdmin
             .from('User')
@@ -155,30 +139,10 @@ export async function requireSchoolLinked() {
 
     if (!dbUser?.schoolId) {
         try {
-            const { getCachedUser } = require('@/lib/users');
+            const { getCachedUser } = await import('@/lib/users');
             const enriched = await getCachedUser(user.id);
             if (enriched?.schoolId) {
                 dbUser = { ...dbUser, schoolId: enriched.schoolId };
-            }
-        } catch {}
-    }
-
-    if (!dbUser?.schoolId) {
-        try {
-            const activeSchool = await prisma.school.findFirst({
-                where: { status: 'ACTIVE' },
-                orderBy: { createdAt: 'desc' },
-                select: { id: true }
-            }) || await prisma.school.findFirst({
-                orderBy: { createdAt: 'desc' },
-                select: { id: true }
-            });
-            if (activeSchool) {
-                dbUser = { ...dbUser, schoolId: activeSchool.id };
-                await prisma.user.update({
-                    where: { id: dbUser.id },
-                    data: { schoolId: activeSchool.id }
-                }).catch(() => {});
             }
         } catch {}
     }

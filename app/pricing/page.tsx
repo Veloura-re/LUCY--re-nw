@@ -195,7 +195,7 @@ export default function Pricing() {
                 </div>
             </main>
 
-            <PageFooter id="PRICING_ACTIVE" links={[{ href: "/features", label: "features" }, { href: "/demo", label: "demo" }, { href: "/contact", label: "contact" }]} />
+            <PageFooter id="PRICING_ACTIVE" links={[{ href: "/features", label: "features" }, { href: "/deck", label: "deck" }, { href: "/contact", label: "contact" }]} />
         </div>
     );
 }

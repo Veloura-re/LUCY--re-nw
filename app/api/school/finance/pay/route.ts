@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth, handleApiError } from '@/lib/security';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { extractAndParseJson } from '@/lib/ai';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function POST(req: Request) {
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
         if (!invoice) return new NextResponse("Invoice not found", { status: 404 });
 
         let isAuthorized = false;
-        if (dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN' || dbUser.role === 'TEACHER') {
+        if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER'].includes(dbUser.role)) {
             if (dbUser.schoolId === invoice.schoolId) isAuthorized = true;
         } else if (dbUser.role === 'PARENT') {
             const linked = dbUser.parentLinks.some(link => link.studentId === invoice.studentId);
@@ -99,10 +100,9 @@ Respond strictly in JSON format:
                 ]);
 
                 const responseText = aiResult.response.text();
-                const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                const parsed = extractAndParseJson<{ isValid: boolean; amount: number; reason: string } | null>(responseText, null);
                 
-                if (jsonMatch) {
-                    const parsed = JSON.parse(jsonMatch[0]);
+                if (parsed) {
                     if (parsed.isValid && Number(parsed.amount) >= Number(invoice.amount)) {
                         finalStatus = "SUCCESS";
                         aiReference = reference ? `${reference} | AI: Verified (${parsed.amount})` : `AI Verified: ${parsed.reason}`;
@@ -141,7 +141,7 @@ Respond strictly in JSON format:
 
         revalidatePath('/dashboard/finance', 'page');
         revalidatePath('/dashboard/parent', 'page');
-        revalidateTag('family-children-data');
+        revalidateTag('family-children-data', 'max');
 
         return NextResponse.json({ success: true, payment: result, pending: needsVerification });
 
