@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
-// Bypass TLS verification for managed Postgres pools with self-signed / intermediate certificates
-if (typeof process !== 'undefined' && process.env) {
+// Bypass TLS verification only in local development for self-signed Postgres certificates
+if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 

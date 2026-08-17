@@ -232,7 +232,7 @@ export async function PATCH(request: Request) {
                     },
                     data: {
                         status: 'EXCUSED',
-                        remarks: `Excused via Authorization #${id.substring(0, 8)}`
+                        reason: `Excused via Authorization #${id.substring(0, 8)}`
                     }
                 });
             }

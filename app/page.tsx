@@ -526,18 +526,6 @@ export default function Home() {
                   </motion.div>
                 </Link>
               </TiltCard>
-
-              <div className="grid grid-cols-2 gap-3 text-[10px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest font-bold">
-                {[
-                  { val: loaded ? liveStats.schools.toString() : "…", label: "institutions" },
-                  { val: loaded ? liveStats.students.toLocaleString() : "…", label: "scholars" }
-                ].map((s, i) => (
-                  <motion.div key={i} whileHover={{ borderColor: "rgba(100,116,139,0.3)", y: -3 }} className="p-4 border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-zinc-900/10 flex flex-col gap-2 cursor-default transition-all rounded-xl dark:rounded-none shadow-sm dark:shadow-none dark:hover:border-white/15">
-                    <motion.span key={s.val} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-slate-900 dark:text-white text-xl font-bold">{s.val}</motion.span>
-                    <span>{s.label}</span>
-                  </motion.div>
-                ))}
-              </div>
             </motion.div>
           </motion.div>
 
@@ -1052,7 +1040,7 @@ export default function Home() {
           <div className="space-y-4">
             <div className="text-slate-900 dark:text-white font-bold">platform</div>
             <ul className="space-y-2 font-bold">
-              {[{ href: "/about", l: "about" }, { href: "/features", l: "features" }, { href: "/pricing", l: "pricing" }, { href: "/security", l: "vault" }, { href: "/demo", l: "demo" }, { href: "/schools", l: "for schools" }].map(i => (
+              {[{ href: "/about", l: "about" }, { href: "/features", l: "features" }, { href: "/pricing", l: "pricing" }, { href: "/security", l: "vault" }, { href: "/deck", l: "presentation" }, { href: "/schools", l: "for schools" }].map(i => (
                 <li key={i.href}><Link href={i.href} className="hover:text-slate-900 dark:hover:text-white transition-colors">{i.l}</Link></li>
               ))}
             </ul>
