@@ -57,14 +57,20 @@ export async function POST(req: Request) {
             }
         });
 
-        if (existingPending) {
+        const isDirector = ['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role);
+
+        // If a parent submits and there's already a pending payment, ask to wait for verification
+        if (existingPending && !isDirector) {
             return NextResponse.json({ error: "Verification in progress for a previous submission." }, { status: 400 });
         }
 
-        // Determine if this is a manual settlement that needs verification
-        const needsVerification = ["BANK_TRANSFER", "CASH", "OTHER", "MOBILE_MONEY"].includes(method);
+        // Determine if this is a manual settlement that needs verification (parents need verification, directors confirm directly)
+        const needsVerification = !isDirector && ["BANK_TRANSFER", "CASH", "OTHER", "MOBILE_MONEY"].includes(method);
         let finalStatus = needsVerification ? "PENDING" : "SUCCESS";
         let aiReference = reference || null;
+        if (isDirector) {
+            aiReference = reference ? `Confirmed by ${dbUser.name || 'Director'}: ${reference}` : `Directly Confirmed by ${dbUser.name || 'Director'}`;
+        }
 
         // Verify with AI if receipt image is provided
         if (receiptImage && needsVerification && process.env.GEMINI_API_KEY) {
@@ -118,6 +124,17 @@ Respond strictly in JSON format:
 
         // Transaction
         const result = await prisma.$transaction(async (tx) => {
+            if (isDirector && existingPending) {
+                // If resolving an existing pending payment
+                await tx.payment.update({
+                    where: { id: existingPending.id },
+                    data: {
+                        status: 'SUCCESS',
+                        reference: reference ? `${existingPending.reference || ''} | Confirmed by ${dbUser.name || 'Director'}: ${reference}` : existingPending.reference
+                    }
+                });
+            }
+
             const payment = await tx.payment.create({
                 data: {
                     invoiceId: invoice.id,

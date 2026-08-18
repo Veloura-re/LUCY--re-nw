@@ -131,3 +131,50 @@ export async function GET(request: Request) {
         return handleApiError(e);
     }
 }
+
+export async function POST(request: Request) {
+    try {
+        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const body: any = await request.json().catch(() => ({}));
+        const { studentId, amount, name = 'Tuition & Fee', description, dueDate } = body;
+
+        if (!studentId || !amount) {
+            return new NextResponse("Student ID and amount are required", { status: 400 });
+        }
+
+        const student = await prisma.student.findUnique({
+            where: { id: studentId }
+        });
+
+        if (!student || student.schoolId !== dbUser.schoolId) {
+            return new NextResponse("Student not found in your school", { status: 404 });
+        }
+
+        const invoice = await prisma.invoice.create({
+            data: {
+                studentId,
+                schoolId: dbUser.schoolId!,
+                amount: Number(amount),
+                status: 'PENDING',
+                dueDate: dueDate ? new Date(dueDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                items: {
+                    create: [
+                        {
+                            name: String(name),
+                            amount: Number(amount),
+                            description: description || 'Direct student billing'
+                        }
+                    ]
+                }
+            },
+            include: {
+                items: true,
+                payments: true
+            }
+        });
+
+        return NextResponse.json({ success: true, invoice });
+    } catch (e) {
+        return handleApiError(e);
+    }
+}
