@@ -1,0 +1,4 @@
+## 2024-10-30 - [Edge Crash & Predictable Tokens] Node Crypto and Math.random Usage in APIs
+**Vulnerability:** Predictable school codes generated using `Math.random()` and potential Edge environment (Cloudflare) build crashes using `require('crypto')` inside `app/api/admin/schools/route.ts`.
+**Learning:** In Next.js APIs compiled for Edge runtimes (Cloudflare workers), Node.js native bindings like `require('crypto')` cause severe build failures. In addition, using `Math.random()` for token or ID generation creates predictable outcomes which can be brute-forced or guessed by an attacker.
+**Prevention:** Always use `globalThis.crypto.getRandomValues()` or `globalThis.crypto.randomUUID()` for cryptographic security, randomness, and Edge runtime compatibility. Never use `Math.random()` for secure identifiers or tokens.

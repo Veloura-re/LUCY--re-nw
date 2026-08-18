@@ -100,8 +100,13 @@ export async function POST(request: Request) {
                 await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
             }
 
+            // SECURITY: Use Web Crypto instead of Math.random() for secure randomness
+            const randomVals = new Uint32Array(1);
+            globalThis.crypto.getRandomValues(randomVals);
+            const randomNum = randomVals[0] % 900;
+
             // Create school via Prisma
-            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + randomNum);
             const school = await prisma.school.create({
                 data: {
                     name,
@@ -110,9 +115,10 @@ export async function POST(request: Request) {
                 }
             });
 
-            // Create Invite Token
-            const crypto = require('crypto');
-            const token = crypto.randomBytes(32).toString('hex');
+            // SECURITY: Use Web Crypto instead of Node's crypto to prevent Edge runtime compilation crashes
+            const tokenBytes = new Uint8Array(32);
+            globalThis.crypto.getRandomValues(tokenBytes);
+            const token = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
             await prisma.inviteToken.create({
@@ -136,17 +142,24 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+        // SECURITY: Use Web Crypto instead of Math.random() for secure randomness
+        const fallbackRandomVals = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(fallbackRandomVals);
+        const fallbackRandomNum = fallbackRandomVals[0] % 900;
+
+        const fallbackSchoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + fallbackRandomNum);
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
-            .insert([{ name, schoolCode, status: 'ACTIVE' }])
+            .insert([{ name, schoolCode: fallbackSchoolCode, status: 'ACTIVE' }])
             .select()
             .single();
 
         if (schErr) throw schErr;
 
-        const crypto = require('crypto');
-        const token = crypto.randomBytes(32).toString('hex');
+        // SECURITY: Use Web Crypto instead of Node's crypto to prevent Edge runtime compilation crashes
+        const fallbackTokenBytes = new Uint8Array(32);
+        globalThis.crypto.getRandomValues(fallbackTokenBytes);
+        const token = Array.from(fallbackTokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
         await supabaseAdmin
