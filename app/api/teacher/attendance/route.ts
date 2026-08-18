@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
         if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-        const { classId, subjectId, examId, periodId, date, records } = await request.json();
+        const { classId, subjectId, examId, periodId, date, records }: any = await request.json().catch(() => ({}));
         const config = (user.school as any)?.attendanceConfig || {};
 
         const attendanceDate = new Date(date);

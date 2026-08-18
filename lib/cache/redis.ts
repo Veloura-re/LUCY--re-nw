@@ -84,7 +84,7 @@ async function executeRedisCommand<T = any>(command: string, ...args: (string | 
         });
 
         if (!res.ok) return null;
-        const data = await res.json();
+        const data = (await res.json()) as any;
         return data.result;
     } catch {
         return null;

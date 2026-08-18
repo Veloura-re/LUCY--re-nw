@@ -42,7 +42,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ stu
             ? await requireHomeroomAccess(student.classId)
             : await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const { content, term } = await request.json();
+        const { content, term }: any = await request.json().catch(() => ({}));
 
         const remark = await prisma.studentRemark.create({
             data: {

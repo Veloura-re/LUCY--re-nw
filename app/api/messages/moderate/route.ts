@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     try {
-        const { messageId, isPinned, isDeleted } = await req.json();
+        const { messageId, isPinned, isDeleted }: any = await req.json().catch(() => ({}));
 
         if (isDeleted) {
             await prisma.message.delete({

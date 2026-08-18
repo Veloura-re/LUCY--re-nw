@@ -42,7 +42,7 @@ export function FeeStructureModal({ isOpen, onClose, onSuccess, grades }: FeeStr
                 body: JSON.stringify(formData)
             });
 
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (!res.ok || data.error) {
                 toast.error(data.error || "Failed to authorize fee structure");
                 return;

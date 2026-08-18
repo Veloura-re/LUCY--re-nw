@@ -48,6 +48,8 @@ next-env.d.ts
 # local debug files
 *.txt
 *.log
+.archive
+scratch
 models_list.json
 db_debug_output.txt
 matched_files.txt

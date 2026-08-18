@@ -19,7 +19,7 @@ export default function StudentExamsPage() {
         const fetchExams = async () => {
             try {
                 const res = await fetch('/api/student/exams');
-                const data = await res.json();
+                const data = (await res.json()) as any;
                 if (data.exams) setExams(data.exams);
             } catch (e) {
                 console.error("Failed to fetch exams:", e);

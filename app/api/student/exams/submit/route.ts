@@ -9,7 +9,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Only students can submit exams' }, { status: 403 });
         }
 
-        const { examId, answers } = await request.json();
+        const { examId, answers }: any = await request.json().catch(() => ({}));
         if (!examId || !answers) return NextResponse.json({ error: 'Exam ID and answers are required' }, { status: 400 });
 
         const student = await prisma.student.findUnique({ where: { userId: dbUser.id } });

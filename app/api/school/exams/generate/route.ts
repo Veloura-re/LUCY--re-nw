@@ -7,7 +7,7 @@ export async function POST(request: Request) {
         // Auth guard: only teachers and above can generate AI exams
         const authUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
 
-        const body = await request.json();
+        const body: any = await request.json().catch(() => ({}));
         const { subject, topic, gradeLevel, count, type } = body;
 
         if (!subject || !topic || !gradeLevel) {

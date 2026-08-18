@@ -65,7 +65,7 @@ export async function PATCH(req: Request) {
     try {
         const dbUser = await requireRole(['STUDENT']);
 
-        const { photoUrl } = await req.json();
+        const { photoUrl }: any = await req.json().catch(() => ({}));
 
         const updated = await prisma.student.updateMany({
             where: { userId: dbUser.id },

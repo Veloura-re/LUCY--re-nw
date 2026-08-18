@@ -42,7 +42,7 @@ export default function TeacherSchedulePage() {
         setLoading(true);
         try {
             const res = await fetch('/api/user/timetable');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setTimetable(data.timetable || []);
         } catch (e) {
             console.error("Failed to fetch schedule", e);

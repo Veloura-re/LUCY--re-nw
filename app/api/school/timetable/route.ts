@@ -40,7 +40,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'PRINCIPAL']);
-        const { classId, subjectId, teacherId, periodId, dayOfWeek } = await request.json();
+        const { classId, subjectId, teacherId, periodId, dayOfWeek }: any = await request.json().catch(() => ({}));
 
         if (!classId || !subjectId || !teacherId || !periodId || !dayOfWeek) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

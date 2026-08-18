@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
-        const { targetUserId } = await request.json();
+        const { targetUserId }: any = await request.json().catch(() => ({}));
 
         if (targetUserId) {
             // Find target user by ID, email, or linked student

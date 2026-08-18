@@ -28,7 +28,7 @@ export default function AttendanceSettingsPage() {
     const fetchConfig = async () => {
         try {
             const res = await fetch('/api/school/attendance-config');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.config) {
                 setConfig(data.config);
             }

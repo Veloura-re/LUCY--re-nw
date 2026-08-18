@@ -19,7 +19,7 @@ export function StaffPaycheckView({ user }: { user: any }) {
     const fetchPaychecks = async () => {
         try {
             const res = await fetch('/api/school/finance/payroll');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             setPaychecks(data.paychecks || []);
         } catch (e) {
             console.error(e);

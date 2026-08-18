@@ -29,8 +29,8 @@ export default function TeacherLessonsPage() {
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/teacher/lessons').then(r => r.json()),
-            fetch('/api/teacher/classes').then(r => r.json()),
+            fetch('/api/teacher/lessons').then(r => r.json() as Promise<any>),
+            fetch('/api/teacher/classes').then(r => r.json() as Promise<any>),
         ]).then(([lessonData, classData]) => {
             setLessons(lessonData.lessons || []);
             setClasses(classData.classes || []);
@@ -50,10 +50,10 @@ export default function TeacherLessonsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form)
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (res.ok) {
                 // Refetch
-                const updated = await fetch('/api/teacher/lessons').then(r => r.json());
+                const updated = await fetch('/api/teacher/lessons').then(r => r.json() as Promise<any>);
                 setLessons(updated.lessons || []);
                 setShowModal(false);
                 setForm({ classId: "", subjectId: "", date: format(new Date(), 'yyyy-MM-dd'), topic: "", objectives: "", periodId: "" });
