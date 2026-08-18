@@ -107,7 +107,7 @@ export function DirectorAssignmentHub({ analytics, oversight }: DirectorAssignme
                                         }
                                     })
                                 });
-                                const data = await res.json();
+                                const data = (await res.json()) as any;
                                 if (data.insight) setInsight(data.insight);
                             } finally {
                                 setLoadingInsight(false);

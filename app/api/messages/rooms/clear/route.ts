@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-        const { chatRoomId } = await request.json();
+        const { chatRoomId }: any = await request.json().catch(() => ({}));
 
         if (!chatRoomId) {
             return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });

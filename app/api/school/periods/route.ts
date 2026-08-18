@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'PRINCIPAL']);
-        const { periods, classId } = await request.json(); // Array of { name, startTime, endTime, isBreak, order, id? }
+        const { periods, classId }: any = await request.json().catch(() => ({})); // Array of { name, startTime, endTime, isBreak, order, id? }
 
         if (!Array.isArray(periods)) {
             return NextResponse.json({ error: "Invalid payload" }, { status: 400 });

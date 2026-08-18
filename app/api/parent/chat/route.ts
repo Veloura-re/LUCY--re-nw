@@ -6,7 +6,7 @@ import { requireRole } from '@/lib/security';
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PARENT']);
-        const { message, previousHistory } = await request.json();
+        const { message, previousHistory }: any = await request.json().catch(() => ({}));
 
         // Fetch deep context for Parent Chatbot
         const parentContext = await prisma.user.findUnique({

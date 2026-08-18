@@ -37,7 +37,7 @@ export default function ExamEditorPage() {
     const fetchExam = async () => {
         try {
             const res = await fetch(`/api/teacher/exams/${params.id}`);
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.exam) {
                 setExam(data.exam);
                 setQuestions(data.exam.questions || []);
@@ -58,7 +58,7 @@ export default function ExamEditorPage() {
                 body: JSON.stringify(source)
             });
 
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.questions) {
                 const newQuestions = data.questions.map((q: any) => ({
                     ...q,
@@ -124,7 +124,7 @@ export default function ExamEditorPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ questions })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.questions) {
                 const remixed = data.questions.map((q: any) => ({
                     ...q,

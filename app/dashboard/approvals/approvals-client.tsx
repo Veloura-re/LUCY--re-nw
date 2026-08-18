@@ -16,7 +16,7 @@ export default function ApprovalsClient() {
         setLoading(true);
         try {
             const res = await fetch("/api/school/approvals");
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.requests) {
                 setRequests(data.requests);
             }
@@ -40,7 +40,7 @@ export default function ApprovalsClient() {
                 body: JSON.stringify({ requestId, resolution, reason: resolution === 'REJECTED' ? "Rejected by Owner" : "" })
             });
 
-            const data = await res.json();
+            const data = (await res.json()) as any;
 
             if (res.ok) {
                 setRequests(prev => prev.filter(r => r.id !== requestId));

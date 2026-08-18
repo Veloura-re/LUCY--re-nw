@@ -37,7 +37,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['PARENT']);
-        const body = await request.json();
+        const body: any = await request.json().catch(() => ({}));
         const { studentId, startDate, endDate, reason } = body;
 
         if (!studentId || !startDate || !endDate) {
