@@ -10,7 +10,7 @@ import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = await request.json();
+        const body: any = await request.json().catch(() => ({}));
         
         const { id, grade, feedback, status } = body;
 

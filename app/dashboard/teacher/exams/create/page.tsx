@@ -64,7 +64,7 @@ function CreateExamContent() {
     const fetchClasses = async () => {
         try {
             const res = await fetch('/api/teacher/classes');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.classes) setClasses(data.classes);
         } catch (e) {
             console.error(e);
@@ -99,7 +99,7 @@ function CreateExamContent() {
                     body: JSON.stringify({ image: base64 })
                 });
 
-                const data = await res.json();
+                const data = (await res.json()) as any;
                 if (data.questions) {
                     const newQuestions = data.questions.map((q: any) => ({
                         ...q,
@@ -187,7 +187,7 @@ function CreateExamContent() {
                     allowedTypes: aiAllowedTypes
                 })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.questions) {
                 const newQs = data.questions.map((q: any) => ({
                     ...q,

@@ -27,7 +27,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
         const fetchExam = async () => {
             try {
                 const res = await fetch(`/api/student/exams/${id}`);
-                const data = await res.json();
+                const data = (await res.json()) as any;
                 if (data.error) {
                     toast.error(data.error);
                     router.push("/dashboard/student/exams");
@@ -69,7 +69,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ answers })
             });
-            const data = await res.json();
+            const data = (await res.json()) as any;
 
             if (data.success) {
                 toast.success(`Assessment Concluded. Score: ${data.score.toFixed(1)}%`);

@@ -11,7 +11,7 @@ export async function POST(
         const { id } = await params;
         const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER']);
         const examId = id;
-        const { marks } = await request.json(); // Array of { studentId, score, remark }
+        const { marks }: any = await request.json().catch(() => ({})); // Array of { studentId, score, remark }
 
         // Fetch Exam to verify locking and details
         const exam = await prisma.exam.findUnique({

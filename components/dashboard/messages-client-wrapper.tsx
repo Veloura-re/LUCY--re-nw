@@ -188,7 +188,7 @@ export default function MessagesClientWrapper({
             });
 
             if (!res.ok) {
-                const errData = await res.json();
+                const errData = (await res.json()) as any;
                 setAlertConfig({
                     title: "Message Transmission Failed",
                     message: errData.error || "Unable to deliver transmission.",
@@ -197,7 +197,7 @@ export default function MessagesClientWrapper({
                 });
                 setMessages(prev => prev.filter(m => m.id !== tempId));
             } else {
-                const sentData = await res.json();
+                const sentData = (await res.json()) as any;
                 setMessages(prev => prev.map(m => m.id === tempId ? (sentData.message || m) : m));
             }
         } catch (err: any) {

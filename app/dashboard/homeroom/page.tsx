@@ -44,7 +44,7 @@ export default function HomeroomDashboard() {
     const fetchHomeroomInfo = async (userId: string) => {
         try {
             const res = await fetch('/api/school/classes');
-            const data = await res.json();
+            const data = (await res.json()) as any;
 
             // Find class where I am homeroom teacher or default to first class
             let found = null;
@@ -64,7 +64,7 @@ export default function HomeroomDashboard() {
             if (found) {
                 // Fetch full students list for this class
                 const sRes = await fetch(`/api/school/students?classId=${found.id}`);
-                const sData = await sRes.json();
+                const sData = (await sRes.json()) as any;
                 found.students = sData.students || [];
                 setMyClass(found);
             }
@@ -79,7 +79,7 @@ export default function HomeroomDashboard() {
         try {
             const formattedDate = format(date, 'yyyy-MM-dd');
             const res = await fetch(`/api/school/attendance?classId=${myClass.id}&date=${formattedDate}`);
-            const data = await res.json();
+            const data = (await res.json()) as any;
 
             const records: Record<string, { status: AttendanceStatus, reason?: string }> = {};
             const auths: Record<string, string> = {};

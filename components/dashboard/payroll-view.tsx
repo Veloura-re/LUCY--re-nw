@@ -54,8 +54,8 @@ export function PayrollView({ user, school }: PayrollViewProps) {
                 fetch('/api/director/payroll')
             ]);
 
-            const staffData = await staffRes.json();
-            const historyData = await historyRes.json();
+            const staffData = (await staffRes.json()) as any;
+            const historyData = (await historyRes.json()) as any;
 
             if (staffData.staff) setStaff(staffData.staff);
             if (Array.isArray(historyData)) setPayrollHistory(historyData);
@@ -105,12 +105,12 @@ export function PayrollView({ user, school }: PayrollViewProps) {
             });
 
             if (res.ok) {
-                const newRecord = await res.json();
+                const newRecord = (await res.json()) as any;
                 toast.success(`Disbursed $${totalAmount.toLocaleString()} to ${selectedMember.name}`);
                 setPayrollHistory([newRecord, ...payrollHistory]);
                 setSelectedMember(null);
             } else {
-                const errData = await res.json();
+                const errData = (await res.json()) as any;
                 toast.error(errData.error || "Failed to execute salary disbursement");
             }
         } catch (e) {

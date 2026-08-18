@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
 
-        const body = await req.json();
+        const body: any = await req.json().catch(() => ({}));
         const paymentId = body.paymentId || body.payId;
         const { status, reason } = body; // status = 'SUCCESS' or 'FAILED'
 

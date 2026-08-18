@@ -16,7 +16,7 @@ export default function StudentAttendancePage() {
     const fetchData = async () => {
         try {
             const res = await fetch('/api/student/attendance');
-            const data = await res.json();
+            const data = (await res.json()) as any;
             if (data.records) {
                 setRecords(data.records);
                 setStats(data.stats);

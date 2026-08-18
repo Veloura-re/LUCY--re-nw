@@ -192,7 +192,7 @@ export default function StudentFinanceDossier() {
                 toast.success(targetStatus === 'SUCCESS' ? "Payment approved and marked as PAID!" : "Payment rejected.");
                 await fetchData();
             } else {
-                const err = await res.json().catch(() => ({}));
+                const err = (await res.json().catch(() => ({}))) as any;
                 toast.error(err.error || "Failed to verify payment");
             }
         } catch (e) {

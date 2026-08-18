@@ -21,7 +21,7 @@ export default function ParentDashboard() {
 
     useEffect(() => {
         fetch('/api/parent/children')
-            .then(r => r.json())
+            .then(r => r.json() as Promise<any>)
             .then(d => setStudents(d.students || []))
             .finally(() => setLoading(false));
     }, []);
