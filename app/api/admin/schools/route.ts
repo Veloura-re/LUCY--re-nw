@@ -101,7 +101,8 @@ export async function POST(request: Request) {
             }
 
             // Create school via Prisma
-            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+            const randomVal = globalThis.crypto.getRandomValues(new Uint32Array(1))[0];
+            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + (randomVal % 900));
             const school = await prisma.school.create({
                 data: {
                     name,
@@ -111,8 +112,7 @@ export async function POST(request: Request) {
             });
 
             // Create Invite Token
-            const crypto = require('crypto');
-            const token = crypto.randomBytes(32).toString('hex');
+            const token = globalThis.crypto.randomUUID().replace(/-/g, '');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
             await prisma.inviteToken.create({
@@ -136,7 +136,8 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+        const randomVal = globalThis.crypto.getRandomValues(new Uint32Array(1))[0];
+        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + (randomVal % 900));
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
             .insert([{ name, schoolCode, status: 'ACTIVE' }])
@@ -145,8 +146,7 @@ export async function POST(request: Request) {
 
         if (schErr) throw schErr;
 
-        const crypto = require('crypto');
-        const token = crypto.randomBytes(32).toString('hex');
+        const token = globalThis.crypto.randomUUID().replace(/-/g, '');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
         await supabaseAdmin
