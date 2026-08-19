@@ -10,25 +10,6 @@ export async function GET(
     try {
         const dbUser = await requireRole(['STUDENT', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN']);
 
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: book, error } = await supabaseAdmin
-                .from('Book')
-                .select('*')
-                .eq('id', id)
-                .maybeSingle();
-
-            if (error) throw error;
-            if (!book || book.schoolId !== dbUser.schoolId) {
-                return new NextResponse("Book not found", { status: 404 });
-            }
-            return NextResponse.json(book);
-        }
-
         const book = await prisma.book.findUnique({
             where: { id },
             include: {

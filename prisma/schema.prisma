@@ -697,6 +697,7 @@ model AssignmentSubmission {
   feedback     String?
   gradedAt     DateTime?
   gradedById   String?
+  aiScanResult Json?
   assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   gradedBy     User?            @relation(fields: [gradedById], references: [id])
   school       School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)

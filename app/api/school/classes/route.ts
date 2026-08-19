@@ -11,68 +11,6 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const gradeId = searchParams.get('gradeId');
 
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-
-            if (gradeId) {
-                const { data: classesData, error } = await supabaseAdmin
-                    .from('Class')
-                    .select('id, name, grade:Grade(schoolId)')
-                    .eq('gradeId', gradeId);
-                if (error) throw error;
-
-                const classes = (classesData || [])
-                    .filter((c: any) => c.grade?.schoolId === dbUser.schoolId)
-                    .map((c: any) => ({ id: c.id, name: c.name }));
-
-                return NextResponse.json({ classes });
-            }
-
-            // Full nested response
-            const { data: gradesData, error: gErr } = await supabaseAdmin
-                .from('Grade')
-                .select('*')
-                .eq('schoolId', dbUser.schoolId)
-                .order('level', { ascending: true });
-            if (gErr) throw gErr;
-
-            // Fetch classes, teachers, student counts
-            const { data: classesData, error: cErr } = await supabaseAdmin
-                .from('Class')
-                .select('*, homeroomTeacher:User(id, name, email), students:Student(id)');
-            if (cErr) throw cErr;
-
-            const classMap = new Map<string, any[]>();
-            for (const c of (classesData || [])) {
-                if (!classMap.has(c.gradeId)) {
-                    classMap.set(c.gradeId, []);
-                }
-                classMap.get(c.gradeId)!.push({
-                    id: c.id,
-                    name: c.name,
-                    gradeId: c.gradeId,
-                    homeroomTeacherId: c.homeroomTeacherId,
-                    homeroomTeacher: c.homeroomTeacher,
-                    _count: { students: c.students?.length || 0 }
-                });
-            }
-
-            const grades = (gradesData || []).map((g: any) => {
-                const classes = classMap.get(g.id) || [];
-                classes.sort((a, b) => a.name.localeCompare(b.name));
-                return {
-                    ...g,
-                    classes
-                };
-            });
-
-            return NextResponse.json({ grades });
-        }
-
         // If gradeId is given, return flat classes for that grade (for dropdowns)
         if (gradeId) {
             const classes = await prisma.class.findMany({

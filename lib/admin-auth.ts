@@ -17,50 +17,22 @@ export async function verifySuperAdmin() {
         return null;
     }
 
-    let dbUser: any = null;
+    // Try direct ID lookup first
+    let dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { id: true, role: true, email: true }
+    });
 
-    if (!prisma) {
-        const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-        const supabaseAdmin = createSupabaseAdmin(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
-        const { data: u1 } = await supabaseAdmin
-            .from('User')
-            .select('id, role, email')
-            .eq('id', user.id)
-            .maybeSingle();
-        dbUser = u1;
-        if (!dbUser && user.email) {
-            const { data: u2 } = await supabaseAdmin
-                .from('User')
-                .select('id, role, email')
-                .eq('email', user.email)
-                .maybeSingle();
-            dbUser = u2;
-            if (dbUser && dbUser.id !== user.id) {
-                console.error(`[AdminAuth] CRITICAL SECURITY ALERT (Edge): ID Mismatch for ${user.email}. Access Denied.`);
-                return null;
-            }
-        }
-    } else {
-        // Try direct ID lookup first
+    // Fallback: email-based lookup (Read-only, NO auto-sync for SUPERADMIN to prevent spoofing)
+    if (!dbUser && user.email) {
         dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { email: user.email },
             select: { id: true, role: true, email: true }
         });
-
-        // Fallback: email-based lookup (Read-only, NO auto-sync for SUPERADMIN to prevent spoofing)
-        if (!dbUser && user.email) {
-            dbUser = await prisma.user.findUnique({
-                where: { email: user.email },
-                select: { id: true, role: true, email: true }
-            });
-            
-            if (dbUser && dbUser.id !== user.id) {
-                console.error(`[AdminAuth] CRITICAL SECURITY ALERT: ID Mismatch for ${user.email}. Supabase ID: ${user.id}, Database ID: ${dbUser.id}. Access Denied to prevent account takeover.`);
-                return null;
-            }
+        
+        if (dbUser && dbUser.id !== user.id) {
+            console.error(`[AdminAuth] CRITICAL SECURITY ALERT: ID Mismatch for ${user.email}. Supabase ID: ${user.id}, Database ID: ${dbUser.id}. Access Denied to prevent account takeover.`);
+            return null;
         }
     }
 
@@ -69,6 +41,5 @@ export async function verifySuperAdmin() {
         return null;
     }
 
-    console.log(`[AdminAuth] Authorized SuperAdmin: ${dbUser.email}`);
     return dbUser;
 }

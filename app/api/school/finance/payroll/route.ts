@@ -9,21 +9,6 @@ export async function GET() {
 
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: paychecks, error } = await supabaseAdmin
-                .from('StaffPayroll')
-                .select('*')
-                .eq('userId', user.id)
-                .order('createdAt', { ascending: false });
-            if (error) throw error;
-            return NextResponse.json({ paychecks });
-        }
-
         const paychecks = await (prisma as any).staffPayroll.findMany({
             where: { userId: user.id },
             orderBy: { createdAt: 'desc' }

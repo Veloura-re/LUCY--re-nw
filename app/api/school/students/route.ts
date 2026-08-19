@@ -9,6 +9,7 @@ import { getPaginatedSchoolStudents } from '@/lib/services/students';
 import { Gender } from '@prisma/client';
 import { Decimal } from 'decimal.js';
 import { z } from 'zod';
+import { getCachedUser } from '@/lib/users';
 
 const StudentCreateSchema = z.object({
     firstName: z.string().min(1, "First name is required").max(100).transform(sanitizeInput),
@@ -99,7 +100,6 @@ export async function POST(request: Request) {
         let targetSchoolId = user.schoolId;
         if (!targetSchoolId) {
             try {
-                const { getCachedUser } = require('@/lib/users');
                 const enriched = await getCachedUser(user.id);
                 targetSchoolId = enriched?.schoolId || null;
             } catch {}

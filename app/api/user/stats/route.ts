@@ -10,57 +10,29 @@ export async function GET(request: Request) {
         let studentId = '';
 
         if (user.role === 'STUDENT') {
-            if (!prisma) {
-                const { createClient } = require('@supabase/supabase-js');
-                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                const { data } = await supabaseAdmin.from('Student').select('id, firstName, lastName, classId, schoolId').eq('userId', user.id).single();
-                if (!data) return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
-                studentId = data.id;
-            } else {
-                const student = await prisma.student.findUnique({ where: { userId: user.id } });
-                if (!student) return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
-                studentId = student.id;
-            }
+            const studentRecord = await prisma.student.findUnique({ where: { userId: user.id } });
+            if (!studentRecord) return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
+            studentId = studentRecord.id;
         } else {
             const childId = searchParams.get('childId');
             if (!childId) return NextResponse.json({ error: 'childId required' }, { status: 400 });
             studentId = childId;
         }
 
-        let student;
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin.from('Student').select('*, class:Class(id, name, teacherAssignments:TeacherAssignment(subjectId))').eq('id', studentId).single();
-            student = data;
-        } else {
-            student = await prisma.student.findUnique({
-                where: { id: studentId },
-                include: {
-                    class: {
-                        include: {
-                            teacherAssignments: {
-                                include: { subject: true, teacher: true }
-                            }
+        const student = await prisma.student.findUnique({
+            where: { id: studentId },
+            include: {
+                class: {
+                    include: {
+                        teacherAssignments: {
+                            include: { subject: true, teacher: true }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
         if (!student) return NextResponse.json({ error: 'Student not found' }, { status: 404 });
-
-        // If Edge, return basic fallback data quickly
-        if (!prisma) {
-            return NextResponse.json({
-                studentName: `${student.firstName} ${student.lastName}`,
-                attendanceRate: 100,
-                subjectStats: [],
-                gpa: "0.0",
-                nextSession: null,
-                assignments: { recent: [], pendingCount: 0 }
-            });
-        }
 
         // 1. Fetch Grades
         const grades = await prisma.gradeRecord.findMany({

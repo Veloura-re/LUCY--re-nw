@@ -28,21 +28,10 @@ export default async function BillingPage() {
 
     if (school?.id) {
         try {
-            if (prisma) {
-                receipts = await prisma.billingReceipt.findMany({
-                    where: { schoolId: school.id },
-                    orderBy: { createdAt: 'desc' }
-                });
-            } else {
-                const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-                const supabaseAdmin = createSupabaseAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                const { data } = await supabaseAdmin
-                    .from('BillingReceipt')
-                    .select('*')
-                    .eq('schoolId', school.id)
-                    .order('createdAt', { ascending: false });
-                receipts = data || [];
-            }
+            receipts = await prisma.billingReceipt.findMany({
+                where: { schoolId: school.id },
+                orderBy: { createdAt: 'desc' }
+            });
         } catch (e) {
             console.error('[BillingPage] Receipt fetch error:', e);
         }
