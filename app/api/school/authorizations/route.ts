@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, requireSchoolLinked, handleApiError } from '@/lib/security';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function GET(request: Request) {
     try {
@@ -9,82 +11,6 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const studentId = searchParams.get('studentId');
         const status = searchParams.get('status') as any;
-
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-
-            // Fetch students and users in this school for mapping
-            const [studentsRes, usersRes] = await Promise.all([
-                supabaseAdmin
-                    .from('Student')
-                    .select('id, firstName, lastName, studentCode, schoolId')
-                    .eq('schoolId', dbUser.schoolId),
-                supabaseAdmin
-                    .from('User')
-                    .select('id, name, email, role, schoolId')
-                    .eq('schoolId', dbUser.schoolId)
-            ]);
-
-            const validStudentIds = (studentsRes.data || []).map((s: any) => s.id);
-            const validUserIds = (usersRes.data || []).map((u: any) => u.id);
-
-            let query = supabaseAdmin
-                .from('AbsenceAuthorization')
-                .select('*')
-                .order('createdAt', { ascending: false });
-
-            if (dbUser.role !== 'SUPERADMIN') {
-                if (validStudentIds.length === 0 && validUserIds.length === 0) {
-                    return NextResponse.json({ authorizations: [] });
-                }
-                const filterParts = [];
-                if (validStudentIds.length > 0) filterParts.push(`studentId.in.(${validStudentIds.join(',')})`);
-                if (validUserIds.length > 0) {
-                    filterParts.push(`requestorId.in.(${validUserIds.join(',')})`);
-                    filterParts.push(`userId.in.(${validUserIds.join(',')})`);
-                }
-                query = query.or(filterParts.join(','));
-            }
-
-            if (status) {
-                query = query.eq('status', status);
-            }
-            if (studentId) {
-                query = query.eq('studentId', studentId);
-            }
-
-            const { data: authData, error } = await query;
-            if (error) throw error;
-
-            const studentMap = new Map((studentsRes.data || []).map((s: any) => [s.id, s]));
-            const userMap = new Map((usersRes.data || []).map((u: any) => [u.id, u]));
-
-            const authorizations = (authData || []).map((auth: any) => {
-                const student = auth.studentId ? studentMap.get(auth.studentId) as any : null;
-                const user = auth.userId ? userMap.get(auth.userId) as any : null;
-                const requestor = auth.requestorId ? userMap.get(auth.requestorId) as any : null;
-
-                const belongsToSchool =
-                    (student && student.schoolId === dbUser.schoolId) ||
-                    (user && user.schoolId === dbUser.schoolId) ||
-                    (requestor && requestor.schoolId === dbUser.schoolId);
-
-                if (!belongsToSchool) return null;
-
-                return {
-                    ...auth,
-                    student,
-                    user,
-                    requestor
-                };
-            }).filter(Boolean);
-
-            return NextResponse.json({ authorizations });
-        }
 
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '50');
@@ -137,60 +63,14 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
     try {
-        // Only Staff can approve
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM', 'SUPERADMIN']);
         const schoolId = dbUser.schoolId;
 
-        const body = await request.json() as { id?: string; status?: string };
+        const body = (await request.json().catch(() => ({}))) as { id?: string; status?: string };
         const { id, status } = body;
 
         if (!id || !status || !['APPROVED', 'REJECTED', 'PENDING'].includes(status)) {
             return NextResponse.json({ error: 'Valid ID and Status required (APPROVED, REJECTED, PENDING)' }, { status: 400 });
-        }
-
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            
-            // Verify tenant ownership first
-            const { data: existingAuth, error: fetchErr } = await (supabaseAdmin as any)
-                .from('AbsenceAuthorization')
-                .select('*, student:Student(schoolId), user:User(schoolId)')
-                .eq('id', id)
-                .single();
-
-            if (fetchErr || !existingAuth) {
-                return NextResponse.json({ error: 'Authorization not found' }, { status: 404 });
-            }
-
-            if (dbUser.role !== 'SUPERADMIN') {
-                const belongs = existingAuth.student?.schoolId === schoolId || existingAuth.user?.schoolId === schoolId;
-                if (!belongs) {
-                    return NextResponse.json({ error: 'Forbidden: Authorization belongs to another school' }, { status: 403 });
-                }
-            }
-
-            const { data: auth, error } = await (supabaseAdmin as any)
-                .from('AbsenceAuthorization')
-                .update({ status })
-                .eq('id', id)
-                .select()
-                .single();
-            if (error) throw error;
-            
-            // Invalidate cache
-            if (schoolId) {
-                try {
-                    const { revalidateTag } = await import('next/cache');
-                    const { CACHE_TAGS, getSchoolTag } = await import('@/lib/cache-keys');
-                    revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, schoolId), 'max');
-                } catch { /* non-blocking */ }
-            }
-
-            return NextResponse.json({ id: auth.id, status: auth.status });
         }
 
         // 1. Verify Tenant Scoping
@@ -243,8 +123,6 @@ export async function PATCH(request: Request) {
         // 3. Invalidate attendance cache
         if (schoolId) {
             try {
-                const { revalidateTag } = await import('next/cache');
-                const { CACHE_TAGS, getSchoolTag } = await import('@/lib/cache-keys');
                 revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, schoolId), 'max');
             } catch { /* non-blocking */ }
         }
@@ -254,7 +132,7 @@ export async function PATCH(request: Request) {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
-                await logActivity({ userId: dbUser.id, action: 'UPDATE', resourceType: 'authorization', ip: _ip });
+                await logActivity({ userId: dbUser.id, schoolId: dbUser.schoolId, action: 'UPDATE_AUTHORIZATION', resourceType: 'authorization', ip: _ip });
             }
         } catch { /* non-blocking */ }
 

@@ -6,26 +6,8 @@ export async function GET() {
     try {
         const dbUser = await requireAuth();
 
-        let user: any = null;
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin.from('User').select('*, school:School(*)').eq('id', dbUser.id).single();
-            user = {
-                id: data?.id,
-                email: data?.email,
-                name: data?.name,
-                role: data?.role,
-                schoolId: data?.schoolId,
-                bio: data?.bio,
-                preferences: data?.preferences,
-                school: data?.school || null,
-                parentLinks: [],
-                teacherAssignments: []
-            };
-        } else {
-            user = await prisma.user.findUnique({
-                where: { id: dbUser.id },
+        const user: any = await prisma.user.findUnique({
+            where: { id: dbUser.id },
                 select: {
                     id: true,
                     email: true,
@@ -131,33 +113,19 @@ export async function GET() {
                     }
                 }
             }
+
+            return NextResponse.json({ user });
+        } catch (e) {
+            return handleApiError(e);
         }
-
-        return NextResponse.json({ user });
-    } catch (e) {
-        return handleApiError(e);
     }
-}
 
-export async function PATCH(request: Request) {
-    try {
-        const dbUser = await requireAuth();
-        const { name, bio, preferences } = ((await request.json()) || {}) as any;
+    export async function PATCH(request: Request) {
+        try {
+            const dbUser = await requireAuth();
+            const { name, bio, preferences } = ((await request.json()) || {}) as any;
 
-        let user;
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data, error } = await supabaseAdmin
-                .from('User')
-                .update({ name, bio, preferences })
-                .eq('id', dbUser.id)
-                .select()
-                .single();
-            if (error) throw error;
-            user = data;
-        } else {
-            user = await prisma.user.update({
+            const user = await prisma.user.update({
                 where: { id: dbUser.id },
                 data: {
                     name,
@@ -165,7 +133,6 @@ export async function PATCH(request: Request) {
                     preferences
                 }
             });
-        }
 
         // Audit log
         try {

@@ -48,27 +48,15 @@ export async function POST(request: Request) {
                 // Grant 35 days (1 month + grace) to avoid race conditions with next billing cycle
                 const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000); 
 
-                if (!prisma) {
-                    const { createClient } = require('@supabase/supabase-js');
-                    const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                    
-                    await supabaseAdmin.from('School').update({
+                await prisma.school.update({
+                    where: { id: schoolId },
+                    data: {
                         subscriptionStatus: 'active',
                         stripeCustomerId: customerId,
                         stripeSubscriptionId: subscriptionId,
-                        trialEndsAt: extendedTrialDate.toISOString()
-                    }).eq('id', schoolId);
-                } else {
-                    await prisma.school.update({
-                        where: { id: schoolId },
-                        data: {
-                            subscriptionStatus: 'active',
-                            stripeCustomerId: customerId,
-                            stripeSubscriptionId: subscriptionId,
-                            trialEndsAt: extendedTrialDate
-                        }
-                    });
-                }
+                        trialEndsAt: extendedTrialDate
+                    }
+                });
                 console.log(`Successfully activated subscription for school ${schoolId}`);
                 break;
             }
@@ -80,23 +68,13 @@ export async function POST(request: Request) {
                 // Whenever a recurring payment succeeds, push out the expiration
                 const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000); 
 
-                if (!prisma) {
-                    const { createClient } = require('@supabase/supabase-js');
-                    const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                    
-                    await supabaseAdmin.from('School').update({
+                await prisma.school.updateMany({
+                    where: { stripeCustomerId: customerId },
+                    data: {
                         subscriptionStatus: 'active',
-                        trialEndsAt: extendedTrialDate.toISOString()
-                    }).eq('stripeCustomerId', customerId);
-                } else {
-                    await prisma.school.updateMany({
-                        where: { stripeCustomerId: customerId },
-                        data: {
-                            subscriptionStatus: 'active',
-                            trialEndsAt: extendedTrialDate
-                        }
-                    });
-                }
+                        trialEndsAt: extendedTrialDate
+                    }
+                });
                 console.log(`Recurring payment successful for customer ${customerId}`);
                 break;
             }
@@ -105,21 +83,12 @@ export async function POST(request: Request) {
                 const subscription = event.data.object as Stripe.Subscription;
                 const customerId = subscription.customer as string;
 
-                if (!prisma) {
-                    const { createClient } = require('@supabase/supabase-js');
-                    const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                    
-                    await supabaseAdmin.from('School').update({
+                await prisma.school.updateMany({
+                    where: { stripeCustomerId: customerId },
+                    data: {
                         subscriptionStatus: 'inactive',
-                    }).eq('stripeCustomerId', customerId);
-                } else {
-                    await prisma.school.updateMany({
-                        where: { stripeCustomerId: customerId },
-                        data: {
-                            subscriptionStatus: 'inactive',
-                        }
-                    });
-                }
+                    }
+                });
                 console.log(`Subscription deleted for customer ${customerId}`);
                 break;
             }

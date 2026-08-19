@@ -42,10 +42,11 @@ export async function POST(req: Request) {
                 });
             }
 
-            // Log the action
+            // Log the action with multi-tenant isolation
             await tx.auditLog.create({
                 data: {
                     userId: dbUser.id,
+                    schoolId: dbUser.schoolId,
                     action: status === 'SUCCESS' ? "PAYMENT_VERIFIED" : "PAYMENT_REJECTED",
                     resourceType: "PAYMENT",
                     resourceId: paymentId,

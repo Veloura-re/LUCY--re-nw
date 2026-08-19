@@ -25,7 +25,6 @@ export async function POST(req: Request) {
             } else if (!['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) {
                 return NextResponse.json({ error: "Forbidden" }, { status: 403 });
             } else {
-                // Admin can update anyone? Need to find student's userId
                 const student = await prisma.student.findUnique({
                     where: { id: studentId, schoolId: dbUser.schoolId! },
                     select: { userId: true }
@@ -64,43 +63,6 @@ export async function GET(req: Request) {
         const studentId = searchParams.get("studentId");
 
         let targetUserId = dbUser.id;
-
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-
-            if (studentId) {
-                if (dbUser.role === 'PARENT') {
-                    const { data: link } = await supabaseAdmin
-                        .from('ParentStudentLink')
-                        .select('*, student:Student(*)')
-                        .eq('parentId', dbUser.id)
-                        .eq('studentId', studentId)
-                        .maybeSingle();
-                    if (!link) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-                    if (link.student.userId) targetUserId = link.student.userId;
-                } else if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
-                    const { data: student } = await supabaseAdmin
-                        .from('Student')
-                        .select('userId')
-                        .eq('id', studentId)
-                        .eq('schoolId', dbUser.schoolId!)
-                        .maybeSingle();
-                    if (student?.userId) targetUserId = student.userId;
-                }
-            }
-
-            const { data: progress, error } = await supabaseAdmin
-                .from('ResourceProgress')
-                .select('*')
-                .eq('userId', targetUserId);
-
-            if (error) throw error;
-            return NextResponse.json(progress);
-        }
 
         if (studentId) {
             if (dbUser.role === 'PARENT') {
