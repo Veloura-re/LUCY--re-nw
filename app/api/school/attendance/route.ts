@@ -20,7 +20,6 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
         }
 
-        // Fetch from the optimized, cached service
         const data = await getAttendanceSystem(user.schoolId!, classId, date, subjectId, periodId);
 
         return NextResponse.json(data);
@@ -33,21 +32,13 @@ export async function POST(request: Request) {
     try {
         const authUser = await requireSchoolLinked();
 
-        let user: any = null;
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin.from('User').select('*, school:School(attendanceConfig)').eq('id', authUser.id).single();
-            user = data;
-        } else {
-            user = await prisma.user.findUnique({
-                where: { id: authUser.id },
-                include: { school: true }
-            });
-        }
+        const user = await prisma.user.findUnique({
+            where: { id: authUser.id },
+            include: { school: true }
+        });
         if (!user || !user.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
-        const body = (await request.json()) as any;
+        const body = (await request.json().catch(() => ({}))) as any;
         const { classId, date, subjectId, periodId, examId, records, seal } = body;
 
         const attendanceDate = new Date(date);
@@ -57,33 +48,16 @@ export async function POST(request: Request) {
 
         // 1. Exam Locking Logic
         if (examId) {
-            let isLocked = false;
-            if (!prisma) {
-                const { createClient } = require('@supabase/supabase-js');
-                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                const { data } = await supabaseAdmin.from('Exam').select('isLocked').eq('id', examId).single();
-                isLocked = data?.isLocked;
-            } else {
-                const exam = await prisma.exam.findUnique({ where: { id: examId } });
-                isLocked = exam?.isLocked;
-            }
-            if (isLocked) {
+            const exam = await prisma.exam.findUnique({ where: { id: examId } });
+            if (exam?.isLocked) {
                 return NextResponse.json({ error: 'Records are locked for this finalized exam.' }, { status: 403 });
             }
         }
 
         // 2. Attendance Locking Logic (Operational Window)
         if (periodId && config.lockAfterMinutes) {
-            let periodStartTime = null;
-            if (!prisma) {
-                const { createClient } = require('@supabase/supabase-js');
-                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                const { data } = await supabaseAdmin.from('Period').select('startTime').eq('id', periodId).single();
-                periodStartTime = data?.startTime;
-            } else {
-                const period = await prisma.period.findUnique({ where: { id: periodId } });
-                periodStartTime = period?.startTime;
-            }
+            const period = await prisma.period.findUnique({ where: { id: periodId } });
+            const periodStartTime = period?.startTime;
             
             if (periodStartTime) {
                 const now = new Date();
@@ -103,116 +77,71 @@ export async function POST(request: Request) {
         }
 
         // 3. Manual Sealing Lock Check
-        let existingLocked = false;
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            let query = supabaseAdmin.from('AttendanceRecord').select('id').eq('classId', classId).eq('date', attendanceDate.toISOString()).eq('isLocked', true);
-            if (subjectId) query = query.eq('subjectId', subjectId);
-            if (periodId) query = query.eq('periodId', periodId);
-            if (examId) query = query.eq('examId', examId);
-            const { data } = await query.maybeSingle();
-            existingLocked = !!data;
-        } else {
-            const record = await prisma.attendanceRecord.findFirst({
-                where: {
-                    classId,
-                    date: attendanceDate,
-                    subjectId: subjectId || null,
-                    periodId: periodId || null,
-                    examId: examId || null,
-                    isLocked: true
-                }
-            });
-            existingLocked = !!record;
-        }
+        const record = await prisma.attendanceRecord.findFirst({
+            where: {
+                classId,
+                date: attendanceDate,
+                subjectId: subjectId || null,
+                periodId: periodId || null,
+                examId: examId || null,
+                isLocked: true
+            }
+        });
 
-        if (existingLocked && !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
+        if (record && !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(user.role)) {
             return NextResponse.json({
                 error: 'Institutional Protocol: This log has been sealed and cannot be modified by staff. Contact administration for overrides.'
             }, { status: 403 });
         }
 
-        // 4. Atomic Update via Transaction (or Supabase fallback)
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            
-            // Delete old records
-            let delQuery = supabaseAdmin.from('AttendanceRecord').delete()
-                .eq('classId', classId).eq('date', attendanceDate.toISOString());
-            if (subjectId) delQuery = delQuery.eq('subjectId', subjectId);
-            if (periodId) delQuery = delQuery.eq('periodId', periodId);
-            if (examId) delQuery = delQuery.eq('examId', examId);
-            await delQuery;
-
-            // Insert new records
-            if (records.length > 0) {
-                const insertData = records.map((record: any) => ({
-                    id: crypto.randomUUID(),
-                    studentId: record.studentId,
+        // 4. Atomic Update via Transaction
+        await prisma.$transaction(async (tx) => {
+            // Purge existing records for this specific metadata
+            await tx.attendanceRecord.deleteMany({
+                where: {
                     classId,
+                    class: { grade: { schoolId: user.schoolId! } },
+                    date: attendanceDate,
                     subjectId: subjectId || null,
                     periodId: periodId || null,
-                    examId: examId || null,
-                    date: attendanceDate.toISOString(),
-                    status: record.status,
-                    reason: record.reason || null,
-                    createdById: user.id,
-                    isLocked: (seal === true),
-                    lockedAt: (seal === true) ? new Date().toISOString() : null,
-                    lockedById: (seal === true) ? user.id : null
-                }));
-                const { error } = await supabaseAdmin.from('AttendanceRecord').insert(insertData);
-                if (error) throw new Error(error.message);
-            }
-        } else {
-            await prisma.$transaction(async (tx) => {
-                // Purge existing records for this specific metadata
-                await tx.attendanceRecord.deleteMany({
-                    where: {
-                        classId,
-                        class: { grade: { schoolId: user.schoolId! } },
-                        date: attendanceDate,
-                        subjectId: subjectId || null,
-                        periodId: periodId || null,
-                        examId: examId || null
-                    }
-                });
-
-                // Bulk Insert new records
-                if (records.length > 0) {
-                    await tx.attendanceRecord.createMany({
-                        data: records.map((record: any) => ({
-                            studentId: record.studentId,
-                            classId,
-                            subjectId: subjectId || null,
-                            periodId: periodId || null,
-                            examId: examId || null,
-                            date: attendanceDate,
-                            status: record.status,
-                            reason: record.reason || null,
-                            createdById: user.id,
-                            isLocked: (seal === true),
-                            lockedAt: (seal === true) ? new Date() : null,
-                            lockedById: (seal === true) ? user.id : null
-                        }))
-                    });
+                    examId: examId || null
                 }
             });
-        }
+
+            // Bulk Insert new records
+            if (records && records.length > 0) {
+                await tx.attendanceRecord.createMany({
+                    data: records.map((rec: any) => ({
+                        studentId: rec.studentId,
+                        classId,
+                        subjectId: subjectId || null,
+                        periodId: periodId || null,
+                        examId: examId || null,
+                        date: attendanceDate,
+                        status: rec.status,
+                        reason: rec.reason || null,
+                        createdById: user.id,
+                        isLocked: (seal === true),
+                        lockedAt: (seal === true) ? new Date() : null,
+                        lockedById: (seal === true) ? user.id : null
+                    }))
+                });
+            }
+        });
 
         // Trigger Cache Invalidation for the attendance system
-        revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId), 'max');
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_ATTENDANCE, user.schoolId), 'max');
+        } catch { /* non-blocking */ }
 
         // 5. Asynchronous Notification Dispatch
-        const lateRecords = records.filter((r: any) => r.status === 'LATE');
+        const lateRecords = (records || []).filter((r: any) => r.status === 'LATE');
         if (lateRecords.length > 0) {
             (async () => {
                 try {
-                    for (const record of lateRecords) {
+                    for (const rec of lateRecords) {
                         const student = await prisma.student.findUnique({
-                            where: { id: record.studentId },
+                            where: { id: rec.studentId },
                             include: {
                                 parentLinks: { include: { parent: true } },
                                 attendanceRecords: { where: { status: 'LATE' } }
@@ -247,17 +176,14 @@ export async function POST(request: Request) {
             })();
         }
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'attendance', ip: _ip || undefined });
-            }
+            await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'CREATE_ATTENDANCE', resourceType: 'attendance', ip: _ip || undefined });
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, count: records.length });
+
+        return NextResponse.json({ success: true, count: records?.length || 0 });
 
     } catch (e) {
         return handleApiError(e);

@@ -53,25 +53,10 @@ export async function requireAuth() {
 export async function requireRole(allowedRoles: Role[]) {
     const user = await requireAuth();
 
-    let dbUser: any = null;
-
-    if (!prisma) {
-        // Edge runtime: use Supabase directly for speed and compatibility
-        const { createClient } = require('@supabase/supabase-js');
-        const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-        const { data } = await supabaseAdmin
-            .from('User')
-            .select('id, role, schoolId, name')
-            .eq('id', user.id)
-            .single();
-        dbUser = data;
-    } else {
-        // Node runtime: use Prisma
-        dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { id: true, role: true, schoolId: true, name: true }
-        });
-    }
+    const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
+    });
 
     if (!dbUser) {
         throw new Error("Unauthorized: User record not found");
@@ -104,36 +89,25 @@ export async function requireRole(allowedRoles: Role[]) {
 export async function requireSchoolLinked() {
     const user = await requireAuth();
     
-    let dbUser: any = null;
-
-    if (!prisma) {
-        const { createClient } = await import('@supabase/supabase-js');
-        const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-        const { data } = await supabaseAdmin
-            .from('User')
-            .select('id, role, schoolId')
-            .or(`id.eq.${user.id},email.eq.${user.email}`)
-            .limit(1)
-            .maybeSingle();
-        dbUser = data;
-    } else {
-        dbUser = await prisma.user.findFirst({
-            where: {
-                OR: [
-                    { id: user.id },
-                    { email: user.email || '' }
-                ]
-            },
-            select: { id: true, role: true, schoolId: true }
-        });
-    }
+    let dbUser = await prisma.user.findFirst({
+        where: {
+            OR: [
+                { id: user.id },
+                { email: user.email || '' }
+            ]
+        },
+        select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
+    });
 
     if (!dbUser) {
         // Fallback: Use auth user profile
         dbUser = {
             id: user.id,
             role: user.user_metadata?.role || 'OWNER',
-            schoolId: user.user_metadata?.schoolId || null
+            schoolId: user.user_metadata?.schoolId || null,
+            name: user.user_metadata?.full_name || '',
+            email: user.email || '',
+            preferences: null
         };
     }
 
@@ -162,23 +136,10 @@ export async function requireHomeroomAccess(classId: string) {
     const user = await requireRole(['TEACHER', 'HOMEROOM', 'OWNER', 'PRINCIPAL', 'SUPERADMIN']);
     if (user.role === 'OWNER' || user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
 
-    let classRecord: any = null;
-
-    if (!prisma) {
-        const { createClient } = require('@supabase/supabase-js');
-        const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-        const { data } = await supabaseAdmin
-            .from('Class')
-            .select('homeroomTeacherId')
-            .eq('id', classId)
-            .single();
-        classRecord = data;
-    } else {
-        classRecord = await prisma.class.findUnique({
-            where: { id: classId },
-            select: { homeroomTeacherId: true }
-        });
-    }
+    const classRecord = await prisma.class.findUnique({
+        where: { id: classId },
+        select: { homeroomTeacherId: true }
+    });
 
     if (classRecord?.homeroomTeacherId !== user.id) {
         throw new Error("Forbidden: You are not the homeroom teacher for this class");
@@ -188,23 +149,10 @@ export async function requireHomeroomAccess(classId: string) {
 }
 
 export async function isHomeroomTeacher(userId: string, classId: string) {
-    let classRecord: any = null;
-
-    if (!prisma) {
-        const { createClient } = require('@supabase/supabase-js');
-        const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-        const { data } = await supabaseAdmin
-            .from('Class')
-            .select('homeroomTeacherId')
-            .eq('id', classId)
-            .single();
-        classRecord = data;
-    } else {
-        classRecord = await prisma.class.findUnique({
-            where: { id: classId },
-            select: { homeroomTeacherId: true }
-        });
-    }
+    const classRecord = await prisma.class.findUnique({
+        where: { id: classId },
+        select: { homeroomTeacherId: true }
+    });
     return classRecord?.homeroomTeacherId === userId;
 }
 

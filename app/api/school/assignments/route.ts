@@ -13,58 +13,30 @@ export async function GET(request: Request) {
         const assignmentId = searchParams.get('id');
 
         if (assignmentId) {
-            let assignment;
-            if (!prisma) {
-                const { createClient } = require('@supabase/supabase-js');
-                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                const { data, error } = await supabaseAdmin.from('Assignment')
-                    .select('*, class:Class(name), subject:Subject(name), submissions:AssignmentSubmission(*, student:Student(firstName, lastName, studentCode))')
-                    .eq('id', assignmentId)
-                    .eq('schoolId', user.schoolId!)
-                    .single();
-                if (error) throw new Error(error.message);
-                assignment = data;
-            } else {
-                assignment = await prisma.assignment.findUnique({
-                    where: { id: assignmentId, schoolId: user.schoolId! },
-                    include: {
-                        class: { select: { name: true } },
-                        subject: { select: { name: true } },
-                        submissions: {
-                            include: {
-                                student: { select: { firstName: true, lastName: true, studentCode: true } }
-                            }
+            const assignment = await prisma.assignment.findUnique({
+                where: { id: assignmentId, schoolId: user.schoolId! },
+                include: {
+                    class: { select: { name: true } },
+                    subject: { select: { name: true } },
+                    submissions: {
+                        include: {
+                            student: { select: { firstName: true, lastName: true, studentCode: true } }
                         }
                     }
-                });
-            }
+                }
+            });
             return NextResponse.json({ assignment });
         }
 
         if (classId) {
-            let assignments;
-            if (!prisma) {
-                const { createClient } = require('@supabase/supabase-js');
-                const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-                // Complex aggregate query is harder in REST, fetch related data separately or use simpler format
-                const { data, error } = await supabaseAdmin.from('Assignment')
-                    .select('*, subject:Subject(name)')
-                    .eq('classId', classId)
-                    .eq('schoolId', user.schoolId!)
-                    .order('dueDate', { ascending: false });
-                if (error) throw new Error(error.message);
-                // We'd manually attach _count.submissions here if needed, but omitted for edge speed
-                assignments = data;
-            } else {
-                assignments = await prisma.assignment.findMany({
-                    where: { classId, schoolId: user.schoolId! },
-                    include: {
-                        subject: { select: { name: true } },
-                        _count: { select: { submissions: true } }
-                    },
-                    orderBy: { dueDate: 'desc' }
-                });
-            }
+            const assignments = await prisma.assignment.findMany({
+                where: { classId, schoolId: user.schoolId! },
+                include: {
+                    subject: { select: { name: true } },
+                    _count: { select: { submissions: true } }
+                },
+                orderBy: { dueDate: 'desc' }
+            });
             return NextResponse.json({ assignments });
         }
 
@@ -78,61 +50,36 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = (await request.json()) as any;
+        const body = (await request.json().catch(() => ({}))) as any;
         const { title, description, classId, subjectId, dueDate, type, materials } = body;
 
-        let assignment;
-
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            
-            const { data, error } = await supabaseAdmin.from('Assignment').insert({
-                id: crypto.randomUUID(),
+        const assignment = await prisma.assignment.create({
+            data: {
                 schoolId: user.schoolId!,
                 teacherId: user.id,
                 classId,
                 subjectId,
                 title,
                 description,
-                dueDate: new Date(dueDate).toISOString(),
+                dueDate: new Date(dueDate),
                 type: type || 'HOMEWORK',
-                materials: materials || [],
-                updatedAt: new Date().toISOString()
-            }).select().single();
+                materials: materials || []
+            }
+        });
 
-            if (error) throw new Error(error.message);
-            assignment = data;
-        } else {
-            assignment = await prisma.assignment.create({
-                data: {
-                    schoolId: user.schoolId!,
-                    teacherId: user.id,
-                    classId,
-                    subjectId,
-                    title,
-                    description,
-                    dueDate: new Date(dueDate),
-                    type: type || 'HOMEWORK',
-                    materials: materials || []
-                }
-            });
-        }
+        try {
+            const assignmentsTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+            revalidateTag(assignmentsTag, 'max');
+        } catch { /* non-blocking */ }
 
-        const assignmentsTag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(assignmentsTag, 'max');
-
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'assignment', ip: _ip || undefined });
-            }
+            await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'CREATE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }
-return NextResponse.json({ assignment });
+
+        return NextResponse.json({ assignment });
 
     } catch (e) {
         return handleApiError(e);
@@ -142,7 +89,7 @@ return NextResponse.json({ assignment });
 export async function PUT(request: Request) {
     try {
         const user = await requireRole(['TEACHER', 'HOMEROOM', 'PRINCIPAL']);
-        const body = (await request.json()) as any;
+        const body = (await request.json().catch(() => ({}))) as any;
         const { id, ...data } = body;
 
         const assignment = await prisma.assignment.update({
@@ -153,21 +100,20 @@ export async function PUT(request: Request) {
             }
         });
 
-        const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(tag, 'max');
-        revalidateTag(`assignment-${id}`, 'max');
+        try {
+            const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+            revalidateTag(tag, 'max');
+            revalidateTag(`assignment-${id}`, 'max');
+        } catch { /* non-blocking */ }
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'assignment', ip: _ip || undefined });
-            }
+            await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'UPDATE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }
-return NextResponse.json({ assignment });
+
+        return NextResponse.json({ assignment });
 
     } catch (e) {
         return handleApiError(e);
@@ -186,20 +132,19 @@ export async function DELETE(request: Request) {
             where: { id, schoolId: user.schoolId!, teacherId: user.role !== 'PRINCIPAL' ? user.id : undefined }
         });
 
-        const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
-        revalidateTag(tag, 'max');
+        try {
+            const tag = getSchoolTag(CACHE_TAGS.ASSIGNMENTS, String(user.schoolId!));
+            revalidateTag(tag, 'max');
+        } catch { /* non-blocking */ }
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'assignment', ip: _ip || undefined });
-            }
+            await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'DELETE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
+
+        return NextResponse.json({ success: true });
 
     } catch (e) {
         return handleApiError(e);

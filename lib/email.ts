@@ -79,39 +79,14 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
 
 async function getSchoolConfig(schoolId: string) {
     try {
-        if (!prisma) {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data, error } = await supabaseAdmin
-                .from('School')
-                .select('communicationsConfig, name')
-                .eq('id', schoolId)
-                .maybeSingle();
-            
-            if (error) throw error;
-            return data;
-        }
-
         const school = await prisma.school.findUnique({
             where: { id: schoolId },
             select: { communicationsConfig: true, name: true }
         });
         return school;
     } catch (err) {
-        console.error('[email.ts] Prisma getSchoolConfig failed, falling back to Supabase REST:', err);
-        try {
-            const { createClient } = require('@supabase/supabase-js');
-            const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
-            const { data } = await supabaseAdmin
-                .from('School')
-                .select('communicationsConfig, name')
-                .eq('id', schoolId)
-                .maybeSingle();
-            return data;
-        } catch (fallbackErr) {
-            console.error('[email.ts] Supabase fallback also failed:', fallbackErr);
-            return null;
-        }
+        console.error('[email.ts] Prisma getSchoolConfig failed:', err);
+        return null;
     }
 }
 

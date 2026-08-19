@@ -8,21 +8,6 @@ export async function GET(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: subjects, error } = await supabaseAdmin
-                .from('Subject')
-                .select('*')
-                .eq('schoolId', dbUser.schoolId!)
-                .order('name', { ascending: true });
-            if (error) throw error;
-            return NextResponse.json({ subjects });
-        }
-
         const subjects = await prisma.subject.findMany({
             where: { schoolId: dbUser.schoolId! },
             orderBy: { name: 'asc' }
@@ -37,36 +22,8 @@ export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await request.json() as { name: string };
+        const body = (await request.json().catch(() => ({}))) as { name: string };
         const { name } = body;
-
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-            const { data: subject, error } = await supabaseAdmin
-                .from('Subject')
-                .insert({
-                    schoolId: dbUser.schoolId!,
-                    name
-                })
-                .select()
-                .single();
-            if (error) throw error;
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'subject', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ subject });
-        }
 
         const subject = await prisma.subject.create({
             data: {
@@ -76,7 +33,16 @@ return NextResponse.json({ subject });
         });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+        } catch { /* non-blocking */ }
+
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            await logActivity({ userId: dbUser.id, schoolId: dbUser.schoolId, action: 'CREATE_SUBJECT', resourceType: 'subject', ip: _ip || undefined });
+        } catch { /* non-blocking */ }
 
         return NextResponse.json({ subject });
     } catch (e) {
@@ -88,44 +54,8 @@ export async function DELETE(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
-        const body = await request.json() as { id: string };
+        const body = (await request.json().catch(() => ({}))) as { id: string };
         const { id } = body;
-
-        if (!prisma) {
-            const { createClient: createSupabaseAdmin } = require('@supabase/supabase-js');
-            const supabaseAdmin = createSupabaseAdmin(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.SUPABASE_SERVICE_ROLE_KEY!
-            );
-
-            const { data: subjectToDelete } = await supabaseAdmin
-                .from('Subject')
-                .select('schoolId')
-                .eq('id', id)
-                .maybeSingle();
-
-            if (subjectToDelete?.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN') {
-                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-            }
-
-            const { error } = await supabaseAdmin
-                .from('Subject')
-                .delete()
-                .eq('id', id);
-            if (error) throw error;
-
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'subject', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
-        }
 
         // Tenant Isolation: Ensure the subject being deleted actually belongs to this school
         const subjectToDelete = await prisma.subject.findUnique({ where: { id } });
@@ -154,7 +84,16 @@ return NextResponse.json({ success: true });
         await prisma.subject.delete({ where: { id } });
 
         // Trigger Cache Invalidation
-        revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+        } catch { /* non-blocking */ }
+
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            await logActivity({ userId: dbUser.id, schoolId: dbUser.schoolId, action: 'DELETE_SUBJECT', resourceType: 'subject', ip: _ip || undefined });
+        } catch { /* non-blocking */ }
 
         return NextResponse.json({ success: true });
     } catch (e) {

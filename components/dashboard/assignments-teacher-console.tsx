@@ -20,8 +20,11 @@ import {
     Zap,
     Activity,
     Search,
-    Loader2
+    Loader2,
+    Sparkles,
+    ShieldCheck
 } from "lucide-react";
+import { AiEssayScannerDrawer } from "@/components/dashboard/ai-essay-scanner-drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -622,6 +625,16 @@ function SubmissionRow({ submission, idx, onClick }: any) {
             </div>
 
             <div className="flex items-center gap-6">
+                {submission.aiScanResult?.authenticityScore !== undefined && (
+                    <div className="hidden sm:flex flex-col items-end">
+                        <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">AI RADAR</span>
+                        <div className="px-3 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
+                            <Sparkles className="w-3 h-3 text-cyan-400" />
+                            <span>{submission.aiScanResult.authenticityScore}% Human</span>
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex flex-col items-end">
                     <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">CURRENT STATUS</span>
                     <div className={cn(
@@ -654,6 +667,7 @@ function GradingView({ submission, onBack, onUpdate }: any) {
     const [loading, setLoading] = useState(false);
     const [summary, setSummary] = useState<string | null>(null);
     const [summarizing, setSummarizing] = useState(false);
+    const [showScanner, setShowScanner] = useState(false);
 
     const handleSave = async () => {
         setLoading(true);
@@ -672,6 +686,8 @@ function GradingView({ submission, onBack, onUpdate }: any) {
         }
     };
 
+    const existingScan = submission.aiScanResult;
+
     return (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white/80 dark:bg-[#050505]/60 backdrop-blur-[50px] border border-zinc-300 dark:border-white/10 rounded-[3.5rem] overflow-hidden shadow-2xl">
             <div className="p-12 border-b border-zinc-200 dark:border-white/5 flex justify-between items-center bg-gradient-to-r from-emerald-900/40 to-transparent">
@@ -679,7 +695,21 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Evaluation Node</span>
                     <h3 className="text-3xl font-black italic text-zinc-900 dark:text-white uppercase">{submission.student?.firstName}'s Submission</h3>
                 </div>
-                <Button variant="ghost" onClick={onBack} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
+                <div className="flex items-center gap-4">
+                    <Button 
+                        onClick={() => setShowScanner(true)} 
+                        className="h-10 px-5 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md shadow-cyan-500/5"
+                    >
+                        <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>AI Essay Scanner</span>
+                        {existingScan?.authenticityScore !== undefined && (
+                            <span className="ml-1 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px]">
+                                {existingScan.authenticityScore}%
+                            </span>
+                        )}
+                    </Button>
+                    <Button variant="ghost" onClick={onBack} className="text-zinc-600 dark:text-zinc-500 hover:text-zinc-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 uppercase text-[10px] font-black tracking-widest">Exit HUD</Button>
+                </div>
             </div>
 
             <div className="p-12 space-y-10">
@@ -689,33 +719,44 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                             <FileText className="w-4 h-4 text-zinc-700" />
                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Student Content</span>
                         </div>
-                        <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={async () => {
-                                if (!submission.content) return;
-                                setSummarizing(true);
-                                try {
-                                    const res = await fetch('/api/ai/assignments', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            mode: 'summarize',
-                                            context: { content: submission.content }
-                                        })
-                                    });
-                                    const data = (await res.json()) as any;
-                                    if (data.summary) setSummary(data.summary);
-                                } finally {
-                                    setSummarizing(false);
-                                }
-                            }}
-                            disabled={summarizing || !submission.content}
-                            className="h-8 px-4 rounded-xl bg-zinc-200 dark:bg-white/5 text-zinc-600 dark:text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center gap-2"
-                        >
-                            {summarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Brain className="w-3 h-3" />}
-                            <span className="text-[8px] font-black uppercase tracking-widest">Smart Synthesis</span>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => setShowScanner(true)}
+                                className="h-8 px-4 rounded-xl bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all flex items-center gap-2 border border-cyan-500/20"
+                            >
+                                <Sparkles className="w-3 h-3 text-cyan-400" />
+                                <span className="text-[8px] font-black uppercase tracking-widest">AI Scanner Analysis</span>
+                            </Button>
+                            <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={async () => {
+                                    if (!submission.content) return;
+                                    setSummarizing(true);
+                                    try {
+                                        const res = await fetch('/api/ai/assignments', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                mode: 'summarize',
+                                                context: { content: submission.content }
+                                            })
+                                        });
+                                        const data = (await res.json()) as any;
+                                        if (data.summary) setSummary(data.summary);
+                                    } finally {
+                                        setSummarizing(false);
+                                    }
+                                }}
+                                disabled={summarizing || !submission.content}
+                                className="h-8 px-4 rounded-xl bg-zinc-200 dark:bg-white/5 text-zinc-600 dark:text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all flex items-center gap-2"
+                            >
+                                {summarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Brain className="w-3 h-3" />}
+                                <span className="text-[8px] font-black uppercase tracking-widest">Smart Synthesis</span>
+                            </Button>
+                        </div>
                     </div>
                     
                     <AnimatePresence>
@@ -829,15 +870,20 @@ function GradingView({ submission, onBack, onUpdate }: any) {
                     </Button>
                 </div>
             </div>
+
+            <AiEssayScannerDrawer
+                isOpen={showScanner}
+                onClose={() => setShowScanner(false)}
+                submission={submission}
+                assignment={submission.assignment}
+                onApplyGradeAndFeedback={(suggestedGrade, suggestedFeedback) => {
+                    setGrade(suggestedGrade.toString());
+                    setFeedback(suggestedFeedback);
+                }}
+            />
         </motion.div>
     );
 }
-
-const Sparkles = ({ className }: any) => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
-);
 
 function Metric({ label, value, icon: Icon }: any) {
     return (
