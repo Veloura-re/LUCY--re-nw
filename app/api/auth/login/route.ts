@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
         const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '');
         verifyParams.append('response', turnstileToken);
         verifyParams.append('remoteip', clientIp);
 
