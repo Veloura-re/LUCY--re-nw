@@ -147,7 +147,7 @@ function LoginContent() {
 
                             <div className="flex justify-center">
                                 <Turnstile 
-                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} 
+                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || (process.env.NODE_ENV !== 'production' ? '1x00000000000000000000AA' : '')}
                                     onSuccess={(token) => setTurnstileToken(token)}
                                     options={{ theme: 'auto', size: 'invisible' }}
                                 />

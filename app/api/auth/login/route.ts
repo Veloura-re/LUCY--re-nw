@@ -68,9 +68,17 @@ export async function POST(req: Request) {
         const clientIp = getClientIp(req);
         const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
+        // Ensure Turnstile secret is configured to prevent fail-open bypasses
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        if (!turnstileSecret && process.env.NODE_ENV === 'production') {
+            console.error('CRITICAL: TURNSTILE_SECRET_KEY is missing in production environment');
+            return NextResponse.json({ error: "Authentication system misconfigured. Please contact administrator." }, { status: 500 });
+        }
+        const secretFallback = process.env.NODE_ENV !== 'production' ? '1x0000000000000000000000000000000AA' : '';
+
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
         const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+        verifyParams.append('secret', turnstileSecret || secretFallback);
         verifyParams.append('response', turnstileToken);
         verifyParams.append('remoteip', clientIp);
 
