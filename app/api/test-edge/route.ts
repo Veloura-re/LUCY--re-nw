@@ -4,6 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function GET() {
     try {
+        if (process.env.NODE_ENV === 'production') {
+            return NextResponse.json({ error: "Endpoint disabled in production." }, { status: 403 });
+        }
+
         const reqHeaders = await headers();
         const authHeader = reqHeaders.get('authorization');
         

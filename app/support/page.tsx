@@ -19,7 +19,7 @@ const faqs = [
 ];
 
 const channels = [
-    { icon: Mail, name: "Email Support", desc: "General queries and provisioning requests", link: "mailto:lucyosck21@gmail.com", label: "email_us" },
+    { icon: Mail, name: "Email Support", desc: "General queries and provisioning requests", link: "mailto:support@5-cn.net", label: "email_us" },
     { icon: MessageCircle, name: "Emergency Contact", desc: "Critical system failures — Tier 2+ only", link: "/contact", label: "open_ticket" },
     { icon: BookOpen, name: "Documentation", desc: "Full technical reference and system guides", link: "/docs", label: "read_docs" },
 ];
