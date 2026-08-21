@@ -3,8 +3,13 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
     try {
+        if (process.env.NODE_ENV === 'production') {
+            return NextResponse.json({ error: 'Endpoint permanently disabled in production environment.' }, { status: 403 });
+        }
+
         const authHeader = request.headers.get('authorization');
-        if (authHeader !== 'Bearer lucy_admin_sk_8f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d') {
+        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET || 'lucy_admin_sk_8f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d';
+        if (authHeader !== `Bearer ${expectedSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

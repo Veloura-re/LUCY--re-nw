@@ -128,6 +128,7 @@ function auditFile(filePath: string) {
             content.includes('requireSchoolLinked') || 
             content.includes('requireAuth') || 
             content.includes('requireSuperAdmin') ||
+            content.includes('verifySuperAdmin') ||
             content.includes('createClient') ||
             content.includes('supabase.auth') ||
             content.includes('getSupabaseAdmin');
@@ -156,7 +157,7 @@ function auditFile(filePath: string) {
 // -------------------------------------------------------------
 
 function runAdministratorAudit() {
-    console.log('\n⚖️  ADMINISTRATOR 17-SENTINEL FULL-PLATFORM AUDIT');
+    console.log('\nADMINISTRATOR 17-SENTINEL FULL-PLATFORM AUDIT');
     console.log('====================================================\n');
 
     const apiFiles = getAllFiles(API_DIR);
@@ -164,7 +165,7 @@ function runAdministratorAudit() {
     const componentFiles = getAllFiles(COMPONENTS_DIR);
 
     const allTargetFiles = [...apiFiles, ...libFiles, ...componentFiles];
-    console.log(`🔍 Scanning ${allTargetFiles.length} files across APIs, Services, and Components...\n`);
+    console.log(`Scanning ${allTargetFiles.length} files across APIs, Services, and Components...\n`);
 
     allTargetFiles.forEach(auditFile);
 
@@ -179,20 +180,20 @@ function runAdministratorAudit() {
     });
 
     console.log('\n====================================================');
-    console.log('📊 ADMINISTRATOR COMPLIANCE SCORECARD');
+    console.log('ADMINISTRATOR COMPLIANCE SCORECARD');
     console.log('====================================================');
     console.log(`Total Files Inspected : ${allTargetFiles.length}`);
-    console.log(`Critical Violations   : ${criticals.length === 0 ? '✅ 0 (CLEAN)' : `🔴 ${criticals.length}`}`);
-    console.log(`Warnings / Notices    : ${warnings.length === 0 ? '✅ 0 (CLEAN)' : `🟡 ${warnings.length}`}`);
+    console.log(`Critical Violations   : ${criticals.length === 0 ? '0 (CLEAN)' : `${criticals.length}`}`);
+    console.log(`Warnings / Notices    : ${warnings.length === 0 ? '0 (CLEAN)' : `${warnings.length}`}`);
 
     if (criticals.length > 0) {
-        console.log('\n❌ AUDIT FAILED: Critical architectural violations detected.');
+        console.log('\nAUDIT FAILED: Critical architectural violations detected.');
         if (!isFixMode) {
-            console.log('👉 Run "npm run audit:administrator:fix" to attempt automated remediations.\n');
+            console.log('Run "npm run audit:administrator:fix" to attempt automated remediations.\n');
         }
         process.exit(1);
     } else {
-        console.log('\n🟢 AUDIT PASSED: 100% compliant with Supreme Administrator Sentinels!\n');
+        console.log('\nAUDIT PASSED: 100% compliant with Supreme Administrator Sentinels.\n');
         process.exit(0);
     }
 }

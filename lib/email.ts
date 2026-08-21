@@ -12,14 +12,14 @@ function getResend() {
 // Generic email sender using Resend (fetch-based, CF Workers compatible)
 export async function sendEmail({ to, subject, html, replyTo }: { to: string; subject: string; html: string; replyTo?: string }) {
     const resend = getResend();
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'no-reply@5-cn.net';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@5-cn.net';
 
-    console.log(`📧 [EMAIL] Attempting to send email to: ${to}, subject: "${subject}", from: ${fromEmail}`);
+    console.log(`[EMAIL] Attempting to send email to: ${to}, subject: "${subject}", from: ${fromEmail}`);
 
     if (!resend) {
-        console.warn('⚠️ [EMAIL] RESEND_API_KEY is missing. Email will NOT be sent.');
+        console.warn('[EMAIL] RESEND_API_KEY is missing. Email will NOT be sent.');
         console.log('='.repeat(80));
-        console.log(`📧 SIMULATED EMAIL TO: ${to}`);
+        console.log(`[EMAIL] SIMULATED EMAIL TO: ${to}`);
         if (replyTo) console.log(`Reply-To: ${replyTo}`);
         console.log(`Subject: ${subject}`);
         console.log('-'.repeat(40));
@@ -39,11 +39,11 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
         });
 
         if (error) {
-            console.error(`❌ [EMAIL] Primary send failed (from: ${fromEmail}):`, JSON.stringify(error));
+            console.error(`[EMAIL] Primary send failed (from: ${fromEmail}):`, JSON.stringify(error));
             
             // Retry with Resend's default onboarding sender if domain isn't verified
             if (error.message?.includes('not verified') || error.message?.includes('not allowed') || error.name === 'validation_error') {
-                console.log('🔄 [EMAIL] Retrying with Resend default sender (onboarding@resend.dev)...');
+                console.log('[EMAIL] Retrying with Resend default sender (onboarding@resend.dev)...');
                 try {
                     const { data: retryData, error: retryError } = await resend.emails.send({
                         from: 'LUCY Platform <onboarding@resend.dev>',
@@ -54,14 +54,14 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
                     });
 
                     if (retryError) {
-                        console.error('❌ [EMAIL] Retry also failed:', JSON.stringify(retryError));
+                        console.error('[EMAIL] Retry also failed:', JSON.stringify(retryError));
                         return { success: false, error: retryError.message };
                     }
 
-                    console.log(`✅ [EMAIL] Sent successfully via fallback sender to: ${to}, id: ${retryData?.id}`);
+                    console.log(`[EMAIL] Sent successfully via fallback sender to: ${to}, id: ${retryData?.id}`);
                     return { success: true, fallback: true };
                 } catch (retryErr: any) {
-                    console.error('❌ [EMAIL] Retry exception:', retryErr);
+                    console.error('[EMAIL] Retry exception:', retryErr);
                     return { success: false, error: retryErr.message || 'Retry failed' };
                 }
             }
@@ -69,10 +69,10 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
             return { success: false, error: error.message };
         }
 
-        console.log(`✅ [EMAIL] Sent successfully to: ${to}, id: ${data?.id}`);
+        console.log(`[EMAIL] Sent successfully to: ${to}, id: ${data?.id}`);
         return { success: true };
     } catch (error: any) {
-        console.error('❌ [EMAIL] Exception:', error);
+        console.error('[EMAIL] Exception:', error);
         return { success: false, error: error.message || 'Unknown Email Error' };
     }
 }
@@ -91,15 +91,15 @@ async function getSchoolConfig(schoolId: string) {
 }
 
 export async function sendInviteEmail(toEmail: string, inviteUrl: string, schoolName: string, token: string, role: string = 'TEACHER', schoolId?: string) {
-    console.log(`📨 [INVITE] sendInviteEmail called: to=${toEmail}, role=${role}, school=${schoolName}, schoolId=${schoolId}`);
+    console.log(`[INVITE] sendInviteEmail called: to=${toEmail}, role=${role}, school=${schoolName}, schoolId=${schoolId}`);
     let replyTo = "";
 
     if (schoolId) {
         const school = await getSchoolConfig(schoolId);
         const config = school?.communicationsConfig as any;
-        console.log(`📨 [INVITE] School communicationsConfig:`, JSON.stringify(config));
+        console.log(`[INVITE] School communicationsConfig:`, JSON.stringify(config));
         if (config && config.sendInvites === false) {
-            console.log(`✉️ [INVITE] SKIPPING invite email for ${toEmail} — sendInvites is FALSE in school config for ${schoolName}`);
+            console.log(`[INVITE] SKIPPING invite email for ${toEmail} - sendInvites is FALSE in school config for ${schoolName}`);
             return { success: true, skipped: true };
         }
         replyTo = config?.replyTo || "";
@@ -451,7 +451,7 @@ export async function sendWelcomeEmail({
     schoolName?: string;
     schoolId?: string;
 }) {
-    console.log(`🎉 [WELCOME] sendWelcomeEmail called: to=${toEmail}, name=${name}, role=${role}, school=${schoolName}`);
+    console.log(`[WELCOME] sendWelcomeEmail called: to=${toEmail}, name=${name}, role=${role}, school=${schoolName}`);
 
     let replyTo = "";
     if (schoolId) {

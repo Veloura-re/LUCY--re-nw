@@ -32,8 +32,9 @@ const prismaClientSingleton = () => {
     }
 
     try {
+        const safeUrl = getSanitizedDbUrl(rawUrl) || rawUrl;
         const pool = new Pool({
-            connectionString: rawUrl,
+            connectionString: safeUrl,
             ssl: { rejectUnauthorized: false },
             max: 15,
             idleTimeoutMillis: 60000,

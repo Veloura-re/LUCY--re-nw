@@ -8,6 +8,10 @@ export async function POST(req: Request) {
         const webhookSecret = process.env.WEBHOOK_SECRET || process.env.LUCY_WEBHOOK_SECRET;
         const incomingSecret = req.headers.get('x-webhook-secret') || req.headers.get('authorization')?.replace('Bearer ', '');
 
+        if (process.env.NODE_ENV === 'production' && !webhookSecret) {
+            return NextResponse.json({ error: "Webhook endpoint not configured" }, { status: 500 });
+        }
+
         if (webhookSecret && incomingSecret !== webhookSecret) {
             return NextResponse.json({ error: "Unauthorized webhook signature" }, { status: 401 });
         }

@@ -2,6 +2,26 @@
 
 All notable changes, security enhancements, and feature releases for LUCY OS are documented here.
 
+## [3.3.0] — 2026-08-21
+
+### Fixed
+- **Atomic Session Management & Eviction Defense**:
+  - Eliminated false-positive concurrent session eviction loops in dashboard layout.
+  - Implemented dual-runtime database active session synchronizer with Prisma and Supabase Admin fallback.
+  - Standardized device session cookie issuance in authentication route handlers.
+
+- **Production CSRF & Domain Verification**:
+  - Normalized host and origin verification in middleware to support Cloudflare edge proxies and custom production domains.
+
+- **Postgres Pooler TLS Compatibility**:
+  - Sanitized connection strings to prevent self-signed certificate chain rejection on Supabase poolers.
+
+### Security
+- **Production Endpoint Hardening**:
+  - Disabled dev-reset, debug-ingest, and test-edge endpoints in production runtime.
+  - Enforced webhook signature validation across billing reconciliation routes.
+  - Verified 100% compliance across all 17 Technical Defense Sentinels.
+
 ## [3.2.0] — 2026-08-06
 
 ### Added
