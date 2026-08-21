@@ -97,13 +97,13 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const UPDATES = {
     'announcements': {
         threadKey: 'announce',
-        title: '📢 LUCY ACADEMICS // Announcement: Active Pricing Plans & Tiers',
+        title: 'LUCY ACADEMICS // Announcement: Active Pricing Plans & Tiers',
         text: 'We have activated the core subscription pricing matrix. The active plan levels and rates are:\n\n• **Pilot Node**: Free (up to 3-month evaluation, 1 institution, 500 students max)\n• **Core Matrix**: $149/month (discounted from $250/month, unlimited students, all roles + AI, priority support)\n• **Enterprise**: Custom Pricing (tailored for multi-school networks & custom integrations)\n\nEvery newly provisioned school starts with a 60-day free trial evaluation period. This tier unlocks the student gradebook system, teacher-parent messaging rooms, and AI exam grading helper modules.'
     },
     'parent-updates': {
         threadKey: 'parents',
-        title: '💳 LUCY ACADEMICS // billing_info: Trial Period & Billing Execution',
-        text: 'School subscription plans now include a 60-day free trial evaluation. After activation, the active rates are:\n\n• **Pilot Node**: Free\n• **Core Matrix**: $149/month (discounted from $250/month)\n• **Enterprise**: Custom Pricing\n\nHow it executes:\n1. Trial Start: When the school administrator registers, the school is set up on the 60-day trial.\n2. Billing: Once the trial expires, the school moves to active billing status.\n3. Payment Methods: Standard subscription payment can be done through the school dashboard. For schools that cannot process online card payments, we support manual bank transfers. School owners can upload a copy of their bank wire receipt via their billing tab, which is then reviewed and approved manually by super admins to extend licenses.'
+        title: 'LUCY ACADEMICS // billing_info: Trial Period & Billing Execution',
+        text: 'School subscription plans now include a 60-day free trial evaluation. After activation, the active rates are:\n\n• **Pilot Node**: Free\n• **Core Matrix**: $149/month (discounted from $250/month)\n• **Enterprise**: Custom Pricing\n\nPayment Methods:\n1. Online Cards (Stripe / Chapa)\n2. Commercial Bank of Ethiopia (CBE): Account 1000790420393 (Abdullahi Abdulwasie Abrar)\n3. Telebirr: 0997267373 (Abdullahi Abdulwasie Abrar)\n\nSchool owners can upload a copy of their bank wire receipt via their billing tab for instant verification.'
     }
 };
 
