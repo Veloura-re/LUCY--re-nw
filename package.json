@@ -89,7 +89,7 @@
     "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "wrangler": "^4.123.0"
+    "wrangler": "^4.125.0"
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"
