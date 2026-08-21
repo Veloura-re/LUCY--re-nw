@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { prisma } from '@/lib/prisma';
 
 // Helper to safely extract and validate client IP
@@ -119,14 +120,31 @@ export async function POST(req: Request) {
         // 5. Invalidate previous sessions & establish new single-active-session token
         const sessionToken = crypto.randomUUID();
 
+        let updatedDb = false;
         if (prisma) {
             try {
                 await prisma.user.update({
                     where: { id: authData.user.id },
                     data: { activeSessionId: sessionToken }
                 });
+                updatedDb = true;
             } catch (updateErr: any) {
-                console.warn("[Login Route] Failed to update activeSessionId on User:", updateErr.message);
+                console.warn("[Login Route] Prisma update failed, falling back to Supabase Admin:", updateErr.message);
+            }
+        }
+
+        if (!updatedDb && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+            try {
+                const supabaseAdmin = createSupabaseAdmin(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL,
+                    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+                );
+                await supabaseAdmin
+                    .from('User')
+                    .update({ activeSessionId: sessionToken })
+                    .eq('id', authData.user.id);
+            } catch (supaErr: any) {
+                console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr.message);
             }
         }
 

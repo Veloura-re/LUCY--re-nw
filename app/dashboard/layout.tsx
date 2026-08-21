@@ -61,9 +61,10 @@ export default async function DashboardLayout({
     }
 
     // Concurrent Session Enforcement
-    if (dbUser) {
+    // Only evict if this client had an active device session cookie that was explicitly superseded by a newer login
+    if (dbUser && dbUser.activeSessionId) {
         const deviceSession = cookieStore.get('lucy_device_session')?.value;
-        if (dbUser.activeSessionId && dbUser.activeSessionId !== deviceSession) {
+        if (deviceSession && deviceSession !== dbUser.activeSessionId) {
             redirect("/logout?reason=concurrent");
         }
     }
