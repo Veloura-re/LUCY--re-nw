@@ -365,6 +365,17 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                 Mobile Money
                             </Button>
                         </div>
+
+                        {/* Account Details Box */}
+                        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-2 text-left">
+                            <div className="text-[10px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest">
+                                {paymentMethod === "BANK_TRANSFER" ? "Commercial Bank of Ethiopia (CBE)" : "Telebirr"}
+                            </div>
+                            <div className="text-xs text-zinc-700 dark:text-zinc-300 space-y-1">
+                                <p><span className="text-zinc-500 text-[10px] uppercase tracking-wider">{paymentMethod === "BANK_TRANSFER" ? "Account Number:" : "Phone Number:"}</span> <strong className="font-mono text-zinc-900 dark:text-white select-all">{paymentMethod === "BANK_TRANSFER" ? "1000790420393" : "0997267373"}</strong></p>
+                                <p><span className="text-zinc-500 text-[10px] uppercase tracking-wider">Account Name:</span> <strong className="text-zinc-900 dark:text-white">Abdullahi Abdulwasie Abrar</strong></p>
+                            </div>
+                        </div>
                         
                         <div className="space-y-2 text-left">
                             <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Upload Receipt (Required)</label>

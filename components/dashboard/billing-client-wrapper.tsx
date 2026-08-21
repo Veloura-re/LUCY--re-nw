@@ -657,13 +657,15 @@ export default function BillingClientWrapper({
                                     
                                     <div className="space-y-3">
                                         <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400">
+                                            <span>Method:</span> <span className="text-zinc-900 dark:text-white font-semibold">Commercial Bank of Ethiopia (CBE)</span>
+                                            <span>Account Number:</span> <span className="text-zinc-900 dark:text-white font-mono font-bold select-all">1000790420393</span>
+                                            <span>Account Name:</span> <span className="text-zinc-900 dark:text-white font-semibold">Abdullahi Abdulwasie Abrar</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400 pt-2 border-t border-zinc-300 dark:border-zinc-800/50">
                                             <span>Method:</span> <span className="text-zinc-900 dark:text-white font-semibold">Telebirr</span>
                                             <span>Account / Phone:</span> <span className="text-zinc-900 dark:text-white font-semibold">0997267373</span>
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-2 gap-y-1 text-zinc-600 dark:text-zinc-400">
-                                            <span>Method:</span> <span className="text-zinc-900 dark:text-white font-semibold">Commercial Bank of Ethiopia (CBE)</span>
-                                            <span>Account:</span> <span className="text-zinc-600 dark:text-zinc-500 italic">...pending</span>
+                                            <span>Account Name:</span> <span className="text-zinc-900 dark:text-white font-semibold">Abdullahi Abdulwasie Abrar</span>
                                         </div>
                                     </div>
 
