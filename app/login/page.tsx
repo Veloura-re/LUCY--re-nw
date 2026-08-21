@@ -66,9 +66,6 @@ function LoginContent() {
                 setIsLoading(false);
                 return;
             }
-
-            // After successful auth, register session
-            await fetch('/api/auth/register-session', { method: 'POST' }).catch(() => null);
         } catch (e: any) {
             setError("Internal Server Error");
             setIsLoading(false);
