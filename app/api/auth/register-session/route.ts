@@ -1,33 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST() {
     try {
-        const cookieStore = await cookies();
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                    getAll() {
-                        return cookieStore.getAll();
-                    },
-                    setAll(cookiesToSet) {
-                        try {
-                            cookiesToSet.forEach(({ name, value, options }) => {
-                                cookieStore.set(name, value, options);
-                            });
-                        } catch (error) {
-                            // Ignore error if setting cookies inside a Server Component
-                        }
-                    },
-                },
-            }
-        );
-
+        const supabase = await createClient();
         const { data: { user }, error } = await supabase.auth.getUser();
 
         if (error || !user) {
@@ -35,13 +12,19 @@ export async function POST() {
         }
 
         // Generate a unique session token for this device
-        const sessionToken = uuidv4();
+        const sessionToken = crypto.randomUUID();
 
         // Update the database to mark this device as the ONLY active session
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { activeSessionId: sessionToken } as any
-        });
+        if (prisma) {
+            try {
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { activeSessionId: sessionToken }
+                });
+            } catch (err: any) {
+                console.warn("[register-session] Failed to update activeSessionId on User:", err.message);
+            }
+        }
 
         // Set the active session token in an HTTP-only cookie
         const response = NextResponse.json({ success: true, sessionToken });
