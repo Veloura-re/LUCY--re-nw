@@ -1,4 +1,0 @@
-## 2024-05-18 - [Hardcoded dummy Turnstile secrets bypassing security protections in API route]
-**Vulnerability:** A hardcoded dummy Turnstile secret key (`1x0000000000000000000000000000000AA`) was used as a fallback for missing environment variables in `app/api/auth/login/route.ts` and dummy sitekey `1x00000000000000000000AA` in `app/login/page.tsx`.
-**Learning:** Hardcoding a test/dummy key creates a 'fail open' vulnerability because the dummy key tells Cloudflare Turnstile to accept *any* token, completely bypassing the bot protection during authentication if the env var is misconfigured.
-**Prevention:** Remove fallback default secrets in production API routes. If a required secret is missing in production, the application should 'fail closed' (throw an error or return 500) rather than bypass security checks.
