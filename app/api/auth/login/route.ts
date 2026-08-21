@@ -106,17 +106,31 @@ export async function POST(req: Request) {
 
         // 4. Supabase Auth Login
         const supabase = await createClient();
-        const { error: authError } = await supabase.auth.signInWithPassword({
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email: sanitizedEmail,
             password,
         });
 
-        if (authError) {
+        if (authError || !authData?.user) {
             await recordAuditLog(clientIp, sanitizedEmail, 'FAILED_PASSWORD');
-            return NextResponse.json({ error: authError.message }, { status: 401 });
+            return NextResponse.json({ error: authError?.message || "Authentication failed" }, { status: 401 });
         }
 
-        // 5. Successful login: reset failed counter for this IP and record audit log
+        // 5. Invalidate previous sessions & establish new single-active-session token
+        const sessionToken = crypto.randomUUID();
+
+        if (prisma) {
+            try {
+                await prisma.user.update({
+                    where: { id: authData.user.id },
+                    data: { activeSessionId: sessionToken }
+                });
+            } catch (updateErr: any) {
+                console.warn("[Login Route] Failed to update activeSessionId on User:", updateErr.message);
+            }
+        }
+
+        // 6. Successful login: reset failed counter for this IP and record audit log
         await recordAuditLog(clientIp, sanitizedEmail, 'SUCCESS');
         if (prisma && !isLocalhost) {
             try {
@@ -127,7 +141,20 @@ export async function POST(req: Request) {
                 // Suppress error if function is missing
             }
         }
-        return NextResponse.json({ success: true });
+
+        // 7. Prepare response and set cookie directly to prevent race conditions
+        const response = NextResponse.json({ success: true, sessionToken });
+        response.cookies.set({
+            name: 'lucy_device_session',
+            value: sessionToken,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 60 * 60 * 24 * 30, // 30 days
+        });
+
+        return response;
 
     } catch (e: any) {
         console.error("Login Error:", e);
