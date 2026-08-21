@@ -12,6 +12,8 @@
     "test": "jest",
     "audit:administrator": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts",
     "audit:administrator:fix": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts --fix",
+    "release:broadcast": "node scripts/broadcast-release.js",
+    "release:doc": "node scripts/broadcast-release.js --dry-run",
     "postinstall": "node scripts/patch-opennext.js"
   },
   "dependencies": {

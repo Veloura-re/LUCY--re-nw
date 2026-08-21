@@ -162,18 +162,31 @@ export async function middleware(request: NextRequest) {
 
     // B. CSRF Protection (Origin Check)
     if (isMutatingRequest) {
-        const origin = request.headers.get('origin')
-        const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
-        const proto = request.headers.get('x-forwarded-proto') || 'https'
-        const expectedOrigin = `${proto}://${host}`
+        const origin = request.headers.get('origin');
+        if (origin && process.env.NODE_ENV === 'production') {
+            try {
+                const originHost = new URL(origin).hostname;
+                const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
+                const requestHost = rawHost.split(':')[0].trim();
+                const appUrlHost = process.env.NEXT_PUBLIC_APP_URL ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname : '';
 
-        if (origin && origin !== expectedOrigin && process.env.NODE_ENV === 'production') {
-            // Allow if both are vercel domains or if origin is trusted
-            if (!origin.endsWith('.vercel.app') || !expectedOrigin.endsWith('.vercel.app')) {
-                return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch", expected: expectedOrigin, origin: origin }), {
-                    status: 403,
-                    headers: { 'Content-Type': 'application/json' }
-                })
+                const isAllowed = 
+                    originHost === requestHost ||
+                    (appUrlHost && originHost === appUrlHost) ||
+                    originHost.endsWith('.vercel.app') ||
+                    originHost.endsWith('.pages.dev') ||
+                    originHost.endsWith('.workers.dev') ||
+                    originHost === 'localhost' ||
+                    originHost === '127.0.0.1';
+
+                if (!isAllowed) {
+                    return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch", origin, host: requestHost }), {
+                        status: 403,
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                }
+            } catch {
+                // Suppress malformed origin header errors to prevent blocking valid requests
             }
         }
     }

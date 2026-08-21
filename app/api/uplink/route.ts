@@ -4,10 +4,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
-        const { callsign, email, message } = await req.json() as any;
+        const { callsign, email, message, category } = await req.json() as any;
 
-        // Recipient fixed as per user request
-        const recipient = "lucyosck21@gmail.com";
+        // Route to designated business inbox based on submission category
+        let recipient = "contact@5-cn.net";
+        if (category === "support") recipient = "support@5-cn.net";
+        else if (category === "sales" || category === "admin") recipient = "admin@5-cn.net";
+        else if (category === "billing") recipient = "billing@5-cn.net";
+        else if (category === "security") recipient = "security@5-cn.net";
 
         // Save to database
         await (prisma as any).wantsAccess.create({

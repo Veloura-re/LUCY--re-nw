@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
+import { getCachedUser } from '@/lib/users';
 import { NextResponse } from 'next/server';
 
 // We import types from @prisma/client but NOT the PrismaClient itself here
@@ -53,10 +54,32 @@ export async function requireAuth() {
 export async function requireRole(allowedRoles: Role[]) {
     const user = await requireAuth();
 
-    const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
-    });
+    let dbUser: { id: string; role: Role; schoolId: string | null; name: string; email: string | null; preferences: any } | null = null;
+
+    if (prisma) {
+        try {
+            dbUser = await prisma.user.findUnique({
+                where: { id: user.id },
+                select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
+            });
+        } catch (err: any) {
+            console.warn("[lib/security] Prisma findUnique failed, using getCachedUser fallback:", err.message);
+        }
+    }
+
+    if (!dbUser) {
+        const enriched = await getCachedUser(user.id);
+        if (enriched) {
+            dbUser = {
+                id: enriched.id,
+                role: enriched.role as Role,
+                schoolId: enriched.schoolId || null,
+                name: enriched.name || '',
+                email: enriched.email || user.email || null,
+                preferences: enriched.preferences || null
+            };
+        }
+    }
 
     if (!dbUser) {
         throw new Error("Unauthorized: User record not found");
@@ -67,16 +90,13 @@ export async function requireRole(allowedRoles: Role[]) {
     }
 
     if (!dbUser.schoolId) {
-        try {
-            const { getCachedUser } = await import('@/lib/users');
-            const enriched = await getCachedUser(user.id);
-            if (enriched?.schoolId) {
-                dbUser.schoolId = enriched.schoolId;
-            }
-        } catch {}
+        const enriched = await getCachedUser(user.id);
+        if (enriched?.schoolId) {
+            dbUser.schoolId = enriched.schoolId;
+        }
     }
 
-    if (!dbUser.schoolId) {
+    if (!dbUser.schoolId && dbUser.role !== 'SUPERADMIN') {
         throw new Error("Forbidden: User is not linked to any school tenant");
     }
 
@@ -89,21 +109,43 @@ export async function requireRole(allowedRoles: Role[]) {
 export async function requireSchoolLinked() {
     const user = await requireAuth();
     
-    let dbUser = await prisma.user.findFirst({
-        where: {
-            OR: [
-                { id: user.id },
-                { email: user.email || '' }
-            ]
-        },
-        select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
-    });
+    let dbUser: { id: string; role: Role; schoolId: string | null; name: string; email: string | null; preferences: any } | null = null;
+
+    if (prisma) {
+        try {
+            dbUser = await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { id: user.id },
+                        { email: user.email || '' }
+                    ]
+                },
+                select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
+            });
+        } catch (err: any) {
+            console.warn("[lib/security] Prisma findFirst failed, using getCachedUser fallback:", err.message);
+        }
+    }
+
+    if (!dbUser) {
+        const enriched = await getCachedUser(user.id);
+        if (enriched) {
+            dbUser = {
+                id: enriched.id,
+                role: enriched.role as Role,
+                schoolId: enriched.schoolId || null,
+                name: enriched.name || '',
+                email: enriched.email || user.email || null,
+                preferences: enriched.preferences || null
+            };
+        }
+    }
 
     if (!dbUser) {
         // Fallback: Use auth user profile
         dbUser = {
             id: user.id,
-            role: user.user_metadata?.role || 'OWNER',
+            role: (user.user_metadata?.role as Role) || 'OWNER',
             schoolId: user.user_metadata?.schoolId || null,
             name: user.user_metadata?.full_name || '',
             email: user.email || '',
@@ -111,17 +153,14 @@ export async function requireSchoolLinked() {
         };
     }
 
-    if (!dbUser?.schoolId) {
-        try {
-            const { getCachedUser } = await import('@/lib/users');
-            const enriched = await getCachedUser(user.id);
-            if (enriched?.schoolId) {
-                dbUser = { ...dbUser, schoolId: enriched.schoolId };
-            }
-        } catch {}
+    if (!dbUser?.schoolId && dbUser?.role !== 'SUPERADMIN') {
+        const enriched = await getCachedUser(user.id);
+        if (enriched?.schoolId) {
+            dbUser = { ...dbUser, schoolId: enriched.schoolId };
+        }
     }
 
-    if (!dbUser?.schoolId) {
+    if (!dbUser?.schoolId && dbUser?.role !== 'SUPERADMIN') {
         throw new Error("Forbidden: No school linked to this account");
     }
 
