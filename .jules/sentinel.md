@@ -1,0 +1,4 @@
+## 2024-05-18 - [Security] Fix missing Turnstile failure config fallback
+**Vulnerability:** A "fail open" vulnerability was identified in the authentication system due to a default dummy string being used as the `TURNSTILE_SECRET_KEY` fallback (`1x0000000000000000000000000000000AA`). This meant that if the production environment variables were ever missing or misconfigured, the Turnstile checks would use the dummy key and bypass security protections, effectively disabling anti-bot checks.
+**Learning:** Default fallbacks for critical security configuration values can lead to severe misconfigurations without immediate errors, often hiding missing credentials and allowing protections to silently fail.
+**Prevention:** Critical security configurations should *fail closed*. If the `TURNSTILE_SECRET_KEY` is not present, the authentication endpoint now returns an explicit 500 error instead of attempting validation with a test key.
