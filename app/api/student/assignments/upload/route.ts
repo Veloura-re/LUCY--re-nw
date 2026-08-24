@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         const fileExtension = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
+        const fileName = `${Date.now()}-${globalThis.crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
         const filePath = `${dbUser.schoolId!}/student-submissions/${dbUser.id}/${fileName}`;
 
         // We will reuse the 'books' bucket for assignments to reduce bucket configuration overhead

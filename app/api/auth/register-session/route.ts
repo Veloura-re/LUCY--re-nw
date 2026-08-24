@@ -13,7 +13,7 @@ export async function POST() {
         }
 
         // Generate a unique session token for this device
-        const sessionToken = crypto.randomUUID();
+        const sessionToken = globalThis.crypto.randomUUID();
 
         // Update the database to mark this device as the ONLY active session
         let updatedDb = false;

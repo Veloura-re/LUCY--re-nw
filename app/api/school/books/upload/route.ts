@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         
         // Use a covers directory if type is cover
         const directory = type === 'cover' ? 'covers' : 'pdfs';
-        const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
+        const fileName = `${Date.now()}-${globalThis.crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
         const filePath = `${dbUser.schoolId!}/${directory}/${fileName}`;
 
         // Upload to Supabase Storage - 'books' bucket
