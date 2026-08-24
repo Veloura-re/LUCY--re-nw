@@ -7,8 +7,8 @@ export async function POST(request: Request) {
         // Enforce that only Owner or Principal can run this simulation
         const user = await requireRole(['OWNER', 'PRINCIPAL']);
 
-        const mockCustomerId = `cus_${Math.random().toString(36).slice(2, 10)}`;
-        const mockSubscriptionId = `sub_${Math.random().toString(36).slice(2, 10)}`;
+        const mockCustomerId = `cus_${globalThis.crypto.randomUUID().replace(/-/g, '').slice(0, 8)}`;
+        const mockSubscriptionId = `sub_${globalThis.crypto.randomUUID().replace(/-/g, '').slice(0, 8)}`;
         // Future date for extended billing
         const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 

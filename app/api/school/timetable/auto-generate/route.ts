@@ -52,7 +52,13 @@ export async function POST(request: Request) {
         let unassignedCount = 0;
 
         // Shuffle helper
-        const shuffle = (array: any[]) => array.sort(() => Math.random() - 0.5);
+        const shuffle = (array: any[]) => {
+            const randomArray = new Uint32Array(1);
+            return array.sort(() => {
+                globalThis.crypto.getRandomValues(randomArray);
+                return (randomArray[0] / (0xffffffff + 1)) - 0.5;
+            });
+        };
 
         // Sort assignments by periodsPerWeek descending to schedule the hardest ones first
         const sortedAssignments = [...assignments].sort((a: any, b: any) => b.periodsPerWeek - a.periodsPerWeek);
