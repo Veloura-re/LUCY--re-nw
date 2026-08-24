@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -11,8 +10,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const reportId = crypto.randomUUID();
-        const hash = crypto.createHash("sha256").update(reportId + description).digest("hex");
+        const reportId = globalThis.crypto.randomUUID();
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(reportId + description);
+        const hashBuffer = await globalThis.crypto.subtle.digest("SHA-256", data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         // Save to database
         const report = await (prisma as any).securityReport.create({
