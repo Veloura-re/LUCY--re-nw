@@ -101,7 +101,9 @@ export async function POST(request: Request) {
             }
 
             // Create school via Prisma
-            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+            const randomArray = new Uint32Array(1);
+            globalThis.crypto.getRandomValues(randomArray);
+            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + (randomArray[0] % 900));
             const school = await prisma.school.create({
                 data: {
                     name,
@@ -111,8 +113,7 @@ export async function POST(request: Request) {
             });
 
             // Create Invite Token
-            const crypto = require('crypto');
-            const token = crypto.randomBytes(32).toString('hex');
+            const token = globalThis.crypto.randomUUID().replace(/-/g, '');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
             await prisma.inviteToken.create({
@@ -136,17 +137,18 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+        const randomArraySupabase = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(randomArraySupabase);
+        const schoolCodeSupabase = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + (randomArraySupabase[0] % 900));
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
-            .insert([{ name, schoolCode, status: 'ACTIVE' }])
+            .insert([{ name, schoolCode: schoolCodeSupabase, status: 'ACTIVE' }])
             .select()
             .single();
 
         if (schErr) throw schErr;
 
-        const crypto = require('crypto');
-        const token = crypto.randomBytes(32).toString('hex');
+        const token = globalThis.crypto.randomUUID().replace(/-/g, '');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
         await supabaseAdmin
