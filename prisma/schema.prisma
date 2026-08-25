@@ -1197,3 +1197,63 @@ model AuthAuditLog {
 
   @@map("auth_audit_logs")
 }
+
+enum SanctuaryMode {
+  PEER_TO_PEER
+  FACULTY_MENTOR
+}
+
+enum SanctuarySessionStatus {
+  WAITING
+  ACTIVE
+  ENDED
+  FLAGGED
+}
+
+model SanctuarySession {
+  id            String                 @id @default(uuid())
+  mode          SanctuaryMode          @default(PEER_TO_PEER)
+  status        SanctuarySessionStatus @default(WAITING)
+  userAId       String
+  userASchoolId String
+  userARole     Role
+  userAPseudo   String
+  userBId       String?
+  userBSchoolId String?
+  userBRole     Role?
+  userBPseudo   String?
+  createdAt     DateTime               @default(now())
+  endedAt       DateTime?
+  messages      SanctuaryMessage[]
+  reports       SanctuaryReport[]
+
+  @@index([mode, status, createdAt])
+  @@index([userAId])
+  @@index([userBId])
+}
+
+model SanctuaryMessage {
+  id         String           @id @default(uuid())
+  sessionId  String
+  senderId   String
+  senderName String
+  senderRole Role
+  content    String
+  createdAt  DateTime         @default(now())
+  session    SanctuarySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model SanctuaryReport {
+  id         String           @id @default(uuid())
+  sessionId  String
+  reporterId String
+  reportedId String
+  reason     String
+  transcript Json
+  createdAt  DateTime         @default(now())
+  session    SanctuarySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+}
