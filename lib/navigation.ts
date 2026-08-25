@@ -32,7 +32,8 @@ import {
     Crown,
     Receipt,
     CreditCard,
-    DollarSign
+    DollarSign,
+    Shield
 } from "lucide-react";
 
 export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
@@ -71,7 +72,8 @@ export const ICON_MAP = {
     Crown,
     Receipt,
     CreditCard,
-    DollarSign
+    DollarSign,
+    Shield
 };
 
 export type IconName = keyof typeof ICON_MAP;
@@ -101,6 +103,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
         { icon: 'Notebook', label: "Reports", href: "/dashboard/reports" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Shield', label: "Sanctuary", href: "/dashboard/sanctuary" },
         { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
         { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
@@ -124,6 +127,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Shield', label: "Sanctuary", href: "/dashboard/sanctuary" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
         { icon: 'HardDrive', label: "Data & Security", href: "/dashboard/settings/data" },
@@ -142,6 +146,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'ScrollText', label: "Marklists", href: "/dashboard/marklist" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Shield', label: "Sanctuary", href: "/dashboard/sanctuary" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
@@ -160,6 +165,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'ScrollText', label: "Marklists", href: "/dashboard/marklist" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Shield', label: "Sanctuary", href: "/dashboard/sanctuary" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
@@ -186,6 +192,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Award', label: "Grades", href: "/dashboard/student/grades" },
         { icon: 'Notebook', label: "Lessons", href: "/dashboard/student/lessons" },
         { icon: 'UserRound', label: "My Profile", href: "/dashboard/student/profile" },
+        { icon: 'Shield', label: "Sanctuary", href: "/dashboard/sanctuary" },
         { icon: 'Hourglass', label: "Events", href: "/dashboard/events" },
         { icon: 'BookMarked', label: "Books", href: "/dashboard/books" },
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
