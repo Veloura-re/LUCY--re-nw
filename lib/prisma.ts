@@ -43,6 +43,11 @@ const prismaClientSingleton = () => {
             keepAliveInitialDelayMillis: 10000,
         });
 
+        // Catch idle connection drops cleanly to prevent uncaughtException crash
+        pool.on('error', (err) => {
+            console.warn('[PostgreSQL Pool Notice] Idle connection reset/timed out:', err.message);
+        });
+
         const adapter = new PrismaPg(pool);
         return new PrismaClient({ 
             adapter,

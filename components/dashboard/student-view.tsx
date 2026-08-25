@@ -13,7 +13,8 @@ import {
     BarChart3,
     Target,
     LayoutDashboard,
-    MessageSquare
+    MessageSquare,
+    Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -77,6 +78,11 @@ export function StudentView({ user }: StudentProps) {
                 </div>
 
                 <div className="flex items-center gap-2 mb-0.5">
+                    <Link href="/dashboard/sanctuary">
+                        <Button variant="outline" className="rounded-lg sm:rounded-2xl border-eduGreen-500/30 bg-eduGreen-950/20 hover:bg-eduGreen-950/40 hover:border-eduGreen-500 transition-all h-8 sm:h-10 md:h-14 px-2.5 sm:px-4 md:px-6 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-eduGreen-400 hover:text-white shadow-sm">
+                            <Shield className="mr-1.5 h-3 w-3 sm:h-4 sm:w-4 text-eduGreen-400" /> Sanctuary
+                        </Button>
+                    </Link>
                     <Link href="/dashboard/messages">
                         <Button variant="outline" className="rounded-lg sm:rounded-2xl border-zinc-200 dark:border-zinc-900 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 hover:border-eduGreen-500/30 transition-all h-8 sm:h-10 md:h-14 px-2.5 sm:px-4 md:px-6 font-medium text-[8px] sm:text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                             <MessageSquare className="mr-1.5 h-3 w-3 sm:h-4 sm:w-4" /> Secure Comms
