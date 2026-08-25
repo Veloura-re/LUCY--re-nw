@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, School, CreditCard, ShieldCheck, Inbox, ScrollText } from 'lucide-react';
+import { LayoutDashboard, School, CreditCard, ShieldCheck, Inbox, ScrollText, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
@@ -11,6 +11,7 @@ export function AdminNav() {
 
     const links = [
         { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { href: '/admin/sanctuary', label: 'Sanctuary Safety', icon: ShieldAlert },
         { href: '/admin/schools', label: 'Schools Ledger', icon: School },
         { href: '/admin/billing', label: 'Billing & Licenses', icon: CreditCard },
         { href: '/admin/security', label: 'Security Disclosures', icon: ShieldCheck },

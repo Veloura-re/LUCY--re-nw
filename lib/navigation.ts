@@ -87,6 +87,7 @@ export interface NavItem {
 export const NAV_ITEMS: Record<Role, NavItem[]> = {
     SUPERADMIN: [
         { icon: 'Compass', label: "Control Center", href: "/admin/dashboard" },
+        { icon: 'Shield', label: "Sanctuary Moderation", href: "/admin/sanctuary" },
         { icon: 'Landmark', label: "Schools", href: "/admin/schools" },
         { icon: 'Users', label: "Users", href: "/admin/users" },
         { icon: 'Wrench', label: "System Status", href: "/admin/status" },

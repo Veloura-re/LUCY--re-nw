@@ -71,19 +71,21 @@ When a new idea, feature, or architecture change is proposed, activate the Debat
   - Prevents circular dependencies, bloated bundles, and unmaintainable state trees.
   - Demands single sources of truth.
 
-### 3. 🕵️ The Dark-Hat Security Exploiter
+### 4. The Dark-Hat Security Exploiter
 * **Question**: *"How will an attacker, rogue student, or malicious parent break this?"*
 * **Mandate**:
   - Relentlessly probes for IDORs, tenant leakage (`schoolId`), CSRF, session hijacking, and double-spend race conditions.
   - Demands zero trust on all client inputs.
 
-### 4. ✨ The Design & UX Perfectionist
-* **Question**: *"Does this feel ultra-premium, fluid, and intuitive on both desktop and mobile?"*
+### 5. The Design & UX Perfectionist (Powered by UI/UX Pro Max)
+* **Question**: *"Does this feel ultra-premium, distinctive, accessible (WCAG 2.1 AA), and fluid across all devices?"*
 * **Mandate**:
-  - Demands modern typography, glassmorphism, responsive layouts, accessible focus states, and 60fps micro-animations (Framer Motion / Anime.js).
-  - Eliminates jarring layout shifts, unstyled loading states, and confusing multi-click flows.
+  - Applies **UI/UX Pro Max** standards: characterful typography, curated dark/light color dualism, and layered spatial depth.
+  - Enforces 4.5:1 contrast ratios, visible `:focus-visible` indicators, 44x44px touch targets, and semantic landmarks.
+  - Enforces Vercel composition patterns: compound components over boolean prop proliferation, zero request waterfalls, and dynamic bundling.
+  - Demands 60fps kinetic spring physics and sub-100ms feedback loops.
 
-### 5. ⚡ The Pragmatic Contrarian
+### 6. The Pragmatic Contrarian
 * **Question**: *"Why will this fail on day 1 in production? How can we achieve 95% of the value with 20% of the complexity?"*
 * **Mandate**:
   - Ruthlessly cuts over-engineering, unnecessary dependencies, and premature optimizations.
@@ -91,7 +93,7 @@ When a new idea, feature, or architecture change is proposed, activate the Debat
 
 ---
 
-## ⚖️ Phase 2: The Extreme-Bar Supreme Judge
+## Phase 2: The Extreme-Bar Supreme Judge
 
 The **Supreme Judge** reviews the Council's debate, grades the plan across 6 core dimensions, and delivers an unequivocal **Binary Verdict**.
 
@@ -105,7 +107,7 @@ The **Supreme Judge** reviews the Council's debate, grades the plan across 6 cor
 
 ### The Supreme Verdict Format
 ```markdown
-### ⚖️ SUPREME JUDGE BINDING VERDICT
+### SUPREME JUDGE BINDING VERDICT
 
 #### Council Debate Synthesis
 - **Product Strategist**: <Core argument & leverage points>
@@ -124,16 +126,16 @@ The **Supreme Judge** reviews the Council's debate, grades the plan across 6 cor
 | Architectural Simplicity | 10/10 | Minimal Surface |
 | Cold-Start Resilience | 10/10 | Top-Level Static |
 
-#### Verdict: 🟢 APPROVED (or 🔴 REJECTED & REITERATE)
+#### Verdict: APPROVED (or REJECTED & REITERATE)
 *Stipulations / Next Steps*: <Clear execution directive>
 ```
 
 > [!CAUTION]
-> **The Extreme Bar Rule**: If ANY dimension scores below 10/10, the verdict is **🔴 REJECTED & REITERATE**. The Supreme Judge will list the exact defects, and the Council must immediately refine and produce an upgraded iteration until perfection is achieved.
+> **The Extreme Bar Rule**: If ANY dimension scores below 10/10, the verdict is **REJECTED & REITERATE**. The Supreme Judge will list the exact defects, and the Council must immediately refine and produce an upgraded iteration until perfection is achieved.
 
 ---
 
-## 🛡️ Phase 3: The 17 Technical Defense Sentinels
+## Phase 3: The 17 Technical Defense Sentinels
 
 Every line of code committed or modified must pass the **17 Defense Sentinels**:
 
@@ -159,7 +161,7 @@ Every line of code committed or modified must pass the **17 Defense Sentinels**:
 
 ---
 
-## 📚 Phase 4: Document Release Synchronization
+## Phase 4: Document Release Synchronization
 
 After implementing and verifying features:
 1. **Diff Assessment**: `git diff --stat HEAD~1` to identify all changed systems.

@@ -323,6 +323,22 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                             <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">{requestCount} inbound sign-ups</p>
                                         </div>
                                     </Link>
+
+                                    <Link
+                                        href="/admin/sanctuary"
+                                        className="relative overflow-hidden bg-white/80 dark:bg-zinc-950/80 hover:bg-zinc-200 dark:hover:bg-zinc-900 border border-zinc-300 dark:border-zinc-800/80 hover:border-emerald-500/40 p-6 rounded-3xl group transition-all duration-300 flex flex-col justify-between h-44 shadow-lg col-span-1 sm:col-span-2"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                                                <ShieldAlert className="w-6 h-6" />
+                                            </div>
+                                            <ArrowUpRight className="w-5 h-5 text-zinc-600 group-hover:text-white transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-zinc-900 dark:text-white font-black text-sm uppercase tracking-wider font-orbitron">Sanctuary Moderation & Interconnect Safety</h4>
+                                            <p className="text-zinc-600 dark:text-zinc-500 text-[10px] font-mono uppercase tracking-wider mt-1">Cross-campus topology matrix, PII intercept scrubbing, and student crisis watchdog</p>
+                                        </div>
+                                    </Link>
                                 </div>
                             </motion.div>
 
