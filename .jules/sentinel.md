@@ -1,0 +1,6 @@
+## 2024-05-24 - Initializing Sentinel Journal
+
+## 2024-05-24 - Removing Fail-Open Dummy Keys and Hardcoded Secrets
+**Vulnerability:** The Turnstile verification implementation in both frontend (`app/login/page.tsx`) and backend (`app/api/auth/login/route.ts`) used default dummy keys (e.g. `'1x00000000000000000000AA'`) when environment variables were missing. This created a "fail-open" vulnerability where security checks would bypass completely rather than blocking access if the keys weren't supplied in production or dev. Similarly, a dev-reset admin route (`app/api/admin/dev-reset/route.ts`) contained a hardcoded fallback string for authorization.
+**Learning:** Using test/dummy keys as fallbacks in security checks undermines their purpose and allows attackers to bypass protections entirely if an environment configuration error occurs. Hardcoded secrets in the source code can also be exposed and leveraged if not strictly tied to environments.
+**Prevention:** Always validate that required environment variables for security logic are present. If missing, fail securely by returning a 500 configuration error or displaying an error message on the frontend, rather than silently substituting dummy keys that bypass checks.

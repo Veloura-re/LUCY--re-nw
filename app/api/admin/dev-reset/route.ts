@@ -8,7 +8,12 @@ export async function POST(request: Request) {
         }
 
         const authHeader = request.headers.get('authorization');
-        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET || 'lucy_admin_sk_8f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d';
+        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET;
+        if (!expectedSecret) {
+            console.error("Critical Security Error: ADMIN_DEV_RESET_SECRET is not configured.");
+            return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
+        }
+
         if (authHeader !== `Bearer ${expectedSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
