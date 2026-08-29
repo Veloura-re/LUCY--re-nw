@@ -8,8 +8,8 @@ export async function POST(request: Request) {
         }
 
         const authHeader = request.headers.get('authorization');
-        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET || 'lucy_admin_sk_8f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d';
-        if (authHeader !== `Bearer ${expectedSecret}`) {
+        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET;
+        if (!expectedSecret || authHeader !== `Bearer ${expectedSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
