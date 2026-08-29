@@ -3,19 +3,21 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
 // Initialize with a dummy key if env var is missing during build time
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2026-06-24.dahlia' as any,
-}) : null;
+
 
 export async function POST(request: Request) {
     try {
         const body = await request.text();
         const signature = request.headers.get('stripe-signature') as string;
 
-        if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
+        if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
             console.error('Missing STRIPE_WEBHOOK_SECRET or STRIPE_SECRET_KEY');
             return NextResponse.json({ error: 'Stripe configuration missing' }, { status: 500 });
         }
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2026-06-24.dahlia' as any,
+        });
 
         let event: Stripe.Event;
 

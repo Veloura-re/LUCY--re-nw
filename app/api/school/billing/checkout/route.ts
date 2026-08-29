@@ -4,9 +4,7 @@ import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
 // Initialize with a dummy key if env var is missing during build time
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2026-06-24.dahlia' as any,
-}) : null;
+
 
 export async function POST(request: Request) {
     try {
@@ -20,9 +18,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'School not found' }, { status: 404 });
         }
 
-        if (!stripe || !process.env.STRIPE_SECRET_KEY) {
+        if (!process.env.STRIPE_SECRET_KEY) {
             return NextResponse.json({ error: 'Stripe is not configured on this server.' }, { status: 500 });
         }
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2026-06-24.dahlia' as any,
+        });
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
