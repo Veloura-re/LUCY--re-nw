@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         // Validate & sanitize inputs
         const callsign = validateStringInput(body.callsign, 40);
         const message = validateStringInput(body.message, 280);
-        const emoji = EMOJIS.includes(body.emoji) ? body.emoji : EMOJIS[crypto.getRandomValues(new Uint32Array(1))[0] % EMOJIS.length];
+        const emoji = EMOJIS.includes(body.emoji) ? body.emoji : EMOJIS[globalThis.crypto.getRandomValues(new Uint32Array(1))[0] % EMOJIS.length];
 
         if (!callsign || !message) {
             return secureJson({ error: "callsign and message required (1-40 chars, 1-280 chars)" }, 400);
