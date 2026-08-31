@@ -1,0 +1,4 @@
+## 2024-03-09 - Hardcoded Cloudflare Turnstile Test Keys Allow Security Bypass
+**Vulnerability:** The application used Cloudflare Turnstile's documented dummy/test keys (`1x0000000000000000000000000000000AA` for secret and `1x00000000000000000000AA` for site key) as fallbacks when environment variables were missing. Because Turnstile dummy keys always return "success" for validation, this created a "fail open" condition where an attacker could easily bypass the CAPTCHA check if the configuration wasn't properly set.
+**Learning:** Never use test/dummy keys as fallbacks for security mechanisms. Doing so turns a configuration error (which should fail securely and noticeably) into a silent security vulnerability.
+**Prevention:** If security configuration values like `TURNSTILE_SECRET_KEY` are missing, the application should throw a 500 error or otherwise fail securely, explicitly denying the request rather than falling back to a mock/test state.
