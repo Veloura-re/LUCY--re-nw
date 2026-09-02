@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { prisma } from '@/lib/prisma'; // Assuming lib/prisma is set up properly
 
 export async function POST(request: Request) {
@@ -17,10 +16,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
         }
 
-        // Validate the signature using HMAC SHA256
-        const hash = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+        // Validate the signature using HMAC SHA256 (Web Crypto API for Edge compatibility)
+        const encoder = new TextEncoder();
+        const key = await globalThis.crypto.subtle.importKey(
+            'raw',
+            encoder.encode(secret),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['verify']
+        );
         
-        if (hash !== signature) {
+        // Convert hex signature to Uint8Array
+        const signatureBytes = new Uint8Array(
+            signature.match(/[\da-f]{2}/gi)?.map(h => parseInt(h, 16)) || []
+        );
+
+        const isValid = await globalThis.crypto.subtle.verify(
+            'HMAC',
+            key,
+            signatureBytes,
+            encoder.encode(rawBody)
+        );
+
+        if (!isValid) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
         }
 
