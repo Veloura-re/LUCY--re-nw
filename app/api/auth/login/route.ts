@@ -105,7 +105,7 @@ export async function POST(req: Request) {
                         { status: 429, headers: { 'Retry-After': '3600' } }
                     );
                 }
-            } catch (e) {
+            } catch (e: unknown) {
                 // Rate limit function or table may not be initialized yet; continue safely
             }
         }
@@ -133,8 +133,8 @@ export async function POST(req: Request) {
                     data: { activeSessionId: sessionToken }
                 });
                 updatedDb = true;
-            } catch (updateErr: any) {
-                console.warn("[Login Route] Prisma update failed, falling back to Supabase Admin:", updateErr.message);
+            } catch (updateErr: unknown) {
+                if (updateErr instanceof Error) { console.warn("[Login Route] Prisma update failed, falling back to Supabase Admin:", updateErr.message); } else { console.warn("[Login Route] Prisma update failed, falling back to Supabase Admin:", updateErr); }
             }
         }
 
@@ -148,8 +148,8 @@ export async function POST(req: Request) {
                     .from('User')
                     .update({ activeSessionId: sessionToken })
                     .eq('id', authData.user.id);
-            } catch (supaErr: any) {
-                console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr.message);
+            } catch (supaErr: unknown) {
+                if (supaErr instanceof Error) { console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr.message); } else { console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr); }
             }
         }
 
@@ -179,7 +179,7 @@ export async function POST(req: Request) {
 
         return response;
 
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("Login Error:", e);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

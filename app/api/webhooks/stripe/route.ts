@@ -25,9 +25,9 @@ export async function POST(request: Request) {
                 signature,
                 process.env.STRIPE_WEBHOOK_SECRET
             );
-        } catch (err: any) {
-            console.error(`Webhook signature verification failed: ${err.message}`);
-            return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+        } catch (err: unknown) {
+            console.error(`Webhook signature verification failed: ${err instanceof Error ? err.message : String(err)}`);
+            return NextResponse.json({ error: `Webhook Error: ${err instanceof Error ? err.message : String(err)}` }, { status: 400 });
         }
 
 
@@ -98,8 +98,8 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json({ received: true });
-    } catch (err: any) {
-        console.error('[StripeWebhook] Fatal Error:', err.message);
+    } catch (err: unknown) {
+        console.error('[StripeWebhook] Fatal Error:', err instanceof Error ? err.message : String(err));
         return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
     }
 }

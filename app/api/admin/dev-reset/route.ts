@@ -40,7 +40,7 @@ export async function POST(request: Request) {
             const chunk = schools.slice(i, i + CHUNK_SIZE);
             const ids = chunk.map(s => s.id);
 
-            await prisma.$transaction(async (tx: any) => {
+            await prisma.$transaction(async (tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0]) => {
                 await tx.marklistMark.deleteMany({ where: { entry: { config: { schoolId: { in: ids } } } } }).catch(() => {});
                 await tx.marklistEntry.deleteMany({ where: { config: { schoolId: { in: ids } } } }).catch(() => {});
                 await tx.marklistColumn.deleteMany({ where: { config: { schoolId: { in: ids } } } }).catch(() => {});
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
         }).catch(() => {});
 
         return NextResponse.json({ success: true, message: 'Schools and non-superadmin users deleted successfully.' });
-    } catch (e: any) {
-        return NextResponse.json({ error: e.message || 'Error occurred' }, { status: 500 });
+    } catch (e: unknown) {
+        return NextResponse.json({ error: e instanceof Error ? e.message : "Error occurred" }, { status: 500 });
     }
 }
