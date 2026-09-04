@@ -2,20 +2,20 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
-// Initialize with a dummy key if env var is missing during build time
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy123', {
-    apiVersion: '2026-06-24.dahlia' as any,
-});
-
 export async function POST(request: Request) {
     try {
         const body = await request.text();
         const signature = request.headers.get('stripe-signature') as string;
 
-        if (!process.env.STRIPE_WEBHOOK_SECRET) {
-            console.error('Missing STRIPE_WEBHOOK_SECRET');
-            return NextResponse.json({ error: 'Webhook secret missing' }, { status: 500 });
+        if (!process.env.STRIPE_WEBHOOK_SECRET || !process.env.STRIPE_SECRET_KEY) {
+            console.error('Missing STRIPE_WEBHOOK_SECRET or STRIPE_SECRET_KEY');
+            return NextResponse.json({ error: 'Webhook configuration missing' }, { status: 500 });
         }
+
+        // Initialize Stripe client securely inside the request handler
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2026-06-24.dahlia' as any,
+        });
 
         let event: Stripe.Event;
 

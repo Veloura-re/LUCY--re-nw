@@ -8,7 +8,13 @@ export async function POST(request: Request) {
         }
 
         const authHeader = request.headers.get('authorization');
-        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET || 'lucy_admin_sk_8f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d';
+
+        if (!process.env.ADMIN_DEV_RESET_SECRET) {
+            console.error("ADMIN_DEV_RESET_SECRET is missing in environment variables.");
+            return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
+        }
+
+        const expectedSecret = process.env.ADMIN_DEV_RESET_SECRET;
         if (authHeader !== `Bearer ${expectedSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }

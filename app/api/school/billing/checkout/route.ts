@@ -3,11 +3,6 @@ import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
-// Initialize with a dummy key if env var is missing during build time
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy123', {
-    apiVersion: '2026-06-24.dahlia' as any,
-});
-
 export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
@@ -23,6 +18,11 @@ export async function POST(request: Request) {
         if (!process.env.STRIPE_SECRET_KEY) {
             return NextResponse.json({ error: 'Stripe is not configured on this server.' }, { status: 500 });
         }
+
+        // Initialize Stripe client securely inside the request handler
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2026-06-24.dahlia' as any,
+        });
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
