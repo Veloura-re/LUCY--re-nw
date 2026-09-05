@@ -5,11 +5,7 @@ import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(req: NextRequest) {
     try {
-        const user = await requireRole([
-            'SUPERADMIN',
-            'OWNER',
-            'PRINCIPAL'
-        ]);
+        const user = await requireRole(['SUPERADMIN']);
 
         const body = (await req.json()) as {
             reportId?: string;
