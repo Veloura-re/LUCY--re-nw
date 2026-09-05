@@ -1,0 +1,5 @@
+## 2025-02-12 - Turnstile Dummy Key Fail Open
+
+**Vulnerability:** A hardcoded dummy Cloudflare Turnstile key ('1x0000000000000000000000000000000AA') was used as a fallback default when `TURNSTILE_SECRET_KEY` was missing from the environment variables in the login authentication route (`app/api/auth/login/route.ts`).
+**Learning:** Using test/dummy keys as fallbacks for security services (like captcha or tokens) creates a "fail open" state. This allows attackers or automated bots to easily bypass intended security mechanisms by using known dummy values, rendering the protection completely ineffective when configuration is missing.
+**Prevention:** Always "fail closed" for security checks. If critical security configuration (like a secret key for Turnstile) is missing, the application should crash or return a generic `500 Internal Server Error` and block the request rather than gracefully degrading to an insecure test mode in production.

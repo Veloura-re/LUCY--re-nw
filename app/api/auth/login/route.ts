@@ -70,8 +70,14 @@ export async function POST(req: Request) {
         const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
+        const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
+        if (!turnstileSecretKey) {
+            console.error("Critical Configuration Error: TURNSTILE_SECRET_KEY is missing from environment variables.");
+            return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        }
+
         const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+        verifyParams.append('secret', turnstileSecretKey);
         verifyParams.append('response', turnstileToken);
         verifyParams.append('remoteip', clientIp);
 
