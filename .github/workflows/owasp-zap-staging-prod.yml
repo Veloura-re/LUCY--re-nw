@@ -17,13 +17,17 @@ jobs:
   security_scan:
     runs-on: ubuntu-latest
     name: ZAP Full Scan
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Run OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           # TODO: If scanning staging, replace this with your staging domain (e.g., staging.lucy-re-nw.com)
           # For scheduled runs on main, this targets production.
           target: 'https://lucy-re-nw.vercel.app'

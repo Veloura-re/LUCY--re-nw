@@ -13,8 +13,11 @@ import {
   UserCheck, Calendar, Palette, Settings, MessageSquare,
   HeartHandshake, Sparkles, ArrowRight, ShieldCheck,
   Smartphone, Award, RefreshCw, Check, Maximize2, Minimize2,
-  AlertCircle, DollarSign, Send, HelpCircle, CheckCheck
+  AlertCircle, DollarSign, Send, HelpCircle, CheckCheck,
+  FileDown, Download, Loader2
 } from "lucide-react";
+import { toast } from "sonner";
+import { downloadDeckAsPPTX, downloadDeckAsPDF } from "@/lib/deck-export";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -188,6 +191,36 @@ export default function PresentationDeck() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showAppendix, setShowAppendix] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isExportingPPTX, setIsExportingPPTX] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
+
+  const handleDownloadPPTX = async () => {
+    try {
+      setIsExportingPPTX(true);
+      toast.info("Generating animated PowerPoint presentation (.pptx)...");
+      await downloadDeckAsPPTX();
+      toast.success("PowerPoint presentation downloaded successfully!");
+    } catch (error) {
+      console.error("PPTX export error:", error);
+      toast.error("Failed to generate PowerPoint file.");
+    } finally {
+      setIsExportingPPTX(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsExportingPDF(true);
+      toast.info("Generating high-resolution presentation PDF...");
+      await downloadDeckAsPDF();
+      toast.success("Keynote PDF downloaded successfully!");
+    } catch (error) {
+      console.error("PDF export error:", error);
+      toast.error("Failed to generate PDF file.");
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -208,74 +241,74 @@ export default function PresentationDeck() {
   }, []);
 
   const slides: Slide[] = [
-    // ──────────────────── 1. THE INVISIBLE BURDEN (PERSONAS POPPING UP) ──
+    // ──────────────────── 1. THE INVISIBLE BURDEN ────────────────────
     {
       id: "intro_burden",
-      tag: "Act 01 // The Real Pressure in Schools",
-      title: "Every Morning, Millions Walk Into School",
-      sub: "Teachers want to inspire, parents want peace of mind, and leaders work hard to keep everything running. But manual paperwork creates continuous daily stress for everyone.",
+      tag: "Act 01 // The Silent Tax on Schools",
+      title: "The Friction Holding Your Campus Back",
+      sub: "Behind every great school is an invisible operational tax: hundreds of wasted educator hours, unverified bank receipts, and anxious parents locked in communication blackouts.",
       content: (
         <div className="space-y-4 w-full text-left">
           {/* Animated Popping Stress Personas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StressPersonaBubble
-              role="Teacher (11:45 PM)"
-              quote="I have 140 exams to calculate weighted averages for by hand. I haven't slept before 1 AM all week."
-              problem="Midnight Grading Exhaustion"
+              role="Senior Faculty (11:45 PM)"
+              quote="I spend 20 hours calculating weighted averages on scratch paper every exam week instead of mentoring students. I haven't slept before 1 AM all term."
+              problem="40 Hours Monthly Grading Fatigue"
               delay={0.1}
             />
             <StressPersonaBubble
-              role="Parent (At Home)"
-              quote="I haven't heard a single update in 2 months. How is my child doing in math before the final exam?"
-              problem="Zero Real-Time Visibility"
+              role="Anxious Parent (Home)"
+              quote="I pay premium tuition, yet I have zero visibility into my son's daily attendance or test scores until finals are already over."
+              problem="90-Day Information Blackout"
               delay={0.2}
             />
             <StressPersonaBubble
               role="School Principal"
-              quote="Two teachers were booked in Room 204 at 9:00 AM. 45 students have nowhere to sit for Physics!"
-              problem="Timetable & Room Collisions"
+              quote="Our master timetable collapsed twice this term because Room 204 was double-booked for Physics and Chemistry. 45 students had nowhere to sit."
+              problem="Classroom & Schedule Collisions"
               delay={0.3}
             />
             <StressPersonaBubble
-              role="Finance Officer"
-              quote="We have 35 unverified bank slips and parents waiting in a long line to get paper receipts stamped."
-              problem="Lost Tuition & Manual Reconciliation"
+              role="Finance Director"
+              quote="We spend 4 days matching unverified bank slips across three different banks while tuition arrears compound into uncollected debt."
+              problem="Revenue Leakage & Manual Slip Chasing"
               delay={0.4}
             />
           </div>
           <div className="p-4 border-2 border-emerald-500/40 bg-emerald-50/90 dark:bg-emerald-950/40 rounded-2xl text-xs sm:text-sm md:text-base text-emerald-950 dark:text-emerald-200 font-bold flex items-center gap-3 shadow-md">
             <Sparkles className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
-            <span>LUCY was built to dissolve this manual friction and give the school community their time, clarity, and peace back.</span>
+            <span>LUCY was built to eliminate this friction entirely—returning time to teachers, clarity to parents, and financial control to leadership.</span>
           </div>
         </div>
       ),
       technicalAppendix: [
-        "Traditional: Disorganized paper registers, fragmented WhatsApp groups, lost receipts, and end-of-term panic.",
-        "LUCY OS: One unified cloud platform connecting School Directors, Teachers, Parents, and Scholars in real time."
+        "Legacy Friction: Disconnected spreadsheets, unverified paper bank slips, chaotic WhatsApp gossip groups, and end-of-term administrative panic.",
+        "LUCY OS: One unified real-time operational engine connecting School Owners, Principals, Faculty, Parents, and Scholars."
       ]
     },
 
     // ──────────────────── 2. THE CORE PHILOSOPHY ────────────────────
     {
       id: "core_philosophy",
-      tag: "Act 02 // The Core Distinction",
-      title: "Automating The Real Work Behind The Paper",
-      sub: "We did not build LUCY just to put documents on a screen. We built LUCY to take away the hard, repetitive manual work behind the paper.",
+      tag: "Act 02 // The Architectural Shift",
+      title: "Software Must Execute The Work, Not Just Host It",
+      sub: "Scanning paper into PDFs is not innovation. LUCY executes the underlying cognitive workload autonomously—computing weighted marklists, preventing schedule collisions, and streaming live campus telemetry.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="space-y-4">
             {[
               {
-                manual: "Teacher spends 15 hours manually calculating weighted averages with a calculator",
-                lucy: "LUCY calculates totals, percentages, grade curves, and class ranks in seconds"
+                manual: "Faculty members spend 18 hours manually crunching weighted percentages, ranking formulas, and grade curves with a calculator.",
+                lucy: "Continuous automated aggregation computes weighted marklists, grade distributions, and student rankings in milliseconds."
               },
               {
-                manual: "School office spends 3 full days printing, sorting, and stamping report cards",
-                lucy: "LUCY generates clean, verified digital PDF report cards in 1 simple click"
+                manual: "Administrative staff spend 3 full days printing, sorting, stamping, and manually sealing paper report cards.",
+                lucy: "Cryptographically verified, school-branded digital PDF report dossiers generated in 60 seconds with QR verification."
               },
               {
-                manual: "Parents wait 3 months for parent-teacher night to discover a learning struggle",
-                lucy: "Parents see grades, attendance, and teacher notes as soon as they happen"
+                manual: "Parents endure a 90-day communication blackout, discovering learning obstacles only after term finals are finished.",
+                lucy: "Real-time visibility into daily attendance, test scores, homework rosters, and teacher notes on any smartphone."
               }
             ].map((comp, idx) => (
               <motion.div
@@ -286,7 +319,7 @@ export default function PresentationDeck() {
                 className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 md:p-6 border-2 border-slate-300 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/70 rounded-3xl text-sm md:text-base shadow-md"
               >
                 <div className="text-slate-600 dark:text-zinc-400 flex items-start gap-3">
-                  <span className="text-rose-600 dark:text-rose-400 font-black font-mono shrink-0 uppercase">[Old Way]</span>
+                  <span className="text-rose-600 dark:text-rose-400 font-black font-mono shrink-0 uppercase">[Legacy Strain]</span>
                   <span className="font-sans font-medium text-xs sm:text-sm md:text-base">{comp.manual}</span>
                 </div>
                 <div className="text-slate-900 dark:text-white font-bold flex items-start gap-3">
@@ -300,34 +333,34 @@ export default function PresentationDeck() {
       ),
       technicalAppendix: [
         "Dynamic formula engine supports customizable curriculum assessment models (e.g. 20/30/50 weighted marklists).",
-        "Deterministic rendering outputs verified PDF report cards instantly."
+        "Deterministic rendering generates verified PDF report cards with zero formula errors."
       ]
     },
 
-    // ──────────────────── 3. SOLUTION 1: LESS PAPERWORK ────────────────────
+    // ──────────────────── 3. SOLUTION 1: ACADEMIC CORE ────────────────────
     {
       id: "sol_paperwork",
-      tag: "Act 03 // Solution 01: Academics",
-      title: "Less Paperwork, More Time For Teaching",
-      sub: "Teachers and office staff save up to 40 hours every month with automatic grading, instant student dossiers, and zero paper chaos.",
+      tag: "Act 03 // Academic Infrastructure",
+      title: "The 40-Hour Gift to Every Educator",
+      sub: "When repetitive arithmetic and manual paperwork are automated with 100% mathematical precision, burnout drops, lesson quality surges, and faculty retention climbs.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-2 gap-4">
-            <ProjectorStatBlock label="Monthly Time Saved" value={40} suffix="h" delay={0.05} sub="Per teacher on grading" />
-            <ProjectorStatBlock label="Calculation Accuracy" value={100} suffix="%" delay={0.1} sub="Zero formula errors" />
+            <ProjectorStatBlock label="Monthly Time Reclaimed" value={40} suffix="h" delay={0.05} sub="Per faculty member on grading" />
+            <ProjectorStatBlock label="Formula Precision" value={100} suffix="%" delay={0.1} sub="Zero calculation errors" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={BarChart3}
-              title="Automated Marklists"
-              desc="Enter scores directly into clean digital marklists. Totals, weighted averages, and student ranks calculate automatically."
+              title="Autonomous Marklists"
+              desc="Enter raw scores directly into structured matrices. Weighted totals, grade distributions, and student ranks calculate automatically."
               badge="Instant Math"
               delay={0.15}
             />
             <ProjectorCard
               icon={FileText}
-              title="1-Click Report Cards"
-              desc="Generate beautiful, school-branded PDF report cards with QR security stamps for hundreds of students in 60 seconds."
+              title="60-Second Report Dossiers"
+              desc="Generate elegant, school-branded PDF report cards with QR security stamps and principal signatures for hundreds of scholars in 60 seconds."
               badge="60 Seconds"
               delay={0.2}
             />
@@ -336,34 +369,34 @@ export default function PresentationDeck() {
       ),
       technicalAppendix: [
         "Continuous grading engine automatically handles weights, curves, and teacher remarks.",
-        "Generates cumulative academic transcripts ready for export."
+        "Generates cumulative academic transcripts ready for ministry export."
       ]
     },
 
-    // ──────────────────── 4. SOLUTION 2: PARENT COMMUNICATION ────────────
+    // ──────────────────── 4. SOLUTION 2: PARENT BRIDGE ────────────────────
     {
       id: "sol_parents",
-      tag: "Act 04 // Solution 02: Transparency",
-      title: "Real-Time Connection With Parents",
-      sub: "Parents access their child's grades, daily attendance, and homework live on their phones. Official communication replaces noisy, disorganized chat groups.",
+      tag: "Act 04 // Family Alignment",
+      title: "Continuous Transparency Builds Fierce Parent Loyalty",
+      sub: "Eliminate chaotic WhatsApp gossip groups. Empower families with direct, live academic visibility and protect teacher sanity with automated evening quiet hours.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-2 gap-4">
-            <ProjectorStatBlock label="Absence SMS Speed" value={3} suffix="s" delay={0.05} sub="Direct text to parents" />
-            <ProjectorStatBlock label="Parent Trust Score" value={98} suffix="%" delay={0.1} sub="Reported satisfaction" />
+            <ProjectorStatBlock label="Absence SMS Dispatch" value={3} suffix="s" delay={0.05} sub="Instant notification to parents" />
+            <ProjectorStatBlock label="Family Trust Index" value={98} suffix="%" delay={0.1} sub="Reported parental satisfaction" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={Eye}
-              title="Live Parent Portal"
-              desc="Parents view test scores, lesson progress, and daily attendance immediately from their phones. Zero surprises."
+              title="Live Parental Portal"
+              desc="Parents track test grades, lesson pacing, and daily attendance immediately from their smartphones. No more 90-day blackouts."
               badge="Real-Time"
               delay={0.15}
             />
             <ProjectorCard
               icon={MessageSquare}
-              title="Official School Chat"
-              desc="Official in-app messaging keeps teacher personal phone numbers private with automatic evening quiet hours."
+              title="Boundary-Enforced School Chat"
+              desc="Official institutional messaging keeps teacher phone numbers private with automated evening quiet hours to protect faculty wellbeing."
               badge="Private & Safe"
               delay={0.2}
             />
@@ -376,40 +409,40 @@ export default function PresentationDeck() {
       ]
     },
 
-    // ──────────────────── 5. SOLUTION 3: DAILY OPERATIONS ────────────────
+    // ──────────────────── 5. SOLUTION 3: CAMPUS LOGISTICS ────────────────
     {
       id: "sol_operations",
-      tag: "Act 05 // Solution 03: Day-to-Day Operations",
-      title: "Smooth Operations & Zero Schedule Clashes",
-      sub: "Coordinate teachers, classrooms, and timetables without conflict. Take single-tap attendance across entire classrooms in seconds.",
+      tag: "Act 05 // Campus Operations",
+      title: "Zero Double-Bookings. Flawless Campus Command.",
+      sub: "Constraint-satisfaction scheduling that prevents room and teacher clashes, paired with 10-second single-tap roll calls across the entire campus.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={ClipboardList}
-              title="10-Second Roll Call"
-              desc="Teachers mark present or absent with quick single-tap rosters, updating school records and parent portals in real time."
+              title="10-Second Digital Roll Call"
+              desc="Teachers mark present or absent with single-tap rosters, updating school records and parent portals in real time."
               badge="Single-Tap Roster"
               delay={0.05}
             />
             <ProjectorCard
               icon={Calendar}
-              title="Smart Timetables"
-              desc="Intelligent scheduling tool prevents room clashes and ensures teachers are never double-booked."
+              title="Collision-Free Timetables"
+              desc="Intelligent scheduling engine prevents room double-bookings and balances teacher workloads across the campus."
               badge="Zero Clashes"
               delay={0.1}
             />
             <ProjectorCard
               icon={BookOpen}
-              title="Digital Lesson Plans"
-              desc="Teachers organize curriculum topics and lesson notes in clean digital views for school leadership."
-              badge="Structured"
+              title="Structured Curriculum Tracking"
+              desc="Teachers organize curriculum topics and lesson notes in clean digital views for academic coordinators."
+              badge="Curriculum Sync"
               delay={0.15}
             />
             <ProjectorCard
               icon={UserCheck}
-              title="Absence Authorizations"
-              desc="Parents submit doctor notes and leave requests digitally. Approved by principals with one tap."
+              title="Paperless Absence Permits"
+              desc="Parents submit medical notes and leave requests directly via smartphone. Approved by principals with a single tap."
               badge="Paperless"
               delay={0.2}
             />
@@ -422,30 +455,30 @@ export default function PresentationDeck() {
       ]
     },
 
-    // ──────────────────── 6. SOLUTION 4: FINANCIAL CLARITY ───────────────
+    // ──────────────────── 6. SOLUTION 4: FINANCIAL AUTONOMY ───────────────
     {
       id: "sol_finance",
-      tag: "Act 06 // Solution 04: Financial Clarity",
-      title: "Clear Tuition Tracking & Live Cash Flow",
-      sub: "Reconcile tuition payments automatically through digital payments or verified bank transfers. Monitor revenues and expenses live.",
+      tag: "Act 06 // Institutional Capital",
+      title: "Instant Mobile Settlement & 100% Ledger Precision",
+      sub: "Direct Telebirr, CBE Birr, and card payments reconcile automatically. School owners monitor live tuition revenues, arrears, and operating costs.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-2 gap-4">
-            <ProjectorStatBlock label="Faster Fee Collection" value={25} suffix="%" delay={0.05} sub="Through auto reminders" />
-            <ProjectorStatBlock label="Fee Record Accuracy" value={100} suffix="%" delay={0.1} sub="Zero missing bank slips" />
+            <ProjectorStatBlock label="Faster Fee Collection" value={25} suffix="%" delay={0.05} sub="Via automated SMS reminders" />
+            <ProjectorStatBlock label="Tuition Record Accuracy" value={100} suffix="%" delay={0.1} sub="Zero missing bank slips" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={CreditCard}
-              title="Automatic Invoices"
-              desc="Parents pay easily via Telebirr, CBE Birr, or card, and get instant verified digital receipts on their phones."
-              badge="Instant Receipt"
+              title="Automated Digital Invoices"
+              desc="Parents settle tuition via Telebirr, CBE Birr, or card, receiving verified digital receipts with instant ledger reconciliation."
+              badge="Instant Settlement"
               delay={0.15}
             />
             <ProjectorCard
               icon={Activity}
-              title="Live Finance Dashboard"
-              desc="School directors track incoming tuition, pending balances, and operating costs in real time."
+              title="Live Cash-Flow Dashboard"
+              desc="School directors track incoming tuition, pending arrears, and operating expenditures in real time."
               badge="Executive View"
               delay={0.2}
             />
@@ -461,38 +494,38 @@ export default function PresentationDeck() {
     // ──────────────────── 7. SOLUTION 5: THE SANCTUARY ───────────────────
     {
       id: "sol_sanctuary",
-      tag: "Act 07 // Solution 05: Student Wellbeing",
-      title: "The Sanctuary: Safe Support & Mentorship",
-      sub: "A confidential, anonymous space for teenagers in Grades 7–12 to connect with peers or receive guidance from verified educators.",
+      tag: "Act 07 // Student Wellbeing",
+      title: "The Sanctuary: Anonymous Student Mental Health & Safety",
+      sub: "Scholars in Grades 7–12 cannot excel academically if they are suffering in silence. A protected, zero-doxxing space with real-time PII shields and faculty guidance.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={HeartHandshake}
               title="Anonymous Peer Uplink"
-              desc="Students talk through academic stress with a fellow student across the school network without stigma."
+              desc="Students discuss academic anxiety and peer pressure with a fellow secondary scholar across the school network without stigma."
               badge="Grades 7–12"
               delay={0.05}
             />
             <ProjectorCard
               icon={GraduationCap}
-              title="Educator Mentorship"
-              desc="Students connect with verified faculty counselors for confidential academic advice and encouragement."
-              badge="Verified Staff"
+              title="Verified Educator Mentorship"
+              desc="Scholars connect with verified faculty counselors for confidential academic advice and emotional encouragement."
+              badge="Verified Faculty"
               delay={0.1}
             />
             <ProjectorCard
               icon={Shield}
-              title="Real-Time Safety Guardrails"
-              desc="Automated filters instantly block personal phone numbers, emails, and social media links."
-              badge="Zero-Doxxing"
+              title="Real-Time Anti-Doxxing Shields"
+              desc="Automated guardrail engine instantly intercepts and scrubs personal phone numbers, emails, and social media handles."
+              badge="Anti-Doxxing"
               delay={0.15}
             />
             <ProjectorCard
               icon={Lock}
-              title="Anti-Screenshot & Anti-Leak"
-              desc="Sessions dissolve on exit. Screen capture shields and 24/7 crisis hotlines protect student safety."
-              badge="Protected"
+              title="Ephemeral Privacy & 24/7 Crisis Guard"
+              desc="Sessions dissolve on exit with anti-capture veils and immediate automated routing to 24/7 crisis lifelines. No student is left alone."
+              badge="Zero Trace"
               delay={0.2}
             />
           </div>
@@ -504,30 +537,30 @@ export default function PresentationDeck() {
       ]
     },
 
-    // ──────────────────── 8. SOLUTION 6: DATA SECURITY ───────────────────
+    // ──────────────────── 8. SOLUTION 6: CLOUD SOVEREIGNTY ─────────────────
     {
       id: "sol_security",
-      tag: "Act 08 // Solution 06: Data Security",
-      title: "Safe, Permanent Cloud Records & Audit Trails",
-      sub: "Academic marks and financial records are protected with strict role-based access, full audit histories, and automatic cloud backups.",
+      tag: "Act 08 // Enterprise Security",
+      title: "Permanent Cloud Records & Immutable Audit Trails",
+      sub: "Academic marks and institutional finances protected with cryptographic tenant isolation, role-based boundaries, and zero on-premise hardware costs.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-2 gap-4">
-            <ProjectorStatBlock label="Platform Uptime" value={99.9} suffix="%" delay={0.05} sub="High availability" />
-            <ProjectorStatBlock label="Server Hardware Cost" value={0} prefix="$" delay={0.1} sub="Cloud hosted" />
+            <ProjectorStatBlock label="Platform Uptime" value={99.9} suffix="%" delay={0.05} sub="High-availability cloud" />
+            <ProjectorStatBlock label="Server Hardware Cost" value={0} prefix="$" delay={0.1} sub="Zero local server overhead" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProjectorCard
               icon={TerminalIcon}
-              title="Tamper-Proof Audit History"
-              desc="Every mark entry, fee adjustment, and record change is logged with exact user name and timestamp."
+              title="Cryptographic Audit Ledger"
+              desc="Every mark entry, fee adjustment, and record modification is permanently logged with exact user attribution and timestamps."
               badge="100% Traceable"
               delay={0.15}
             />
             <ProjectorCard
               icon={Globe}
-              title="Encrypted Cloud Backups"
-              desc="Runs securely in the cloud on any device. Hourly backups protect against physical record loss."
+              title="Encrypted Hourly Snapshots"
+              desc="Runs securely in the cloud on any device. Hourly cloud snapshots protect against hardware failures or physical fire damage."
               badge="AES-256 Cloud"
               delay={0.2}
             />
@@ -540,20 +573,20 @@ export default function PresentationDeck() {
       ]
     },
 
-    // ──────────────────── 9. THE LUCY FLYWHEEL ───────────────────────────
+    // ──────────────────── 9. THE INSTITUTIONAL FLYWHEEL ───────────────────
     {
       id: "flywheel_growth",
-      tag: "Act 09 // The Institutional Multiplier",
-      title: "The LUCY Flywheel: How Schools Thrive",
-      sub: "When a school runs on LUCY, operational efficiency creates a self-sustaining cycle of trust, excellence, and institutional growth.",
+      tag: "Act 09 // The Multiplier Effect",
+      title: "The Flywheel: How Modern Campuses Dominate Their Market",
+      sub: "When operational friction disappears, a compounding cycle of teacher energy, parent loyalty, and student achievement turns a campus into a market leader.",
       content: (
         <div className="space-y-3 w-full text-left">
           {[
-            { step: "01", title: "Clear Systems", desc: "Automating repetitive work saves teachers hours every single week." },
-            { step: "02", title: "Energized Teachers", desc: "Teachers give richer, more focused attention to their students." },
-            { step: "03", title: "Live Transparency", desc: "Parents stay informed and build deep, enduring trust with the school." },
-            { step: "04", title: "Supported Students", desc: "Students feel safe, valued, and motivated in their studies." },
-            { step: "05", title: "Strong School Growth", desc: "High reputation and parental trust attract more families and drive prestige." }
+            { step: "01", title: "Zero-Friction Operations", desc: "Automating repetitive workflows reclaims dozens of hours every week for teachers and administrators." },
+            { step: "02", title: "Energized Faculty", desc: "Educators invest reclaimed energy into richer lesson pacing and individualized student mentorship." },
+            { step: "03", title: "Continuous Transparency", desc: "Live parent portals build deep, enduring institutional trust and eliminate communication blackouts." },
+            { step: "04", title: "Thriving Scholars", desc: "Students feel safe, valued, and motivated—accelerating exam performance and emotional wellbeing." },
+            { step: "05", title: "Campus Market Dominance", desc: "Exceptional parent loyalty and academic prestige drive word-of-mouth waitlists and enrollment growth." }
           ].map((item, idx) => (
             <motion.div
               key={idx}
@@ -583,9 +616,9 @@ export default function PresentationDeck() {
     // ──────────────────── 10. CONCLUSION & 4-MONTH TRIAL ─────────────────
     {
       id: "conclusion_launch",
-      tag: "Act 10 // The Future of Education",
-      title: "Simple, Helpful, And Built For People",
-      sub: "Experience the complete digital schoolhouse across your entire campus with a full 4-month academic term free trial.",
+      tag: "Act 10 // The Partnership Mandate",
+      title: "Deploy Across Your Campus: 4 Months Free",
+      sub: "Experience the entire LUCY operating system across your entire school for a full academic term—with zero risk, zero hardware, and complete hands-on onboarding.",
       content: (
         <div className="space-y-6 w-full text-left">
           <motion.div
@@ -751,12 +784,38 @@ export default function PresentationDeck() {
             Projector Keynote
           </span>
         </Link>
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Button
+              onClick={handleDownloadPPTX}
+              disabled={isExportingPPTX}
+              variant="outline"
+              size="sm"
+              className="h-9 px-3 rounded-xl border-2 border-slate-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 hover:bg-slate-100 dark:hover:bg-zinc-900 text-slate-800 dark:text-zinc-200 shadow-sm"
+              title="Download as PowerPoint (.pptx) with animations and speaker notes"
+            >
+              {isExportingPPTX ? <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" /> : <FileDown className="w-3.5 h-3.5 text-emerald-500" />}
+              <span className="hidden sm:inline">PPTX</span>
+            </Button>
+
+            <Button
+              onClick={handleDownloadPDF}
+              disabled={isExportingPDF}
+              variant="outline"
+              size="sm"
+              className="h-9 px-3 rounded-xl border-2 border-slate-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 hover:bg-slate-100 dark:hover:bg-zinc-900 text-slate-800 dark:text-zinc-200 shadow-sm"
+              title="Download as High-Resolution Presentation PDF"
+            >
+              {isExportingPDF ? <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-500" /> : <FileText className="w-3.5 h-3.5 text-teal-500" />}
+              <span className="hidden sm:inline">PDF</span>
+            </Button>
+          </div>
+
           <Button
             onClick={toggleFullscreen}
             variant="outline"
             size="sm"
-            className="rounded-xl border-2 border-slate-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-zinc-900"
+            className="h-9 px-3 rounded-xl border-2 border-slate-300 dark:border-zinc-800 text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-zinc-900"
             title="Toggle Projector Fullscreen (Press F)"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4 text-emerald-500" />}
@@ -764,7 +823,7 @@ export default function PresentationDeck() {
           </Button>
 
           <Link href="/register">
-            <Button className="h-10 px-5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs uppercase tracking-widest font-black rounded-xl shadow-md transition-all">
+            <Button className="h-9 sm:h-10 px-3.5 sm:px-5 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] sm:text-xs uppercase tracking-widest font-black rounded-xl shadow-md transition-all">
               4-Month Free Trial
             </Button>
           </Link>
@@ -772,7 +831,7 @@ export default function PresentationDeck() {
           <motion.span
             animate={{ borderColor: ["rgba(16,185,129,0.3)", "rgba(16,185,129,0.8)", "rgba(16,185,129,0.3)"] }}
             transition={{ repeat: Infinity, duration: 2.5 }}
-            className="px-3.5 py-1.5 border-2 border-emerald-500/40 bg-emerald-50 dark:bg-zinc-950/80 text-xs text-emerald-700 dark:text-emerald-400 uppercase font-black font-mono rounded-xl shadow-sm"
+            className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 border-2 border-emerald-500/40 bg-emerald-50 dark:bg-zinc-950/80 text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-400 uppercase font-black font-mono rounded-xl shadow-sm whitespace-nowrap"
           >
             Slide {String(currentSlide + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
           </motion.span>

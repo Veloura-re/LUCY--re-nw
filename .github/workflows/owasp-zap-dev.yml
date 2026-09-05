@@ -12,13 +12,17 @@ jobs:
   security_scan:
     runs-on: ubuntu-latest
     name: ZAP Baseline Scan
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           # TODO: If you map a custom domain to your dev branch (like dev.lucy-re-nw.com), replace this URL!
           target: 'https://lucy-re-nw.vercel.app'
           

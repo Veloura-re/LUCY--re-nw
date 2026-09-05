@@ -4,13 +4,7 @@ import { requireRole } from '@/lib/security';
 
 export async function GET(req: NextRequest) {
     try {
-        const user = await requireRole([
-            'SUPERADMIN',
-            'OWNER',
-            'PRINCIPAL',
-            'TEACHER',
-            'HOMEROOM'
-        ]);
+        const user = await requireRole(['SUPERADMIN']);
 
         const url = new URL(req.url);
         const requestedSchoolId = url.searchParams.get('schoolId');
