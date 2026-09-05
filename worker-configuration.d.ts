@@ -19,6 +19,7 @@ declare namespace Cloudflare {
 		DATABASE_URL: string;
 		DIRECT_URL: string;
 		GOOGLE_GENERATIVE_AI_API_KEY: string;
+		TURNSTILE_SECRET_KEY: string;
 		WORKER_SELF_REFERENCE: Fetcher /* lucy */;
 	}
 }
@@ -27,7 +28,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "IS_CLOUDFLARE" | "GEMINI_API_KEY" | "GMAIL_USER" | "GMAIL_APP_PASSWORD" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY" | "NEXT_PUBLIC_SUPABASE_ANON_KEY" | "SUPABASE_SERVICE_ROLE_KEY" | "DATABASE_URL" | "DIRECT_URL" | "GOOGLE_GENERATIVE_AI_API_KEY">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "IS_CLOUDFLARE" | "GEMINI_API_KEY" | "GMAIL_USER" | "GMAIL_APP_PASSWORD" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "NEXT_PUBLIC_SUPABASE_URL" | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY" | "NEXT_PUBLIC_SUPABASE_ANON_KEY" | "SUPABASE_SERVICE_ROLE_KEY" | "DATABASE_URL" | "DIRECT_URL" | "GOOGLE_GENERATIVE_AI_API_KEY" | "TURNSTILE_SECRET_KEY">> {}
 }
 
 // Begin runtime types
