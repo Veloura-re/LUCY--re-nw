@@ -47,3 +47,9 @@ safePatch(
 );
 
 console.log('🚀 OpenNext patches applied with Cloudflare Sockets Shim (v3)');
+// 4. pg-cloudflare esbuild error
+safePatch(
+    'node_modules/@opennextjs/cloudflare/dist/cli/build/bundle-server.js',
+    'external: [',
+    'external: ["pg-cloudflare",'
+);
