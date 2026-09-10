@@ -87,6 +87,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
     "jest": "^30.4.2",
+    "pg-cloudflare": "^1.4.0",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.12",
