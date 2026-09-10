@@ -13,6 +13,7 @@ import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSp
 import { ParticleField, InteractiveParticleSimulation, SpiderWebIntro } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { PromoPopup } from "@/components/marketing/promo-popup";
+import { LanguageSelector } from "@/components/ui/language-selector";
 
 
 
@@ -366,12 +367,13 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="hidden md:flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-zinc-500 tracking-wide font-medium">
               <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-1.5 h-1.5 bg-emerald-500 dark:bg-white rounded-full" />
               <span>{time}</span>
             </div>
             
+            <LanguageSelector />
             <ThemeToggle className="scale-90" />
 
             <Link href="/login">

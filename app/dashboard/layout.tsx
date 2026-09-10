@@ -18,6 +18,7 @@ import { Logo } from "@/components/ui/logo";
 import { SchoolLogo } from "@/components/ui/school-logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
 import { PresenceBroadcaster } from "@/components/dashboard/presence-broadcaster";
+import { LanguageSelector } from "@/components/ui/language-selector";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -176,7 +177,10 @@ export default async function DashboardLayout({
                             <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1.5 sm:ml-2 md:ml-3">]</span>
                         </div>
                     </div>
-                    <EdgeHealthIndicator />
+                    <div className="flex items-center gap-3">
+                        <LanguageSelector />
+                        <EdgeHealthIndicator />
+                    </div>
                 </header>
             )}
 
