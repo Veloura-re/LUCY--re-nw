@@ -18,7 +18,6 @@ import { Logo } from "@/components/ui/logo";
 import { SchoolLogo } from "@/components/ui/school-logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
 import { PresenceBroadcaster } from "@/components/dashboard/presence-broadcaster";
-import { LanguageSelector } from "@/components/ui/language-selector";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -178,7 +177,6 @@ export default async function DashboardLayout({
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <LanguageSelector />
                         <EdgeHealthIndicator />
                     </div>
                 </header>
