@@ -13,7 +13,6 @@ import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSp
 import { ParticleField, InteractiveParticleSimulation, SpiderWebIntro } from "@/components/public/animations";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { PromoPopup } from "@/components/marketing/promo-popup";
-import { LanguageSelector } from "@/components/ui/language-selector";
 
 
 
@@ -373,7 +372,6 @@ export default function Home() {
               <span>{time}</span>
             </div>
             
-            <LanguageSelector />
             <ThemeToggle className="scale-90" />
 
             <Link href="/login">
