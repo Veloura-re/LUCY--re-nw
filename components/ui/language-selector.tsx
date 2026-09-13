@@ -46,7 +46,7 @@ function getActiveLanguageCookie(): string {
   for (const cookie of cookies) {
     const trimmed = cookie.trim();
     if (trimmed.startsWith("googtrans=")) {
-      const val = trimmed.substring("googtrans=".length);
+      const val = decodeURIComponent(trimmed.substring("googtrans=".length));
       const parts = val.split("/");
       if (parts.length >= 3 && parts[2]) {
         return parts[2];
@@ -59,28 +59,27 @@ function getActiveLanguageCookie(): string {
 function setGoogleTransCookie(code: string) {
   if (typeof document === "undefined") return;
   const isEnglish = code.toLowerCase() === "en";
-  const cookieVal = isEnglish ? "/en/en" : `/en/${code}`;
-  const now = new Date();
-  const expireDate = isEnglish
-    ? "Thu, 01 Jan 1970 00:00:00 UTC"
-    : new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+  const cookieVal = isEnglish ? "" : `/en/${code}`;
+  const expireStr = isEnglish
+    ? "expires=Thu, 01 Jan 1970 00:00:00 UTC;"
+    : "expires=Fri, 31 Dec 9999 23:59:59 GMT;";
 
-  // Root path (compatible with localhost and standard hosts)
-  document.cookie = `googtrans=${cookieVal}; path=/; expires=${expireDate}`;
+  // 1. Root path cookie (works on localhost, IPv4/v6, and standard origins)
+  document.cookie = `googtrans=${cookieVal}; path=/; ${expireStr}`;
 
-  // Domain path if hostname is qualified
+  // 2. Domain-scoped cookie if host has dot notation (e.g. lucy-re-nw.vercel.app)
   const host = window.location.hostname;
   if (host && host.includes(".")) {
-    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host}; expires=${expireDate}`;
-    document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host}; expires=${expireDate}`;
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host}; ${expireStr}`;
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host}; ${expireStr}`;
   }
 
-  // Backup /auto/ path variant
-  const autoVal = isEnglish ? "/auto/en" : `/auto/${code}`;
-  document.cookie = `googtrans=${autoVal}; path=/; expires=${expireDate}`;
+  // 3. Fallback /auto/ format
+  const autoVal = isEnglish ? "" : `/auto/${code}`;
+  document.cookie = `googtrans=${autoVal}; path=/; ${expireStr}`;
 }
 
-function triggerGoogleTranslateCombo(code: string): boolean {
+function triggerGoogleComboDirectly(code: string): boolean {
   if (typeof document === "undefined") return false;
   const isEnglish = code.toLowerCase() === "en";
   const combo = (document.querySelector(".goog-te-combo") as unknown) as HTMLSelectElement | null;
@@ -105,6 +104,14 @@ function triggerGoogleTranslateCombo(code: string): boolean {
     combo.value = code;
   }
 
+  if (typeof combo.onchange === "function") {
+    try {
+      combo.onchange(new Event("change"));
+    } catch {
+      // ignore
+    }
+  }
+
   combo.dispatchEvent(new Event("change", { bubbles: true }));
   return true;
 }
@@ -122,18 +129,10 @@ export function LanguageSelector({ variant = "default", className }: LanguageSel
   const modalRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize and synchronize active language state
+  // Synchronize active language state from cookie on mount
   useEffect(() => {
     const initialLang = getActiveLanguageCookie();
     setActiveCode(initialLang);
-
-    const handleCustomChange = (e: Event) => {
-      const detail = (e as CustomEvent<string>).detail;
-      if (detail) setActiveCode(detail);
-    };
-
-    window.addEventListener("lucy-language-change", handleCustomChange);
-    return () => window.removeEventListener("lucy-language-change", handleCustomChange);
   }, []);
 
   // Keyboard navigation and outside click dismissal
@@ -187,33 +186,21 @@ export function LanguageSelector({ variant = "default", className }: LanguageSel
     setIsOpen(false);
     setSearchQuery("");
 
-    // 1. Persist Google Translate cookies
+    // 1. Write the cookies immediately
     setGoogleTransCookie(code);
 
-    // 2. Dispatch custom event for UI updates
+    // 2. Dispatch custom event for telemetry
     window.dispatchEvent(new CustomEvent("lucy-language-change", { detail: code }));
 
-    // 3. Programmatic trigger on Google Translate select combo
-    const triggered = triggerGoogleTranslateCombo(code);
+    // 3. Attempt live DOM combo switch
+    triggerGoogleComboDirectly(code);
 
-    if (!triggered) {
-      // If combo element is not yet attached, poll for up to 3 seconds
-      let attempts = 0;
-      const pollInterval = setInterval(() => {
-        attempts++;
-        const success = triggerGoogleTranslateCombo(code);
-        if (success || attempts >= 12) {
-          clearInterval(pollInterval);
-          setIsTranslating(false);
-          if (!success) {
-            // Reload page with cookie active as deterministic fallback
-            window.location.reload();
-          }
-        }
-      }, 250);
-    } else {
-      setTimeout(() => setIsTranslating(false), 900);
-    }
+    // 4. Guaranteed full-page translation reload
+    // A rapid reload with the cookie set ensures that all server-rendered text,
+    // client components, and nested views load cleanly without virtual DOM conflicts.
+    setTimeout(() => {
+      window.location.reload();
+    }, 150);
   };
 
   return (
