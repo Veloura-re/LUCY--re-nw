@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Globe, Search, Check, X, ChevronDown, RotateCcw, Languages } from "lucide-react";
+import { Globe, Search, Check, X, ChevronDown, RotateCcw, Languages, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -46,13 +46,67 @@ function getActiveLanguageCookie(): string {
   for (const cookie of cookies) {
     const trimmed = cookie.trim();
     if (trimmed.startsWith("googtrans=")) {
-      const parts = trimmed.substring("googtrans=".length).split("/");
+      const val = trimmed.substring("googtrans=".length);
+      const parts = val.split("/");
       if (parts.length >= 3 && parts[2]) {
         return parts[2];
       }
     }
   }
   return "en";
+}
+
+function setGoogleTransCookie(code: string) {
+  if (typeof document === "undefined") return;
+  const isEnglish = code.toLowerCase() === "en";
+  const cookieVal = isEnglish ? "/en/en" : `/en/${code}`;
+  const now = new Date();
+  const expireDate = isEnglish
+    ? "Thu, 01 Jan 1970 00:00:00 UTC"
+    : new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+
+  // Root path (compatible with localhost and standard hosts)
+  document.cookie = `googtrans=${cookieVal}; path=/; expires=${expireDate}`;
+
+  // Domain path if hostname is qualified
+  const host = window.location.hostname;
+  if (host && host.includes(".")) {
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=${host}; expires=${expireDate}`;
+    document.cookie = `googtrans=${cookieVal}; path=/; domain=.${host}; expires=${expireDate}`;
+  }
+
+  // Backup /auto/ path variant
+  const autoVal = isEnglish ? "/auto/en" : `/auto/${code}`;
+  document.cookie = `googtrans=${autoVal}; path=/; expires=${expireDate}`;
+}
+
+function triggerGoogleTranslateCombo(code: string): boolean {
+  if (typeof document === "undefined") return false;
+  const isEnglish = code.toLowerCase() === "en";
+  const combo = (document.querySelector(".goog-te-combo") as unknown) as HTMLSelectElement | null;
+  if (!combo) return false;
+
+  const targetVal = isEnglish ? "" : code;
+  let found = false;
+
+  for (let i = 0; i < combo.options.length; i++) {
+    const optVal = combo.options[i].value;
+    if (
+      optVal.toLowerCase() === targetVal.toLowerCase() ||
+      (isEnglish && (optVal === "" || optVal.toLowerCase() === "en"))
+    ) {
+      combo.selectedIndex = i;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found && !isEnglish) {
+    combo.value = code;
+  }
+
+  combo.dispatchEvent(new Event("change", { bubbles: true }));
+  return true;
 }
 
 interface LanguageSelectorProps {
@@ -63,6 +117,7 @@ interface LanguageSelectorProps {
 export function LanguageSelector({ variant = "default", className }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeCode, setActiveCode] = useState<string>("en");
+  const [isTranslating, setIsTranslating] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -128,38 +183,41 @@ export function LanguageSelector({ variant = "default", className }: LanguageSel
 
   const selectLanguage = (code: string) => {
     setActiveCode(code);
+    setIsTranslating(true);
     setIsOpen(false);
     setSearchQuery("");
 
-    const isEnglish = code === "en";
-    const hostname = window.location.hostname;
+    // 1. Persist Google Translate cookies
+    setGoogleTransCookie(code);
 
-    // Persist Google Translate cookies across root and domain
-    if (isEnglish) {
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${hostname};`;
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${hostname};`;
-    } else {
-      document.cookie = `googtrans=/en/${code}; path=/;`;
-      document.cookie = `googtrans=/en/${code}; path=/; domain=${hostname};`;
-      document.cookie = `googtrans=/en/${code}; path=/; domain=.${hostname};`;
-    }
-
+    // 2. Dispatch custom event for UI updates
     window.dispatchEvent(new CustomEvent("lucy-language-change", { detail: code }));
 
-    // Programmatic trigger on Google Translate select combo
-    const combo = (document.querySelector(".goog-te-combo") as unknown) as HTMLSelectElement | null;
-    if (combo) {
-      combo.value = isEnglish ? "" : code;
-      combo.dispatchEvent(new Event("change", { bubbles: true }));
+    // 3. Programmatic trigger on Google Translate select combo
+    const triggered = triggerGoogleTranslateCombo(code);
+
+    if (!triggered) {
+      // If combo element is not yet attached, poll for up to 3 seconds
+      let attempts = 0;
+      const pollInterval = setInterval(() => {
+        attempts++;
+        const success = triggerGoogleTranslateCombo(code);
+        if (success || attempts >= 12) {
+          clearInterval(pollInterval);
+          setIsTranslating(false);
+          if (!success) {
+            // Reload page with cookie active as deterministic fallback
+            window.location.reload();
+          }
+        }
+      }, 250);
     } else {
-      // Fallback if widget script is still establishing
-      window.location.reload();
+      setTimeout(() => setIsTranslating(false), 900);
     }
   };
 
   return (
-    <div className={cn("relative notranslate", className)} translate="no">
+    <div className={cn("relative notranslate select-none", className)} translate="no">
       {/* Trigger Capsule Button */}
       <motion.button
         type="button"
@@ -177,7 +235,11 @@ export function LanguageSelector({ variant = "default", className }: LanguageSel
         )}
       >
         <div className="flex items-center justify-center w-5 h-5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-          <Globe className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-12" />
+          {isTranslating ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />
+          ) : (
+            <Globe className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-12" />
+          )}
         </div>
 
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-200">
@@ -329,7 +391,7 @@ export function LanguageSelector({ variant = "default", className }: LanguageSel
                   {SUPPORTED_LANGUAGES.length} Regional Locales
                 </span>
 
-                {activeCode !== "en" && (
+                {activeCode.toLowerCase() !== "en" && (
                   <button
                     type="button"
                     onClick={() => selectLanguage("en")}
