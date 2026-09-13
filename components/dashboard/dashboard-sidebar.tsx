@@ -13,7 +13,6 @@ import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { Logo } from "@/components/ui/logo";
 import { SchoolLogo } from "@/components/ui/school-logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LanguageSelector } from "@/components/ui/language-selector";
 
 interface DashboardSidebarProps {
     dbUser: any;
@@ -192,7 +191,6 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                         <div className="space-y-2">
                             <NavToggle mode="DOCK" />
                             <div className="flex items-center gap-2">
-                                <LanguageSelector variant="compact" />
                                 <ThemeToggle className="!w-[38px] !h-[38px] !rounded-xl shrink-0" />
                                 <Button
                                     variant="ghost"
@@ -233,7 +231,6 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {!collapsed && <SignOutButton />}
                     {collapsed && (
                         <>
-                            <LanguageSelector variant="compact" />
                             <ThemeToggle className="!w-9 !h-9 !rounded-xl" />
                             <button
                                 onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
