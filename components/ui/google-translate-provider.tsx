@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect } from "react";
 
 declare global {
@@ -24,7 +23,8 @@ declare global {
 
 export function GoogleTranslateProvider() {
   useEffect(() => {
-    const initTranslate = () => {
+    // 1. Define global init callback before script runs
+    window.googleTranslateElementInit = function () {
       if (typeof window !== "undefined" && window.google?.translate?.TranslateElement) {
         try {
           const container = document.getElementById("google_translate_element");
@@ -38,73 +38,39 @@ export function GoogleTranslateProvider() {
             );
           }
         } catch {
-          // Silently handle re-initialization guards
+          // ignore re-initialization
         }
       }
     };
 
-    window.googleTranslateElementInit = initTranslate;
-
-    // If script loaded prior to effect execution
-    if (window.google?.translate?.TranslateElement) {
-      initTranslate();
+    // 2. Inject external Google Translate runtime directly into DOM
+    const existingScript = document.getElementById("google-translate-script");
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.id = "google-translate-script";
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+    } else if (window.google?.translate?.TranslateElement) {
+      window.googleTranslateElementInit();
     }
-
-    // Polling watch to ensure combo mounts cleanly once script evaluates
-    const pollInterval = setInterval(() => {
-      const combo = document.querySelector(".goog-te-combo");
-      if (combo) {
-        clearInterval(pollInterval);
-      } else if (window.google?.translate?.TranslateElement) {
-        initTranslate();
-      }
-    }, 200);
-
-    const timeout = setTimeout(() => clearInterval(pollInterval), 8000);
-
-    return () => {
-      clearInterval(pollInterval);
-      clearTimeout(timeout);
-    };
   }, []);
 
   return (
-    <>
-      {/* Permanent offscreen bridge container for Google Translate widget */}
-      <div
-        id="google_translate_element"
-        aria-hidden="true"
-        className="pointer-events-none fixed -left-[9999px] -top-[9999px] h-px w-px overflow-hidden opacity-0 z-[-9999]"
-      />
-
-      {/* Inline synchronous initializer callback */}
-      <script
-        id="google-translate-inline-init"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.googleTranslateElementInit = function() {
-              if (window.google && window.google.translate && window.google.translate.TranslateElement) {
-                try {
-                  var el = document.getElementById('google_translate_element');
-                  if (el && !el.hasChildNodes()) {
-                    new window.google.translate.TranslateElement({
-                      pageLanguage: 'en',
-                      autoDisplay: false
-                    }, 'google_translate_element');
-                  }
-                } catch(e) {}
-              }
-            };
-          `,
-        }}
-      />
-
-      {/* External Google Translate engine runtime */}
-      <Script
-        id="google-translate-script"
-        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-        strategy="afterInteractive"
-      />
-    </>
+    <div
+      id="google_translate_element"
+      aria-hidden="true"
+      style={{
+        position: "fixed",
+        top: "-9999px",
+        left: "-9999px",
+        width: "1px",
+        height: "1px",
+        overflow: "hidden",
+        opacity: 0,
+        pointerEvents: "none",
+        zIndex: -9999,
+      }}
+    />
   );
 }

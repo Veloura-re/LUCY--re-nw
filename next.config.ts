@@ -87,16 +87,8 @@ const nextConfig: NextConfig = {
             value: 'same-origin',
           },
           {
-            key: 'Cross-Origin-Resource-Policy',
-            value: 'same-origin',
-          },
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'credentialless',
-          },
-          {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com https://translate.google.com https://translate.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co https://translate.google.com https://translate.googleapis.com; frame-src 'self' https://challenges.cloudflare.com https://translate.google.com https://translate.googleapis.com; worker-src 'self' blob:;",
+            value: "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com https://translate.google.com https://translate.googleapis.com https://*.gstatic.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com https://*.gstatic.com https://www.gstatic.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://*.gstatic.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co https://translate.google.com https://translate.googleapis.com https://*.googleapis.com https://*.google.com; frame-src 'self' https://challenges.cloudflare.com https://translate.google.com https://translate.googleapis.com https://*.google.com; worker-src 'self' blob:;",
           },
         ],
       },
