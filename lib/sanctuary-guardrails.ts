@@ -212,7 +212,7 @@ export function sanitizeSanctuaryContent(rawContent: string): SanctuarySafetyRes
  * Generates an anonymous pseudonym tailored to participant role.
  */
 export function generateSanctuaryPseudonym(role: string): string {
-    const randomId = Math.floor(100 + (globalThis.crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296) * 900);
+    const randomId = Math.floor(100 + Math.random() * 900);
     switch (role) {
         case 'TEACHER':
         case 'HOMEROOM':
