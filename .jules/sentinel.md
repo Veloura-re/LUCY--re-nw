@@ -1,0 +1,4 @@
+## 2024-09-16 - Fail-Open Authorization/CAPTCHA Bypasses and Privileged Client Downgrades
+**Vulnerability:** The login endpoint `app/api/auth/login/route.ts` used a dummy fallback string for `TURNSTILE_SECRET_KEY` and allowed falling back to an unprivileged key `NEXT_PUBLIC_SUPABASE_ANON_KEY` when instantiating the `supabaseAdmin` client.
+**Learning:** Hardcoding fallback test keys in missing environment variables creates "fail-open" security conditions (which bypasses CAPTCHA enforcement entirely). Using public anonymous keys to fallback for administrative clients drops privileges silently and fails unexpectedly at runtime.
+**Prevention:** Explicitly check for the existence of required environment variables (`TURNSTILE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`) and throw errors to fail securely rather than silently degrading protections or bypassing them.
