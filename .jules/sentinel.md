@@ -1,0 +1,4 @@
+## 2024-11-20 - [Fix] Unprivileged Fallback for Privileged Supabase Clients
+**Vulnerability:** The codebase initialized `supabaseAdmin` instances with `process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!`. If the `SUPABASE_SERVICE_ROLE_KEY` was missing, it fell back to using the unprivileged anon key.
+**Learning:** Using an unprivileged key for an admin client results in silent privilege drops (e.g. RLS policies apply when they shouldn't) rather than failing immediately. This leads to "fail open" scenarios or silent operational failures, hiding configuration issues and causing potential security vulnerabilities.
+**Prevention:** Always verify that privileged keys (like `SUPABASE_SERVICE_ROLE_KEY`) are present before initializing administrative clients. Throw an error or fail securely if the key is missing instead of using an unprivileged fallback.
