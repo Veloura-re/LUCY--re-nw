@@ -718,19 +718,19 @@ export default function BillingClientWrapper({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider font-orbitron">
-                                                    Lucy Dev Team
+                                                    Stripe Gateway
                                                 </h4>
                                                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                                     SANDBOX ACTIVE
                                                 </span>
                                             </div>
                                             <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
-                                                acct_1UH8MTLLcd0wQEee &bull; Dynamic Payment Methods
+                                                {process.env.NEXT_PUBLIC_STRIPE_ACCOUNT_ID || 'Connected Sandbox'} &bull; Dynamic Payment Methods
                                             </p>
                                         </div>
                                     </div>
                                     <a
-                                        href="https://dashboard.stripe.com/acct_1UH8MTLLcd0wQEee/test/apikeys"
+                                        href={process.env.NEXT_PUBLIC_STRIPE_ACCOUNT_ID ? `https://dashboard.stripe.com/${process.env.NEXT_PUBLIC_STRIPE_ACCOUNT_ID}/test/apikeys` : "https://dashboard.stripe.com/test/apikeys"}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
