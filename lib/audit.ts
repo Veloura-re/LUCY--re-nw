@@ -41,10 +41,21 @@ export async function logActivity({
     userAgent?: string;
 }) {
     try {
+        let effectiveSchoolId = schoolId;
+        if (!effectiveSchoolId && userId) {
+            const u = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { schoolId: true }
+            }).catch(() => null);
+            if (u?.schoolId) {
+                effectiveSchoolId = u.schoolId;
+            }
+        }
+
         await prisma.auditLog.create({
             data: {
                 userId,
-                schoolId,
+                schoolId: effectiveSchoolId,
                 action,
                 resourceType,
                 resourceId,
@@ -58,7 +69,7 @@ export async function logActivity({
             }
         });
     } catch (e) {
-        // Non-blocking — never crash a route over audit logging
+        // Non-blocking - never crash a route over audit logging
         console.error('[audit] Failed to log activity:', e);
     }
 }

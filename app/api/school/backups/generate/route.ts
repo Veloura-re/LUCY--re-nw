@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole } from '@/lib/security';
+import { prisma } from '@/lib/prisma';
+import { logActivity } from '@/lib/audit';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
@@ -12,14 +14,27 @@ export async function POST(request: Request) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 1. Fetch all critical data
-        const { data: users } = await supabaseAdmin.from('User').select('*').eq('schoolId', user.schoolId);
-        const { data: students } = await supabaseAdmin.from('Student').select('*').eq('schoolId', user.schoolId);
-        const { data: classes } = await supabaseAdmin.from('Class').select('*').eq('schoolId', user.schoolId);
-        const { data: grades } = await supabaseAdmin.from('Grade').select('*').eq('schoolId', user.schoolId);
-        const { data: subjects } = await supabaseAdmin.from('Subject').select('*').eq('schoolId', user.schoolId);
-        const { data: invoices } = await supabaseAdmin.from('Invoice').select('*').eq('schoolId', user.schoolId);
-        const { data: payments } = await supabaseAdmin.from('Payment').select('*').eq('schoolId', user.schoolId);
+        // 1. Fetch all critical data type-safely via Prisma to prevent schema drift and missing records
+        const [users, students, grades, subjects, invoices, classes, payments] = await Promise.all([
+            prisma.user.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.student.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.grade.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.subject.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.invoice.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.class.findMany({
+                where: {
+                    OR: [
+                        { schoolId: user.schoolId },
+                        { grade: { schoolId: user.schoolId } }
+                    ]
+                }
+            }),
+            prisma.payment.findMany({
+                where: {
+                    invoice: { schoolId: user.schoolId }
+                }
+            })
+        ]);
 
         const backupData = {
             metadata: {
@@ -86,6 +101,17 @@ export async function POST(request: Request) {
         }).select().single();
 
         if (rpError) throw rpError;
+
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+        await logActivity({
+            userId: user.id,
+            schoolId: user.schoolId,
+            action: 'GENERATE_BACKUP',
+            resourceType: 'RESTORE_POINT',
+            resourceId: restorePoint?.id,
+            ip,
+            after: { sizeBytes: buffer.length, fileUrl }
+        });
 
         return NextResponse.json({ success: true, restorePoint });
     } catch (error: any) {

@@ -4,15 +4,15 @@ import { prisma } from "@/lib/prisma";
 // Webhook for payment gateway reconciliation (Stripe, Chapa, Telebirr, CBE Birr)
 export async function POST(req: Request) {
     try {
-        // Sentinel 08 & 02: Secure webhook endpoint with secret verification
+        // Secure webhook endpoint with strict secret verification
         const webhookSecret = process.env.WEBHOOK_SECRET || process.env.LUCY_WEBHOOK_SECRET;
         const incomingSecret = req.headers.get('x-webhook-secret') || req.headers.get('authorization')?.replace('Bearer ', '');
 
-        if (process.env.NODE_ENV === 'production' && !webhookSecret) {
+        if (!webhookSecret) {
             return NextResponse.json({ error: "Webhook endpoint not configured" }, { status: 500 });
         }
 
-        if (webhookSecret && incomingSecret !== webhookSecret) {
+        if (incomingSecret !== webhookSecret) {
             return NextResponse.json({ error: "Unauthorized webhook signature" }, { status: 401 });
         }
 
@@ -34,13 +34,18 @@ export async function POST(req: Request) {
         if (!invoice) return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
         if (invoice.status === 'PAID') return NextResponse.json({ message: "Already processed" });
 
+        const incomingAmount = amount ? Number(amount) : Number(invoice.amount);
+        if (incomingAmount < Number(invoice.amount)) {
+            return NextResponse.json({ error: "Insufficient payment amount" }, { status: 400 });
+        }
+
         // Atomic Transaction for Reconciliation
         await prisma.$transaction(async (tx) => {
             // 1. Create Payment Record
             await tx.payment.create({
                 data: {
                     invoiceId: invoice.id,
-                    amount: amount ? Number(amount) : invoice.amount,
+                    amount: incomingAmount,
                     method: method || 'CARD',
                     reference: transactionReference || `AUTO_WEBHOOK_${Date.now()}`,
                     status: 'SUCCESS'

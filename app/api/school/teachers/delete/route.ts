@@ -48,17 +48,19 @@ export async function DELETE(request: Request) {
                     return NextResponse.json({ success: true, pendingApproval: true, message: "Termination request sent to Owner" });
                 }
 
-                // Delete teacher assignments and timetables to free up tasks/classes
-                await prisma.teacherAssignment.deleteMany({
-                    where: { teacherId: teacher.id }
-                });
-                await prisma.timetable.deleteMany({
-                    where: { teacherId: teacher.id }
-                });
+                // Delete teacher assignments and timetables to free up tasks/classes atomically
+                await prisma.$transaction(async (tx) => {
+                    await tx.teacherAssignment.deleteMany({
+                        where: { teacherId: teacher.id }
+                    });
+                    await tx.timetable.deleteMany({
+                        where: { teacherId: teacher.id }
+                    });
 
-                await prisma.user.update({
-                    where: { id: teacher.id },
-                    data: { schoolId: null }
+                    await tx.user.update({
+                        where: { id: teacher.id },
+                        data: { schoolId: null }
+                    });
                 });
             }
         }
@@ -69,6 +71,7 @@ export async function DELETE(request: Request) {
         // Log Activity
         await logActivity({
             userId: dbUser.id,
+            schoolId: dbUser.schoolId,
             action: 'DELETE_STAFF_OR_INVITE',
             resourceType: 'USER/INVITE',
             resourceId: email,

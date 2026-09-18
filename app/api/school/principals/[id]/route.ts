@@ -71,12 +71,17 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         const isInvite = searchParams.get('type') === 'invite';
 
         if (isInvite) {
-            await prisma.inviteToken.delete({
-                where: { id: resolvedParams.id }
+            const deleted = await prisma.inviteToken.deleteMany({
+                where: { id: resolvedParams.id, schoolId: owner.schoolId }
             });
+            if (deleted.count === 0) return NextResponse.json({ error: 'Invite not found' }, { status: 404 });
         } else {
+            const targetUser = await prisma.user.findFirst({
+                where: { id: resolvedParams.id, schoolId: owner.schoolId }
+            });
+            if (!targetUser) return NextResponse.json({ error: 'Principal not found' }, { status: 404 });
             await prisma.user.update({
-                where: { id: resolvedParams.id },
+                where: { id: targetUser.id },
                 data: { schoolId: null, role: 'TEACHER' }
             });
         }

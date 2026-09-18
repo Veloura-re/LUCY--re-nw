@@ -43,7 +43,7 @@ export async function POST(req: Request) {
                 const { logActivity } = await import('@/lib/audit');
                 const _ip = typeof req !== 'undefined' && req instanceof Request ? (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || undefined) : undefined;
                 if (authUser?.id) {
-                    await logActivity({ userId: authUser.id, action: 'CREATE', resourceType: 'payment', ip: _ip });
+                    await logActivity({ userId: authUser.id, schoolId: invoice.schoolId, action: 'ATTEMPT_DUPLICATE_PAYMENT', resourceType: 'payment', ip: _ip });
                 }
             } catch { /* non-blocking */ }
             return NextResponse.json({ message: "Already Paid" });
@@ -122,28 +122,29 @@ Respond strictly in JSON format:
             }
         }
 
-        // Transaction
+        // Transaction - atomically settle without duplicate payment creation
         const result = await prisma.$transaction(async (tx) => {
+            let payment;
             if (isDirector && existingPending) {
-                // If resolving an existing pending payment
-                await tx.payment.update({
+                // If resolving an existing pending payment, update it to SUCCESS without duplicating revenue
+                payment = await tx.payment.update({
                     where: { id: existingPending.id },
                     data: {
                         status: 'SUCCESS',
                         reference: reference ? `${existingPending.reference || ''} | Confirmed by ${dbUser.name || 'Director'}: ${reference}` : existingPending.reference
                     }
                 });
+            } else {
+                payment = await tx.payment.create({
+                    data: {
+                        invoiceId: invoice.id,
+                        amount: invoice.amount,
+                        method: method,
+                        reference: aiReference,
+                        status: finalStatus as any
+                    }
+                });
             }
-
-            const payment = await tx.payment.create({
-                data: {
-                    invoiceId: invoice.id,
-                    amount: invoice.amount,
-                    method: method,
-                    reference: aiReference,
-                    status: finalStatus as any
-                }
-            });
 
             // Only mark invoice as PAID if status is SUCCESS
             if (finalStatus === 'SUCCESS') {
@@ -155,6 +156,21 @@ Respond strictly in JSON format:
 
             return payment;
         });
+
+        // Audit log
+        try {
+            const { logActivity } = await import('@/lib/audit');
+            const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+            await logActivity({
+                userId: dbUser.id,
+                schoolId: invoice.schoolId,
+                action: finalStatus === 'SUCCESS' ? 'PAYMENT_SUCCESS' : 'PAYMENT_SUBMIT_PENDING',
+                resourceType: 'PAYMENT',
+                resourceId: result.id,
+                ip,
+                after: { amount: invoice.amount, invoiceId: invoice.id, method, status: finalStatus }
+            });
+        } catch { /* non-blocking */ }
 
         revalidatePath('/dashboard/finance', 'page');
         revalidatePath('/dashboard/parent', 'page');

@@ -21,13 +21,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "No periods defined for this school." }, { status: 400 });
         }
 
-        if (overwrite) {
-            // Delete all timetables for the school
-            await prisma.timetable.deleteMany({
-                where: { class: { grade: { schoolId: dbUser.schoolId } } }
-            });
-        }
-
         const existingTimetables = overwrite ? [] : await prisma.timetable.findMany({
             where: { class: { grade: { schoolId: dbUser.schoolId } } }
         });
@@ -118,22 +111,32 @@ export async function POST(request: Request) {
             }
         }
 
-        // 3. Save to database
-        if (newTimetableEntries.length > 0) {
-            await prisma.timetable.createMany({
-                data: newTimetableEntries
-            });
-        }
+        // 3. Save to database atomically within a transaction
+        await prisma.$transaction(async (tx) => {
+            if (overwrite) {
+                await tx.timetable.deleteMany({
+                    where: { class: { grade: { schoolId: dbUser.schoolId } } }
+                });
+            }
+            if (newTimetableEntries.length > 0) {
+                await tx.timetable.createMany({
+                    data: newTimetableEntries
+                });
+            }
+        });
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'AUTO_GENERATE_TIMETABLE', resourceType: 'timetable', ip: _ip || undefined });
-            }
+            await logActivity({
+                userId: dbUser.id,
+                schoolId: dbUser.schoolId,
+                action: 'AUTO_GENERATE_TIMETABLE',
+                resourceType: 'timetable',
+                ip: _ip || undefined,
+                after: { generatedCount: newTimetableEntries.length, unassignedCount }
+            });
         } catch { /* non-blocking */ }
 return NextResponse.json({ 
             success: true, 

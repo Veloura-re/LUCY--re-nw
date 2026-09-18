@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
+import { logActivity } from '@/lib/audit';
 
 export async function GET(
     req: Request,
@@ -19,7 +20,7 @@ export async function GET(
             }
         });
 
-        if (!book || book.schoolId !== dbUser.schoolId) {
+        if (!book || (book.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
             return new NextResponse("Book not found", { status: 404 });
         }
 
@@ -45,17 +46,31 @@ export async function DELETE(
             return new NextResponse("Book not found", { status: 404 });
         }
 
-        // Clean up dependencies and self-referencing prerequisites
-        await prisma.book.updateMany({
-            where: { prerequisiteId: id },
-            data: { prerequisiteId: null }
-        });
-        await prisma.resourceProgress.deleteMany({ where: { bookId: id } });
-        await prisma.unitPackResource.deleteMany({ where: { bookId: id } });
-        await prisma.bookRequest.deleteMany({ where: { schoolId: book.schoolId } });
+        // Clean up dependencies and self-referencing prerequisites atomically
+        await prisma.$transaction(async (tx) => {
+            await tx.book.updateMany({
+                where: { prerequisiteId: id },
+                data: { prerequisiteId: null }
+            });
+            await tx.resourceProgress.deleteMany({ where: { bookId: id } });
+            await tx.unitPackResource.deleteMany({ where: { bookId: id } });
+            // Only clean up requests matching this book's title for this school
+            await tx.bookRequest.deleteMany({ where: { schoolId: book.schoolId, title: book.title } });
 
-        await prisma.book.delete({
-            where: { id }
+            await tx.book.delete({
+                where: { id }
+            });
+        });
+
+        const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+        await logActivity({
+            userId: dbUser.id,
+            schoolId: book.schoolId,
+            action: 'DELETE_BOOK',
+            resourceType: 'BOOK',
+            resourceId: id,
+            ip,
+            before: { id: book.id, title: book.title, schoolId: book.schoolId }
         });
 
         return new NextResponse("Book deleted", { status: 200 });
