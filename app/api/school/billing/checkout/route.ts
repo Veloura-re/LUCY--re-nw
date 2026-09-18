@@ -1,19 +1,13 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import Stripe from 'stripe';
-
-// Initialize with a dummy key if env var is missing during build time
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy123', {
-    apiVersion: '2026-06-24.dahlia' as any,
-});
+import { createSchoolSubscriptionCheckoutSession } from '@/lib/stripe';
 
 export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
         const user = await requireRole(['OWNER', 'PRINCIPAL']);
 
-        // 🔮 Crystal Ball: use top-level prisma import — no more dynamic require() cold-start failures
         const school = await prisma.school.findUnique({ where: { id: user.schoolId! } });
 
         if (!school) {
@@ -26,40 +20,30 @@ export async function POST(request: Request) {
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-        // Set up the checkout session for a $49/month subscription
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            customer_email: user.email,
-            client_reference_id: school.id,
-            line_items: [
-                {
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: 'Enterprise Node Tier (Monthly)',
-                            description: `Platform access for ${school.name}`,
-                        },
-                        unit_amount: 4900, // $49.00 in cents
-                        recurring: {
-                            interval: 'month',
-                        },
-                    },
-                    quantity: 1,
-                },
-            ],
-            mode: 'subscription',
-            success_url: `${domain}/dashboard/billing?session_id={CHECKOUT_SESSION_ID}&success=true`,
-            cancel_url: `${domain}/dashboard/billing?canceled=true`,
-            metadata: {
-                schoolId: school.id,
-            }
+        // Set up the checkout session with dynamic payment methods and customer reuse
+        const session = await createSchoolSubscriptionCheckoutSession({
+            schoolId: school.id,
+            schoolName: school.name,
+            userEmail: user.email,
+            existingCustomerId: school.stripeCustomerId,
+            successUrl: `${domain}/dashboard/billing?session_id={CHECKOUT_SESSION_ID}&success=true`,
+            cancelUrl: `${domain}/dashboard/billing?canceled=true`,
+            tierName: 'Enterprise Node Tier (Monthly)',
+            amountCents: 4900,
         });
 
-        // Non-blocking audit
+        // Non-blocking audit adhering to multi-tenant audit invariant
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            await logActivity({ userId: user.id, action: 'INITIATE_PAYMENT', resourceType: 'billing', ip: _ip });
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId!,
+                action: 'INITIATE_PAYMENT',
+                resourceType: 'billing',
+                ip: _ip,
+                after: { sessionId: session.id, amountCents: 4900 }
+            });
         } catch { /* non-blocking */ }
 
         return NextResponse.json({
@@ -70,3 +54,4 @@ export async function POST(request: Request) {
         return handleApiError(error);
     }
 }
+

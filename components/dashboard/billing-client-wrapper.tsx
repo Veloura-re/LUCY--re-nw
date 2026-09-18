@@ -15,8 +15,12 @@ import {
     WifiOff,
     RefreshCw,
     AlertTriangle,
-    ShieldAlert,
-    School
+    School,
+    Receipt,
+    Landmark,
+    ExternalLink,
+    BadgeCheck,
+    Terminal as TerminalIcon
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageUpload } from '@/components/ui/image-upload';
@@ -237,6 +241,108 @@ export default function BillingClientWrapper({
         } catch (err) {
             toast.error('Checkout initialization failed.');
             setSubmitting(false);
+        }
+    };
+
+    const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+    const handleCreateTestInvoice = async () => {
+        setActionLoading('invoice');
+        try {
+            const res = await fetch('/api/school/billing/invoices', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    recipientEmail: me?.email || 'parent@5-cn.net',
+                    recipientName: me?.name || 'School Scholar Guardian',
+                    description: 'Term 1 STEM Tuition & Robotics Laboratory Statement',
+                    items: [
+                        { description: 'Grade 10 STEM Academic Tuition', amount: 500 },
+                        { description: 'Robotics Lab Equipment & Consumables', amount: 45 },
+                    ],
+                }),
+            });
+            const data = await res.json() as any;
+            if (data.invoice?.hostedInvoiceUrl) {
+                toast.success(`Stripe Tuition Invoice Created ($${data.invoice.total})`, {
+                    description: 'Opening official Stripe Hosted Invoice...',
+                });
+                window.open(data.invoice.hostedInvoiceUrl, '_blank');
+            } else {
+                toast.error(data.error || 'Failed to create invoice.');
+            }
+        } catch {
+            toast.error('Failed to create test tuition invoice.');
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleTestTerminal = async () => {
+        setActionLoading('terminal');
+        try {
+            const res = await fetch('/api/school/billing/terminal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'connection_token' }),
+            });
+            const data = await res.json() as any;
+            if (data.secret) {
+                toast.success('Terminal Reader Connection Token Generated', {
+                    description: `Token: ${data.secret.substring(0, 16)}...`,
+                });
+            } else {
+                toast.error(data.error || 'Terminal token error.');
+            }
+        } catch {
+            toast.error('Failed to generate Terminal token.');
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleTestIdentity = async () => {
+        setActionLoading('identity');
+        try {
+            const res = await fetch('/api/school/billing/identity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json() as any;
+            if (data.verificationSession?.url) {
+                toast.success('Identity Verification Portal Ready', {
+                    description: 'Opening Stripe Identity KYC window...',
+                });
+                window.open(data.verificationSession.url, '_blank');
+            } else {
+                toast.error(data.error || 'Identity verification error.');
+            }
+        } catch {
+            toast.error('Failed to initiate Identity verification.');
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleTestFinancialConnections = async () => {
+        setActionLoading('bank');
+        try {
+            const res = await fetch('/api/school/billing/financial-connections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json() as any;
+            if (data.session?.clientSecret) {
+                toast.success('Financial Connections Session Created', {
+                    description: `Permissions: ${data.session.permissions?.join(', ')}`,
+                });
+            } else {
+                toast.error(data.error || 'Financial Connections error.');
+            }
+        } catch {
+            toast.error('Failed to link institutional bank account.');
+        } finally {
+            setActionLoading(null);
         }
     };
 
@@ -603,24 +709,142 @@ export default function BillingClientWrapper({
                         {/* Stripe Setup View */}
                         {paymentMode === 'STRIPE' && (
                             <div className="p-6 space-y-6 animate-in fade-in duration-300">
+                                {/* Account Connectivity Header */}
+                                <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center text-eduGreen-600 dark:text-eduGreen-400">
+                                            <BadgeCheck className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider font-orbitron">
+                                                    Lucy Dev Team
+                                                </h4>
+                                                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                                    SANDBOX ACTIVE
+                                                </span>
+                                            </div>
+                                            <p className="text-[11px] text-zinc-500 font-mono mt-0.5">
+                                                acct_1UH8MTLLcd0wQEee &bull; Dynamic Payment Methods
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href="https://dashboard.stripe.com/acct_1UH8MTLLcd0wQEee/test/apikeys"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                                    >
+                                        <span>Stripe Dashboard</span>
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                </div>
+
                                 <div className="space-y-2">
-                                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Connect with Stripe Gateway</h3>
+                                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Institutional Subscription</h3>
                                     <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
                                         Authorize pre-approved credit card debits directly through Stripe&apos;s secure portal. You will be billed <strong>$49.00 per month</strong> to sustain platform operations.
                                     </p>
                                 </div>
+
                                 <button
                                     onClick={handleStripeCheckout}
                                     disabled={submitting}
-                                    className="w-full py-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-4 bg-eduGreen-600 hover:bg-eduGreen-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-eduGreen-900/20"
                                 >
                                     {submitting ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
                                         <CreditCard className="w-4 h-4" />
                                     )}
-                                    Establish Stripe Connection &amp; Subscribe
+                                    Establish Stripe Connection &amp; Subscribe ($49/mo)
                                 </button>
+
+                                {/* Multi-Product Testing Suite */}
+                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 font-orbitron">
+                                            Integrated Product Capabilities
+                                        </h4>
+                                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest">
+                                            Test Mode
+                                        </span>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {/* Invoicing */}
+                                        <button
+                                            onClick={handleCreateTestInvoice}
+                                            disabled={actionLoading !== null}
+                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
+                                        >
+                                            <div className="flex items-center justify-between mb-1.5">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
+                                                    <Receipt className="w-4 h-4 text-emerald-500" />
+                                                    Tuition Invoicing
+                                                </div>
+                                                {actionLoading === 'invoice' && <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />}
+                                            </div>
+                                            <p className="text-[11px] text-zinc-500 leading-snug">
+                                                Create and finalize a live $545.00 tuition invoice on Stripe.
+                                            </p>
+                                        </button>
+
+                                        {/* Terminal POS */}
+                                        <button
+                                            onClick={handleTestTerminal}
+                                            disabled={actionLoading !== null}
+                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
+                                        >
+                                            <div className="flex items-center justify-between mb-1.5">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
+                                                    <TerminalIcon className="w-4 h-4 text-indigo-500" />
+                                                    Terminal POS
+                                                </div>
+                                                {actionLoading === 'terminal' && <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />}
+                                            </div>
+                                            <p className="text-[11px] text-zinc-500 leading-snug">
+                                                Generate smart reader connection token for campus kiosks.
+                                            </p>
+                                        </button>
+
+                                        {/* Identity Verification */}
+                                        <button
+                                            onClick={handleTestIdentity}
+                                            disabled={actionLoading !== null}
+                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
+                                        >
+                                            <div className="flex items-center justify-between mb-1.5">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
+                                                    <ShieldCheck className="w-4 h-4 text-blue-500" />
+                                                    Identity Verification
+                                                </div>
+                                                {actionLoading === 'identity' && <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />}
+                                            </div>
+                                            <p className="text-[11px] text-zinc-500 leading-snug">
+                                                Launch biometric KYC document verification for school staff.
+                                            </p>
+                                        </button>
+
+                                        {/* Financial Connections */}
+                                        <button
+                                            onClick={handleTestFinancialConnections}
+                                            disabled={actionLoading !== null}
+                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
+                                        >
+                                            <div className="flex items-center justify-between mb-1.5">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
+                                                    <Landmark className="w-4 h-4 text-amber-500" />
+                                                    Financial Connections
+                                                </div>
+                                                {actionLoading === 'bank' && <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />}
+                                            </div>
+                                            <p className="text-[11px] text-zinc-500 leading-snug">
+                                                Link institutional bank account for direct debits and payouts.
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
