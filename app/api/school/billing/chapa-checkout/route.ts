@@ -7,7 +7,7 @@ export async function POST(request: Request) {
         // Enforce that only Owner or Principal can create a checkout session
         const user = await requireRole(['OWNER', 'PRINCIPAL']);
 
-        // 🔮 Crystal Ball: use top-level prisma import — no more dynamic require() cold-start failures
+        // Use top-level prisma import to prevent dynamic require cold-start failures
         const school = await prisma.school.findUnique({ where: { id: user.schoolId! } });
 
         if (!school) {

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         // Future date for extended billing
         const extendedTrialDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
-        // 🔮 Crystal Ball: use top-level prisma import — no more dynamic require() cold-start failures
+        // Use top-level prisma import to prevent dynamic require cold-start failures
         await prisma.school.update({
             where: { id: user.schoolId! },
             data: {

@@ -108,7 +108,7 @@ export async function PATCH(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true, class: updatedClass });
@@ -143,7 +143,7 @@ export async function POST(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ grade });
@@ -257,7 +257,7 @@ export async function DELETE(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true });

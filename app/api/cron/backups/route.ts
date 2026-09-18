@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 // Vercel Cron will call this endpoint daily.
@@ -17,7 +18,11 @@ export async function GET(request: Request) {
         );
 
         // 1. Fetch all ACTIVE schools
-        const { data: schools } = await supabaseAdmin.from('School').select('id').eq('status', 'ACTIVE');
+        const schools = await prisma.school.findMany({
+            where: { status: 'ACTIVE' },
+            select: { id: true }
+        });
+
         if (!schools || schools.length === 0) {
             return NextResponse.json({ success: true, message: 'No active schools to backup' });
         }
@@ -30,13 +35,26 @@ export async function GET(request: Request) {
             try {
                 const schoolId = school.id;
                 
-                const { data: users } = await supabaseAdmin.from('User').select('*').eq('schoolId', schoolId);
-                const { data: students } = await supabaseAdmin.from('Student').select('*').eq('schoolId', schoolId);
-                const { data: classes } = await supabaseAdmin.from('Class').select('*').eq('schoolId', schoolId);
-                const { data: grades } = await supabaseAdmin.from('Grade').select('*').eq('schoolId', schoolId);
-                const { data: subjects } = await supabaseAdmin.from('Subject').select('*').eq('schoolId', schoolId);
-                const { data: invoices } = await supabaseAdmin.from('Invoice').select('*').eq('schoolId', schoolId);
-                const { data: payments } = await supabaseAdmin.from('Payment').select('*').eq('schoolId', schoolId);
+                const [users, students, grades, subjects, invoices, classes, payments] = await Promise.all([
+                    prisma.user.findMany({ where: { schoolId } }),
+                    prisma.student.findMany({ where: { schoolId } }),
+                    prisma.grade.findMany({ where: { schoolId } }),
+                    prisma.subject.findMany({ where: { schoolId } }),
+                    prisma.invoice.findMany({ where: { schoolId } }),
+                    prisma.class.findMany({
+                        where: {
+                            OR: [
+                                { schoolId },
+                                { grade: { schoolId } }
+                            ]
+                        }
+                    }),
+                    prisma.payment.findMany({
+                        where: {
+                            invoice: { schoolId }
+                        }
+                    })
+                ]);
 
                 const backupData = {
                     metadata: {

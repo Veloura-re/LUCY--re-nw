@@ -107,7 +107,14 @@ export async function DELETE(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'event', ip: _ip || undefined });
+                await logActivity({
+                    userId: _userId,
+                    schoolId: eventToDelete?.schoolId || dbUser.schoolId!,
+                    action: 'DELETE',
+                    resourceType: 'event',
+                    resourceId: id,
+                    ip: _ip || undefined
+                });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true });

@@ -92,7 +92,7 @@ export async function GET() {
                     user.school = user.parentLinks[0].student.school;
                 } else if (user.student?.school) {
                     user.school = user.student.school;
-                } else if (user.role === 'SUPERADMIN' || !user.schoolId) {
+                } else if (user.role === 'SUPERADMIN') {
                     const defaultSchool = await prisma.school.findFirst({
                         select: {
                             id: true,
@@ -140,7 +140,7 @@ export async function GET() {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId || undefined, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { sendInviteEmail } from '@/lib/email';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
@@ -111,7 +112,6 @@ export async function POST(request: Request) {
             });
 
             // Create Invite Token
-            const crypto = require('crypto');
             const token = crypto.randomBytes(32).toString('hex');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -145,7 +145,6 @@ export async function POST(request: Request) {
 
         if (schErr) throw schErr;
 
-        const crypto = require('crypto');
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 

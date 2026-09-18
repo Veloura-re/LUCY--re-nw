@@ -52,7 +52,7 @@ export async function POST(request: Request) {
             where: { id: periodId }
         });
 
-        if (!targetPeriod) {
+        if (!targetPeriod || (targetPeriod.schoolId !== user.schoolId && user.role !== 'SUPERADMIN')) {
             return NextResponse.json({ error: "Period not found" }, { status: 404 });
         }
 
@@ -106,17 +106,21 @@ export async function POST(request: Request) {
             }
         });
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'timetable', ip: _ip || undefined });
-            }
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId!,
+                action: 'CREATE_TIMETABLE_SLOT',
+                resourceType: 'TIMETABLE',
+                resourceId: result.id,
+                ip: _ip || undefined
+            });
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, entry: result });
+
+        return NextResponse.json({ success: true, entry: result });
     } catch (e) {
         return handleApiError(e);
     }
@@ -130,18 +134,32 @@ export async function DELETE(request: Request) {
 
         if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 
+        const slot = await prisma.timetable.findFirst({
+            where: { id },
+            include: { period: true }
+        });
+
+        if (!slot || (slot.period.schoolId !== user.schoolId && user.role !== 'SUPERADMIN')) {
+            return NextResponse.json({ error: "Slot not found" }, { status: 404 });
+        }
+
         await prisma.timetable.delete({ where: { id } });
         
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'timetable', ip: _ip || undefined });
-            }
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId!,
+                action: 'DELETE_TIMETABLE_SLOT',
+                resourceType: 'TIMETABLE',
+                resourceId: id,
+                ip: _ip || undefined
+            });
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
+
+        return NextResponse.json({ success: true });
     } catch (e) {
         return handleApiError(e);
     }

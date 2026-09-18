@@ -56,13 +56,18 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: 'Target user not found' }, { status: 404 });
             }
 
-            // Sync target user school if missing
-            if (!targetUser.schoolId && dbUser.schoolId) {
-                await prisma.user.update({
-                    where: { id: targetUser.id },
-                    data: { schoolId: dbUser.schoolId }
-                }).catch(() => {});
-            } else if (targetUser.schoolId && dbUser.schoolId && targetUser.schoolId !== dbUser.schoolId) {
+            // Cross-tenant membership verification
+            if (!targetUser.schoolId) {
+                const isLinked = await prisma.parentStudentLink.findFirst({
+                    where: {
+                        parentId: targetUser.id,
+                        student: { schoolId: dbUser.schoolId }
+                    }
+                });
+                if (!isLinked && dbUser.role !== 'SUPERADMIN') {
+                    return NextResponse.json({ error: 'Target user not found in your school' }, { status: 404 });
+                }
+            } else if (targetUser.schoolId !== dbUser.schoolId) {
                 // If it's a parent, check if their child goes to this school
                 const isParentOfSchoolStudent = await prisma.parentStudentLink.findFirst({
                     where: {
@@ -70,21 +75,21 @@ export async function POST(request: Request) {
                         student: { schoolId: dbUser.schoolId }
                     }
                 });
-                if (!isParentOfSchoolStudent) {
+                if (!isParentOfSchoolStudent && dbUser.role !== 'SUPERADMIN') {
                     return NextResponse.json({ error: 'Target user not found in your school' }, { status: 404 });
                 }
             }
 
-            // 🛡️ Warding Spell: DM role guardrails
-            // Students can only DM teachers/staff — not other students
+            // DM role guardrails:
+            // Students can only DM teachers/staff - not other students
             if (dbUser.role === 'STUDENT' && targetUser.role === 'STUDENT') {
                 return NextResponse.json({ error: 'Direct transmission restricted on student mode' }, { status: 403 });
             }
-            // Parents can only DM teachers/staff or principals — not other parents
+            // Parents can only DM teachers/staff or principals - not other parents
             if (dbUser.role === 'PARENT' && targetUser.role === 'PARENT') {
                 return NextResponse.json({ error: 'Parent-to-parent direct messaging is not permitted' }, { status: 403 });
             }
-            // Students can't DM other school's users (cross-school check already done above)
+            // Students cannot DM users from other schools (checked above)
 
             const room = await getOrCreateDirectRoom(dbUser.schoolId, dbUser.id, targetUser.id);
             return NextResponse.json({ room });
