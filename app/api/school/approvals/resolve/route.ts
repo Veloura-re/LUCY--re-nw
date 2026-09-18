@@ -35,18 +35,20 @@ export async function POST(request: Request) {
             if (actionRequest.actionType === 'DELETE_STAFF') {
                 const email = payload.email;
                 if (email) {
-                    const teacher = await prisma.user.findFirst({
-                        where: { email: email, schoolId: user.schoolId }
-                    });
-                    
-                    if (teacher) {
-                        await prisma.teacherAssignment.deleteMany({ where: { teacherId: teacher.id } });
-                        await prisma.timetable.deleteMany({ where: { teacherId: teacher.id } });
-                        await prisma.user.update({ where: { id: teacher.id }, data: { schoolId: null } });
-                    }
-                    
-                    await prisma.inviteToken.deleteMany({
-                        where: { email: email, schoolId: user.schoolId }
+                    await prisma.$transaction(async (tx) => {
+                        const teacher = await tx.user.findFirst({
+                            where: { email: email, schoolId: user.schoolId }
+                        });
+                        
+                        if (teacher) {
+                            await tx.teacherAssignment.deleteMany({ where: { teacherId: teacher.id } });
+                            await tx.timetable.deleteMany({ where: { teacherId: teacher.id } });
+                            await tx.user.update({ where: { id: teacher.id }, data: { schoolId: null } });
+                        }
+                        
+                        await tx.inviteToken.deleteMany({
+                            where: { email: email, schoolId: user.schoolId }
+                        });
                     });
                     
                     revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId), 'max');
@@ -73,9 +75,14 @@ export async function POST(request: Request) {
             } else if (actionRequest.actionType === 'DELETE_MARKLIST') {
                 const marklistId = payload.marklistId;
                 if (marklistId) {
-                    await prisma.exam.delete({
-                        where: { id: marklistId } // Ensure it's scoped properly if possible
+                    const exam = await prisma.exam.findFirst({
+                        where: { id: marklistId, class: { grade: { schoolId: user.schoolId } } }
                     });
+                    if (exam) {
+                        await prisma.exam.delete({
+                            where: { id: exam.id }
+                        });
+                    }
                 }
             }
         }
@@ -91,6 +98,7 @@ export async function POST(request: Request) {
 
         await logActivity({
             userId: user.id,
+            schoolId: user.schoolId,
             action: `RESOLVE_REQUEST_${resolution}`,
             resourceType: 'ACTION_REQUEST',
             resourceId: resolvedRequest.id,

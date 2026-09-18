@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
@@ -187,7 +188,6 @@ return NextResponse.json({ success: true, userId });
         }
 
         if (invite.schoolId) {
-            const { revalidateTag } = require('next/cache');
             revalidateTag(`school-${invite.schoolId}`, 'max');
             revalidateTag(`users-${invite.schoolId}`, 'max');
             revalidateTag(`teacher-registry-${invite.schoolId}`, 'max');

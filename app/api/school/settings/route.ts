@@ -61,8 +61,8 @@ export async function GET() {
             resolvedSchool = dbUser.student.school;
         }
 
-        // 3. Fallback for SUPERADMIN or single-institution deployments
-        if (!resolvedSchool && (dbUser.role === 'SUPERADMIN' || !dbUser.schoolId)) {
+        // 3. Fallback for SUPERADMIN
+        if (!resolvedSchool && dbUser.role === 'SUPERADMIN') {
             resolvedSchool = await prisma.school.findFirst({
                 include: {
                     _count: {
@@ -71,18 +71,6 @@ export async function GET() {
                 },
                 orderBy: { createdAt: 'asc' }
             });
-
-            // Auto-heal the user record if a single school exists
-            if (resolvedSchool && !dbUser.schoolId) {
-                try {
-                    await prisma.user.update({
-                        where: { id: dbUser.id },
-                        data: { schoolId: resolvedSchool.id }
-                    });
-                } catch {
-                    /* non-blocking */
-                }
-            }
         }
 
         if (!resolvedSchool) {
@@ -162,7 +150,7 @@ export async function PATCH(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 

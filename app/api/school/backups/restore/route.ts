@@ -27,18 +27,25 @@ export async function POST(request: Request) {
         let restoredClasses = 0;
 
         // 1. Restore Users
+        // 1. Restore Users - strictly scoped to this school
         if (data.users && Array.isArray(data.users)) {
             for (const user of data.users) {
-                const { data: existingUser } = await supabaseAdmin.from('User').select('id').eq('id', user.id).single();
+                if (user.schoolId && user.schoolId !== adminUser.schoolId) continue;
+
+                const { data: existingUser } = await supabaseAdmin
+                    .from('User')
+                    .select('id, schoolId, role')
+                    .eq('id', user.id)
+                    .maybeSingle();
                 
                 if (!existingUser) {
-                    // User is completely missing, restore them
+                    // User is completely missing, restore them into this school
                     await supabaseAdmin.from('User').insert({
                         id: user.id,
                         email: user.email,
                         name: user.name,
                         role: user.role,
-                        schoolId: user.schoolId,
+                        schoolId: adminUser.schoolId,
                         verified: false, // Force them to be unverified so they must use invite token
                         createdAt: user.createdAt,
                         gender: user.gender,
@@ -57,23 +64,21 @@ export async function POST(request: Request) {
                             token,
                             email: user.email,
                             role: user.role,
-                            schoolId: user.schoolId,
+                            schoolId: adminUser.schoolId,
                             expiresAt: expiresAt.toISOString(),
                             createdAt: new Date().toISOString()
                         });
                         
                         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
-                        // Fetch school name
-                        const { data: schoolData } = await supabaseAdmin.from('School').select('name').eq('id', user.schoolId).single();
-                        await sendInviteEmail(user.email, inviteUrl, schoolData?.name || 'Institution', token, user.role, user.schoolId);
+                        const { data: schoolData } = await supabaseAdmin.from('School').select('name').eq('id', adminUser.schoolId).single();
+                        await sendInviteEmail(user.email, inviteUrl, schoolData?.name || 'Institution', token, user.role, adminUser.schoolId);
                     }
                     restoredUsers++;
-                } else {
-                    // Just update them with backup info
+                } else if (existingUser.schoolId === adminUser.schoolId) {
+                    // Only update if the user already belongs to this school
                     await supabaseAdmin.from('User').update({
                         name: user.name,
                         role: user.role,
-                        schoolId: user.schoolId,
                         gender: user.gender,
                         phone: user.phone,
                         teacherCode: user.teacherCode,
@@ -83,57 +88,79 @@ export async function POST(request: Request) {
             }
         }
 
-        // 2. Restore Students
+        // 2. Restore Students - strictly scoped
         if (data.students && Array.isArray(data.students)) {
-            for (const student of data.students) {
-                const { data: existing } = await supabaseAdmin.from('Student').select('id').eq('id', student.id).single();
+            const validStudents = data.students.filter((s: any) => s.schoolId === adminUser.schoolId);
+            for (const student of validStudents) {
+                const { data: existing } = await supabaseAdmin.from('Student').select('id, schoolId').eq('id', student.id).maybeSingle();
                 if (!existing) {
                     await supabaseAdmin.from('Student').insert(student);
                     restoredStudents++;
-                } else {
+                } else if (existing.schoolId === adminUser.schoolId) {
                     await supabaseAdmin.from('Student').update(student).eq('id', student.id);
                 }
             }
         }
 
-        // 3. Restore Classes
+        // 3. Restore Classes - strictly scoped
         if (data.classes && Array.isArray(data.classes)) {
-            for (const cls of data.classes) {
-                const { data: existing } = await supabaseAdmin.from('Class').select('id').eq('id', cls.id).single();
+            const validClasses = data.classes.filter((cls: any) => !cls.schoolId || cls.schoolId === adminUser.schoolId);
+            for (const cls of validClasses) {
+                const { data: existing } = await supabaseAdmin.from('Class').select('id').eq('id', cls.id).maybeSingle();
                 if (!existing) {
-                    await supabaseAdmin.from('Class').insert(cls);
+                    await supabaseAdmin.from('Class').insert({ ...cls, schoolId: adminUser.schoolId });
                     restoredClasses++;
                 } else {
-                    await supabaseAdmin.from('Class').update(cls).eq('id', cls.id);
+                    await supabaseAdmin.from('Class').update({ ...cls, schoolId: adminUser.schoolId }).eq('id', cls.id);
                 }
             }
         }
 
-        // 4. Upsert Grades, Subjects, etc in bulk using upsert
-        if (data.grades && data.grades.length > 0) {
-            await supabaseAdmin.from('Grade').upsert(data.grades);
+        // 4. Upsert Grades, Subjects, Invoices, Payments strictly scoped to this school
+        if (data.grades && Array.isArray(data.grades)) {
+            const validGrades = data.grades.filter((g: any) => g.schoolId === adminUser.schoolId);
+            if (validGrades.length > 0) {
+                await supabaseAdmin.from('Grade').upsert(validGrades);
+            }
         }
-        if (data.subjects && data.subjects.length > 0) {
-            await supabaseAdmin.from('Subject').upsert(data.subjects);
-        }
-        if (data.invoices && data.invoices.length > 0) {
-            await supabaseAdmin.from('Invoice').upsert(data.invoices);
-        }
-        if (data.payments && data.payments.length > 0) {
-            await supabaseAdmin.from('Payment').upsert(data.payments);
+        if (data.subjects && Array.isArray(data.subjects)) {
+            const validSubjects = data.subjects.filter((s: any) => s.schoolId === adminUser.schoolId);
+            if (validSubjects.length > 0) {
+                await supabaseAdmin.from('Subject').upsert(validSubjects);
+            }
         }
 
-        
-        // Audit log
+        const validInvoiceIds = new Set<string>();
+        if (data.invoices && Array.isArray(data.invoices)) {
+            const validInvoices = data.invoices.filter((inv: any) => inv.schoolId === adminUser.schoolId);
+            validInvoices.forEach((inv: any) => validInvoiceIds.add(inv.id));
+            if (validInvoices.length > 0) {
+                await supabaseAdmin.from('Invoice').upsert(validInvoices);
+            }
+        }
+
+        if (data.payments && Array.isArray(data.payments)) {
+            const validPayments = data.payments.filter((p: any) => validInvoiceIds.has(p.invoiceId));
+            if (validPayments.length > 0) {
+                await supabaseAdmin.from('Payment').upsert(validPayments);
+            }
+        }
+
+        // Audit log with mandatory schoolId
         try {
             const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = adminUser?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'RESTORE', resourceType: 'action', ip: _ip || undefined });
-            }
+            await logActivity({
+                userId: adminUser.id,
+                schoolId: adminUser.schoolId,
+                action: 'RESTORE_BACKUP',
+                resourceType: 'BACKUP',
+                ip: _ip || undefined,
+                after: { restoredUsers, restoredStudents, restoredClasses }
+            });
         } catch { /* non-blocking */ }
-return NextResponse.json({ 
+
+        return NextResponse.json({ 
             success: true, 
             message: `Restored ${restoredUsers} missing users, ${restoredStudents} missing students, ${restoredClasses} missing classes, and resynced all records.` 
         });

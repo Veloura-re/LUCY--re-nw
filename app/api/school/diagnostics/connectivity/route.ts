@@ -17,28 +17,34 @@ export async function GET() {
             return new NextResponse("Forbidden", { status: 403 });
         }
 
+        const isSuperAdmin = dbUser.role === 'SUPERADMIN';
         const schoolId = dbUser.schoolId;
 
-        // Sequential lookups for stability on Cloudflare Edge
-        const orphanedTeachers = await prisma.user.findMany({
+        if (!isSuperAdmin && !schoolId) {
+            return new NextResponse("School association missing", { status: 400 });
+        }
+
+        // Global orphan checks are restricted exclusively to Superadmins
+        const orphanedTeachers = isSuperAdmin ? await prisma.user.findMany({
             where: { role: 'TEACHER', schoolId: null },
             select: { id: true, name: true, email: true }
-        });
+        }) : [];
 
-        const unmappedStudents = await prisma.student.findMany({
-            where: { schoolId: schoolId || undefined, parentLinks: { none: {} } },
-            select: { id: true, firstName: true, lastName: true, studentCode: true }
-        });
-
-        const disconnectedParents = await prisma.user.findMany({
-            where: { role: 'PARENT', schoolId: schoolId || undefined, parentLinks: { none: {} } },
-            select: { id: true, name: true, email: true }
-        });
-
-        const idlePrincipals = await prisma.user.findMany({
+        const idlePrincipals = isSuperAdmin ? await prisma.user.findMany({
             where: { role: 'PRINCIPAL', schoolId: null },
             select: { id: true, name: true, email: true }
-        });
+        }) : [];
+
+        // Tenant-scoped lookups
+        const unmappedStudents = schoolId ? await prisma.student.findMany({
+            where: { schoolId, parentLinks: { none: {} } },
+            select: { id: true, firstName: true, lastName: true, studentCode: true }
+        }) : [];
+
+        const disconnectedParents = schoolId ? await prisma.user.findMany({
+            where: { role: 'PARENT', schoolId, parentLinks: { none: {} } },
+            select: { id: true, name: true, email: true }
+        }) : [];
 
         return NextResponse.json({
             orphanedTeachers,
