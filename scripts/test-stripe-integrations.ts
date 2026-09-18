@@ -2,9 +2,14 @@ import Stripe from 'stripe';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-const secretKey = process.env.STRIPE_SECRET_KEY || 'sk_test_51UH8MTLLcd0wQEeeQtGFg1eQhRU4COA2ye1YQJ2sMicntUduFbD5jusaRKiWgpOzTPRRJeauNRUzS8tJRHGZURoH005pYfjiEv';
+const secretKey = process.env.STRIPE_SECRET_KEY;
+if (!secretKey) {
+    console.error('Fatal: STRIPE_SECRET_KEY environment variable is required.');
+    process.exit(1);
+}
 
 const stripe = new Stripe(secretKey, {
     apiVersion: '2026-06-24.dahlia' as any,
@@ -36,7 +41,8 @@ async function runStripeIntegrationTests() {
     // 1. Account Connectivity & Balance
     let accountId = '';
     await test('Retrieve Stripe Account Information', async () => {
-        const account = await stripe.accounts.retrieve(process.env.STRIPE_ACCOUNT_ID || 'acct_1UH8MTLLcd0wQEee');
+        const targetAccountId = process.env.STRIPE_ACCOUNT_ID;
+        const account = await stripe.accounts.retrieve(targetAccountId || (null as any));
         accountId = account.id;
         if (!account.id.startsWith('acct_')) throw new Error('Invalid account ID');
         return account;
