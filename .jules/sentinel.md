@@ -1,0 +1,4 @@
+## 2026-09-20 - [Fix Fail-Open Privilege Drop Vulnerability in Supabase Admin Initializer]
+**Vulnerability:** In `app/api/auth/login/route.ts`, the Supabase Admin client was being initialized with a fallback to the unprivileged `NEXT_PUBLIC_SUPABASE_ANON_KEY` if the `SUPABASE_SERVICE_ROLE_KEY` was missing. This creates a fail-open privilege drop vulnerability, causing the script to execute operations with insufficient permissions silently.
+**Learning:** Hardcoding fallbacks to anonymous or lesser-privileged keys for administrative clients can lead to unintended privilege dropping. It masks the absence of proper configuration and allows the application to proceed insecurely.
+**Prevention:** Never use an unprivileged key as a fallback for privileged clients. If the necessary administrative key is missing, the application should throw a clear error or fail securely.

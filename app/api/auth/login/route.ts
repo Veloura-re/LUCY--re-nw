@@ -135,9 +135,14 @@ export async function POST(req: Request) {
 
         if (!updatedDb && process.env.NEXT_PUBLIC_SUPABASE_URL) {
             try {
+                // SECURITY: Never fall back to an unprivileged key for administrative clients
+                if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+                    throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing. Administrative fallback disabled to prevent privilege drop.");
+                }
+
                 const supabaseAdmin = createSupabaseAdmin(
                     process.env.NEXT_PUBLIC_SUPABASE_URL,
-                    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+                    process.env.SUPABASE_SERVICE_ROLE_KEY
                 );
                 await supabaseAdmin
                     .from('User')
