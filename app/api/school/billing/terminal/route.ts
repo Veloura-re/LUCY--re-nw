@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { createTerminalConnectionToken, createTerminalPaymentIntent } from '@/lib/stripe';

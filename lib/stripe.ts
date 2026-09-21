@@ -1,11 +1,22 @@
 import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+let stripeInstance: Stripe | null = null;
 
-export const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2026-06-24.dahlia' as any,
-    typescript: true,
-});
+export const getStripe = (): Stripe => {
+    if (stripeInstance) return stripeInstance;
+
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+        throw new Error("STRIPE_SECRET_KEY is not configured.");
+    }
+
+    stripeInstance = new Stripe(key, {
+        apiVersion: '2026-06-24.dahlia' as any,
+        typescript: true,
+    });
+
+    return stripeInstance;
+};
 
 export interface CreateSubscriptionCheckoutParams {
     schoolId: string;
@@ -67,7 +78,7 @@ export async function createSchoolSubscriptionCheckoutSession({
         sessionParams.customer_email = userEmail;
     }
 
-    return await stripe.checkout.sessions.create(sessionParams);
+    return await getStripe().checkout.sessions.create(sessionParams);
 }
 
 export interface CreateTuitionInvoiceParams {
@@ -92,6 +103,7 @@ export async function createStudentTuitionInvoice({
     daysUntilDue = 30,
     metadata = {},
 }: CreateTuitionInvoiceParams): Promise<Stripe.Invoice> {
+    const stripe = getStripe();
     for (const item of items) {
         await stripe.invoiceItems.create({
             customer: customerId,
@@ -117,7 +129,7 @@ export async function createStudentTuitionInvoice({
  * Creates a Stripe Terminal connection token for campus POS card readers.
  */
 export async function createTerminalConnectionToken(): Promise<Stripe.Terminal.ConnectionToken> {
-    return await stripe.terminal.connectionTokens.create();
+    return await getStripe().terminal.connectionTokens.create();
 }
 
 /**
@@ -129,7 +141,7 @@ export async function createTerminalPaymentIntent(
     currency: string = 'usd',
     metadata: Record<string, string> = {}
 ): Promise<Stripe.PaymentIntent> {
-    return await stripe.paymentIntents.create({
+    return await getStripe().paymentIntents.create({
         amount: amountCents,
         currency,
         payment_method_types: ['card_present'],
@@ -147,7 +159,7 @@ export async function createIdentityVerificationSession(
     returnUrl: string,
     metadata: Record<string, string> = {}
 ): Promise<Stripe.Identity.VerificationSession> {
-    return await stripe.identity.verificationSessions.create({
+    return await getStripe().identity.verificationSessions.create({
         type: 'document',
         options: {
             document: {
@@ -170,7 +182,7 @@ export async function createFinancialConnectionsSession(
     customerId: string,
     returnUrl: string
 ): Promise<Stripe.FinancialConnections.Session> {
-    return await stripe.financialConnections.sessions.create({
+    return await getStripe().financialConnections.sessions.create({
         account_holder: {
             type: 'customer',
             customer: customerId,
@@ -194,6 +206,7 @@ export async function createIssuingCardholderAndCard({
     monthlySpendingLimitCents: number;
     schoolId: string;
 }): Promise<{ cardholder: Stripe.Issuing.Cardholder; card: Stripe.Issuing.Card }> {
+    const stripe = getStripe();
     const cardholder = await stripe.issuing.cardholders.create({
         name: name.slice(0, 24),
         email,

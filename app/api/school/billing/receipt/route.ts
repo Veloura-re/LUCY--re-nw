@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { requireRole, requireAuth, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
