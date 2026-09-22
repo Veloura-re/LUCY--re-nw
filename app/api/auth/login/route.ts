@@ -70,8 +70,13 @@ export async function POST(req: Request) {
         const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        if (!turnstileSecret) {
+            return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+        }
+
         const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+        verifyParams.append('secret', turnstileSecret);
         verifyParams.append('response', turnstileToken);
         verifyParams.append('remoteip', clientIp);
 
@@ -100,8 +105,12 @@ export async function POST(req: Request) {
                         { status: 429, headers: { 'Retry-After': '3600' } }
                     );
                 }
-            } catch (e) {
-                // Rate limit function or table may not be initialized yet; continue safely
+            } catch (e: any) {
+                // Rate limit function or table may not be initialized yet; continue safely ONLY if it's a missing function
+                if (!e.message?.includes('does not exist')) {
+                    console.error("Rate limit check error:", e);
+                    return NextResponse.json({ error: "Service unavailable." }, { status: 503 });
+                }
             }
         }
 
