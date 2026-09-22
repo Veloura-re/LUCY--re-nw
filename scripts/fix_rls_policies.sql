@@ -41,9 +41,14 @@ TO authenticated
 USING ((auth.jwt() -> 'user_metadata' ->> 'role') = 'SUPERADMIN')
 WITH CHECK ((auth.jwt() -> 'user_metadata' ->> 'role') = 'SUPERADMIN');
 
--- 4. Enable RLS (Should already be enabled, but ensure it)
-ALTER TABLE "School" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "InviteToken" ENABLE ROW LEVEL SECURITY;
+-- 4. Enable RLS on all tables in public schema
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND rowsecurity = false) LOOP
+        EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY;', r.tablename);
+    END LOOP;
+END $$;
 
 COMMIT;
