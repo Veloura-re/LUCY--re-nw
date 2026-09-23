@@ -1,10 +1,34 @@
 import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+// Use a getter to avoid initializing Stripe globally during Next.js static build
+// when environment variables are not yet injected.
+let stripeInstance: Stripe | null = null;
 
-export const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2026-06-24.dahlia' as any,
-    typescript: true,
+export function getStripe(): Stripe {
+    if (!stripeInstance) {
+        const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+        if (!stripeSecretKey) {
+            throw new Error('Stripe is not configured. Missing STRIPE_SECRET_KEY.');
+        }
+        stripeInstance = new Stripe(stripeSecretKey, {
+            apiVersion: '2026-06-24.dahlia' as any,
+            typescript: true,
+        });
+    }
+    return stripeInstance;
+}
+
+// Keep the export for backward compatibility but use a proxy so that it initializes on first use
+export const stripe = new Proxy({} as Stripe, {
+    get: (target, prop) => {
+        // Prevent bundlers/Next.js from triggering initialization during static analysis
+        if (prop === '__esModule' || prop === 'then' || typeof prop === 'symbol') {
+            return undefined;
+        }
+        const instance = getStripe();
+        const value = (instance as any)[prop];
+        return typeof value === 'function' ? value.bind(instance) : value;
+    }
 });
 
 export interface CreateSubscriptionCheckoutParams {
