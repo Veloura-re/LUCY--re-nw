@@ -70,8 +70,14 @@ export async function POST(req: Request) {
         const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
+        // SECURITY FIX: Fail securely if TURNSTILE_SECRET_KEY is missing, do not bypass with dummy key
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        if (!turnstileSecret) {
+            return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+        }
+
         const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
+        verifyParams.append('secret', turnstileSecret);
         verifyParams.append('response', turnstileToken);
         verifyParams.append('remoteip', clientIp);
 
@@ -135,14 +141,20 @@ export async function POST(req: Request) {
 
         if (!updatedDb && process.env.NEXT_PUBLIC_SUPABASE_URL) {
             try {
-                const supabaseAdmin = createSupabaseAdmin(
-                    process.env.NEXT_PUBLIC_SUPABASE_URL,
-                    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-                );
-                await supabaseAdmin
-                    .from('User')
-                    .update({ activeSessionId: sessionToken })
-                    .eq('id', authData.user.id);
+                // SECURITY FIX: Do not fallback to anon key for admin operations
+                const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+                if (!serviceRoleKey) {
+                    console.warn("[Login Route] Missing SUPABASE_SERVICE_ROLE_KEY. Aborting admin fallback.");
+                } else {
+                    const supabaseAdmin = createSupabaseAdmin(
+                        process.env.NEXT_PUBLIC_SUPABASE_URL,
+                        serviceRoleKey
+                    );
+                    await supabaseAdmin
+                        .from('User')
+                        .update({ activeSessionId: sessionToken })
+                        .eq('id', authData.user.id);
+                }
             } catch (supaErr: any) {
                 console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr.message);
             }
