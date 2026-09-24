@@ -1,0 +1,4 @@
+## 2024-05-24 - [Remove unsafe fallback in Supabase Service Role Key]
+**Vulnerability:** The code used an unsafe fallback for the `SUPABASE_SERVICE_ROLE_KEY` by falling back to `NEXT_PUBLIC_SUPABASE_ANON_KEY` when the service role key was not provided. This causes silent privilege drops which could lead to unexpected behavior and security bugs (fail-open security issue).
+**Learning:** Initializing privileged administrative clients must never provide an unprivileged fallback to prevent accidental fail-open states that would allow users to act with incomplete validation. If a privileged key is required, its absence should trigger an explicit failure (fail securely).
+**Prevention:** Always verify the presence of critical service/admin keys directly and avoid `|| fallback_key` patterns for sensitive client initializations.
