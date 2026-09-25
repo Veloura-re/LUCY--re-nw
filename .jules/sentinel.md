@@ -1,0 +1,4 @@
+## 2024-10-25 - Fail-Open Authorization Bypass
+**Vulnerability:** A fail-open authorization vulnerability exists in `app/api/cron/backups/route.ts` where string interpolation of an undefined environment variable (`process.env.CRON_SECRET`) results in the string `'Bearer undefined'`. This allows an attacker to bypass authentication by sending exactly that header.
+**Learning:** String interpolation of undefined variables in JavaScript evaluates to the string 'undefined', which can inadvertently create valid, guessable authentication tokens if used as a fallback or in a direct comparison.
+**Prevention:** Always explicitly check for the existence of required environment variables before using them in security contexts. Fail securely by rejecting the request or throwing an error if the secret is not configured.
