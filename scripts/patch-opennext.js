@@ -28,8 +28,8 @@ function safePatch(relativeFilePath, target, replacement) {
 // 1. Patch bundle-server.js
 safePatch(
     'node_modules/@opennextjs/cloudflare/dist/cli/build/bundle-server.js',
-    'external: ["cloudflare:sockets", "./middleware/handler.mjs",',
-    'external: ["cloudflare:sockets", "./middleware/handler.mjs"],'
+    'external: [\n            "./middleware/handler.mjs",',
+    'external: [\n            "cloudflare:sockets",\n            "./middleware/handler.mjs",'
 );
 
 // 2. Patch helper.js
