@@ -6,6 +6,13 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 // Ensure it's secured via CRON_SECRET or Vercel's authorization header.
 export async function GET(request: Request) {
     const authHeader = request.headers.get('authorization');
+
+    // Fail securely if CRON_SECRET is missing, rather than allowing 'Bearer undefined'
+    if (!process.env.CRON_SECRET) {
+        console.error("CRON_SECRET is not configured");
+        return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && !request.url.includes('localhost')) {
         // Vercel Cron sends a Bearer token matching CRON_SECRET
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
