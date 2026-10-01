@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { stripe, createStudentTuitionInvoice } from '@/lib/stripe';
+import { getStripe, createStudentTuitionInvoice } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         }
 
         // Find or create customer in Stripe
-        const existingCustomers = await stripe.customers.list({
+        const existingCustomers = await getStripe().customers.list({
             email: recipientEmail,
             limit: 1,
         });
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         if (existingCustomers.data.length > 0) {
             customerId = existingCustomers.data[0].id;
         } else {
-            const newCustomer = await stripe.customers.create({
+            const newCustomer = await getStripe().customers.create({
                 email: recipientEmail,
                 name: recipientName || recipientEmail,
                 metadata: {
@@ -85,3 +85,4 @@ export async function POST(request: Request) {
         return handleApiError(error);
     }
 }
+export const dynamic = 'force-dynamic';

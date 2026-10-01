@@ -82,3 +82,4 @@ export async function GET(request: Request) {
         return handleApiError(error);
     }
 }
+export const dynamic = 'force-dynamic';

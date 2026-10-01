@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { stripe, createFinancialConnectionsSession } from '@/lib/stripe';
+import { getStripe, createFinancialConnectionsSession } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
         let customerId = school.stripeCustomerId;
         if (!customerId) {
-            const customer = await stripe.customers.create({
+            const customer = await getStripe().customers.create({
                 email: user.email,
                 name: school.name,
                 metadata: {
@@ -61,3 +61,4 @@ export async function POST(request: Request) {
         return handleApiError(error);
     }
 }
+export const dynamic = 'force-dynamic';

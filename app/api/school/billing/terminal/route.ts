@@ -58,3 +58,4 @@ export async function POST(request: Request) {
         return handleApiError(error);
     }
 }
+export const dynamic = 'force-dynamic';

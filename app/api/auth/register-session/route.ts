@@ -64,3 +64,4 @@ export async function POST() {
         return NextResponse.json({ error: "Failed to register session" }, { status: 500 });
     }
 }
+export const dynamic = 'force-dynamic';
