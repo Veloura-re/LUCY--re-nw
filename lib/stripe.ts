@@ -1,11 +1,17 @@
 import Stripe from 'stripe';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+let stripeInstance: Stripe | null = null;
 
-export const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2026-06-24.dahlia' as any,
-    typescript: true,
-});
+export function getStripe(): Stripe {
+    if (!stripeInstance) {
+        const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+        stripeInstance = new Stripe(stripeSecretKey, {
+            apiVersion: '2026-06-24.dahlia' as any,
+            typescript: true,
+        });
+    }
+    return stripeInstance;
+}
 
 export interface CreateSubscriptionCheckoutParams {
     schoolId: string;
@@ -67,7 +73,7 @@ export async function createSchoolSubscriptionCheckoutSession({
         sessionParams.customer_email = userEmail;
     }
 
-    return await stripe.checkout.sessions.create(sessionParams);
+    return await getStripe().checkout.sessions.create(sessionParams);
 }
 
 export interface CreateTuitionInvoiceParams {
@@ -93,7 +99,7 @@ export async function createStudentTuitionInvoice({
     metadata = {},
 }: CreateTuitionInvoiceParams): Promise<Stripe.Invoice> {
     for (const item of items) {
-        await stripe.invoiceItems.create({
+        await getStripe().invoiceItems.create({
             customer: customerId,
             amount: item.amountCents,
             currency: item.currency || 'usd',
@@ -102,7 +108,7 @@ export async function createStudentTuitionInvoice({
         });
     }
 
-    const invoice = await stripe.invoices.create({
+    const invoice = await getStripe().invoices.create({
         customer: customerId,
         collection_method: 'send_invoice',
         days_until_due: daysUntilDue,
@@ -110,14 +116,14 @@ export async function createStudentTuitionInvoice({
         metadata,
     });
 
-    return await stripe.invoices.finalizeInvoice(invoice.id);
+    return await getStripe().invoices.finalizeInvoice(invoice.id);
 }
 
 /**
  * Creates a Stripe Terminal connection token for campus POS card readers.
  */
 export async function createTerminalConnectionToken(): Promise<Stripe.Terminal.ConnectionToken> {
-    return await stripe.terminal.connectionTokens.create();
+    return await getStripe().terminal.connectionTokens.create();
 }
 
 /**
@@ -129,7 +135,7 @@ export async function createTerminalPaymentIntent(
     currency: string = 'usd',
     metadata: Record<string, string> = {}
 ): Promise<Stripe.PaymentIntent> {
-    return await stripe.paymentIntents.create({
+    return await getStripe().paymentIntents.create({
         amount: amountCents,
         currency,
         payment_method_types: ['card_present'],
@@ -147,7 +153,7 @@ export async function createIdentityVerificationSession(
     returnUrl: string,
     metadata: Record<string, string> = {}
 ): Promise<Stripe.Identity.VerificationSession> {
-    return await stripe.identity.verificationSessions.create({
+    return await getStripe().identity.verificationSessions.create({
         type: 'document',
         options: {
             document: {
@@ -170,7 +176,7 @@ export async function createFinancialConnectionsSession(
     customerId: string,
     returnUrl: string
 ): Promise<Stripe.FinancialConnections.Session> {
-    return await stripe.financialConnections.sessions.create({
+    return await getStripe().financialConnections.sessions.create({
         account_holder: {
             type: 'customer',
             customer: customerId,
@@ -194,7 +200,7 @@ export async function createIssuingCardholderAndCard({
     monthlySpendingLimitCents: number;
     schoolId: string;
 }): Promise<{ cardholder: Stripe.Issuing.Cardholder; card: Stripe.Issuing.Card }> {
-    const cardholder = await stripe.issuing.cardholders.create({
+    const cardholder = await getStripe().issuing.cardholders.create({
         name: name.slice(0, 24),
         email,
         phone_number: '+18005550199',
@@ -214,7 +220,7 @@ export async function createIssuingCardholderAndCard({
         },
     });
 
-    const card = await stripe.issuing.cards.create({
+    const card = await getStripe().issuing.cards.create({
         cardholder: cardholder.id,
         currency: 'usd',
         type: 'virtual',
