@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { stripe, createStudentTuitionInvoice } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);

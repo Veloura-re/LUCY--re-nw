@@ -3,6 +3,8 @@ import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { createSchoolSubscriptionCheckoutSession } from '@/lib/stripe';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session

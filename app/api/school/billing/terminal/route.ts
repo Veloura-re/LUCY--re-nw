@@ -3,6 +3,8 @@ import { requireRole, handleApiError } from '@/lib/security';
 import { createTerminalConnectionToken, createTerminalPaymentIntent } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
