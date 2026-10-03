@@ -1,25 +1,10 @@
 import Stripe from 'stripe';
 
-let stripeInstance: Stripe | null = null;
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder';
 
-export function getStripe(): Stripe {
-    if (!stripeInstance) {
-        const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
-        stripeInstance = new Stripe(stripeSecretKey, {
-            apiVersion: '2026-06-24.dahlia' as any,
-            typescript: true,
-        });
-    }
-    return stripeInstance;
-}
-
-// Keep export for backward compatibility but implemented as a getter
-export const stripe = new Proxy({} as Stripe, {
-    get: function(target, prop) {
-        if (prop === '__esModule') return false;
-        if (prop === 'then') return undefined;
-        return (getStripe() as any)[prop];
-    }
+export const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2026-06-24.dahlia' as any,
+    typescript: true,
 });
 
 export interface CreateSubscriptionCheckoutParams {
