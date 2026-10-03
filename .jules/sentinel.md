@@ -1,0 +1,4 @@
+## 2024-05-18 - Privilege Downgrade in Supabase Admin Initialization
+**Vulnerability:** The application was falling back to `process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY` when `process.env.SUPABASE_SERVICE_ROLE_KEY` was missing during the initialization of the Supabase Admin client.
+**Learning:** This is a fail-open security vulnerability. Using an unprivileged key as a fallback for an administrative operation can lead to silent privilege drops, unexpected behavior, and potentially unauthorized access or data exposure. If the privileged key is missing, the application should fail securely and explicitly reject the operation.
+**Prevention:** Never use unprivileged keys as fallbacks for administrative or highly privileged clients. Always explicitly check for the presence of the required privileged keys (e.g., `if (!process.env.SUPABASE_SERVICE_ROLE_KEY) throw new Error(...)`) and fail securely if they are missing.
