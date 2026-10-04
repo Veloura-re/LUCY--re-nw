@@ -18,6 +18,8 @@ import { Logo } from "@/components/ui/logo";
 import { SchoolLogo } from "@/components/ui/school-logo";
 import { WelcomeAnnouncement } from "@/components/dashboard/welcome-announcement";
 import { PresenceBroadcaster } from "@/components/dashboard/presence-broadcaster";
+import { StudentQRScannerModal } from "@/components/dashboard/student-qr-scanner-modal";
+import { ScannerTriggerButton } from "@/components/dashboard/scanner-trigger-button";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -176,7 +178,10 @@ export default async function DashboardLayout({
                             <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1.5 sm:ml-2 md:ml-3">]</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        {['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'].includes(dbUser.role) && (
+                            <ScannerTriggerButton variant="header" />
+                        )}
                         <EdgeHealthIndicator />
                     </div>
                 </header>
@@ -200,6 +205,9 @@ export default async function DashboardLayout({
             <NetworkBanner />
             <WelcomeAnnouncement />
             <PresenceBroadcaster user={{ id: dbUser.id, name: dbUser.name, email: dbUser.email, role: dbUser.role, schoolId: dbUser.schoolId }} />
+            {['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'].includes(dbUser.role) && (
+                <StudentQRScannerModal />
+            )}
         </div>
     );
 }

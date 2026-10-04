@@ -15,7 +15,7 @@ import { createPortal } from "react-dom";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { updateNavPreference } from "@/utils/nav-actions";
 import { ICON_MAP, NAV_ITEMS } from "@/lib/navigation";
-import { Columns2, DoorOpen, Sparkles } from "lucide-react";
+import { Columns2, DoorOpen, Sparkles, QrCode } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const SCALING_FACTOR = 1.6;
@@ -47,8 +47,11 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
         return true;
     }) : menu;
 
+    const isStaff = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'].includes(role);
+
     const items = [
         { icon: Columns2, label: "Switch to Sidebar", onClick: () => updateNavPreference("SIDEBAR"), variant: "toggle" },
+        ...(isStaff ? [{ icon: QrCode, label: "Scan Student ID", onClick: () => window.dispatchEvent(new CustomEvent('lucy:open-scanner')), variant: "toggle" }] : []),
         ...filteredMenu,
         { icon: Sparkles, label: "Interactive Tour", onClick: () => window.dispatchEvent(new CustomEvent('lucy:open-tour')), variant: "toggle" },
         { icon: DoorOpen, label: "Sign Out", onClick: () => setShowSignOutConfirm(true), variant: "danger" },

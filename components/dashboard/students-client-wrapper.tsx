@@ -22,6 +22,7 @@ const StudentRegistryPrint = dynamic(() => import('@/components/dashboard/studen
 const ConfirmationModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.ConfirmationModal), { ssr: false });
 const AlertModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.AlertModal), { ssr: false });
 const GradeStudentModal = dynamic(() => import('@/components/dashboard/grade-student-modal').then(m => m.GradeStudentModal), { ssr: false });
+import { ScannerTriggerButton } from "@/components/dashboard/scanner-trigger-button";
 
 interface StudentsClientWrapperProps {
     initialStudents: any[];
@@ -229,6 +230,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-4">
+                    <ScannerTriggerButton variant="button" label="Scan Student ID" className="h-9 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl text-[8px] sm:text-xs tracking-[0.1em] sm:tracking-[0.2em]" />
                     <Button
                         onClick={() => handlePrint()}
                         className="bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white h-9 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl font-medium text-[8px] sm:text-xs uppercase tracking-[0.1em] sm:tracking-[0.2em] border border-zinc-200 dark:border-zinc-900 hover:border-zinc-700 transition-all shadow-md"
