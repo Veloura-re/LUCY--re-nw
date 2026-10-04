@@ -7,6 +7,7 @@
     "dev:webpack": "node node_modules/next/dist/bin/next dev --webpack",
     "build": "npx prisma generate && next build",
     "build:local": "npm run build",
+    "build:worker": "NODE_OPTIONS=\"--max-old-space-size=8192\" opennextjs-cloudflare build",
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "eslint",
     "test": "jest",
