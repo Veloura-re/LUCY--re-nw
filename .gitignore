@@ -60,3 +60,4 @@ lint_report.txt
 prisma_push_debug.txt
 prisma_output.txt
 prisma_error.txt
+dist/
