@@ -324,6 +324,7 @@ graph LR
 | **19** | Student Exam Portal (`/dashboard/student/exams/[id]`) | **"Submit Exam Answers"** | Submits student responses for automatic score | `POST /api/student/exams/submit` | Computes score, saves `GradeRecord` with `status: SUBMITTED`. | `school:{id}:grades` |
 | **20** | School Settings (`/dashboard/settings`) | **"Switch Active Term"** | Selects active academic term (e.g. Semester 2) | `PATCH /api/school/terms` | Updates `AcademicTerm.isActive = true`, unsets previous active. | `school:{id}:classes` |
 | **21** | Data Center (`/dashboard/settings/data`) | **"Export Database Backup"** | Generates encrypted institutional dump | `POST /api/school/backups/generate` | Serializes tenant records to JSON/SQL snapshot. | — |
+| **22** | Staff Portal (`/dashboard`) | **"Scan Student ID"** | Opens `<StudentQRScannerModal>` to scan QR badges | `POST /api/school/students/scan` | Strict `schoolId` match check, returns verified profile and logs audit entry. | `school:{id}:students` |
 
 ---
 

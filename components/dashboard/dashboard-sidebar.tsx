@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { NavToggle } from "@/components/dashboard/nav-toggle";
-import { Menu, X, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, X, Sparkles, ChevronLeft, ChevronRight, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
@@ -139,6 +139,24 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
 
                 {/* ── Nav Items ── */}
                 <nav className="flex-1 px-2 space-y-1 overflow-y-auto scrollbar-hide py-2">
+                    {['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'].includes(dbUser?.role) && (
+                        <button
+                            type="button"
+                            onClick={() => window.dispatchEvent(new CustomEvent('lucy:open-scanner'))}
+                            className={cn(
+                                "w-full flex items-center gap-3 h-10 sm:h-11 px-3 rounded-xl sm:rounded-2xl transition-all group font-semibold text-xs sm:text-sm cursor-pointer mb-2 bg-eduGreen-500/10 hover:bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 border border-eduGreen-500/20",
+                                collapsed ? "justify-center px-0" : ""
+                            )}
+                            title="Scan Student ID"
+                        >
+                            <QrCode className="w-4 h-4 shrink-0" />
+                            {!collapsed && (
+                                <span className="whitespace-nowrap overflow-hidden font-bold uppercase tracking-wider text-[11px]">
+                                    Scan Student ID
+                                </span>
+                            )}
+                        </button>
+                    )}
                     {filteredMenu.map((item: any) => {
                         const Icon = ICON_MAP[item.icon as keyof typeof ICON_MAP];
                         const isActive = pathname === item.href;
