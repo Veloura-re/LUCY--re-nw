@@ -42,7 +42,9 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
     const initial = fullName ? fullName[0] : "?";
     const age = type === "STUDENT" ? calculateAge(user.dob) : null;
 
-    const qrValue = typeof window !== 'undefined' ? `${window.location.origin}/verify/student/${user.id}` : "";
+    const origin = typeof window !== 'undefined' ? window.location.origin : "";
+    const schoolParam = user.schoolId ? `?sid=${encodeURIComponent(user.schoolId)}&code=${encodeURIComponent(code || '')}` : (code ? `?code=${encodeURIComponent(code)}` : "");
+    const qrValue = origin ? `${origin}/verify/student/${user.id}${schoolParam}` : "";
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

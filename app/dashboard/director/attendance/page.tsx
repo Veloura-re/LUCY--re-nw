@@ -9,6 +9,7 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ScannerTriggerButton } from "@/components/dashboard/scanner-trigger-button";
 
 export default function DirectorAttendancePage() {
     const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'STAFF'>('OVERVIEW');
@@ -158,7 +159,10 @@ export default function DirectorAttendancePage() {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:items-end gap-6">
+                <div className="flex flex-col md:items-end gap-4">
+                    <div className="flex items-center gap-3">
+                        <ScannerTriggerButton variant="button" label="Scan Student Badge" className="h-11 px-5 rounded-2xl text-[9px] tracking-[0.2em]" />
+                    </div>
                     <div className="flex items-center gap-4 bg-white/60 dark:bg-[#050505]/60 border border-zinc-200 dark:border-white/5 p-2 rounded-[2rem] backdrop-blur-3xl shadow-2xl">
                         <motion.button
                             whileHover={{ scale: 1.1 }}

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { AlertModal } from "@/components/ui/confirmation-modal";
 import { motion } from "framer-motion";
+import { ScannerTriggerButton } from "@/components/dashboard/scanner-trigger-button";
 
 type Student = { id: string; firstName: string; lastName: string; studentCode: string };
 type RecordType = { studentId: string; status: string; reason?: string; isLocked?: boolean };
@@ -208,18 +209,25 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
                     </h2>
                 </motion.div>
 
-                <Button
-                    onClick={handleSave}
-                    disabled={isLocked || loading || saving}
-                    className={cn(
-                        "h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-12 rounded-lg sm:rounded-2xl md:rounded-[2rem] font-bold text-[8px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.3em] transition-all shadow-xl relative overflow-hidden group active:scale-95",
-                        isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black hover:bg-zinc-200"
-                    )}
-                >
-                    <div className="flex items-center gap-2 sm:gap-4 relative z-10">
-                        {isLocked ? "SYNC COMPLETE" : saving ? "SEALING..." : <><Activity className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> SEAL RECORDS</>}
-                    </div>
-                </Button>
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <ScannerTriggerButton
+                        variant="button"
+                        label="Scan Student Badge"
+                        className="h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-10 rounded-lg sm:rounded-2xl md:rounded-[2rem] text-[8px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.3em]"
+                    />
+                    <Button
+                        onClick={handleSave}
+                        disabled={isLocked || loading || saving}
+                        className={cn(
+                            "h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-12 rounded-lg sm:rounded-2xl md:rounded-[2rem] font-bold text-[8px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.3em] transition-all shadow-xl relative overflow-hidden group active:scale-95",
+                            isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black hover:bg-zinc-200"
+                        )}
+                    >
+                        <div className="flex items-center gap-2 sm:gap-4 relative z-10">
+                            {isLocked ? "SYNC COMPLETE" : saving ? "SEALING..." : <><Activity className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> SEAL RECORDS</>}
+                        </div>
+                    </Button>
+                </div>
             </div>
 
             <Card className="p-3.5 sm:p-6 md:p-10 bg-white/40 dark:bg-[#050505]/40 backdrop-blur-[40px] border-zinc-200 dark:border-white/5 rounded-xl sm:rounded-3xl md:rounded-[3rem] relative shadow-xl overflow-hidden group">
