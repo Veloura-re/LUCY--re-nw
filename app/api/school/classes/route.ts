@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { logActivity } from '@/lib/audit';
 
 export async function GET(request: Request) {
     try {
@@ -60,16 +61,63 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: 'Class not found' }, { status: 404 });
         }
 
+        let resolvedHomeroomTeacherId: string | null = null;
+
         if (homeroomTeacherId) {
-            const targetTeacher = await prisma.user.findFirst({
-                where: { id: homeroomTeacherId, schoolId: dbUser.schoolId }
+            let targetTeacher = await prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { id: homeroomTeacherId },
+                        { email: { equals: String(homeroomTeacherId).trim(), mode: 'insensitive' } },
+                        { teacherCode: String(homeroomTeacherId).trim() }
+                    ],
+                    schoolId: dbUser.schoolId
+                }
             });
+
+            // Auto-heal if teacher was referenced by pending invite token
+            if (!targetTeacher) {
+                const invite = await prisma.inviteToken.findFirst({
+                    where: {
+                        OR: [
+                            { id: homeroomTeacherId },
+                            { email: { equals: String(homeroomTeacherId).trim(), mode: 'insensitive' } }
+                        ],
+                        schoolId: dbUser.schoolId
+                    }
+                });
+                if (invite) {
+                    let userByEmail = await prisma.user.findUnique({ where: { email: invite.email } });
+                    if (!userByEmail) {
+                        userByEmail = await prisma.user.create({
+                            data: {
+                                email: invite.email,
+                                name: invite.email.split('@')[0],
+                                role: 'HOMEROOM',
+                                schoolId: dbUser.schoolId,
+                                verified: false,
+                                teacherCode: `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
+                            }
+                        });
+                    } else {
+                        userByEmail = await prisma.user.update({
+                            where: { id: userByEmail.id },
+                            data: { role: 'HOMEROOM', schoolId: dbUser.schoolId }
+                        });
+                    }
+                    targetTeacher = userByEmail;
+                }
+            }
+
             if (!targetTeacher) {
                 return NextResponse.json({ error: 'Selected teacher does not belong to your institution' }, { status: 400 });
             }
+
+            resolvedHomeroomTeacherId = targetTeacher.id;
+
             if (targetTeacher.role === 'TEACHER') {
                 await prisma.user.update({
-                    where: { id: homeroomTeacherId },
+                    where: { id: targetTeacher.id },
                     data: { role: 'HOMEROOM' }
                 });
             }
@@ -78,7 +126,7 @@ export async function PATCH(request: Request) {
         const updatedClass = await prisma.class.update({
             where: { id: classId },
             data: { 
-                homeroomTeacherId,
+                homeroomTeacherId: resolvedHomeroomTeacherId,
                 schoolId: targetClass.grade.schoolId
             }
         });
@@ -114,11 +162,10 @@ export async function PATCH(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
+            if (_userId && dbUser.schoolId) {
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 
@@ -150,10 +197,9 @@ export async function POST(request: Request) {
             
             // Audit log
             try {
-                const { logActivity } = await import('@/lib/audit');
                 const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
                 const _userId = dbUser?.id || undefined;
-                if (_userId) {
+                if (_userId && targetSchoolId) {
                     await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
                 }
             } catch { /* non-blocking */ }
@@ -176,10 +222,9 @@ export async function POST(request: Request) {
 
             // Audit log
             try {
-                const { logActivity } = await import('@/lib/audit');
                 const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
                 const _userId = dbUser?.id || undefined;
-                if (_userId) {
+                if (_userId && parentGrade.schoolId) {
                     await logActivity({ userId: _userId, schoolId: parentGrade.schoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
                 }
             } catch { /* non-blocking */ }
@@ -277,11 +322,10 @@ export async function DELETE(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
+            if (_userId && dbUser.schoolId) {
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId, action: 'DELETE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true });

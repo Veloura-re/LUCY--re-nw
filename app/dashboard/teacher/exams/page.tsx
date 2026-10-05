@@ -81,12 +81,18 @@ function ExamsPageContent() {
     };
 
     const fetchClasses = async () => {
-        const res = await fetch('/api/teacher/classes');
-        const data = (await res.json()) as any;
-        if (data.classes) setClasses(data.classes);
-        // Auto-select first class?
-        if (data.classes.length > 0) {
-            setNewExam(prev => ({ ...prev, classId: data.classes[0].classId }));
+        try {
+            const res = await fetch('/api/teacher/classes');
+            if (!res.ok) return;
+            const data = (await res.json()) as any;
+            if (data?.classes && Array.isArray(data.classes)) {
+                setClasses(data.classes);
+                if (data.classes.length > 0) {
+                    setNewExam(prev => ({ ...prev, classId: data.classes[0].classId }));
+                }
+            }
+        } catch (err) {
+            console.error("Failed to fetch teacher classes:", err);
         }
     };
 

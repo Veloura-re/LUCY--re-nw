@@ -8,9 +8,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import dynamic from "next/dynamic";
+import { safeImport } from "@/lib/dynamic-import";
 
 const DynamicPrintRegistry = dynamic(
-    () => import("@/components/dashboard/director/print-registry").then((mod) => mod.PrintRegistryButton),
+    () => safeImport(() => import("@/components/dashboard/director/print-registry").then((mod) => mod.PrintRegistryButton), 'PrintRegistryButton'),
     { ssr: false, loading: () => <Button disabled className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 h-14 px-8 rounded-2xl"><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Fetching Module...</Button> }
 );
 

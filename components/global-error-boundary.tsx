@@ -74,18 +74,50 @@ export function setupGlobalErrorListeners() {
     };
 
     window.addEventListener('unhandledrejection', (e) => {
+        const msg = e.reason?.message || String(e.reason) || '';
+        const isChunkError = msg.includes('ChunkLoadError') || 
+            msg.includes('Failed to fetch dynamically imported module') ||
+            msg.includes('Loading chunk');
+
+        if (isChunkError && typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+            const lastReload = sessionStorage.getItem('lucy_last_chunk_reload');
+            const now = Date.now();
+            if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+                sessionStorage.setItem('lucy_last_chunk_reload', String(now));
+                console.warn('[ChunkLoadError] Network drop detected on module import. Auto-reloading client bundle...');
+                window.location.reload();
+                return;
+            }
+        }
+
         sendError({
             type: 'unhandled_rejection',
-            message: e.reason?.message || String(e.reason) || 'Unhandled promise rejection',
+            message: msg || 'Unhandled promise rejection',
             stack: e.reason?.stack,
             path: window.location.pathname,
         });
     });
 
     window.addEventListener('error', (e) => {
+        const msg = e.message || '';
+        const isChunkError = msg.includes('ChunkLoadError') || 
+            msg.includes('Failed to fetch dynamically imported module') ||
+            msg.includes('Loading chunk');
+
+        if (isChunkError && typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+            const lastReload = sessionStorage.getItem('lucy_last_chunk_reload');
+            const now = Date.now();
+            if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+                sessionStorage.setItem('lucy_last_chunk_reload', String(now));
+                console.warn('[ChunkLoadError] Uncaught script error on module chunk. Auto-reloading client bundle...');
+                window.location.reload();
+                return;
+            }
+        }
+
         sendError({
             type: 'ui_crash',
-            message: e.message || 'Uncaught JS error',
+            message: msg || 'Uncaught JS error',
             stack: e.error?.stack,
             path: window.location.pathname,
             metadata: { filename: e.filename, lineno: e.lineno, colno: e.colno }
