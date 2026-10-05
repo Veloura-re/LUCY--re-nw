@@ -114,18 +114,45 @@ const isEdge = !prisma;
                 };
             });
 
-            const orphanedInvites = invites
-                .filter(i => !users.find(u => u.email === i.email))
-                .map(i => ({
-                    id: i.id,
-                    name: null,
-                    email: i.email,
-                    token: i.token,
-                    createdAt: i.createdAt,
-                    status: 'PENDING'
-                }));
+            const orphanedInvites = invites.filter(i => !users.find(u => u.email === i.email));
+            for (const i of orphanedInvites) {
+                try {
+                    let placeholder = await prisma.user.findUnique({ where: { email: i.email } });
+                    if (!placeholder) {
+                        placeholder = await prisma.user.create({
+                            data: {
+                                email: i.email,
+                                name: i.email.split('@')[0],
+                                role: (i.role as any) || 'TEACHER',
+                                schoolId,
+                                verified: false,
+                                teacherCode: `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
+                            }
+                        });
+                    } else if (!placeholder.schoolId) {
+                        placeholder = await prisma.user.update({
+                            where: { id: placeholder.id },
+                            data: { schoolId, role: (i.role as any) || 'TEACHER' }
+                        });
+                    }
+                    formattedTeachers.push({
+                        ...placeholder,
+                        token: i.token,
+                        status: 'PENDING'
+                    });
+                } catch {
+                    formattedTeachers.push({
+                        id: i.id,
+                        name: null,
+                        email: i.email,
+                        token: i.token,
+                        createdAt: i.createdAt,
+                        status: 'PENDING'
+                    } as any);
+                }
+            }
 
-            const result = [...formattedTeachers, ...orphanedInvites].sort((a, b) =>
+            const result = formattedTeachers.sort((a, b) =>
                 new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
             return JSON.parse(JSON.stringify(result));

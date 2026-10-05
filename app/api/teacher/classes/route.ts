@@ -40,47 +40,79 @@ export async function GET(request: Request) {
         }
 
         // Node runtime: full Prisma query
-        const assignments = await prisma.teacherAssignment.findMany({
-            where: { teacherId: dbUser.id },
-            include: {
-                class: {
-                    include: { grade: true, _count: { select: { students: true } } }
-                },
-                subject: true
-            }
-        });
+        const [assignments, homerooms] = await Promise.all([
+            prisma.teacherAssignment.findMany({
+                where: { teacherId: dbUser.id },
+                include: {
+                    class: {
+                        include: { grade: true, _count: { select: { students: true } } }
+                    },
+                    subject: true
+                }
+            }).catch(() => []),
+            prisma.class.findMany({
+                where: { homeroomTeacherId: dbUser.id },
+                include: {
+                    grade: true,
+                    _count: { select: { students: true } }
+                }
+            }).catch(() => [])
+        ]);
 
         const classIds = assignments.map(a => a.classId);
         const subjectIds = assignments.map(a => a.subjectId);
 
-        const allGrades = await prisma.gradeRecord.findMany({
+        const allGrades = (classIds.length > 0 && subjectIds.length > 0) ? await prisma.gradeRecord.findMany({
             where: {
                 student: { classId: { in: classIds } },
                 subjectId: { in: subjectIds }
             },
             select: { score: true, subjectId: true, student: { select: { classId: true } } }
-        });
+        }).catch(() => []) : [];
 
-        const classes = assignments.map((a: any) => {
+        const classesMap = new Map<string, any>();
+
+        assignments.forEach((a: any) => {
+            if (!a.class) return;
             const relevantGrades = allGrades.filter(g =>
-                g.student.classId === a.classId && g.subjectId === a.subjectId
+                g.student?.classId === a.classId && g.subjectId === a.subjectId
             );
             const avgGrade = relevantGrades.length > 0
-                ? relevantGrades.reduce((acc, curr) => acc + curr.score, 0) / relevantGrades.length
+                ? relevantGrades.reduce((acc: number, curr: any) => acc + curr.score, 0) / relevantGrades.length
                 : null;
-            return {
+
+            classesMap.set(`${a.classId}_${a.subjectId}`, {
                 id: a.id,
                 classId: a.classId,
-                className: a.class.name,
+                className: a.class?.name || "Class",
                 subjectId: a.subjectId,
-                subjectName: a.subject.name,
-                gradeLevel: a.class.grade.level,
-                studentCount: a.class._count.students,
-                avgGrade
-            };
+                subjectName: a.subject?.name || "Subject",
+                gradeLevel: a.class?.grade?.level ?? 0,
+                studentCount: a.class?._count?.students ?? 0,
+                avgGrade,
+                isHomeroom: false
+            });
         });
 
-        return NextResponse.json({ classes });
+        homerooms.forEach((h: any) => {
+            // Check if class already has an assignment entry
+            const alreadyAssigned = Array.from(classesMap.values()).some((c: any) => c.classId === h.id);
+            if (!alreadyAssigned) {
+                classesMap.set(`homeroom_${h.id}`, {
+                    id: `homeroom-${h.id}`,
+                    classId: h.id,
+                    className: h.name || "Homeroom Class",
+                    subjectId: "homeroom",
+                    subjectName: "Homeroom Advisory",
+                    gradeLevel: h.grade?.level ?? 0,
+                    studentCount: h._count?.students ?? 0,
+                    avgGrade: null,
+                    isHomeroom: true
+                });
+            }
+        });
+
+        return NextResponse.json({ classes: Array.from(classesMap.values()) });
     } catch (e) {
         return handleApiError(e);
     }

@@ -69,48 +69,57 @@ const isEdge = !prisma;
                 }
             }
 
-            // Node.js Prisma Fallback
-            const assignments = await prisma.teacherAssignment.findMany({
-                where: { teacherId },
-                include: {
-                    class: {
-                        select: { id: true, name: true, grade: { select: { name: true } } }
-                    },
-                    subject: {
-                        select: { id: true, name: true }
+            try {
+                // Node.js Prisma Fallback
+                const assignments = await prisma.teacherAssignment.findMany({
+                    where: { teacherId },
+                    include: {
+                        class: {
+                            select: { id: true, name: true, grade: { select: { name: true } } }
+                        },
+                        subject: {
+                            select: { id: true, name: true }
+                        }
                     }
-                }
-            });
+                });
 
-            const homerooms = await prisma.class.findMany({
-                where: { homeroomTeacherId: teacherId },
-                select: { id: true, name: true, grade: { select: { name: true } } }
-            });
+                const homerooms = await prisma.class.findMany({
+                    where: { homeroomTeacherId: teacherId },
+                    select: { id: true, name: true, grade: { select: { name: true } } }
+                });
 
-            const classesMap = new Map<string, any>();
-            assignments.forEach(a => {
-                if (!classesMap.has(a.classId)) {
-                    classesMap.set(a.classId, {
-                        classId: a.classId,
-                        className: `${a.class.grade.name} ${a.class.name}`,
-                        subjects: []
-                    });
-                }
-                const cls = classesMap.get(a.classId);
-                cls.subjects.push({ id: a.subject.id, name: a.subject.name });
-            });
+                const classesMap = new Map<string, any>();
+                assignments.forEach(a => {
+                    if (!a.class) return;
+                    if (!classesMap.has(a.classId)) {
+                        classesMap.set(a.classId, {
+                            classId: a.classId,
+                            className: `${a.class.grade?.name || ''} ${a.class.name || ''}`.trim(),
+                            subjects: []
+                        });
+                    }
+                    const cls = classesMap.get(a.classId);
+                    if (a.subject) {
+                        cls.subjects.push({ id: a.subject.id, name: a.subject.name });
+                    }
+                });
 
-            homerooms.forEach(h => {
-                if (!classesMap.has(h.id)) {
-                    classesMap.set(h.id, {
-                        classId: h.id,
-                        className: `${h.grade.name} ${h.name}`,
-                        subjects: []
-                    });
-                }
-            });
+                homerooms.forEach(h => {
+                    if (!classesMap.has(h.id)) {
+                        classesMap.set(h.id, {
+                            classId: h.id,
+                            className: `${h.grade?.name || ''} ${h.name || ''}`.trim(),
+                            isHomeroom: true,
+                            subjects: []
+                        });
+                    }
+                });
 
-            return Array.from(classesMap.values());
+                return Array.from(classesMap.values());
+            } catch (err) {
+                console.error("[getCachedTeacherClasses] Error:", err);
+                return [];
+            }
         },
         [getUserTag(teacherId), 'teacher-classes'],
         {
@@ -132,82 +141,92 @@ export const getAttendanceSystem = (
 ) => {
     return unstable_cache(
         async () => {
-const isEdge = !prisma;
+            const isEdge = !prisma;
             const targetDate = new Date(date);
             targetDate.setHours(0, 0, 0, 0);
 
             if (isEdge) {
-                const supabase = getSupabase();
-                
-                const { data: students } = await supabase
-                    .from('Student')
-                    .select('id, firstName, lastName, studentCode, photoUrl')
-                    .eq('schoolId', schoolId)
-                    .eq('classId', classId)
-                    .order('lastName', { ascending: true })
-                    .order('firstName', { ascending: true });
+                try {
+                    const supabase = getSupabase();
+                    
+                    const { data: students } = await supabase
+                        .from('Student')
+                        .select('id, firstName, lastName, studentCode, photoUrl')
+                        .eq('schoolId', schoolId)
+                        .eq('classId', classId)
+                        .order('lastName', { ascending: true })
+                        .order('firstName', { ascending: true });
 
-                if (!students || students.length === 0) return { students: [], records: [], authorizations: [] };
+                    if (!students || students.length === 0) return { students: [], records: [], authorizations: [] };
+
+                    const studentIds = students.map(s => s.id);
+                    
+                    // Fetch attendance records and authorizations in parallel
+                    let query = supabase.from('AttendanceRecord').select('*').eq('classId', classId).eq('date', targetDate.toISOString().split('T')[0]);
+                    if (subjectId) query = query.eq('subjectId', subjectId);
+                    if (periodId) query = query.eq('periodId', periodId);
+
+                    const [recordsRes, authorizationsRes] = await Promise.all([
+                        query,
+                        supabase.from('AbsenceAuthorization')
+                            .select('*')
+                            .in('studentId', studentIds)
+                            .lte('startDate', targetDate.toISOString())
+                            .gte('endDate', targetDate.toISOString())
+                            .eq('status', 'APPROVED')
+                    ]);
+
+                    return {
+                        students,
+                        records: recordsRes.data || [],
+                        authorizations: authorizationsRes.data || []
+                    };
+                } catch (e) {
+                    console.error("[getAttendanceSystem Edge] Error:", e);
+                    return { students: [], records: [], authorizations: [] };
+                }
+            }
+
+            try {
+                // Node.js Prisma Fallback
+                const students = await prisma.student.findMany({
+                    where: { schoolId, classId },
+                    select: { id: true, firstName: true, lastName: true, studentCode: true, photoUrl: true },
+                    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }]
+                });
+
+                if (students.length === 0) return { students: [], records: [], authorizations: [] };
 
                 const studentIds = students.map(s => s.id);
-                
-                // Fetch attendance records and authorizations in parallel
-                let query = supabase.from('AttendanceRecord').select('*').eq('classId', classId).eq('date', targetDate.toISOString().split('T')[0]);
-                if (subjectId) query = query.eq('subjectId', subjectId);
-                if (periodId) query = query.eq('periodId', periodId);
 
-                const [recordsRes, authorizationsRes] = await Promise.all([
-                    query,
-                    supabase.from('AbsenceAuthorization')
-                        .select('*')
-                        .in('studentId', studentIds)
-                        .lte('startDate', targetDate.toISOString())
-                        .gte('endDate', targetDate.toISOString())
-                        .eq('status', 'APPROVED')
+                const [records, authorizations] = await Promise.all([
+                    prisma.attendanceRecord.findMany({
+                        where: {
+                            classId,
+                            date: targetDate,
+                            ...(subjectId ? { subjectId } : {}),
+                            ...(periodId ? { periodId } : {})
+                        }
+                    }),
+                    prisma.absenceAuthorization.findMany({
+                        where: {
+                            studentId: { in: studentIds },
+                            startDate: { lte: targetDate },
+                            endDate: { gte: targetDate },
+                            status: 'APPROVED'
+                        }
+                    })
                 ]);
 
                 return {
                     students,
-                    records: recordsRes.data || [],
-                    authorizations: authorizationsRes.data || []
+                    records,
+                    authorizations
                 };
+            } catch (err) {
+                console.error("[getAttendanceSystem Prisma] Error:", err);
+                return { students: [], records: [], authorizations: [] };
             }
-
-            // Node.js Prisma Fallback
-            const students = await prisma.student.findMany({
-                where: { schoolId, classId },
-                select: { id: true, firstName: true, lastName: true, studentCode: true, photoUrl: true },
-                orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }]
-            });
-
-            if (students.length === 0) return { students: [], records: [], authorizations: [] };
-
-            const studentIds = students.map(s => s.id);
-
-            const [records, authorizations] = await Promise.all([
-                prisma.attendanceRecord.findMany({
-                    where: {
-                        classId,
-                        date: targetDate,
-                        ...(subjectId ? { subjectId } : {}),
-                        ...(periodId ? { periodId } : {})
-                    }
-                }),
-                prisma.absenceAuthorization.findMany({
-                    where: {
-                        studentId: { in: studentIds },
-                        startDate: { lte: targetDate },
-                        endDate: { gte: targetDate },
-                        status: 'APPROVED'
-                    }
-                })
-            ]);
-
-            return {
-                students,
-                records,
-                authorizations
-            };
         },
         [`attendance-matrix-${classId}-${date}-${subjectId || 'all'}-${periodId || 'all'}`],
         {
