@@ -95,9 +95,12 @@ export async function GET(request: Request) {
         });
 
         homerooms.forEach((h: any) => {
-            // Check if class already has an assignment entry
-            const alreadyAssigned = Array.from(classesMap.values()).some((c: any) => c.classId === h.id);
-            if (!alreadyAssigned) {
+            const matchingEntries = Array.from(classesMap.values()).filter((c: any) => c.classId === h.id);
+            if (matchingEntries.length > 0) {
+                matchingEntries.forEach((entry: any) => {
+                    entry.isHomeroom = true;
+                });
+            } else {
                 classesMap.set(`homeroom_${h.id}`, {
                     id: `homeroom-${h.id}`,
                     classId: h.id,

@@ -15,17 +15,21 @@ export default async function AttendancePage() {
     const dbUser = await getCachedUser(authUser.id);
     if (!dbUser || !dbUser.schoolId) redirect("/dashboard");
 
-    // Parallel Fetching for sub-second performance
-    // 1. Fetch assigned classes
-    const classes = await getCachedTeacherClasses(dbUser.id, dbUser.schoolId);
-    
-    // 2. Pre-fetch system for the first class assigned for today
-    const firstClassId = classes[0]?.classId;
-    const today = new Date().toISOString().split('T')[0];
+    // Parallel Fetching for sub-second performance with defensive fallback
+    let classes: any[] = [];
+    let initialSystem: any = { students: [], records: [], authorizations: [] };
 
-    const initialSystem = firstClassId 
-        ? await getAttendanceSystem(dbUser.schoolId, firstClassId, today)
-        : { students: [], records: [], authorizations: [] };
+    try {
+        classes = (await getCachedTeacherClasses(dbUser.id, dbUser.schoolId)) || [];
+        const firstClassId = classes[0]?.classId;
+        const today = new Date().toISOString().split('T')[0];
+
+        if (firstClassId) {
+            initialSystem = await getAttendanceSystem(dbUser.schoolId, firstClassId, today);
+        }
+    } catch (err) {
+        console.error('[AttendancePage] Attendance initialization fallback:', err);
+    }
 
     return (
         <Suspense fallback={

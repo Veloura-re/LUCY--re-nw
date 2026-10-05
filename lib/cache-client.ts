@@ -149,28 +149,54 @@ export function clearAllClientCache(): void {
 }
 
 /**
- * Resilient fetch wrapper with built-in AbortController timeout
+ * Resilient fetch wrapper with exponential backoff and timeout tolerance
+ * for high-latency or unstable mobile and institutional networks.
  */
 export async function fetchWithResilience(
     url: string,
     options: RequestInit = {},
-    timeoutMs: number = 10000
+    timeoutMs: number = 15000,
+    maxRetries: number = 2
 ): Promise<Response> {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let attempt = 0;
+    let lastError: any = null;
 
-    // If caller provided their own signal, link it
-    if (options.signal) {
-        options.signal.addEventListener('abort', () => controller.abort());
+    while (attempt <= maxRetries) {
+        const controller = new AbortController();
+        const effectiveTimeout = Math.round(timeoutMs * (1 + attempt * 0.4));
+        const timer = setTimeout(() => controller.abort(), effectiveTimeout);
+
+        if (options.signal) {
+            options.signal.addEventListener('abort', () => controller.abort());
+        }
+
+        try {
+            const res = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+
+            // On gateway timeout (504) or bad gateway (502/503) during cold start, retry
+            if ([502, 503, 504].includes(res.status) && attempt < maxRetries) {
+                attempt++;
+                clearTimeout(timer);
+                await new Promise((r) => setTimeout(r, 600 * attempt));
+                continue;
+            }
+
+            return res;
+        } catch (err: any) {
+            lastError = err;
+            attempt++;
+            if (attempt > maxRetries) {
+                break;
+            }
+            await new Promise((r) => setTimeout(r, 600 * attempt));
+        } finally {
+            clearTimeout(timer);
+        }
     }
 
-    try {
-        const res = await fetch(url, {
-            ...options,
-            signal: controller.signal
-        });
-        return res;
-    } finally {
-        clearTimeout(timer);
-    }
+    throw lastError || new Error(`Network request failed for ${url}`);
 }
+
