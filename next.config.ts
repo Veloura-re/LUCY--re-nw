@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   turbopack: {},
   output: 'standalone',
+  outputFileTracingRoot: process.cwd(),
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -80,7 +81,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+            value: 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
           },
           {
             key: 'Cross-Origin-Opener-Policy',
