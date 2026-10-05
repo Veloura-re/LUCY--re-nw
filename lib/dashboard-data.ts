@@ -222,10 +222,14 @@ const _getTeacherDashboardData = async (userId: string) => {
             return { classes: [], exams: [], isClockedIn: false, attendanceSummary: [] };
         }
 
-        const [assignments, recentExams, clockInRecord] = await Promise.all([
+        const [assignments, homerooms, recentExams, clockInRecord] = await Promise.all([
             prisma.teacherAssignment.findMany({
                 where: { teacherId: userId },
-                include: { class: { include: { grade: true } }, subject: true }
+                include: { class: { include: { grade: true, _count: { select: { students: true } } } }, subject: true }
+            }).catch(() => []),
+            prisma.class.findMany({
+                where: { homeroomTeacherId: userId },
+                include: { grade: true, _count: { select: { students: true } } }
             }).catch(() => []),
             prisma.exam.findMany({
                 where: { createdById: userId },
@@ -237,15 +241,36 @@ const _getTeacherDashboardData = async (userId: string) => {
             }).catch(() => null)
         ]);
 
-        return JSON.parse(JSON.stringify({
-            classes: assignments.map((a: any) => ({
+        const classesMap = new Map<string, any>();
+
+        assignments.forEach((a: any) => {
+            if (!a.class) return;
+            classesMap.set(`${a.classId}_${a.subjectId}`, {
                 id: a.id,
                 classId: a.classId,
                 className: a.class?.name || "Class",
                 subjectName: a.subject?.name || "Subject",
-                gradeLevel: a.class?.grade?.level || 0,
-                studentCount: 0
-            })),
+                gradeLevel: a.class?.grade?.level ?? 0,
+                studentCount: a.class?._count?.students ?? 0
+            });
+        });
+
+        homerooms.forEach((h: any) => {
+            const alreadyAssigned = Array.from(classesMap.values()).some((c: any) => c.classId === h.id);
+            if (!alreadyAssigned) {
+                classesMap.set(`homeroom_${h.id}`, {
+                    id: `homeroom-${h.id}`,
+                    classId: h.id,
+                    className: h.name || "Homeroom Class",
+                    subjectName: "Homeroom Advisory",
+                    gradeLevel: h.grade?.level ?? 0,
+                    studentCount: h._count?.students ?? 0
+                });
+            }
+        });
+
+        return JSON.parse(JSON.stringify({
+            classes: Array.from(classesMap.values()),
             exams: recentExams,
             isClockedIn: !!clockInRecord,
             attendanceSummary: [

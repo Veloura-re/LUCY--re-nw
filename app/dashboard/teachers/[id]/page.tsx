@@ -11,7 +11,7 @@ export default async function TeacherDossierPage({ params }: { params: Promise<{
     if (!authUser) redirect("/login");
 
     const dbUser = await getCachedUser(authUser.id);
-    if (!dbUser || !['PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) redirect("/dashboard");
+    if (!dbUser || !['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role)) redirect("/dashboard");
 
     const { id } = await params;
 
@@ -29,8 +29,8 @@ export default async function TeacherDossierPage({ params }: { params: Promise<{
         }
     });
 
-    if (!teacher || !['TEACHER', 'HOMEROOM'].includes(teacher.role)) {
-        redirect("/dashboard/academic-personnel");
+    if (!teacher || !['TEACHER', 'HOMEROOM'].includes(teacher.role) || (dbUser.role !== 'SUPERADMIN' && teacher.schoolId !== dbUser.schoolId)) {
+        redirect("/dashboard/teachers");
     }
 
     // Fetch remarks

@@ -15,54 +15,66 @@ export async function DELETE(request: Request) {
 
         if (!dbUser.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
-        // Try to delete invite first
-        const deletedInvite = await prisma.inviteToken.deleteMany({
+        // 1. Delete all invite tokens for this email and school
+        await prisma.inviteToken.deleteMany({
             where: {
                 email: email,
                 schoolId: dbUser.schoolId
             }
         });
 
-        // If no invite found, check if it's an active user and unlink/delete them
-        if (deletedInvite.count === 0) {
-            const teacher = await prisma.user.findFirst({
-                where: { email: email, schoolId: dbUser.schoolId }
-            });
+        // 2. Check if user record exists in this school
+        const teacher = await prisma.user.findFirst({
+            where: { email: email, schoolId: dbUser.schoolId }
+        });
 
-            if (teacher) {
-                const prefs = (dbUser.preferences as any) || {};
-                const hasFullAccess = prefs?.fullAccess === true;
+        if (teacher) {
+            const prefs = (dbUser.preferences as any) || {};
+            const hasFullAccess = prefs?.fullAccess === true;
 
-                // Intercept for PRINCIPAL without full access
-                if (dbUser.role === 'PRINCIPAL' && !hasFullAccess) {
-                    await prisma.actionRequest.create({
-                        data: {
-                            schoolId: dbUser.schoolId,
-                            requesterId: dbUser.id,
-                            targetUserId: teacher.id,
-                            actionType: 'DELETE_STAFF',
-                            payload: { email },
-                            status: 'PENDING'
-                        }
+            // Intercept for PRINCIPAL without full access on verified active staff
+            if (teacher.verified && dbUser.role === 'PRINCIPAL' && !hasFullAccess) {
+                await prisma.actionRequest.create({
+                    data: {
+                        schoolId: dbUser.schoolId,
+                        requesterId: dbUser.id,
+                        targetUserId: teacher.id,
+                        actionType: 'DELETE_STAFF',
+                        payload: { email },
+                        status: 'PENDING'
+                    }
+                });
+                return NextResponse.json({ success: true, pendingApproval: true, message: "Termination request sent to Owner" });
+            }
+
+            // Clean up teacher assignments, homeroom links, timetables, and unlink/delete atomically
+            await prisma.$transaction(async (tx) => {
+                await tx.teacherAssignment.deleteMany({
+                    where: { teacherId: teacher.id }
+                });
+                await tx.timetable.deleteMany({
+                    where: { teacherId: teacher.id }
+                });
+                await tx.class.updateMany({
+                    where: { homeroomTeacherId: teacher.id },
+                    data: { homeroomTeacherId: null }
+                });
+
+                if (!teacher.verified) {
+                    // Unverified placeholder user can be safely deleted or unlinked
+                    await tx.user.delete({ where: { id: teacher.id } }).catch(async () => {
+                        await tx.user.update({
+                            where: { id: teacher.id },
+                            data: { schoolId: null }
+                        });
                     });
-                    return NextResponse.json({ success: true, pendingApproval: true, message: "Termination request sent to Owner" });
-                }
-
-                // Delete teacher assignments and timetables to free up tasks/classes atomically
-                await prisma.$transaction(async (tx) => {
-                    await tx.teacherAssignment.deleteMany({
-                        where: { teacherId: teacher.id }
-                    });
-                    await tx.timetable.deleteMany({
-                        where: { teacherId: teacher.id }
-                    });
-
+                } else {
                     await tx.user.update({
                         where: { id: teacher.id },
                         data: { schoolId: null }
                     });
-                });
-            }
+                }
+            });
         }
 
         // Trigger Cache Invalidation for the personnel registry

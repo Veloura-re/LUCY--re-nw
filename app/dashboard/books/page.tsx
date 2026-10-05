@@ -17,15 +17,23 @@ export default async function BooksPage() {
         dbUser.schoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
     }
 
-    const school = await prisma.school.findUnique({ where: { id: dbUser.schoolId } });
+    if (!dbUser.schoolId) {
+        redirect("/dashboard");
+    }
 
+    let school: any = null;
     let children: any[] = [];
-    if (dbUser.role === 'PARENT') {
-        const links = await prisma.parentStudentLink.findMany({
-            where: { parentId: dbUser.id },
-            include: { student: true }
-        });
-        children = links.map((l: any) => l.student);
+    try {
+        school = await prisma.school.findUnique({ where: { id: dbUser.schoolId } });
+        if (dbUser.role === 'PARENT') {
+            const links = await prisma.parentStudentLink.findMany({
+                where: { parentId: dbUser.id },
+                include: { student: true }
+            });
+            children = links.map((l: any) => l.student);
+        }
+    } catch (e) {
+        console.error('[BooksPage] Error loading institutional context:', e);
     }
 
     return (
