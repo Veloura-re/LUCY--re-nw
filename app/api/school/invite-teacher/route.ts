@@ -33,18 +33,46 @@ export async function POST(request: Request) {
             data: {
                 token,
                 email,
-                role: 'TEACHER', // Fixed as Teacher for this endpoint
+                role: 'TEACHER',
                 schoolId: dbUser.schoolId!,
-                expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48h
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
             }
         });
+
+        // Ensure a placeholder or unverified user is linked to the institution
+        if (!existingUser) {
+            await prisma.user.create({
+                data: {
+                    email,
+                    name: email.split('@')[0],
+                    role: 'TEACHER',
+                    schoolId: dbUser.schoolId!,
+                    verified: false,
+                    teacherCode: `TCH-${crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
+                }
+            }).catch(() => {});
+        } else if (!existingUser.schoolId) {
+            await prisma.user.update({
+                where: { id: existingUser.id },
+                data: {
+                    schoolId: dbUser.schoolId!,
+                    role: 'TEACHER'
+                }
+            }).catch(() => {});
+        }
 
         const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
         const inviteUrl = `${origin}/invite/${token}`;
 
         const emailResult = await sendInviteEmail(email, inviteUrl, school.name, token, 'TEACHER', dbUser.schoolId!);
-
         const result = emailResult as any;
+
+        // Invalidate Personnel Cache
+        try {
+            const { revalidateTag } = await import('next/cache');
+            const { CACHE_TAGS, getSchoolTag } = await import('@/lib/cache-keys');
+            revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, dbUser.schoolId!), 'max');
+        } catch { /* non-blocking */ }
         
         // Audit log
         try {
@@ -52,10 +80,11 @@ export async function POST(request: Request) {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'INVITE', resourceType: 'teacher_invite', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'INVITE', resourceType: 'teacher_invite', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
-return NextResponse.json({
+
+        return NextResponse.json({
             token,
             sent: result.success && !result.skipped,
             simulated: result.simulated || false,

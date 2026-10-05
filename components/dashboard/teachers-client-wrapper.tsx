@@ -53,6 +53,20 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
 
     const [copied, setCopied] = useState(false);
 
+    const handleCopyInvite = (token: string) => {
+        if (!token) return;
+        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://5-cn.net';
+        navigator.clipboard.writeText(`${origin}/invite/${token}`);
+        setCopied(true);
+        setAlertConfig({
+            title: "Invite Link Copied",
+            message: "The invitation link has been copied to your clipboard. Send it directly to the faculty member.",
+            isOpen: true,
+            variant: "success"
+        });
+        setTimeout(() => setCopied(false), 2000);
+    };
+
     // Modal State
     const [confirmDeleteEmail, setConfirmDeleteEmail] = useState<string | null>(null);
     const [alertConfig, setAlertConfig] = useState<{ title: string, message: string, isOpen: boolean, variant?: "info" | "success" | "error" }>({ title: "", message: "", isOpen: false, variant: "info" });
@@ -267,6 +281,11 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                                         </div>
                                     )}
                                     <div className="flex items-center gap-1 sm:gap-2">
+                                        {teacher.token && (
+                                            <Button variant="ghost" size="icon" onClick={() => handleCopyInvite(teacher.token)} title="Copy Invitation Link" className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500">
+                                                <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                            </Button>
+                                        )}
                                         {teacher.id && <Link href={`/dashboard/messages?userId=${teacher.id}`}><Button variant="ghost" size="icon" className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-500"><MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></Button></Link>}
                                         <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForEdit(teacher)} className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"><Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></Button>
                                         <Button variant="ghost" size="icon" onClick={() => setSelectedTeacherForID(teacher)} className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"><ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></Button>

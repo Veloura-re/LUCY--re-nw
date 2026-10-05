@@ -36,21 +36,26 @@ const isEdge = !prisma;
             }
 
             // Node.js Prisma Fallback
-            const data = await prisma.assignment.findMany({
-                where: { classId, schoolId },
-                include: {
-                    subject: { select: { name: true } },
-                    teacher: { select: { name: true } },
-                    _count: { select: { submissions: true } }
-                },
-                orderBy: { dueDate: 'asc' }
-            });
-            return data.map((a: any) => ({
-                ...a,
-                dueDate: a.dueDate?.toISOString(),
-                createdAt: a.createdAt?.toISOString(),
-                updatedAt: a.updatedAt?.toISOString()
-            }));
+            try {
+                const data = await prisma.assignment.findMany({
+                    where: { classId, schoolId },
+                    include: {
+                        subject: { select: { name: true } },
+                        teacher: { select: { name: true } },
+                        _count: { select: { submissions: true } }
+                    },
+                    orderBy: { dueDate: 'asc' }
+                });
+                return data.map((a: any) => ({
+                    ...a,
+                    dueDate: a.dueDate?.toISOString(),
+                    createdAt: a.createdAt?.toISOString(),
+                    updatedAt: a.updatedAt?.toISOString()
+                }));
+            } catch (err) {
+                console.error('[getCachedClassAssignments] Database query failure:', err);
+                return [];
+            }
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `class-${classId}-assignments`],
         {
@@ -86,29 +91,34 @@ const isEdge = !prisma;
             }
 
             // Node.js Prisma Fallback
-            const assignments = await prisma.assignment.findMany({
-                where: { classId, schoolId, isPublished: true },
-                include: {
-                    subject: { select: { name: true } },
-                    teacher: { select: { name: true } },
-                    submissions: {
-                        where: { studentId },
-                        select: { status: true, submittedAt: true, grade: true }
-                    }
-                },
-                orderBy: { dueDate: 'asc' }
-            });
+            try {
+                const assignments = await prisma.assignment.findMany({
+                    where: { classId, schoolId, isPublished: true },
+                    include: {
+                        subject: { select: { name: true } },
+                        teacher: { select: { name: true } },
+                        submissions: {
+                            where: { studentId },
+                            select: { status: true, submittedAt: true, grade: true }
+                        }
+                    },
+                    orderBy: { dueDate: 'asc' }
+                });
 
-            return assignments.map((a: any) => ({
-                ...a,
-                dueDate: a.dueDate?.toISOString(),
-                createdAt: a.createdAt?.toISOString(),
-                updatedAt: a.updatedAt?.toISOString(),
-                submission: a.submissions?.[0] ? {
-                    ...a.submissions[0],
-                    submittedAt: a.submissions[0].submittedAt?.toISOString()
-                } : null
-            }));
+                return assignments.map((a: any) => ({
+                    ...a,
+                    dueDate: a.dueDate?.toISOString(),
+                    createdAt: a.createdAt?.toISOString(),
+                    updatedAt: a.updatedAt?.toISOString(),
+                    submission: a.submissions?.[0] ? {
+                        ...a.submissions[0],
+                        submittedAt: a.submissions[0].submittedAt?.toISOString()
+                    } : null
+                }));
+            } catch (err) {
+                console.error('[getCachedStudentAssignments] Database query failure:', err);
+                return [];
+            }
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `student-${studentId}-assignments`],
         {
@@ -138,33 +148,38 @@ const isEdge = !prisma;
             }
 
             // Node.js Prisma Fallback
-            const data = await prisma.assignment.findUnique({
-                where: { id: assignmentId, schoolId },
-                include: {
-                    class: { select: { name: true } },
-                    subject: { select: { name: true } },
-                    submissions: {
-                        include: {
-                            student: { select: { firstName: true, lastName: true, studentCode: true } }
-                        },
-                        orderBy: { submittedAt: 'desc' }
+            try {
+                const data = await prisma.assignment.findUnique({
+                    where: { id: assignmentId, schoolId },
+                    include: {
+                        class: { select: { name: true } },
+                        subject: { select: { name: true } },
+                        submissions: {
+                            include: {
+                                student: { select: { firstName: true, lastName: true, studentCode: true } }
+                            },
+                            orderBy: { submittedAt: 'desc' }
+                        }
                     }
-                }
-            });
+                });
 
-            if (!data) return null;
+                if (!data) return null;
 
-            return {
-                ...data,
-                dueDate: data.dueDate?.toISOString(),
-                createdAt: data.createdAt?.toISOString(),
-                updatedAt: data.updatedAt?.toISOString(),
-                submissions: data.submissions.map((s: any) => ({
-                    ...s,
-                    submittedAt: s.submittedAt?.toISOString(),
-                    gradedAt: s.gradedAt?.toISOString()
-                }))
-            };
+                return {
+                    ...data,
+                    dueDate: data.dueDate?.toISOString(),
+                    createdAt: data.createdAt?.toISOString(),
+                    updatedAt: data.updatedAt?.toISOString(),
+                    submissions: data.submissions.map((s: any) => ({
+                        ...s,
+                        submittedAt: s.submittedAt?.toISOString(),
+                        gradedAt: s.gradedAt?.toISOString()
+                    }))
+                };
+            } catch (err) {
+                console.error('[getCachedAssignmentDetails] Database query failure:', err);
+                return null;
+            }
         },
         [getSchoolTag(CACHE_TAGS.ASSIGNMENTS, schoolId), `assignment-${assignmentId}`],
         {

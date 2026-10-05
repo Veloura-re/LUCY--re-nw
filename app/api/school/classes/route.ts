@@ -60,18 +60,28 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: 'Class not found' }, { status: 404 });
         }
 
+        if (homeroomTeacherId) {
+            const targetTeacher = await prisma.user.findFirst({
+                where: { id: homeroomTeacherId, schoolId: dbUser.schoolId }
+            });
+            if (!targetTeacher) {
+                return NextResponse.json({ error: 'Selected teacher does not belong to your institution' }, { status: 400 });
+            }
+            if (targetTeacher.role === 'TEACHER') {
+                await prisma.user.update({
+                    where: { id: homeroomTeacherId },
+                    data: { role: 'HOMEROOM' }
+                });
+            }
+        }
+
         const updatedClass = await prisma.class.update({
             where: { id: classId },
-            data: { homeroomTeacherId }
+            data: { 
+                homeroomTeacherId,
+                schoolId: targetClass.grade.schoolId
+            }
         });
-
-        // Role Transition Logic:
-        if (homeroomTeacherId) {
-            await prisma.user.update({
-                where: { id: homeroomTeacherId },
-                data: { role: 'HOMEROOM' }
-            });
-        }
 
         // Cleanup: Any user with HOMEROOM role in this school who is NOT a homeroom teacher anymore
         const activeHomeroomTeachers = await prisma.class.findMany({
@@ -98,10 +108,10 @@ export async function PATCH(request: Request) {
             });
         }
 
-        // Invalidate Structure Caches
+        // Invalidate Structure & Personnel Caches
         revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+        revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, dbUser.schoolId!), 'max');
 
-        
         // Audit log
         try {
             const { logActivity } = await import('@/lib/audit');
@@ -111,7 +121,8 @@ export async function PATCH(request: Request) {
                 await logActivity({ userId: _userId, schoolId: dbUser.schoolId!, action: 'UPDATE', resourceType: 'class', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, class: updatedClass });
+
+        return NextResponse.json({ success: true, class: updatedClass });
     } catch (e) {
         return handleApiError(e);
     }
@@ -137,16 +148,17 @@ export async function POST(request: Request) {
             });
             revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, targetSchoolId), 'max');
             
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ grade });
+            // Audit log
+            try {
+                const { logActivity } = await import('@/lib/audit');
+                const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+                const _userId = dbUser?.id || undefined;
+                if (_userId) {
+                    await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
+                }
+            } catch { /* non-blocking */ }
+
+            return NextResponse.json({ grade });
         } else if (type === 'CLASS') {
             const parentGrade = await prisma.grade.findUnique({ where: { id: gradeId } });
             if (!parentGrade || (parentGrade.schoolId !== dbUser.schoolId && dbUser.role !== 'SUPERADMIN')) {
@@ -157,9 +169,21 @@ return NextResponse.json({ grade });
                 data: {
                     gradeId,
                     name,
+                    schoolId: parentGrade.schoolId,
                 }
             });
             revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, dbUser.schoolId!), 'max');
+
+            // Audit log
+            try {
+                const { logActivity } = await import('@/lib/audit');
+                const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+                const _userId = dbUser?.id || undefined;
+                if (_userId) {
+                    await logActivity({ userId: _userId, schoolId: parentGrade.schoolId, action: 'CREATE', resourceType: 'class', ip: _ip || undefined });
+                }
+            } catch { /* non-blocking */ }
+
             return NextResponse.json({ cls });
         }
         return NextResponse.json({ error: 'Invalid type' }, { status: 400 });

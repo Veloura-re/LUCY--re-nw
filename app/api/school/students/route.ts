@@ -145,56 +145,105 @@ export async function POST(request: Request) {
             return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str.trim());
         };
 
+        const normalizeKey = (str: string | null | undefined): string => {
+            if (!str) return '';
+            return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+        };
+
+        // Fetch all classes and grades belonging to the institution for deterministic resolution
+        const institutionClasses = await prisma.class.findMany({
+            where: {
+                OR: [
+                    { schoolId: targetSchoolId },
+                    { grade: { schoolId: targetSchoolId } }
+                ]
+            },
+            include: { grade: true }
+        });
+
+        const institutionGrades = await prisma.grade.findMany({
+            where: { schoolId: targetSchoolId },
+            orderBy: { level: 'asc' }
+        });
+
         // 1. Cross-Tenant Validation & Resolution: Class belongs to target institution
+        let matchedClass = null;
         if (resolvedClassId) {
-            const classUuidValid = isUuid(resolvedClassId);
-            const cls = await prisma.class.findFirst({
-                where: {
-                    schoolId: targetSchoolId,
-                    ...(classUuidValid ? { id: resolvedClassId } : { name: { equals: resolvedClassId, mode: 'insensitive' } })
-                }
-            });
-            if (cls) {
-                resolvedClassId = cls.id;
-                if (!resolvedGradeId) {
-                    resolvedGradeId = cls.gradeId;
+            const trimmedClass = resolvedClassId.trim();
+            const classNorm = normalizeKey(trimmedClass);
+            const classUuidValid = isUuid(trimmedClass);
+
+            matchedClass = institutionClasses.find(c => {
+                if (classUuidValid && c.id.toLowerCase() === trimmedClass.toLowerCase()) return true;
+                if (c.name.trim().toLowerCase() === trimmedClass.toLowerCase()) return true;
+                const cNorm = normalizeKey(c.name);
+                if (cNorm && cNorm === classNorm) return true;
+                if (cNorm.replace(/^(class|grade)/, '') === classNorm.replace(/^(class|grade)/, '')) return true;
+                return false;
+            }) || null;
+
+            if (matchedClass) {
+                resolvedClassId = matchedClass.id;
+                resolvedGradeId = matchedClass.gradeId;
+                if (!matchedClass.schoolId) {
+                    prisma.class.update({ where: { id: matchedClass.id }, data: { schoolId: targetSchoolId } }).catch(() => {});
                 }
             } else {
                 resolvedClassId = null;
             }
         }
 
+        // If no class matched yet, check if resolvedGradeId was actually specifying a class (e.g. "11A", "11a", "Grade 11-Alpha")
+        if (!matchedClass && resolvedGradeId) {
+            const trimmedGrade = resolvedGradeId.trim();
+            const gradeNorm = normalizeKey(trimmedGrade);
+            const candidateClass = institutionClasses.find(c => {
+                if (c.name.trim().toLowerCase() === trimmedGrade.toLowerCase()) return true;
+                const cNorm = normalizeKey(c.name);
+                if (cNorm && cNorm === gradeNorm) return true;
+                if (cNorm.replace(/^(class|grade)/, '') === gradeNorm.replace(/^(class|grade)/, '')) return true;
+                return false;
+            });
+            if (candidateClass) {
+                matchedClass = candidateClass;
+                resolvedClassId = candidateClass.id;
+                resolvedGradeId = candidateClass.gradeId;
+                if (!candidateClass.schoolId) {
+                    prisma.class.update({ where: { id: candidateClass.id }, data: { schoolId: targetSchoolId } }).catch(() => {});
+                }
+            }
+        }
+
         // 2. Cross-Tenant Validation & Resolution: Grade
         let matchedGrade = null;
-        if (resolvedGradeId) {
-            const gradeUuidValid = isUuid(resolvedGradeId);
-            matchedGrade = await prisma.grade.findFirst({
-                where: {
-                    schoolId: targetSchoolId,
-                    ...(gradeUuidValid ? {
-                        OR: [
-                            { id: resolvedGradeId },
-                            { name: { equals: resolvedGradeId, mode: 'insensitive' } }
-                        ]
-                    } : {
-                        name: { equals: resolvedGradeId, mode: 'insensitive' }
-                    })
-                }
-            });
+        if (matchedClass) {
+            matchedGrade = matchedClass.grade;
+        } else if (resolvedGradeId) {
+            const trimmedGrade = resolvedGradeId.trim();
+            const gradeNorm = normalizeKey(trimmedGrade);
+            const gradeUuidValid = isUuid(trimmedGrade);
+
+            matchedGrade = institutionGrades.find(g => {
+                if (gradeUuidValid && g.id.toLowerCase() === trimmedGrade.toLowerCase()) return true;
+                if (g.name.trim().toLowerCase() === trimmedGrade.toLowerCase()) return true;
+                const gNorm = normalizeKey(g.name);
+                if (gNorm && gNorm === gradeNorm) return true;
+                if (gNorm.replace(/^grade/, '') === gradeNorm.replace(/^grade/, '')) return true;
+                const num = parseInt(gradeNorm.replace(/\D/g, ''), 10);
+                if (!isNaN(num) && g.level === num) return true;
+                return false;
+            }) || null;
         }
 
         if (!matchedGrade) {
-            matchedGrade = await prisma.grade.findFirst({
-                where: { schoolId: targetSchoolId },
-                orderBy: { level: 'asc' }
-            });
+            matchedGrade = institutionGrades[0] || null;
         }
 
         if (!matchedGrade) {
-            // Auto-create initial default Grade for school so registration never blocks
             matchedGrade = await prisma.grade.create({
                 data: {
                     name: "Grade 1",
+                    level: 1,
                     schoolId: targetSchoolId
                 }
             });
@@ -448,8 +497,44 @@ export async function PUT(request: Request) {
             return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str.trim());
         };
 
-        // Validate new grade if provided
-        if (data.gradeId) {
+        // Validate new class if provided
+        if (data.classId !== undefined) {
+            if (!data.classId || typeof data.classId !== 'string' || !data.classId.trim()) {
+                data.classId = null;
+            } else {
+                const trimmedClass = data.classId.trim();
+                const isClassUuid = isUuid(trimmedClass);
+                const classNorm = trimmedClass.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+                const institutionClasses = await prisma.class.findMany({
+                    where: {
+                        OR: [
+                            { schoolId: user.schoolId! },
+                            { grade: { schoolId: user.schoolId! } }
+                        ]
+                    },
+                    include: { grade: true }
+                });
+
+                const cls = institutionClasses.find(c => {
+                    if (isClassUuid && c.id.toLowerCase() === trimmedClass.toLowerCase()) return true;
+                    if (c.name.trim().toLowerCase() === trimmedClass.toLowerCase()) return true;
+                    const cNorm = c.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    if (cNorm && cNorm === classNorm) return true;
+                    if (cNorm.replace(/^(class|grade)/, '') === classNorm.replace(/^(class|grade)/, '')) return true;
+                    return false;
+                });
+
+                if (!cls) {
+                    return secureJson({ error: "Selected class does not belong to your institution." }, 400);
+                }
+                data.classId = cls.id;
+                data.gradeId = cls.gradeId; // Ensure grade is synchronized to the assigned class
+                if (!cls.schoolId) {
+                    prisma.class.update({ where: { id: cls.id }, data: { schoolId: user.schoolId! } }).catch(() => {});
+                }
+            }
+        } else if (data.gradeId) {
             const isGradeUuid = isUuid(data.gradeId);
             const grade = await prisma.grade.findFirst({
                 where: {
@@ -461,24 +546,6 @@ export async function PUT(request: Request) {
                 return secureJson({ error: "Selected grade does not belong to your institution." }, 400);
             }
             data.gradeId = grade.id;
-        }
-
-        // Validate new class if provided
-        if (data.classId) {
-            const isClassUuid = isUuid(data.classId);
-            const cls = await prisma.class.findFirst({
-                where: {
-                    ...(isClassUuid ? { id: data.classId } : { name: { equals: data.classId, mode: 'insensitive' } }),
-                    OR: [
-                        { schoolId: user.schoolId! },
-                        { grade: { schoolId: user.schoolId! } }
-                    ]
-                }
-            });
-            if (!cls) {
-                return secureJson({ error: "Selected class does not belong to your institution." }, 400);
-            }
-            data.classId = cls.id;
         }
 
         let updateDob: Date | undefined = undefined;
