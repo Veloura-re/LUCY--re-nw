@@ -36,33 +36,58 @@ export default async function DashboardPage() {
 async function DashboardContent({ dbUser }: { dbUser: any }) {
     let dashboardData: any = null;
 
-    switch (dbUser.role) {
-        case 'OWNER':
-            if (dbUser.schoolId) {
-                dashboardData = await getSchoolAnalytics(dbUser.schoolId);
-            }
-            return <OwnerView user={dbUser} school={dbUser.school} initialAnalytics={JSON.parse(JSON.stringify(dashboardData))} />;
+    try {
+        switch (dbUser.role) {
+            case 'OWNER':
+                if (dbUser.schoolId) {
+                    try {
+                        dashboardData = await getSchoolAnalytics(dbUser.schoolId);
+                    } catch (e) {
+                        console.error('[DashboardPage] Analytics fetch error:', e);
+                    }
+                }
+                return <OwnerView user={dbUser} school={dbUser.school} initialAnalytics={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : null} />;
 
-        case 'PRINCIPAL':
-            if (dbUser.schoolId) {
-                dashboardData = await getSchoolAnalytics(dbUser.schoolId);
-            }
-            return <DirectorView user={dbUser} school={dbUser.school} initialAnalytics={JSON.parse(JSON.stringify(dashboardData))} />;
+            case 'PRINCIPAL':
+                if (dbUser.schoolId) {
+                    try {
+                        dashboardData = await getSchoolAnalytics(dbUser.schoolId);
+                    } catch (e) {
+                        console.error('[DashboardPage] Principal analytics fetch error:', e);
+                    }
+                }
+                return <DirectorView user={dbUser} school={dbUser.school} initialAnalytics={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : null} />;
 
-        case 'HOMEROOM':
-        case 'TEACHER':
-            dashboardData = await getTeacherDashboardData(dbUser.id);
-            return <TeacherView user={dbUser} initialData={JSON.parse(JSON.stringify(dashboardData))} />;
+            case 'HOMEROOM':
+            case 'TEACHER':
+                try {
+                    dashboardData = await getTeacherDashboardData(dbUser.id);
+                } catch (e) {
+                    console.error('[DashboardPage] Teacher data fetch error:', e);
+                }
+                return <TeacherView user={dbUser} initialData={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : { classes: [], exams: [], isClockedIn: false, attendanceSummary: [] }} />;
 
-        case 'PARENT':
-            dashboardData = await getFamilyChildren(dbUser.id);
-            return <ParentView user={dbUser} childrenData={JSON.parse(JSON.stringify(dashboardData))} />;
+            case 'PARENT':
+                try {
+                    dashboardData = await getFamilyChildren(dbUser.id);
+                } catch (e) {
+                    console.error('[DashboardPage] Parent children data fetch error:', e);
+                }
+                return <ParentView user={dbUser} childrenData={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : []} />;
 
-        case 'STUDENT':
-            redirect('/dashboard/student');
+            case 'STUDENT':
+                redirect('/dashboard/student');
 
-        default:
-            return <div className="p-20 text-center font-medium uppercase tracking-widest text-zinc-800 dark:text-zinc-200">Operational Role Not Discovered</div>;
+            default:
+                return <div className="p-20 text-center font-medium uppercase tracking-widest text-zinc-800 dark:text-zinc-200">Operational Role Not Discovered</div>;
+        }
+    } catch (err) {
+        console.error('[DashboardContent] Rendering fallback caught:', err);
+        return (
+            <div className="p-8 text-center text-zinc-600 dark:text-zinc-400">
+                <p className="text-xs uppercase tracking-widest font-mono">Institutional telemetry active. Synchronizing workspace...</p>
+            </div>
+        );
     }
 }
 

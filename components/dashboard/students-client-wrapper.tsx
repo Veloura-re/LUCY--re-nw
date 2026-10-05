@@ -17,11 +17,24 @@ import Image from "next/image";
 import { PenTool } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { toast } from "sonner";
+import { safeImport, retryImport } from "@/lib/dynamic-import";
 
-const StudentRegistryPrint = dynamic(() => import('@/components/dashboard/student-registry-print').then(m => m.StudentRegistryPrint), { ssr: false });
-const ConfirmationModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.ConfirmationModal), { ssr: false });
-const AlertModal = dynamic(() => import('@/components/ui/confirmation-modal').then(m => m.AlertModal), { ssr: false });
-const GradeStudentModal = dynamic(() => import('@/components/dashboard/grade-student-modal').then(m => m.GradeStudentModal), { ssr: false });
+const StudentRegistryPrint = dynamic(
+    () => safeImport(() => import('@/components/dashboard/student-registry-print').then(m => m.StudentRegistryPrint), 'StudentRegistryPrint'),
+    { ssr: false }
+);
+const ConfirmationModal = dynamic(
+    () => safeImport(() => import('@/components/ui/confirmation-modal').then(m => m.ConfirmationModal), 'ConfirmationModal'),
+    { ssr: false }
+);
+const AlertModal = dynamic(
+    () => safeImport(() => import('@/components/ui/confirmation-modal').then(m => m.AlertModal), 'AlertModal'),
+    { ssr: false }
+);
+const GradeStudentModal = dynamic(
+    () => safeImport(() => import('@/components/dashboard/grade-student-modal').then(m => m.GradeStudentModal), 'GradeStudentModal'),
+    { ssr: false }
+);
 import { ScannerTriggerButton } from "@/components/dashboard/scanner-trigger-button";
 
 interface StudentsClientWrapperProps {
