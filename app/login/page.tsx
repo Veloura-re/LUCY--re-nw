@@ -146,11 +146,17 @@ function LoginContent() {
                             )}
 
                             <div className="flex justify-center">
-                                <Turnstile 
-                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'} 
-                                    onSuccess={(token) => setTurnstileToken(token)}
-                                    options={{ theme: 'auto', size: 'invisible' }}
-                                />
+                                {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
+                                    <Turnstile
+                                        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                                        onSuccess={(token) => setTurnstileToken(token)}
+                                        options={{ theme: 'auto', size: 'invisible' }}
+                                    />
+                                ) : (
+                                    <div className="text-[10px] text-red-500 font-medium uppercase tracking-wider text-center">
+                                        Security Check Configuration Missing
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex items-start space-x-3 pt-1 pb-1 sm:pt-2 sm:pb-2">
