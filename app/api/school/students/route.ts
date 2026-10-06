@@ -1,3 +1,4 @@
+import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError, requireRole, requireSchoolLinked, secureJson, sanitizeInput } from '@/lib/security';
@@ -651,7 +652,7 @@ export async function DELETE(request: Request) {
                 });
 
                 if (otherStudents === 0 && userObj?.role === 'STUDENT') {
-                    const { createClient: createSupabaseAdmin } = await import('@supabase/supabase-js');
+
                     const supabaseAdmin = createSupabaseAdmin(
                         process.env.NEXT_PUBLIC_SUPABASE_URL!,
                         process.env.SUPABASE_SERVICE_ROLE_KEY!

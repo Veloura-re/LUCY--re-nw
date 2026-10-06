@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS, getSchoolTag } from "@/lib/cache-keys";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
@@ -69,8 +71,8 @@ export async function POST(request: Request) {
 
         // Invalidate Personnel Cache
         try {
-            const { revalidateTag } = await import('next/cache');
-            const { CACHE_TAGS, getSchoolTag } = await import('@/lib/cache-keys');
+
+
             revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, dbUser.schoolId!), 'max');
         } catch { /* non-blocking */ }
         
