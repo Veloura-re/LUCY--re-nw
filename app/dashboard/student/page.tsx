@@ -20,7 +20,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 
 export default function StudentDashboard() {
     const [data, setData] = useState<any>(null);
@@ -30,8 +29,6 @@ export default function StudentDashboard() {
     const [showPhotoUpload, setShowPhotoUpload] = useState(false);
     const [photoUrl, setPhotoUrl] = useState("");
     const [savingPhoto, setSavingPhoto] = useState(false);
-
-    useRealtimeDashboard(data?.student?.schoolId);
 
     useEffect(() => {
         const fetchDashboard = async () => {

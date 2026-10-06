@@ -20,6 +20,7 @@ export async function GET(
                     address: true
                 }
             },
+            grade: true,
             class: {
                 include: {
                     grade: true

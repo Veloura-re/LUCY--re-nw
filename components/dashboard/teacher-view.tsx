@@ -11,7 +11,6 @@ import { DashboardGreeting } from "./dashboard-greeting";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 
 interface TeacherClass {
     id: string; // Assignment ID
@@ -44,7 +43,6 @@ export function TeacherView({ user, initialData }: {
     user: { role: string; name: string; gender?: Gender | null; schoolId?: string | null };
     initialData?: any;
 }) {
-    useRealtimeDashboard(user.schoolId);
     const [classes, setClasses] = useState<TeacherClass[]>(initialData?.classes || []);
     const [exams, setExams] = useState<TeacherExam[]>(initialData?.exams || []);
     const [attendanceSummary, setAttendanceSummary] = useState<AttendanceStat[]>(initialData?.attendanceSummary || []);
