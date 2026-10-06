@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, ChevronRight, Filter, UserCircle, FileText } from "lucide-react";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import Link from "next/link";
@@ -49,7 +50,7 @@ export default function StudentReportsPage() {
                     <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white">
                         Student <span className="text-eduGreen-500 italic">Reports</span>
                     </h1>
-                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Individual Academic Synthesis</p>
+                    <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Individual Academic Synthesis &amp; Profiles</p>
                 </div>
             </div>
 
@@ -108,21 +109,46 @@ export default function StudentReportsPage() {
                             return matchesSearch && matchesGrade && matchesClass;
                         })
                         .map((s: any) => (
-                            <Link key={s.id} href={`/dashboard/reports/${s.id}`} className="group">
-                                <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-3xl hover:border-eduGreen-900/40 transition-all">
-                                    <CardContent className="p-5 flex items-center gap-4">
-                                        <div className="w-11 h-11 rounded-2xl bg-eduGreen-950/30 border border-eduGreen-900/30 flex items-center justify-center text-lg font-black text-eduGreen-500 shrink-0 group-hover:border-eduGreen-700/50 transition-colors">
-                                            {s.firstName?.[0]}
-                                        </div>
-                                        <div className="min-w-0">
+                            <Card key={s.id} className="bg-white/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900 rounded-3xl hover:border-eduGreen-900/40 transition-all p-5 flex flex-col justify-between group">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3.5">
+                                        {s.photoUrl ? (
+                                            <div className="w-12 h-12 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                                <img src={s.photoUrl} alt={s.firstName} className="w-full h-full object-cover" />
+                                            </div>
+                                        ) : (
+                                            <div className="w-12 h-12 rounded-2xl bg-eduGreen-950/30 border border-eduGreen-900/30 flex items-center justify-center text-lg font-black text-eduGreen-500 shrink-0 group-hover:border-eduGreen-700/50 transition-colors">
+                                                {s.firstName?.[0] || "S"}
+                                            </div>
+                                        )}
+                                        <div className="min-w-0 flex-1">
                                             <p className="text-zinc-900 dark:text-white font-medium text-sm truncate">{s.firstName} {s.lastName}</p>
-                                            <p className="text-zinc-600 text-[9px] uppercase tracking-widest font-mono mt-0.5">{s.studentCode}</p>
-                                            <p className="text-zinc-700 text-[9px] mt-0.5 truncate">{s.class?.name || "Unassigned"} · {s.grade?.name || "Unassigned"}</p>
+                                            <p className="text-zinc-600 text-[9px] uppercase tracking-widest font-mono mt-0.5">{s.studentCode || "NO-ID"}</p>
+                                            <p className="text-zinc-700 dark:text-zinc-400 text-[9px] mt-0.5 truncate">{s.class?.name || "Unassigned"} · {s.grade?.name || "Unassigned"}</p>
                                         </div>
-                                        <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-eduGreen-500 ml-auto shrink-0 transition-colors" />
-                                    </CardContent>
-                                </Card>
-                            </Link>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900/40 mt-4 flex items-center gap-2">
+                                    <Link href={`/dashboard/students/${s.id}`} className="flex-1">
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="w-full rounded-xl text-[10px] font-bold uppercase tracking-wider h-9 border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500 hover:text-eduGreen-500"
+                                        >
+                                            <UserCircle className="w-3.5 h-3.5 mr-1" /> Dossier
+                                        </Button>
+                                    </Link>
+                                    <Link href={`/dashboard/reports/${s.id}`} className="flex-1">
+                                        <Button 
+                                            size="sm" 
+                                            className="w-full rounded-xl text-[10px] font-bold uppercase tracking-wider h-9 bg-eduGreen-600 hover:bg-eduGreen-500 text-white"
+                                        >
+                                            <FileText className="w-3.5 h-3.5 mr-1" /> Report Card
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </Card>
                         ))}
                 </div>
             </div>
