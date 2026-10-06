@@ -1,13 +1,21 @@
+import { revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError, secureJson, sanitizeInput } from "@/lib/security";
-import { logActivity, logError } from "@/lib/audit";
+import { logActivity } from "@/lib/audit";
+import { CACHE_TAGS, getSchoolTag } from "@/lib/cache-keys";
 import { z } from "zod";
+
+export const dynamic = "force-dynamic";
 
 const TermCreateSchema = z.object({
     name: z.string().min(1, "Term name is required").max(100).transform(sanitizeInput),
     startDate: z.string().min(1, "Start date is required"),
     endDate: z.string().min(1, "End date is required"),
     isActive: z.boolean().optional().default(false)
+});
+
+const TermBatchSchema = z.object({
+    terms: z.array(TermCreateSchema).min(1, "At least one term is required")
 });
 
 const TermUpdateSchema = z.object({
@@ -30,10 +38,12 @@ export async function GET(req: Request) {
                     select: { marklists: true, exams: true }
                 }
             },
-            orderBy: { startDate: "desc" },
+            orderBy: { startDate: "asc" },
         });
 
-        return secureJson({ terms });
+        const res = secureJson({ terms });
+        res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        return res;
     } catch (error) {
         return handleApiError(error);
     }
@@ -47,9 +57,86 @@ export async function POST(req: Request) {
         const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
         if (!user?.schoolId) return secureJson({ error: "Unauthorized: School association missing" }, 401);
 
-        const rawBody = await req.json();
-        const parseResult = TermCreateSchema.safeParse(rawBody);
+        const rawBody: any = await req.json();
 
+        // Check if batch payload provided
+        const isBatch = Array.isArray(rawBody) || (rawBody && Array.isArray(rawBody.terms));
+        const rawTermsList = Array.isArray(rawBody) ? rawBody : (rawBody?.terms || null);
+
+        if (isBatch && rawTermsList) {
+            const batchResult = TermBatchSchema.safeParse({ terms: rawTermsList });
+            if (!batchResult.success) {
+                return secureJson({ error: "Invalid batch term payload", details: batchResult.error.flatten().fieldErrors }, 400);
+            }
+
+            const validatedTerms = batchResult.data.terms;
+
+            // Validate date ordering for all items
+            for (const t of validatedTerms) {
+                const s = new Date(t.startDate);
+                const e = new Date(t.endDate);
+                if (isNaN(s.getTime()) || isNaN(e.getTime())) {
+                    return secureJson({ error: `Invalid date format provided for term "${t.name}".` }, 400);
+                }
+                if (s > e) {
+                    return secureJson({ error: `Start date cannot be after end date for term "${t.name}".` }, 400);
+                }
+            }
+
+            const createdTerms = await prisma.$transaction(async (tx) => {
+                // If any term is marked active, deactivate existing active terms
+                const hasActive = validatedTerms.some(t => t.isActive);
+                if (hasActive) {
+                    await tx.academicTerm.updateMany({
+                        where: { schoolId: user.schoolId!, isActive: true },
+                        data: { isActive: false }
+                    });
+                }
+
+                const results = [];
+                for (const t of validatedTerms) {
+                    const created = await tx.academicTerm.create({
+                        data: {
+                            schoolId: user.schoolId!,
+                            name: t.name,
+                            startDate: new Date(t.startDate),
+                            endDate: new Date(t.endDate),
+                            isActive: !!t.isActive
+                        },
+                        include: {
+                            _count: { select: { marklists: true, exams: true } }
+                        }
+                    });
+                    results.push(created);
+                }
+                return results;
+            });
+
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId!,
+                action: 'CREATE_ACADEMIC_TERM_BATCH',
+                resourceType: 'ACADEMIC_TERM',
+                resourceId: createdTerms[0]?.id || 'BATCH',
+                ip,
+                userAgent,
+                after: { count: createdTerms.length, termIds: createdTerms.map(t => t.id) }
+            });
+
+            try {
+                revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_CONFIG, user.schoolId!), 'max');
+                revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, user.schoolId!), 'max');
+                revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, user.schoolId!), 'max');
+                revalidateTag(`school-${user.schoolId!}`, 'max');
+            } catch (cacheErr) {
+                console.error("Cache revalidation ignored:", cacheErr);
+            }
+
+            return secureJson({ terms: createdTerms, count: createdTerms.length }, 201);
+        }
+
+        // Single term creation
+        const parseResult = TermCreateSchema.safeParse(rawBody);
         if (!parseResult.success) {
             return secureJson({ error: "Invalid term creation payload", details: parseResult.error.flatten().fieldErrors }, 400);
         }
@@ -68,9 +155,11 @@ export async function POST(req: Request) {
         }
 
         const term = await prisma.$transaction(async (tx) => {
-            // If setting this term active, optionally toggle other terms if single active required
             if (isActive) {
-                // Keep others or leave as is
+                await tx.academicTerm.updateMany({
+                    where: { schoolId: user.schoolId!, isActive: true },
+                    data: { isActive: false }
+                });
             }
 
             return tx.academicTerm.create({
@@ -97,6 +186,15 @@ export async function POST(req: Request) {
             userAgent,
             after: term
         });
+
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_CONFIG, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, user.schoolId!), 'max');
+            revalidateTag(`school-${user.schoolId!}`, 'max');
+        } catch (cacheErr) {
+            console.error("Cache revalidation ignored:", cacheErr);
+        }
 
         return secureJson({ term }, 201);
     } catch (error) {
@@ -129,17 +227,26 @@ export async function PATCH(req: Request) {
             return secureJson({ error: "Term not found in your institution" }, 404);
         }
 
-        const updated = await prisma.academicTerm.update({
-            where: { id },
-            data: {
-                name: name || undefined,
-                startDate: startDate ? new Date(startDate) : undefined,
-                endDate: endDate ? new Date(endDate) : undefined,
-                isActive: isActive !== undefined ? isActive : undefined
-            },
-            include: {
-                _count: { select: { marklists: true, exams: true } }
+        const updated = await prisma.$transaction(async (tx) => {
+            if (isActive) {
+                await tx.academicTerm.updateMany({
+                    where: { schoolId: user.schoolId!, id: { not: id }, isActive: true },
+                    data: { isActive: false }
+                });
             }
+
+            return tx.academicTerm.update({
+                where: { id },
+                data: {
+                    name: name || undefined,
+                    startDate: startDate ? new Date(startDate) : undefined,
+                    endDate: endDate ? new Date(endDate) : undefined,
+                    isActive: isActive !== undefined ? isActive : undefined
+                },
+                include: {
+                    _count: { select: { marklists: true, exams: true } }
+                }
+            });
         });
 
         await logActivity({
@@ -153,6 +260,15 @@ export async function PATCH(req: Request) {
             before: existing,
             after: updated
         });
+
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_CONFIG, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, user.schoolId!), 'max');
+            revalidateTag(`school-${user.schoolId!}`, 'max');
+        } catch (cacheErr) {
+            console.error("Cache revalidation ignored:", cacheErr);
+        }
 
         return secureJson({ term: updated });
     } catch (error) {
@@ -213,6 +329,15 @@ export async function DELETE(req: Request) {
             userAgent,
             before: existing
         });
+
+        try {
+            revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_CONFIG, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.CLASSES, user.schoolId!), 'max');
+            revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, user.schoolId!), 'max');
+            revalidateTag(`school-${user.schoolId!}`, 'max');
+        } catch (cacheErr) {
+            console.error("Cache revalidation ignored:", cacheErr);
+        }
 
         return secureJson({ success: true, message: `Term "${existing.name}" successfully removed.` });
     } catch (error) {

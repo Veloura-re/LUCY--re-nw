@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { 
     Printer, GraduationCap, Award, CheckCircle2, 
@@ -89,13 +90,23 @@ export default function StudentReportCardPage() {
 
             {/* Top Toolbar (Hidden in Print) */}
             <div className="max-w-6xl mx-auto mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden relative z-20">
-                <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/dashboard/reports/students')} 
-                    className="rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-xl text-xs font-semibold uppercase tracking-widest hover:bg-zinc-100 dark:hover:bg-zinc-900"
-                >
-                    <ArrowLeft className="w-4 h-4 mr-2" /> Back to Students
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button 
+                        variant="outline" 
+                        onClick={() => router.push('/dashboard/reports/students')} 
+                        className="rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-xl text-xs font-semibold uppercase tracking-widest hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Students
+                    </Button>
+                    <Link href={`/dashboard/students/${student.id}`}>
+                        <Button 
+                            variant="outline" 
+                            className="rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-xl text-xs font-semibold uppercase tracking-widest hover:border-eduGreen-500 hover:text-eduGreen-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                        >
+                            <User className="w-4 h-4 mr-2 text-eduGreen-500" /> Student Profile Dossier
+                        </Button>
+                    </Link>
+                </div>
 
                 <div className="flex items-center gap-3">
                     <Button 
