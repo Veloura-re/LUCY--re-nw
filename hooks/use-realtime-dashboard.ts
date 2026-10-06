@@ -6,8 +6,8 @@ import { createBrowserClient } from '@supabase/ssr';
 
 /**
  * Hook to listen for database changes that should trigger a dashboard refresh.
- * Uses the PUBLIC anon key only — never the service role key.
- * Realtime channels are scoped with a filter where possible to reduce broadcast surface.
+ * Uses unique channel instances and defensive error boundaries to prevent
+ * duplicate postgres_changes callback collisions after subscribe().
  */
 export function useRealtimeDashboard(schoolId?: string | null) {
     const router = useRouter();
@@ -16,78 +16,97 @@ export function useRealtimeDashboard(schoolId?: string | null) {
     useEffect(() => {
         if (!schoolId) return;
 
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        if (!url || !key) return;
+
         // Explicitly use the public anon key — NEVER the service role key
-        const supabase = createBrowserClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
+        const supabase = createBrowserClient(url, key);
 
-        const channelName = `realtime-dashboard-${schoolId}`;
+        // Unique instance channel name prevents collision with layout-level channels
+        const instanceId = globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID().slice(0, 8) : Math.random().toString(36).slice(2, 8);
+        const channelName = `realtime-dashboard-${schoolId}-${instanceId}`;
 
-        const channel = supabase
-            .channel(channelName)
-            // Attendance changes for this school
-            .on(
-                'postgres_changes',
-                { event: '*', schema: 'public', table: 'AttendanceRecord' },
-                () => router.refresh()
-            )
-            // Grade inserts for this school
-            .on(
-                'postgres_changes',
-                { event: 'INSERT', schema: 'public', table: 'GradeRecord' },
-                () => router.refresh()
-            )
-            // New messages scoped to this school
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'Message',
-                    filter: `schoolId=eq.${schoolId}`
-                },
-                () => router.refresh()
-            )
-            // New assignments for this school
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'Assignment',
-                    filter: `schoolId=eq.${schoolId}`
-                },
-                () => router.refresh()
-            )
-            // Assignment submissions for this school
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'AssignmentSubmission',
-                    filter: `schoolId=eq.${schoolId}`
-                },
-                () => router.refresh()
-            )
-            // Invoice/financial activity for this school
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'Invoice',
-                    filter: `schoolId=eq.${schoolId}`
-                },
-                () => router.refresh()
-            )
-            .subscribe();
+        try {
+            const channel = supabase
+                .channel(channelName)
+                // Attendance changes for this school
+                .on(
+                    'postgres_changes',
+                    { event: '*', schema: 'public', table: 'AttendanceRecord' },
+                    () => { try { router.refresh(); } catch {} }
+                )
+                // Grade inserts for this school
+                .on(
+                    'postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'GradeRecord' },
+                    () => { try { router.refresh(); } catch {} }
+                )
+                // New messages scoped to this school
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'Message',
+                        filter: `schoolId=eq.${schoolId}`
+                    },
+                    () => { try { router.refresh(); } catch {} }
+                )
+                // New assignments for this school
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'Assignment',
+                        filter: `schoolId=eq.${schoolId}`
+                    },
+                    () => { try { router.refresh(); } catch {} }
+                )
+                // Assignment submissions for this school
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'AssignmentSubmission',
+                        filter: `schoolId=eq.${schoolId}`
+                    },
+                    () => { try { router.refresh(); } catch {} }
+                )
+                // Invoice/financial activity for this school
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',
+                        schema: 'public',
+                        table: 'Invoice',
+                        filter: `schoolId=eq.${schoolId}`
+                    },
+                    () => { try { router.refresh(); } catch {} }
+                );
 
-        channelRef.current = channel;
+            channelRef.current = channel;
+
+            channel.subscribe((status: string, err?: any) => {
+                if (err) {
+                    console.warn('[useRealtimeDashboard] Subscription status:', status, err);
+                }
+            });
+        } catch (err) {
+            console.warn('[useRealtimeDashboard] Realtime connection registration bypassed:', err);
+        }
 
         return () => {
-            supabase.removeChannel(channel);
+            if (channelRef.current) {
+                try {
+                    supabase.removeChannel(channelRef.current);
+                } catch {
+                    /* non-blocking teardown */
+                }
+                channelRef.current = null;
+            }
         };
     }, [schoolId, router]);
 }

@@ -25,7 +25,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useReactToPrint } from "react-to-print";
 import Image from "next/image";
 import { StudentDossierPrint } from "@/components/dashboard/student-dossier-print";
-import { useRealtimeDashboard } from "@/hooks/use-realtime-dashboard";
 import { StudentTermSummary } from "@/components/dashboard/student-term-summary";
 import { NetworkRetryState } from "@/components/ui/network-retry-state";
 import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
@@ -43,24 +42,29 @@ function StudentProfileContent() {
         }
     };
 
-    const { studentId } = useParams();
+    const params = useParams();
+    const rawStudentId = params?.studentId;
+    const studentId = Array.isArray(rawStudentId) ? rawStudentId[0] : (rawStudentId as string | undefined);
     const router = useRouter();
     const [data, setData] = useState<any>(() => {
         if (typeof window !== "undefined" && studentId) {
-            return getClientCache<any>(`student_dossier_${studentId}`) || null;
+            const cached = getClientCache<any>(`student_dossier_${studentId}`);
+            if (cached && cached.student) return cached;
         }
         return null;
     });
     const [loading, setLoading] = useState<boolean>(() => {
         if (typeof window !== "undefined" && studentId) {
-            return !getClientCache<any>(`student_dossier_${studentId}`);
+            const cached = getClientCache<any>(`student_dossier_${studentId}`);
+            return !cached?.student;
         }
         return true;
     });
     const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
     const [isFromCache, setIsFromCache] = useState<boolean>(() => {
         if (typeof window !== "undefined" && studentId) {
-            return !!getClientCache<any>(`student_dossier_${studentId}`);
+            const cached = getClientCache<any>(`student_dossier_${studentId}`);
+            return !!cached?.student;
         }
         return false;
     });
@@ -83,8 +87,6 @@ function StudentProfileContent() {
     const [analyzing, setAnalyzing] = useState(false);
     const [userRole, setUserRole] = useState<string>("");
     const searchParams = useSearchParams();
-
-    useRealtimeDashboard(data?.student?.schoolId);
     const dossierRef = useRef<HTMLDivElement>(null);
 
     const isDirector = userRole === 'PRINCIPAL' || userRole === 'OWNER' || userRole === 'SUPERADMIN';
@@ -201,6 +203,10 @@ function StudentProfileContent() {
 
     const handleUpdateStudent = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (editSelectedGradeId && !editForm.classId) {
+            toast.error("Please select a specific class for the student.");
+            return;
+        }
         setSubmitting(true);
         try {
             const res = await fetch('/api/school/students', {
@@ -539,7 +545,7 @@ function StudentProfileContent() {
                         <div className="flex flex-wrap justify-center md:justify-start gap-6 text-[11px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">
                             <div className="flex items-center gap-2">
                                 <GraduationCap className="w-4 h-4 text-eduGreen-700" />
-                                <span>{student.class?.grade?.name || "No Grade"} / {student.class?.name || "Unassigned"}</span>
+                                <span>{student.class?.grade?.name || student.grade?.name || "No Grade"} / {student.class?.name || "Unassigned"}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <ShieldAlert className="w-4 h-4 text-amber-700" />
