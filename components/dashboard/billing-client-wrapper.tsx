@@ -16,11 +16,8 @@ import {
     RefreshCw,
     AlertTriangle,
     School,
-    Receipt,
-    Landmark,
     ExternalLink,
-    BadgeCheck,
-    Terminal as TerminalIcon
+    BadgeCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageUpload } from '@/components/ui/image-upload';
@@ -244,107 +241,6 @@ export default function BillingClientWrapper({
         }
     };
 
-    const [actionLoading, setActionLoading] = useState<string | null>(null);
-
-    const handleCreateTestInvoice = async () => {
-        setActionLoading('invoice');
-        try {
-            const res = await fetch('/api/school/billing/invoices', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    recipientEmail: me?.email || 'parent@5-cn.net',
-                    recipientName: me?.name || 'School Scholar Guardian',
-                    description: 'Term 1 STEM Tuition & Robotics Laboratory Statement',
-                    items: [
-                        { description: 'Grade 10 STEM Academic Tuition', amount: 500 },
-                        { description: 'Robotics Lab Equipment & Consumables', amount: 45 },
-                    ],
-                }),
-            });
-            const data = await res.json() as any;
-            if (data.invoice?.hostedInvoiceUrl) {
-                toast.success(`Stripe Tuition Invoice Created ($${data.invoice.total})`, {
-                    description: 'Opening official Stripe Hosted Invoice...',
-                });
-                window.open(data.invoice.hostedInvoiceUrl, '_blank');
-            } else {
-                toast.error(data.error || 'Failed to create invoice.');
-            }
-        } catch {
-            toast.error('Failed to create test tuition invoice.');
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleTestTerminal = async () => {
-        setActionLoading('terminal');
-        try {
-            const res = await fetch('/api/school/billing/terminal', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'connection_token' }),
-            });
-            const data = await res.json() as any;
-            if (data.secret) {
-                toast.success('Terminal Reader Connection Token Generated', {
-                    description: `Token: ${data.secret.substring(0, 16)}...`,
-                });
-            } else {
-                toast.error(data.error || 'Terminal token error.');
-            }
-        } catch {
-            toast.error('Failed to generate Terminal token.');
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleTestIdentity = async () => {
-        setActionLoading('identity');
-        try {
-            const res = await fetch('/api/school/billing/identity', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json() as any;
-            if (data.verificationSession?.url) {
-                toast.success('Identity Verification Portal Ready', {
-                    description: 'Opening Stripe Identity KYC window...',
-                });
-                window.open(data.verificationSession.url, '_blank');
-            } else {
-                toast.error(data.error || 'Identity verification error.');
-            }
-        } catch {
-            toast.error('Failed to initiate Identity verification.');
-        } finally {
-            setActionLoading(null);
-        }
-    };
-
-    const handleTestFinancialConnections = async () => {
-        setActionLoading('bank');
-        try {
-            const res = await fetch('/api/school/billing/financial-connections', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json() as any;
-            if (data.session?.clientSecret) {
-                toast.success('Financial Connections Session Created', {
-                    description: `Permissions: ${data.session.permissions?.join(', ')}`,
-                });
-            } else {
-                toast.error(data.error || 'Financial Connections error.');
-            }
-        } catch {
-            toast.error('Failed to link institutional bank account.');
-        } finally {
-            setActionLoading(null);
-        }
-    };
 
     const handleChapaCheckout = async () => {
         setSubmitting(true);
@@ -760,91 +656,7 @@ export default function BillingClientWrapper({
                                     Establish Stripe Connection &amp; Subscribe ($49/mo)
                                 </button>
 
-                                {/* Multi-Product Testing Suite */}
-                                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 font-orbitron">
-                                            Integrated Product Capabilities
-                                        </h4>
-                                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest">
-                                            Test Mode
-                                        </span>
-                                    </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {/* Invoicing */}
-                                        <button
-                                            onClick={handleCreateTestInvoice}
-                                            disabled={actionLoading !== null}
-                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
-                                        >
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
-                                                    <Receipt className="w-4 h-4 text-emerald-500" />
-                                                    Tuition Invoicing
-                                                </div>
-                                                {actionLoading === 'invoice' && <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />}
-                                            </div>
-                                            <p className="text-[11px] text-zinc-500 leading-snug">
-                                                Create and finalize a live $545.00 tuition invoice on Stripe.
-                                            </p>
-                                        </button>
-
-                                        {/* Terminal POS */}
-                                        <button
-                                            onClick={handleTestTerminal}
-                                            disabled={actionLoading !== null}
-                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
-                                        >
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
-                                                    <TerminalIcon className="w-4 h-4 text-indigo-500" />
-                                                    Terminal POS
-                                                </div>
-                                                {actionLoading === 'terminal' && <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />}
-                                            </div>
-                                            <p className="text-[11px] text-zinc-500 leading-snug">
-                                                Generate smart reader connection token for campus kiosks.
-                                            </p>
-                                        </button>
-
-                                        {/* Identity Verification */}
-                                        <button
-                                            onClick={handleTestIdentity}
-                                            disabled={actionLoading !== null}
-                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
-                                        >
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
-                                                    <ShieldCheck className="w-4 h-4 text-blue-500" />
-                                                    Identity Verification
-                                                </div>
-                                                {actionLoading === 'identity' && <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />}
-                                            </div>
-                                            <p className="text-[11px] text-zinc-500 leading-snug">
-                                                Launch biometric KYC document verification for school staff.
-                                            </p>
-                                        </button>
-
-                                        {/* Financial Connections */}
-                                        <button
-                                            onClick={handleTestFinancialConnections}
-                                            disabled={actionLoading !== null}
-                                            className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-all text-left group"
-                                        >
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <div className="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-white">
-                                                    <Landmark className="w-4 h-4 text-amber-500" />
-                                                    Financial Connections
-                                                </div>
-                                                {actionLoading === 'bank' && <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />}
-                                            </div>
-                                            <p className="text-[11px] text-zinc-500 leading-snug">
-                                                Link institutional bank account for direct debits and payouts.
-                                            </p>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         )}
 

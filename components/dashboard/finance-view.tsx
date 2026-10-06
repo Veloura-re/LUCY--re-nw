@@ -203,9 +203,9 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <Link href="/dashboard/finance/students">
                         <Button
                             variant="outline"
-                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-blue-500/50 hover:bg-blue-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                            className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
                         >
-                            <Users className="w-4 h-4 text-blue-500" />
+                            <Users className="w-4 h-4 text-eduGreen-500" />
                             Student Dossiers
                         </Button>
                     </Link>
@@ -329,17 +329,17 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     </Card>
 
                     {/* Portal 3: Student Billing Dossiers */}
-                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-blue-500/40 transition-all group flex flex-col justify-between">
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-eduGreen-500/40 transition-all group flex flex-col justify-between">
                         <div>
                             <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-blue-500 group-hover:scale-110 transition-transform">
+                                <div className="p-3 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500 group-hover:scale-110 transition-transform">
                                     <Users className="w-5 h-5" />
                                 </div>
-                                <span className="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 text-[8px] font-medium uppercase tracking-widest border border-blue-500/20">
+                                <span className="px-2.5 py-1 rounded-full bg-eduGreen-500/10 text-eduGreen-500 text-[8px] font-medium uppercase tracking-widest border border-eduGreen-500/20">
                                     Student Accounts
                                 </span>
                             </div>
-                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-blue-500 transition-colors">
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-eduGreen-500 transition-colors">
                                 Student Dossiers
                             </h3>
                             <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
@@ -347,7 +347,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                             </p>
                         </div>
                         <Link href="/dashboard/finance/students" className="w-full">
-                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-blue-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
+                            <Button className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn">
                                 Inspect Student Ledgers
                                 <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                             </Button>
