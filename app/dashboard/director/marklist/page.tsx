@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet, Plus, Settings2, GripVertical, Search, Loader2, Download, Printer } from "lucide-react";
+import { FileSpreadsheet, Plus, Settings2, GripVertical, Search, Loader2, Download, Printer, AlertTriangle, RotateCw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { safeImport } from "@/lib/dynamic-import";
+import { cn } from "@/lib/utils";
 
 const DynamicPrintRegistry = dynamic(
     () => safeImport(() => import("@/components/dashboard/director/print-registry").then((mod) => mod.PrintRegistryButton), 'PrintRegistryButton'),
@@ -22,31 +23,47 @@ export default function MarklistManagerPage() {
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
+    const [syncingTerms, setSyncingTerms] = useState(false);
     const router = useRouter();
 
-    useEffect(() => {
-        fetchConfigs();
-        fetchTerms();
-    }, []);
-
-    const fetchTerms = async () => {
+    const fetchTerms = useCallback(async () => {
+        setSyncingTerms(true);
         try {
-            const res = await fetch('/api/school/terms');
+            const res = await fetch(`/api/school/terms?_t=${Date.now()}`, { cache: 'no-store' });
             if (res.ok) {
                 const data = await res.json() as any;
                 setTermsCount((data.terms || []).length);
             }
         } catch (e) {
             console.error("Terms check failed", e);
+        } finally {
+            setSyncingTerms(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchConfigs();
+        fetchTerms();
+
+        const handleSync = () => {
+            fetchTerms();
+            fetchConfigs();
+        };
+
+        window.addEventListener('academic-terms-updated', handleSync);
+        window.addEventListener('focus', handleSync);
+        return () => {
+            window.removeEventListener('academic-terms-updated', handleSync);
+            window.removeEventListener('focus', handleSync);
+        };
+    }, [fetchTerms]);
 
     const fetchConfigs = async (pageNum = 1) => {
         if (pageNum === 1) setLoading(true);
         else setLoadingMore(true);
 
         try {
-            const res = await fetch(`/api/director/marklists?page=${pageNum}&limit=12`);
+            const res = await fetch(`/api/director/marklists?page=${pageNum}&limit=12&_t=${Date.now()}`, { cache: 'no-store' });
             const data = await res.json() as any;
             if (data.configs) {
                 if (pageNum === 1) {
@@ -98,17 +115,27 @@ export default function MarklistManagerPage() {
                 <div className="p-6 bg-amber-500/10 border border-amber-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                         <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                            ⚠️ No Academic Terms Configured
+                            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" /> No Academic Terms Configured
                         </h3>
                         <p className="text-xs text-zinc-600 dark:text-zinc-400">
                             Your institution has not set up academic terms. Please create at least one academic term in Settings before configuring or generating marklists.
                         </p>
                     </div>
-                    <Link href="/dashboard/settings" prefetch={false}>
-                        <Button className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0">
-                            Create Academic Term
+                    <div className="flex items-center gap-2 shrink-0">
+                        <Button 
+                            onClick={() => fetchTerms()} 
+                            disabled={syncingTerms}
+                            variant="outline" 
+                            className="rounded-xl text-xs font-bold uppercase tracking-wider px-4 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                        >
+                            <RotateCw className={cn("w-3.5 h-3.5 mr-2", syncingTerms && "animate-spin")} /> Re-Check
                         </Button>
-                    </Link>
+                        <Link href="/dashboard/settings" prefetch={false}>
+                            <Button className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0">
+                                Create Academic Term
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             )}
 

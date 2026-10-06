@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Trash2, Plus, GripVertical, Save, FileSpreadsheet } from "lucide-react";
+import { Trash2, Plus, GripVertical, Save, FileSpreadsheet, AlertTriangle, RotateCw } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,7 @@ export default function MarklistConfigPage() {
     const [classes, setClasses] = useState<any[]>([]);
     const [subjects, setSubjects] = useState<any[]>([]);
     const [terms, setTerms] = useState<any[]>([]);
+    const [syncingTerms, setSyncingTerms] = useState(false);
 
     const [selectedClassId, setSelectedClassId] = useState("");
     const [selectedSubjectId, setSelectedSubjectId] = useState("");
@@ -39,12 +40,45 @@ export default function MarklistConfigPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
+    const fetchTerms = useCallback(async () => {
+        setSyncingTerms(true);
+        try {
+            const res = await fetch(`/api/school/terms?_t=${Date.now()}`, { cache: "no-store" });
+            if (res.ok) {
+                const data: any = await res.json();
+                const termList = data.terms || [];
+                setTerms(termList);
+                const active = termList.find((t: any) => t.isActive);
+                if (active) {
+                    setSelectedTermId(prev => prev || active.id);
+                } else if (termList.length > 0) {
+                    setSelectedTermId(prev => prev || termList[0].id);
+                }
+            }
+        } catch (e) {
+            console.error("Terms fetch failed", e);
+        } finally {
+            setSyncingTerms(false);
+        }
+    }, []);
+
     // Load Metadata
     useEffect(() => {
         fetchClasses();
         fetchSubjects();
         fetchTerms();
-    }, []);
+
+        const handleSync = () => {
+            fetchTerms();
+        };
+
+        window.addEventListener('academic-terms-updated', handleSync);
+        window.addEventListener('focus', handleSync);
+        return () => {
+            window.removeEventListener('academic-terms-updated', handleSync);
+            window.removeEventListener('focus', handleSync);
+        };
+    }, [fetchTerms]);
 
     // Check for search params after options load
     useEffect(() => {
@@ -76,18 +110,6 @@ export default function MarklistConfigPage() {
                 setSubjects(data.subjects || []);
             }
         } catch (e) { console.error("Subjects fetch failed", e); }
-    };
-
-    const fetchTerms = async () => {
-        try {
-            const res = await fetch("/api/school/terms");
-            if (res.ok) {
-                const data: any = await res.json();
-                setTerms(data.terms || []);
-                const active = (data.terms || []).find((t: any) => t.isActive);
-                if (active && !selectedTermId) setSelectedTermId(active.id);
-            }
-        } catch (e) { console.error("Terms fetch failed", e); }
     };
 
     // Fetch Config when selection changes
@@ -216,18 +238,28 @@ export default function MarklistConfigPage() {
                 <div className="p-6 bg-amber-500/10 border border-amber-500/30 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                         <h3 className="text-sm font-bold text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                            ⚠️ No Academic Terms Configured
+                            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" /> No Academic Terms Configured
                         </h3>
                         <p className="text-xs text-zinc-600 dark:text-zinc-400">
                             Your institution has not set up academic terms or seasons. You must create at least one academic term before you can generate marklists.
                         </p>
                     </div>
-                    <Button
-                        onClick={() => router.push('/dashboard/settings')}
-                        className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0"
-                    >
-                        Create Academic Term
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                            onClick={() => fetchTerms()}
+                            disabled={syncingTerms}
+                            variant="outline"
+                            className="rounded-xl text-xs font-bold uppercase tracking-wider px-4 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                        >
+                            <RotateCw className={cn("w-3.5 h-3.5 mr-2", syncingTerms && "animate-spin")} /> Re-Check
+                        </Button>
+                        <Button
+                            onClick={() => router.push('/dashboard/settings')}
+                            className="bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider px-5 shrink-0"
+                        >
+                            Create Academic Term
+                        </Button>
+                    </div>
                 </div>
             )}
 

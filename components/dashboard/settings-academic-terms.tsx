@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Calendar, Trash2, Lock, ShieldAlert, Sparkles } from "lucide-react";
+import { Plus, Calendar, Trash2, Lock, ShieldAlert, Sparkles, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCachedQuery } from "@/hooks/use-cached-query";
 import { CachedSyncBadge } from "@/components/ui/cached-sync-badge";
+import { invalidateClientCache } from "@/lib/cache-client";
 
 interface TermsPayload {
     school: any;
@@ -20,6 +21,8 @@ interface TermsPayload {
 export function SettingsAcademicTerms() {
     const [creating, setCreating] = useState(false);
     const [savingSettings, setSavingSettings] = useState(false);
+    const [autoGenerating, setAutoGenerating] = useState(false);
+    const [updatingTermId, setUpdatingTermId] = useState<string | null>(null);
     
     const [formData, setFormData] = useState({
         name: "",
@@ -85,6 +88,7 @@ export function SettingsAcademicTerms() {
             const json = (await res.json()) as any;
             if (res.ok) {
                 toast.success("Institutional parameters synchronized successfully.");
+                invalidateClientCache('academic_terms_and_settings');
                 mutate(prev => prev ? { ...prev, school: json.school } : { school: json.school, terms: [] });
             } else {
                 toast.error(json.error || "Failed to update settings.");
@@ -116,9 +120,20 @@ export function SettingsAcademicTerms() {
                 toast.success("Term created successfully.");
                 setFormData({ name: "", startDate: "", endDate: "", isActive: false });
                 
-                // Optimistically append term to cache
+                invalidateClientCache('academic_terms_and_settings');
+                invalidateClientCache('school-terms');
+                if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('academic-terms-updated'));
+                }
+
                 if (termJson.term) {
-                    mutate(prev => prev ? { ...prev, terms: [termJson.term, ...prev.terms] } : prev, true);
+                    mutate(prev => {
+                        if (!prev) return { school: null, terms: [termJson.term] };
+                        const updatedTerms = termJson.term.isActive
+                            ? [termJson.term, ...prev.terms.map(t => ({ ...t, isActive: false }))]
+                            : [termJson.term, ...prev.terms];
+                        return { ...prev, terms: updatedTerms };
+                    }, true);
                 } else {
                     refetch(true);
                 }
@@ -134,6 +149,42 @@ export function SettingsAcademicTerms() {
         }
     };
 
+    const handleSetActiveTerm = async (id: string) => {
+        setUpdatingTermId(id);
+        try {
+            const res = await fetch("/api/school/terms", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, isActive: true })
+            });
+            if (res.ok) {
+                toast.success("Active academic term updated.");
+                invalidateClientCache('academic_terms_and_settings');
+                invalidateClientCache('school-terms');
+                if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('academic-terms-updated'));
+                }
+                mutate(prev => {
+                    if (!prev) return prev;
+                    return {
+                        ...prev,
+                        terms: prev.terms.map(t => ({
+                            ...t,
+                            isActive: t.id === id
+                        }))
+                    };
+                }, true);
+            } else {
+                const err: any = await res.json().catch(() => ({}));
+                toast.error(err.error || "Failed to switch active term.");
+            }
+        } catch (e: any) {
+            toast.error(e?.message || "Failed to switch active term.");
+        } finally {
+            setUpdatingTermId(null);
+        }
+    };
+
     const handleDeleteTerm = async (id: string) => {
         try {
             const res = await fetch(`/api/school/terms?id=${id}`, {
@@ -142,6 +193,11 @@ export function SettingsAcademicTerms() {
             const resData = (await res.json().catch(() => ({}))) as any;
             if (res.ok) {
                 toast.success("Academic period deleted successfully.");
+                invalidateClientCache('academic_terms_and_settings');
+                invalidateClientCache('school-terms');
+                if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('academic-terms-updated'));
+                }
                 mutate(prev => prev ? { ...prev, terms: prev.terms.filter(t => t.id !== id) } : prev);
             } else {
                 toast.error(resData.error || "Failed to delete academic term.", {
@@ -154,34 +210,81 @@ export function SettingsAcademicTerms() {
     };
 
     const handleAutoGenerate = async () => {
+        setAutoGenerating(true);
         toast.info("Auto-generation protocol initiated...");
-        const currentYear = new Date().getFullYear();
-        let generatedTerms = [];
+        try {
+            const now = new Date();
+            const currentMonth = now.getMonth(); // 0-indexed: Jan=0, Aug=7, Sep=8
+            // Academic year begins August/September
+            const startYear = currentMonth >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+            const endYear = startYear + 1;
+            const todayStr = now.toISOString().split('T')[0];
 
-        if (settingsData.termStructure === 'QUARTERS') {
-            generatedTerms = [
-                { name: `Q1 ${currentYear}`, startDate: `${currentYear}-09-01`, endDate: `${currentYear}-11-15`, isActive: true },
-                { name: `Q2 ${currentYear}`, startDate: `${currentYear}-11-16`, endDate: `${currentYear+1}-01-31`, isActive: false },
-                { name: `Q3 ${currentYear}`, startDate: `${currentYear+1}-02-01`, endDate: `${currentYear+1}-04-15`, isActive: false },
-                { name: `Q4 ${currentYear}`, startDate: `${currentYear+1}-04-16`, endDate: `${currentYear+1}-06-30`, isActive: false },
-            ];
-        } else if (settingsData.termStructure === 'SEMESTERS') {
-            generatedTerms = [
-                { name: `Semester 1 ${currentYear}`, startDate: `${currentYear}-09-01`, endDate: `${currentYear+1}-01-31`, isActive: true },
-                { name: `Semester 2 ${currentYear}`, startDate: `${currentYear+1}-02-01`, endDate: `${currentYear+1}-06-30`, isActive: false },
-            ];
-        }
+            let generatedTerms: Array<{ name: string; startDate: string; endDate: string; isActive?: boolean }> = [];
 
-        for (const t of generatedTerms) {
-            await fetch("/api/school/terms", {
+            if (settingsData.termStructure === 'QUARTERS') {
+                generatedTerms = [
+                    { name: `Q1 ${startYear}`, startDate: `${startYear}-09-01`, endDate: `${startYear}-11-15` },
+                    { name: `Q2 ${startYear}-${endYear}`, startDate: `${startYear}-11-16`, endDate: `${endYear}-01-31` },
+                    { name: `Q3 ${endYear}`, startDate: `${endYear}-02-01`, endDate: `${endYear}-04-15` },
+                    { name: `Q4 ${endYear}`, startDate: `${endYear}-04-16`, endDate: `${endYear}-06-30` },
+                ];
+            } else if (settingsData.termStructure === 'SEMESTERS') {
+                generatedTerms = [
+                    { name: `Semester 1 ${startYear}-${endYear}`, startDate: `${startYear}-09-01`, endDate: `${endYear}-01-31` },
+                    { name: `Semester 2 ${endYear}`, startDate: `${endYear}-02-01`, endDate: `${endYear}-06-30` },
+                ];
+            } else if (settingsData.termStructure === 'TRIMESTERS') {
+                generatedTerms = [
+                    { name: `Trimester 1 ${startYear}`, startDate: `${startYear}-09-01`, endDate: `${startYear}-12-15` },
+                    { name: `Trimester 2 ${endYear}`, startDate: `${endYear}-01-05`, endDate: `${endYear}-04-10` },
+                    { name: `Trimester 3 ${endYear}`, startDate: `${endYear}-04-20`, endDate: `${endYear}-07-15` },
+                ];
+            } else {
+                // CUSTOM fallback
+                generatedTerms = [
+                    { name: `Term 1 ${startYear}-${endYear}`, startDate: `${startYear}-09-01`, endDate: `${endYear}-01-31` },
+                    { name: `Term 2 ${endYear}`, startDate: `${endYear}-02-01`, endDate: `${endYear}-06-30` },
+                ];
+            }
+
+            // Determine active term based on today's date
+            let activeIndex = generatedTerms.findIndex(t => todayStr >= t.startDate && todayStr <= t.endDate);
+            if (activeIndex === -1) activeIndex = 0; // Default to first term
+
+            const finalTerms = generatedTerms.map((t, idx) => ({
+                ...t,
+                isActive: idx === activeIndex
+            }));
+
+            // Send batch creation to backend
+            const res = await fetch("/api/school/terms", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(t)
+                body: JSON.stringify({ terms: finalTerms })
             });
+
+            if (!res.ok) {
+                const errData: any = await res.json().catch(() => ({}));
+                throw new Error(errData.error || "Failed to auto-generate academic terms.");
+            }
+
+            const data: any = await res.json();
+            toast.success(`Generated ${data.count || finalTerms.length} academic periods successfully.`);
+
+            invalidateClientCache('academic_terms_and_settings');
+            invalidateClientCache('school-terms');
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('academic-terms-updated'));
+            }
+
+            await refetch(true);
+        } catch (err: any) {
+            console.error("Auto-generate error:", err);
+            toast.error(err?.message || "Failed to auto-generate academic terms.");
+        } finally {
+            setAutoGenerating(false);
         }
-        
-        toast.success("Academic periods auto-generated successfully.");
-        refetch(true);
     };
 
     return (
@@ -302,10 +405,11 @@ export function SettingsAcademicTerms() {
                     {terms.length === 0 && !loading && (
                         <Button 
                             onClick={handleAutoGenerate}
+                            disabled={autoGenerating}
                             variant="outline" 
-                            className="border-blue-500/30 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 text-[10px] font-bold uppercase tracking-widest gap-2"
+                            className="border-eduGreen-500/30 text-eduGreen-500 bg-eduGreen-500/10 hover:bg-eduGreen-500/20 text-[10px] font-bold uppercase tracking-widest gap-2"
                         >
-                            <Sparkles className="w-3 h-3" /> Auto-Generate Dates
+                            <Sparkles className="w-3 h-3" /> {autoGenerating ? "Generating..." : "Auto-Generate Dates"}
                         </Button>
                     )}
                 </CardHeader>
@@ -314,7 +418,7 @@ export function SettingsAcademicTerms() {
                         <div className="space-y-2">
                             <Label className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-500">Term Name</Label>
                             <Input 
-                                placeholder="e.g. Q1 2026, Semester 1"
+                                placeholder="e.g. Q1 2026, Semester 1, Trimester 1"
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 className="bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white h-12 rounded-xl"
@@ -377,8 +481,19 @@ export function SettingsAcademicTerms() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="text-right mr-4">
+                        <div className="flex items-center gap-3">
+                            {!t.isActive && (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={updatingTermId === t.id}
+                                    onClick={() => handleSetActiveTerm(t.id)}
+                                    className="h-8 px-3 text-[10px] font-bold uppercase tracking-wider rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500 hover:text-eduGreen-500 transition-colors"
+                                >
+                                    {updatingTermId === t.id ? "Activating..." : "Set Active"}
+                                </Button>
+                            )}
+                            <div className="text-right mr-2">
                                 <p className="text-zinc-900 dark:text-white text-xs font-medium">{t._count?.marklists || 0}</p>
                                 <p className="text-[9px] text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Marklists</p>
                             </div>
