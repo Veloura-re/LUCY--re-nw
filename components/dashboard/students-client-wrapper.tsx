@@ -91,6 +91,24 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
 
     const handleAddStudent = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!newStudent.firstName?.trim() || !newStudent.lastName?.trim()) {
+            setAlertConfig({ 
+                title: "Incomplete Details", 
+                message: "Student first name and last name are required.", 
+                isOpen: true, 
+                variant: "error" 
+            });
+            return;
+        }
+        if (!newStudent.classId) {
+            setAlertConfig({ 
+                title: "Class Required", 
+                message: "Please select an assigned class for the student.", 
+                isOpen: true, 
+                variant: "error" 
+            });
+            return;
+        }
         setLoading(true);
         try {
             const payload = {
@@ -451,37 +469,39 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
 
                             <div className="space-y-4">
                                 <label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-2">Academic Placement</label>
-                                <Select onValueChange={(val: string) => {
-                                    for (const g of (grades || [])) {
-                                        if (g.id === val) {
-                                            setNewStudent(prev => ({ ...prev, grade: g.id, classId: "" }));
-                                            return;
+                                <Select
+                                    value={newStudent.classId || undefined}
+                                    onValueChange={(val: string) => {
+                                        for (const g of (grades || [])) {
+                                            const foundCls = g.classes?.find((c: any) => c.id === val);
+                                            if (foundCls) {
+                                                setNewStudent(prev => ({ ...prev, grade: g.id, classId: foundCls.id }));
+                                                return;
+                                            }
                                         }
-                                        const foundCls = g.classes?.find((c: any) => c.id === val);
-                                        if (foundCls) {
-                                            setNewStudent(prev => ({ ...prev, grade: g.id, classId: foundCls.id }));
-                                            return;
-                                        }
-                                    }
-                                    setNewStudent(prev => ({ ...prev, grade: val, classId: val }));
-                                }}>
+                                        setNewStudent(prev => ({ ...prev, grade: val, classId: val }));
+                                    }}
+                                >
                                     <SelectTrigger className="h-14 rounded-2xl bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 border-2 text-zinc-700 dark:text-zinc-300">
-                                        <SelectValue placeholder="Select Class or Grade" />
+                                        <SelectValue placeholder="Select Class" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white">
+                                    <SelectContent className="bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white max-h-72">
                                         {grades?.map(grade => (
                                             <div key={grade.id}>
                                                 <div className="px-3 py-1.5 text-[11px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-100/60 dark:bg-zinc-900/60">
                                                     {grade.name}
                                                 </div>
-                                                <SelectItem value={grade.id} className="font-semibold text-xs text-eduGreen-600 dark:text-eduGreen-400">
-                                                    {grade.name} (General / Unassigned Class)
-                                                </SelectItem>
-                                                {grade.classes?.map((cls: any) => (
-                                                    <SelectItem key={cls.id} value={cls.id} className="pl-6 text-xs">
-                                                        ↳ {cls.name}
-                                                    </SelectItem>
-                                                ))}
+                                                {grade.classes && grade.classes.length > 0 ? (
+                                                    grade.classes.map((cls: any) => (
+                                                        <SelectItem key={cls.id} value={cls.id} className="pl-6 text-xs">
+                                                            {cls.name}
+                                                        </SelectItem>
+                                                    ))
+                                                ) : (
+                                                    <div className="px-6 py-1.5 text-[11px] text-zinc-400 italic">
+                                                        No classes configured
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </SelectContent>
