@@ -19,7 +19,9 @@ import {
     ExternalLink,
     AlertCircle,
     CheckCircle2,
-    Flashlight
+    Flashlight,
+    Award,
+    FileText
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,6 +56,9 @@ interface ScanResponse {
     status: "VERIFIED" | "CROSS_SCHOOL_MISMATCH" | "NOT_FOUND";
     error?: string;
     schoolMismatch?: boolean;
+    scanSource?: string;
+    reportCardUrl?: string;
+    profileUrl?: string;
     student?: ScannedStudent;
     todayAttendance?: {
         status: string;
@@ -520,10 +525,17 @@ export function StudentQRScannerModal({
                                                 Identity Confirmed
                                             </span>
                                         </div>
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 text-[9px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse" />
-                                            Active Standing
-                                        </div>
+                                        {scanResult.scanSource === "transcript" ? (
+                                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/30 text-[9px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest">
+                                                <Award className="w-3 h-3 text-eduGreen-500" />
+                                                Holographic Seal Verified
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 text-[9px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse" />
+                                                Active Standing
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Student Card Hub Preview */}
@@ -604,23 +616,33 @@ export function StudentQRScannerModal({
                                     </div>
 
                                     {/* Modal Actions */}
-                                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                                    <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
                                         <Button
                                             type="button"
                                             onClick={handleResetScanner}
-                                            className="flex-1 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-2xl font-bold uppercase text-[10px] tracking-widest h-12 shadow-lg"
+                                            variant="outline"
+                                            className="flex-1 rounded-2xl font-bold uppercase text-[10px] tracking-widest h-12 border-zinc-300 dark:border-zinc-800"
                                         >
-                                            <RefreshCw className="w-4 h-4 mr-2" />
+                                            <RefreshCw className="w-3.5 h-3.5 mr-2" />
                                             Scan Next ID
                                         </Button>
+
+                                        <Link
+                                            href={scanResult.reportCardUrl || `/dashboard/reports/${scanResult.student.id}`}
+                                            onClick={handleClose}
+                                            className="inline-flex items-center justify-center flex-1 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-2xl font-bold uppercase text-[10px] tracking-widest h-12 shadow-lg shadow-eduGreen-600/20 transition-all"
+                                        >
+                                            <Award className="w-3.5 h-3.5 mr-2" />
+                                            View Transcript
+                                        </Link>
 
                                         <Link
                                             href={`/dashboard/students/${scanResult.student.id}`}
                                             onClick={handleClose}
                                             className="inline-flex items-center justify-center flex-1 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 rounded-2xl font-bold uppercase text-[10px] tracking-widest h-12 transition-colors"
                                         >
-                                            <ExternalLink className="w-4 h-4 mr-2" />
-                                            View Full Profile
+                                            <ExternalLink className="w-3.5 h-3.5 mr-2" />
+                                            Student Dossier
                                         </Link>
                                     </div>
                                 </div>

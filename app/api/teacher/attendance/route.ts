@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError } from '@/lib/security';
+import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(request: Request) {
     try {
@@ -14,6 +15,13 @@ export async function POST(request: Request) {
 
         const { classId, subjectId, examId, periodId, date, records }: any = await request.json().catch(() => ({}));
         const config = (user.school as any)?.attendanceConfig || {};
+
+        // Late Marking Capability Protocol Check
+        if (config.enableLateMarking === false && records?.some((r: any) => r.status === 'LATE')) {
+            return NextResponse.json({
+                error: 'Institutional Protocol: Late marking is disabled by institutional policy.'
+            }, { status: 400 });
+        }
 
         const attendanceDate = new Date(date);
 
@@ -81,16 +89,18 @@ export async function POST(request: Request) {
         });
 
         
-        // Audit log
+        // Multi-Tenant Audit log invariant
         try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'attendance', ip: _ip || undefined });
-            }
+            const clientIp = getIp(request);
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId,
+                action: 'CREATE_ATTENDANCE',
+                resourceType: 'attendance',
+                ip: clientIp
+            });
         } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true });
     } catch (e) {
         return handleApiError(e);
     }

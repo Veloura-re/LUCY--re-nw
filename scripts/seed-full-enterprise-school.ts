@@ -318,15 +318,6 @@ async function main() {
     // 5. Provision Executive & Administrative Leadership
     console.log('Step 5: Provisioning Executive Leadership...');
     
-    // SuperAdmin
-    const superAdminEmail = 'admin@lucy.edu';
-    const superAdminAuthId = await ensureAuthUser(superAdminEmail, PASSWORDS.SUPERADMIN, 'Platform SuperAdmin', 'SUPERADMIN');
-    await prisma.user.upsert({
-        where: { email: superAdminEmail },
-        update: { name: 'Platform SuperAdmin', role: 'SUPERADMIN', verified: true },
-        create: { id: superAdminAuthId || deterministicUuid(superAdminEmail), email: superAdminEmail, name: 'Platform SuperAdmin', role: 'SUPERADMIN', verified: true }
-    });
-
     // School Owner
     const ownerEmail = 'owner@apex.edu';
     const ownerName = 'Dr. Julian Sterling';
@@ -1371,7 +1362,6 @@ async function main() {
     console.log('---------------------------------------------------------------------------');
     console.log('EXECUTIVE TEST CREDENTIALS (READY FOR VIDEO PRODUCTION):');
     console.log('---------------------------------------------------------------------------');
-    console.log(`SuperAdmin:         admin@lucy.edu               / Pass: ${PASSWORDS.SUPERADMIN}`);
     console.log(`School Owner:       owner@apex.edu               / Pass: ${PASSWORDS.OWNER}`);
     console.log(`Academy Principal:  principal@apex.edu           / Pass: ${PASSWORDS.PRINCIPAL}`);
     console.log(`Teacher 1 (Math):   teacher1@apex.edu (Marcus)   / Pass: ${PASSWORDS.TEACHER} [Homeroom 9-Alpha]`);

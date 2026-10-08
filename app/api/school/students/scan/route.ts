@@ -157,6 +157,9 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             status: "VERIFIED",
+            scanSource: parsed.scanSource || "badge",
+            reportCardUrl: `/dashboard/reports/${student.id}`,
+            profileUrl: `/dashboard/students/${student.id}`,
             student: {
                 id: student.id,
                 studentCode: student.studentCode,
