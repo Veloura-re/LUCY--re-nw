@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
         const targetBucket = 'school-assets';
         const fileExtension = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
+        const fileName = `${Date.now()}-${globalThis.crypto.randomUUID().substring(0, 8)}.${fileExtension}`;
         // Organize by bucket/folder name within the public school-assets bucket
         const filePath = `${bucket}/${fileName}`;
 

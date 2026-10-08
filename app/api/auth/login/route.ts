@@ -118,7 +118,7 @@ export async function POST(req: Request) {
         }
 
         // 5. Invalidate previous sessions & establish new single-active-session token
-        const sessionToken = crypto.randomUUID();
+        const sessionToken = globalThis.crypto.randomUUID();
 
         let updatedDb = false;
         if (prisma) {

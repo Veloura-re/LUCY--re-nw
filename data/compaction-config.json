@@ -1,8 +1,0 @@
-{
-  "logSizeThreshold": 50000,
-  "fileCountThreshold": 1000,
-  "narrativeSizeThreshold": 100000,
-  "checkIntervalMs": 3600000,
-  "alertCooldownMs": 86400000,
-  "autoArchiveDays": 30
-}
