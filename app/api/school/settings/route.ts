@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError, requireAuth, requireRole } from '@/lib/security';
+import { logActivity, getIp } from '@/lib/audit';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
 export async function GET() {
     try {
@@ -134,7 +137,14 @@ export async function PATCH(request: Request) {
         if (typeof logoUrl === 'string') updateData.logoUrl = logoUrl;
         if (typeof address === 'string') updateData.address = address;
         if (locations !== undefined) updateData.locations = locations;
-        if (communicationsConfig !== undefined) updateData.communicationsConfig = communicationsConfig;
+        if (communicationsConfig !== undefined) {
+            updateData.communicationsConfig = {
+                sendInvites: typeof communicationsConfig.sendInvites === 'boolean' ? communicationsConfig.sendInvites : true,
+                sendReports: typeof communicationsConfig.sendReports === 'boolean' ? communicationsConfig.sendReports : true,
+                sendInvoices: typeof communicationsConfig.sendInvoices === 'boolean' ? communicationsConfig.sendInvoices : true,
+                replyTo: typeof communicationsConfig.replyTo === 'string' ? communicationsConfig.replyTo.trim() : ""
+            };
+        }
         if (termStructure) updateData.termStructure = termStructure;
         if (typeof termStructureLocked === 'boolean') updateData.termStructureLocked = termStructureLocked;
         if (defaultBillingCycle) updateData.defaultBillingCycle = defaultBillingCycle;
@@ -144,13 +154,25 @@ export async function PATCH(request: Request) {
             data: updateData
         });
 
-        // Audit log
+        // Revalidate school profile cache
         try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+            revalidateTag(getSchoolTag(CACHE_TAGS.SCHOOL_CONFIG, targetSchoolId), 'max');
+        } catch { /* non-blocking */ }
+
+        // Multi-Tenant Audit log invariant
+        try {
+            const clientIp = getIp(request);
             const _userId = user?.id;
             if (_userId) {
-                await logActivity({ userId: _userId, schoolId: targetSchoolId, action: 'UPDATE_SETTINGS', resourceType: 'settings', ip: _ip || undefined });
+                await logActivity({
+                    userId: _userId,
+                    schoolId: targetSchoolId,
+                    action: 'UPDATE_SETTINGS',
+                    resourceType: 'settings',
+                    resourceId: targetSchoolId,
+                    ip: clientIp,
+                    after: updateData
+                });
             }
         } catch { /* non-blocking */ }
 

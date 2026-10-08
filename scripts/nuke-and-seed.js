@@ -152,7 +152,6 @@ async function main() {
 
     const users = [
         // [email, password, name, role]
-        ['superadmin@lucy.edu',  'Lucy@Admin2026!',     'Super Admin',       'SUPERADMIN'],
         ['principal@lucy.edu',   'Lucy@Principal2026!', 'Principal Morgan',  'PRINCIPAL'],
         ['teacher@lucy.edu',     'Lucy@Teacher2026!',   'Ms. Johnson',       'TEACHER'],
         ['homeroom@lucy.edu',    'Lucy@Homeroom2026!',  'Mr. Carter',        'HOMEROOM'],

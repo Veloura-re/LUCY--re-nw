@@ -64,14 +64,14 @@ export function SelectTrigger({ children, className }: any) {
             disabled={disabled}
             type="button"
             className={cn(
-                "flex h-14 w-full items-center justify-between rounded-2xl border border-slate-200 dark:border-zinc-900 bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl px-4 py-2 text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-zinc-100 transition-all hover:border-eduGreen-900/40 focus:outline-none focus:ring-2 focus:ring-eduGreen-600/20 disabled:cursor-not-allowed disabled:opacity-50",
-                open ? "border-eduGreen-600/50 shadow-[0_0_20px_rgba(20,122,82,0.1)]" : "shadow-2xl",
+                "flex h-14 w-full items-center justify-between rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/60 backdrop-blur-xl px-4 py-2 text-xs font-medium uppercase tracking-widest text-slate-900 dark:text-zinc-100 transition-all hover:border-eduGreen-600/50 focus:outline-none focus:ring-2 focus:ring-eduGreen-600/20 disabled:cursor-not-allowed disabled:opacity-50",
+                open ? "border-eduGreen-600/50 shadow-[0_0_20px_rgba(20,122,82,0.1)]" : "shadow-sm dark:shadow-2xl",
                 className
             )}
             onClick={() => setOpen(!open)}
         >
             <div className="flex items-center gap-3">{children}</div>
-            <ChevronDown className={cn("h-4 w-4 text-zinc-600 transition-transform duration-300", open ? "rotate-180 text-eduGreen-500" : "")} />
+            <ChevronDown className={cn("h-4 w-4 text-zinc-500 transition-transform duration-300", open ? "rotate-180 text-eduGreen-500" : "")} />
         </button>
     );
 }
@@ -80,7 +80,7 @@ export function SelectValue({ placeholder }: any) {
     const { selectedValue, itemMap } = React.useContext(SelectContext);
     const label = selectedValue ? itemMap[selectedValue] : null;
     return (
-        <span className={cn("truncate font-medium", !label ? "text-slate-500 dark:text-zinc-700" : "text-slate-900 dark:text-white")}>
+        <span className={cn("truncate font-medium", !label ? "text-slate-400 dark:text-zinc-600" : "text-slate-900 dark:text-white")}>
             {label || placeholder}
         </span>
     );
@@ -123,7 +123,7 @@ export function SelectContent({ children, className }: any) {
         <div
             ref={contentRef}
             className={cn(
-                "absolute z-[99999] mt-2 overflow-hidden rounded-[2rem] border border-slate-200 dark:border-zinc-900 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200",
+                "absolute z-[99999] mt-2 overflow-hidden rounded-[2rem] border border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-3xl p-2 shadow-xl dark:shadow-2xl animate-in fade-in zoom-in-95 duration-200",
                 className
             )}
             style={{ top: coords.top, left: coords.left, width: coords.width }}
@@ -149,14 +149,14 @@ export function SelectItem({ children, value, className }: any) {
             className={cn(
                 "relative flex w-full cursor-pointer select-none items-center justify-between rounded-xl py-3 px-4 text-[10px] font-medium uppercase tracking-widest outline-none transition-all",
                 isSelected
-                    ? "bg-eduGreen-950/30 text-eduGreen-400 border border-eduGreen-900/20"
-                    : "text-slate-600 dark:text-zinc-500 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-zinc-200",
+                    ? "bg-eduGreen-50 dark:bg-eduGreen-950/30 text-eduGreen-700 dark:text-eduGreen-400 border border-eduGreen-200 dark:border-eduGreen-900/20 font-semibold"
+                    : "text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white",
                 className
             )}
             onClick={() => handleSelect(value)}
         >
             <span className="truncate">{children}</span>
-            {isSelected && <Check className="w-3.5 h-3.5 text-eduGreen-500 animate-in zoom-in-50 duration-300" />}
+            {isSelected && <Check className="w-3.5 h-3.5 text-eduGreen-600 dark:text-eduGreen-500 animate-in zoom-in-50 duration-300" />}
         </div>
     );
 }

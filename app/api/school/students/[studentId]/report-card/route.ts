@@ -7,7 +7,13 @@ export async function GET(
     { params }: { params: Promise<{ studentId: string }> }
 ) {
     try {
-        const dbUser = await requireAuth();
+        let dbUser: any = null;
+        try {
+            dbUser = await requireAuth();
+        } catch {
+            // Unauthenticated public verification request
+        }
+
         const { studentId } = await params;
 
         // 1. Robust Student Lookup (by id, userId, studentCode, or 'me')
@@ -52,7 +58,7 @@ export async function GET(
         });
 
         // Fallback A: If studentId === 'me' or logged in user is a STUDENT
-        if (!student && (studentId === "me" || dbUser.role === "STUDENT")) {
+        if (!student && dbUser && (studentId === "me" || dbUser.role === "STUDENT")) {
             student = await prisma.student.findFirst({
                 where: { userId: dbUser.id },
                 include: studentInclude
@@ -60,7 +66,7 @@ export async function GET(
         }
 
         // Fallback B: If logged in user is a PARENT, check linked students
-        if (!student && dbUser.role === "PARENT") {
+        if (!student && dbUser?.role === "PARENT") {
             const link = await prisma.parentStudentLink.findFirst({
                 where: { parentId: dbUser.id }
             });
@@ -73,7 +79,7 @@ export async function GET(
         }
 
         // Fallback C: Fetch first student in school if ID is generic
-        if (!student && dbUser.schoolId) {
+        if (!student && dbUser?.schoolId) {
             student = await prisma.student.findFirst({
                 where: { schoolId: dbUser.schoolId },
                 include: studentInclude
@@ -308,12 +314,34 @@ export async function GET(
         const absentCount = attendanceRecords.filter((a: any) => a.status === "ABSENT").length;
         const attendanceRate = attendanceRecords.length > 0 ? Math.round((presentCount / attendanceRecords.length) * 100) : 0;
 
+        // 5. Homeroom / Staff Editing Authorization
+        let canEditRemarks = false;
+        if (dbUser) {
+            if (['SUPERADMIN', 'PRINCIPAL', 'OWNER'].includes(dbUser.role)) {
+                canEditRemarks = true;
+            } else if (student.classId) {
+                const isAssigned = await prisma.teacherAssignment.findFirst({
+                    where: { teacherId: dbUser.id, classId: student.classId }
+                });
+                canEditRemarks = Boolean(isAssigned);
+            }
+        }
+
+        // Privacy redaction for unauthenticated verification
+        const sanitizedStudent = dbUser ? student : {
+            ...student,
+            guardianPhone: undefined,
+            secondaryPhone: undefined,
+            parentLinks: []
+        };
+
         return NextResponse.json({
-            student,
+            student: sanitizedStudent,
             principal,
             term: termData,
             grades,
-            userRole: dbUser.role,
+            userRole: dbUser?.role || "GUEST",
+            canEditRemarks,
             summary: {
                 overallPercentage,
                 gpa,
@@ -330,7 +358,7 @@ export async function GET(
                 total: attendanceRecords.length
             },
             remarks,
-            internalNotes
+            internalNotes: dbUser ? internalNotes : []
         });
     } catch (e) {
         return handleApiError(e);
