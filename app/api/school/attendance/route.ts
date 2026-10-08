@@ -5,6 +5,7 @@ import { sendLatenessNotificationEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getAttendanceSystem } from '@/lib/services/attendance';
+import { logActivity, getIp } from '@/lib/audit';
 
 export async function GET(request: Request) {
     try {
@@ -45,6 +46,13 @@ export async function POST(request: Request) {
         attendanceDate.setHours(0, 0, 0, 0);
 
         const config = (user.school as any)?.attendanceConfig || {};
+
+        // Late Marking Capability Protocol Check
+        if (config.enableLateMarking === false && records?.some((r: any) => r.status === 'LATE')) {
+            return NextResponse.json({
+                error: 'Institutional Protocol: Late marking is disabled by institutional policy.'
+            }, { status: 400 });
+        }
 
         // 1. Exam Locking Logic
         if (examId) {
@@ -176,11 +184,16 @@ export async function POST(request: Request) {
             })();
         }
 
-        // Audit log
+        // Multi-Tenant Audit log invariant
         try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'CREATE_ATTENDANCE', resourceType: 'attendance', ip: _ip || undefined });
+            const clientIp = getIp(request);
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId,
+                action: 'CREATE_ATTENDANCE',
+                resourceType: 'attendance',
+                ip: clientIp
+            });
         } catch { /* non-blocking */ }
 
         return NextResponse.json({ success: true, count: records?.length || 0 });

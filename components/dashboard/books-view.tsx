@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Printer } from "lucide-react";
+import { FlipBookViewer } from "@/components/dashboard/flip-book-viewer";
 
 import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
 
@@ -85,6 +86,7 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
     const [statusLoading, setStatusLoading] = useState<string | null>(null);
     const [deletingUnit, setDeletingUnit] = useState<string | null>(null);
     const [togglingProgress, setTogglingProgress] = useState<string | null>(null);
+    const [readingBook, setReadingBook] = useState<any | null>(null);
 
     const printRef = useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({
@@ -282,7 +284,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                     onClick={() => setSelectedStudentId(null)}
                                     className={cn(
                                         "h-8 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl border transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shrink-0",
-                                        !selectedStudentId ? "bg-white text-black border-white" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                                        !selectedStudentId
+                                            ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 border-zinc-900 dark:border-white shadow-sm"
+                                            : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
                                     )}
                                 >
                                     All Library
@@ -294,7 +298,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         onClick={() => setSelectedStudentId(child.id)}
                                         className={cn(
                                             "h-8 sm:h-14 px-3 sm:px-6 rounded-lg sm:rounded-2xl border transition-all font-medium text-[8px] sm:text-[10px] uppercase tracking-widest shrink-0",
-                                            selectedStudentId === child.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-900 text-zinc-600 dark:text-zinc-500 hover:text-white"
+                                            selectedStudentId === child.id
+                                                ? "bg-eduGreen-600 text-white border-eduGreen-600 shadow-sm"
+                                                : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
                                         )}
                                     >
                                         {child.firstName}
@@ -371,7 +377,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                         onClick={() => setGradeFilter("ALL")}
                         className={cn(
                             "rounded-lg sm:rounded-xl h-7 sm:h-10 px-3 sm:px-6 font-medium text-[8px] sm:text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
-                            gradeFilter === "ALL" ? "bg-white text-black border-white" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-zinc-900 dark:hover:text-white"
+                            gradeFilter === "ALL"
+                                ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 border-zinc-900 dark:border-white shadow-sm"
+                                : "border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-700 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
                         )}
                     >
                         All Grades
@@ -383,7 +391,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                             onClick={() => setGradeFilter(grade.id)}
                             className={cn(
                                 "rounded-lg sm:rounded-xl h-7 sm:h-10 px-3 sm:px-6 font-medium text-[8px] sm:text-[9px] uppercase tracking-widest border transition-all whitespace-nowrap",
-                                gradeFilter === grade.id ? "bg-eduGreen-600 text-white border-eduGreen-600" : "border-zinc-200 dark:border-zinc-900 text-zinc-600 hover:text-white"
+                                gradeFilter === grade.id
+                                    ? "bg-eduGreen-600 text-white border-eduGreen-600 shadow-sm"
+                                    : "border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-700 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
                             )}
                         >
                             Grade {grade.level}
@@ -419,24 +429,24 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-eduGreen-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                         {/* 3D Book Cover / Spine */}
-                                        <div className="absolute -right-16 -top-12 w-48 h-64 rotate-12 opacity-80 group-hover:rotate-0 group-hover:-right-4 group-hover:-top-4 group-hover:opacity-100 transition-all duration-700 ease-in-out z-0 pointer-events-none perspective-[1000px]">
+                                        <div className="absolute -right-16 -top-12 w-48 h-64 rotate-12 opacity-85 group-hover:rotate-0 group-hover:-right-4 group-hover:-top-4 group-hover:opacity-100 transition-all duration-700 ease-in-out z-0 pointer-events-none perspective-[1000px]">
                                             <div className="w-full h-full relative preserve-3d group-hover:rotate-y-[-15deg] transition-all duration-700">
                                                 {(() => {
                                                     const meta = parseBookMeta(book.description);
                                                     if (meta.coverUrl) {
                                                         return (
                                                             <div 
-                                                                className="absolute inset-0 rounded-l-md shadow-2xl border-l border-zinc-400 dark:border-zinc-700/50"
+                                                                className="absolute inset-0 rounded-l-md shadow-2xl border-l-2 border-zinc-300 dark:border-zinc-700/50"
                                                                 style={{ backgroundImage: `url(${meta.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                                                             >
-                                                                <div className="absolute inset-0 bg-gradient-to-r from-white dark:from-black/60 to-transparent" />
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-white/70 dark:from-black/60 to-transparent" />
                                                             </div>
                                                         );
                                                     }
                                                     return (
-                                                        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-l-md shadow-2xl border-l border-zinc-300 dark:border-white/10 flex flex-col items-start p-4">
-                                                            <div className="w-full h-1 bg-zinc-200 dark:bg-white/5 mb-4" />
-                                                            <h4 className="text-[10px] font-bold text-zinc-900 dark:text-white uppercase tracking-widest break-words w-full text-left opacity-30">{book.title}</h4>
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 rounded-l-md shadow-2xl border-l-2 border-amber-300/80 dark:border-white/10 flex flex-col items-start p-4">
+                                                            <div className="w-full h-1 bg-amber-400/40 dark:bg-white/10 mb-4" />
+                                                            <h4 className="text-[10px] font-bold text-zinc-700 dark:text-white uppercase tracking-widest break-words w-full text-left opacity-70 dark:opacity-40">{book.title}</h4>
                                                         </div>
                                                     );
                                                 })()}
@@ -472,10 +482,10 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-4">
-                                                    <span className="text-[7px] sm:text-[8px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest px-1.5 sm:px-2 py-0.5 sm:py-1 bg-zinc-100 dark:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800">
+                                                    <span className="text-[7px] sm:text-[8px] font-medium text-zinc-700 dark:text-zinc-400 uppercase tracking-widest px-1.5 sm:px-2 py-0.5 sm:py-1 bg-zinc-100 dark:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800">
                                                         Grade {book.grade.level}
                                                     </span>
-                                                    <span className="text-[7px] sm:text-[8px] font-medium text-eduGreen-900 uppercase tracking-tighter">
+                                                    <span className="text-[7px] sm:text-[8px] font-medium text-eduGreen-700 dark:text-eduGreen-400 uppercase tracking-tighter">
                                                         Section: {book.class.name}
                                                     </span>
                                                 </div>
@@ -511,12 +521,12 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                             </div>
                                         </CardContent>
 
-                                        <CardFooter className="px-3.5 sm:px-6 md:px-8 pb-3.5 sm:pb-6 md:pb-8 pt-3 sm:pt-6 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
+                                        <CardFooter className="px-3.5 sm:px-6 md:px-8 pb-3.5 sm:pb-6 md:pb-8 pt-3 sm:pt-6 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-900/20 border-t border-zinc-100 dark:border-zinc-900/50">
                                             <div className="flex gap-1.5 sm:gap-2">
                                                 <Button
                                                     disabled={isLocked || isExpired}
-                                                    onClick={() => window.open(book.fileUrl, '_blank')}
-                                                    className="h-8 sm:h-12 px-3 sm:px-6 bg-zinc-100 dark:bg-zinc-900 hover:bg-eduGreen-600 text-white rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-1.5 sm:gap-2 shadow-md disabled:opacity-50"
+                                                    onClick={() => setReadingBook(book)}
+                                                    className="h-8 sm:h-12 px-3 sm:px-6 bg-zinc-900 hover:bg-eduGreen-600 text-white dark:bg-zinc-100 dark:hover:bg-eduGreen-500 dark:text-zinc-950 dark:hover:text-white rounded-lg sm:rounded-xl font-medium text-[8px] sm:text-[10px] uppercase tracking-widest transition-all hover:scale-105 flex items-center justify-center gap-1.5 sm:gap-2 shadow-md disabled:opacity-50"
                                                 >
                                                     <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Start Reading
                                                 </Button>
@@ -527,7 +537,9 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                                                         isLoading={togglingProgress === book.id}
                                                         className={cn(
                                                             "h-8 w-8 sm:h-12 sm:w-12 p-0 rounded-lg sm:rounded-xl transition-all",
-                                                            isCompleted ? "bg-eduGreen-500 text-white" : "bg-white dark:bg-zinc-950 text-zinc-600 hover:text-white border border-zinc-200 dark:border-zinc-900"
+                                                            isCompleted
+                                                                ? "bg-eduGreen-500 text-white shadow-sm"
+                                                                : "bg-white dark:bg-zinc-950 text-zinc-700 dark:text-zinc-400 hover:bg-eduGreen-600 hover:text-white dark:hover:bg-zinc-800 dark:hover:text-white border border-zinc-200 dark:border-zinc-800"
                                                         )}
                                                     >
                                                         <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -759,6 +771,13 @@ export function BooksView({ user, school, children = [] }: BooksViewProps) {
                 )}
             </AnimatePresence>
 
+            {/* Flip Book Viewer Reader */}
+            <FlipBookViewer
+                isOpen={!!readingBook}
+                onClose={() => setReadingBook(null)}
+                book={readingBook}
+            />
+
             <ConfirmationModal
                 isOpen={!!deleteId}
                 onClose={() => setDeleteId(null)}
@@ -834,43 +853,43 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-white/95 dark:bg-black/95"
+            className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/60 dark:bg-black/85 backdrop-blur-md"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-[3.5rem] overflow-hidden shadow-2xl"
+                className="w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl"
             >
-                <div className="p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-100/20 dark:bg-zinc-900/20">
+                <div className="p-8 sm:p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/40">
                     <div>
-                        <h2 className="text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Unit Synthesizer</h2>
-                        <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Bundling institutional intelligence packs</p>
+                        <h2 className="text-2xl sm:text-3xl font-medium text-zinc-900 dark:text-white tracking-tighter uppercase">Unit Synthesizer</h2>
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mt-1 italic">Bundling institutional intelligence packs</p>
                     </div>
                     <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-full">
                         <X className="w-6 h-6" />
                     </Button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-10 space-y-8 overflow-y-auto max-h-[70vh] scrollbar-hide">
+                <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-6 sm:space-y-8 overflow-y-auto max-h-[70vh] scrollbar-hide">
                     <div className="space-y-4">
                         <Input
                             placeholder="Unit Title (e.g., Quantum Mechanics Fundamentals)"
                             required
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            className="h-16 bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-lg"
+                            className="h-14 sm:h-16 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-base sm:text-lg text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                         />
                         <textarea
                             placeholder="Unit Description / Objectives..."
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full h-24 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white resize-none"
+                            className="w-full h-24 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 resize-none"
                         />
                     </div>
 
                     <div className="space-y-4">
-                        <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-widest ml-1">Select Instructional Resources</label>
+                        <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest ml-1">Select Instructional Resources</label>
                         <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto pr-2 scrollbar-hide">
                             {books.map((book: any) => (
                                 <button
@@ -881,7 +900,7 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                                         "flex items-center justify-between p-4 rounded-2xl border transition-all text-left",
                                         formData.resourceIds.includes(book.id)
                                             ? "bg-eduGreen-500/10 border-eduGreen-500 text-zinc-900 dark:text-white"
-                                            : "bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500 hover:border-zinc-700"
+                                            : "bg-zinc-50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-700"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
@@ -889,14 +908,14 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                                             "w-4 h-4 rounded border flex items-center justify-center transition-all",
                                             formData.resourceIds.includes(book.id) ? "bg-eduGreen-500 border-eduGreen-500" : "border-zinc-400 dark:border-zinc-700"
                                         )}>
-                                            {formData.resourceIds.includes(book.id) && <Zap className="w-3 h-3 text-black" />}
+                                            {formData.resourceIds.includes(book.id) && <Zap className="w-3 h-3 text-white" />}
                                         </div>
                                         <div>
                                             <p className="text-xs font-medium leading-none">{book.title}</p>
-                                            <p className="text-[8px] font-medium uppercase tracking-widest text-zinc-600 mt-1">{book.subject.name} • Grade {book.grade.level}</p>
+                                            <p className="text-[8px] font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mt-1">{book.subject.name} • Grade {book.grade.level}</p>
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-medium uppercase text-zinc-800 dark:text-zinc-200 italic">{book.author || "Institutional"}</span>
+                                    <span className="text-[8px] font-medium uppercase text-zinc-700 dark:text-zinc-300 italic">{book.author || "Institutional"}</span>
                                 </button>
                             ))}
                         </div>
@@ -905,10 +924,10 @@ function UnitPackModal({ onClose, onSuccess, books }: any) {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-20 bg-white text-black hover:bg-eduGreen-600 hover:text-white rounded-[2rem] font-medium text-xs uppercase tracking-[0.4em] transition-all flex items-center justify-center gap-3"
+                        className="w-full h-14 sm:h-18 bg-zinc-900 text-white hover:bg-eduGreen-600 dark:bg-white dark:text-zinc-950 dark:hover:bg-eduGreen-500 dark:hover:text-white rounded-2xl sm:rounded-[2rem] font-medium text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 shadow-lg"
                     >
                         {loading ? (
-                            <><span className="w-5 h-5 border-2 border-zinc-400 border-t-black rounded-full animate-spin" /> Synthesizing Pack...</>
+                            <><span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Synthesizing Pack...</>
                         ) : (
                             "Authorize Unit Deployment"
                         )}
@@ -956,59 +975,59 @@ function BookRequestModal({ onClose, onSuccess, selectedStudentId, children }: a
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-white/90 dark:bg-black/90"
+            className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 dark:bg-black/85 backdrop-blur-md"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
-                className="w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-[3rem] overflow-hidden shadow-2xl"
+                className="w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl"
             >
-                <div className="p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-100/40 dark:bg-zinc-900/40">
+                <div className="p-8 sm:p-10 border-b border-zinc-200 dark:border-zinc-900 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/40">
                     <div>
                         <h2 className="text-2xl font-medium text-zinc-900 dark:text-white tracking-tight uppercase">Request Resource</h2>
-                        <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mt-1 italic">Submit requirements</p>
+                        <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mt-1 italic">Submit requirements</p>
                     </div>
                     <Button variant="ghost" onClick={onClose} size="icon" className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white rounded-full">
                         <X className="w-5 h-5" />
                     </Button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-10 space-y-6">
+                <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-5 sm:space-y-6">
                     <Input
                         placeholder="Desired Material Title"
                         required
                         value={formData.title}
                         onChange={e => setFormData({ ...formData, title: e.target.value })}
-                        className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
+                        className="h-14 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                     />
                     <div className="grid grid-cols-2 gap-4">
                         <Input
                             placeholder="Subject"
                             value={formData.subject}
                             onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                            className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
+                            className="h-14 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                         />
                         <Input
                             placeholder="Grade Level"
                             value={formData.grade}
                             onChange={e => setFormData({ ...formData, grade: e.target.value })}
-                            className="h-14 bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-900 rounded-2xl font-medium"
+                            className="h-14 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 rounded-2xl font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                         />
                     </div>
                     <textarea
                         placeholder="Reason for request / Context..."
                         value={formData.reason}
                         onChange={e => setFormData({ ...formData, reason: e.target.value })}
-                        className="w-full h-32 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white resize-none"
+                        className="w-full h-32 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-sm font-medium focus:border-eduGreen-500 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 resize-none"
                     />
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-16 bg-white text-black hover:bg-eduGreen-600 hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2"
+                        className="w-full h-14 sm:h-16 bg-zinc-900 text-white hover:bg-eduGreen-600 dark:bg-white dark:text-zinc-950 dark:hover:bg-eduGreen-500 dark:hover:text-white rounded-2xl font-medium text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2 shadow-lg"
                     >
                         {loading ? (
-                            <><span className="w-4 h-4 border-2 border-zinc-400 border-t-black rounded-full animate-spin" /> Transmitting...</>
+                            <><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Transmitting...</>
                         ) : (
                             "Authorize Request"
                         )}
@@ -1116,7 +1135,7 @@ function BookUploadModal({ onClose, onSuccess, grades, subjects, books }: any) {
     return (
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white/95 dark:bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 dark:bg-black/85 backdrop-blur-md"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
             <motion.div

@@ -271,13 +271,19 @@ export default function SettingsPage() {
                 else body.classList.remove('reduce-motion');
             }
 
-            // Save School Settings ONLY if user is Principal
-            if ((activeTab === 'school' || activeTab === 'communications') && (userData?.role === 'PRINCIPAL' || userData?.role === 'SUPERADMIN')) {
-                await fetch('/api/school/settings', {
+            // Save School Settings if user is Principal, Superadmin, or Owner
+            if ((activeTab === 'school' || activeTab === 'communications') && isPrincipal) {
+                const schoolRes = await fetch('/api/school/settings', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(schoolForm)
                 });
+                if (schoolRes.ok) {
+                    const data = await schoolRes.json() as any;
+                    if (data.school) {
+                        setSchoolData(data.school);
+                    }
+                }
                 fetchSchoolSettings();
             }
 
@@ -385,7 +391,7 @@ export default function SettingsPage() {
         );
     }
 
-    const isPrincipal = userData?.role === 'PRINCIPAL' || userData?.role === 'SUPERADMIN';
+    const isPrincipal = userData?.role === 'PRINCIPAL' || userData?.role === 'SUPERADMIN' || userData?.role === 'OWNER';
 
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
@@ -1176,6 +1182,16 @@ export default function SettingsPage() {
                                                 className="bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-14 rounded-2xl focus:border-eduGreen-600 transition-all border-2 font-medium"
                                             />
                                             <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-medium uppercase tracking-widest ml-2 italic">Recipient responses will be routed to this email address.</p>
+                                        </div>
+
+                                        <div className="pt-6 flex justify-end">
+                                            <Button
+                                                onClick={handleSave}
+                                                isLoading={saving}
+                                                className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-8 rounded-xl font-medium text-xs uppercase tracking-[0.2em] shadow-lg shadow-eduGreen-900/20 transition-all active:scale-95"
+                                            >
+                                                {saving ? "Synchronizing..." : "Save Broadcast Protocols"}
+                                            </Button>
                                         </div>
                                     </div>
                                 </CardContent>

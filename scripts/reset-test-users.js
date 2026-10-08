@@ -11,7 +11,6 @@ const CLASS  = '236fec34-4920-4fc2-b9a3-493964b388d8';
 const SUBJ   = '86d4922f-4b6b-45ec-9fac-fcd0841d2a1a';
 
 const TEST_EMAILS = [
-    'superadmin@lucy.edu',
     'principal@lucy.edu',
     'teacher@lucy.edu',
     'student@lucy.edu',
@@ -69,7 +68,6 @@ async function main() {
 
     // ── Step 3: Recreate all users ──
     console.log('\n✨ Creating fresh users...');
-    await mkUser('superadmin@lucy.edu', 'Lucy@Admin2026!',     'Super Admin',      'SUPERADMIN');
     await mkUser('principal@lucy.edu',  'Lucy@Principal2026!', 'Principal Morgan',  'PRINCIPAL');
 
     const teacherId = await mkUser('teacher@lucy.edu', 'Lucy@Teacher2026!', 'Ms. Johnson', 'TEACHER');
@@ -99,7 +97,6 @@ async function main() {
     console.log('  ✅  ALL USERS RESET — CREDENTIALS');
     console.log('══════════════════════════════════════════════════════════\n');
     const creds = [
-        ['SuperAdmin',  'superadmin@lucy.edu',  'Lucy@Admin2026!'],
         ['Principal',   'principal@lucy.edu',   'Lucy@Principal2026!'],
         ['Teacher',     'teacher@lucy.edu',     'Lucy@Teacher2026!'],
         ['Student',     'student@lucy.edu',     'Lucy@Student2026!'],

@@ -2,7 +2,6 @@
  * seed-full-school.js
  *
  * Builds a COMPLETE school around the 6 existing seed users:
- *   superadmin@lucy.edu   → SUPERADMIN  (no school needed)
  *   principal@lucy.edu    → PRINCIPAL
  *   teacher@lucy.edu      → TEACHER
  *   homeroom@lucy.edu     → HOMEROOM
@@ -242,7 +241,6 @@ async function main() {
     console.log('║  CREDENTIALS                                                        ║');
     console.log('╠══════════════════════════════════════════════════════════════════════╣');
     const creds = [
-        ['SUPERADMIN', 'superadmin@lucy.edu',  'Lucy@Admin2026!',     '(no school — global)'],
         ['PRINCIPAL',  'principal@lucy.edu',   'Lucy@Principal2026!', 'Lucy Demo Academy'],
         ['TEACHER',    'teacher@lucy.edu',     'Lucy@Teacher2026!',   'Lucy Demo Academy'],
         ['HOMEROOM',   'homeroom@lucy.edu',    'Lucy@Homeroom2026!',  'Lucy Demo Academy'],

@@ -30,7 +30,12 @@ export default function AttendanceSettingsPage() {
             const res = await fetch('/api/school/attendance-config');
             const data = (await res.json()) as any;
             if (data.config) {
-                setConfig(data.config);
+                setConfig({
+                    type: data.config.type || "PERIOD",
+                    lockAfterMinutes: data.config.lockAfterMinutes ?? 30,
+                    enableLateMarking: data.config.enableLateMarking ?? true,
+                    autoAbsentAfterMinutes: data.config.autoAbsentAfterMinutes ?? 45
+                });
             }
         } catch (e) {
             console.error(e);
@@ -152,8 +157,12 @@ export default function AttendanceSettingsPage() {
                                 <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-1">Lock After (Minutes)</Label>
                                 <Input
                                     type="number"
+                                    min={0}
                                     value={config.lockAfterMinutes}
-                                    onChange={(e) => setConfig({ ...config, lockAfterMinutes: parseInt(e.target.value) })}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        setConfig(prev => ({ ...prev, lockAfterMinutes: isNaN(val) ? 0 : val }));
+                                    }}
                                     className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                                 <p className="text-[9px] text-zinc-600 font-medium uppercase">Records become immutable after this duration.</p>
@@ -163,8 +172,12 @@ export default function AttendanceSettingsPage() {
                                 <Label className="text-[10px] font-medium text-zinc-700 uppercase tracking-[0.3em] ml-1">Auto-Absent Threshold</Label>
                                 <Input
                                     type="number"
+                                    min={0}
                                     value={config.autoAbsentAfterMinutes}
-                                    onChange={(e) => setConfig({ ...config, autoAbsentAfterMinutes: parseInt(e.target.value) })}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        setConfig(prev => ({ ...prev, autoAbsentAfterMinutes: isNaN(val) ? 0 : val }));
+                                    }}
                                     className="h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium rounded-xl focus:border-eduGreen-600 transition-all border-2"
                                 />
                                 <p className="text-[9px] text-zinc-600 font-medium uppercase">Mark students absent if not verified within this time.</p>

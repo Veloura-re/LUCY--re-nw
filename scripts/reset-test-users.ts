@@ -18,7 +18,6 @@ const CLASS_ID   = '236fec34-4920-4fc2-b9a3-493964b388d8';
 const SUBJECT_ID = '86d4922f-4b6b-45ec-9fac-fcd0841d2a1a';
 
 const TEST_EMAILS = [
-    'superadmin@lucy.edu',
     'principal@lucy.edu',
     'teacher@lucy.edu',
     'student@lucy.edu',
@@ -101,10 +100,6 @@ async function main() {
     for (const email of TEST_EMAILS) await deleteUser(email);
     console.log('');
 
-    // ── Recreate: SuperAdmin ──
-    log('👑 Creating SuperAdmin...');
-    await createUser('superadmin@lucy.edu', 'Lucy@Admin2026!', 'Super Admin', 'SUPERADMIN');
-    ok('superadmin@lucy.edu\n');
 
     // ── Recreate: Principal ──
     log('🏫 Creating Principal...');
@@ -153,7 +148,6 @@ async function main() {
     console.log('  ✅  ALL USERS RESET — CREDENTIALS BELOW');
     console.log('════════════════════════════════════════════════════════════\n');
     const creds = [
-        { role: 'SuperAdmin',  email: 'superadmin@lucy.edu',  password: 'Lucy@Admin2026!'     },
         { role: 'Principal',   email: 'principal@lucy.edu',   password: 'Lucy@Principal2026!' },
         { role: 'Teacher',     email: 'teacher@lucy.edu',     password: 'Lucy@Teacher2026!'   },
         { role: 'Student',     email: 'student@lucy.edu',     password: 'Lucy@Student2026!'   },
