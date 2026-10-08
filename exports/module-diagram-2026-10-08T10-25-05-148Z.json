@@ -1,0 +1,155 @@
+{
+  "project": {
+    "name": "Untitled Project",
+    "type": "Unknown",
+    "patterns": [
+      "library-package",
+      "web-application",
+      "frontend-heavy",
+      "react-project",
+      "nextjs-project",
+      "npm-project",
+      "documented-project",
+      "comprehensive-docs"
+    ],
+    "moduleCount": 12,
+    "totalLines": 91710,
+    "frameworks": [
+      "react",
+      "next"
+    ]
+  },
+  "mermaid": "graph TD\n    app[[\"App\"]\n    components[[\"Components\"]\n    data[[\"Workspace Data\"]\n    docs{[\"Documentation\"]\n    legacy_exports[[\"Legacy Exports\"]\n    hooks[[\"Hooks\"]\n    lib[[\"Library Modules\"]\n    prisma[[\"Prisma\"]\n    frontend([\"Frontend Interface\"]\n    scripts[[[\"Automation Scripts\"]\n    tests[[\"Tests\"]\n    utils[[\"Utils\"]\n    app --> components\n    scripts --> lib\n    classDef frontend fill:#e1f5fe\n    classDef backend fill:#f3e5f5\n    classDef database fill:#e8f5e8\n    class app code\n    class components code\n    class data storage\n    class docs documentation\n    class legacy_exports artifacts\n    class hooks code\n    class lib code\n    class prisma code\n    class frontend frontend\n    class scripts automation\n    class tests code\n    class utils code",
+  "d3": {
+    "nodes": [
+      {
+        "id": "app",
+        "name": "App",
+        "type": "code",
+        "size": 107.54813005557924,
+        "health": 56,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "components",
+        "name": "Components",
+        "type": "code",
+        "size": 102.49839396151786,
+        "health": 55,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "data",
+        "name": "Workspace Data",
+        "type": "storage",
+        "size": 46.53960350157523,
+        "health": 75,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "docs",
+        "name": "Documentation",
+        "type": "documentation",
+        "size": 0,
+        "health": 75,
+        "color": "#ffa726",
+        "frameworks": []
+      },
+      {
+        "id": "legacy-exports",
+        "name": "Legacy Exports",
+        "type": "artifacts",
+        "size": 59.81414211254481,
+        "health": 75,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "hooks",
+        "name": "Hooks",
+        "type": "code",
+        "size": 65.56778356158043,
+        "health": 68,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "lib",
+        "name": "Library Modules",
+        "type": "code",
+        "size": 88.66158492284917,
+        "health": 50,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "prisma",
+        "name": "Prisma",
+        "type": "code",
+        "size": 30.91042453358316,
+        "health": 74,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "frontend",
+        "name": "Frontend Interface",
+        "type": "frontend",
+        "size": 0,
+        "health": 75,
+        "color": "#42a5f5",
+        "frameworks": [
+          "react",
+          "next"
+        ]
+      },
+      {
+        "id": "scripts",
+        "name": "Automation Scripts",
+        "type": "automation",
+        "size": 89.7941663334301,
+        "health": 68,
+        "color": "#ef5350",
+        "frameworks": []
+      },
+      {
+        "id": "tests",
+        "name": "Tests",
+        "type": "code",
+        "size": 65.53933404025811,
+        "health": 99,
+        "color": "#78909c",
+        "frameworks": []
+      },
+      {
+        "id": "utils",
+        "name": "Utils",
+        "type": "code",
+        "size": 46.05170185988092,
+        "health": 71,
+        "color": "#78909c",
+        "frameworks": []
+      }
+    ],
+    "links": [
+      {
+        "source": "app",
+        "target": "components",
+        "type": "internal"
+      },
+      {
+        "source": "scripts",
+        "target": "lib",
+        "type": "internal"
+      }
+    ]
+  },
+  "metadata": {
+    "generated": "2026-10-08T10:25:05.148Z",
+    "totalNodes": 12,
+    "totalEdges": 2
+  }
+}

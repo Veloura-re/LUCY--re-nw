@@ -1,0 +1,73 @@
+{
+  "initialized": "2026-10-08T10:25:04.735Z",
+  "progressiveFlow": {
+    "detectedPatterns": [
+      "library-package",
+      "web-application",
+      "frontend-heavy",
+      "react-project",
+      "nextjs-project",
+      "npm-project",
+      "documented-project",
+      "comprehensive-docs"
+    ],
+    "queuedArtifacts": [
+      "project-analysis",
+      "module-diagram",
+      "frontend-checklist",
+      "ui-component-map",
+      "technical-specification",
+      "architecture-diagram"
+    ],
+    "projectSummary": {
+      "name": "Untitled Project",
+      "type": "Unknown",
+      "patterns": [
+        "library-package",
+        "web-application",
+        "frontend-heavy",
+        "react-project",
+        "nextjs-project",
+        "npm-project",
+        "documented-project",
+        "comprehensive-docs"
+      ],
+      "moduleCount": 12,
+      "totalLines": 91710,
+      "frameworks": [
+        "react",
+        "next"
+      ]
+    },
+    "nextPhase": "detection",
+    "recommendedPath": [
+      "detection",
+      "foundation",
+      "technical",
+      "generation"
+    ]
+  },
+  "generatedArtifacts": [
+    {
+      "type": "project-analysis",
+      "files": [
+        "/app/exports/project-analysis-2026-10-08T10-25-04-653Z.json",
+        "/app/exports/project-analysis-2026-10-08T10-25-04-653Z.md"
+      ]
+    },
+    {
+      "type": "module-diagram",
+      "files": [
+        "/app/exports/module-diagram-2026-10-08T10-25-04-730Z.json"
+      ]
+    },
+    {
+      "type": "frontend-checklist",
+      "files": [
+        "/app/exports/frontend-checklist-2026-10-08T10-25-04-732Z.md"
+      ]
+    }
+  ],
+  "phase": "initial-analysis-complete",
+  "lastUpdated": "2026-10-08T10:25:04.736Z"
+}
