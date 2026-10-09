@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet, Plus, Settings2, GripVertical, Search, Loader2, Download, Printer, AlertTriangle, RotateCw } from "lucide-react";
+import { FileSpreadsheet, Plus, Settings2, GripVertical, Search, Loader2, Download, Printer, AlertTriangle, RotateCw, Archive } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -102,6 +102,11 @@ export default function MarklistManagerPage() {
 
                 <div className="flex items-center gap-3">
                     <DynamicPrintRegistry configs={configs} />
+                    <Link href="/dashboard/marklist/archive" prefetch={false}>
+                        <Button variant="outline" className="bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-2xl h-14 px-6 font-medium text-xs uppercase tracking-[0.2em]">
+                            <Archive className="w-4 h-4 mr-2 text-zinc-500" /> Finished Terms Archive
+                        </Button>
+                    </Link>
                     <Link href="/dashboard/director/marklist/create" prefetch={false}>
                         <Button className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-2xl h-14 px-8 font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 border border-eduGreen-500/50">
                             <Plus className="w-5 h-5 mr-3" /> Initialize Config

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/security";
+import { logActivity } from "@/lib/audit";
 
 // GET: Fetch Grid Data (Entries + Marks)
 export async function GET(req: Request) {
@@ -12,7 +13,7 @@ export async function GET(req: Request) {
     }
 
     try {
-        await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
 
         // Return all entries with their marks for this config
         const entries = await (prisma as any).marklistEntry.findMany({
@@ -43,7 +44,7 @@ export async function GET(req: Request) {
 // POST: Save Marks (Bulk Update)
 export async function POST(req: Request) {
     try {
-        const user = await requireRole(['SUPERADMIN', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
+        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM']);
         const body = (await req.json()) as any;
         const { configId, updates } = body;
 
@@ -55,24 +56,128 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "No changes detected to commit" }, { status: 400 });
         }
 
+        let schoolIdForAudit = user.schoolId;
+
         await (prisma as any).$transaction(async (tx: any) => {
             const config = await tx.marklistConfig.findUnique({
                 where: { id: configId },
-                include: { columns: true }
+                include: {
+                    columns: true,
+                    class: {
+                        select: {
+                            id: true,
+                            name: true,
+                            schoolId: true,
+                            homeroomTeacherId: true
+                        }
+                    },
+                    term: true
+                }
             });
 
             if (!config) throw new Error("Config not found");
 
-            // Teacher/Homeroom verification
+            if (config.schoolId) {
+                schoolIdForAudit = config.schoolId;
+            }
+
+            // Enforce school isolation
+            if (user.role !== 'SUPERADMIN' && config.schoolId !== user.schoolId) {
+                throw new Error("unauthorized_school");
+            }
+
+            // Term completion guard: If term is completed, disallow faculty edits
             if (['TEACHER', 'HOMEROOM'].includes(user.role)) {
-                const assignment = await tx.teacherAssignment.findFirst({
-                    where: {
-                        teacherId: user.id,
-                        classId: config.classId,
-                        subjectId: config.subjectId
+                let isTermCompleted = false;
+
+                if (config.term) {
+                    const isTermInactive = !config.term.isActive;
+                    const isTermPastEndDate = config.term.endDate ? new Date() > new Date(config.term.endDate) : false;
+                    isTermCompleted = isTermInactive || isTermPastEndDate;
+                } else if (config.schoolId) {
+                    // Check if school has an active live term
+                    const activeTerm = await tx.academicTerm.findFirst({
+                        where: { schoolId: config.schoolId, isActive: true }
+                    });
+                    // If school has terms configured but none active, editing is locked
+                    const totalTerms = await tx.academicTerm.count({
+                        where: { schoolId: config.schoolId }
+                    });
+                    if (totalTerms > 0 && !activeTerm) {
+                        isTermCompleted = true;
                     }
-                });
-                if (!assignment && config.teacherId !== user.id) {
+                }
+
+                if (isTermCompleted) {
+                    throw new Error("term_completed");
+                }
+
+                if (config.isLocked) {
+                    throw new Error("marklist_locked");
+                }
+            }
+
+            // Comprehensive Teacher/Homeroom verification
+            if (['TEACHER', 'HOMEROOM'].includes(user.role)) {
+                let isAuthorized = false;
+
+                // 1. Direct configuration teacher assignment
+                if (config.teacherId === user.id) {
+                    isAuthorized = true;
+                }
+
+                // 2. Homeroom teacher for this class
+                if (!isAuthorized && config.class?.homeroomTeacherId === user.id) {
+                    isAuthorized = true;
+                }
+
+                // 3. Exact TeacherAssignment (teacher + class + subject)
+                if (!isAuthorized) {
+                    const exactAssignment = await tx.teacherAssignment.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId,
+                            subjectId: config.subjectId
+                        }
+                    });
+                    if (exactAssignment) isAuthorized = true;
+                }
+
+                // 4. Class-level TeacherAssignment (assigned to this class)
+                if (!isAuthorized) {
+                    const classAssignment = await tx.teacherAssignment.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId
+                        }
+                    });
+                    if (classAssignment) isAuthorized = true;
+                }
+
+                // 5. Timetable schedule slot for this teacher, class, and subject
+                if (!isAuthorized) {
+                    const timetableSlot = await tx.timetable.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId,
+                            subjectId: config.subjectId
+                        }
+                    });
+                    if (timetableSlot) isAuthorized = true;
+                }
+
+                // 6. Timetable schedule slot for this teacher in this class
+                if (!isAuthorized) {
+                    const classTimetableSlot = await tx.timetable.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId
+                        }
+                    });
+                    if (classTimetableSlot) isAuthorized = true;
+                }
+
+                if (!isAuthorized) {
                     throw new Error("unauthorized_teacher");
                 }
             }
@@ -104,8 +209,7 @@ export async function POST(req: Request) {
                     }
                 }
 
-                // Recalculate Totals for this entry using the LATEST data from the update payload + existing marks if needed
-                // Actually, for consistency, we fetch the updated entry with its marks.
+                // Recalculate Totals for this entry
                 const currentEntry = await tx.marklistEntry.findUnique({
                     where: { id: entry.id },
                     include: { marks: true }
@@ -143,21 +247,49 @@ export async function POST(req: Request) {
             }
         });
 
-        
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'marklist', ip: _ip || undefined });
+        // Audit log with guaranteed non-null schoolId
+        if (schoolIdForAudit) {
+            try {
+                const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+                await logActivity({
+                    userId: user.id,
+                    schoolId: schoolIdForAudit,
+                    action: 'UPDATE_MARKLIST_SCORES',
+                    resourceType: 'MARKLIST_CONFIG',
+                    resourceId: configId,
+                    ip
+                });
+            } catch (auditErr) {
+                console.error("Audit logging non-blocking error:", auditErr);
             }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
+        }
+
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Save Marks Error:", error);
+        if (error.message === "term_completed") {
+            return NextResponse.json({
+                error: "Academic term is completed. Marklists for finalized terms are read-only.",
+                code: "TERM_COMPLETED"
+            }, { status: 403 });
+        }
+        if (error.message === "marklist_locked") {
+            return NextResponse.json({
+                error: "Marklist is locked by administration. Modifications are prohibited.",
+                code: "MARKLIST_LOCKED"
+            }, { status: 403 });
+        }
         if (error.message === "unauthorized_teacher") {
-            return NextResponse.json({ error: "You are not authorized to edit this marklist." }, { status: 403 });
+            return NextResponse.json({
+                error: "You are not assigned to teach or manage this class subject.",
+                code: "UNAUTHORIZED_TEACHER"
+            }, { status: 403 });
+        }
+        if (error.message === "unauthorized_school") {
+            return NextResponse.json({
+                error: "Access denied: Class belongs to a different school tenant.",
+                code: "UNAUTHORIZED_TENANT"
+            }, { status: 403 });
         }
         return NextResponse.json({ error: error.message || "Failed to save marks" }, { status: 500 });
     }

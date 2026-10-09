@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, requireSchoolLinked } from '@/lib/security';
+import { logActivity } from '@/lib/audit';
 
 // GET: List Marklists (Exams)
 export async function GET(request: Request) {
@@ -9,36 +10,42 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const classId = searchParams.get('classId');
         const subjectId = searchParams.get('subjectId');
+        const termId = searchParams.get('termId');
 
         const where: any = {
-            class: { grade: { schoolId: user.schoolId } } // Ensure school scope via Class->Grade->School or directly checks?
-            // Exam doesn't have schoolId directly, it links to Class. Class links to Grade links to School.
-            // Better to filter by classId provided or all classes in school.
+            class: { grade: { schoolId: user.schoolId } }
         };
 
         if (classId) where.classId = classId;
         if (subjectId) where.subjectId = subjectId;
+        if (termId) where.termId = termId;
 
-        // If Teacher, strictly filter to their assignments?
-        // User requirements say "Teacher View ONLY assigned classes".
-        if (user.role === 'TEACHER') {
-            // Find assignments
-            const assignments = await prisma.teacherAssignment.findMany({
-                where: { teacherId: user.id },
-                select: { classId: true, subjectId: true }
-            });
-            const classIds = assignments.map(a => a.classId);
-            const subjectIds = assignments.map(a => a.subjectId);
+        // Teacher and Homeroom role filtering
+        if (['TEACHER', 'HOMEROOM'].includes(user.role)) {
+            const [assignments, homeroomClasses, timetables] = await Promise.all([
+                prisma.teacherAssignment.findMany({
+                    where: { teacherId: user.id },
+                    select: { classId: true, subjectId: true }
+                }),
+                prisma.class.findMany({
+                    where: { schoolId: user.schoolId, homeroomTeacherId: user.id },
+                    select: { id: true }
+                }),
+                prisma.timetable.findMany({
+                    where: { teacherId: user.id },
+                    select: { classId: true, subjectId: true }
+                })
+            ]);
 
-            // Filter exams where classId IS in assignments AND subjectId IS in assignments
-            // OR logic: Teacher teaches Class A Subject Math. Should see Exams for Class A Subject Math.
-            // Simplified: where classId IN classIds.
-            if (classIds.length > 0) {
-                where.classId = { in: classIds };
-                // And subjectId? If I teach Math I shouldn't see English exams even if in same class.
-                where.subjectId = { in: subjectIds };
+            const homeroomClassIds = homeroomClasses.map(c => c.id);
+            const assignmentClassIds = assignments.map(a => a.classId);
+            const timetableClassIds = timetables.map(t => t.classId);
+            const allClasses = Array.from(new Set([...homeroomClassIds, ...assignmentClassIds, ...timetableClassIds]));
+
+            if (allClasses.length > 0) {
+                where.classId = { in: allClasses };
             } else {
-                return NextResponse.json({ exams: [] }); // No assignments
+                return NextResponse.json({ exams: [] });
             }
         }
 
@@ -47,6 +54,7 @@ export async function GET(request: Request) {
             include: {
                 class: { select: { name: true, grade: { select: { name: true, level: true } } } },
                 subject: { select: { name: true } },
+                term: { select: { id: true, name: true, isActive: true, startDate: true, endDate: true } },
                 _count: { select: { gradeRecords: true } }
             },
             orderBy: { availableFrom: 'desc' }
@@ -62,21 +70,42 @@ export async function GET(request: Request) {
 // POST: Create a new Marklist
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
-        // Teachers can create marklists for their subjects? Yes.
+        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM']);
 
         const { title, classId, subjectId, totalMarks, category, description, date, termId } = await request.json() as any;
 
-        // Validate assignment if Teacher
-        if (user.role === 'TEACHER') {
-            const assignment = await prisma.teacherAssignment.findFirst({
-                where: {
-                    teacherId: user.id,
-                    classId,
-                    subjectId
-                }
+        // Validate assignment if Teacher or Homeroom
+        if (['TEACHER', 'HOMEROOM'].includes(user.role)) {
+            let isAuthorized = false;
+            const targetClass = await prisma.class.findUnique({
+                where: { id: classId },
+                select: { homeroomTeacherId: true }
             });
-            if (!assignment) {
+            if (targetClass?.homeroomTeacherId === user.id) isAuthorized = true;
+
+            if (!isAuthorized) {
+                const assignment = await prisma.teacherAssignment.findFirst({
+                    where: {
+                        teacherId: user.id,
+                        classId,
+                        ...(subjectId ? { subjectId } : {})
+                    }
+                });
+                if (assignment) isAuthorized = true;
+            }
+
+            if (!isAuthorized) {
+                const timetable = await prisma.timetable.findFirst({
+                    where: {
+                        teacherId: user.id,
+                        classId,
+                        ...(subjectId ? { subjectId } : {})
+                    }
+                });
+                if (timetable) isAuthorized = true;
+            }
+
+            if (!isAuthorized) {
                 return NextResponse.json({ error: "You are not assigned to this Class and Subject" }, { status: 403 });
             }
         }
@@ -95,20 +124,24 @@ export async function POST(request: Request) {
             }
         });
 
-        // Optional: Pre-fill GradeRecords with 0 or null for all students in class?
-        // Not necessary, UI can handle "missing" grades.
-
-        
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'marklist', ip: _ip || undefined });
+        // Audit log with valid schoolId
+        if (user.schoolId) {
+            try {
+                const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
+                await logActivity({
+                    userId: user.id,
+                    schoolId: user.schoolId,
+                    action: 'CREATE_MARKLIST_EXAM',
+                    resourceType: 'EXAM',
+                    resourceId: marklist.id,
+                    ip: _ip
+                });
+            } catch (auditErr) {
+                console.error("Audit log error:", auditErr);
             }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ marklist });
+        }
+
+        return NextResponse.json({ marklist });
 
     } catch (e: any) {
         return NextResponse.json({ error: e.message || "Failed to create marklist" }, { status: 500 });

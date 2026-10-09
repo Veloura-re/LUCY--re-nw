@@ -291,9 +291,26 @@ export default function MarklistEntryPage() {
     }
 
     const stats = getStats();
+    const isTermCompleted = Boolean(exam.isTermCompleted);
+    const isReadOnly = Boolean(exam.isLocked || isTermCompleted || exam.canEdit === false);
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-300 relative z-10 pb-20">
+            {/* Term Completed Read-Only Banner */}
+            {isTermCompleted && (
+                <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between text-xs text-amber-700 dark:text-amber-400 font-medium">
+                    <div className="flex items-center gap-2">
+                        <Lock className="w-4 h-4 text-amber-500 shrink-0" />
+                        <span>
+                            <strong>Term Completed - Read Only:</strong> This assessment belongs to a finalized academic term{exam.term?.name ? ` (${exam.term.name})` : ""}. Grade records are locked for audit preservation.
+                        </span>
+                    </div>
+                    <Link href="/dashboard/marklist/archive" className="underline font-bold text-[10px] uppercase tracking-wider shrink-0">
+                        View Archive
+                    </Link>
+                </div>
+            )}
+
             {/* Header */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-8">
                 <div className="flex items-center gap-4">
@@ -307,6 +324,15 @@ export default function MarklistEntryPage() {
                             <span className="text-[10px] font-black text-eduGreen-500 uppercase tracking-widest bg-eduGreen-900/10 px-2 py-1 rounded-lg">
                                 {exam.category?.replace('_', ' ')}
                             </span>
+                            {exam.term?.name && (
+                                <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg border ${
+                                    isTermCompleted
+                                        ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-500"
+                                        : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                                }`}>
+                                    {exam.term.name} {isTermCompleted ? "(Concluded)" : "(Live)"}
+                                </span>
+                            )}
                             <span className="text-[10px] font-black text-zinc-600 dark:text-zinc-500 uppercase tracking-widest bg-zinc-100/50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg">
                                 {exam.totalMarks} Marks
                             </span>
@@ -337,11 +363,11 @@ export default function MarklistEntryPage() {
 
                     <Button
                         onClick={handleSave}
-                        disabled={saving || exam.isLocked}
-                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-8 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-eduGreen-900/20"
+                        disabled={saving || isReadOnly}
+                        className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-12 px-8 rounded-xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-eduGreen-900/20 disabled:opacity-50"
                     >
                         <Save className="mr-2 h-4 w-4" />
-                        {saving ? "Securing..." : "Save Grades"}
+                        {saving ? "Securing..." : isTermCompleted ? "Term Concluded" : exam.isLocked ? "Locked" : "Save Grades"}
                     </Button>
                 </div>
             </div>
@@ -387,13 +413,14 @@ export default function MarklistEntryPage() {
                                             <td className="p-4 sm:p-5 text-center">
                                                 <Input
                                                     type="number"
-                                                    disabled={exam.isLocked}
+                                                    disabled={isReadOnly}
+                                                    readOnly={isReadOnly}
                                                     value={student.score ?? ""}
                                                     onChange={(e) => handleMarkChange(student.id, 'score', e.target.value)}
                                                     placeholder="-"
                                                     max={exam.totalMarks}
                                                     min={0}
-                                                    className="w-24 mx-auto text-center font-bold text-base h-10 rounded-xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800"
+                                                    className="w-24 mx-auto text-center font-bold text-base h-10 rounded-xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 disabled:opacity-80 disabled:cursor-not-allowed"
                                                 />
                                             </td>
                                             <td className="p-4 sm:p-5 text-center">
@@ -404,18 +431,19 @@ export default function MarklistEntryPage() {
                                             <td className="p-4 sm:p-5">
                                                 <div className="flex items-center gap-2">
                                                     <Input
-                                                        disabled={exam.isLocked}
+                                                        disabled={isReadOnly}
+                                                        readOnly={isReadOnly}
                                                         value={student.remark ?? ""}
                                                         onChange={(e) => handleMarkChange(student.id, 'remark', e.target.value)}
-                                                        placeholder="Add academic remarks..."
-                                                        className="h-10 rounded-xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-xs flex-1"
+                                                        placeholder={isReadOnly ? "No observations recorded" : "Add academic remarks..."}
+                                                        className="h-10 rounded-xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-xs flex-1 disabled:opacity-80 disabled:cursor-not-allowed"
                                                     />
                                                     <Button
                                                         size="icon"
                                                         variant="outline"
-                                                        disabled={exam.isLocked || generatingFeedbackId === student.id}
+                                                        disabled={isReadOnly || generatingFeedbackId === student.id}
                                                         onClick={() => handleGenerateFeedback(student.id, student.score, exam)}
-                                                        className="h-10 w-10 shrink-0 rounded-xl border-slate-200 dark:border-zinc-800 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-500/30"
+                                                        className="h-10 w-10 shrink-0 rounded-xl border-slate-200 dark:border-zinc-800 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-500/30 disabled:opacity-40"
                                                         title="Generate AI Academic Remark"
                                                     >
                                                         <Sparkles className={`w-4 h-4 ${generatingFeedbackId === student.id ? 'animate-spin text-emerald-500' : ''}`} />
