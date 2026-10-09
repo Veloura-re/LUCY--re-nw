@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, requireSchoolLinked, handleApiError } from "@/lib/security";
+import { logActivity } from "@/lib/audit";
 
 export async function POST(req: Request) {
     try {
@@ -102,7 +103,7 @@ export async function POST(req: Request) {
                 }
                 return await tx.marklistConfig.findUnique({
                     where: { id: existing.id },
-                    include: { columns: true }
+                    include: { columns: true, term: true }
                 });
             } else {
                 // Create New
@@ -112,7 +113,7 @@ export async function POST(req: Request) {
                         classId,
                         subjectId,
                         teacherId,
-                        termId: termId || null,
+                        termId: resolvedTermId || null,
                         columns: {
                             create: columns.map((col: any) => ({
                                 title: col.title,
@@ -122,7 +123,7 @@ export async function POST(req: Request) {
                             }))
                         }
                     },
-                    include: { columns: true }
+                    include: { columns: true, term: true }
                 });
             }
         });
@@ -151,6 +152,23 @@ export async function POST(req: Request) {
             ));
         }
 
+        // Multi-tenant Audit Log
+        if (schoolId) {
+            try {
+                const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
+                await logActivity({
+                    userId: user.id,
+                    schoolId,
+                    action: 'UPDATE_MARKLIST_CONFIG',
+                    resourceType: 'MARKLIST_CONFIG',
+                    resourceId: config.id,
+                    ip
+                });
+            } catch (auditErr) {
+                console.error("Audit log error:", auditErr);
+            }
+        }
+
         return NextResponse.json(config);
     } catch (error) {
         console.error("Config Error:", error);
@@ -168,7 +186,15 @@ export async function GET(req: Request) {
         const user = await requireSchoolLinked();
         const schoolId = user.schoolId;
 
-        let config;
+        const includeRelations = {
+            columns: { orderBy: { order: 'asc' } },
+            class: { select: { id: true, name: true, schoolId: true, homeroomTeacherId: true } },
+            subject: { select: { id: true, name: true } },
+            teacher: { select: { id: true, name: true } },
+            term: { select: { id: true, name: true, isActive: true, startDate: true, endDate: true } }
+        };
+
+        let config: any = null;
 
         if (id) {
             config = await (prisma as any).marklistConfig.findFirst({
@@ -176,12 +202,7 @@ export async function GET(req: Request) {
                     id,
                     class: { schoolId }
                 },
-                include: {
-                    columns: { orderBy: { order: 'asc' } },
-                    class: { select: { name: true, schoolId: true } },
-                    subject: { select: { name: true } },
-                    teacher: { select: { name: true } }
-                }
+                include: includeRelations
             });
         } else if (classId && subjectId) {
             config = await (prisma as any).marklistConfig.findFirst({
@@ -190,12 +211,7 @@ export async function GET(req: Request) {
                     subjectId,
                     class: { schoolId }
                 },
-                include: {
-                    columns: { orderBy: { order: 'asc' } as any },
-                    class: { select: { name: true, schoolId: true } },
-                    subject: { select: { name: true } },
-                    teacher: { select: { name: true } }
-                }
+                include: includeRelations
             });
         } else {
             return NextResponse.json({ error: "Missing identity params" }, { status: 400 });
@@ -205,7 +221,89 @@ export async function GET(req: Request) {
             return NextResponse.json(null);
         }
 
-        return NextResponse.json(config);
+        // Calculate term completion & live status
+        let isTermCompleted = false;
+        let isLiveTerm = false;
+
+        if (config.term) {
+            const isTermInactive = !config.term.isActive;
+            const isPastEndDate = config.term.endDate ? new Date() > new Date(config.term.endDate) : false;
+            isTermCompleted = isTermInactive || isPastEndDate;
+            isLiveTerm = config.term.isActive && !isPastEndDate;
+        } else {
+            const activeTerm = await prisma.academicTerm.findFirst({
+                where: { schoolId, isActive: true }
+            });
+            const totalTerms = await prisma.academicTerm.count({ where: { schoolId } });
+            if (totalTerms > 0 && !activeTerm) {
+                isTermCompleted = true;
+            } else if (activeTerm) {
+                isLiveTerm = true;
+            }
+        }
+
+        // Calculate whether current user is permitted to edit this marklist
+        let canEdit = true;
+        if (['TEACHER', 'HOMEROOM'].includes(user.role)) {
+            if (isTermCompleted || config.isLocked) {
+                canEdit = false;
+            } else {
+                let isAuthorized = false;
+                if (config.teacherId === user.id) isAuthorized = true;
+                if (!isAuthorized && config.class?.homeroomTeacherId === user.id) isAuthorized = true;
+
+                if (!isAuthorized) {
+                    const exactAssignment = await prisma.teacherAssignment.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId,
+                            subjectId: config.subjectId
+                        }
+                    });
+                    if (exactAssignment) isAuthorized = true;
+                }
+
+                if (!isAuthorized) {
+                    const classAssignment = await prisma.teacherAssignment.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId
+                        }
+                    });
+                    if (classAssignment) isAuthorized = true;
+                }
+
+                if (!isAuthorized) {
+                    const timetableSlot = await prisma.timetable.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId,
+                            subjectId: config.subjectId
+                        }
+                    });
+                    if (timetableSlot) isAuthorized = true;
+                }
+
+                if (!isAuthorized) {
+                    const classTimetableSlot = await prisma.timetable.findFirst({
+                        where: {
+                            teacherId: user.id,
+                            classId: config.classId
+                        }
+                    });
+                    if (classTimetableSlot) isAuthorized = true;
+                }
+
+                canEdit = isAuthorized;
+            }
+        }
+
+        return NextResponse.json({
+            ...config,
+            isLiveTerm,
+            isTermCompleted,
+            canEdit
+        });
     } catch (error) {
         console.error("Fetch Config Error:", error);
         return NextResponse.json({ error: "Failed to fetch configuration" }, { status: 500 });

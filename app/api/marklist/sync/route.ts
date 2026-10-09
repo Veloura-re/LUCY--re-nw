@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/security";
+import { logActivity } from "@/lib/audit";
 import { revalidateTag } from "next/cache";
 import { CACHE_TAGS, getSchoolTag } from "@/lib/cache-keys";
 
@@ -23,13 +24,67 @@ export async function POST(req: Request) {
             },
             include: {
                 entries: true,
-                class: true,
-                subject: true
+                class: {
+                    select: {
+                        id: true,
+                        name: true,
+                        homeroomTeacherId: true
+                    }
+                },
+                subject: true,
+                term: true
             }
         });
 
         if (!config) {
             return NextResponse.json({ error: "Marklist configuration not found or unauthorized" }, { status: 404 });
+        }
+
+        // Faculty permissions and term completion check
+        if (['TEACHER', 'HOMEROOM'].includes(dbUser.role)) {
+            if (config.term) {
+                const isTermCompleted = !config.term.isActive || (config.term.endDate && new Date() > new Date(config.term.endDate));
+                if (isTermCompleted) {
+                    return NextResponse.json({
+                        error: "Academic term is completed. Marklists for finalized terms are read-only.",
+                        code: "TERM_COMPLETED"
+                    }, { status: 403 });
+                }
+            }
+
+            if (config.isLocked) {
+                return NextResponse.json({
+                    error: "Marklist is locked by administration.",
+                    code: "MARKLIST_LOCKED"
+                }, { status: 403 });
+            }
+
+            let isAuthorized = config.teacherId === dbUser.id || config.class?.homeroomTeacherId === dbUser.id;
+            if (!isAuthorized) {
+                const assignment = await prisma.teacherAssignment.findFirst({
+                    where: { teacherId: dbUser.id, classId: config.classId, subjectId: config.subjectId }
+                });
+                if (assignment) isAuthorized = true;
+            }
+            if (!isAuthorized) {
+                const classAssignment = await prisma.teacherAssignment.findFirst({
+                    where: { teacherId: dbUser.id, classId: config.classId }
+                });
+                if (classAssignment) isAuthorized = true;
+            }
+            if (!isAuthorized) {
+                const timetable = await prisma.timetable.findFirst({
+                    where: { teacherId: dbUser.id, classId: config.classId, subjectId: config.subjectId }
+                });
+                if (timetable) isAuthorized = true;
+            }
+
+            if (!isAuthorized) {
+                return NextResponse.json({
+                    error: "You are not authorized to sync grades for this class subject.",
+                    code: "UNAUTHORIZED_TEACHER"
+                }, { status: 403 });
+            }
         }
 
         let targetExamId = examId;
@@ -130,18 +185,27 @@ export async function POST(req: Request) {
             revalidateTag(getSchoolTag(CACHE_TAGS.GRADES, schoolId), 'max');
         }
 
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'SYNC', resourceType: 'marklist', ip: _ip || undefined });
+        // Audit log with valid schoolId
+        if (schoolId) {
+            try {
+                const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
+                await logActivity({
+                    userId: dbUser.id,
+                    schoolId,
+                    action: 'SYNC_MARKLIST_TO_GRADEBOOK',
+                    resourceType: 'MARKLIST_CONFIG',
+                    resourceId: configId,
+                    ip: _ip
+                });
+            } catch (auditErr) {
+                console.error("Audit log error:", auditErr);
             }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, ...stats });
+        }
+
+        return NextResponse.json({ success: true, ...stats });
     } catch (error) {
         console.error("Marklist Sync Error:", error);
         return NextResponse.json({ error: "Failed to sync marklist" }, { status: 500 });
     }
 }
+
