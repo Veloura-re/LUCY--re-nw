@@ -12,7 +12,11 @@ import {
     AlertCircle,
     User,
     GraduationCap,
-    ShieldCheck
+    ShieldCheck,
+    Building2,
+    Smartphone,
+    Copy,
+    Check
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from 'next/link';
@@ -29,16 +33,26 @@ interface ParentBillingViewProps {
     school?: any;
 }
 
-export function ParentBillingView({ user, students }: ParentBillingViewProps) {
+export function ParentBillingView({ user, students, school }: ParentBillingViewProps) {
     const [activeTab, setActiveTab] = React.useState<'invoices' | 'receipts'>('invoices');
     const [processingId, setProcessingId] = React.useState<string | null>(null);
     const [selectingPaymentId, setSelectingPaymentId] = React.useState<string | null>(null);
+    const [activePayStudent, setActivePayStudent] = React.useState<any>(null);
+    const [selectedAccountId, setSelectedAccountId] = React.useState<string | null>(null);
+    const [copiedNumber, setCopiedNumber] = React.useState(false);
+    const [copiedMemo, setCopiedMemo] = React.useState(false);
     const [paymentMethod, setPaymentMethod] = React.useState<string>("BANK_TRANSFER");
     const [showConfirmation, setShowConfirmation] = React.useState(false);
     const [receiptImage, setReceiptImage] = React.useState<string | null>(null);
     const [printInvoice, setPrintInvoice] = React.useState<any>(null);
     const [printStudent, setPrintStudent] = React.useState<any>(null);
     const [printingId, setPrintingId] = React.useState<string | null>(null);
+
+    // Resolve official institutional banking accounts from school
+    const rawBanking = school?.bankingConfig || students?.[0]?.school?.bankingConfig || [];
+    const activeBankingAccounts: any[] = React.useMemo(() => {
+        return Array.isArray(rawBanking) ? rawBanking.filter((a: any) => a.isActive !== false) : [];
+    }, [rawBanking]);
 
     const printRef = React.useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({
@@ -75,9 +89,20 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
         }
     }, [printingId, printInvoice, handlePrint]);
 
-    const handleInitialPay = (invoiceId: string) => {
+    const handleInitialPay = (invoiceId: string, student?: any) => {
         setSelectingPaymentId(invoiceId);
+        setActivePayStudent(student || null);
         setReceiptImage(null);
+
+        // Pre-select primary account if available
+        const primary = activeBankingAccounts.find((a: any) => a.isPrimary) || activeBankingAccounts[0] || null;
+        if (primary) {
+            setSelectedAccountId(primary.id);
+            setPaymentMethod(primary.type || "BANK_TRANSFER");
+        } else {
+            setSelectedAccountId(null);
+            setPaymentMethod("BANK_TRANSFER");
+        }
         setShowConfirmation(true);
     };
 
@@ -106,13 +131,19 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
         setProcessingId(selectingPaymentId);
         setShowConfirmation(false);
         try {
+            const selectedAcc = activeBankingAccounts.find((a: any) => a.id === selectedAccountId);
+            const methodToSend = selectedAcc?.type || paymentMethod;
+            const refToSend = selectedAcc 
+                ? `[Rail: ${selectedAcc.provider}] ${reference}` 
+                : reference;
+
             const res = await fetch('/api/school/finance/pay', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     invoiceId: selectingPaymentId,
-                    method: paymentMethod,
-                    reference: reference,
+                    method: methodToSend,
+                    reference: refToSend,
                     receiptImage: receiptImage
                 })
             });
@@ -298,7 +329,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                                                         {invoice.status !== 'PAID' && !hasPendingPayment ? (
                                                             <Button
                                                                 disabled={!!processingId}
-                                                                onClick={() => handleInitialPay(invoice.id)}
+                                                                onClick={() => handleInitialPay(invoice.id, student)}
                                                                 className="w-full h-14 bg-white text-black hover:bg-zinc-200 rounded-2xl font-medium text-[10px] uppercase tracking-widest transition-all"
                                                             >
                                                                 {processingId === invoice.id ? "Syncing..." : "Initiate Settlement"}
@@ -343,39 +374,132 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                 placeholder="Enter Transaction Reference / Bank Ref"
                 footerElement={
                     <div className="flex flex-col gap-4 mt-4 mb-6">
-                        <div className="grid grid-cols-2 gap-4">
-                            <Button
-                                variant="ghost"
-                                onClick={() => setPaymentMethod("BANK_TRANSFER")}
-                                className={cn(
-                                    "h-14 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                    paymentMethod === "BANK_TRANSFER" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500"
+                        {activeBankingAccounts.length > 0 ? (
+                            <>
+                                {/* Channel Selector Tabs if multiple accounts */}
+                                {activeBankingAccounts.length > 1 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {activeBankingAccounts.map((acc: any) => {
+                                            const isSelected = (selectedAccountId === acc.id) || (!selectedAccountId && acc.isPrimary);
+                                            return (
+                                                <button
+                                                    key={acc.id}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSelectedAccountId(acc.id);
+                                                        setPaymentMethod(acc.type || "BANK_TRANSFER");
+                                                        setCopiedNumber(false);
+                                                    }}
+                                                    className={cn(
+                                                        "px-3 py-2 rounded-xl text-[9px] font-bold uppercase tracking-wider border transition-all flex items-center gap-1.5",
+                                                        isSelected
+                                                            ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white"
+                                                            : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500"
+                                                    )}
+                                                >
+                                                    {acc.type === "MOBILE_MONEY" ? <Smartphone className="w-3.5 h-3.5 text-amber-500" /> : <Building2 className="w-3.5 h-3.5 text-eduGreen-500" />}
+                                                    <span>{acc.provider}</span>
+                                                    {acc.isPrimary && (
+                                                        <span className="text-[7px] px-1 py-0.2 rounded-full bg-eduGreen-500/20 text-eduGreen-500">Primary</span>
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 )}
-                            >
-                                Bank Transfer
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => setPaymentMethod("MOBILE_MONEY")}
-                                className={cn(
-                                    "h-14 rounded-xl border border-zinc-300 dark:border-zinc-800 text-[9px] font-medium uppercase tracking-widest transition-all",
-                                    paymentMethod === "MOBILE_MONEY" ? "bg-eduGreen-950/20 border-eduGreen-500 text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500"
-                                )}
-                            >
-                                Mobile Money
-                            </Button>
-                        </div>
 
-                        {/* Account Details Box */}
-                        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-2 text-left">
-                            <div className="text-[10px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest">
-                                {paymentMethod === "BANK_TRANSFER" ? "Commercial Bank of Ethiopia (CBE)" : "Telebirr"}
+                                {/* Selected Account Details Box */}
+                                {(() => {
+                                    const currentAccount = activeBankingAccounts.find((a: any) => a.id === selectedAccountId) || 
+                                                           activeBankingAccounts.find((a: any) => a.isPrimary) || 
+                                                           activeBankingAccounts[0];
+                                    if (!currentAccount) return null;
+                                    return (
+                                        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-2.5 text-left">
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-[10px] font-bold text-eduGreen-600 dark:text-eduGreen-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                    {currentAccount.type === "MOBILE_MONEY" ? <Smartphone className="w-3.5 h-3.5" /> : <Building2 className="w-3.5 h-3.5" />}
+                                                    {currentAccount.provider}
+                                                </div>
+                                                <span className="text-[8px] font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded-full">
+                                                    Official School Account
+                                                </span>
+                                            </div>
+
+                                            <div className="text-xs space-y-2">
+                                                <div className="flex items-center justify-between bg-white dark:bg-zinc-950 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                                                    <div>
+                                                        <span className="text-zinc-500 text-[9px] uppercase tracking-wider block">
+                                                            {currentAccount.type === "MOBILE_MONEY" ? "Phone / Merchant Number:" : "Account Number:"}
+                                                        </span>
+                                                        <strong className="font-mono text-sm text-zinc-900 dark:text-white select-all">
+                                                            {currentAccount.accountNumber}
+                                                        </strong>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(currentAccount.accountNumber);
+                                                            setCopiedNumber(true);
+                                                            setTimeout(() => setCopiedNumber(false), 2000);
+                                                            toast.success("Account number copied.");
+                                                        }}
+                                                        className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 hover:border-eduGreen-500 text-zinc-700 dark:text-zinc-300 text-[10px] font-semibold flex items-center gap-1.5 transition-colors"
+                                                    >
+                                                        {copiedNumber ? <Check className="w-3 h-3 text-eduGreen-500" /> : <Copy className="w-3 h-3" />}
+                                                        {copiedNumber ? "Copied" : "Copy"}
+                                                    </button>
+                                                </div>
+
+                                                <div className="text-[11px] text-zinc-700 dark:text-zinc-300">
+                                                    <span className="text-zinc-500 text-[9px] uppercase tracking-wider">Account Holder:</span>{" "}
+                                                    <strong className="text-zinc-900 dark:text-white">{currentAccount.accountName}</strong>
+                                                    {currentAccount.branch && (
+                                                        <span className="text-zinc-500 ml-1">· Branch: {currentAccount.branch}</span>
+                                                    )}
+                                                </div>
+
+                                                {currentAccount.instructions && (
+                                                    <p className="text-[9px] text-amber-800 dark:text-amber-400/90 font-medium pt-1.5 border-t border-zinc-200 dark:border-zinc-800/80">
+                                                        Memo Instruction: {currentAccount.instructions}
+                                                    </p>
+                                                )}
+
+                                                {activePayStudent && (
+                                                    <div className="pt-1.5 flex items-center justify-between text-[10px] border-t border-zinc-200 dark:border-zinc-800/80 text-zinc-600 dark:text-zinc-400">
+                                                        <span>Student Code: <strong className="text-zinc-900 dark:text-white font-mono">{activePayStudent.studentCode}</strong></span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(activePayStudent.studentCode);
+                                                                setCopiedMemo(true);
+                                                                setTimeout(() => setCopiedMemo(false), 2000);
+                                                                toast.success("Student code copied.");
+                                                            }}
+                                                            className="text-eduGreen-600 dark:text-eduGreen-400 hover:text-eduGreen-500 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1"
+                                                        >
+                                                            {copiedMemo ? <Check className="w-3 h-3 text-eduGreen-500" /> : <Copy className="w-3 h-3" />}
+                                                            Copy Code
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </>
+                        ) : (
+                            /* Fallback if school hasn't configured banking channels yet */
+                            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-left space-y-1.5">
+                                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold text-xs uppercase tracking-wider">
+                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                    Campus Finance Notice
+                                </div>
+                                <p className="text-[10px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                                    The school administration has not published digital banking channels yet. Please settle this invoice directly at the campus finance office, or contact administration for official transfer instructions.
+                                </p>
                             </div>
-                            <div className="text-xs text-zinc-700 dark:text-zinc-300 space-y-1">
-                                <p><span className="text-zinc-500 text-[10px] uppercase tracking-wider">{paymentMethod === "BANK_TRANSFER" ? "Account Number:" : "Phone Number:"}</span> <strong className="font-mono text-zinc-900 dark:text-white select-all">{paymentMethod === "BANK_TRANSFER" ? "1000790420393" : "0997267373"}</strong></p>
-                                <p><span className="text-zinc-500 text-[10px] uppercase tracking-wider">Account Name:</span> <strong className="text-zinc-900 dark:text-white">Abdullahi Abdulwasie Abrar</strong></p>
-                            </div>
-                        </div>
+                        )}
                         
                         <div className="space-y-2 text-left">
                             <label className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Upload Receipt (Required)</label>
@@ -405,7 +529,7 @@ export function ParentBillingView({ user, students }: ParentBillingViewProps) {
                         <InvoicePrint
                             invoice={printInvoice}
                             student={printStudent}
-                            school={students[0]?.school || (user as any)?.school}
+                            school={school || students[0]?.school || (user as any)?.school}
                         />
                     )}
                 </div>

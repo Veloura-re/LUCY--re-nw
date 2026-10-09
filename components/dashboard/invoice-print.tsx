@@ -165,6 +165,57 @@ export const InvoicePrint = React.forwardRef<HTMLDivElement, InvoicePrintProps>(
                 </div>
             </div>
 
+            {/* Settlement Banking Details */}
+            {(() => {
+                let bankingAccounts: any[] = [];
+                try {
+                    const raw = school?.bankingConfig;
+                    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+                    if (Array.isArray(parsed)) {
+                        bankingAccounts = parsed.filter((a: any) => a.isActive !== false);
+                    }
+                } catch {
+                    bankingAccounts = [];
+                }
+
+                if (bankingAccounts.length === 0) return null;
+
+                return (
+                    <div className="mb-8 p-4 rounded-xl border border-zinc-200 bg-zinc-50">
+                        <div className="flex items-center justify-between mb-3 border-b border-zinc-200 pb-2">
+                            <h3 className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest">
+                                Official Institutional Settlement Accounts
+                            </h3>
+                            <span className="text-[9px] font-mono font-bold text-zinc-500 uppercase">
+                                Memo Ref: {safeStudent.studentCode || invoiceCode}
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                            {bankingAccounts.map((acc: any, idx: number) => (
+                                <div key={idx} className="p-2.5 rounded-lg bg-white border border-zinc-200">
+                                    <div className="flex justify-between items-start">
+                                        <span className="font-bold text-zinc-900 text-xs">{acc.bankName}</span>
+                                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 font-bold uppercase">
+                                            {acc.type}
+                                        </span>
+                                    </div>
+                                    <div className="mt-1 font-mono font-bold text-zinc-800 tracking-wider text-xs">
+                                        {acc.accountNumber}
+                                    </div>
+                                    <div className="text-[10px] text-zinc-500 truncate mt-0.5">
+                                        {acc.accountHolder}
+                                        {acc.branch ? ` - ${acc.branch}` : ''}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <p className="text-[9px] text-zinc-500 mt-2.5 italic">
+                            Please specify the student ID ({safeStudent.studentCode}) in your transfer memo for rapid institutional ledger reconciliation.
+                        </p>
+                    </div>
+                );
+            })()}
+
             {/* Footer */}
             <div className="mt-auto pt-8 border-t border-zinc-200 text-center">
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em] mb-1">
