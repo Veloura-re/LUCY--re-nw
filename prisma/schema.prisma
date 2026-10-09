@@ -83,6 +83,7 @@ model School {
   address               String?
   communicationsConfig  Json?                  @default("{\"replyTo\": \"\", \"sendInvites\": true, \"sendReports\": true, \"sendInvoices\": true}")
   locations             Json?                  @default("[]")
+  bankingConfig         Json?                  @default("[]")
   assignments           Assignment[]
   assignmentSubmissions AssignmentSubmission[]
   books                 Book[]

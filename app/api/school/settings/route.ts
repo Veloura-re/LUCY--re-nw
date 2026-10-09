@@ -108,7 +108,8 @@ export async function PATCH(request: Request) {
             communicationsConfig, 
             termStructure, 
             termStructureLocked, 
-            defaultBillingCycle 
+            defaultBillingCycle,
+            bankingConfig 
         } = body || {};
 
         const currentSchool = await prisma.school.findUnique({ where: { id: targetSchoolId } });
@@ -148,6 +149,7 @@ export async function PATCH(request: Request) {
         if (termStructure) updateData.termStructure = termStructure;
         if (typeof termStructureLocked === 'boolean') updateData.termStructureLocked = termStructureLocked;
         if (defaultBillingCycle) updateData.defaultBillingCycle = defaultBillingCycle;
+        if (bankingConfig !== undefined) updateData.bankingConfig = Array.isArray(bankingConfig) ? bankingConfig : [];
 
         const school = await prisma.school.update({
             where: { id: targetSchoolId },

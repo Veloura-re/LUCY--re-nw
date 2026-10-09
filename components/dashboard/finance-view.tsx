@@ -26,7 +26,12 @@ import {
     CheckCircle2,
     Layers,
     Clock,
-    FileText
+    FileText,
+    Building2,
+    Smartphone,
+    Copy,
+    Check,
+    AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +39,7 @@ import SpringingLoader from "@/components/dashboard/springing-loader";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { FeeStructureModal } from "./fee-structure-modal";
+import { BankingAccountsModal, BankingAccount } from "./banking-accounts-modal";
 import { getClientCache, setClientCache, fetchWithResilience } from "@/lib/cache-client";
 
 interface FinanceViewProps {
@@ -49,6 +55,11 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const [fees, setFees] = useState<any[]>(cachedFees || []);
     const [loading, setLoading] = useState(!cachedFees);
     const [showFeeModal, setShowFeeModal] = useState(false);
+    const [showBankingModal, setShowBankingModal] = useState(false);
+    const [bankingAccounts, setBankingAccounts] = useState<BankingAccount[]>(
+        Array.isArray(school?.bankingConfig) ? school.bankingConfig : []
+    );
+    const [copiedAccId, setCopiedAccId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [deletingFee, setDeletingFee] = useState(false);
     const [financialAnalytics, setFinancialAnalytics] = useState<any>(cachedAnalytics || null);
@@ -65,9 +76,10 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const [feesRes, analyticsRes] = await Promise.all([
+            const [feesRes, analyticsRes, bankingRes] = await Promise.all([
                 fetchWithResilience('/api/school/finance/fees', {}, 8000),
-                fetchWithResilience('/api/school/finance/analytics', {}, 8000)
+                fetchWithResilience('/api/school/finance/analytics', {}, 8000),
+                fetchWithResilience('/api/school/finance/banking', {}, 8000).catch(() => ({ ok: false }))
             ]);
 
             if (feesRes.ok) {
@@ -81,6 +93,13 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 const data = await analyticsRes.json();
                 setFinancialAnalytics(data);
                 setClientCache('finance_analytics', data, 60000);
+            }
+
+            if ('json' in bankingRes && bankingRes.ok) {
+                const bData: any = await bankingRes.json();
+                if (Array.isArray(bData.accounts)) {
+                    setBankingAccounts(bData.accounts);
+                }
             }
         } catch (e) {
             console.error("[FinanceView] Fetch error:", e);
@@ -210,6 +229,19 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                         </Button>
                     </Link>
                     <Button
+                        onClick={() => setShowBankingModal(true)}
+                        variant="outline"
+                        className="h-10 sm:h-12 px-4 sm:px-5 rounded-xl border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50 hover:bg-eduGreen-500/10 text-zinc-900 dark:text-white font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all flex items-center gap-2"
+                    >
+                        <Building2 className="w-4 h-4 text-eduGreen-500" />
+                        Banking Channels
+                        {bankingAccounts.length > 0 && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-eduGreen-500/20 text-eduGreen-600 dark:text-eduGreen-400 text-[8px] font-bold">
+                                {bankingAccounts.filter(a => a.isActive).length}
+                            </span>
+                        )}
+                    </Button>
+                    <Button
                         onClick={() => setShowFeeModal(true)}
                         className="h-10 sm:h-12 px-4 sm:px-6 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl font-medium text-[9px] sm:text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-eduGreen-900/20 flex items-center gap-2 active:scale-95"
                     >
@@ -275,7 +307,7 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                     <span className="text-[9px] font-mono text-zinc-600 uppercase">Independent Modules</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     {/* Portal 1: Revenue Hub */}
                     <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-eduGreen-500/40 transition-all group flex flex-col justify-between">
                         <div>
@@ -353,6 +385,132 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                             </Button>
                         </Link>
                     </Card>
+
+                    {/* Portal 4: Banking & Settlement Channels */}
+                    <Card className="bg-gradient-to-br from-white/80 to-white/40 dark:from-zinc-950/80 dark:to-zinc-900/40 backdrop-blur-xl border-zinc-200 dark:border-zinc-900/60 rounded-2xl p-5 sm:p-6 shadow-md hover:border-eduGreen-500/40 transition-all group flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500 group-hover:scale-110 transition-transform">
+                                    <Building2 className="w-5 h-5" />
+                                </div>
+                                <span className={cn(
+                                    "px-2.5 py-1 rounded-full text-[8px] font-medium uppercase tracking-widest border",
+                                    bankingAccounts.filter(a => a.isActive).length > 0
+                                        ? "bg-eduGreen-500/10 text-eduGreen-600 dark:text-eduGreen-400 border-eduGreen-500/20"
+                                        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                                )}>
+                                    {bankingAccounts.filter(a => a.isActive).length > 0 ? `${bankingAccounts.filter(a => a.isActive).length} Rails Active` : "Setup Required"}
+                                </span>
+                            </div>
+                            <h3 className="text-base sm:text-lg font-medium text-zinc-900 dark:text-white uppercase tracking-tight mb-1.5 group-hover:text-eduGreen-500 transition-colors">
+                                Institutional Bank Accounts
+                            </h3>
+                            <p className="text-[10px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal mb-6">
+                                Configure verified school accounts (CBE, Telebirr) for parent tuition settlements.
+                            </p>
+                        </div>
+                        <Button 
+                            onClick={() => setShowBankingModal(true)}
+                            className="w-full h-10 bg-zinc-900 dark:bg-zinc-800 hover:bg-eduGreen-600 text-white rounded-xl font-medium text-[9px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn"
+                        >
+                            Configure Banking Rails
+                            <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                    </Card>
+                </div>
+
+                {/* Institutional Settlement Accounts Ribbon */}
+                <div className="p-6 rounded-3xl bg-white/40 dark:bg-zinc-950/40 backdrop-blur-xl border border-zinc-200 dark:border-zinc-900/60 shadow-sm space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2.5 bg-eduGreen-500/10 rounded-xl border border-eduGreen-500/20 text-eduGreen-500">
+                                <Building2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">
+                                    Official Institutional Settlement Channels
+                                </h3>
+                                <p className="text-[10px] text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
+                                    Accounts presented to parents when settling tuition invoices
+                                </p>
+                            </div>
+                        </div>
+                        <Button
+                            onClick={() => setShowBankingModal(true)}
+                            size="sm"
+                            className="h-9 px-4 rounded-xl bg-eduGreen-600 hover:bg-eduGreen-500 text-white text-[10px] font-bold uppercase tracking-widest self-start sm:self-auto shadow-md shadow-eduGreen-900/20"
+                        >
+                            <Plus className="w-3.5 h-3.5 mr-1" /> Manage Accounts
+                        </Button>
+                    </div>
+
+                    {bankingAccounts.filter(a => a.isActive).length === 0 ? (
+                        <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-xs flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
+                                <div>
+                                    <p className="font-semibold text-zinc-900 dark:text-white text-[11px] uppercase tracking-wider">
+                                        No Banking Channels Configured Yet
+                                    </p>
+                                    <p className="text-[10px] text-zinc-600 dark:text-zinc-400">
+                                        Parents currently see a notice to settle at the campus finance office. Add your official CBE, Telebirr, or bank account so families can pay online.
+                                    </p>
+                                </div>
+                            </div>
+                            <Button
+                                size="sm"
+                                onClick={() => setShowBankingModal(true)}
+                                className="h-8 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-black text-[9px] font-bold uppercase tracking-wider shrink-0"
+                            >
+                                Setup Now
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {bankingAccounts.filter(a => a.isActive).map((acc) => (
+                                <div
+                                    key={acc.id}
+                                    className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 space-y-1.5 text-xs relative group"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className="font-bold text-[10px] uppercase tracking-wider text-eduGreen-600 dark:text-eduGreen-400 flex items-center gap-1.5">
+                                            {acc.type === "MOBILE_MONEY" ? <Smartphone className="w-3.5 h-3.5" /> : <Building2 className="w-3.5 h-3.5" />}
+                                            {acc.provider}
+                                        </span>
+                                        {acc.isPrimary && (
+                                            <span className="px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest bg-eduGreen-100 dark:bg-eduGreen-950/60 text-eduGreen-700 dark:text-eduGreen-400 border border-eduGreen-300 dark:border-eduGreen-800/40">
+                                                Primary
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="text-[11px] font-mono text-zinc-900 dark:text-white flex items-center justify-between">
+                                        <span className="select-all font-bold">{acc.accountNumber}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(acc.accountNumber);
+                                                setCopiedAccId(acc.id);
+                                                setTimeout(() => setCopiedAccId(null), 2000);
+                                                toast.success("Account copied");
+                                            }}
+                                            className="text-zinc-600 hover:text-eduGreen-500 transition-colors p-1"
+                                            title="Copy Account Number"
+                                        >
+                                            {copiedAccId === acc.id ? <Check className="w-3 h-3 text-eduGreen-500" /> : <Copy className="w-3 h-3" />}
+                                        </button>
+                                    </div>
+                                    <div className="text-[10px] text-zinc-600 dark:text-zinc-400 truncate">
+                                        Holder: <strong className="text-zinc-800 dark:text-zinc-200">{acc.accountName}</strong>
+                                    </div>
+                                    {acc.instructions && (
+                                        <p className="text-[9px] text-zinc-600 dark:text-zinc-500 truncate italic">
+                                            {acc.instructions}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -493,6 +651,15 @@ export function FinanceView({ user, school, grades }: FinanceViewProps) {
                 onClose={() => setShowFeeModal(false)}
                 onSuccess={handleFeeCreated}
                 grades={grades}
+            />
+
+            {/* Institutional Banking Channels Modal */}
+            <BankingAccountsModal
+                isOpen={showBankingModal}
+                onClose={() => setShowBankingModal(false)}
+                initialAccounts={bankingAccounts}
+                onSuccess={(updated) => setBankingAccounts(updated)}
+                schoolName={school?.name}
             />
 
             {/* Delete Fee Confirmation Modal */}
