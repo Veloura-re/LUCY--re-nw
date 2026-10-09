@@ -1,23 +1,15 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireRole, requireHomeroomAccess } from '@/lib/security';
+import { handleApiError, requireStudentAccess } from '@/lib/security';
+import { logActivity, getIp } from '@/lib/audit';
 
 export async function GET(request: Request, { params }: { params: Promise<{ studentId: string }> }) {
     try {
         const { studentId } = await params;
-        const student = await prisma.student.findUnique({
-            where: { id: studentId },
-            select: { classId: true }
-        });
-
-        if (student?.classId) {
-            await requireHomeroomAccess(student.classId);
-        } else {
-            await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
-        }
+        const { student } = await requireStudentAccess(studentId);
 
         const remarks = await prisma.studentRemark.findMany({
-            where: { studentId },
+            where: { studentId: student.id },
             include: {
                 teacher: { select: { id: true, name: true } }
             },
@@ -33,37 +25,46 @@ export async function GET(request: Request, { params }: { params: Promise<{ stud
 export async function POST(request: Request, { params }: { params: Promise<{ studentId: string }> }) {
     try {
         const { studentId } = await params;
-        const student = await prisma.student.findUnique({
-            where: { id: studentId },
-            select: { classId: true }
-        });
-
-        const user = student?.classId
-            ? await requireHomeroomAccess(student.classId)
-            : await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const { user, student } = await requireStudentAccess(studentId);
 
         const { content, term }: any = await request.json().catch(() => ({}));
 
+        if (typeof content !== 'string' || !content.trim() || content.length > 5000) {
+            return NextResponse.json({ error: 'Remark content is required (max 5000 characters)' }, { status: 400 });
+        }
+
+        let termId: string | undefined;
+        if (term) {
+            // The term must belong to the same school as the student
+            const academicTerm = await prisma.academicTerm.findFirst({
+                where: { id: String(term), schoolId: student.schoolId },
+                select: { id: true }
+            });
+            if (!academicTerm) {
+                return NextResponse.json({ error: 'Invalid term' }, { status: 400 });
+            }
+            termId = academicTerm.id;
+        }
+
         const remark = await prisma.studentRemark.create({
             data: {
-                studentId,
+                studentId: student.id,
                 teacherId: user.id,
-                content,
-                termId: term || undefined   // term is AcademicTerm FK (termId), not a string field
+                content: content.trim(),
+                termId
             }
         });
 
-        
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'CREATE', resourceType: 'student_remark', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ remark });
+        await logActivity({
+            userId: user.id,
+            schoolId: student.schoolId,
+            action: 'CREATE',
+            resourceType: 'student_remark',
+            resourceId: remark.id,
+            ip: getIp(request)
+        });
+
+        return NextResponse.json({ remark });
     } catch (e) {
         return handleApiError(e);
     }

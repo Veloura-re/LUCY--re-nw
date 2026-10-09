@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { prisma } from '@/lib/prisma';
@@ -69,6 +70,6 @@ export async function PATCH(
         });
     } catch (error: any) {
         console.error('[AdminBillingReceipts/PATCH] Error:', error.message);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

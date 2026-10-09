@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
@@ -197,6 +198,6 @@ return NextResponse.json({ success: true, userId });
 
     } catch (e: any) {
         console.error(e);
-        return NextResponse.json({ error: e.message }, { status: 400 });
+        return NextResponse.json({ error: publicErrorMessage(e) }, { status: 400 });
     }
 }

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { requireAuth, handleApiError, rateLimit, secureJson } from "@/lib/security";
+import { requireAuth, handleApiError, secureJson } from "@/lib/security";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimitShared } from '@/lib/rate-limit';
 
 console.log("[DEBUG] Loading Chat Route Module (Edge-Native)");
 
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
     console.log("[DEBUG] POST /api/ai/chat entered");
     try {
         // 1. Rate Limiting (10 requests per minute)
-        const rateLimitResponse = rateLimit(req, "ai/chat", 10);
+        const rateLimitResponse = await rateLimitShared(req, "ai/chat", 10);
         if (rateLimitResponse) return rateLimitResponse;
 
         // 2. Authentication
@@ -78,8 +79,6 @@ export async function POST(req: Request) {
     } catch (error: any) {
         console.error("[DEBUG] Chat API Error:", error);
         return secureJson({ 
-            error: "AI API Error", 
-            details: error.message || String(error)
-        }, 500);
+            error: "AI API Error" }, 500);
     }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(req: NextRequest) {
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
     } catch (err: any) {
         console.error('[Sanctuary Report Error]:', err.message);
         return NextResponse.json(
-            { error: err.message || 'Failed to submit report' },
+            { error: publicErrorMessage(err, 'Failed to submit report') },
             { status: err.message?.includes('Unauthorized') ? 401 : 500 }
         );
     }

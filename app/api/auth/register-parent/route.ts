@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { rateLimit, secureJson, sanitizeInput } from '@/lib/security';
+import { secureJson, sanitizeInput } from '@/lib/security';
 import { logActivity, logError } from '@/lib/audit';
 import { z } from 'zod';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 const RegisterParentSchema = z.object({
     userId: z.string().uuid().optional(),
@@ -14,7 +15,7 @@ const RegisterParentSchema = z.object({
 });
 
 export async function POST(request: Request) {
-    const limit = rateLimit(request, "auth/register-parent", 10);
+    const limit = await rateLimitShared(request, "auth/register-parent", 10);
     if (limit) return limit;
 
     const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;

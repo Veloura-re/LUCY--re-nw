@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { processParentChat } from '@/lib/ai';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 
 export async function POST(request: Request) {
     try {
@@ -55,6 +55,6 @@ export async function POST(request: Request) {
 return NextResponse.json({ text: responseText });
     } catch (e: any) {
         console.error('[Parent Chat API Error]', e);
-        return NextResponse.json({ error: e.message || 'Failed to process chat' }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(e, 'Failed to process chat') }, { status: 500 });
     }
 }

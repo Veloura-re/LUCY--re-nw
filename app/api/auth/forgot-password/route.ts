@@ -1,15 +1,25 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { sendRecoveryEmail } from '@/lib/email';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
     try {
-        const { email } = await request.json() as { email: string };
+        // Per-IP throttle first, then a per-address throttle so one inbox cannot be flooded from many IPs
+        const ipLimited = await rateLimitShared(request, 'auth/forgot-password', 5, 10 * 60_000);
+        if (ipLimited) return ipLimited;
 
-        if (!email) {
+        const body = await request.json().catch(() => ({})) as { email?: unknown };
+        const email = typeof body.email === 'string' ? body.email.trim() : '';
+
+        if (!email || email.length > 254) {
             return NextResponse.json({ error: 'Email is required' }, { status: 400 });
         }
+
+        const emailLimited = await rateLimitShared(request, `auth/forgot-password:${email.toLowerCase()}`, 3, 60 * 60_000);
+        if (emailLimited) return emailLimited;
 
         // 1. Verify user exists in the local database (with Supabase REST fallback if Prisma is null)
         let userExists = false;
@@ -85,9 +95,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'SMTP gateway message failure.' }, { status: 500 });
         }
 
-        return NextResponse.json({ success: true, message: 'Recovery instructions dispatched.' });
+        return NextResponse.json({ success: true, message: 'Recovery instructions dispatched if the account exists.' });
     } catch (e: any) {
         console.error('Forgot password API error:', e);
-        return NextResponse.json({ error: e.message || 'Internal server error.' }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(e, 'Internal server error.') }, { status: 500 });
     }
 }

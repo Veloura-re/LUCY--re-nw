@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { safeEqual } from "@/lib/security";
 
 // Webhook for payment gateway reconciliation (Stripe, Chapa, Telebirr, CBE Birr)
 export async function POST(req: Request) {
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Webhook endpoint not configured" }, { status: 500 });
         }
 
-        if (incomingSecret !== webhookSecret) {
+        if (!incomingSecret || !safeEqual(incomingSecret, webhookSecret)) {
             return NextResponse.json({ error: "Unauthorized webhook signature" }, { status: 401 });
         }
 

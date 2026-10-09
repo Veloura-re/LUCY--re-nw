@@ -135,7 +135,7 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error('[AI Essay Scan API Error]', error);
         return NextResponse.json(
-            { error: 'Failed to scan submission', details: error.message },
+            { error: 'Failed to scan submission' },
             { status: 500 }
         );
     }

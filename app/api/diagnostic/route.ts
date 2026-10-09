@@ -1,46 +1,45 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit } from '@/lib/security';
 
-export async function GET() {
-    const results: Record<string, any> = {};
+/**
+ * Connectivity self-check for signed-in users. Reports pass/fail only; internal error text,
+ * identifiers and configuration state are never returned.
+ */
+export async function GET(request: Request) {
+    const limited = rateLimit(request, 'diagnostic', 10);
+    if (limited) return limited;
 
-    // 1. Check Supabase auth
+    const results: Record<string, { ok: boolean }> = {};
+
+    // 1. Check Supabase auth. A signed-in session is required to use this endpoint.
+    let signedIn = false;
     try {
         const supabase = await createClient();
         const { data: { user }, error } = await supabase.auth.getUser();
-        results.supabase_auth = {
-            ok: !error,
-            user_id: user?.id ?? null,
-            error: error?.message ?? null,
-        };
-    } catch (e: any) {
-        results.supabase_auth = { ok: false, error: e?.message ?? 'Unknown error' };
+        signedIn = !error && !!user;
+        results.supabase_auth = { ok: signedIn };
+    } catch (e) {
+        console.error('[Diagnostic] Supabase auth check failed:', e);
+        results.supabase_auth = { ok: false };
+    }
+
+    if (!signedIn) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Check database connectivity via Prisma
     try {
-        if (prisma) {
-            await (prisma as any).$queryRaw`SELECT 1`;
-            results.database = { ok: true, provider: 'prisma' };
-        } else {
-            results.database = { ok: false, provider: 'none', error: 'Prisma not available on this runtime' };
-        }
-    } catch (e: any) {
-        results.database = { ok: false, provider: 'prisma', error: e?.message ?? 'Unknown error' };
+        if (!prisma) throw new Error('Prisma not available on this runtime');
+        await (prisma as any).$queryRaw`SELECT 1`;
+        results.database = { ok: true };
+    } catch (e) {
+        console.error('[Diagnostic] Database check failed:', e);
+        results.database = { ok: false };
     }
 
-    // 3. Check environment variable presence (never expose values)
-    results.env = {
-        supabase_url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-        supabase_anon_key: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-        service_role_key: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-        database_url: !!process.env.DATABASE_URL,
-    };
-
-    const allOk = Object.values(results).every((r: any) =>
-        typeof r === 'object' && r !== null ? (r.ok !== false) : true
-    );
+    const allOk = Object.values(results).every(r => r.ok);
 
     return NextResponse.json({ success: allOk, results }, { status: allOk ? 200 : 500 });
 }

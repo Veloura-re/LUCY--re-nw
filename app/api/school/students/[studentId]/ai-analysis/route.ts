@@ -1,15 +1,23 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { analyzeStudentRisk } from '@/lib/ai';
+import { handleApiError, requireStudentAccess } from '@/lib/security';
+import { rateLimitShared } from '@/lib/rate-limit';
+import { logActivity, getIp } from '@/lib/audit';
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ studentId: string }> }
 ) {
     try {
+        const limited = await rateLimitShared(request, 'school/students/ai-analysis', 10);
+        if (limited) return limited;
+
         const { studentId } = await params;
+        const { user, student: access } = await requireStudentAccess(studentId);
+
         const student = await prisma.student.findUnique({
-            where: { id: studentId },
+            where: { id: access.id },
             include: {
                 attendanceRecords: {
                     orderBy: { date: 'desc' },
@@ -47,10 +55,18 @@ export async function GET(
 
         const analysis = await analyzeStudentRisk(aiContext);
 
+        await logActivity({
+            userId: user.id,
+            schoolId: access.schoolId,
+            action: 'AI_STUDENT_ANALYSIS',
+            resourceType: 'student',
+            resourceId: access.id,
+            ip: getIp(request)
+        });
+
         return NextResponse.json({ analysis });
 
     } catch (error: any) {
-        console.error('[AI Analysis Error]', error);
-        return NextResponse.json({ error: 'Failed to generate AI analysis', details: error.message }, { status: 500 });
+        return handleApiError(error);
     }
 }

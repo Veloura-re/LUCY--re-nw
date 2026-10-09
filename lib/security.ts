@@ -113,17 +113,12 @@ export async function requireSchoolLinked() {
 
     if (prisma) {
         try {
-            dbUser = await prisma.user.findFirst({
-                where: {
-                    OR: [
-                        { id: user.id },
-                        { email: user.email || '' }
-                    ]
-                },
+            dbUser = await prisma.user.findUnique({
+                where: { id: user.id },
                 select: { id: true, role: true, schoolId: true, name: true, email: true, preferences: true }
             });
         } catch (err: any) {
-            console.warn("[lib/security] Prisma findFirst failed, using getCachedUser fallback:", err.message);
+            console.warn("[lib/security] Prisma findUnique failed, using getCachedUser fallback:", err.message);
         }
     }
 
@@ -142,15 +137,8 @@ export async function requireSchoolLinked() {
     }
 
     if (!dbUser) {
-        // Fallback: Use auth user profile
-        dbUser = {
-            id: user.id,
-            role: (user.user_metadata?.role as Role) || 'OWNER',
-            schoolId: user.user_metadata?.schoolId || null,
-            name: user.user_metadata?.full_name || '',
-            email: user.email || '',
-            preferences: null
-        };
+        // user_metadata is writable by the end user and must never grant a role or tenant.
+        throw new Error("Unauthorized: User record not found");
     }
 
     if (!dbUser?.schoolId && dbUser?.role !== 'SUPERADMIN') {
@@ -173,18 +161,59 @@ export async function requireSchoolLinked() {
 
 export async function requireHomeroomAccess(classId: string) {
     const user = await requireRole(['TEACHER', 'HOMEROOM', 'OWNER', 'PRINCIPAL', 'SUPERADMIN']);
-    if (user.role === 'OWNER' || user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
 
     const classRecord = await prisma.class.findUnique({
         where: { id: classId },
-        select: { homeroomTeacherId: true }
+        select: { homeroomTeacherId: true, schoolId: true, grade: { select: { schoolId: true } } }
     });
 
-    if (classRecord?.homeroomTeacherId !== user.id) {
+    if (!classRecord) {
+        throw new Error("Forbidden: Class not accessible");
+    }
+
+    const classSchoolId = classRecord.grade?.schoolId ?? classRecord.schoolId;
+    if (user.role !== 'SUPERADMIN' && classSchoolId !== user.schoolId) {
+        throw new Error("Forbidden: Class not accessible");
+    }
+
+    if (user.role === 'OWNER' || user.role === 'PRINCIPAL' || user.role === 'SUPERADMIN') return user;
+
+    if (classRecord.homeroomTeacherId !== user.id) {
         throw new Error("Forbidden: You are not the homeroom teacher for this class");
     }
 
     return user;
+}
+
+/**
+ * Resolves a student for a staff caller and enforces tenant isolation.
+ * Admin roles must belong to the student's school; teachers must additionally be the
+ * homeroom teacher of the student's class. SUPERADMIN is exempt from the tenant check.
+ * Unknown and cross-tenant students are indistinguishable to the caller.
+ */
+export async function requireStudentAccess(studentId: string) {
+    const user = await requireRole(STAFF_ROLES);
+
+    const student = await prisma.student.findUnique({
+        where: { id: studentId },
+        select: { id: true, schoolId: true, classId: true }
+    });
+
+    if (!student) {
+        throw new Error("Forbidden: Student not accessible");
+    }
+
+    if (user.role !== 'SUPERADMIN' && student.schoolId !== user.schoolId) {
+        throw new Error("Forbidden: Student not accessible");
+    }
+
+    if (user.role === 'TEACHER' || user.role === 'HOMEROOM') {
+        if (!student.classId || !(await isHomeroomTeacher(user.id, student.classId))) {
+            throw new Error("Forbidden: You are not the homeroom teacher for this student");
+        }
+    }
+
+    return { user, student };
 }
 
 export async function isHomeroomTeacher(userId: string, classId: string) {
@@ -193,6 +222,25 @@ export async function isHomeroomTeacher(userId: string, classId: string) {
         select: { homeroomTeacherId: true }
     });
     return classRecord?.homeroomTeacherId === userId;
+}
+
+const INTERNAL_ERROR_PATTERN = /prisma|invocation|\bpg\b|postgres|supabase|relation "|column "|violates|syntax error|ECONN|ETIMEDOUT|ENOTFOUND|socket|fetch failed|\bat .+\(.+:\d+:\d+\)|jwt|service[_ ]role|api[_ ]key|secret|token/i;
+
+/**
+ * Returns an error message that is safe to show to API clients.
+ * Application errors pass through. Database, Prisma, Supabase, network and credential-related
+ * errors are replaced with the fallback; the original is expected to be logged server-side.
+ */
+export function publicErrorMessage(error: unknown, fallback: string = "Internal Server Error"): string {
+    if (!(error instanceof Error)) return fallback;
+
+    const withCode = error as Error & { code?: unknown; hint?: unknown; details?: unknown };
+    if (withCode.code !== undefined || withCode.hint !== undefined || withCode.details !== undefined) return fallback;
+    if (/prisma|postgres|supabase|storage|fetch|auth/i.test(error.name) && error.name !== 'Error') return fallback;
+
+    const message = error.message?.trim();
+    if (!message || message.length > 200 || INTERNAL_ERROR_PATTERN.test(message)) return fallback;
+    return message;
 }
 
 export function handleApiError(error: unknown) {
@@ -219,7 +267,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(self), microphone=(), geolocation=()',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://* wss://*; frame-src 'self' https://*; worker-src 'self' blob:;",
+    'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'",
 };
 
 export function secureJson(data: any, status: number = 200) {
@@ -274,6 +322,40 @@ export function rateLimit(
         return secureJson({ error: `Rate limit exceeded. Try again in ${retryAfter}s.` }, 429);
     }
     return null;
+}
+
+/**
+ * Constant-time string comparison. Always inspects the full length of the longer input
+ * so response timing does not reveal how many leading characters matched.
+ */
+export function safeEqual(a: string, b: string): boolean {
+    const enc = new TextEncoder();
+    const x = enc.encode(a);
+    const y = enc.encode(b);
+    let diff = x.length ^ y.length;
+    const len = Math.max(x.length, y.length);
+    for (let i = 0; i < len; i++) {
+        diff |= (x[i] ?? 0) ^ (y[i] ?? 0);
+    }
+    return diff === 0;
+}
+
+const HTML_ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+/** Escapes untrusted text for safe interpolation into HTML (emails, templates). */
+export function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, ch => HTML_ESCAPES[ch]);
+}
+
+/** Collapses control characters and line breaks so a value is safe in an email subject or header. */
+export function singleLine(value: string): string {
+    return value.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+}
+
+const EMAIL_PATTERN = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/;
+
+export function isValidEmail(value: unknown): value is string {
+    return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
 }
 
 export function sanitizeInput(input: string): string {

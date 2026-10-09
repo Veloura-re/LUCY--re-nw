@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         console.error(e);
         console.error(`[GET /api/user/authorizations] Error: ${e.message}`, e.stack);
 
-        return NextResponse.json({ error: 'Failed to fetch authorizations', message: e.message }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch authorizations' }, { status: 500 });
     }
 }
 
@@ -86,6 +86,6 @@ return NextResponse.json({ authorization });
         console.error(e);
         console.error(`[POST /api/user/authorizations] Error: ${e.message}`, e.stack);
 
-        return NextResponse.json({ error: 'Failed to create authorization', message: e.message }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to create authorization' }, { status: 500 });
     }
 }

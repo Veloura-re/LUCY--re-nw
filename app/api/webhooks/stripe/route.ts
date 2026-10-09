@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
@@ -217,6 +218,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true });
     } catch (error: any) {
         console.error('Stripe webhook handling error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

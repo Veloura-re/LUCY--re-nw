@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError, secureJson, rateLimit, sanitizeInput } from '@/lib/security';
+import { requireRole, handleApiError, secureJson, sanitizeInput } from '@/lib/security';
 import { logActivity, logError } from '@/lib/audit';
 import { z } from 'zod';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 const LinkStudentSchema = z.object({
     studentCode: z.string().min(1).max(32).transform(val => sanitizeInput(val).toUpperCase()),
@@ -9,7 +10,7 @@ const LinkStudentSchema = z.object({
 });
 
 export async function POST(request: Request) {
-    const limit = rateLimit(request, "parent/link-student", 10);
+    const limit = await rateLimitShared(request, "parent/link-student", 10);
     if (limit) return limit;
 
     const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;

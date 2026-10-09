@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { safeEqual } from '@/lib/security';
 
-// Vercel Cron will call this endpoint daily.
-// Ensure it's secured via CRON_SECRET or Vercel's authorization header.
+// Invoked by the scheduler with "Authorization: Bearer <CRON_SECRET>".
+// The secret is mandatory: an unset secret disables the endpoint instead of opening it.
 export async function GET(request: Request) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && !request.url.includes('localhost')) {
-        // Vercel Cron sends a Bearer token matching CRON_SECRET
+    const secret = process.env.CRON_SECRET;
+    if (!secret) {
+        console.error('[Cron Backup] CRON_SECRET is not configured; refusing to run.');
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const authHeader = request.headers.get('authorization') || '';
+    if (!safeEqual(authHeader, `Bearer ${secret}`)) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -126,6 +132,6 @@ export async function GET(request: Request) {
         });
     } catch (error: any) {
         console.error("Cron Backup Error:", error);
-        return NextResponse.json({ error: error.message || 'Cron failed' }, { status: 500 });
+        return NextResponse.json({ error: 'Cron failed' }, { status: 500 });
     }
 }

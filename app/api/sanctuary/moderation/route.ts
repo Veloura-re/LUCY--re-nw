@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 
 export async function GET(req: NextRequest) {
     try {
@@ -217,7 +217,7 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
         console.error('[Sanctuary Moderation API Error]:', err.message);
         return NextResponse.json(
-            { error: err.message || 'Internal failure' },
+            { error: publicErrorMessage(err, 'Internal failure') },
             { status: err.message?.includes('Unauthorized') ? 401 : err.message?.includes('Forbidden') ? 403 : 500 }
         );
     }
