@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 
 export async function POST(req: NextRequest) {
     try {
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     } catch (err: any) {
         console.error('[Sanctuary End Error]:', err.message);
         return NextResponse.json(
-            { error: err.message || 'Failed to end session' },
+            { error: publicErrorMessage(err, 'Failed to end session') },
             { status: err.message?.includes('Unauthorized') ? 401 : 500 }
         );
     }

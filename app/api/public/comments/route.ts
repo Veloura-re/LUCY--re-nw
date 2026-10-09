@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { rateLimit, secureJson, validateStringInput } from "@/lib/security";
 import { unstable_cache } from "next/cache";
+import { rateLimitShared } from '@/lib/rate-limit';
 
 const EMOJIS = ["🔭", "⚡", "🛸", "🧠", "🌐", "⬡", "🔒", "🚀", "💡", "🌍", "🤖", "✨"];
 
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
         return secureJson(data);
     } catch (e: any) {
         console.error("[Comments/GET] Error:", e);
-        return secureJson({ error: "failed to fetch", details: e.message }, 500);
+        return secureJson({ error: "failed to fetch" }, 500);
     }
 }
 
@@ -44,7 +45,7 @@ interface CommentBody {
 // POST /api/public/comments — submit a comment
 export async function POST(request: Request) {
     // Rate limit: 5 requests/min per IP
-    const limited = rateLimit(request, "public/comments/POST", 5);
+    const limited = await rateLimitShared(request, "public/comments/POST", 5);
     if (limited) return limited;
 
     try {

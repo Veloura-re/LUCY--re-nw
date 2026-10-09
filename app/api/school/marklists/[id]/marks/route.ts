@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 
 // POST: Bulk update marks
@@ -147,7 +147,7 @@ export async function POST(
         return NextResponse.json({ success: true, count: updates.length });
     } catch (e: any) {
         console.error("Save Marks Error:", e);
-        return NextResponse.json({ error: e.message || "Failed to save marks" }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(e, "Failed to save marks") }, { status: 500 });
     }
 }
 
@@ -235,6 +235,6 @@ export async function GET(
         });
 
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(e) }, { status: 500 });
     }
 }

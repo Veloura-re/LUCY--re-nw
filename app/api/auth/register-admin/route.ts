@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { rateLimit, secureJson } from '@/lib/security';
+import { secureJson } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
-    const limit = rateLimit(request, "auth/register-admin", 3); // Very strict for admin reg
+    const limit = await rateLimitShared(request, "auth/register-admin", 3); // Very strict for admin reg
     if (limit) return limit;
 
     const { userId, email, name, secretKey } = await request.json() as any;

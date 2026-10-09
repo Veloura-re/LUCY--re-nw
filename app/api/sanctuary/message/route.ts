@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 import { sanitizeSanctuaryContent } from '@/lib/sanctuary-guardrails';
 
 export async function GET(req: NextRequest) {
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
         console.error('[Sanctuary Message Fetch Error]:', err.message);
         return NextResponse.json(
-            { error: err.message || 'Internal failure' },
+            { error: publicErrorMessage(err, 'Internal failure') },
             { status: err.message?.includes('Unauthorized') ? 401 : err.message?.includes('Forbidden') ? 403 : 500 }
         );
     }
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     } catch (err: any) {
         console.error('[Sanctuary Message Send Error]:', err.message);
         return NextResponse.json(
-            { error: err.message || 'Internal transmission failure' },
+            { error: publicErrorMessage(err, 'Internal transmission failure') },
             { status: err.message?.includes('Unauthorized') ? 401 : err.message?.includes('Forbidden') ? 403 : 500 }
         );
     }

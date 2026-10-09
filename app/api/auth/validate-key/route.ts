@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
@@ -64,6 +65,6 @@ export async function POST(request: Request) {
 
     } catch (error: any) {
         console.error('Validation Error:', error);
-        return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error, 'Internal server error') }, { status: 500 });
     }
 }

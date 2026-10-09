@@ -1,25 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
+import { escapeHtml, singleLine, isValidEmail } from "@/lib/security";
+import { rateLimitShared } from '@/lib/rate-limit';
+
+const CATEGORY_RECIPIENTS: Record<string, string> = {
+    support: "support@5-cn.net",
+    sales: "admin@5-cn.net",
+    admin: "admin@5-cn.net",
+    billing: "billing@5-cn.net",
+    security: "security@5-cn.net",
+};
+const DEFAULT_RECIPIENT = "contact@5-cn.net";
+
+const MAX_CALLSIGN = 100;
+const MAX_MESSAGE = 5000;
 
 export async function POST(req: NextRequest) {
+    const limited = await rateLimitShared(req, "uplink", 3, 10 * 60_000);
+    if (limited) return limited;
+
     try {
-        const { callsign, email, message, category } = await req.json() as any;
+        const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
 
-        // Route to designated business inbox based on submission category
-        let recipient = "contact@5-cn.net";
-        if (category === "support") recipient = "support@5-cn.net";
-        else if (category === "sales" || category === "admin") recipient = "admin@5-cn.net";
-        else if (category === "billing") recipient = "billing@5-cn.net";
-        else if (category === "security") recipient = "security@5-cn.net";
+        const callsign = typeof body.callsign === "string" ? singleLine(body.callsign).slice(0, MAX_CALLSIGN) : "";
+        const message = typeof body.message === "string" ? body.message.trim().slice(0, MAX_MESSAGE) : "";
+        const email = isValidEmail(body.email) ? body.email : "";
+        const category = typeof body.category === "string" ? body.category : "";
 
-        // Save to database
-        await (prisma as any).wantsAccess.create({
-            data: {
-                callsign: callsign || "UNIDENTIFIED_UNIT",
-                email: email || "NO_REPLY_PROTOCOL",
-                message: message || "Empty Transmission Packet."
-            }
+        if (!message) {
+            return NextResponse.json({ error: "A message is required." }, { status: 400 });
+        }
+
+        const recipient = CATEGORY_RECIPIENTS[category] ?? DEFAULT_RECIPIENT;
+        const safeCallsign = callsign || "UNIDENTIFIED_UNIT";
+        const safeEmail = email || "NO_REPLY_PROTOCOL";
+
+        await prisma.wantsAccess.create({
+            data: { callsign: safeCallsign, email: safeEmail, message }
         });
 
         const html = `
@@ -29,15 +47,15 @@ export async function POST(req: NextRequest) {
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
                 <div style="margin-bottom: 20px;">
                     <p style="color: #00ff9d; font-weight: bold; font-size: 12px; text-transform: uppercase;">Callsign / Identifier</p>
-                    <p style="font-size: 18px; margin: 4px 0;">${callsign || "UNIDENTIFIED_UNIT"}</p>
+                    <p style="font-size: 18px; margin: 4px 0;">${escapeHtml(safeCallsign)}</p>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <p style="color: #00ff9d; font-weight: bold; font-size: 12px; text-transform: uppercase;">Direct Comm Link</p>
-                    <p style="font-size: 16px; margin: 4px 0;">${email || "NO_REPLY_PROTOCOL"}</p>
+                    <p style="font-size: 16px; margin: 4px 0;">${escapeHtml(safeEmail)}</p>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <p style="color: #00ff9d; font-weight: bold; font-size: 12px; text-transform: uppercase;">Payload Content</p>
-                    <p style="font-size: 14px; line-height: 1.6; color: #ccc;">${message || "Empty Transmission Packet."}</p>
+                    <p style="font-size: 14px; line-height: 1.6; color: #ccc; white-space: pre-wrap;">${escapeHtml(message)}</p>
                 </div>
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
                 <p style="font-size: 10px; color: #444; text-align: center;">LUCY OS // INITIALIZATION PROTOCOL // SECURE TRANSIT</p>
@@ -46,17 +64,14 @@ export async function POST(req: NextRequest) {
 
         await sendEmail({
             to: recipient,
-            subject: `UPLINK: connection request from ${callsign || 'Unknown'}`,
-            html: html,
+            subject: `UPLINK: connection request from ${safeCallsign}`,
+            html,
             replyTo: email || undefined
         });
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("[Connection API Error]:", error);
-        return NextResponse.json(
-            { error: "Transmission failed. Error: " + error.message },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Transmission failed. Please try again later." }, { status: 500 });
     }
 }

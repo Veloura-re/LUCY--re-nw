@@ -1,10 +1,11 @@
 import { prisma } from '@/lib/prisma';
-import { rateLimit, secureJson, sanitizeInput } from '@/lib/security';
+import { secureJson, sanitizeInput } from '@/lib/security';
 import { logError } from '@/lib/audit';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
     // 1. Throttling: Max 5 code verification attempts per minute per IP to block enumeration attacks
-    const limit = rateLimit(request, "auth/verify-code", 5, 60_000);
+    const limit = await rateLimitShared(request, "auth/verify-code", 5, 60_000);
     if (limit) return limit;
 
     const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;

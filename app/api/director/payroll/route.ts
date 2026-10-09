@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
@@ -83,6 +84,6 @@ export async function POST(req: Request) {
         return NextResponse.json(payroll);
     } catch (e: any) {
         console.error(e);
-        return NextResponse.json({ error: e?.message || "Internal Server Error", details: e }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(e, "Internal Server Error") }, { status: 500 });
     }
 }

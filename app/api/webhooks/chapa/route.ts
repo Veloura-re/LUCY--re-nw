@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { prisma } from '@/lib/prisma'; // Assuming lib/prisma is set up properly
+import { prisma } from '@/lib/prisma';
+import { safeEqual } from '@/lib/security';
+import { logActivity } from '@/lib/audit';
+import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS } from '@/lib/chapa';
 
 export async function POST(request: Request) {
     try {
@@ -20,34 +23,80 @@ export async function POST(request: Request) {
         // Validate the signature using HMAC SHA256
         const hash = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
         
-        if (hash !== signature) {
+        if (!safeEqual(hash, signature)) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
         }
 
-        const event = JSON.parse(rawBody);
+        let event: any;
+        try {
+            event = JSON.parse(rawBody);
+        } catch {
+            return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+        }
 
         // Chapa sends successful charge events as "charge.success"
-        if (event.event === 'charge.success') {
-            const tx_ref = event.data.tx_ref; // e.g., tx-{schoolId}-{timestamp}
-            
-            // Extract school ID from tx_ref
-            // Format is tx-schoolId-timestamp
-            const parts = tx_ref.split('-');
-            if (parts.length >= 3) {
-                // The school ID might contain dashes if it's a UUID, so we need to reconstruct it
-                const schoolId = parts.slice(1, -1).join('-');
-                
-                // Update school to premium/active
-                await prisma.school.update({
-                    where: { id: schoolId },
-                    data: {
-                        status: 'ACTIVE',
-                        subscriptionStatus: 'active'
-                    }
-                });
-                
-                console.log(`[Chapa Webhook] Successfully processed payment for school ${schoolId}`);
+        if (
+            event?.event === 'charge.success' &&
+            (!event.data?.status || event.data.status === 'success') &&
+            typeof event.data?.tx_ref === 'string'
+        ) {
+            const txRef: string = event.data.tx_ref;
+            const parsed = parseChapaTxRef(txRef);
+
+            if (!parsed) {
+                console.warn('[Chapa Webhook] Ignoring event with unrecognised tx_ref format');
+                return NextResponse.json({ received: true });
             }
+
+            // Ignore stale or future-dated references so an old captured event cannot be replayed
+            const age = Date.now() - parsed.createdAt;
+            if (age > CHAPA_MAX_TX_AGE_MS || age < -5 * 60 * 1000) {
+                console.warn(`[Chapa Webhook] Ignoring out-of-window tx_ref for school ${parsed.schoolId}`);
+                return NextResponse.json({ received: true });
+            }
+
+            // Confirm the payment and amount with Chapa; never trust the webhook body alone
+            const verification = await verifyChapaTransaction(txRef);
+            if (!verification.ok) {
+                if (verification.reason === 'UNREACHABLE') {
+                    // Non-2xx makes Chapa retry the delivery later
+                    return NextResponse.json({ error: 'Verification unavailable' }, { status: 503 });
+                }
+                console.warn(`[Chapa Webhook] Verification rejected (${verification.reason}) for school ${parsed.schoolId}`);
+                return NextResponse.json({ received: true });
+            }
+
+            const school = await prisma.school.findUnique({ where: { id: parsed.schoolId }, select: { id: true } });
+            if (!school) {
+                console.warn(`[Chapa Webhook] Verified payment references unknown school ${parsed.schoolId}`);
+                return NextResponse.json({ received: true });
+            }
+
+            // Update school to premium/active
+            await prisma.school.update({
+                where: { id: school.id },
+                data: {
+                    status: 'ACTIVE',
+                    subscriptionStatus: 'active'
+                }
+            });
+
+            // Webhooks have no signed-in actor; attribute the entry to the school's owner account
+            const actor = await prisma.user.findFirst({
+                where: { schoolId: school.id, role: 'OWNER' },
+                select: { id: true }
+            });
+            if (actor) {
+                await logActivity({
+                    userId: actor.id,
+                    schoolId: school.id,
+                    action: 'CHAPA_PAYMENT_CONFIRMED',
+                    resourceType: 'billing',
+                    resourceId: txRef
+                });
+            }
+
+            console.log(`[Chapa Webhook] Successfully processed payment for school ${school.id}`);
         }
 
         return NextResponse.json({ received: true });

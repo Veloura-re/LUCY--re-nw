@@ -1,24 +1,44 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createClient } from "@/utils/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { requireRole, handleApiError,  } from "@/lib/security";
+import { logActivity, getIp } from "@/lib/audit";
+import { rateLimitShared } from '@/lib/rate-limit';
+
+const MAX_IMAGE_CHARS = 6 * 1024 * 1024; // roughly 4.5MB of decoded image data
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user || user.user_metadata.role !== 'TEACHER') {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const limited = await rateLimitShared(req, "teacher/exams/extract", 10);
+    if (limited) return limited;
+
+    let user;
+    try {
+        user = await requireRole(['TEACHER', 'HOMEROOM']);
+
+        const exam = await prisma.exam.findUnique({
+            where: { id },
+            select: { class: { select: { grade: { select: { schoolId: true } } } } }
+        });
+        if (!exam || exam.class?.grade?.schoolId !== user.schoolId) {
+            return NextResponse.json({ error: "Exam not found" }, { status: 404 });
+        }
+    } catch (e) {
+        return handleApiError(e);
     }
 
     try {
-        const { image } = (await req.json()) as any; // base64 image data
+        const { image } = (await req.json().catch(() => ({}))) as { image?: unknown }; // base64 image data
 
-        if (!image) {
-            return NextResponse.json({ error: "Missing image data" }, { status: 400 });
+        if (typeof image !== 'string' || !image.startsWith("data:image/") || !image.includes(",")) {
+            return NextResponse.json({ error: "Missing or invalid image data" }, { status: 400 });
+        }
+        if (image.length > MAX_IMAGE_CHARS) {
+            return NextResponse.json({ error: "Image too large" }, { status: 413 });
         }
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -59,19 +79,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         try {
             const questions = JSON.parse(text);
             
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'EXTRACT_EXAM', resourceType: 'exam', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ questions });
+            await logActivity({
+                userId: user.id,
+                schoolId: user.schoolId as string,
+                action: 'EXTRACT_EXAM',
+                resourceType: 'exam',
+                resourceId: id,
+                ip: getIp(req)
+            });
+            return NextResponse.json({ questions });
         } catch (parseError) {
             console.error("Failed to parse Gemini response:", text);
-            return NextResponse.json({ error: "AI returned invalid format", raw: text }, { status: 500 });
+            return NextResponse.json({ error: "AI returned invalid format" }, { status: 500 });
         }
 
     } catch (e) {

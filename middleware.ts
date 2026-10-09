@@ -11,8 +11,8 @@ export const runtime = 'experimental-edge'
 const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
 
 function checkRateLimit(ip: string, path: string): boolean {
-    // Localhost & internal development bypass
-    if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') return true;
+    // Development bypass only. A missing IP header must never exempt a request in production.
+    if (process.env.NODE_ENV !== 'production') return true;
 
     const isAuth = path.startsWith('/api/auth/');
     const limit = isAuth ? 120 : 300; // 120 req/min for auth actions, 300 req/min for standard API
@@ -33,6 +33,83 @@ function checkRateLimit(ip: string, path: string): boolean {
 
     record.count += 1;
     return true;
+}
+
+function jsonError(status: number, error: string, extra: Record<string, string> = {}) {
+    return new NextResponse(JSON.stringify({ error }), {
+        status,
+        headers: { 'Content-Type': 'application/json', ...extra }
+    })
+}
+
+function isMutating(request: NextRequest) {
+    return ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)
+}
+
+const LARGE_BODY_LIMIT = 10 * 1024 * 1024
+const DEFAULT_BODY_LIMIT = 1024 * 1024
+
+/** Upload and image-extraction endpoints legitimately carry larger bodies. */
+function checkBodySize(request: NextRequest, path: string) {
+    const isLargeRoute = path.endsWith('/upload') || path.endsWith('/extract')
+    const limit = isLargeRoute ? LARGE_BODY_LIMIT : DEFAULT_BODY_LIMIT
+    const contentLength = parseInt(request.headers.get('content-length') || '0', 10)
+    if (contentLength > limit) return jsonError(413, "Payload too large")
+    return null
+}
+
+/**
+ * Origin check for mutating requests. Requests without an Origin header (webhooks, server-to-server)
+ * are not browser-initiated and are left to the route's own authentication.
+ * Extra trusted origins (for example preview deployments) go in ALLOWED_ORIGINS, comma separated.
+ */
+function checkOrigin(request: NextRequest) {
+    const origin = request.headers.get('origin')
+    if (!origin || process.env.NODE_ENV !== 'production') return null
+
+    let originHost: string
+    try {
+        originHost = new URL(origin).hostname
+    } catch {
+        return jsonError(403, "CSRF: Malformed origin")
+    }
+
+    const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
+    const requestHost = rawHost.split(':')[0].trim()
+    const trusted = new Set<string>([requestHost])
+
+    const addHost = (value: string | undefined) => {
+        if (!value) return
+        try { trusted.add(new URL(value.includes('://') ? value : `https://${value}`).hostname) } catch { /* ignore */ }
+    }
+    addHost(process.env.NEXT_PUBLIC_APP_URL)
+    ;(process.env.ALLOWED_ORIGINS || '').split(',').forEach(v => addHost(v.trim()))
+
+    if (!trusted.has(originHost)) return jsonError(403, "CSRF: Origin mismatch")
+    return null
+}
+
+function applySecurityHeaders(response: NextResponse) {
+    const securityHeaders: Record<string, string> = {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Content-Security-Policy': "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co; frame-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob:;",
+        'Link': process.env.NEXT_PUBLIC_SUPABASE_URL ? `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect` : '',
+    }
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+        if (value) response.headers.set(key, value)
+    })
+
+    // Stricter policy in report-only mode: nothing is blocked, but browsers list in the console every
+    // resource that would break once 'unsafe-eval' is removed. Use it to plan the move to nonces.
+    response.headers.set(
+        'Content-Security-Policy-Report-Only',
+        securityHeaders['Content-Security-Policy'].replace(" 'unsafe-eval'", '')
+    )
 }
 
 export async function middleware(request: NextRequest) {
@@ -57,24 +134,30 @@ export async function middleware(request: NextRequest) {
     const isApiPage = path.startsWith('/api')
 
     // ─────────────────────────────────────────────────
-    // RATE LIMITING & FAST-PATH LAYER FOR API ROUTES
+    // RATE LIMITING, CSRF, SIZE LIMIT AND HEADERS FOR API ROUTES
     // ─────────────────────────────────────────────────
     if (isApiPage) {
         const rawForwarded = request.headers.get('x-forwarded-for');
         const ip = request.headers.get('cf-connecting-ip')
             || request.headers.get('x-real-ip')
             || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
-            || '127.0.0.1';
+            || 'unknown';
         const cleanIp = ip.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
 
         if (!checkRateLimit(cleanIp, path)) {
-            return new NextResponse(JSON.stringify({ error: "Too Many Requests. Please wait before retrying." }), {
-                status: 429,
-                headers: { 'Content-Type': 'application/json', 'Retry-After': '60' }
-            })
+            return jsonError(429, "Too Many Requests. Please wait before retrying.", { 'Retry-After': '60' })
         }
 
-        // Fast-path: Let API handlers perform high-speed authenticated token validation directly
+        if (isMutating(request)) {
+            const tooLarge = checkBodySize(request, path)
+            if (tooLarge) return tooLarge
+
+            const csrf = checkOrigin(request)
+            if (csrf) return csrf
+        }
+
+        // Let API handlers perform authenticated token validation directly
+        applySecurityHeaders(response)
         return response;
     }
 
@@ -147,65 +230,13 @@ export async function middleware(request: NextRequest) {
     // 5. Advanced Security Layers
     // ─────────────────────────────────────────────────
 
-    const isMutatingRequest = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)
-
-    // A. Request Size Limiting (DoS Protection)
-    if (isApiPage && isMutatingRequest) {
-        const contentLength = parseInt(request.headers.get('content-length') || '0')
-        if (contentLength > 1024 * 1024) { // 1MB Limit
-            return new NextResponse(JSON.stringify({ error: "Payload too large" }), {
-                status: 413,
-                headers: { 'Content-Type': 'application/json' }
-            })
-        }
+    // Page requests: CSRF check for mutating requests (e.g. server actions) and security headers
+    if (isMutating(request)) {
+        const csrf = checkOrigin(request)
+        if (csrf) return csrf
     }
 
-    // B. CSRF Protection (Origin Check)
-    if (isMutatingRequest) {
-        const origin = request.headers.get('origin');
-        if (origin && process.env.NODE_ENV === 'production') {
-            try {
-                const originHost = new URL(origin).hostname;
-                const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
-                const requestHost = rawHost.split(':')[0].trim();
-                const appUrlHost = process.env.NEXT_PUBLIC_APP_URL ? new URL(process.env.NEXT_PUBLIC_APP_URL).hostname : '';
-
-                const isAllowed = 
-                    originHost === requestHost ||
-                    (appUrlHost && originHost === appUrlHost) ||
-                    originHost.endsWith('.vercel.app') ||
-                    originHost.endsWith('.pages.dev') ||
-                    originHost.endsWith('.workers.dev') ||
-                    originHost === 'localhost' ||
-                    originHost === '127.0.0.1';
-
-                if (!isAllowed) {
-                    return new NextResponse(JSON.stringify({ error: "CSRF: Origin mismatch", origin, host: requestHost }), {
-                        status: 403,
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                }
-            } catch {
-                // Suppress malformed origin header errors to prevent blocking valid requests
-            }
-        }
-    }
-
-    // C. Global Security Headers & Performance Hints
-    const securityHeaders = {
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'X-XSS-Protection': '1; mode=block',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
-        'Cross-Origin-Opener-Policy': 'same-origin',
-        'Content-Security-Policy': "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co; frame-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob:;",
-        'Link': process.env.NEXT_PUBLIC_SUPABASE_URL ? `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect` : '',
-    }
-
-    Object.entries(securityHeaders).forEach(([key, value]) => {
-        if (value) response.headers.set(key, value)
-    })
+    applySecurityHeaders(response)
 
     // D. Performance Layers: Global Cache Control
     const isStaticAsset = path.match(/\.(css|js|woff2|png|jpg|jpeg|svg|webp|gif|ico)$/)

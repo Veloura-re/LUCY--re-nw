@@ -7,11 +7,11 @@ declare namespace Cloudflare {
 		IMAGES: ImagesBinding;
 		ASSETS: Fetcher;
 		IS_CLOUDFLARE: "true";
-		GEMINI_API_KEY: "REDACTED_GEMINI_KEY";
-		GMAIL_USER: "goodluck97248@gmail.com";
-		GMAIL_APP_PASSWORD: "REDACTED_GMAIL_PASS";
-		RESEND_API_KEY: "REDACTED_RESEND_KEY";
-		RESEND_FROM_EMAIL: "goodluck97248@gmail.com";
+		GEMINI_API_KEY: string;
+		GMAIL_USER: string;
+		GMAIL_APP_PASSWORD: string;
+		RESEND_API_KEY: string;
+		RESEND_FROM_EMAIL: string;
 		NEXT_PUBLIC_SUPABASE_URL: string;
 		NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: string;
 		NEXT_PUBLIC_SUPABASE_ANON_KEY: string;

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireRole } from '@/lib/security';
+import { requireRole, publicErrorMessage } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 
 export async function GET(request: Request) {
@@ -23,6 +23,6 @@ export async function GET(request: Request) {
         return NextResponse.json({ restorePoints: restorePoints || [] });
     } catch (error: any) {
         console.error("Fetch Backups Error:", error);
-        return NextResponse.json({ error: error.message || 'Failed to fetch backups' }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error, 'Failed to fetch backups') }, { status: 500 });
     }
 }

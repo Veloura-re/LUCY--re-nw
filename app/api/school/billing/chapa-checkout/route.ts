@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
+import { CHAPA_SUBSCRIPTION_AMOUNT_ETB, CHAPA_CURRENCY } from '@/lib/chapa';
 
 export async function POST(request: Request) {
     try {
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
         // Convert $49 USD to ETB (Approximate rate: 1 USD = ~120 ETB, so roughly 5880 ETB)
-        const amountETB = '5880';
+        const amountETB = String(CHAPA_SUBSCRIPTION_AMOUNT_ETB);
         const tx_ref = `tx-${school.id}-${Date.now()}`;
 
         // Initialize Chapa Transaction
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
             },
             body: JSON.stringify({
                 amount: amountETB,
-                currency: 'ETB',
+                currency: CHAPA_CURRENCY,
                 email: user.email,
                 first_name: 'School',
                 last_name: 'Admin',

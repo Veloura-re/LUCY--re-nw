@@ -1,14 +1,32 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { escapeHtml, singleLine, isValidEmail } from "@/lib/security";
+import { rateLimitShared } from '@/lib/rate-limit';
+
+const SEVERITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+const MAX_TYPE = 100;
+const MAX_DESCRIPTION = 10000;
 
 export async function POST(req: Request) {
-    try {
-        const body = (await req.json()) as any;
-        const { email, vulnerabilityType, severity, description } = body;
+    const limited = await rateLimitShared(req, "public/security-report", 3, 10 * 60_000);
+    if (limited) return limited;
 
-        if (!email || !vulnerabilityType || !severity || !description) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    try {
+        const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+
+        if (!isValidEmail(body.email) || typeof body.vulnerabilityType !== "string"
+            || typeof body.severity !== "string" || typeof body.description !== "string") {
+            return NextResponse.json({ error: "Missing or invalid required fields" }, { status: 400 });
+        }
+
+        const email = body.email;
+        const vulnerabilityType = singleLine(body.vulnerabilityType).slice(0, MAX_TYPE);
+        const severity = singleLine(body.severity).toUpperCase();
+        const description = body.description.trim().slice(0, MAX_DESCRIPTION);
+
+        if (!vulnerabilityType || !description || !SEVERITIES.includes(severity)) {
+            return NextResponse.json({ error: "Missing or invalid required fields" }, { status: 400 });
         }
 
         const reportId = crypto.randomUUID();
@@ -37,13 +55,13 @@ export async function POST(req: Request) {
                 html: `
                     <div style="font-family: sans-serif; padding: 24px; background: #0a0a0a; color: #fff; border-radius: 8px;">
                         <h2 style="color: #f97316;">VULNERABILITY DISCLOSURE RECEIVED</h2>
-                        <p><strong>Severity:</strong> ${severity}</p>
-                        <p><strong>Type:</strong> ${vulnerabilityType}</p>
-                        <p><strong>Researcher:</strong> ${email}</p>
+                        <p><strong>Severity:</strong> ${escapeHtml(severity)}</p>
+                        <p><strong>Type:</strong> ${escapeHtml(vulnerabilityType)}</p>
+                        <p><strong>Researcher:</strong> ${escapeHtml(email)}</p>
                         <p><strong>Report Hash:</strong> ${hash}</p>
                         <hr style="border: 0; border-top: 1px solid #333; margin: 16px 0;" />
                         <p><strong>Description / PoC:</strong></p>
-                        <pre style="background: #18181b; padding: 12px; border-radius: 4px; white-space: pre-wrap; color: #e4e4e7;">${description}</pre>
+                        <pre style="background: #18181b; padding: 12px; border-radius: 4px; white-space: pre-wrap; color: #e4e4e7;">${escapeHtml(description)}</pre>
                     </div>
                 `,
                 replyTo: email

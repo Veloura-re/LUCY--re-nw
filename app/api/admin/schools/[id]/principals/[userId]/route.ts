@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
@@ -32,7 +33,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }
 
@@ -74,6 +75,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

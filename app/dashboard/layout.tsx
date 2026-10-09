@@ -49,13 +49,16 @@ export default async function DashboardLayout({
 
     // Auto-Heal Mismatch Logic
     if (!dbUser && user.email) {
-        dbUser = await getCachedUserByEmail(user.email);
-        
-        if (dbUser) {
+        const candidate = await getCachedUserByEmail(user.email);
+
+        // Only migrate an invited placeholder record to this account when the Supabase email is
+        // confirmed. SUPERADMIN records are never migrated by email. A record that is not migrated
+        // must not be used as this session's profile.
+        if (candidate && user.email_confirmed_at && candidate.role !== 'SUPERADMIN') {
             try {
                 // Perform healing in the background (within the request) but wait for it to ensure profile is ready
-                const healed = await healUserMismatch(dbUser.id, user.id, user.email);
-                dbUser = { ...healed, school: dbUser.school };
+                const healed = await healUserMismatch(candidate.id, user.id, user.email);
+                dbUser = { ...healed, school: candidate.school };
             } catch (err) {
                 console.error("[Dashboard Layout] Healing failed:", err);
             }

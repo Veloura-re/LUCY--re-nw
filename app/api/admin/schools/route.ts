@@ -1,3 +1,4 @@
+import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { sendInviteEmail } from '@/lib/email';
@@ -67,7 +68,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ schools: [] });
     } catch (error: any) {
         console.error("Error fetching schools:", error);
-        return NextResponse.json({ schools: [], error: error.message }, { status: 200 });
+        return NextResponse.json({ schools: [], error: publicErrorMessage(error) }, { status: 200 });
     }
 }
 
@@ -158,6 +159,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, school, inviteUrl });
     } catch (err: any) {
         console.error("[AdminAPI Error]:", err);
-        return NextResponse.json({ error: err.message || 'Failed to provision institution' }, { status: 500 });
+        return NextResponse.json({ error: publicErrorMessage(err, 'Failed to provision institution') }, { status: 500 });
     }
 }

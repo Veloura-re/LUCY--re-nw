@@ -1,44 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { requireRole, handleApiError } from "@/lib/security";
+import { logActivity, getIp } from "@/lib/audit";
 
 export async function PATCH(req: NextRequest) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user || user.user_metadata?.role !== 'SUPERADMIN') {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     try {
+        const admin = await requireRole(['SUPERADMIN']);
+
         const { messageId, isPinned, isDeleted }: any = await req.json().catch(() => ({}));
 
-        if (isDeleted) {
-            await prisma.message.delete({
-                where: { id: messageId }
-            });
-            
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = user?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'MODERATE_MESSAGE', resourceType: 'message', ip: _ip || undefined });
+        if (typeof messageId !== 'string' || !messageId) {
+            return NextResponse.json({ error: "messageId is required" }, { status: 400 });
+        }
+
+        const target = await prisma.message.findUnique({
+            where: { id: messageId },
+            select: { id: true, schoolId: true }
+        });
+
+        if (!target) {
+            return NextResponse.json({ error: "Message not found" }, { status: 404 });
+        }
+
+        if (isDeleted === true) {
+            await prisma.message.delete({ where: { id: target.id } });
+
+            if (target.schoolId) {
+                await logActivity({
+                    userId: admin.id,
+                    schoolId: target.schoolId,
+                    action: 'MODERATE_MESSAGE',
+                    resourceType: 'message',
+                    resourceId: target.id,
+                    ip: getIp(req)
+                });
             }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true });
+            return NextResponse.json({ success: true });
         }
 
         const updated = await prisma.message.update({
-            where: { id: messageId },
+            where: { id: target.id },
             data: {
-                isPinned: isPinned ?? undefined,
+                isPinned: typeof isPinned === 'boolean' ? isPinned : undefined,
             }
         });
 
         return NextResponse.json({ message: updated });
     } catch (e) {
-        return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+        return handleApiError(e);
     }
 }

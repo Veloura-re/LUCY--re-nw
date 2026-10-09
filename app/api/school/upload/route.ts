@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { requireRole, requireAuth } from '@/lib/security';
+import { requireRole, requireAuth, publicErrorMessage } from '@/lib/security';
 
 export async function POST(request: Request) {
     try {
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
         if (error) {
             console.error('Storage Upload Error:', error);
-            return NextResponse.json({ error: error.message }, { status: 500 });
+            return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
         }
 
         const { data: { publicUrl } } = supabase.storage
