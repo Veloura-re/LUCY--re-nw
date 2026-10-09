@@ -75,7 +75,11 @@ export async function POST(req: Request) {
         // Verify with AI if receipt image is provided
         if (receiptImage && needsVerification && process.env.GEMINI_API_KEY) {
             try {
-                const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+                let genAIInstance: any = null;
+                if (!genAIInstance && process.env.GEMINI_API_KEY) {
+                    genAIInstance = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+                }
+                const genAI = genAIInstance;
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
                 const base64Data = receiptImage.includes(',') ? receiptImage.split(',')[1] : receiptImage;

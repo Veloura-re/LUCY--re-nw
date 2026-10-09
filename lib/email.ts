@@ -3,10 +3,12 @@ import { prisma } from './prisma';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
 
+let resendInstance: Resend | null = null;
 function getResend() {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) return null;
-    return new Resend(apiKey);
+    if (!resendInstance) resendInstance = new Resend(apiKey);
+    return resendInstance;
 }
 
 // Generic email sender using Resend (fetch-based, CF Workers compatible)

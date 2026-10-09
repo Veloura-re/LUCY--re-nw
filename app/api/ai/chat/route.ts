@@ -6,7 +6,13 @@ import { createClient } from "@supabase/supabase-js";
 console.log("[DEBUG] Loading Chat Route Module (Edge-Native)");
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
+let genAIInstance: any = null;
+function getGenAI() {
+    if (!genAIInstance && apiKey) {
+        genAIInstance = new GoogleGenerativeAI(apiKey);
+    }
+    return genAIInstance;
+}
 
 export async function POST(req: Request) {
     console.log("[DEBUG] POST /api/ai/chat entered");
@@ -47,7 +53,7 @@ export async function POST(req: Request) {
         console.log(`[DEBUG] Chatting with AI for user: ${dbUser.email}`);
 
         // 3. AI Interaction
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = getGenAI()!.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const lastMessage = messages[messages.length - 1].content;
         const result = await model.generateContentStream(lastMessage);

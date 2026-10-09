@@ -6,7 +6,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiGradingSchema } from "@/lib/schemas";
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
+let genAIInstance: any = null;
+function getGenAI() {
+    if (!genAIInstance && apiKey) {
+        genAIInstance = new GoogleGenerativeAI(apiKey);
+    }
+    return genAIInstance;
+}
 
 export async function POST(
     request: Request,
@@ -75,7 +81,7 @@ export async function POST(
                 case "LONG":
                     // AI EVALUATION WITH PROMPT INJECTION DEFENSE (Sentinel 12)
                     try {
-                        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                        const model = getGenAI()!.getGenerativeModel({ model: "gemini-1.5-flash" });
                         
                         // Sanitize & bound student input length
                         const sanitizedAnswer = String(studentAnswer || "")

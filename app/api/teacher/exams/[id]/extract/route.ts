@@ -3,7 +3,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/utils/supabase/server";
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
+let genAIInstance: any = null;
+function getGenAI() {
+    if (!genAIInstance && apiKey) {
+        genAIInstance = new GoogleGenerativeAI(apiKey);
+    }
+    return genAIInstance;
+}
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -21,7 +27,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             return NextResponse.json({ error: "Missing image data" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = getGenAI()!.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
             Extract all exam questions from this image. 

@@ -4,7 +4,13 @@ import { requireRole, handleApiError, secureJson, rateLimit, TEACHER_ROLES } fro
 import { AiQuestionsArraySchema } from "@/lib/schemas";
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
+let genAIInstance: any = null;
+function getGenAI() {
+    if (!genAIInstance && apiKey) {
+        genAIInstance = new GoogleGenerativeAI(apiKey);
+    }
+    return genAIInstance;
+}
 
 export async function POST(req: Request) {
     const limit = rateLimit(req, "teacher/exams/remix", 10);
@@ -19,7 +25,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "No questions provided for remixing" }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = getGenAI()!.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
             You are an expert assessment designer. Your task is to REMIX the following exam questions.
