@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, handleApiError } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
+import { canUserAccessChatRoom } from '@/lib/messaging';
 
 export async function POST(request: Request) {
     try {
@@ -22,10 +23,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Chat Room not found' }, { status: 404 });
         }
 
-        // Verify membership
-        const isMember = room.members.some(m => m.userId === dbUser.id);
-        if (!isMember && dbUser.role !== 'SUPERADMIN') {
-            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        // Verify channel and tenant access
+        const hasAccess = await canUserAccessChatRoom(dbUser.id, dbUser.schoolId || '', dbUser.role, room);
+        if (!hasAccess) {
+            return NextResponse.json({ error: 'Forbidden: You are not authorized to access this room' }, { status: 403 });
         }
 
         // Channel guard: students and parents cannot nuke institutional channels

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError, secureJson } from '@/lib/security';
 import { getCachedRoomMessages, invalidateRoomCache } from '@/lib/services/messages';
-import { ensureDbUser } from '@/lib/messaging';
+import { ensureDbUser, canUserAccessChatRoom } from '@/lib/messaging';
 
 export async function GET(request: Request) {
     try {
@@ -20,11 +20,19 @@ export async function GET(request: Request) {
         // Verify room belongs to this school
         const room = await prisma.chatRoom.findUnique({
             where: { id: chatRoomId },
-            select: { id: true, schoolId: true, type: true }
+            include: {
+                members: { select: { userId: true } }
+            }
         });
 
-        if (!room || (room.schoolId && dbUser.schoolId && room.schoolId !== dbUser.schoolId)) {
-            return NextResponse.json({ error: 'Room not found or forbidden' }, { status: 404 });
+        if (!room) {
+            return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+        }
+
+        // Enforce strict role and class cohort access boundaries
+        const hasAccess = await canUserAccessChatRoom(dbUser.id, dbUser.schoolId, dbUser.role, room);
+        if (!hasAccess) {
+            return NextResponse.json({ error: 'Access denied: You are not authorized to view this room' }, { status: 403 });
         }
 
         // Ensure user is registered as member
@@ -56,11 +64,20 @@ export async function POST(request: Request) {
 
         // Verify room belongs to this school
         const room = await prisma.chatRoom.findUnique({
-            where: { id: chatRoomId }
+            where: { id: chatRoomId },
+            include: {
+                members: { select: { userId: true } }
+            }
         });
 
-        if (!room || (room.schoolId && dbUser.schoolId && room.schoolId !== dbUser.schoolId)) {
-            return NextResponse.json({ error: 'Forbidden: Room does not belong to your school' }, { status: 403 });
+        if (!room) {
+            return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+        }
+
+        // Enforce strict role and class cohort access boundaries
+        const hasAccess = await canUserAccessChatRoom(dbUser.id, dbUser.schoolId, dbUser.role, room);
+        if (!hasAccess) {
+            return NextResponse.json({ error: 'Forbidden: You are not authorized to post in this room' }, { status: 403 });
         }
 
         // Ensure user exists in prisma DB

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { canUserAccessChatRoom } from '@/lib/messaging';
 
 export async function POST(request: Request) {
     const supabase = await createClient();
@@ -17,13 +18,28 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing file or chatRoomId' }, { status: 400 });
         }
 
-        // Verify membership
-        const membership = await prisma.chatRoomMember.findUnique({
-            where: { chatRoomId_userId: { chatRoomId, userId: authUser.id } }
+        // Verify room and access authorization
+        const room = await prisma.chatRoom.findUnique({
+            where: { id: chatRoomId },
+            include: { members: { select: { userId: true } } }
         });
 
-        if (!membership) {
-            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        if (!room) {
+            return NextResponse.json({ error: 'Chat room not found' }, { status: 404 });
+        }
+
+        const dbUser = await prisma.user.findUnique({
+            where: { id: authUser.id },
+            select: { id: true, schoolId: true, role: true }
+        });
+
+        if (!dbUser) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        const hasAccess = await canUserAccessChatRoom(dbUser.id, dbUser.schoolId || '', dbUser.role, room);
+        if (!hasAccess) {
+            return NextResponse.json({ error: 'Forbidden: You are not authorized to upload to this channel' }, { status: 403 });
         }
 
         const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;

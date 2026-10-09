@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
+import { canUserAccessChatRoom } from '@/lib/messaging';
 
 export async function PATCH(request: Request) {
     const supabase = await createClient();
@@ -13,11 +14,39 @@ export async function PATCH(request: Request) {
 
         if (!chatRoomId) return NextResponse.json({ error: 'Missing chatRoomId' }, { status: 400 });
 
-        await prisma.chatRoomMember.update({
+        const room = await prisma.chatRoom.findUnique({
+            where: { id: chatRoomId },
+            include: { members: { select: { userId: true } } }
+        });
+
+        if (!room) {
+            return NextResponse.json({ error: 'Room not found' }, { status: 404 });
+        }
+
+        const dbUser = await prisma.user.findUnique({
+            where: { id: authUser.id },
+            select: { id: true, schoolId: true, role: true }
+        });
+
+        if (!dbUser) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        const hasAccess = await canUserAccessChatRoom(dbUser.id, dbUser.schoolId || '', dbUser.role, room);
+        if (!hasAccess) {
+            return NextResponse.json({ error: 'Forbidden: You are not authorized to access this room' }, { status: 403 });
+        }
+
+        await prisma.chatRoomMember.upsert({
             where: {
                 chatRoomId_userId: { chatRoomId, userId: authUser.id }
             },
-            data: {
+            update: {
+                lastReadAt: new Date()
+            },
+            create: {
+                chatRoomId,
+                userId: authUser.id,
                 lastReadAt: new Date()
             }
         });
