@@ -63,3 +63,4 @@ prisma_error.txt
 
 # cloudflare local state and generated artifacts
 /.wrangler/
+*.bundle
