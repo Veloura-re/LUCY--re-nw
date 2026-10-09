@@ -131,10 +131,16 @@ export default function MessagesClientWrapper({
             if (data.classCohorts) setClassCohorts(data.classCohorts);
             if (data.directChats) setDirectChats(data.directChats);
 
-            if (!activeRoom && (data.campusChannels?.[0] || data.rooms?.[0])) {
-                const defaultRoom = data.campusChannels?.[0] || data.rooms?.[0];
+            const allAllowed = [...(data.campusChannels || []), ...(data.classCohorts || []), ...(data.directChats || [])];
+            if (!activeRoom && allAllowed.length > 0) {
+                const defaultRoom = data.campusChannels?.[0] || allAllowed[0];
                 setActiveRoom(defaultRoom);
                 fetchMessages(defaultRoom.id);
+            } else if (activeRoom && allAllowed.length > 0 && !allAllowed.some((r: any) => r.id === activeRoom.id)) {
+                // If active room is no longer accessible, recover to an authorized campus room
+                const fallback = data.campusChannels?.[0] || allAllowed[0];
+                setActiveRoom(fallback);
+                fetchMessages(fallback.id);
             }
         } catch (e) {
             console.error("Failed to fetch channels", e);
@@ -286,7 +292,7 @@ export default function MessagesClientWrapper({
                     <div className="p-4 border-b border-zinc-200 dark:border-zinc-900/60 flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-xl bg-eduGreen-600/20 border border-eduGreen-500/30 flex items-center justify-center text-eduGreen-500 font-black text-xs">
-                                🏫
+                                <School className="w-4 h-4 text-eduGreen-500" />
                             </div>
                             <div>
                                 <h2 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-tight truncate">
@@ -339,7 +345,7 @@ export default function MessagesClientWrapper({
                             </div>
                         ) : (
                             <>
-                                {/* 📢 UNIVERSAL CAMPUS CHANNELS */}
+                                {/* Universal Campus Channels */}
                                 <div className="space-y-1">
                                     <div className="flex items-center justify-between px-2 text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
                                         <span className="flex items-center gap-1.5">
@@ -370,7 +376,7 @@ export default function MessagesClientWrapper({
                                     </div>
                                 </div>
 
-                                {/* 🏫 CLASS COHORT CHANNELS */}
+                                {/* Class Cohort Channels */}
                                 <div className="space-y-1">
                                     <button 
                                         onClick={() => setShowClassSection(!showClassSection)}
@@ -386,7 +392,7 @@ export default function MessagesClientWrapper({
                                     {showClassSection && (
                                         <div className="space-y-0.5 mt-1">
                                             {classCohorts.length === 0 ? (
-                                                <div className="text-[10px] text-zinc-500 italic px-3 py-1">No active classes registered</div>
+                                                <div className="text-[10px] text-zinc-500 italic px-3 py-1">No enrolled or assigned class channels</div>
                                             ) : (
                                                 classCohorts.map(channel => {
                                                     const isSelected = activeRoom?.id === channel.id;
@@ -411,7 +417,7 @@ export default function MessagesClientWrapper({
                                     )}
                                 </div>
 
-                                {/* 💬 DIRECT MESSAGES (1-ON-1) */}
+                                {/* Direct Messages (1-on-1) */}
                                 <div className="space-y-1">
                                     <button 
                                         onClick={() => setShowDirectSection(!showDirectSection)}
