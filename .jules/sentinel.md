@@ -1,5 +1,5 @@
-## 2025-02-27 - Removed hardcoded Turnstile test key fallback
+## 2025-02-27 - Stripe CI Failure via Eager Initialization
 
-**Vulnerability:** A hardcoded Cloudflare Turnstile test key was used as a fallback if `TURNSTILE_SECRET_KEY` was missing from the environment. This test key always causes verification to pass in development, which means in a misconfigured production environment, Turnstile validation fails open entirely and bots are allowed to bypass the check.
-**Learning:** Using test keys as fallback defaults for missing environment variables creates 'fail open' security vulnerabilities that bypass intended protections entirely.
-**Prevention:** Never use test keys as fallback defaults for missing environment variables. Explicitly check for the required variable and return an error if missing (failing securely).
+**Vulnerability:** Eager top-level initialization of the Stripe SDK client in shared lib files (`lib/stripe.ts`) without the environment variables being present caused CI worker build failures. Eager initialization in these environments creates build-time crashes or inadvertently pulls in missing environment config when building Next.js pages statically.
+**Learning:** Third-party services like Stripe that require environment secrets must not be initialized eagerly at the top level of a module in Next.js/Cloudflare deployments, as it causes Next.js SSG build errors.
+**Prevention:** Implement a singleton getter pattern (`export function getStripe() { ... }`) to delay initialization to runtime when request handling actually needs it.
