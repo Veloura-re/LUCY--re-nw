@@ -282,7 +282,8 @@ export async function POST(request: Request) {
         }
 
         if (!generatedStudentCode) {
-            const fallbackEntropy = `${Date.now().toString(36).toUpperCase().slice(-5)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+            const randHex = Array.from(globalThis.crypto.getRandomValues(new Uint8Array(2))).map(b => b.toString(16).padStart(2, '0')).join('');
+            const fallbackEntropy = `${Date.now().toString(36).toUpperCase().slice(-5)}${randHex.toUpperCase().substring(0, 3)}`;
             generatedStudentCode = `ST-${fallbackEntropy}-${currentYear}`;
         }
 
