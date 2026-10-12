@@ -1,6 +1,5 @@
 import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { sendInviteEmail } from '@/lib/email';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
@@ -116,7 +115,9 @@ export async function POST(request: Request) {
             });
 
             // Create Invite Token
-            const token = crypto.randomBytes(32).toString('hex');
+            const randArrayToken = new Uint8Array(32);
+            globalThis.crypto.getRandomValues(randArrayToken);
+            const token = Array.from(randArrayToken).map(b => b.toString(16).padStart(2, '0')).join('');
             const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
             await prisma.inviteToken.create({
@@ -152,7 +153,9 @@ export async function POST(request: Request) {
 
         if (schErr) throw schErr;
 
-        const token = crypto.randomBytes(32).toString('hex');
+        const randArrayTokenSupa = new Uint8Array(32);
+        globalThis.crypto.getRandomValues(randArrayTokenSupa);
+        const token = Array.from(randArrayTokenSupa).map(b => b.toString(16).padStart(2, '0')).join('');
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
         await supabaseAdmin

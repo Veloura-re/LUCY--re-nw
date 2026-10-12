@@ -27,7 +27,7 @@ export async function POST(request: Request) {
             await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
         }
 
-        const token = crypto.randomUUID().replace(/-/g, '');
+        const token = globalThis.crypto.randomUUID().replace(/-/g, '');
 
         await prisma.inviteToken.create({
             data: {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
                     role: 'TEACHER',
                     schoolId: dbUser.schoolId!,
                     verified: false,
-                    teacherCode: `TCH-${crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
+                    teacherCode: `TCH-${globalThis.crypto.randomUUID().split('-')[0].substring(0, 4).toUpperCase()}`
                 }
             }).catch(() => {});
         } else if (!existingUser.schoolId) {
