@@ -1,0 +1,4 @@
+## 2024-05-31 - [Fail-Open Security Configuration via Fallback Environment Variables]
+**Vulnerability:** A missing `TURNSTILE_SECRET_KEY` environment variable in `app/api/auth/login/route.ts` used a hardcoded fallback test key (`1x0000000000000000000000000000000AA`), which bypassed the verification check completely (fail open). The client also used a fallback dummy key in `app/login/page.tsx` (`1x00000000000000000000AA`).
+**Learning:** Hardcoding test credentials as fallbacks for missing critical environment variables breaks security boundaries. If production configurations are incomplete, the system should crash or refuse to process authentication rather than continuing using non-secure paths.
+**Prevention:** Always use a "fail-secure" mechanism. For missing environment variables, log an error and throw an exception/500 rather than providing a default dummy/test key.
