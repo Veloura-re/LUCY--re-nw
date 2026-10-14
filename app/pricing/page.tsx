@@ -162,9 +162,6 @@ export default function Pricing() {
 
                                 <div className="flex items-baseline gap-2 relative z-10">
                                     <span className="text-3xl font-bold text-slate-900 dark:text-white font-orbitron">{t.price}</span>
-                                    {t.originalPrice && (
-                                        <span className="text-sm line-through text-slate-400 dark:text-zinc-500 font-medium">{t.originalPrice}</span>
-                                    )}
                                     <span className="text-slate-500 dark:text-zinc-500 text-xs">{t.period}</span>
                                 </div>
 
