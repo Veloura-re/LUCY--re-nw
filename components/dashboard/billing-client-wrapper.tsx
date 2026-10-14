@@ -63,6 +63,21 @@ export default function BillingClientWrapper({
     
     // Tab State
     const [paymentMode, setPaymentMode] = useState<'STRIPE' | 'CHAPA' | 'BANK'>('STRIPE');
+    const [chapaQuote, setChapaQuote] = useState<{ usd: number; amountEtb: number } | null>(null);
+    const [chapaQuoteFailed, setChapaQuoteFailed] = useState(false);
+
+    // Show today's birr price as soon as the owner opens the Chapa option
+    useEffect(() => {
+        if (paymentMode !== 'CHAPA') return;
+        let cancelled = false;
+        setChapaQuote(null);
+        setChapaQuoteFailed(false);
+        fetch('/api/school/billing/chapa-checkout')
+            .then(r => (r.ok ? r.json() : Promise.reject(new Error('quote unavailable'))))
+            .then((d: any) => { if (!cancelled) setChapaQuote({ usd: d.usd, amountEtb: d.amountEtb }); })
+            .catch(() => { if (!cancelled) setChapaQuoteFailed(true); });
+        return () => { cancelled = true; };
+    }, [paymentMode]);
     
     // Manual Payment Form States
     const [amount, setAmount] = useState('49.00');
@@ -668,6 +683,18 @@ export default function BillingClientWrapper({
                                     <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
                                         Pay locally using Ethiopian Birr (ETB). Selecting this option will open the secure Chapa checkout portal where you can pay using Telebirr, CBE, or local bank cards. Your subscription activates immediately upon payment.
                                     </p>
+                                </div>
+                                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 text-xs">
+                                    {chapaQuote ? (
+                                        <p className="text-zinc-700 dark:text-zinc-300">
+                                            Today&apos;s price: <span className="font-bold text-zinc-900 dark:text-white">{chapaQuote.amountEtb.toLocaleString('en-US')} ETB</span> for 30 days
+                                            (${chapaQuote.usd} at the current exchange rate). The amount is confirmed again at checkout.
+                                        </p>
+                                    ) : chapaQuoteFailed ? (
+                                        <p className="text-zinc-600 dark:text-zinc-400">The birr price could not be loaded right now. It is shown on the Chapa checkout page.</p>
+                                    ) : (
+                                        <p className="text-zinc-500">Loading today&apos;s price...</p>
+                                    )}
                                 </div>
                                 <button
                                     onClick={handleChapaCheckout}
