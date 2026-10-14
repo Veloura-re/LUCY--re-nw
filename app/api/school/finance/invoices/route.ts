@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from '@/lib/security';
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(request: Request) {
     try {
@@ -53,7 +54,7 @@ export async function GET(request: Request) {
     }
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const body: any = await request.json().catch(() => ({}));
@@ -99,3 +100,5 @@ export async function POST(request: Request) {
         return handleApiError(e);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_INVOICE', resourceType: 'invoice' });

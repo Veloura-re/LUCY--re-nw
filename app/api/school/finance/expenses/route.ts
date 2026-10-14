@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError, secureJson } from "@/lib/security";
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(req: Request) {
     try {
@@ -28,7 +29,7 @@ export async function GET(req: Request) {
     }
 }
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireRole(["SUPERADMIN", "OWNER", "PRINCIPAL"]);
 
@@ -67,3 +68,5 @@ export async function POST(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_EXPENSE', resourceType: 'expense' });

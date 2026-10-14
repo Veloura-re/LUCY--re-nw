@@ -3,8 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from '@/lib/security';
 import { Decimal } from "decimal.js";
 import { sendInvoiceNotificationEmail } from "@/lib/email";
+import { withAudit } from '@/lib/with-audit';
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const schoolId = dbUser.schoolId!;
@@ -166,3 +167,5 @@ export async function POST(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'GENERATE_INVOICES', resourceType: 'invoice' });

@@ -6,6 +6,7 @@ import { requireRole, handleApiError, secureJson, STAFF_ROLES } from '@/lib/secu
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getCachedTeacherRegistry, getCachedSchoolInfoForRegistry } from '@/lib/services/teachers';
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(request: Request) {
     try {
@@ -64,7 +65,7 @@ export async function GET(request: Request) {
 }
 
 // POST: Register a new teacher (and invite)
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const { name, email, phone, gender, teacherCode, qualification, photoUrl, role: rawRole } = await request.json() as any;
@@ -160,7 +161,7 @@ export async function POST(request: Request) {
 }
 
 // PUT: Update teacher details
-export async function PUT(request: Request) {
+async function handlePUT(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const { id, name, email, phone, gender, qualification, photoUrl, role: rawRole } = await request.json() as any;
@@ -199,3 +200,6 @@ export async function PUT(request: Request) {
         return handleApiError(e);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_TEACHER', resourceType: 'staff' });
+export const PUT = withAudit(handlePUT, { action: 'UPDATE_TEACHER', resourceType: 'staff' });

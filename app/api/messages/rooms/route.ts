@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError } from '@/lib/security';
 import { getStructuredSchoolRooms, getOrCreateDirectRoom, ensureDbUser } from '@/lib/messaging';
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(request: Request) {
     try {
@@ -21,7 +22,7 @@ export async function GET(request: Request) {
     }
 }
 
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
         const { targetUserId }: any = await request.json().catch(() => ({}));
@@ -100,3 +101,5 @@ export async function POST(request: Request) {
         return handleApiError(e);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_CHAT_ROOM', resourceType: 'chat_room' });

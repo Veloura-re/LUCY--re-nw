@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireSchoolLinked, handleApiError } from "@/lib/security";
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(req: Request) {
     try {
@@ -66,7 +67,7 @@ export async function GET(req: Request) {
     }
 }
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
@@ -92,7 +93,7 @@ export async function POST(req: Request) {
     }
 }
 
-export async function PATCH(req: Request) {
+async function handlePATCH(req: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
@@ -121,3 +122,6 @@ export async function PATCH(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_BOOK_REQUEST', resourceType: 'book_request' });
+export const PATCH = withAudit(handlePATCH, { action: 'RESOLVE_BOOK_REQUEST', resourceType: 'book_request' });

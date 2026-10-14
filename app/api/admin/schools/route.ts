@@ -5,6 +5,7 @@ import { sendInviteEmail } from '@/lib/email';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { prisma } from '@/lib/prisma';
+import { logActivity, getIp } from '@/lib/audit';
 
 // GET - List all schools safely
 export async function GET(request: Request) {
@@ -129,6 +130,16 @@ export async function POST(request: Request) {
             const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://lucy-re-nw.vercel.app'}/invite/${token}`;
             await sendInviteEmail(ownerEmail, inviteUrl, name, 'OWNER');
 
+            await logActivity({
+                userId: dbUser.id,
+                schoolId: school.id,
+                action: 'PROVISION_SCHOOL',
+                resourceType: 'school',
+                resourceId: school.id,
+                after: { name, ownerEmail },
+                ip: getIp(request)
+            });
+
             return NextResponse.json({ success: true, school, inviteUrl });
         }
 
@@ -155,6 +166,16 @@ export async function POST(request: Request) {
 
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://lucy-re-nw.vercel.app'}/invite/${token}`;
         await sendInviteEmail(ownerEmail, inviteUrl, name, 'OWNER');
+
+        await logActivity({
+            userId: dbUser.id,
+            schoolId: school.id,
+            action: 'PROVISION_SCHOOL',
+            resourceType: 'school',
+            resourceId: school.id,
+            after: { name, ownerEmail },
+            ip: getIp(request)
+        });
 
         return NextResponse.json({ success: true, school, inviteUrl });
     } catch (err: any) {

@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from "@/lib/security";
 import { Decimal } from "decimal.js";
+import { withAudit } from '@/lib/with-audit';
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const schoolId = dbUser.schoolId!;
@@ -132,3 +133,5 @@ export async function POST(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'SYNC_FINANCE', resourceType: 'finance' });

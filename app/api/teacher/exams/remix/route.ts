@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 import { requireRole, handleApiError, secureJson, TEACHER_ROLES } from "@/lib/security";
 import { AiQuestionsArraySchema } from "@/lib/schemas";
 import { rateLimitShared } from '@/lib/rate-limit';
+import { withAudit } from '@/lib/with-audit';
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     const limit = await rateLimitShared(req, "teacher/exams/remix", 10);
     if (limit) return limit;
 
@@ -55,3 +56,5 @@ export async function POST(req: Request) {
         return handleApiError(e);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'AI_REMIX_EXAM', resourceType: 'exam' });

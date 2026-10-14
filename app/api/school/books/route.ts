@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security';
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET(req: Request) {
     try {
@@ -96,7 +97,7 @@ export async function GET(req: Request) {
     }
 }
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
 
@@ -169,3 +170,5 @@ export async function POST(req: Request) {
         return handleApiError(e);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'CREATE_BOOK', resourceType: 'book' });

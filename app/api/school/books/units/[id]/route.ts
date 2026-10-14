@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from '@/lib/security';
+import { withAudit } from '@/lib/with-audit';
 
-export async function DELETE(
+async function handleDELETE(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
@@ -22,3 +23,5 @@ export async function DELETE(
         return handleApiError(e);
     }
 }
+
+export const DELETE = withAudit(handleDELETE, { action: 'DELETE_UNIT_PACK', resourceType: 'unit_pack' });
