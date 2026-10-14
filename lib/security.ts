@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { getCachedUser } from '@/lib/users';
+import { reportServerError } from '@/lib/error-capture';
 import { NextResponse } from 'next/server';
 
 // We import types from @prisma/client but NOT the PrismaClient itself here
@@ -247,7 +248,11 @@ export function handleApiError(error: unknown) {
     console.error("API Security Error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
     if (message.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
-    if (message.startsWith("Forbidden")) return secureJson({ error: "Forbidden" }, 403);
+    if (message.startsWith("Forbidden")) {
+        // Denied access is worth seeing, but at warning level: it is the system working as intended
+        void reportServerError(error, { type: 'auth_failure', level: 'WARN', status: 403 });
+        return secureJson({ error: "Forbidden" }, 403);
+    }
     if (
         message.toLowerCase().includes("timed out") || 
         message.toLowerCase().includes("connection pool") || 
@@ -256,8 +261,10 @@ export function handleApiError(error: unknown) {
         message.includes("ECONNREFUSED") ||
         message.includes("504")
     ) {
+        void reportServerError(error, { type: 'network_error', status: 504 });
         return secureJson({ error: "Campus ledger connection busy or timed out. Please retry.", code: "DB_TIMEOUT" }, 504);
     }
+    void reportServerError(error, { status: 500 });
     return secureJson({ error: "Internal Server Error" }, 500);
 }
 

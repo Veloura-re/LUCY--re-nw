@@ -1,25 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
+import { verifySuperAdmin, parsePaging } from '@/lib/admin-auth';
 
 export async function GET(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { role: true } });
-    if (!dbUser || dbUser.role !== 'SUPERADMIN') {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    const admin = await verifySuperAdmin();
+    if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const search = searchParams.get('search') || '';
+    const { page, limit, skip } = parsePaging(searchParams);
+    const search = (searchParams.get('search') || '').slice(0, 200);
     const schoolId = searchParams.get('schoolId') || '';
     const resourceType = searchParams.get('resourceType') || '';
     const level = searchParams.get('level') || '';
-    const skip = (page - 1) * limit;
 
     const where: any = {};
     if (search) {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { requireRole, requireAuth, publicErrorMessage } from '@/lib/security';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
 
         if (error) {
             console.error('Storage Upload Error:', error);
+            void reportServerError(error, { status: 500 });
             return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
         }
 

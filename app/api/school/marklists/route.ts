@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, requireSchoolLinked, publicErrorMessage } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
+import { reportServerError } from '@/lib/error-capture';
 
 // GET: List Marklists (Exams)
 export async function GET(request: Request) {
@@ -63,6 +64,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ exams });
 
     } catch (e: any) {
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to fetch marklists") }, { status: 500 });
     }
 }
@@ -144,6 +146,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ marklist });
 
     } catch (e: any) {
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to create marklist") }, { status: 500 });
     }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { safeEqual } from "@/lib/security";
+import { reportServerError } from '@/lib/error-capture';
 
 // Webhook for payment gateway reconciliation (Stripe, Chapa, Telebirr, CBE Birr)
 export async function POST(req: Request) {
@@ -97,6 +98,7 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error("[PAYMENT_WEBHOOK]", error);
+        void reportServerError(error, { type: 'webhook_failure', status: 500, context: { provider: 'invoice-gateway' } });
         return NextResponse.json({ error: "Internal Error" }, { status: 500 });
     }
 }

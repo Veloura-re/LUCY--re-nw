@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { revalidateTag } from 'next/cache';
+import { reportServerError } from '@/lib/error-capture';
 
 // PATCH - Demote principal/owner to TEACHER
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string, userId: string }> }) {
@@ -33,6 +34,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }
@@ -74,6 +76,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

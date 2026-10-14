@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySuperAdmin } from '@/lib/admin-auth';
 import { sendInviteEmail } from '@/lib/email';
+import { reportServerError } from '@/lib/error-capture';
 
 // GET - List all principals and pending invites for a school
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -26,6 +27,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             invites: pendingInvites
         });
     } catch (error: any) {
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }
@@ -77,6 +79,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             emailSent: res.success && !res.skipped
         });
     } catch (error: any) {
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

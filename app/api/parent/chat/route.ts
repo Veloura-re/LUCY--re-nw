@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { processParentChat } from '@/lib/ai';
 import { requireRole, publicErrorMessage } from '@/lib/security';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
 return NextResponse.json({ text: responseText });
     } catch (e: any) {
         console.error('[Parent Chat API Error]', e);
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, 'Failed to process chat') }, { status: 500 });
     }
 }

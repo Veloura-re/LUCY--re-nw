@@ -4,6 +4,7 @@ import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
 import { logBillingActivity, accessEndAfterRenewal } from '@/lib/billing';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -221,6 +222,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true });
     } catch (error: any) {
         console.error('Stripe webhook handling error:', error);
+        void reportServerError(error, { type: 'webhook_failure', status: 500, context: { provider: 'stripe' } });
         return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
     }
 }

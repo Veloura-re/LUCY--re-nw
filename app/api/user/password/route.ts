@@ -1,6 +1,7 @@
 import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     const supabase = await createClient();
@@ -22,6 +23,7 @@ export async function POST(request: Request) {
         });
 
         if (error) {
+            void reportServerError(error, { status: 500 });
             return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
         }
 

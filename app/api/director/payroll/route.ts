@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
 import { withAudit } from '@/lib/with-audit';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function GET() {
     try {
@@ -85,6 +86,7 @@ async function handlePOST(req: Request) {
         return NextResponse.json(payroll);
     } catch (e: any) {
         console.error(e);
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Internal Server Error") }, { status: 500 });
     }
 }

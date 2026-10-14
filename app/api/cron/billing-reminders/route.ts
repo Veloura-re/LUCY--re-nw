@@ -5,6 +5,7 @@ import { isAuthorizedCron, escapeHtml } from '@/lib/security';
 import { getAccessEnd, DAY_MS, findBillingActor } from '@/lib/billing';
 import { quoteUsdInEtb } from '@/lib/fx';
 import { SUBSCRIPTION_PRICE_USD } from '@/lib/chapa';
+import { reportServerError } from '@/lib/error-capture';
 
 /** Days before access ends on which a reminder goes out. */
 const REMINDER_DAYS = [7, 3, 1];
@@ -100,6 +101,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ success: true, checked: schools.length, sent, skipped });
     } catch (error) {
         console.error('[Cron Billing Reminders] Failed:', error);
+        void reportServerError(error, { type: 'cron_failure', status: 500, context: { job: 'billing-reminders' } });
         return NextResponse.json({ error: 'Cron failed' }, { status: 500 });
     }
 }

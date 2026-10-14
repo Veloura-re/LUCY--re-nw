@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(
     request: Request,
@@ -53,6 +54,7 @@ export async function POST(
         return NextResponse.json({ success: true, exam: updated });
     } catch (e: any) {
         console.error("Lock Marklist Error:", e);
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to update marklist lock status") }, { status: 500 });
     }
 }

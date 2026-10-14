@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, publicErrorMessage } from "@/lib/security";
 import { logActivity } from "@/lib/audit";
+import { reportServerError } from '@/lib/error-capture';
 
 // GET: Fetch Grid Data (Entries + Marks)
 export async function GET(req: Request) {
@@ -291,6 +292,7 @@ export async function POST(req: Request) {
                 code: "UNAUTHORIZED_TENANT"
             }, { status: 403 });
         }
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, "Failed to save marks") }, { status: 500 });
     }
 }

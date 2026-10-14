@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { isAuthorizedCron } from '@/lib/security';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function GET(request: Request) {
     if (!isAuthorizedCron(request)) {
@@ -113,6 +114,7 @@ export async function GET(request: Request) {
                 successCount++;
             } catch (err) {
                 console.error(`Cron backup failed for school ${school.id}:`, err);
+                void reportServerError(err, { type: 'cron_failure', context: { job: 'backups', schoolId: school.id } });
                 failCount++;
             }
         }
@@ -123,6 +125,7 @@ export async function GET(request: Request) {
         });
     } catch (error: any) {
         console.error("Cron Backup Error:", error);
+        void reportServerError(error, { type: 'cron_failure', status: 500, context: { job: 'backups' } });
         return NextResponse.json({ error: 'Cron failed' }, { status: 500 });
     }
 }
