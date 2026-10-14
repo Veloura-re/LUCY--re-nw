@@ -1,5 +1,11 @@
-/** Monthly platform subscription price charged through Chapa, in ETB. */
-export const CHAPA_SUBSCRIPTION_AMOUNT_ETB = 5880;
+/** Monthly platform subscription price in USD. The ETB charge is derived from it at checkout. */
+export const SUBSCRIPTION_PRICE_USD = 49;
+
+/**
+ * Minimum ETB accepted for a checkout that has no recorded quote. Only checkouts created before
+ * live pricing shipped (quoted at the old fixed 5880 ETB) can lack one.
+ */
+export const CHAPA_LEGACY_AMOUNT_ETB = 5880;
 export const CHAPA_CURRENCY = 'ETB';
 
 /** Days of platform access one subscription payment buys. */
@@ -29,7 +35,10 @@ export type ChapaVerification = {
  * Confirms a transaction with Chapa instead of trusting the webhook body.
  * UNREACHABLE means Chapa could not be queried and the caller should ask for a retry.
  */
-export async function verifyChapaTransaction(txRef: string): Promise<ChapaVerification> {
+export async function verifyChapaTransaction(
+    txRef: string,
+    minAmountEtb: number = CHAPA_LEGACY_AMOUNT_ETB
+): Promise<ChapaVerification> {
     const secret = process.env.CHAPA_SECRET_KEY;
     if (!secret) return { ok: false, reason: 'UNREACHABLE' };
 
@@ -48,7 +57,7 @@ export async function verifyChapaTransaction(txRef: string): Promise<ChapaVerifi
         if (body?.status !== 'success' || data?.status !== 'success' || data?.tx_ref !== txRef) {
             return { ok: false, reason: 'NOT_PAID' };
         }
-        if (data.currency !== CHAPA_CURRENCY || Number(data.amount) < CHAPA_SUBSCRIPTION_AMOUNT_ETB) {
+        if (data.currency !== CHAPA_CURRENCY || Number(data.amount) < minAmountEtb) {
             return { ok: false, reason: 'AMOUNT_MISMATCH' };
         }
         return { ok: true };

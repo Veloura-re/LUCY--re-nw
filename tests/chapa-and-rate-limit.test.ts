@@ -1,4 +1,4 @@
-import { parseChapaTxRef, verifyChapaTransaction, CHAPA_SUBSCRIPTION_AMOUNT_ETB } from '@/lib/chapa';
+import { parseChapaTxRef, verifyChapaTransaction, CHAPA_LEGACY_AMOUNT_ETB } from '@/lib/chapa';
 import { rateLimitShared } from '@/lib/rate-limit';
 
 const realFetch = global.fetch;
@@ -38,7 +38,7 @@ describe('verifyChapaTransaction', () => {
         mockFetch.mockResolvedValue({ ok: status >= 200 && status < 300, status, json: async () => body });
 
     test('accepts a paid transaction for the full amount', async () => {
-        respond(200, { status: 'success', data: { status: 'success', tx_ref: ref, currency: 'ETB', amount: String(CHAPA_SUBSCRIPTION_AMOUNT_ETB) } });
+        respond(200, { status: 'success', data: { status: 'success', tx_ref: ref, currency: 'ETB', amount: String(CHAPA_LEGACY_AMOUNT_ETB) } });
         await expect(verifyChapaTransaction(ref)).resolves.toEqual({ ok: true });
     });
 

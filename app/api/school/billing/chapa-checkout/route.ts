@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { CHAPA_SUBSCRIPTION_AMOUNT_ETB, CHAPA_CURRENCY } from '@/lib/chapa';
+import { SUBSCRIPTION_PRICE_USD, CHAPA_CURRENCY } from '@/lib/chapa';
+import { quoteUsdInEtb } from '@/lib/fx';
+import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(request: Request) {
     try {
@@ -21,8 +23,13 @@ export async function POST(request: Request) {
 
         const domain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-        // Convert $49 USD to ETB (Approximate rate: 1 USD = ~120 ETB, so roughly 5880 ETB)
-        const amountETB = String(CHAPA_SUBSCRIPTION_AMOUNT_ETB);
+        // Convert the USD price to ETB at today's rate. The quote is recorded below so the payment can
+        // be verified against exactly what this school was asked to pay.
+        const quote = await quoteUsdInEtb(SUBSCRIPTION_PRICE_USD);
+        if (!quote) {
+            return NextResponse.json({ error: 'Exchange rate is temporarily unavailable. Please try again shortly.' }, { status: 503 });
+        }
+        const amountETB = String(quote.amountEtb);
         const tx_ref = `tx-${school.id}-${Date.now()}`;
 
         // Initialize Chapa Transaction
@@ -52,14 +59,17 @@ export async function POST(request: Request) {
         const chapaData = await response.json() as any;
 
         if (chapaData.status === 'success' && chapaData.data?.checkout_url) {
-            // Non-blocking audit
-            try {
-                const { logActivity } = await import('@/lib/audit');
-                const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-                await logActivity({ userId: user.id, action: 'INITIATE_PAYMENT', resourceType: 'billing', ip: _ip });
-            } catch { /* non-blocking */ }
+            await logActivity({
+                userId: user.id,
+                schoolId: school.id,
+                action: 'CHAPA_CHECKOUT_QUOTED',
+                resourceType: 'billing',
+                resourceId: tx_ref,
+                after: { amountEtb: quote.amountEtb, usd: SUBSCRIPTION_PRICE_USD, rate: quote.rate, rateSource: quote.source, marginPercent: quote.marginPercent },
+                ip: getIp(request)
+            });
 
-            return NextResponse.json({ checkoutUrl: chapaData.data.checkout_url });
+            return NextResponse.json({ checkoutUrl: chapaData.data.checkout_url, amountEtb: quote.amountEtb });
         } else {
             console.error('[ChapaCheckout] Initialization Error:', chapaData);
             return NextResponse.json({ error: 'Failed to initialize Chapa checkout.' }, { status: 500 });

@@ -80,7 +80,7 @@ describe('Chapa webhook', () => {
         process.env.CHAPA_WEBHOOK_SECRET = secret;
         process.env.CHAPA_SECRET_KEY = 'chapa-secret';
         mockSchoolFind.mockResolvedValue({ id: schoolId, trialEndsAt: new Date(Date.now() - days(3)), createdAt: new Date(Date.now() - days(200)) });
-        mockAuditFind.mockResolvedValue(null);
+        mockAuditFind.mockImplementation(async (args: any) => (args.where.action === 'CHAPA_CHECKOUT_QUOTED' ? null : null));
         mockUserFind.mockResolvedValue({ id: 'owner-1' });
     });
     afterAll(() => { global.fetch = realFetch; });
@@ -117,6 +117,20 @@ describe('Chapa webhook', () => {
         await send(ref);
         expect(mockFetch).not.toHaveBeenCalled();
         expect(mockSchoolUpdate).not.toHaveBeenCalled();
+    });
+
+    test('a payment must cover the quote recorded at checkout, not the legacy amount', async () => {
+        const ref = `tx-${schoolId}-${Date.now()}`;
+        mockAuditFind.mockImplementation(async (args: any) =>
+            args.where.action === 'CHAPA_CHECKOUT_QUOTED' ? { after: { amountEtb: 7910 } } : null);
+
+        verified(ref, '5880');
+        await send(ref);
+        expect(mockSchoolUpdate).not.toHaveBeenCalled();
+
+        verified(ref, '7910');
+        await send(ref);
+        expect(mockSchoolUpdate).toHaveBeenCalledTimes(1);
     });
 
     test('a bad signature is rejected', async () => {
