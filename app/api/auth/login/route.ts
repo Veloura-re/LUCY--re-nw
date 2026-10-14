@@ -69,20 +69,40 @@ export async function POST(req: Request) {
         const clientIp = getClientIp(req);
         const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
 
-        // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters)
-        const verifyParams = new URLSearchParams();
-        verifyParams.append('secret', process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA');
-        verifyParams.append('response', turnstileToken);
-        verifyParams.append('remoteip', clientIp);
+        // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters).
+        // In production this fails closed: a missing secret, an unreachable verifier or an
+        // unparseable answer all block the login instead of letting it through.
+        const isProduction = process.env.NODE_ENV === 'production';
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+            || (isProduction ? '' : '1x0000000000000000000000000000000AA'); // Cloudflare's always-pass test secret, development only
 
-        const cfVerify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: verifyParams.toString(),
-        });
-        
-        const cfResponse = (await cfVerify.json()) as { success?: boolean; 'error-codes'?: string[] };
-        if (!cfResponse?.success && process.env.NODE_ENV === 'production') {
+        if (!turnstileSecret) {
+            console.error('[Login] TURNSTILE_SECRET_KEY is not configured; refusing all logins.');
+            return NextResponse.json({ error: "Login is temporarily unavailable. Please try again later." }, { status: 503 });
+        }
+
+        let turnstilePassed = false;
+        try {
+            const verifyParams = new URLSearchParams();
+            verifyParams.append('secret', turnstileSecret);
+            verifyParams.append('response', turnstileToken);
+            verifyParams.append('remoteip', clientIp);
+
+            const cfVerify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: verifyParams.toString(),
+            });
+            const cfResponse = (await cfVerify.json()) as { success?: boolean; 'error-codes'?: string[] };
+            turnstilePassed = cfResponse?.success === true;
+        } catch (e) {
+            console.error('[Login] Turnstile verification could not be completed:', (e as Error).message);
+            if (isProduction) {
+                return NextResponse.json({ error: "Security check unavailable. Please try again shortly." }, { status: 503 });
+            }
+        }
+
+        if (!turnstilePassed && isProduction) {
             await recordAuditLog(clientIp, sanitizedEmail, 'BLOCKED_TURNSTILE');
             return NextResponse.json({ error: "Security check failed. Access Denied." }, { status: 403 });
         }

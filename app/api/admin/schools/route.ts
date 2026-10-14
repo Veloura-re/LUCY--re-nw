@@ -1,4 +1,4 @@
-import { publicErrorMessage } from '@/lib/security';
+import { publicErrorMessage, secureRandomInt } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { sendInviteEmail } from '@/lib/email';
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
             }
 
             // Create school via Prisma
-            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+            const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + secureRandomInt(100, 999);
             const school = await prisma.school.create({
                 data: {
                     name,
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
         const supabaseAdmin = createSupabaseAdmin(supabaseUrl, serviceKey);
 
-        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + Math.floor(100 + Math.random() * 900);
+        const schoolCode = name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6) + secureRandomInt(100, 999);
         const { data: school, error: schErr } = await supabaseAdmin
             .from('School')
             .insert([{ name, schoolCode, status: 'ACTIVE' }])
