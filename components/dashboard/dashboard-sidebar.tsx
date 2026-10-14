@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { NavToggle } from "@/components/dashboard/nav-toggle";
-import { Menu, X, Sparkles, ChevronLeft, ChevronRight, QrCode } from "lucide-react";
+import { Menu, X, Sparkles, ChevronLeft, ChevronRight, QrCode, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_MAP, NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
@@ -212,11 +212,21 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                                 <ThemeToggle className="!w-[38px] !h-[38px] !rounded-xl shrink-0" />
                                 <Button
                                     variant="ghost"
-                                    onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
-                                    className="flex-1 justify-start gap-3 h-10 px-3 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
+                                    onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tutorial"))}
+                                    className="flex-1 justify-start gap-1.5 h-10 px-2 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
+                                    title="Role Guidelines"
                                 >
-                                    <Sparkles className="w-4 h-4" />
-                                    Interactive Tour
+                                    <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                                    <span>Guide</span>
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
+                                    className="flex-1 justify-start gap-1.5 h-10 px-2 rounded-xl text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-900/10 transition-all font-black uppercase tracking-widest text-[9px]"
+                                    title="Interactive Tour"
+                                >
+                                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                                    <span>Tour</span>
                                 </Button>
                             </div>
                         </div>
@@ -250,6 +260,13 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
                     {collapsed && (
                         <>
                             <ThemeToggle className="!w-9 !h-9 !rounded-xl" />
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tutorial"))}
+                                className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"
+                                title="Role Guidelines"
+                            >
+                                <BookOpen className="w-4 h-4" />
+                            </button>
                             <button
                                 onClick={() => window.dispatchEvent(new CustomEvent("lucy:open-tour"))}
                                 className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-500 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 hover:border-eduGreen-900/40 transition-all"

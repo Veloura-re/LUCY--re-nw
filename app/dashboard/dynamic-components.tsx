@@ -13,3 +13,8 @@ export const NetworkBanner = dynamic(
     { ssr: false }
 );
 
+export const SmartTutorialWrapper = dynamic(
+    () => safeImport(() => import("@/components/dashboard/neural-tutorial-wrapper").then(m => m.SmartTutorialWrapper), "SmartTutorialWrapper"),
+    { ssr: false }
+);
+
