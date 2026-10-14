@@ -116,3 +116,17 @@ describe('requireStudentAccess', () => {
         await expect(requireStudentAccess('missing')).rejects.toThrow(/^Forbidden/);
     });
 });
+
+describe('secureRandomInt', () => {
+    test('stays within bounds and varies', () => {
+        const { secureRandomInt } = require('@/lib/security');
+        const seen = new Set<number>();
+        for (let i = 0; i < 400; i++) {
+            const n = secureRandomInt(100, 999);
+            expect(n).toBeGreaterThanOrEqual(100);
+            expect(n).toBeLessThanOrEqual(999);
+            seen.add(n);
+        }
+        expect(seen.size).toBeGreaterThan(100);
+    });
+});

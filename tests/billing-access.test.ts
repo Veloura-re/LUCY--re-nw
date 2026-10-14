@@ -31,7 +31,8 @@ const days = (n: number) => n * DAY_MS;
 
 describe('access date helpers', () => {
     test('defaults to a 120-day trial from creation', () => {
-        const createdAt = new Date(Date.now() - days(20));
+        // 20 days and 1 hour ago, so the result is never exactly on a day boundary
+        const createdAt = new Date(Date.now() - days(20) - 60 * 60 * 1000);
         expect(Math.round((getAccessEnd({ createdAt }) - createdAt.getTime()) / DAY_MS)).toBe(120);
         expect(remainingAccessDays({ createdAt })).toBe(99);
     });
