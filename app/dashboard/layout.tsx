@@ -4,13 +4,13 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCachedUser, getCachedUserByEmail } from "@/lib/users";
 import { healUserMismatch } from "@/lib/auth-healing";
-import { Shield, LayoutDashboard } from "lucide-react";
+import { Shield, LayoutDashboard, BookOpen } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { FloatingDock } from "@/components/dashboard/floating-dock";
-import { InteractiveTour, NetworkBanner } from "@/app/dashboard/dynamic-components";
+import { InteractiveTour, NetworkBanner, SmartTutorialWrapper } from "@/app/dashboard/dynamic-components";
 import { PreferencesProvider } from "@/components/dashboard/preferences-provider";
 import { RealtimeRefresh } from "@/components/dashboard/realtime-refresh";
 import { EdgeHealthIndicator } from "@/components/dashboard/edge-health-indicator";
@@ -185,6 +185,16 @@ export default async function DashboardLayout({
                         {['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'].includes(dbUser.role) && (
                             <ScannerTriggerButton variant="header" />
                         )}
+                        <a
+                            href={`/guidelines?role=${role}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/50 hover:bg-eduGreen-50 dark:hover:bg-eduGreen-950/20 text-zinc-600 dark:text-zinc-400 hover:text-eduGreen-600 dark:hover:text-eduGreen-400 text-[10px] font-bold tracking-wider uppercase transition-colors"
+                            title="Role Guidelines & Operating Manual"
+                        >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>Guide</span>
+                        </a>
                         <EdgeHealthIndicator />
                     </div>
                 </header>
@@ -204,6 +214,7 @@ export default async function DashboardLayout({
             {/* Primary Navigation Hub (Appears in DOCK mode) */}
             {!isSidebar && <FloatingDock role={role} userEmail={dbUser.email} userName={dbUser.name} />}
             <InteractiveTour role={role} />
+            <SmartTutorialWrapper role={role} />
             <PreferencesProvider children={null} />
             <NetworkBanner />
             <WelcomeAnnouncement />
