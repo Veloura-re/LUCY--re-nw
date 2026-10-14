@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { safeEqual } from '@/lib/security';
-import { logActivity } from '@/lib/audit';
-import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS } from '@/lib/chapa';
+import { findBillingActor, accessEndAfterPurchase } from '@/lib/billing';
+import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS, CHAPA_ACCESS_DAYS } from '@/lib/chapa';
 
 export async function POST(request: Request) {
     try {
@@ -66,35 +66,51 @@ export async function POST(request: Request) {
                 return NextResponse.json({ received: true });
             }
 
-            const school = await prisma.school.findUnique({ where: { id: parsed.schoolId }, select: { id: true } });
+            const school = await prisma.school.findUnique({
+                where: { id: parsed.schoolId },
+                select: { id: true, trialEndsAt: true, createdAt: true }
+            });
             if (!school) {
                 console.warn(`[Chapa Webhook] Verified payment references unknown school ${parsed.schoolId}`);
                 return NextResponse.json({ received: true });
             }
 
-            // Update school to premium/active
-            await prisma.school.update({
-                where: { id: school.id },
-                data: {
-                    status: 'ACTIVE',
-                    subscriptionStatus: 'active'
-                }
-            });
-
-            // Webhooks have no signed-in actor; attribute the entry to the school's owner account
-            const actor = await prisma.user.findFirst({
-                where: { schoolId: school.id, role: 'OWNER' },
+            // One payment buys one month of access. The transaction reference is recorded in the
+            // audit log, so a redelivered webhook is recognised and does not extend access twice.
+            const alreadyProcessed = await prisma.auditLog.findFirst({
+                where: { schoolId: school.id, action: 'CHAPA_PAYMENT_CONFIRMED', resourceId: txRef },
                 select: { id: true }
             });
-            if (actor) {
-                await logActivity({
-                    userId: actor.id,
-                    schoolId: school.id,
-                    action: 'CHAPA_PAYMENT_CONFIRMED',
-                    resourceType: 'billing',
-                    resourceId: txRef
-                });
+            if (alreadyProcessed) {
+                return NextResponse.json({ received: true });
             }
+
+            const actorId = await findBillingActor(school.id);
+            const newAccessEnd = accessEndAfterPurchase(school, CHAPA_ACCESS_DAYS);
+
+            await prisma.$transaction(async (tx) => {
+                await tx.school.update({
+                    where: { id: school.id },
+                    data: {
+                        status: 'ACTIVE',
+                        subscriptionStatus: 'active',
+                        trialEndsAt: newAccessEnd
+                    }
+                });
+
+                if (actorId) {
+                    await tx.auditLog.create({
+                        data: {
+                            userId: actorId,
+                            schoolId: school.id,
+                            action: 'CHAPA_PAYMENT_CONFIRMED',
+                            resourceType: 'billing',
+                            resourceId: txRef,
+                            after: { accessEndsAt: newAccessEnd.toISOString() }
+                        }
+                    });
+                }
+            });
 
             console.log(`[Chapa Webhook] Successfully processed payment for school ${school.id}`);
         }
