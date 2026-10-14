@@ -89,8 +89,8 @@ export default function Pricing() {
                                 desc: "Full access for a single institution during evaluation period. No credit card required.",
                                 features: ["1 institution", "up to 500 students", "all core features", "email support"],
                                 highlight: false,
-                                href: "/register/admin?plan=pilot",
-                                buttonText: "Start Free Trial"
+                                href: "/contact?plan=pilot",
+                                buttonText: "Request Free Trial"
                             },
                             {
                                 tier: "Core Plan",
@@ -100,8 +100,8 @@ export default function Pricing() {
                                 desc: "Production-grade deployment for full-scale institutional management.",
                                 features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"],
                                 highlight: true,
-                                href: "/register/admin?plan=core",
-                                buttonText: "Start 120-Day Trial"
+                                href: "/contact?plan=core",
+                                buttonText: "Request 120-Day Trial"
                             },
                             {
                                 tier: "Enterprise",
