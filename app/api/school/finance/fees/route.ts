@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from "@/lib/security";
 import { FeeCategory, FeeFrequency } from "@prisma/client";
+import { withAudit } from '@/lib/with-audit';
 
 const VALID_CATEGORIES: Record<string, FeeCategory> = {
     TUITION: FeeCategory.TUITION,
@@ -39,7 +40,7 @@ export async function GET() {
     }
 }
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
         const schoolId = dbUser.schoolId!;
@@ -155,3 +156,5 @@ export async function POST(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'UPDATE_FEE_STRUCTURE', resourceType: 'fee_structure' });

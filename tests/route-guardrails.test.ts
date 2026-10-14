@@ -119,3 +119,44 @@ describe('known bad patterns', () => {
         expect(hits).toEqual([]);
     });
 });
+
+describe('audit trail coverage', () => {
+    const MUTATION = /export\s+(?:async\s+function|const)\s+(POST|PUT|PATCH|DELETE)\b/;
+    const AUDITED = /logActivity|logBillingActivity|auditLog\.create|logAudit|withAudit/;
+
+    /** Mutating routes that are deliberately not written to the per-school audit log. */
+    const NOT_AUDITED: Record<string, string> = {
+        'app/api/ai/chat/route.ts': 'read-only assistant call; rate limited',
+        'app/api/auth/forgot-password/route.ts': 'recorded by the authentication flow',
+        'app/api/auth/login/route.ts': 'recorded in auth_audit_logs, shown on the security page',
+        'app/api/auth/register-admin/route.ts': 'platform bootstrap; no school exists yet',
+        'app/api/auth/register-session/route.ts': 'session bookkeeping',
+        'app/api/auth/validate-key/route.ts': 'read-only key check',
+        'app/api/auth/verify-code/route.ts': 'failures go to the error log',
+        'app/api/client-error/route.ts': 'is the error log writer',
+        'app/api/debug-ingest/route.ts': 'development only',
+        'app/api/messages/route.ts': 'message content; high volume, moderated separately',
+        'app/api/public/comments/route.ts': 'anonymous public input, moderated before display',
+        'app/api/public/security-report/route.ts': 'stored as a security report',
+        'app/api/uplink/route.ts': 'stored as an access request',
+        'app/api/sanctuary/match/route.ts': 'anonymous peer-support session, deliberately not tied to a school record',
+        'app/api/sanctuary/message/route.ts': 'anonymous peer-support session, deliberately not tied to a school record',
+        'app/api/sanctuary/end/route.ts': 'anonymous peer-support session, deliberately not tied to a school record',
+    };
+
+    test('every mutating route writes an audit entry or is listed with a reason', () => {
+        const missing = routeFiles
+            .filter(f => MUTATION.test(fs.readFileSync(f, 'utf8')) && !AUDITED.test(fs.readFileSync(f, 'utf8')))
+            .map(rel)
+            .filter(r => !(r in NOT_AUDITED));
+        expect(missing).toEqual([]);
+    });
+
+    test('the exemption list stays honest', () => {
+        const stale = Object.keys(NOT_AUDITED).filter(r => {
+            const file = path.join(ROOT, r);
+            return !fs.existsSync(file) || AUDITED.test(fs.readFileSync(file, 'utf8'));
+        });
+        expect(stale).toEqual([]);
+    });
+});

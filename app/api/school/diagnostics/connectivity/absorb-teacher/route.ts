@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
+import { withAudit } from '@/lib/with-audit';
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -45,3 +46,5 @@ export async function POST(req: Request) {
         return new NextResponse(e.message, { status: 500 });
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'ABSORB_TEACHER', resourceType: 'staff' });

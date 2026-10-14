@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireSchoolLinked, handleApiError } from "@/lib/security";
+import { withAudit } from '@/lib/with-audit';
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const dbUser = await requireSchoolLinked();
 
@@ -90,3 +91,5 @@ export async function GET(req: Request) {
         return handleApiError(error);
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'UPDATE_READING_PROGRESS', resourceType: 'book_progress' });

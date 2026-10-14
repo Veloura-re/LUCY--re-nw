@@ -2,6 +2,7 @@ import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
+import { withAudit } from '@/lib/with-audit';
 
 export async function GET() {
     try {
@@ -42,7 +43,7 @@ export async function GET() {
     }
 }
 
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
     try {
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
@@ -87,3 +88,5 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: publicErrorMessage(e, "Internal Server Error") }, { status: 500 });
     }
 }
+
+export const POST = withAudit(handlePOST, { action: 'PAYROLL_UPDATE', resourceType: 'payroll' });
