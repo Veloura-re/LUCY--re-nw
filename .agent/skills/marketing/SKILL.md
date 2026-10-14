@@ -33,7 +33,7 @@ Say goodbye to lost paper marklists and delayed fee collections. The future of c
 
 🏛️ *Built for modern school directors who demand 100% operational precision.*
 
-👉 **Experience the Live Campus OS:** [lucy-os.com/demo](https://lucy-os.com/demo)
+👉 **Experience the Live Campus OS:** [5-cn.net/deck](https://5-cn.net/deck)
 💬 **Join the Discussion:** @LucySchoolOS
 ```
 
@@ -76,7 +76,7 @@ Schools operate in the real world—where mobile signals drop, power fluctuates,
 ---
 
 ### 🛠️ Try it Out
-Check your updated dashboard live at <https://lucy-os.com/dashboard>.
+Check your updated dashboard live at <https://5-cn.net/dashboard>.
 
 > 💬 **Community Question**: Which feature should we build next? Vote in <#feature-requests>!
 ```

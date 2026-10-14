@@ -81,7 +81,7 @@ Every user action in LUCY OS propagates through a four-stage reactive pipeline:
 - Route: `/admin/schools`
 - Screen Actions:
   1. Click "Provision Institution" to open the `<CreateSchoolModal>`.
-  2. Input: School Name: "Apex International Academy", Code: "APEX-2026", Domain: "apex.lucy-os.com".
+  2. Input: School Name: "Apex International Academy", Code: "APEX-2026", Domain: "apex.5-cn.net".
   3. Click "Authorize Tenant Provisioning".
   4. Inspect the newly provisioned tenant row in the directory.
   5. Demonstrate the kill-switch: Click "Suspend Institution" toggle. The tenant state transitions immediately to `SUSPENDED`, locking all faculty and student access.

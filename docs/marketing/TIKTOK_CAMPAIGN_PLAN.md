@@ -46,7 +46,7 @@ TikTok and consumer-protection rules treat unsubstantiated performance claims as
 | "Works on 2G, zero-drop offline sync" | Telegram drop | Test on a real throttled connection before claiming |
 | "Cryptographically secure" | One-pager | Replace with specific, true statements (role-based access, per-school data isolation, audit logs) |
 | "$149 original price" strikethrough | Pricing page | A reference price nobody paid can be a deceptive discount; remove or document it |
-| "Free up to 3 months" vs "120-day trial" | Pricing page | Pick one; they contradict each other |
+| "Free up to 3 months" vs "120-day trial" | Pricing page | Fixed: the pricing page now says 120-day trial, matching the trial length the code applies |
 
 Safe claim pattern: describe what the product does and show it on screen. Replace numbers with a real pilot result once you have one, with the school's written permission.
 
@@ -133,7 +133,7 @@ All scripts: 15 to 30 seconds, vertical, captions burned in, shot on a demo scho
 Marketing will send traffic to the site, so these must be true first.
 
 1. Tracking: there is no TikTok Pixel, Events API or UTM capture in the app today. Add the pixel, record `utm_*` and `ttclid` on the pilot registration, and fire a registration event. The enforced Content-Security-Policy in `middleware.ts` does not allow TikTok script or connect hosts, so it must be extended when the pixel is added.
-2. Domain: 5-cn.net is canonical (confirmed). Replace every `lucy-os.com` link in `MARKETING_AND_COMMUNITY_DROPS.md` and the deck copy, and redirect `lucy-os.com` to `5-cn.net` if that domain is owned.
+2. Domain: 5-cn.net is canonical and the only domain owned (confirmed). All `lucy-os.com` links in the marketing docs now point to it. Do not publish any `lucy-os.com` link until that domain is purchased.
 3. Pricing page: resolve the trial wording and the $149 strikethrough (section 4).
 4. Demo tenant: a fictional school with seeded classes, marks, invoices and a QR card, resettable before each shoot.
 5. Lead path: confirm `/contact` (the uplink form) and `/register/admin?plan=pilot` work end to end and someone answers within one business day.

@@ -85,7 +85,7 @@ export default function Pricing() {
                             {
                                 tier: "Pilot Plan",
                                 price: "Free",
-                                period: "up to 3 months",
+                                period: "120-day trial",
                                 desc: "Full access for a single institution during evaluation period. No credit card required.",
                                 features: ["1 institution", "up to 500 students", "all core features", "email support"],
                                 highlight: false,

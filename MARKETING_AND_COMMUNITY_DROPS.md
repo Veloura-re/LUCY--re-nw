@@ -20,7 +20,7 @@ Say goodbye to lost paper marklists, chaotic group chats, and delayed tuition co
 
 🏛️ *Built for modern school directors, principals, and educators who demand 100% operational precision.*
 
-👉 **Explore the Pitch Deck:** https://lucy-os.com/deck
+👉 **Explore the Pitch Deck:** https://5-cn.net/deck
 💬 **Join the Community:** @LucySchoolOS
 ```
 
@@ -42,7 +42,7 @@ Here is what happens when exam week hits:
 ✅ Moderated, institutional in-app messaging
 ✅ 100% cloud-backed and cryptographically secure
 
-🚀 **Bring your school to the future today:** https://lucy-os.com
+🚀 **Bring your school to the future today:** https://5-cn.net
 ```
 
 ---
@@ -59,7 +59,7 @@ Your autonomous institutional concierge. Tap any command below to start:
 🔔 `/alerts` — Emergency notices & holiday announcements
 🛡️ `/verify [ID]` — Instant scholar QR credential validation
 
-📲 **Launch WebApp Dashboard:** [Open LUCY Portal](https://lucy-os.com/login)
+📲 **Launch WebApp Dashboard:** [Open LUCY Portal](https://5-cn.net/login)
 ```
 
 ---
@@ -87,9 +87,9 @@ LUCY is the unified digital campus operating system designed to eliminate admini
 ---
 
 ### 🚀 Get Started:
-1. View the interactive presentation deck: <https://lucy-os.com/deck>
-2. Check the platform specifications: <https://lucy-os.com/features>
-3. Check the documentation: <https://lucy-os.com/docs>
+1. View the interactive presentation deck: <https://5-cn.net/deck>
+2. Check the platform specifications: <https://5-cn.net/features>
+3. Check the documentation: <https://5-cn.net/docs>
 
 > *"Create your digital schoolhouse with us."*
 ```
@@ -110,7 +110,7 @@ We just deployed a massive resilience upgrade across all 237 campus routes:
 * **🤖 Resilient AI Extraction**: AI academic summaries and exam generators now run on bulletproof JSON extractors.
 * **🔐 Zero-Trust School Scoping**: Strict multi-tenant isolation guaranteeing zero cross-school data leakage.
 
-Read the full changelog here: <https://lucy-os.com/changelog>
+Read the full changelog here: <https://5-cn.net/changelog>
 ```
 
 ---
@@ -163,6 +163,6 @@ ENTERPRISE COMPLIANCE & SECURITY:
 • 99.9% Cloud Uptime SLA with offline caching support.
 
 GET STARTED:
-Schedule a 15-minute campus onboarding demo at https://lucy-os.com
+Schedule a 15-minute campus onboarding demo at https://5-cn.net
 ================================================================================
 ```
