@@ -11,6 +11,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
+require('./_guard').requireWipeConfirmation('nuke-and-seed');
 
 const sb = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,

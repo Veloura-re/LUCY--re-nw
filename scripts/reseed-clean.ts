@@ -13,6 +13,8 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 async function main() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('./_guard').requireWipeConfirmation('reseed-clean');
     console.log('--- STARTING DATABASE RESET ---');
 
     // 1. CLEANUP ALL TABLES (Order is important for FK constraints)

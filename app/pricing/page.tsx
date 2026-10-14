@@ -95,7 +95,6 @@ export default function Pricing() {
                             {
                                 tier: "Core Plan",
                                 price: "$49",
-                                originalPrice: "$149",
                                 period: "/ month",
                                 desc: "Production-grade deployment for full-scale institutional management.",
                                 features: ["unlimited students", "all roles", "parent portal", "priority support", "99.9% uptime SLA"],
