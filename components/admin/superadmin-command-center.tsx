@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Globe, Users, GraduationCap, BookOpen, ShieldCheck, CreditCard,
     Inbox, ArrowUpRight, CheckCircle2, ShieldAlert, Activity, Cpu,
-    Server, RefreshCw, Zap, ExternalLink, Lock, Check, Key, Terminal
+    Server, RefreshCw, Zap, ExternalLink, Lock, Check, Key, Terminal, AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -56,6 +56,9 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
     const [wantsAccessRequests, setWantsAccessRequests] = useState<any[]>([]);
     const [receipts, setReceipts] = useState<any[]>([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [errors24h, setErrors24h] = useState<number | null>(null);
+    const [warnings24h, setWarnings24h] = useState<number | null>(null);
+    const [topFailure, setTopFailure] = useState<{ message: string; count: number; type: string } | null>(null);
 
     useEffect(() => {
         fetchDashboardMetrics();
@@ -94,6 +97,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                 const receiptsList = data.receipts || [];
                 setReceipts(receiptsList);
                 setPendingReceiptsCount(receiptsList.filter((r: any) => r.status === 'PENDING').length);
+            }
+
+            // 5. Real system health from the error log: counts for the last 24 hours and the most frequent failure
+            const resErrors = await fetch('/api/admin/error-logs?group=1&since=24h&limit=1&level=ERROR');
+            if (resErrors.ok) {
+                const data = await resErrors.json() as any;
+                setErrors24h(data.summary?.errors24h ?? 0);
+                setWarnings24h(data.summary?.warnings24h ?? 0);
+                const top = data.groups?.[0];
+                setTopFailure(top ? { message: top.message, count: top.count, type: top.type } : null);
             }
         } catch (err: any) {
             console.error('Failed to load dashboard metrics:', err);
@@ -369,6 +382,18 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                             </div>
                                         )}
 
+                                        {errors24h !== null && errors24h > 0 && topFailure && (
+                                            <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+                                                <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                                                <div className="min-w-0">
+                                                    <div className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Server errors in the last 24 hours</div>
+                                                    <div className="text-[10px] text-zinc-600 dark:text-zinc-400 font-mono mt-0.5 truncate">
+                                                        {errors24h.toLocaleString()} errors, {(warnings24h ?? 0).toLocaleString()} warnings. Most frequent: {topFailure.count}x {topFailure.message}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {securityCount > 0 && (
                                             <div className="p-3.5 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-start gap-3">
                                                 <ShieldAlert className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
@@ -382,7 +407,13 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
 
                                     <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center justify-between text-[10px] font-mono text-zinc-600 dark:text-zinc-500">
                                         <span>ZDR POLICY: STRICT</span>
-                                        <span className="text-emerald-400 font-bold">100% HEALTHY</span>
+                                        {errors24h === null ? (
+                                            <span className="text-zinc-500 font-bold">HEALTH UNKNOWN</span>
+                                        ) : errors24h === 0 ? (
+                                            <span className="text-emerald-400 font-bold">NO ERRORS IN 24H</span>
+                                        ) : (
+                                            <span className="text-amber-500 font-bold">{errors24h.toLocaleString()} ERRORS IN 24H</span>
+                                        )}
                                     </div>
                                 </div>
                             </motion.div>

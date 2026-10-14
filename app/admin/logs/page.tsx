@@ -27,6 +27,8 @@ interface ErrorLog {
     school?: { id: string; name: string; schoolCode: string } | null;
 }
 
+interface ErrorGroup { type: string; message: string; path: string | null; count: number; firstSeen: string; lastSeen: string; }
+
 interface SchoolInfo { id: string; name: string; schoolCode: string; }
 
 const ACTION_COLORS: Record<string, string> = {
@@ -50,6 +52,9 @@ const ERROR_TYPE_COLORS: Record<string, string> = {
     auth_failure: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
     unhandled_rejection: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
     network_error: 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20',
+    webhook_failure: 'text-red-600 dark:text-red-400 bg-red-500/10 border-red-200 dark:border-red-500/20',
+    payment_failure: 'text-red-600 dark:text-red-400 bg-red-500/10 border-red-200 dark:border-red-500/20',
+    cron_failure: 'text-amber-600 dark:text-amber-400 bg-amber-500/10 border-amber-500/20',
 };
 
 const ERROR_TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -58,6 +63,9 @@ const ERROR_TYPE_ICONS: Record<string, React.ReactNode> = {
     route_404: <Globe className="w-3 h-3" />,
     auth_failure: <Shield className="w-3 h-3" />,
     unhandled_rejection: <Zap className="w-3 h-3" />,
+    webhook_failure: <AlertTriangle className="w-3 h-3" />,
+    payment_failure: <AlertTriangle className="w-3 h-3" />,
+    cron_failure: <Clock className="w-3 h-3" />,
     network_error: <XCircle className="w-3 h-3" />,
 };
 
@@ -114,6 +122,10 @@ export default function AdminLogsPage() {
     const [errorSchoolFilter, setErrorSchoolFilter] = useState('');
     const [errorStats, setErrorStats] = useState<any[]>([]);
     const [selectedError, setSelectedError] = useState<ErrorLog | null>(null);
+    const [errorGrouped, setErrorGrouped] = useState(false);
+    const [errorSince, setErrorSince] = useState('7d');
+    const [errorGroups, setErrorGroups] = useState<ErrorGroup[]>([]);
+    const [errorSummary, setErrorSummary] = useState<{ errors24h: number; warnings24h: number }>({ errors24h: 0, warnings24h: 0 });
     
     const limit = 50;
 
@@ -139,23 +151,27 @@ export default function AdminLogsPage() {
     const fetchErrors = useCallback(async () => {
         setErrorLoading(true);
         try {
-            const params = new URLSearchParams({ page: String(errorPage), limit: String(limit), search: errorSearch, schoolId: errorSchoolFilter, type: errorTypeFilter, level: errorLevelFilter });
+            const params = new URLSearchParams({ page: String(errorPage), limit: String(limit), search: errorSearch, schoolId: errorSchoolFilter, type: errorTypeFilter, level: errorLevelFilter, since: errorSince, group: errorGrouped ? '1' : '0' });
             const res = await fetch(`/api/admin/error-logs?${params}`);
-            const data = await res.json() as { errors: ErrorLog[]; total: number; typeStats: any[] };
+            const data = await res.json() as { errors: ErrorLog[]; groups: ErrorGroup[] | null; total: number; typeStats: any[]; summary?: { errors24h: number; warnings24h: number } };
             setErrors(data.errors || []);
+            setErrorGroups(data.groups || []);
+            if (data.summary) setErrorSummary(data.summary);
             setErrorTotal(data.total || 0);
             setErrorStats(data.typeStats || []);
         } finally { setErrorLoading(false); }
-    }, [errorPage, errorSearch, errorSchoolFilter, errorTypeFilter, errorLevelFilter]);
+    }, [errorPage, errorSearch, errorSchoolFilter, errorTypeFilter, errorLevelFilter, errorSince, errorGrouped]);
 
     useEffect(() => { fetchLogs(); }, [fetchLogs]);
     useEffect(() => { if (tab === 'errors') fetchErrors(); }, [tab, fetchErrors]);
     useEffect(() => { setPage(1); }, [debouncedSearch, schoolFilter, resourceFilter, levelFilter]);
-    useEffect(() => { setErrorPage(1); }, [errorSearch, errorSchoolFilter, errorTypeFilter, errorLevelFilter]);
+    useEffect(() => { setErrorPage(1); }, [errorSearch, errorSchoolFilter, errorTypeFilter, errorLevelFilter, errorSince, errorGrouped]);
 
     const downloadCSV = () => {
         const rows = logs.map(l => [new Date(l.createdAt).toISOString(), l.user.name || '', l.user.email, l.user.role, l.action, l.resourceType, l.resourceId || '', l.ip || '', l.path || '']);
-        const csv = [['Timestamp','User','Email','Role','Action','Resource','ResourceId','IP','Path'], ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+        // Quote every cell and neutralise leading = + - @ so a user-controlled name cannot run as a spreadsheet formula
+        const cell = (v: string) => { const t = /^[=+\-@\t\r]/.test(v) ? `'${v}` : v; return `"${t.replace(/"/g, '""')}"`; };
+        const csv = [['Timestamp','User','Email','Role','Action','Resource','ResourceId','IP','Path'], ...rows].map(r => r.map(cell).join(',')).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'audit-logs.csv'; a.click();
     };
 
@@ -357,9 +373,24 @@ export default function AdminLogsPage() {
                             <select value={errorTypeFilter} onChange={e => setErrorTypeFilter(e.target.value)}
                                 className="px-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none appearance-none cursor-pointer">
                                 <option value="">All Types</option>
-                                {['ui_crash','api_error','route_404','auth_failure','unhandled_rejection','network_error'].map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
+                                {['ui_crash','api_error','route_404','auth_failure','unhandled_rejection','network_error','webhook_failure','payment_failure','cron_failure'].map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
                             </select>
-                            <div className="text-[11px] text-zinc-600">{errorTotal.toLocaleString()} errors</div>
+                            <select value={errorSince} onChange={e => setErrorSince(e.target.value)}
+                                className="px-4 py-2.5 bg-white/[0.03] border border-zinc-300 dark:border-white/10 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 focus:outline-none">
+                                <option value="1h">Last hour</option>
+                                <option value="24h">Last 24 hours</option>
+                                <option value="7d">Last 7 days</option>
+                                <option value="30d">Last 30 days</option>
+                                <option value="all">All time</option>
+                            </select>
+                            <button onClick={() => setErrorGrouped(g => !g)}
+                                className={cn("px-4 py-2.5 border rounded-xl text-sm transition-all", errorGrouped ? "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-500" : "bg-white/[0.03] border-zinc-300 dark:border-white/10 text-zinc-700 dark:text-zinc-300")}>
+                                Group similar
+                            </button>
+                            <div className="text-[11px] text-zinc-600">
+                                {errorGrouped ? `${errorGroups.length} groups` : `${errorTotal.toLocaleString()} errors`}
+                                {' · '}last 24h: {errorSummary.errors24h.toLocaleString()} errors, {errorSummary.warnings24h.toLocaleString()} warnings
+                            </div>
                         </div>
 
                         {/* Error Table */}
@@ -369,6 +400,34 @@ export default function AdminLogsPage() {
                             </div>
                             {errorLoading ? (
                                 <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
+                            ) : errorGrouped ? (
+                                errorGroups.length === 0 ? (
+                                    <div className="text-center py-16">
+                                        <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
+                                        <p className="text-sm text-zinc-700">No errors logged in this window</p>
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-white/[0.03]">
+                                        {errorGroups.map((g, i) => (
+                                            <div key={`${g.type}-${g.path}-${i}`}
+                                                onClick={() => { setErrorSearch(g.message.slice(0, 80)); setErrorGrouped(false); }}
+                                                title="Show every occurrence"
+                                                className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
+                                                <div className="flex items-center">
+                                                    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[g.type] || 'text-zinc-600 bg-zinc-500/10 border-zinc-500/20')}>
+                                                        {ERROR_TYPE_ICONS[g.type]}{g.type.replace('_', ' ')}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2 min-w-0">
+                                                    <span className="shrink-0 px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-white/10 text-[10px] font-bold text-zinc-800 dark:text-white">{g.count.toLocaleString()}x</span>
+                                                    <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{g.message}</span>
+                                                </div>
+                                                <div className="flex items-center min-w-0"><span className="text-[10px] text-zinc-600 font-mono truncate">{g.path || '-'}</span></div>
+                                                <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(g.lastSeen)}</span></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
                             ) : errors.length === 0 ? (
                                 <div className="text-center py-16">
                                     <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
