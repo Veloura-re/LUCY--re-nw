@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: process.cwd(),
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   serverExternalPackages: [
     "@prisma/client", 
