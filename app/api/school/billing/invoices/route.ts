@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { stripe, createStudentTuitionInvoice } from '@/lib/stripe';
+import { getStripe, createStudentTuitionInvoice } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
         }
 
         // Find or create customer in Stripe
+        const stripe = getStripe();
         const existingCustomers = await stripe.customers.list({
             email: recipientEmail,
             limit: 1,

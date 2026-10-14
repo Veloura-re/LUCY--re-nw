@@ -1,7 +1,7 @@
 import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
 import { logActivity } from '@/lib/audit';
 
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
         let event: Stripe.Event;
 
         try {
+            const stripe = getStripe();
             event = stripe.webhooks.constructEvent(
                 body,
                 signature,

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
-import { stripe, createFinancialConnectionsSession } from '@/lib/stripe';
+import { getStripe, createFinancialConnectionsSession } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
 
         let customerId = school.stripeCustomerId;
         if (!customerId) {
+            const stripe = getStripe();
             const customer = await stripe.customers.create({
                 email: user.email,
                 name: school.name,
