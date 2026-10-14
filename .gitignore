@@ -64,3 +64,4 @@ prisma_error.txt
 # cloudflare local state and generated artifacts
 /.wrangler/
 *.bundle
+remote_stale_branches_manifest.json
