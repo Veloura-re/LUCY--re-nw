@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
 import { safeEqual } from '@/lib/security';
 import { findBillingActor, accessEndAfterPurchase } from '@/lib/billing';
-import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS, CHAPA_ACCESS_DAYS } from '@/lib/chapa';
+import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS, CHAPA_ACCESS_DAYS, CHAPA_LEGACY_AMOUNT_ETB } from '@/lib/chapa';
 
 export async function POST(request: Request) {
     try {
@@ -55,8 +55,17 @@ export async function POST(request: Request) {
                 return NextResponse.json({ received: true });
             }
 
+            // The amount this school was asked to pay is recorded at checkout. Checkouts created before
+            // live pricing have no quote and are held to the previous fixed amount.
+            const quoteRecord = await prisma.auditLog.findFirst({
+                where: { schoolId: parsed.schoolId, action: 'CHAPA_CHECKOUT_QUOTED', resourceId: txRef },
+                select: { after: true }
+            });
+            const quotedAmount = Number((quoteRecord?.after as { amountEtb?: unknown } | null)?.amountEtb);
+            const requiredAmount = Number.isFinite(quotedAmount) && quotedAmount > 0 ? quotedAmount : CHAPA_LEGACY_AMOUNT_ETB;
+
             // Confirm the payment and amount with Chapa; never trust the webhook body alone
-            const verification = await verifyChapaTransaction(txRef);
+            const verification = await verifyChapaTransaction(txRef, requiredAmount);
             if (!verification.ok) {
                 if (verification.reason === 'UNREACHABLE') {
                     // Non-2xx makes Chapa retry the delivery later
