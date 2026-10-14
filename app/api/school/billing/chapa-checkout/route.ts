@@ -5,6 +5,20 @@ import { SUBSCRIPTION_PRICE_USD, CHAPA_CURRENCY } from '@/lib/chapa';
 import { quoteUsdInEtb } from '@/lib/fx';
 import { logActivity, getIp } from '@/lib/audit';
 
+/** Today's price in birr, shown before the owner commits to checkout. */
+export async function GET() {
+    try {
+        await requireRole(['OWNER', 'PRINCIPAL']);
+        const quote = await quoteUsdInEtb(SUBSCRIPTION_PRICE_USD);
+        if (!quote) {
+            return NextResponse.json({ error: 'Exchange rate is temporarily unavailable.' }, { status: 503 });
+        }
+        return NextResponse.json({ usd: SUBSCRIPTION_PRICE_USD, amountEtb: quote.amountEtb });
+    } catch (err: any) {
+        return handleApiError(err);
+    }
+}
+
 export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
