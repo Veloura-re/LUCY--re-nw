@@ -58,8 +58,8 @@ Core Capabilities:
 - Collision-Free Timetables: Constraint-based scheduling with zero room double-bookings.
 - The Sanctuary: Safe, confidential student peer uplink with real-time PII shields.
 
-Experience the Live Presentation: https://lucy-os.com/deck
-Claim 4-Month Campus Free Trial: https://lucy-os.com/register
+Experience the Live Presentation: https://5-cn.net/deck
+Claim 4-Month Campus Free Trial: https://5-cn.net/register
 Support & Inquiries: contact@5-cn.net
 ```
 
