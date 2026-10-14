@@ -1,6 +1,7 @@
 import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { reportServerError } from '@/lib/error-capture';
 
 async function fetchWithRetry(fn: () => PromiseLike<any>, retries = 3) {
     for (let i = 0; i < retries; i++) {
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
 
     } catch (error: any) {
         console.error('Validation Error:', error);
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Internal server error') }, { status: 500 });
     }
 }

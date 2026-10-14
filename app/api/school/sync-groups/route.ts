@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { syncAllSchoolMembers } from '@/lib/messaging';
 import { withAudit } from '@/lib/with-audit';
+import { reportServerError } from '@/lib/error-capture';
 
 // POST /api/school/sync-groups — Bulk sync all users into their correct groups
 async function handlePOST(request: Request) {
@@ -14,6 +15,7 @@ async function handlePOST(request: Request) {
         return NextResponse.json({ success: true, message: 'All school members synced into group chats.' });
     } catch (e: any) {
         console.error('Group sync failed:', e);
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, 'Sync failed') }, { status: 500 });
     }
 }

@@ -2,6 +2,10 @@ import { prisma } from './prisma';
 
 export type LogLevel = 'INFO' | 'WARN' | 'ERROR';
 
+export type ErrorLogType =
+    | 'ui_crash' | 'api_error' | 'route_404' | 'auth_failure' | 'unhandled_rejection' | 'network_error'
+    | 'webhook_failure' | 'payment_failure' | 'cron_failure';
+
 /** Extract client IP from a NextRequest / standard Request header chain */
 export function getIp(req?: Request | null): string | undefined {
     if (!req) return undefined;
@@ -89,7 +93,7 @@ export async function logError({
 }: {
     schoolId?: string;
     userId?: string;
-    type: 'ui_crash' | 'api_error' | 'route_404' | 'auth_failure' | 'unhandled_rejection' | 'network_error';
+    type: ErrorLogType;
     message: string;
     stack?: string;
     path?: string;

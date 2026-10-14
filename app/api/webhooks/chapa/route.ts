@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { safeEqual } from '@/lib/security';
 import { findBillingActor, accessEndAfterPurchase } from '@/lib/billing';
 import { parseChapaTxRef, verifyChapaTransaction, CHAPA_MAX_TX_AGE_MS, CHAPA_ACCESS_DAYS, CHAPA_LEGACY_AMOUNT_ETB } from '@/lib/chapa';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
             if (!verification.ok) {
                 if (verification.reason === 'UNREACHABLE') {
                     // Non-2xx makes Chapa retry the delivery later
+                    void reportServerError(new Error('Chapa transaction verification was unavailable'), { type: 'payment_failure', level: 'WARN', status: 503, context: { provider: 'chapa', txRef, schoolId: parsed.schoolId } });
                     return NextResponse.json({ error: 'Verification unavailable' }, { status: 503 });
                 }
                 console.warn(`[Chapa Webhook] Verification rejected (${verification.reason}) for school ${parsed.schoolId}`);
@@ -127,6 +129,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true });
     } catch (err: any) {
         console.error('[Chapa Webhook Error]', err);
+        void reportServerError(err, { type: 'webhook_failure', status: 500, context: { provider: 'chapa' } });
         return NextResponse.json({ error: 'Webhook handler failed' }, { status: 500 });
     }
 }

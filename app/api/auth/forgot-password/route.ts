@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { sendRecoveryEmail } from '@/lib/email';
 import { rateLimitShared } from '@/lib/rate-limit';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -98,6 +99,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, message: 'Recovery instructions dispatched if the account exists.' });
     } catch (e: any) {
         console.error('Forgot password API error:', e);
+        void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, 'Internal server error.') }, { status: 500 });
     }
 }

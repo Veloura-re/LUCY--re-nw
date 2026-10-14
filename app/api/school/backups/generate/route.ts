@@ -3,6 +3,7 @@ import { requireRole, publicErrorMessage } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { logActivity } from '@/lib/audit';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -116,6 +117,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, restorePoint });
     } catch (error: any) {
         console.error("Backup Generation Error:", error);
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Failed to generate backup') }, { status: 500 });
     }
 }

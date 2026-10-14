@@ -6,6 +6,7 @@ import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { prisma } from '@/lib/prisma';
 import { logActivity, getIp } from '@/lib/audit';
+import { reportServerError } from '@/lib/error-capture';
 
 // GET - List all schools safely
 export async function GET(request: Request) {
@@ -180,6 +181,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, school, inviteUrl });
     } catch (err: any) {
         console.error("[AdminAPI Error]:", err);
+        void reportServerError(err, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(err, 'Failed to provision institution') }, { status: 500 });
     }
 }

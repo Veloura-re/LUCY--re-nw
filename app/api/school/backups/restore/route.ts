@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { sendInviteEmail } from '@/lib/email';
+import { reportServerError } from '@/lib/error-capture';
 
 export async function POST(request: Request) {
     try {
@@ -167,6 +168,7 @@ export async function POST(request: Request) {
 
     } catch (error: any) {
         console.error("Backup Restore Error:", error);
+        void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Failed to restore backup') }, { status: 500 });
     }
 }
