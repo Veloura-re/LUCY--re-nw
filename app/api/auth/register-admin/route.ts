@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { secureJson } from '@/lib/security';
+import { secureJson, safeEqual } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { rateLimitShared } from '@/lib/rate-limit';
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Server configuration error.' }, { status: 500 });
     }
 
-    if (secretKey?.trim() !== VALID_SECRET?.trim()) {
+    if (!safeEqual(secretKey?.trim() || '', VALID_SECRET?.trim() || '')) {
         return secureJson({ error: 'Invalid Administration Key.' }, 403);
     }
 
