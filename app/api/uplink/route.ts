@@ -3,6 +3,7 @@ import { sendEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { escapeHtml, singleLine, isValidEmail } from "@/lib/security";
 import { rateLimitShared } from '@/lib/rate-limit';
+import { attributionFromCookieHeader, formatAttribution } from '@/lib/attribution';
 
 const CATEGORY_RECIPIENTS: Record<string, string> = {
     support: "support@5-cn.net",
@@ -32,12 +33,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "A message is required." }, { status: 400 });
         }
 
+        // Where the visitor came from (for example a TikTok campaign link), kept with the request
+        const attributionLine = formatAttribution(attributionFromCookieHeader(req.headers.get("cookie")));
+        const storedMessage = attributionLine ? `${message}\n\n${attributionLine}` : message;
+
         const recipient = CATEGORY_RECIPIENTS[category] ?? DEFAULT_RECIPIENT;
         const safeCallsign = callsign || "UNIDENTIFIED_UNIT";
         const safeEmail = email || "NO_REPLY_PROTOCOL";
 
         await prisma.wantsAccess.create({
-            data: { callsign: safeCallsign, email: safeEmail, message }
+            data: { callsign: safeCallsign, email: safeEmail, message: storedMessage }
         });
 
         const html = `
@@ -55,7 +60,7 @@ export async function POST(req: NextRequest) {
                 </div>
                 <div style="margin-bottom: 20px;">
                     <p style="color: #00ff9d; font-weight: bold; font-size: 12px; text-transform: uppercase;">Payload Content</p>
-                    <p style="font-size: 14px; line-height: 1.6; color: #ccc; white-space: pre-wrap;">${escapeHtml(message)}</p>
+                    <p style="font-size: 14px; line-height: 1.6; color: #ccc; white-space: pre-wrap;">${escapeHtml(storedMessage)}</p>
                 </div>
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
                 <p style="font-size: 10px; color: #444; text-align: center;">LUCY OS // INITIALIZATION PROTOCOL // SECURE TRANSIT</p>

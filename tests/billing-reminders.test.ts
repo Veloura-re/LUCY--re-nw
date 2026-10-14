@@ -46,7 +46,7 @@ test('rejects calls without the cron secret', async () => {
 
 test('sends a reminder at 7, 3 and 1 days and no other day', async () => {
     mockSchools.mockResolvedValue([school('a', 7), school('b', 3), school('c', 1), school('d', 5), school('e', -2)]);
-    const body = await (await call()).json();
+    const body: any = await (await call()).json();
     expect(body.sent).toBe(3);
     expect(mockSend).toHaveBeenCalledTimes(3);
     expect(mockAuditCreate.mock.calls.map(c => c[0].data.action)).toEqual(Array(3).fill('BILLING_REMINDER_SENT'));
@@ -61,7 +61,7 @@ test('skips card subscribers who renew automatically', async () => {
 test('does not send the same reminder twice', async () => {
     mockSchools.mockResolvedValue([school('a', 3)]);
     mockAuditFind.mockResolvedValue({ id: 'already-sent' });
-    const body = await (await call()).json();
+    const body: any = await (await call()).json();
     expect(body.sent).toBe(0);
     expect(mockSend).not.toHaveBeenCalled();
 });

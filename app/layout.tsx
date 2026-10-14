@@ -3,6 +3,7 @@ import "@fontsource/space-grotesk";
 import "@fontsource/cinzel";
 import "@fontsource/permanent-marker";
 import "./globals.css";
+import { AttributionCapture } from "@/components/public/attribution-capture";
 
 function getSafeMetadataBase(): URL {
   const rawUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || 'https://lucy-re-nw.vercel.app';
@@ -112,6 +113,7 @@ export default function RootLayout({
           />
           <ErrorListenerInit />
           <GlobalConnectionProbe />
+          <AttributionCapture />
           {children}
           <Toaster position="top-right" closeButton richColors />
         </ThemeProvider>

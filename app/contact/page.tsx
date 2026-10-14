@@ -17,6 +17,15 @@ export default function ContactPage() {
     const [category, setCategory] = useState<Category>(null);
     const [formData, setFormData] = useState({ callsign: '', email: '', message: '' });
 
+    // Arriving from a pricing button (?plan=pilot or ?plan=core) goes straight to a deployment request
+    useEffect(() => {
+        const plan = new URLSearchParams(window.location.search).get('plan');
+        if (plan === 'pilot' || plan === 'core') {
+            setCategory('sales');
+            setStep(2);
+        }
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('LOADING');
