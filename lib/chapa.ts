@@ -2,6 +2,9 @@
 export const CHAPA_SUBSCRIPTION_AMOUNT_ETB = 5880;
 export const CHAPA_CURRENCY = 'ETB';
 
+/** Days of platform access one subscription payment buys. */
+export const CHAPA_ACCESS_DAYS = 30;
+
 /** Payments whose checkout was created longer ago than this are treated as stale and ignored. */
 export const CHAPA_MAX_TX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { createSchoolSubscriptionCheckoutSession } from '@/lib/stripe';
+import { remainingAccessDays } from '@/lib/billing';
 
 export async function POST(request: Request) {
     try {
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
             cancelUrl: `${domain}/dashboard/billing?canceled=true`,
             tierName: 'Enterprise Node Tier (Monthly)',
             amountCents: 4900,
+            trialDays: remainingAccessDays(school),
         });
 
         // Non-blocking audit adhering to multi-tenant audit invariant

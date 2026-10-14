@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
-import { logActivity } from '@/lib/audit';
+import { logBillingActivity, accessEndAfterRenewal } from '@/lib/billing';
 
 export async function POST(request: Request) {
     try {
@@ -48,8 +48,18 @@ export async function POST(request: Request) {
                 const customerId = session.customer as string;
                 const subscriptionId = session.subscription as string;
 
-                // Grant 35 days (1 month + grace) to avoid race conditions with next billing cycle
-                const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000);
+                const current = await prisma.school.findUnique({
+                    where: { id: schoolId },
+                    select: { trialEndsAt: true, createdAt: true },
+                });
+                if (!current) {
+                    console.error(`Checkout session ${session.id} references unknown school ${schoolId}`);
+                    break;
+                }
+
+                // Grant 35 days (1 month + grace), but never shorten remaining free trial time.
+                // A subscription started during a trial is billed when the trial ends.
+                const extendedTrialDate = accessEndAfterRenewal(current, 35);
 
                 await prisma.school.update({
                     where: { id: schoolId },
@@ -63,11 +73,9 @@ export async function POST(request: Request) {
 
                 // Multi-tenant audit log
                 try {
-                    await logActivity({
-                        userId: 'system-stripe-webhook',
+                    await logBillingActivity({
                         schoolId,
                         action: 'SUBSCRIPTION_ACTIVATED',
-                        resourceType: 'billing',
                         after: {
                             sessionId: session.id,
                             customerId,
@@ -88,28 +96,27 @@ export async function POST(request: Request) {
 
                 if (!customerId) break;
 
+                // A zero-amount invoice (the start of a trial) is not a payment and must not move the access date
+                if (!invoice.amount_paid || invoice.amount_paid <= 0) break;
+
                 const schools = await prisma.school.findMany({
                     where: { stripeCustomerId: customerId },
-                    select: { id: true },
+                    select: { id: true, trialEndsAt: true, createdAt: true },
                 });
-
-                const extendedTrialDate = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000);
 
                 for (const school of schools) {
                     await prisma.school.update({
                         where: { id: school.id },
                         data: {
                             subscriptionStatus: 'active',
-                            trialEndsAt: extendedTrialDate,
+                            trialEndsAt: accessEndAfterRenewal(school, 35),
                         },
                     });
 
                     try {
-                        await logActivity({
-                            userId: 'system-stripe-webhook',
+                        await logBillingActivity({
                             schoolId: school.id,
                             action: 'INVOICE_PAYMENT_SUCCEEDED',
-                            resourceType: 'billing',
                             after: {
                                 invoiceId: invoice.id,
                                 amountPaid: invoice.amount_paid,
@@ -143,11 +150,9 @@ export async function POST(request: Request) {
                     });
 
                     try {
-                        await logActivity({
-                            userId: 'system-stripe-webhook',
+                        await logBillingActivity({
                             schoolId: school.id,
                             action: 'INVOICE_PAYMENT_FAILED',
-                            resourceType: 'billing',
                             after: {
                                 invoiceId: invoice.id,
                                 customerId,
@@ -178,11 +183,9 @@ export async function POST(request: Request) {
                     });
 
                     try {
-                        await logActivity({
-                            userId: 'system-stripe-webhook',
+                        await logBillingActivity({
                             schoolId: school.id,
                             action: 'SUBSCRIPTION_CANCELED',
-                            resourceType: 'billing',
                             after: {
                                 subscriptionId: subscription.id,
                                 customerId,

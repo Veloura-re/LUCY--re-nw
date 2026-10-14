@@ -16,6 +16,8 @@ export interface CreateSubscriptionCheckoutParams {
     cancelUrl: string;
     tierName?: string;
     amountCents?: number;
+    /** Whole days of free access left; billed as a Stripe trial so the first charge happens at its end. */
+    trialDays?: number;
 }
 
 /**
@@ -32,6 +34,7 @@ export async function createSchoolSubscriptionCheckoutSession({
     cancelUrl,
     tierName = 'Enterprise Node Tier (Monthly)',
     amountCents = 4900,
+    trialDays,
 }: CreateSubscriptionCheckoutParams): Promise<Stripe.Checkout.Session> {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
         mode: 'subscription',
@@ -65,6 +68,12 @@ export async function createSchoolSubscriptionCheckoutSession({
         sessionParams.customer = existingCustomerId;
     } else {
         sessionParams.customer_email = userEmail;
+    }
+
+    // Remaining free access becomes a Stripe trial, so the card is charged when the trial ends
+    // instead of immediately. Stripe accepts 1 to 730 days.
+    if (trialDays && trialDays >= 1) {
+        sessionParams.subscription_data = { trial_period_days: Math.min(Math.floor(trialDays), 730) };
     }
 
     return await stripe.checkout.sessions.create(sessionParams);
