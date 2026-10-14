@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
+    // The access code is the only credential here, so guessing must be slow
+    const limited = await rateLimitShared(req, 'auth/register-student', 5, 10 * 60_000);
+    if (limited) return limited;
+
     try {
         const { studentCode, email, password } = await req.json() as any;
 

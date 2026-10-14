@@ -68,12 +68,15 @@ export async function POST(req: Request) {
                 select: { id: true }
             });
 
+            // Never attribute a school's audit entry to a user of another school; fall back to a
+            // platform administrator, who is not tied to any tenant.
             let auditUserId = adminUser?.id;
             if (!auditUserId) {
-                const anyUser = await tx.user.findFirst({
+                const platformAdmin = await tx.user.findFirst({
+                    where: { role: 'SUPERADMIN' },
                     select: { id: true }
                 });
-                auditUserId = anyUser?.id;
+                auditUserId = platformAdmin?.id;
             }
 
             if (auditUserId) {
