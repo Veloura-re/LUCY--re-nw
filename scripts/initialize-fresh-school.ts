@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('./_guard').requireWipeConfirmation('initialize-fresh-school');
     console.log('--- Initiating Global Neural Reset & Provisioning (INDEPENDENT SECTIONS) ---');
 
     const tables = [
