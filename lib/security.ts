@@ -358,6 +358,19 @@ export function isValidEmail(value: unknown): value is string {
     return typeof value === 'string' && value.length <= 254 && EMAIL_PATTERN.test(value);
 }
 
+/**
+ * Authorizes a scheduler-triggered request. The CRON_SECRET must be configured and sent as
+ * "Authorization: Bearer <secret>"; an unset secret disables the endpoint instead of opening it.
+ */
+export function isAuthorizedCron(request: Request): boolean {
+    const secret = process.env.CRON_SECRET;
+    if (!secret) {
+        console.error('[Cron] CRON_SECRET is not configured; refusing to run.');
+        return false;
+    }
+    return safeEqual(request.headers.get('authorization') || '', `Bearer ${secret}`);
+}
+
 export function sanitizeInput(input: string): string {
     return input.replace(/<[^>]*>/g, '').replace(/javascript\s*:/gi, '').replace(/on\w+\s*=/gi, '').replace(/data\s*:[^,]*,/gi, '').replace(/\s+/g, ' ').trim();
 }

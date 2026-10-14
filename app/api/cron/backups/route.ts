@@ -1,19 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
-import { safeEqual } from '@/lib/security';
+import { isAuthorizedCron } from '@/lib/security';
 
-// Invoked by the scheduler with "Authorization: Bearer <CRON_SECRET>".
-// The secret is mandatory: an unset secret disables the endpoint instead of opening it.
 export async function GET(request: Request) {
-    const secret = process.env.CRON_SECRET;
-    if (!secret) {
-        console.error('[Cron Backup] CRON_SECRET is not configured; refusing to run.');
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const authHeader = request.headers.get('authorization') || '';
-    if (!safeEqual(authHeader, `Bearer ${secret}`)) {
+    if (!isAuthorizedCron(request)) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
