@@ -64,11 +64,11 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-[600px] bg-transparent border-0 shadow-none p-0 flex flex-col items-center outline-none">
+            <DialogContent className="max-w-[600px] w-full p-2 sm:p-4 bg-transparent border-0 shadow-none flex flex-col items-center outline-none">
 
                 {/* ID CARD UI CONTAINER (500px x 320px Landscape) */}
                 <div
-                    className="relative w-[500px] h-[320px] cursor-pointer group perspective-1000"
+                    className="relative w-full max-w-[500px] h-[280px] xs:h-[300px] sm:h-[320px] cursor-pointer group perspective-1000"
                     onClick={() => setIsFlipped(!isFlipped)}
                 >
                     <motion.div
@@ -81,7 +81,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                         <div className="absolute inset-0 w-full h-full backface-hidden" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
                             <div className="w-full h-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 rounded-[20px] overflow-hidden relative shadow-2xl flex flex-col">
                                 {/* Header */}
-                                <div className="px-6 py-4 bg-gradient-to-r from-eduGreen-950/30 to-transparent flex items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
+                                <div className="px-3.5 sm:px-6 py-2.5 sm:py-4 bg-gradient-to-r from-eduGreen-950/30 to-transparent flex items-center justify-between border-b border-zinc-200 dark:border-zinc-900/50">
                                     <div className="flex items-center gap-2">
                                         {schoolLogo ? (
                                             <div className="w-6 h-6 rounded-lg overflow-hidden bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 shadow-[0_0_10px_rgba(59,214,141,0.3)] relative">
@@ -100,14 +100,14 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 </div>
 
                                 {/* Content Body */}
-                                <div className="flex-1 p-6 flex items-center gap-8">
+                                <div className="flex-1 p-3.5 sm:p-6 flex items-center gap-3.5 sm:gap-8">
                                     {/* Photo Area */}
-                                    <div className="w-32 h-32 rounded-[2rem] p-1 bg-gradient-to-tr from-eduGreen-600 to-slate-200 dark:to-zinc-800 shadow-2xl shrink-0">
-                                        <div className="w-full h-full rounded-[1.8rem] overflow-hidden bg-slate-50 dark:bg-zinc-950 relative border border-slate-200 dark:border-zinc-900">
+                                    <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-2xl sm:rounded-[2rem] p-1 bg-gradient-to-tr from-eduGreen-600 to-slate-200 dark:to-zinc-800 shadow-2xl shrink-0">
+                                        <div className="w-full h-full rounded-xl sm:rounded-[1.8rem] overflow-hidden bg-slate-50 dark:bg-zinc-950 relative border border-slate-200 dark:border-zinc-900">
                                             {user.photoUrl ? (
                                                 <Image src={user.photoUrl} alt="ID" className="object-cover" fill sizes="128px" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-slate-50 dark:bg-zinc-950 text-4xl font-medium text-slate-400 dark:text-zinc-800">
+                                                <div className="w-full h-full flex items-center justify-center bg-slate-50 dark:bg-zinc-950 text-2xl sm:text-4xl font-medium text-slate-400 dark:text-zinc-800">
                                                     {initial}
                                                 </div>
                                             )}
@@ -115,46 +115,46 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     </div>
 
                                     {/* Info Area */}
-                                    <div className="flex-1 space-y-4">
-                                        <div className="space-y-1">
-                                            <h2 className="text-3xl font-medium text-slate-900 dark:text-white tracking-tight uppercase leading-tight">{fullName}</h2>
-                                            <p className="text-[9px] font-medium text-slate-500 dark:text-zinc-500 uppercase tracking-widest">Entity Identification Code: <span className="text-slate-900 dark:text-white font-mono">{code || "--------"}</span></p>
+                                    <div className="flex-1 space-y-2 sm:space-y-4 min-w-0">
+                                        <div className="space-y-0.5 sm:space-y-1">
+                                            <h2 className="text-lg sm:text-2xl md:text-3xl font-medium text-slate-900 dark:text-white tracking-tight uppercase leading-tight truncate">{fullName}</h2>
+                                            <p className="text-[7.5px] sm:text-[9px] font-medium text-slate-500 dark:text-zinc-500 uppercase tracking-wider sm:tracking-widest truncate">Entity Identification Code: <span className="text-slate-900 dark:text-white font-mono">{code || "--------"}</span></p>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-4 border-t border-slate-200 dark:border-zinc-900/50 pt-4">
+                                        <div className="grid grid-cols-2 gap-2 sm:gap-4 border-t border-slate-200 dark:border-zinc-900/50 pt-2 sm:pt-4">
                                             {type === "STUDENT" ? (
                                                 <>
-                                                    <div className="space-y-1">
+                                                    <div className="space-y-0.5 sm:space-y-1">
                                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Level / Class</p>
-                                                        <p className="text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase">{user.class?.grade?.name || "N/A"} • {user.class?.name || "N/A"}</p>
+                                                        <p className="text-[9px] sm:text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase truncate">{user.class?.grade?.name || "N/A"} • {user.class?.name || "N/A"}</p>
                                                     </div>
-                                                    <div className="space-y-1">
+                                                    <div className="space-y-0.5 sm:space-y-1">
                                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Enrolled</p>
-                                                        <p className="text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase">{user.enrolledAt ? new Date(user.enrolledAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
+                                                        <p className="text-[9px] sm:text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase truncate">{user.enrolledAt ? new Date(user.enrolledAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
                                                     </div>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="space-y-1">
+                                                    <div className="space-y-0.5 sm:space-y-1">
                                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Department / Role</p>
-                                                        <p className="text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase">Faculty • {user.role || "TEACHER"}</p>
+                                                        <p className="text-[9px] sm:text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase truncate">Faculty • {user.role || "TEACHER"}</p>
                                                     </div>
-                                                    <div className="space-y-1">
+                                                    <div className="space-y-0.5 sm:space-y-1">
                                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Joined</p>
-                                                        <p className="text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
+                                                        <p className="text-[9px] sm:text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase truncate">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }) : "N/A"}</p>
                                                     </div>
                                                 </>
                                             )}
-                                            <div className="space-y-1">
+                                            <div className="space-y-0.5 sm:space-y-1">
                                                 <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Gender</p>
-                                                <p className="text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase">{user.gender || "N/A"}</p>
+                                                <p className="text-[9px] sm:text-[10px] font-medium text-slate-700 dark:text-zinc-300 uppercase truncate">{user.gender || "N/A"}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Footer Bar */}
-                                <div className="px-6 py-3 bg-slate-100/50 dark:bg-zinc-900/30 flex justify-between items-center border-t border-slate-200 dark:border-zinc-900/50">
+                                <div className="px-3.5 sm:px-6 py-2 sm:py-3 bg-slate-100/50 dark:bg-zinc-900/30 flex justify-between items-center border-t border-slate-200 dark:border-zinc-900/50">
                                     <div className="flex items-center gap-1 opacity-20">
                                         <ShieldCheck className="w-3 h-3 text-slate-900 dark:text-white" />
                                         <span className="text-[6px] font-medium text-slate-900 dark:text-white uppercase tracking-[0.3em]">Smart Verification Active</span>
@@ -169,19 +169,19 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
 
                         {/* BACK SIDE (UI Landscape) */}
                         <div className="absolute inset-0 w-full h-full backface-hidden" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                            <div className="w-full h-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 rounded-[20px] overflow-hidden relative shadow-2xl flex flex-row p-6 items-center gap-8">
+                            <div className="w-full h-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 rounded-[20px] overflow-hidden relative shadow-2xl flex flex-row p-3.5 sm:p-6 items-center gap-3 sm:gap-8">
                                 <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-slate-200/50 dark:from-zinc-900/50 to-transparent opacity-50" />
 
                                 {/* Guardian / Contact Area */}
-                                <div className="relative z-10 flex-1 space-y-6">
-                                    <div className="flex items-center gap-2 border-b border-slate-200 dark:border-zinc-900 pb-3">
+                                <div className="relative z-10 flex-1 space-y-2.5 sm:space-y-6 min-w-0">
+                                    <div className="flex items-center gap-2 border-b border-slate-200 dark:border-zinc-900 pb-1.5 sm:pb-3">
                                         <User className="w-4 h-4 text-eduGreen-600" />
                                         <h3 className="text-[10px] font-medium text-slate-900 dark:text-white uppercase tracking-[0.2em]">Contact & Lifecycle</h3>
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-0.5 sm:space-y-1">
                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">{type === "STUDENT" ? "Guardian Registry" : "Qualification / Title"}</p>
-                                        <p className="text-xs font-medium text-slate-900 dark:text-white uppercase truncate">
+                                        <p className="text-[10px] sm:text-xs font-medium text-slate-900 dark:text-white uppercase truncate">
                                             {type === "STUDENT" 
                                                 ? <>{user.guardianName || "N/A"} • <span className="text-eduGreen-500 uppercase">{user.guardianRelation || "Guardian"}</span></>
                                                 : <span className="text-eduGreen-500 uppercase">{user.qualification || "Faculty Member"}</span>
@@ -189,30 +189,30 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
+                                    <div className="grid grid-cols-2 gap-1.5 sm:gap-4">
+                                        <div className="space-y-0.5 sm:space-y-1">
                                             <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Gender</p>
-                                            <p className="text-[10px] font-medium text-slate-900 dark:text-white uppercase">{user.gender || "---"}</p>
+                                            <p className="text-[9px] sm:text-[10px] font-medium text-slate-900 dark:text-white uppercase truncate">{user.gender || "---"}</p>
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-0.5 sm:space-y-1">
                                             <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Enrolled / Joined</p>
-                                            <p className="text-[10px] font-medium text-slate-900 dark:text-white uppercase">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
+                                            <p className="text-[9px] sm:text-[10px] font-medium text-slate-900 dark:text-white uppercase truncate">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : "---"}</p>
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-0.5 sm:space-y-1">
                                             <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest">Expires</p>
-                                            <p className="text-[10px] font-medium text-eduGreen-500 uppercase">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? (() => { const d = new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt); d.setMonth(d.getMonth() + 10); return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }); })() : "---"}</p>
+                                            <p className="text-[9px] sm:text-[10px] font-medium text-eduGreen-500 uppercase truncate">{(type === 'STUDENT' ? user.enrolledAt : user.createdAt) ? (() => { const d = new Date(type === 'STUDENT' ? user.enrolledAt : user.createdAt); d.setMonth(d.getMonth() + 10); return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }); })() : "---"}</p>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2 bg-slate-50 dark:bg-zinc-900/40 p-3 rounded-xl border border-slate-200 dark:border-zinc-900/50">
-                                        <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest mb-1">{type === "STUDENT" ? "Emergency Contacts" : "Contact Number"}</p>
+                                    <div className="space-y-1 sm:space-y-2 bg-slate-50 dark:bg-zinc-900/40 p-2 sm:p-3 rounded-xl border border-slate-200 dark:border-zinc-900/50">
+                                        <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-600 uppercase tracking-widest mb-0.5 sm:mb-1">{type === "STUDENT" ? "Emergency Contacts" : "Contact Number"}</p>
                                         <div className="flex flex-col gap-1">
-                                            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-medium text-xs">
-                                                <Phone className="w-3 h-3 text-eduGreen-600" />
-                                                {type === "STUDENT" ? (user.guardianPhone || "N/A") : (user.phone || "N/A")}
+                                            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-medium text-[10px] sm:text-xs truncate">
+                                                <Phone className="w-3 h-3 text-eduGreen-600 shrink-0" />
+                                                <span className="truncate">{type === "STUDENT" ? (user.guardianPhone || "N/A") : (user.phone || "N/A")}</span>
                                             </div>
                                             {type === "STUDENT" && user.secondaryPhone && (
-                                                <div className="flex items-center gap-2 text-slate-500 dark:text-white/60 font-medium text-[10px] pl-5 border-l border-slate-200 dark:border-zinc-800">
+                                                <div className="flex items-center gap-2 text-slate-500 dark:text-white/60 font-medium text-[9px] sm:text-[10px] pl-5 border-l border-slate-200 dark:border-zinc-800 truncate">
                                                     {user.secondaryPhone}
                                                 </div>
                                             )}
@@ -221,24 +221,26 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 </div>
 
                                 {/* QR Section Area */}
-                                <div className="relative z-10 w-48 flex flex-col items-center gap-4 shrink-0 border-l border-slate-200 dark:border-zinc-900/50 pl-8">
-                                    <div className="relative p-3 bg-white rounded-[15px] shadow-[0_0_40px_rgba(255,255,255,0.05)] group/qr hover:scale-110 transition-transform duration-300">
+                                <div className="relative z-10 w-24 sm:w-48 flex flex-col items-center justify-center gap-2 sm:gap-4 shrink-0 border-l border-slate-200 dark:border-zinc-900/50 pl-2.5 sm:pl-8">
+                                    <div className="relative p-1.5 sm:p-3 bg-white rounded-xl sm:rounded-[15px] shadow-[0_0_40px_rgba(255,255,255,0.05)] group/qr hover:scale-105 transition-transform duration-300">
                                         {qrValue ? (
-                                            <QRCode
-                                                value={qrValue}
-                                                size={140}
-                                                level="H"
-                                                className="rounded-lg"
-                                            />
+                                            <div className="w-16 h-16 sm:w-[140px] sm:h-[140px] flex items-center justify-center">
+                                                <QRCode
+                                                    value={qrValue}
+                                                    size={140}
+                                                    level="H"
+                                                    className="w-full h-full object-contain rounded-md sm:rounded-lg"
+                                                />
+                                            </div>
                                         ) : (
-                                            <div className="w-[140px] h-[140px] flex items-center justify-center text-[9px] font-medium uppercase tracking-widest text-zinc-500">
+                                            <div className="w-16 h-16 sm:w-[140px] sm:h-[140px] flex items-center justify-center text-[7px] sm:text-[9px] font-medium uppercase tracking-widest text-zinc-500 text-center">
                                                 Preparing credential
                                             </div>
                                         )}
                                     </div>
                                     <div className="text-center space-y-0.5">
-                                        <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-500 uppercase tracking-[0.3em]">System Validation</p>
-                                        <p className="text-[5px] font-medium text-slate-500 dark:text-zinc-700 uppercase tracking-[0.1em]">Cloud Synchronized</p>
+                                        <p className="text-[6.5px] sm:text-[7px] font-medium text-slate-400 dark:text-zinc-500 uppercase tracking-widest">System Validation</p>
+                                        <p className="text-[5px] font-medium text-slate-500 dark:text-zinc-700 uppercase tracking-[0.1em] hidden sm:block">Cloud Synchronized</p>
                                     </div>
                                 </div>
                             </div>

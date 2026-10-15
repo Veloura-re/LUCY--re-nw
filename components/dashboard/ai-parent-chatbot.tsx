@@ -47,9 +47,9 @@ export function AIParentChatbot() {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 max-w-[calc(100vw-2rem)]">
             {isOpen ? (
-                <Card className="w-[350px] md:w-[400px] h-[500px] flex flex-col shadow-2xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <Card className="w-[calc(100vw-2rem)] max-w-[360px] sm:w-[380px] md:w-[400px] h-[480px] sm:h-[500px] max-h-[85vh] flex flex-col shadow-2xl bg-white dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                     <div className="p-4 bg-emerald-600 flex items-center justify-between text-white shadow-md z-10">
                         <div className="flex items-center gap-2 font-black italic text-lg">
                             <Sparkles className="w-5 h-5 text-emerald-200" />
