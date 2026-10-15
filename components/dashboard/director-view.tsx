@@ -65,9 +65,9 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                         <Skeleton className="h-4 w-40 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md" />
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                     {[1, 2, 3, 4].map((i) => (
-                        <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 border-t-zinc-800/20">
+                        <Card key={i} className="bg-white/20 dark:bg-zinc-950/20 border-zinc-200 dark:border-zinc-900 rounded-3xl p-6 sm:p-8 border-t-zinc-800/20">
                             <Skeleton className="h-4 w-20 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md mb-6" />
                             <Skeleton className="h-12 w-16 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-lg mb-4" />
                             <Skeleton className="h-3 w-24 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-md" />
@@ -80,8 +80,8 @@ export function DirectorView({ user, school: initialSchool, initialAnalytics }: 
                             <CardHeader className="p-8 border-b border-zinc-200 dark:border-zinc-900/50">
                                 <Skeleton className="h-8 w-48 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-xl" />
                             </CardHeader>
-                            <CardContent className="p-8 grid grid-cols-4 gap-4">
-                                <Skeleton className="col-span-4 h-32 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl" />
+                            <CardContent className="p-4 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                <Skeleton className="col-span-2 lg:col-span-4 h-32 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl" />
                                 {[1, 2, 3, 4].map((i) => (
                                     <Skeleton key={i} className="col-span-1 h-24 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-2xl" />
                                 ))}

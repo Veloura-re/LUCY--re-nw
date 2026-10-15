@@ -128,7 +128,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
             {/* Detail Modal (Overlay) */}
             <AnimatePresence>
                 {showDetailModal && selectedAssignment && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 md:p-12">
                         <motion.div 
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1 }} 
@@ -141,25 +141,25 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                             initial={{ opacity: 0, scale: 0.9, y: 40 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 40 }}
-                            className="relative w-full max-w-4xl bg-white dark:bg-[#09090b] border border-zinc-300 dark:border-white/10 rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
+                            className="relative w-full max-w-4xl bg-white dark:bg-[#09090b] border border-zinc-300 dark:border-white/10 rounded-2xl sm:rounded-3xl md:rounded-[4rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
                         >
-                            <div className="p-10 md:p-16 space-y-12">
-                                <div className="flex justify-between items-start">
+                            <div className="p-5 sm:p-8 md:p-16 space-y-6 sm:space-y-12">
+                                <div className="flex justify-between items-start gap-4">
                                     <div className="space-y-2">
-                                        <div className="flex items-center gap-4">
-                                            <span className="px-5 py-1.5 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
+                                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                                            <span className="px-3 sm:px-5 py-1 sm:py-1.5 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 rounded-full text-[9px] font-black uppercase text-zinc-600 dark:text-zinc-400 tracking-widest">{selectedAssignment.type}</span>
                                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">{selectedAssignment.subject?.name}</span>
                                         </div>
-                                        <h3 className="text-3xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase">{selectedAssignment.title}</h3>
+                                        <h3 className="text-2xl sm:text-4xl md:text-5xl font-black italic text-zinc-900 dark:text-white uppercase leading-tight">{selectedAssignment.title}</h3>
                                         <div className="flex items-center gap-3 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
                                             <Calendar className="w-4 h-4" /> DEADLINE: {format(new Date(selectedAssignment.dueDate), "PPP")}
                                         </div>
                                     </div>
-                                    <Button variant="ghost" onClick={() => setShowDetailModal(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase font-black tracking-widest text-[9px]">EXIT HUD</Button>
+                                    <Button variant="ghost" onClick={() => setShowDetailModal(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white uppercase font-black tracking-widest text-[9px] shrink-0">EXIT HUD</Button>
                                 </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                                    <div className="space-y-8">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+                                    <div className="space-y-6 sm:space-y-8">
                                         <div className="space-y-4">
                                             <label className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">DISPATCH SPECIFICATIONS</label>
                                             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed font-medium">
@@ -167,7 +167,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                             </p>
                                         </div>
                                         
-                                        <div className="p-8 bg-white/60 dark:bg-zinc-950/60 rounded-[2.5rem] border border-zinc-200 dark:border-white/5 space-y-4">
+                                        <div className="p-5 sm:p-8 bg-white/60 dark:bg-zinc-950/60 rounded-2xl sm:rounded-[2.5rem] border border-zinc-200 dark:border-white/5 space-y-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Zap className="w-4 h-4 text-zinc-700" />
@@ -212,7 +212,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                 <motion.div 
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
-                                                    className="p-8 bg-emerald-500/5 border border-emerald-500/10 rounded-[2.5rem] space-y-6 overflow-hidden"
+                                                    className="p-5 sm:p-8 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl sm:rounded-[2.5rem] space-y-6 overflow-hidden"
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <Brain className="w-4 h-4 text-emerald-500" />
@@ -237,12 +237,12 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                         </AnimatePresence>
                                     </div>
 
-                                    <div className="space-y-8">
+                                    <div className="space-y-6 sm:space-y-8">
                                         <div className="space-y-4">
                                             <label className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">ACADEMIC VERDICT</label>
                                             
                                             {selectedAssignment.submission?.status === 'GRADED' ? (
-                                                <div className="p-10 bg-emerald-500/5 border border-emerald-500/20 rounded-[2.5rem] space-y-6">
+                                                <div className="p-6 sm:p-10 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl sm:rounded-[2.5rem] space-y-6">
                                                     <div className="flex items-center gap-4">
                                                         <CheckCircle className="w-6 h-6 text-emerald-500" />
                                                         <div>
@@ -258,13 +258,13 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                                                     </div>
                                                 </div>
                                             ) : selectedAssignment.submission ? (
-                                                <div className="p-10 bg-amber-500/5 border border-amber-500/20 rounded-[2.5rem] space-y-4 text-center">
+                                                <div className="p-6 sm:p-10 bg-amber-500/5 border border-amber-500/20 rounded-2xl sm:rounded-[2.5rem] space-y-4 text-center">
                                                     <Activity className="w-10 h-10 text-amber-600 dark:text-amber-500 mx-auto animate-pulse" />
                                                     <h4 className="text-xl font-black text-amber-600 dark:text-amber-500 italic uppercase">Coursework Under Review</h4>
                                                     <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-widest">Submission detected. Pending educator evaluation.</p>
                                                 </div>
                                             ) : (
-                                                <div className="p-10 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-[2.5rem] space-y-4 text-center">
+                                                <div className="p-6 sm:p-10 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 rounded-2xl sm:rounded-[2.5rem] space-y-4 text-center">
                                                     <AlertCircle className="w-10 h-10 text-zinc-700 mx-auto" />
                                                     <h4 className="text-xl font-black text-zinc-600 italic uppercase">Dispatch Pending Submission</h4>
                                                     <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest">No coursework detected in registry for this task.</p>
