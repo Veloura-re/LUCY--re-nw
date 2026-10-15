@@ -75,7 +75,7 @@ async function run() {
             text: 'System: Initializing purge handshake...',
             message_thread_id: 1 // general thread
         });
-        console.log(`✔ Sent dummy message. Top Message ID resolves to: ${dummy.message_id}`);
+        console.log(`Sent dummy message. Top Message ID resolves to: ${dummy.message_id}`);
     } catch (err) {
         console.error("Failed to resolve top message ID:", err.message);
         process.exit(1);
@@ -102,7 +102,7 @@ async function run() {
         await new Promise(r => setTimeout(r, 50));
     }
 
-    console.log(`✔ Purge complete. Successfully deleted ${deletedCount} messages.`);
+    console.log(`Purge complete. Successfully deleted ${deletedCount} messages.`);
 }
 
 run();

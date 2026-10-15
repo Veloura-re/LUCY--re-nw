@@ -9,14 +9,14 @@ export interface LanguageMeta {
 }
 
 export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageMeta> = {
-    en: { code: 'en', label: 'English', nativeName: 'English', direction: 'ltr', flag: '🇬🇧' },
-    am: { code: 'am', label: 'Amharic', nativeName: 'አማርኛ', direction: 'ltr', flag: '🇪🇹' },
-    sw: { code: 'sw', label: 'Swahili', nativeName: 'Kiswahili', direction: 'ltr', flag: '🇰🇪' },
-    ar: { code: 'ar', label: 'Arabic', nativeName: 'العربية', direction: 'rtl', flag: '🇸🇦' },
-    fr: { code: 'fr', label: 'French', nativeName: 'Français', direction: 'ltr', flag: '🇫🇷' },
-    es: { code: 'es', label: 'Spanish', nativeName: 'Español', direction: 'ltr', flag: '🇪🇸' },
-    om: { code: 'om', label: 'Oromo', nativeName: 'Afaan Oromoo', direction: 'ltr', flag: '🇪🇹' },
-    ti: { code: 'ti', label: 'Tigrinya', nativeName: 'ትግርኛ', direction: 'ltr', flag: '🇪🇷' }
+    en: { code: 'en', label: 'English', nativeName: 'English', direction: 'ltr', flag: 'GB' },
+    am: { code: 'am', label: 'Amharic', nativeName: 'አማርኛ', direction: 'ltr', flag: 'ET' },
+    sw: { code: 'sw', label: 'Swahili', nativeName: 'Kiswahili', direction: 'ltr', flag: 'KE' },
+    ar: { code: 'ar', label: 'Arabic', nativeName: 'العربية', direction: 'rtl', flag: 'SA' },
+    fr: { code: 'fr', label: 'French', nativeName: 'Français', direction: 'ltr', flag: 'FR' },
+    es: { code: 'es', label: 'Spanish', nativeName: 'Español', direction: 'ltr', flag: 'ES' },
+    om: { code: 'om', label: 'Oromo', nativeName: 'Afaan Oromoo', direction: 'ltr', flag: 'ET' },
+    ti: { code: 'ti', label: 'Tigrinya', nativeName: 'ትግርኛ', direction: 'ltr', flag: 'ER' }
 };
 
 export const translations = {

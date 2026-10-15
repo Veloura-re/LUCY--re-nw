@@ -131,37 +131,37 @@ export function WelcomeAnnouncement() {
               <div className="text-[10px] font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-widest mb-2">[system_changelog_v1]</div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-emerald-600 dark:text-emerald-400 font-bold mb-1">⚡ 3d community grids</div>
+                  <div className="text-emerald-600 dark:text-emerald-400 font-bold mb-1">3d community grids</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     redesigned community links inside a 3d squircle tile format. hover events trigger spring depth z-perspective and tooltip details.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-indigo-600 dark:text-indigo-400 font-bold mb-1">🔒 security vault</div>
+                  <div className="text-indigo-600 dark:text-indigo-400 font-bold mb-1">security vault</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     the security disclosure form receives vulnerabilities and maps reports to the secure system database.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-sky-600 dark:text-sky-400 font-bold mb-1">📩 wants access ledger</div>
+                  <div className="text-sky-600 dark:text-sky-400 font-bold mb-1">wants access ledger</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     public contact messages route to our new db wants-access ledger, viewable inside the admin panel.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-amber-600 dark:text-amber-400 font-bold mb-1">🎓 grade matching</div>
+                  <div className="text-amber-600 dark:text-amber-400 font-bold mb-1">grade matching</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     automatic exam grading computes mcq and short-answer keywords, upserting reports directly into the database.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-pink-600 dark:text-pink-400 font-bold mb-1">✉️ parent sync</div>
+                  <div className="text-pink-600 dark:text-pink-400 font-bold mb-1">parent sync</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     grade reports deliver automatically to student parents via resend onboarding integration.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.01]">
-                  <div className="text-teal-600 dark:text-teal-400 font-bold mb-1">🏫 institutional ledger</div>
+                  <div className="text-teal-600 dark:text-teal-400 font-bold mb-1">institutional ledger</div>
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                     superadmins can create, activate, or suspend entire school environments under supreme ledger rules.
                   </p>

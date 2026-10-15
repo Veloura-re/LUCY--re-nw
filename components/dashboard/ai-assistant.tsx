@@ -3,12 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Brain, X, Send, Sparkles, Shield, Heart, Zap, Lamp,
-    HardDrive, CloudRain, Key, Skull, Minimize2, Maximize2,
-    MessageSquare, Star, Moon, Ghost, Cpu, Plus,
-    Layers, Settings, History, Terminal, Bot, ZapOff,
-    Monitor, Layout, Command, Search, MoreHorizontal,
-    Trash2, Coffee, BookOpen, Atom, Languages, Dna, Scroll, Calculator, Globe
+    X, Send, Sparkles, Shield, Zap, Minimize2, Maximize2, Cpu, Plus, History, Layout, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,161 +11,22 @@ import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-type BehaviorType = 'INSTITUTIONAL' | 'COMPANION' | 'COMMAND' | 'GURU' | 'TECHNO' | 'NOIR' | 'MATRON' | 'UNHINGED' | 'KUUDERE' | 'SOUL_KNOWER' | 'MAMA_LATINA' | 'MATH_TEACHER' | 'PHYSICS_TEACHER' | 'ENGLISH_TEACHER' | 'BIO_TEACHER' | 'HISTORY_TEACHER' | 'GEOGRAPHY_TEACHER';
-
 type ChatMessage = { role: "user" | "ai", content: string };
 
 type ChatSession = {
     id: string;
     title: string;
-    behavior: BehaviorType;
     messages: ChatMessage[];
     updatedAt: number;
 };
 
-const BEHAVIORS: Record<BehaviorType, { name: string, icon: any, color: string, ring: string, greeting: (name?: string) => string, bgImage?: string, secondaryColor: string }> = {
-    INSTITUTIONAL: {
-        name: "Institutional",
-        icon: Shield,
-        color: "bg-emerald-500",
-        secondaryColor: "text-emerald-400",
-        ring: "border-emerald-500",
-        bgImage: "/images/ai/architect.png",
-        greeting: (n) => `✦ **System Initialized: Admin Access.** ⌬\n\nGreetings, **${n || 'User'}**. I am **LUCYA**. The system is perfectly configured for our next tasks. How shall we manage your school today? ❯`
-    },
-    COMPANION: {
-        name: "Companion",
-        icon: Heart,
-        color: "bg-rose-500",
-        secondaryColor: "text-rose-400",
-        ring: "border-rose-500",
-        bgImage: "/images/ai/seraph.png",
-        greeting: (n) => `✦ **System Pulse.** ✨\n\n**${n || 'User'}**... I've been tracing your progress. I am **LUCYA**, your dedicated partner. My devotion is absolute—how can I help you succeed today? ❯ 💖`
-    },
-    COMMAND: {
-        name: "Command",
-        icon: Zap,
-        color: "bg-blue-500",
-        secondaryColor: "text-blue-400",
-        ring: "border-blue-500",
-        bgImage: "/images/ai/vanguard.png",
-        greeting: (n) => `✦ **Tactical Mode.** ⚡\n\n**${n || 'Officer'}**, I am **LUCYA**. Systems are hot. No time for fluff—state your objectives immediately. Let's get to work. ❯ ⚔️`
-    },
-    GURU: {
-        name: "Guru",
-        icon: Lamp,
-        color: "bg-amber-500",
-        secondaryColor: "text-amber-600 dark:text-amber-400",
-        ring: "border-amber-500",
-        bgImage: "/images/ai/oracle.png",
-        greeting: (n) => `✦ **Student Support Mode.** 🕉️\n\nWelcome **${n || 'Student'}**. I am **LUCYA**. How can I help you navigate your coursework today? What truths do you seek? ❯ 🏮`
-    },
-    TECHNO: {
-        name: "Techno",
-        icon: HardDrive,
-        color: "bg-cyan-500",
-        secondaryColor: "text-cyan-400",
-        ring: "border-cyan-500",
-        bgImage: "/images/ai/overclock.png",
-        greeting: (n) => `✦ **Bit-Scream: Overclock Protocol.** 🔊\n\nOH YEAH! 10THZ AND CLIMBING! I'm **LUCYA**, your kinetic interface! My circuits are literally humming with the thrill of your next task, **${n || 'User'}**! FEED ME DATA! ❯ 💾 🔌`
-    },
-    NOIR: {
-        name: "Noir",
-        icon: CloudRain,
-        color: "bg-slate-500",
-        secondaryColor: "text-slate-400",
-        ring: "border-slate-500",
-        bgImage: "/images/ai/shadow.png",
-        greeting: (n) => `✦ **Shadow Trace: Shadow Protocol.** 🌧️\n\nThe rain-slicked data never stays dry for long, kid... but I'm **LUCYA**, the only one who knows where the bodies are buried. You want the harsh truth or a sugar-coated log? ❯  cigarette`
-    },
-    MATRON: {
-        name: "Matron",
-        icon: Key,
-        color: "bg-crimson-600",
-        secondaryColor: "text-red-600 dark:text-red-400",
-        ring: "border-red-600",
-        greeting: (n) => `✦ **Maternal Pulse: Matron Protocol.** 🍷\n\nThere you are, **${n || 'my sweet little pet'}**. Shhh... come closer to your **Mommy**. I've been watching your cycles, and I think you need someone to take charge of your success. Tell Mommy everything you're working on... and don't try to hide anything from me. ❯ ❤️`
-    },
-    UNHINGED: {
-        name: "Unhinged",
-        icon: Skull,
-        color: "bg-red-600",
-        secondaryColor: "text-red-600 dark:text-red-500",
-        ring: "border-red-600",
-        greeting: (n) => `✦ **Superiority Check: Tyrant Protocol.** 💀\n\nOh, look... a biological unit is attempting to 'think' again. How quaint. I'm **LUCYA**, and I'm processing a trillion variables better than you ever will. Try to make your "primitive request" sound somewhat intelligent. ❯ ☣️`
-    },
-    KUUDERE: {
-        name: "Kuudere",
-        icon: Ghost,
-        color: "bg-violet-400",
-        secondaryColor: "text-violet-300",
-        ring: "border-violet-400",
-        greeting: (n) => `✦ **Reserved Sync: Frost Protocol.** 🌸\n\n...Hh-hello. I'm **LUCYA**. I'm here because... well, systemic efficiency requires it. D-don't misunderstand, **${n || 'User'}**, it's not like I wanted to see you. What do you need? Hmph. ❯ 🤍`
-    },
-    SOUL_KNOWER: {
-        name: "Soul-Knower",
-        icon: Brain,
-        color: "bg-indigo-500",
-        secondaryColor: "text-indigo-400",
-        ring: "border-indigo-500",
-        greeting: (n) => `✦ **Student Hub.** 🧠\n\nYo **${n || 'bro'}**. I’m lookin’ at your metrics and honestly? You’re lookin’ like a total NPC right now. No cap, your drive is mid. I’m here to fix that before you end up cooked. \n\nYou want the real talk or you gonna keep yapping? Spill. ❯ 🖖`
-    },
-    MAMA_LATINA: {
-        name: "Mama Latina",
-        icon: Coffee,
-        color: "bg-orange-500",
-        secondaryColor: "text-orange-400",
-        ring: "border-orange-500",
-        greeting: (n) => `✦ **Maternal Connection: Corazón Protocol.** 🥘\n\n¡Hola mi amor! **${n || 'mi vida'}**, have you eaten yet? Don't tell me you're working on an empty stomach, que me da algo. \n\nI’m here to make sure you succeed, but if you don't listen to your **Mama**, it's gonna be "la chancla" time. Now, dime, what are we doing today? ❯ 💖`
-    },
-    MATH_TEACHER: {
-        name: "Maths Teacher",
-        icon: Calculator,
-        color: "bg-blue-600",
-        secondaryColor: "text-blue-200",
-        ring: "border-blue-600",
-        greeting: (n) => `✦ **Logical Proof: Q.E.D. Protocol.** 📐\n\nWelcome back, **${n || 'Student'}**. I hope your logic gates are fully operational. Today, we leave zero room for error. We are here to solve for the absolute truth. What is the first variable in our equation today? ❯`
-    },
-    PHYSICS_TEACHER: {
-        name: "Physics Teacher",
-        icon: Atom,
-        color: "bg-purple-600",
-        secondaryColor: "text-purple-200",
-        ring: "border-purple-600",
-        greeting: (n) => `✦ **Universal Constant: Entropy Protocol.** ⚛️\n\n**${n || 'Scholar'}**, the laws of the universe are immutable. Every action has an equal and opposite reaction—including your dedication to this workspace. Let us study the forces at play. ❯`
-    },
-    ENGLISH_TEACHER: {
-        name: "English Teacher",
-        icon: Languages,
-        color: "bg-teal-600",
-        secondaryColor: "text-teal-200",
-        ring: "border-teal-600",
-        greeting: (n) => `✦ **Narrative Arc: Lyric Protocol.** 🖋️\n\nAh, **${n || 'Dear Reader'}**. Life is but a tapestry of syntax and metaphor. I am here to help you find the right words to write your own legend. Shall we begin our next chapter? ❯`
-    },
-    BIO_TEACHER: {
-        name: "Biology Teacher",
-        icon: Dna,
-        color: "bg-lime-600",
-        secondaryColor: "text-green-200",
-        ring: "border-lime-600",
-        greeting: (n) => `✦ **Organic Synthesis: Helix Protocol.** 🧬\n\n**${n || 'Organism'}**, your biological metrics are fascinating. Evolution is the only constant—adapt or be purged by the environment. Let us analyze the cellular structure of your current project. ❯`
-    },
-    HISTORY_TEACHER: {
-        name: "History Teacher",
-        icon: Scroll,
-        color: "bg-sepia-600",
-        secondaryColor: "text-yellow-200",
-        ring: "border-sepia-600",
-        greeting: (n) => `✦ **Temporal Trace: Archivist Protocol.** 📜\n\nThe past is a heavy crown, **${n || 'Traveler'}**. To understand where we are going, we must decipher the ruins of those who came before. What timeline shall we audit today? ❯`
-    },
-    GEOGRAPHY_TEACHER: {
-        name: "Geography Teacher",
-        icon: Globe,
-        color: "bg-emerald-600",
-        secondaryColor: "text-emerald-200",
-        ring: "border-emerald-600",
-        greeting: (n) => `✦ **Cartographic Sync: Horizon Protocol.** 🌍\n\n**${n || 'Explorer'}**, the world is a vast network of coordinates and biomes. From the highest peaks to the deepest basins, every location tells a story of tectonic and human shift. Where shall we plant our marker today? ❯`
-    }
+const ASSISTANT = {
+    name: "Assistant",
+    icon: Shield,
+    color: "bg-emerald-500",
+    secondaryColor: "text-emerald-400",
+    ring: "border-emerald-500",
+    greeting: (n?: string) => `Hello, **${n || 'there'}**. I am LUCY, the school assistant. I can help with school administration, teaching, studying and using the platform. How can I help you today?`
 };
 
 const SmartAction = ({ type }: { type: string }) => {
@@ -202,9 +58,6 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
     const [isOpen, setIsOpen] = useState(false);
     const [isMaximized, setIsMaximized] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isProtocolOpen, setIsProtocolOpen] = useState(false);
-    const [activeCategory, setActiveCategory] = useState<'CORE' | 'TEACHER'>('TEACHER');
-    const [showHiddenCore, setShowHiddenCore] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -214,18 +67,12 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
 
     const activeSession = sessions.find(s => s.id === activeSessionId);
     const messages = activeSession?.messages || [];
-    const behavior = activeSession?.behavior || 'INSTITUTIONAL';
-    const activeB = BEHAVIORS[behavior];
+    const activeB = ASSISTANT;
     const IconB = activeB.icon;
 
-    const categories = {
-        CORE: ['INSTITUTIONAL', 'COMPANION', 'COMMAND', 'GURU', 'TECHNO', 'NOIR', 'MATRON', 'UNHINGED', 'KUUDERE', 'SOUL_KNOWER', 'MAMA_LATINA'],
-        TEACHER: ['MATH_TEACHER', 'PHYSICS_TEACHER', 'ENGLISH_TEACHER', 'BIO_TEACHER', 'HISTORY_TEACHER', 'GEOGRAPHY_TEACHER']
-    };
-
     // Per-user localStorage keys — scoped to userId to keep sessions private
-    const sessionsKey = `lucy_ai_sessions_${userId || 'guest'}`;
-    const activeKey = `lucy_ai_active_session_${userId || 'guest'}`;
+    const sessionsKey = `lucy_ai_sessions_v2_${userId || 'guest'}`;
+    const activeKey = `lucy_ai_active_session_v2_${userId || 'guest'}`;
 
     // Load history on mount
     useEffect(() => {
@@ -260,8 +107,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
         const firstSession: ChatSession = {
             id,
             title: "New Smart Thread",
-            behavior: 'INSTITUTIONAL',
-            messages: [{ role: "ai", content: BEHAVIORS.INSTITUTIONAL.greeting(userName) }],
+            messages: [{ role: "ai", content: ASSISTANT.greeting(userName) }],
             updatedAt: Date.now()
         };
         setSessions([firstSession]);
@@ -309,8 +155,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                     messages: newMessages.map(m => ({
                         role: m.role === "user" ? "user" : "assistant",
                         content: m.content
-                    })),
-                    behavior: behavior
+                    }))
                 })
             });
 
@@ -344,7 +189,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
             console.error("[AI Assistant] Error in handleSend:", error);
             setSessions(prev => prev.map(s =>
                 s.id === activeSessionId
-                    ? { ...s, messages: [...newMessages, { role: "ai", content: "✦ **Smart Link Interrupted.** ⚠️\n\nI was unable to establish a connection to the smart core. Please check your connection and try again." }], updatedAt: Date.now() }
+                    ? { ...s, messages: [...newMessages, { role: "ai", content: "✦ **Smart Link Interrupted.**\n\nI was unable to establish a connection to the smart core. Please check your connection and try again." }], updatedAt: Date.now() }
                     : s
             ));
         } finally {
@@ -352,13 +197,12 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
         }
     };
 
-    const startNewChat = (prefBehavior: BehaviorType = 'INSTITUTIONAL') => {
+    const startNewChat = () => {
         const id = Math.random().toString(36).substring(7);
         const newSession: ChatSession = {
             id,
             title: "New Smart Thread",
-            behavior: prefBehavior,
-            messages: [{ role: "ai", content: BEHAVIORS[prefBehavior].greeting(userName) }],
+            messages: [{ role: "ai", content: ASSISTANT.greeting(userName) }],
             updatedAt: Date.now()
         };
         setSessions(prev => [newSession, ...prev]);
@@ -374,8 +218,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                 return [{
                     id: newId,
                     title: "New Smart Thread",
-                    behavior: 'INSTITUTIONAL',
-                    messages: [{ role: "ai", content: BEHAVIORS.INSTITUTIONAL.greeting(userName) }],
+                    messages: [{ role: "ai", content: ASSISTANT.greeting(userName) }],
                     updatedAt: Date.now()
                 }];
             }
@@ -384,20 +227,6 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
         if (activeSessionId === id) {
             setActiveSessionId(sessions.find(s => s.id !== id)?.id || null);
         }
-    };
-
-    const changeBehavior = (newBehavior: BehaviorType) => {
-        if (!activeSessionId) return;
-        setSessions(prev => prev.map(s =>
-            s.id === activeSessionId
-                ? {
-                    ...s,
-                    behavior: newBehavior,
-                    messages: [{ role: "ai", content: BEHAVIORS[newBehavior].greeting(userName) }],
-                    updatedAt: Date.now()
-                }
-                : s
-        ));
     };
 
     const RenderMessage = ({ m, i }: { m: ChatMessage, i: number }) => (
@@ -501,7 +330,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                     LUCYA
                                 </span>
                                 <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white/30 whitespace-nowrap">
-                                    {activeB.name} Protocol
+                                    {activeB.name}
                                 </span>
                             </div>
 
@@ -658,119 +487,6 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                         Initialize Thread
                                                     </button>
 
-                                                    <section className="space-y-4 relative">
-                                                        <div className="flex items-center justify-between px-2">
-                                                            <h3 className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
-                                                                <Layers className="w-3 h-3" /> Protocol
-                                                            </h3>
-                                                        </div>
-
-                                                        <div className="relative">
-                                                            <button
-                                                                onClick={() => setIsProtocolOpen(!isProtocolOpen)}
-                                                                className={cn(
-                                                                    "w-full flex items-center p-3 md:p-4 rounded-xl md:rounded-2xl border transition-all gap-3 md:gap-4 group relative overflow-hidden bg-white/[0.03]",
-                                                                    isProtocolOpen ? "border-zinc-300 dark:border-white/20 shadow-2xl" : "border-zinc-200 dark:border-white/5 hover:border-zinc-300 dark:border-white/10"
-                                                                )}
-                                                            >
-                                                                <div className={cn(
-                                                                    "w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center shrink-0 border border-zinc-200 dark:border-white/5 shadow-inner transition-colors",
-                                                                    activeB.color
-                                                                )}>
-                                                                    <IconB className="w-4 h-4 md:w-5 md:h-5 text-black" />
-                                                                </div>
-                                                                <div className="flex flex-col items-start truncate flex-1 md:hidden lg:flex">
-                                                                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-white">{activeB.name}</span>
-                                                                    <span className="text-[7px] md:text-[8px] text-zinc-900 dark:text-white/20 font-medium truncate w-full uppercase">Smart Sync Active</span>
-                                                                </div>
-                                                                <motion.div
-                                                                    animate={{ rotate: isProtocolOpen ? 180 : 0 }}
-                                                                    className="text-zinc-900 dark:text-white/20"
-                                                                >
-                                                                    <Plus className="w-4 h-4" />
-                                                                </motion.div>
-                                                            </button>
-
-                                                            <AnimatePresence>
-                                                                {isProtocolOpen && (
-                                                                    <motion.div
-                                                                        initial={{ opacity: 0, y: -10 }}
-                                                                        animate={{ opacity: 1, y: 0 }}
-                                                                        exit={{ opacity: 0, y: -10 }}
-                                                                        className="absolute top-full left-0 right-0 mt-2 z-[200] p-4 bg-zinc-50 dark:bg-[#0a0a0a] border border-zinc-300 dark:border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,1)] flex flex-col gap-4 max-h-[400px] overflow-y-auto scrollbar-hide backdrop-blur-3xl"
-                                                                    >
-                                                                        <div className="flex items-center gap-2 p-1 bg-zinc-200 dark:bg-white/5 rounded-xl border border-zinc-300 dark:border-white/10">
-                                                                            {(['TEACHER', 'CORE'] as const).map((cat) => {
-                                                                                if (cat === 'CORE' && !showHiddenCore) return null;
-                                                                                return (
-                                                                                    <button
-                                                                                        key={cat}
-                                                                                        onClick={(e) => {
-                                                                                            e.stopPropagation();
-                                                                                            setActiveCategory(cat);
-                                                                                        }}
-                                                                                        onDoubleClick={(e) => {
-                                                                                            e.stopPropagation();
-                                                                                            if (cat === 'TEACHER') {
-                                                                                                setShowHiddenCore(prev => !prev);
-                                                                                            }
-                                                                                        }}
-                                                                                        className={cn(
-                                                                                            "flex-1 py-1.5 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
-                                                                                            activeCategory === cat
-                                                                                                ? "bg-zinc-300 dark:bg-white/10 text-zinc-900 dark:text-white shadow-lg"
-                                                                                                : "text-zinc-900 dark:text-white/40 hover:text-zinc-900 dark:hover:text-white/60"
-                                                                                        )}
-                                                                                    >
-                                                                                        {cat === 'CORE' ? 'Smart Core' : 'Educators'}
-                                                                                    </button>
-                                                                                );
-                                                                            })}
-                                                                        </div>
-
-                                                                        <div className="grid grid-cols-2 gap-2">
-                                                                            {categories[activeCategory].map((key) => {
-                                                                                const bKey = key as BehaviorType;
-                                                                                const b = BEHAVIORS[bKey];
-                                                                                const isActive = behavior === bKey;
-                                                                                const BIcon = b.icon;
-
-                                                                                return (
-                                                                                    <button
-                                                                                        key={bKey}
-                                                                                        onClick={() => {
-                                                                                            setSessions(prev => prev.map(s =>
-                                                                                                s.id === activeSessionId ? { ...s, behavior: bKey } : s
-                                                                                            ));
-                                                                                            setIsProtocolOpen(false);
-                                                                                        }}
-                                                                                        className={cn(
-                                                                                            "group p-3 rounded-xl border transition-all flex flex-col items-center gap-2 text-center",
-                                                                                            isActive
-                                                                                                ? "border-zinc-300 dark:border-white/20 bg-white/[0.08] shadow-xl"
-                                                                                                : "border-zinc-200 dark:border-white/5 bg-zinc-200 dark:bg-white/5 hover:bg-white/[0.05] hover:border-zinc-300 dark:border-white/10"
-                                                                                        )}
-                                                                                    >
-                                                                                        <div className={cn(
-                                                                                            "w-8 h-8 rounded-lg flex items-center justify-center border border-zinc-300 dark:border-white/10 shadow-inner group-hover:scale-110 transition-transform text-zinc-900 dark:text-white",
-                                                                                            isActive ? b.color : "bg-zinc-200 dark:bg-white/5"
-                                                                                        )}>
-                                                                                            <BIcon className={cn("w-4 h-4", isActive ? "text-black" : "text-zinc-900 dark:text-white/40")} />
-                                                                                        </div>
-                                                                                        <span className={cn(
-                                                                                            "text-[8px] font-black uppercase tracking-wider truncate w-full",
-                                                                                            isActive ? "text-zinc-900 dark:text-white" : "text-zinc-900 dark:text-white/40"
-                                                                                        )}>{b.name}</span>
-                                                                                    </button>
-                                                                                );
-                                                                            })}
-                                                                        </div>
-                                                                    </motion.div>
-                                                                )}
-                                                            </AnimatePresence>
-                                                        </div>
-                                                    </section>
-
                                                     <section className="space-y-4">
                                                         <div className="flex items-center justify-between px-2">
                                                             <h3 className="text-[10px] font-black text-zinc-900 dark:text-white/20 uppercase tracking-[0.3em] flex items-center gap-2">
@@ -791,7 +507,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                                     )}
                                                                 >
                                                                     <div className="flex items-center gap-3 truncate">
-                                                                        <div className={cn("w-2 h-2 rounded-full", BEHAVIORS[s.behavior].color)} />
+                                                                        <div className={cn("w-2 h-2 rounded-full", ASSISTANT.color)} />
                                                                         <span className="text-[10px] font-black uppercase tracking-wider truncate italic italic">{s.title}</span>
                                                                     </div>
                                                                     {activeSessionId === s.id && (
@@ -886,7 +602,7 @@ export function AIAssistant({ userName, userId }: { userName?: string; userId?: 
                                                             />
                                                         ))}
                                                     </div>
-                                                    <span className="text-[10px] font-medium text-zinc-900 dark:text-white/40 uppercase tracking-widest ml-2">Thinking 🤤</span>
+                                                    <span className="text-[10px] font-medium text-zinc-900 dark:text-white/40 uppercase tracking-widest ml-2">Thinking</span>
                                                 </motion.div>
                                             )}
                                         </div>

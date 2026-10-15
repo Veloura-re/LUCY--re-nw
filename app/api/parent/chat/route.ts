@@ -4,6 +4,7 @@ import { processParentChat } from '@/lib/ai';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { reportServerError } from '@/lib/error-capture';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['PARENT']);
@@ -46,7 +47,6 @@ export async function POST(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {

@@ -5,6 +5,7 @@ import { verifySuperAdmin } from '@/lib/admin-auth';
 import { sendInviteEmail } from '@/lib/email';
 import { reportServerError } from '@/lib/error-capture';
 
+import { logActivity } from '@/lib/audit';
 // GET - List all principals and pending invites for a school
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
@@ -66,7 +67,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
                 await logActivity({ userId: dbUser.id, schoolId: resolvedParams.id, action: 'INVITE_PRINCIPAL', resourceType: 'principal', ip: _ip || undefined });

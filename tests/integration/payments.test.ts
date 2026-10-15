@@ -1,5 +1,5 @@
 /**
- * 🧪 Critical Path Integration Tests: Financial System & Payment Processing
+ * Critical Path Integration Tests: Financial System & Payment Processing
  *
  * Tests:
  * 1. Fee Structure creation & multi-tenant grade scoping

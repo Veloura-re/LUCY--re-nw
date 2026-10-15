@@ -68,27 +68,25 @@ export default async function AdminLayout({
             </div>
 
             {/* Top Nav */}
-            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-zinc-200 dark:border-white/5 bg-white/80 dark:bg-[#080808]/80 backdrop-blur-xl flex items-center px-8 gap-6">
+            <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-zinc-200 dark:border-white/5 bg-white/80 dark:bg-[#080808]/80 backdrop-blur-xl flex items-center px-4 sm:px-6 md:px-8 gap-3 sm:gap-6">
                 {/* Logo */}
-                <div className="flex items-center gap-3 mr-auto">
-                    <div className="w-8 h-8 rounded-lg bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
+                <div className="flex items-center gap-2 sm:gap-3 mr-auto">
+                    <div className="w-8 h-8 rounded-lg bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center shrink-0">
                         <Zap className="w-4 h-4 text-eduGreen-500" />
                     </div>
-                    <div>
+                    <div className="flex items-center">
                         <span className="text-zinc-900 dark:text-white font-black tracking-[0.15em] text-sm font-orbitron">LUCY</span>
                         <span className="text-eduGreen-500 font-black tracking-[0.15em] text-sm font-orbitron"> OS</span>
                     </div>
-                    <div className="w-px h-5 bg-zinc-300 dark:bg-white/10 mx-1" />
-                    <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em]">Admin Engine</span>
+                    <div className="hidden sm:block w-px h-5 bg-zinc-300 dark:bg-white/10 mx-1" />
+                    <span className="text-[10px] font-medium text-zinc-600 uppercase tracking-[0.3em] hidden sm:inline">Admin Engine</span>
                 </div>
 
-                {/* Nav Links */}
-                <div className="hidden md:block">
-                    <AdminNav />
-                </div>
+                {/* Nav Links & Mobile/Tablet Drawer Toggle */}
+                <AdminNav />
 
                 {/* Right */}
-                <div className="flex items-center gap-4 ml-auto">
+                <div className="flex items-center gap-2 sm:gap-4">
                     {/* Status Indicator */}
                     <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-eduGreen-950/40 border border-eduGreen-900/30">
                         <div className="w-1.5 h-1.5 rounded-full bg-eduGreen-500 animate-pulse shadow-[0_0_6px_rgba(34,197,94,0.6)]" />
@@ -96,8 +94,8 @@ export default async function AdminLayout({
                     </div>
 
                     {/* User Info */}
-                    <div className="flex items-center gap-3 pl-4 border-l border-zinc-200 dark:border-white/5">
-                        <div className="w-8 h-8 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
+                    <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-zinc-200 dark:border-white/5">
+                        <div className="w-8 h-8 rounded-full bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center shrink-0">
                             <Shield className="w-4 h-4 text-eduGreen-500" />
                         </div>
                         <div className="hidden md:block">
@@ -115,11 +113,11 @@ export default async function AdminLayout({
             {/* Main Content */}
             <main className="relative z-10 flex-1 pt-16">
                 {/* Greeting Banner */}
-                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-white dark:from-black/[0.02] dark:from-white/[0.02] to-transparent px-8 py-8">
+                <div className="border-b border-zinc-200 dark:border-white/5 bg-gradient-to-r from-white dark:from-black/[0.02] dark:from-white/[0.02] to-transparent px-4 sm:px-6 md:px-8 py-6 md:py-8">
                     <div className="max-w-7xl mx-auto flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-medium text-eduGreen-500 uppercase tracking-[0.4em] mb-1">Infrastructure Control</p>
-                            <h1 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white">
+                            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-zinc-900 dark:text-white">
                                 {greeting}<span className="text-zinc-600 dark:text-zinc-500">{honorific}</span>
                             </h1>
                         </div>
@@ -132,7 +130,7 @@ export default async function AdminLayout({
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-8 py-10">
+                <div className="max-w-7xl mx-auto px-3 sm:px-6 md:px-8 py-6 md:py-10">
                     {children}
                 </div>
             </main>

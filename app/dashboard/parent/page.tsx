@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
     GraduationCap, TrendingUp, Calendar, CreditCard,
     ChevronRight, Loader2, AlertCircle, Users, ArrowRight,
-    BookOpen, ClipboardCheck, MessageSquare
+    BookOpen, ClipboardCheck, MessageSquare, CalendarDays
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -115,7 +115,7 @@ export default function ParentDashboard() {
                                                                 </span>
                                                                 <Link href={`/dashboard/messages?userId=${student.class.homeroomTeacher.id}`}>
                                                                     <Badge className="bg-eduGreen-950/20 text-eduGreen-500 hover:bg-eduGreen-950/40 hover:text-eduGreen-400 border-eduGreen-900/30 text-[8px] tracking-widest cursor-pointer transition-colors">
-                                                                        💬 Message Teacher
+                                                                        Message Teacher
                                                                     </Badge>
                                                                 </Link>
                                                             </div>
@@ -213,16 +213,16 @@ export default function ParentDashboard() {
             {/* Quick links */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {[
-                    { label: "Messages", href: "/dashboard/messages", icon: "💬" },
-                    { label: "Events", href: "/dashboard/events", icon: "📅" },
-                    { label: "Billing", href: "/dashboard/finance", icon: "💳" },
-                    { label: "Homework", href: "/dashboard/student/assignments", icon: "📝" },
-                    { label: "Absence Permits", href: "/dashboard/parent/authorizations", icon: "📋" },
-                ].map(({ label, href, icon }) => (
+                    { label: "Messages", href: "/dashboard/messages", Icon: MessageSquare },
+                    { label: "Events", href: "/dashboard/events", Icon: CalendarDays },
+                    { label: "Billing", href: "/dashboard/finance", Icon: CreditCard },
+                    { label: "Homework", href: "/dashboard/student/assignments", Icon: BookOpen },
+                    { label: "Absence Permits", href: "/dashboard/parent/authorizations", Icon: ClipboardCheck },
+                ].map(({ label, href, Icon }) => (
                     <Link key={href} href={href}>
                         <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2rem] hover:border-zinc-800 transition-all cursor-pointer group">
                             <CardContent className="p-6 flex flex-col items-center gap-3 text-center">
-                                <span className="text-2xl">{icon}</span>
+                                <Icon className="w-6 h-6 text-eduGreen-500" aria-hidden="true" />
                                 <p className="text-[10px] font-bold text-zinc-600 dark:text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest transition-colors">{label}</p>
                             </CardContent>
                         </Card>

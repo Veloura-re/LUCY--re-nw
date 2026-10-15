@@ -331,27 +331,27 @@ function MarklistViewContent() {
             )}
 
             {/* Header */}
-            <div className="border-b border-zinc-200 dark:border-zinc-900/50 px-8 py-5 flex items-center justify-between bg-zinc-100/60 dark:bg-zinc-950/60 backdrop-blur-xl shrink-0">
-                <div className="flex items-center gap-4">
+            <div className="border-b border-zinc-200 dark:border-zinc-900/50 px-4 sm:px-6 md:px-8 py-4 md:py-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-zinc-100/60 dark:bg-zinc-950/60 backdrop-blur-xl shrink-0">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => router.push(isArchivedParam ? "/dashboard/marklist/archive" : "/dashboard/marklist")}
-                        className="rounded-xl h-10 w-10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                        className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white shrink-0"
                         title="Back to marklists"
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold uppercase tracking-tight text-zinc-900 dark:text-white">
+                    <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                            <h2 className="text-base sm:text-xl font-bold uppercase tracking-tight text-zinc-900 dark:text-white truncate">
                                 {config.class?.name} <span className="text-emerald-500 italic">::</span> {config.subject?.name}
                             </h2>
                             {config.term?.name && (
                                 <Badge
                                     variant="outline"
                                     className={cn(
-                                        "text-[9px] uppercase tracking-wider font-semibold",
+                                        "text-[9px] uppercase tracking-wider font-semibold shrink-0",
                                         isTermCompleted
                                             ? "bg-zinc-200/50 dark:bg-zinc-800/50 border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"
                                             : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
@@ -365,15 +365,15 @@ function MarklistViewContent() {
                                 </Badge>
                             )}
                         </div>
-                        <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.3em] mt-0.5">
+                        <p className="text-[9px] font-medium text-zinc-500 uppercase tracking-[0.3em] mt-0.5 truncate">
                             Academic Performance & Evaluation System
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                     {!isReadOnly && unsavedChanges.size > 0 && (
-                        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 animate-in fade-in zoom-in duration-300">
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-900/30 animate-in fade-in zoom-in duration-300">
                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
                             <span className="text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase tracking-widest leading-none">
                                 Unsaved Changes ({unsavedChanges.size})
@@ -383,16 +383,16 @@ function MarklistViewContent() {
 
                     <Button
                         onClick={() => handlePrint()}
-                        className="h-10 px-5 rounded-xl font-bold uppercase tracking-[0.15em] text-[10px] transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/20 active:scale-95"
+                        className="h-9 sm:h-10 px-3 sm:px-5 rounded-xl font-bold uppercase tracking-[0.15em] text-[9px] sm:text-[10px] transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/20 active:scale-95"
                     >
-                        <Printer className="w-3.5 h-3.5 mr-2" /> Export PDF Registry
+                        <Printer className="w-3.5 h-3.5 mr-1.5 sm:mr-2" /> Export PDF Registry
                     </Button>
 
                     <Button
                         onClick={handleSync}
                         disabled={isSyncing || unsavedChanges.size > 0}
                         className={cn(
-                            "h-10 px-5 rounded-xl font-bold uppercase tracking-[0.15em] text-[10px] transition-all",
+                            "h-9 sm:h-10 px-3 sm:px-5 rounded-xl font-bold uppercase tracking-[0.15em] text-[9px] sm:text-[10px] transition-all",
                             unsavedChanges.size === 0
                                 ? "bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-emerald-600 dark:text-emerald-400 border border-emerald-900/30 active:scale-95"
                                 : "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 border border-zinc-200 dark:border-zinc-800 pointer-events-none opacity-50"
@@ -405,7 +405,7 @@ function MarklistViewContent() {
                         onClick={saveAll}
                         disabled={isReadOnly || isSaving || unsavedChanges.size === 0}
                         className={cn(
-                            "h-10 px-6 rounded-xl font-bold uppercase tracking-[0.15em] text-[10px] transition-all",
+                            "h-9 sm:h-10 px-4 sm:px-6 rounded-xl font-bold uppercase tracking-[0.15em] text-[9px] sm:text-[10px] transition-all",
                             !isReadOnly && unsavedChanges.size > 0
                                 ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-900/30 active:scale-95"
                                 : "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 border border-zinc-300 dark:border-zinc-800 cursor-not-allowed opacity-60"
@@ -425,7 +425,7 @@ function MarklistViewContent() {
             </div>
 
             {/* Grid Area */}
-            <div className="flex-1 overflow-auto p-8 custom-scrollbar">
+            <div className="flex-1 overflow-auto p-3 sm:p-6 md:p-8 custom-scrollbar">
                 <div className="rounded-2xl border border-zinc-200 dark:border-zinc-900/50 bg-white/40 dark:bg-zinc-950/40 shadow-xl overflow-hidden backdrop-blur-sm">
                     <table className="w-full text-sm text-left border-collapse">
                         <thead className="bg-zinc-100/60 dark:bg-zinc-900/60 text-[9px] uppercase font-bold tracking-[0.15em] text-zinc-600 dark:text-zinc-400 sticky top-0 z-10 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-900">

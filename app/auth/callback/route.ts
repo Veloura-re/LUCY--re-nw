@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { safeNextPath } from '@/lib/safe-redirect';
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get('code');
     const token_hash = searchParams.get('token_hash') || searchParams.get('token');
     const type = searchParams.get('type');
-    const next = searchParams.get('next') ?? '/reset-password';
+    const next = safeNextPath(searchParams.get('next'), '/reset-password');
 
     const supabase = await createClient();
 

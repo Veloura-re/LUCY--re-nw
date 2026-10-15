@@ -26,11 +26,11 @@ async function auditSuperadmin() {
         console.log('Auth User:', JSON.stringify(authUser, null, 2));
 
         if (dbUser && authUser && dbUser.id !== authUser.id) {
-            console.log('\n⚠️ ID MISMATCH DETECTED!');
+            console.log('\nID MISMATCH DETECTED!');
             console.log(`Prisma ID: ${dbUser.id}`);
             console.log(`Auth ID: ${authUser.id}`);
         } else {
-            console.log('\n✅ IDs match.');
+            console.log('\nIDs match.');
         }
     }
     console.log('\n------------------------');

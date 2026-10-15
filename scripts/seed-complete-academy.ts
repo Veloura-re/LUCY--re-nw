@@ -74,12 +74,12 @@ async function ensureAuthUser(email: string, pass: string, name: string, role: s
 
 async function main() {
     console.log('\n======================================================');
-    console.log('  🏛️  LUCY OS ACADEMY PROVISIONING ENGINE');
+    console.log('   LUCY OS ACADEMY PROVISIONING ENGINE');
     console.log(`  School: ${SCHOOL_NAME} (${SCHOOL_CODE})`);
     console.log('======================================================\n');
 
     // 1. Create or Update School
-    console.log('🏫 1. Provisioning School Record...');
+    console.log('1. Provisioning School Record...');
     const school = await prisma.school.upsert({
         where: { schoolCode: SCHOOL_CODE },
         update: {
@@ -112,10 +112,10 @@ async function main() {
         }
     });
 
-    console.log(`  ✅ School ID: ${school.id}`);
+    console.log(`  School ID: ${school.id}`);
 
     // 2. Provision Academic Terms
-    console.log('\n📅 2. Provisioning Academic Terms...');
+    console.log('\n2. Provisioning Academic Terms...');
     const term1 = await prisma.academicTerm.upsert({
         where: { id: `${SCHOOL_ID}-term-1` },
         update: { name: 'Fall Semester 2026', isActive: true, schoolId: school.id },
@@ -130,7 +130,7 @@ async function main() {
     });
 
     // 3. Provision Core Subjects
-    console.log('\n📚 3. Provisioning Core Curriculum Subjects...');
+    console.log('\n3. Provisioning Core Curriculum Subjects...');
     const SUBJECT_NAMES = [
         'Advanced Mathematics',
         'Physics & Quantum Mechanics',
@@ -154,10 +154,10 @@ async function main() {
         });
         subjects.push(s);
     }
-    console.log(`  ✅ Created ${subjects.length} subjects.`);
+    console.log(`  Created ${subjects.length} subjects.`);
 
     // 4. Provision Principal
-    console.log('\n👑 4. Provisioning Academy Principal...');
+    console.log('\n4. Provisioning Academy Principal...');
     const principalEmail = 'principal@apex.edu';
     const principalName = 'Dr. Evelyn Vance';
     const principalAuthId = await ensureAuthUser(principalEmail, 'Lucy@Principal2026!', principalName, 'PRINCIPAL');
@@ -179,10 +179,10 @@ async function main() {
             verified: true
         }
     });
-    console.log(`  ✅ Principal: ${principalUser.name} (${principalUser.email})`);
+    console.log(`  Principal: ${principalUser.name} (${principalUser.email})`);
 
     // 5. Provision 10 Teachers
-    console.log('\n🧑‍🏫 5. Provisioning 10 Faculty Teachers...');
+    console.log('\n5. Provisioning 10 Faculty Teachers...');
     const TEACHER_PROFILES = [
         { name: 'Prof. Marcus Aurelius', email: 'teacher1@apex.edu', subjectIdx: 0, title: 'Head of Mathematics' },
         { name: 'Dr. Elena Rostova', email: 'teacher2@apex.edu', subjectIdx: 1, title: 'Chair of Physics' },
@@ -223,10 +223,10 @@ async function main() {
         });
         teacherUsers.push({ user, profile: tp });
     }
-    console.log(`  ✅ Provisioned ${teacherUsers.length} teachers.`);
+    console.log(`  Provisioned ${teacherUsers.length} teachers.`);
 
     // 6. Provision Grades & 4 Classes (with assigned Homeroom Teachers)
-    console.log('\n🏫 6. Provisioning Grades & 4 Cohort Classes...');
+    console.log('\n6. Provisioning Grades & 4 Cohort Classes...');
     
     // Grade 9
     const grade9 = await prisma.grade.upsert({
@@ -268,11 +268,11 @@ async function main() {
             }
         });
         classes.push(cls);
-        console.log(`  ✅ Class: ${cls.name} -> Homeroom: ${cc.homeroomTeacher.name}`);
+        console.log(`  Class: ${cls.name} -> Homeroom: ${cc.homeroomTeacher.name}`);
     }
 
     // 7. Assign Faculty to Classes (TeacherAssignment)
-    console.log('\n🔗 7. Mapping Faculty to Class Subject Rosters...');
+    console.log('\n7. Mapping Faculty to Class Subject Rosters...');
     for (const cls of classes) {
         for (const t of teacherUsers) {
             const subject = subjects[t.profile.subjectIdx];
@@ -290,10 +290,10 @@ async function main() {
             });
         }
     }
-    console.log('  ✅ Faculty roster mapped across all 4 classes.');
+    console.log('  Faculty roster mapped across all 4 classes.');
 
     // 8. Provision 100 Students (25 students per class)
-    console.log('\n🎓 8. Provisioning 100 Students across 4 Cohort Classes (25/class)...');
+    console.log('\n8. Provisioning 100 Students across 4 Cohort Classes (25/class)...');
     
     let studentCount = 0;
     const allCreatedStudents: any[] = [];
@@ -359,10 +359,10 @@ async function main() {
             allCreatedStudents.push({ user: userRecord, student: studentRecord, class: targetClass });
         }
     }
-    console.log(`  ✅ Successfully provisioned ${allCreatedStudents.length} students!`);
+    console.log(`  Successfully provisioned ${allCreatedStudents.length} students!`);
 
     // 9. Provision Demo Assignments with Student Submissions & AI Scan Diagnostics
-    console.log('\n📝 9. Provisioning Demo Assignments & Submissions with AI Scanner reports...');
+    console.log('\n9. Provisioning Demo Assignments & Submissions with AI Scanner reports...');
     
     const leadTeacher = teacherUsers[2].user; // Sarah Jenkins (Literature)
     const litSubject = subjects[2];
@@ -477,29 +477,29 @@ async function main() {
             } as any
         });
     }
-    console.log('  ✅ Seeded sample submissions with live AI Scanner data.');
+    console.log('  Seeded sample submissions with live AI Scanner data.');
 
     // ── Summary Credentials Report ──
     console.log('\n═══════════════════════════════════════════════════════════════════════════');
-    console.log('  ✨  APEX HORIZON INTERNATIONAL ACADEMY PROVISIONED SUCCESSFULLY!');
+    console.log('   APEX HORIZON INTERNATIONAL ACADEMY PROVISIONED SUCCESSFULLY!');
     console.log('═══════════════════════════════════════════════════════════════════════════\n');
-    console.log(`  🏫 School:   ${SCHOOL_NAME} [Code: ${SCHOOL_CODE}]`);
-    console.log(`  📊 Cohorts:  4 Classes (9-A, 9-B, 10-A, 10-B) with 25 students each`);
-    console.log(`  🧑‍🏫 Faculty:  10 Teachers (4 Homeroom Leads)`);
-    console.log(`  🎓 Scholars: 100 Enrolled Active Students`);
+    console.log(`  School:   ${SCHOOL_NAME} [Code: ${SCHOOL_CODE}]`);
+    console.log(`  Cohorts:  4 Classes (9-A, 9-B, 10-A, 10-B) with 25 students each`);
+    console.log(`  Faculty:  10 Teachers (4 Homeroom Leads)`);
+    console.log(`  Scholars: 100 Enrolled Active Students`);
     console.log('───────────────────────────────────────────────────────────────────────────');
-    console.log('  🔑 CORE TEST CREDENTIALS:');
+    console.log('  CORE TEST CREDENTIALS:');
     console.log('───────────────────────────────────────────────────────────────────────────');
-    console.log(`  👑 Principal: principal@apex.edu       / Pass: Lucy@Principal2026!`);
-    console.log(`  🧑‍🏫 Teacher 1: teacher1@apex.edu (Math) / Pass: Lucy@Teacher2026! [Homeroom 9-A]`);
-    console.log(`  🧑‍🏫 Teacher 2: teacher2@apex.edu (Phys) / Pass: Lucy@Teacher2026! [Homeroom 9-B]`);
-    console.log(`  🧑‍🏫 Teacher 3: teacher3@apex.edu (Lit)  / Pass: Lucy@Teacher2026! [Homeroom 10-A]`);
-    console.log(`  🧑‍🏫 Teacher 4: teacher4@apex.edu (Chem) / Pass: Lucy@Teacher2026! [Homeroom 10-B]`);
-    console.log(`  🧑‍🏫 Teachers 5-10: teacher5@apex.edu to teacher10@apex.edu / Pass: Lucy@Teacher2026!`);
-    console.log(`  🎓 Student 1:  student1@apex.edu (9-A)  / Pass: Lucy@Student2026! [Code: APEX-9A-01]`);
-    console.log(`  🎓 Student 26: student26@apex.edu (9-B) / Pass: Lucy@Student2026! [Code: APEX-9B-01]`);
-    console.log(`  🎓 Student 51: student51@apex.edu (10-A)/ Pass: Lucy@Student2026! [Code: APEX-10A-01]`);
-    console.log(`  🎓 Student 76: student76@apex.edu (10-B)/ Pass: Lucy@Student2026! [Code: APEX-10B-01]`);
+    console.log(`  Principal: principal@apex.edu       / Pass: Lucy@Principal2026!`);
+    console.log(`  Teacher 1: teacher1@apex.edu (Math) / Pass: Lucy@Teacher2026! [Homeroom 9-A]`);
+    console.log(`  Teacher 2: teacher2@apex.edu (Phys) / Pass: Lucy@Teacher2026! [Homeroom 9-B]`);
+    console.log(`  Teacher 3: teacher3@apex.edu (Lit)  / Pass: Lucy@Teacher2026! [Homeroom 10-A]`);
+    console.log(`  Teacher 4: teacher4@apex.edu (Chem) / Pass: Lucy@Teacher2026! [Homeroom 10-B]`);
+    console.log(`  Teachers 5-10: teacher5@apex.edu to teacher10@apex.edu / Pass: Lucy@Teacher2026!`);
+    console.log(`  Student 1:  student1@apex.edu (9-A)  / Pass: Lucy@Student2026! [Code: APEX-9A-01]`);
+    console.log(`  Student 26: student26@apex.edu (9-B) / Pass: Lucy@Student2026! [Code: APEX-9B-01]`);
+    console.log(`  Student 51: student51@apex.edu (10-A)/ Pass: Lucy@Student2026! [Code: APEX-10A-01]`);
+    console.log(`  Student 76: student76@apex.edu (10-B)/ Pass: Lucy@Student2026! [Code: APEX-10B-01]`);
     console.log('═══════════════════════════════════════════════════════════════════════════\n');
 }
 

@@ -31,17 +31,17 @@ async function mkUser(email, pass, name, role) {
         updatedAt: new Date().toISOString(),
     });
     if (de) throw new Error('DB failed: ' + email + ' — ' + de.message);
-    console.log('  ✅ Created', role, '-', email);
+    console.log('  Created', role, '-', email);
     return data.user.id;
 }
 
 async function main() {
     console.log('\n══════════════════════════════════════════════');
-    console.log('  🔄  LUCY FULL USER RESET');
+    console.log('   LUCY FULL USER RESET');
     console.log('══════════════════════════════════════════════\n');
 
     // ── Step 1: Nuke all DB rows ──
-    console.log('🗑  Purging DB rows...');
+    console.log(' Purging DB rows...');
     for (const email of TEST_EMAILS) {
         const { data: rows } = await sb.from('User').select('id').eq('email', email);
         for (const row of (rows || [])) {
@@ -52,22 +52,22 @@ async function main() {
             await sb.from('AssignmentSubmission').delete().eq('studentId', row.id);
         }
         const { error } = await sb.from('User').delete().eq('email', email);
-        console.log(' ', email, '->', error ? '⚠ ' + error.message : 'cleaned');
+        console.log(' ', email, '->', error ? '' + error.message : 'cleaned');
     }
 
     // ── Step 2: Nuke all auth accounts ──
-    console.log('\n🗑  Purging Auth accounts...');
+    console.log('\n Purging Auth accounts...');
     const { data: authData } = await sb.auth.admin.listUsers({ perPage: 1000 });
     const allUsers = authData ? authData.users : [];
     for (const u of allUsers) {
         if (TEST_EMAILS.includes(u.email || '')) {
             const { error } = await sb.auth.admin.deleteUser(u.id);
-            console.log(' ', u.email, '->', error ? '⚠ ' + error.message : 'deleted');
+            console.log(' ', u.email, '->', error ? '' + error.message : 'deleted');
         }
     }
 
     // ── Step 3: Recreate all users ──
-    console.log('\n✨ Creating fresh users...');
+    console.log('\nCreating fresh users...');
     await mkUser('principal@lucy.edu',  'Lucy@Principal2026!', 'Principal Morgan',  'PRINCIPAL');
 
     const teacherId = await mkUser('teacher@lucy.edu', 'Lucy@Teacher2026!', 'Ms. Johnson', 'TEACHER');
@@ -94,7 +94,7 @@ async function main() {
 
     // ── Final credentials summary ──
     console.log('\n══════════════════════════════════════════════════════════');
-    console.log('  ✅  ALL USERS RESET — CREDENTIALS');
+    console.log('   ALL USERS RESET — CREDENTIALS');
     console.log('══════════════════════════════════════════════════════════\n');
     const creds = [
         ['Principal',   'principal@lucy.edu',   'Lucy@Principal2026!'],
@@ -105,10 +105,10 @@ async function main() {
     creds.forEach(([role, email, pass]) => {
         console.log(`  ${role.padEnd(12)} ${email.padEnd(28)} ${pass}`);
     });
-    console.log('\n  🌐  Login: https://5-cn.net/login\n');
+    console.log('\n   Login: https://5-cn.net/login\n');
 }
 
 main().catch(e => {
-    console.error('\n❌ FAILED:', e.message);
+    console.error('\nFAILED:', e.message);
     process.exit(1);
 });

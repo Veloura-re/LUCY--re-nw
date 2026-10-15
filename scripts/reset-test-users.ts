@@ -26,9 +26,9 @@ const TEST_EMAILS = [
 
 // ─── Helpers ─────────────────────────────────────────────────────
 function log(msg: string) { console.log(msg); }
-function ok(msg: string)  { console.log('  ✅ ' + msg); }
-function info(msg: string){ console.log('  ℹ  ' + msg); }
-function warn(msg: string){ console.log('  ⚠  ' + msg); }
+function ok(msg: string)  { console.log('  ' + msg); }
+function info(msg: string){ console.log('   ' + msg); }
+function warn(msg: string){ console.log('   ' + msg); }
 
 async function deleteUser(email: string) {
     // 1. Get Supabase auth user
@@ -87,7 +87,7 @@ async function createUser(email: string, password: string, name: string, role: s
 // ─── Main ─────────────────────────────────────────────────────────
 async function main() {
     console.log('\n════════════════════════════════════════');
-    console.log('  🔄  LUCY TEST USER RESET');
+    console.log('   LUCY TEST USER RESET');
     console.log('════════════════════════════════════════\n');
 
     // Verify school
@@ -96,18 +96,18 @@ async function main() {
     ok(`School confirmed: ${school.name}\n`);
 
     // ── Delete all existing test users ──
-    log('🗑  Deleting existing test users...');
+    log(' Deleting existing test users...');
     for (const email of TEST_EMAILS) await deleteUser(email);
     console.log('');
 
 
     // ── Recreate: Principal ──
-    log('🏫 Creating Principal...');
+    log('Creating Principal...');
     await createUser('principal@lucy.edu', 'Lucy@Principal2026!', 'Principal Morgan', 'PRINCIPAL');
     ok('principal@lucy.edu\n');
 
     // ── Recreate: Teacher ──
-    log('👩‍🏫 Creating Teacher...');
+    log('Creating Teacher...');
     const teacherId = await createUser('teacher@lucy.edu', 'Lucy@Teacher2026!', 'Ms. Johnson', 'TEACHER');
     // Assign to class/subject
     await supabase.from('TeacherAssignment').insert({
@@ -119,7 +119,7 @@ async function main() {
     ok('teacher@lucy.edu → assigned to class\n');
 
     // ── Recreate: Student ──
-    log('🎓 Creating Student...');
+    log('Creating Student...');
     const studentUserId = await createUser('student@lucy.edu', 'Lucy@Student2026!', 'Alex Rivera', 'STUDENT');
     // Get grade for this class
     const { data: classData } = await supabase.from('Class').select('gradeId').eq('id', CLASS_ID).single();
@@ -139,13 +139,13 @@ async function main() {
     ok(`student@lucy.edu → code: ${studentCode}\n`);
 
     // ── Recreate: Parent ──
-    log('👪 Creating Parent...');
+    log('Creating Parent...');
     await createUser('parent@lucy.edu', 'Lucy@Parent2026!', 'Jordan Rivera', 'PARENT');
     ok('parent@lucy.edu\n');
 
     // ── Print credentials ──
     console.log('════════════════════════════════════════════════════════════');
-    console.log('  ✅  ALL USERS RESET — CREDENTIALS BELOW');
+    console.log('   ALL USERS RESET — CREDENTIALS BELOW');
     console.log('════════════════════════════════════════════════════════════\n');
     const creds = [
         { role: 'Principal',   email: 'principal@lucy.edu',   password: 'Lucy@Principal2026!' },
@@ -157,10 +157,10 @@ async function main() {
     creds.forEach(c => {
         console.log(`  ${c.role.padEnd(11)} │ ${c.email.padEnd(26)} │ ${c.password}`);
     });
-    console.log(`\n  🌐  Login at: https://5-cn.net/login\n`);
+    console.log(`\n   Login at: https://5-cn.net/login\n`);
 }
 
 main().catch(e => {
-    console.error('\n❌ Reset failed:', e.message || e);
+    console.error('\nReset failed:', e.message || e);
     process.exit(1);
 });

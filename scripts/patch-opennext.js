@@ -11,7 +11,7 @@ if (!fs.existsSync(shimPath)) {
 function safePatch(relativeFilePath, target, replacement) {
     const filePath = path.join(projectRoot, relativeFilePath);
     if (!fs.existsSync(filePath)) {
-        console.log(`⚠️ Skip: ${relativeFilePath} not found`);
+        console.log(`Skip: ${relativeFilePath} not found`);
         return;
     }
 
@@ -19,9 +19,9 @@ function safePatch(relativeFilePath, target, replacement) {
     if (content.includes(target) && !content.includes(replacement)) {
         content = content.replace(target, replacement);
         fs.writeFileSync(filePath, content);
-        console.log(`✅ Patched: ${relativeFilePath}`);
+        console.log(`Patched: ${relativeFilePath}`);
     } else {
-        console.log(`ℹ️ Already patched or target not found: ${relativeFilePath}`);
+        console.log(`Already patched or target not found: ${relativeFilePath}`);
     }
 }
 
@@ -46,4 +46,4 @@ safePatch(
     'external: [...externals, "cloudflare:sockets"],'
 );
 
-console.log('🚀 OpenNext patches applied with Cloudflare Sockets Shim (v3)');
+console.log('OpenNext patches applied with Cloudflare Sockets Shim (v3)');

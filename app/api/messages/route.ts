@@ -1,3 +1,4 @@
+import { rateLimitShared } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError, secureJson } from '@/lib/security';
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const chatRoomId = searchParams.get('chatRoomId');
         const cursor = searchParams.get('cursor') || undefined;
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50') || 50));
 
         if (!chatRoomId) {
             return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });
@@ -55,11 +56,22 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const dbUser = await requireSchoolLinked();
-        const { chatRoomId, content, attachments } = (await request.json()) as any;
+        const limited = await rateLimitShared(request, 'messages/post', 60);
+        if (limited) return limited;
 
-        if (!chatRoomId || (!content && !attachments)) {
+        const dbUser = await requireSchoolLinked();
+        const body = ((await request.json().catch(() => ({}))) || {}) as any;
+        const { chatRoomId, attachments } = body;
+        const content: string | undefined = typeof body.content === 'string' ? body.content : undefined;
+
+        if (typeof chatRoomId !== 'string' || !chatRoomId || (!content && !attachments)) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+        if (content && content.length > 4000) {
+            return NextResponse.json({ error: 'Message is too long (maximum 4000 characters)' }, { status: 400 });
+        }
+        if (attachments !== undefined && attachments !== null && (!Array.isArray(attachments) || attachments.length > 10)) {
+            return NextResponse.json({ error: 'Invalid attachments' }, { status: 400 });
         }
 
         // Verify room belongs to this school

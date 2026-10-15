@@ -56,6 +56,12 @@ export async function logActivity({
             }
         }
 
+        if (!effectiveSchoolId) {
+            // AGENTS.md section 2: tenant mutations must carry a schoolId. Only platform-level
+            // actions by users who belong to no school (for example SUPERADMIN) may omit it.
+            console.warn(`[audit] Entry "${action}" on "${resourceType}" has no schoolId (platform-level action or caller omitted it).`);
+        }
+
         await prisma.auditLog.create({
             data: {
                 userId,

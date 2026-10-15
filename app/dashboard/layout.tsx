@@ -168,20 +168,20 @@ export default async function DashboardLayout({
 
             {/* Header (Appears in DOCK mode on desktop) */}
             {!isSidebar && (
-                <header className="w-full pt-3 sm:pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-3 sm:px-6 md:px-12 relative z-20">
-                    <div className="hidden md:block w-32" /> {/* Spacer */}
-                    <div className="flex items-center gap-2 sm:gap-4">
-                        <SchoolLogo logoUrl={dbUser.school?.logoUrl} className="w-8 h-8 sm:w-12 sm:h-12 object-contain rounded-lg sm:rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 p-1" fallbackSize="w-8 h-8 sm:w-12 sm:h-12" />
-                        <div className="relative flex items-center bg-zinc-100 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-3 sm:pr-5 pl-1 py-1 md:py-2 overflow-hidden group w-max rounded-l-lg sm:rounded-l-xl">
+                <header className="w-full pt-3 sm:pt-4 md:pt-10 pb-2 md:pb-4 flex items-center justify-between px-3 sm:px-6 md:px-8 lg:px-12 relative z-20">
+                    <div className="hidden lg:block w-20 xl:w-32 shrink-0" /> {/* Spacer */}
+                    <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                        <SchoolLogo logoUrl={dbUser.school?.logoUrl} className="w-8 h-8 sm:w-12 sm:h-12 object-contain rounded-lg sm:rounded-xl bg-zinc-100/50 dark:bg-zinc-900/50 p-1 shrink-0" fallbackSize="w-8 h-8 sm:w-12 sm:h-12" />
+                        <div className="relative flex items-center bg-zinc-100 dark:bg-zinc-950/50 backdrop-blur-md border-r-2 border-eduGreen-500 pr-2 sm:pr-4 md:pr-5 pl-1 py-1 md:py-2 overflow-hidden group max-w-[150px] xs:max-w-[200px] sm:max-w-[320px] md:max-w-[420px] lg:max-w-none rounded-l-lg sm:rounded-l-xl">
                             <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(20,122,82,0.1)_2px,rgba(20,122,82,0.1)_4px)] opacity-0 group-hover:opacity-100 transition-opacity mix-blend-screen" />
-                            <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity">[</span>
-                            <span className="relative text-base sm:text-xl md:text-3xl font-black tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-1.5 sm:ml-2 md:ml-3">
+                            <span className="text-eduGreen-500 font-orbitron font-black text-base sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity shrink-0">[</span>
+                            <span className="relative text-sm sm:text-lg md:text-2xl lg:text-3xl font-black tracking-[0.10em] sm:tracking-[0.15em] md:tracking-[0.25em] font-orbitron text-zinc-900 dark:text-white ml-1 sm:ml-2 md:ml-3 truncate">
                                 {dbUser.school?.name?.toUpperCase() || "LUCY"}
                             </span>
-                            <span className="text-eduGreen-500 font-orbitron font-black text-lg sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1.5 sm:ml-2 md:ml-3">]</span>
+                            <span className="text-eduGreen-500 font-orbitron font-black text-base sm:text-xl md:text-3xl tracking-tighter opacity-80 group-hover:opacity-100 transition-opacity ml-1 sm:ml-2 md:ml-3 shrink-0">]</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                         {['TEACHER', 'HOMEROOM', 'PRINCIPAL', 'OWNER', 'SUPERADMIN'].includes(dbUser.role) && (
                             <ScannerTriggerButton variant="header" />
                         )}

@@ -4,6 +4,7 @@ import { requireRole, requireSchoolLinked, handleApiError } from '@/lib/security
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
+import { logActivity } from '@/lib/audit';
 export async function GET(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
@@ -129,7 +130,6 @@ export async function PATCH(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
                 await logActivity({ userId: dbUser.id, schoolId: dbUser.schoolId, action: 'UPDATE_AUTHORIZATION', resourceType: 'authorization', ip: _ip });

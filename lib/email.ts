@@ -110,7 +110,6 @@ export async function sendInviteEmail(toEmail: string, inviteUrl: string, school
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">🎓</span>
                 <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY</h1>
             </div>
             
@@ -135,7 +134,7 @@ export async function sendInviteEmail(toEmail: string, inviteUrl: string, school
     `;
 
     const result = await sendEmail({ to: toEmail, subject: `Invitation: Join ${schoolName} as a ${roleLabel}`, html, replyTo });
-    console.log(`📨 [INVITE] sendEmail result for ${toEmail}:`, JSON.stringify(result));
+    console.log(`[INVITE] sendEmail result for ${toEmail}:`, JSON.stringify(result));
     return result;
 }
 
@@ -153,7 +152,7 @@ export async function sendAssessmentReportEmail(
     const school = await getSchoolConfig(schoolId);
     const config = school?.communicationsConfig as any;
     if (config && config.sendReports === false) {
-        console.log(`✉️ Skipping report email for ${studentName} as per institutional config for ${school?.name}`);
+        console.log(`Skipping report email for ${studentName} as per institutional config for ${school?.name}`);
         return { success: true, skipped: true };
     }
 
@@ -163,7 +162,6 @@ export async function sendAssessmentReportEmail(
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">📋</span>
                 <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY ACADEMIC</h1>
             </div>
             
@@ -227,7 +225,7 @@ export async function sendAssessmentAssignedEmail(
 
     const config = Object.assign({}, school.communicationsConfig) as any;
     if (config?.sendReports === false) {
-        console.log(`✉️ Skipping assignment email for ${studentName} as per institutional config for ${school.name}`);
+        console.log(`Skipping assignment email for ${studentName} as per institutional config for ${school.name}`);
         return { success: true, skipped: true };
     }
 
@@ -236,7 +234,6 @@ export async function sendAssessmentAssignedEmail(
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">📅</span>
                 <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY ACADEMIC</h1>
             </div>
             
@@ -288,7 +285,7 @@ export async function sendInvoiceNotificationEmail(
 
     const config = Object.assign({}, school.communicationsConfig) as any;
     if (config?.sendInvoices === false) {
-        console.log(`✉️ Skipping invoice email for ${studentName} as per institutional config for ${school.name}`);
+        console.log(`Skipping invoice email for ${studentName} as per institutional config for ${school.name}`);
         return { success: true, skipped: true };
     }
 
@@ -297,7 +294,6 @@ export async function sendInvoiceNotificationEmail(
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">💳</span>
                 <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY FINANCE</h1>
             </div>
             
@@ -347,7 +343,7 @@ export async function sendLatenessNotificationEmail(
 
     const config = Object.assign({}, school.communicationsConfig) as any;
     if (config?.sendReports === false) {
-        console.log(`✉️ Skipping lateness alert for ${studentName} as per institutional config for ${school.name}`);
+        console.log(`Skipping lateness alert for ${studentName} as per institutional config for ${school.name}`);
         return { success: true, skipped: true };
     }
 
@@ -357,7 +353,6 @@ export async function sendLatenessNotificationEmail(
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">⏰</span>
                 <h1 style="color: #D14343; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY ATTENDANCE</h1>
             </div>
             
@@ -414,7 +409,6 @@ export async function sendRecoveryEmail(toEmail: string, resetUrl: string) {
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
             <div style="margin-bottom: 32px; text-align: center;">
-                <span style="font-size: 40px;">🔑</span>
                 <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY</h1>
             </div>
             
@@ -476,7 +470,7 @@ export async function sendWelcomeEmail({
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 24px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #eef2f0; box-shadow: 0 4px 24px rgba(0,0,0,0.04);">
             <div style="margin-bottom: 32px; text-align: center;">
                 <div style="display: inline-block; padding: 12px; border-radius: 16px; background-color: #f0fdf4; border: 1px solid #dcfce7; margin-bottom: 12px;">
-                    <span style="font-size: 36px; line-height: 1;">🎓</span>
+                    <span style="font-size: 36px; line-height: 1;"></span>
                 </div>
                 <h1 style="color: #147A52; margin: 8px 0 0 0; font-size: 28px; font-weight: 900; letter-spacing: -0.04em;">LUCY OS</h1>
                 <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: 700; color: #6E7377; text-transform: uppercase; letter-spacing: 0.15em;">Next-Generation Academic Infrastructure</p>

@@ -36,28 +36,45 @@ export async function POST(req: Request) {
         if (!invoice) return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
         if (invoice.status === 'PAID') return NextResponse.json({ message: "Already processed" });
 
-        const incomingAmount = amount ? Number(amount) : Number(invoice.amount);
+        // The amount must be stated by the gateway; it never defaults to the invoice amount.
+        const incomingAmount = Number(amount);
+        if (!Number.isFinite(incomingAmount) || incomingAmount <= 0) {
+            return NextResponse.json({ error: "amount is required" }, { status: 400 });
+        }
         if (incomingAmount < Number(invoice.amount)) {
             return NextResponse.json({ error: "Insufficient payment amount" }, { status: 400 });
         }
 
+        const METHODS = ['CASH', 'CARD', 'BANK_TRANSFER', 'MOBILE_MONEY', 'OTHER'];
+        const safeMethod = METHODS.includes(method) ? method : 'CARD';
+        const reference = typeof transactionReference === 'string' && transactionReference.length > 0
+            ? transactionReference.slice(0, 200)
+            : null;
+
+        // Idempotency: a replayed event for the same gateway reference must not settle twice.
+        if (reference) {
+            const duplicate = await prisma.payment.findFirst({ where: { invoiceId: invoice.id, reference } });
+            if (duplicate) return NextResponse.json({ message: "Already processed" });
+        }
+
         // Atomic Transaction for Reconciliation
         await prisma.$transaction(async (tx) => {
-            // 1. Create Payment Record
+            // 1. Claim the invoice atomically so concurrent deliveries cannot both settle it
+            const claimed = await tx.invoice.updateMany({
+                where: { id: invoice.id, status: { not: 'PAID' } },
+                data: { status: 'PAID' }
+            });
+            if (claimed.count === 0) return;
+
+            // 2. Create Payment Record
             await tx.payment.create({
                 data: {
                     invoiceId: invoice.id,
                     amount: incomingAmount,
-                    method: method || 'CARD',
-                    reference: transactionReference || `AUTO_WEBHOOK_${Date.now()}`,
+                    method: safeMethod as any,
+                    reference: reference || `AUTO_WEBHOOK_${Date.now()}`,
                     status: 'SUCCESS'
                 }
-            });
-
-            // 2. Update Invoice Status
-            await tx.invoice.update({
-                where: { id: invoice.id },
-                data: { status: 'PAID' }
             });
 
             // 3. Log highly sensitive audit event with strict multi-tenant schoolId

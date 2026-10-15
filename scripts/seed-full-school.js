@@ -33,8 +33,8 @@ const sb = createClient(
 );
 
 function ok(label, error) {
-    if (error) { console.error(`  ❌  ${label}: ${error.message}`); return false; }
-    console.log(`  ✅  ${label}`);
+    if (error) { console.error(`   ${label}: ${error.message}`); return false; }
+    console.log(`   ${label}`);
     return true;
 }
 
@@ -46,11 +46,11 @@ async function one(table, query) {
 
 async function main() {
     console.log('\n╔══════════════════════════════════════════════╗');
-    console.log('║   🏫  LUCY — FULL SCHOOL SEED               ║');
+    console.log('║    LUCY — FULL SCHOOL SEED               ║');
     console.log('╚══════════════════════════════════════════════╝\n');
 
     // ── 0. Load existing seed users ──────────────────────────────────────────
-    console.log('📋  Loading seed users…');
+    console.log(' Loading seed users…');
     const { data: users, error: ue } = await sb.from('User').select('*');
     if (ue) throw new Error('Cannot load users: ' + ue.message);
 
@@ -66,10 +66,10 @@ async function main() {
     for (const [name, u] of [['principal', principal], ['teacher', teacher], ['homeroom', homeroom], ['parent', parent], ['student', student]]) {
         if (!u) throw new Error(`Missing user: ${name}@lucy.edu — run nuke-and-seed.js first`);
     }
-    console.log(`  ✅  Loaded ${users.length} users\n`);
+    console.log(`   Loaded ${users.length} users\n`);
 
     // ── 1. School ─────────────────────────────────────────────────────────────
-    console.log('🏫  Creating school…');
+    console.log(' Creating school…');
     const schoolId = uuid();
     const { error: se } = await sb.from('School').insert({
         id: schoolId,
@@ -86,7 +86,7 @@ async function main() {
     if (!ok('School — Lucy Demo Academy', se)) process.exit(1);
 
     // ── 2. Assign non-superadmin users to school ──────────────────────────────
-    console.log('\n👥  Assigning users to school…');
+    console.log('\n Assigning users to school…');
     for (const u of [principal, teacher, homeroom, parent, student]) {
         const { error } = await sb.from('User').update({ schoolId }).eq('id', u.id);
         ok(`Assigned ${u.role} (${u.email})`, error);
@@ -94,7 +94,7 @@ async function main() {
     }
 
     // ── 3. Grades ─────────────────────────────────────────────────────────────
-    console.log('\n📚  Creating grades…');
+    console.log('\n Creating grades…');
     const gradeIds = {};
     for (const [name, level] of [['Grade 9', 9], ['Grade 10', 10], ['Grade 11', 11]]) {
         const id = uuid();
@@ -105,7 +105,7 @@ async function main() {
     const grade10 = gradeIds['Grade 10'];
 
     // ── 4. Classes ────────────────────────────────────────────────────────────
-    console.log('\n🏛  Creating classes…');
+    console.log('\n Creating classes…');
     const classAId = uuid();
     const classBId = uuid();
     const { error: ca } = await sb.from('Class').insert({
@@ -121,7 +121,7 @@ async function main() {
     ok('Class 10-B (homeroom: Ms. Johnson)', cb);
 
     // ── 5. Subjects ───────────────────────────────────────────────────────────
-    console.log('\n📖  Creating subjects…');
+    console.log('\n Creating subjects…');
     const subjects = {};
     for (const name of ['Mathematics', 'Science', 'English', 'History']) {
         const id = uuid();
@@ -131,7 +131,7 @@ async function main() {
     }
 
     // ── 6. Teacher assignments ────────────────────────────────────────────────
-    console.log('\n📝  Assigning teachers to class/subjects…');
+    console.log('\n Assigning teachers to class/subjects…');
     // Ms. Johnson (TEACHER) → 10-A: Math & Science
     for (const subj of ['Mathematics', 'Science']) {
         const { error } = await sb.from('TeacherAssignment').insert({
@@ -148,7 +148,7 @@ async function main() {
     }
 
     // ── 7. Periods (daily schedule) ───────────────────────────────────────────
-    console.log('\n🕐  Creating periods…');
+    console.log('\n Creating periods…');
     const periodDefs = [
         { name: 'Period 1', startTime: '08:00', endTime: '09:00', isBreak: false, order: 1 },
         { name: 'Break',    startTime: '09:00', endTime: '09:20', isBreak: true,  order: 2 },
@@ -166,7 +166,7 @@ async function main() {
     }
 
     // ── 8. Timetable (Mon–Fri, class 10-A) ───────────────────────────────────
-    console.log('\n📅  Building timetable for 10-A…');
+    console.log('\n Building timetable for 10-A…');
     const timetableEntries = [
         // Monday
         { dayOfWeek: 'MON', period: 'Period 1', subjectId: subjects['Mathematics'], teacherId: teacher.id },
@@ -188,7 +188,7 @@ async function main() {
     }
 
     // ── 9. Student record ─────────────────────────────────────────────────────
-    console.log('\n🎓  Creating student record…');
+    console.log('\n Creating student record…');
     const studentRecordId = uuid();
     const { error: sre } = await sb.from('Student').insert({
         id: studentRecordId,
@@ -208,7 +208,7 @@ async function main() {
     ok('Student record — Alex Rivera (LUCY-STU-001)', sre);
 
     // ── 10. Parent ↔ Student link ─────────────────────────────────────────────
-    console.log('\n👨‍👧  Linking parent to student…');
+    console.log('\n Linking parent to student…');
     const { error: ple } = await sb.from('ParentStudentLink').insert({
         id: uuid(),
         parentId:  parent.id,
@@ -219,7 +219,7 @@ async function main() {
     ok('ParentStudentLink — Jordan Rivera → Alex Rivera', ple);
 
     // ── 11. Fee Structure ─────────────────────────────────────────────────────
-    console.log('\n💰  Creating fee structure…');
+    console.log('\n Creating fee structure…');
     const { error: fe } = await sb.from('FeeStructure').insert({
         id: uuid(), schoolId, name: 'Term Tuition', amount: 1500.00,
         category: 'TUITION', frequency: 'TERM',
@@ -230,7 +230,7 @@ async function main() {
 
     // ── Summary ───────────────────────────────────────────────────────────────
     console.log('\n╔══════════════════════════════════════════════════════════════════════╗');
-    console.log('║   🏫  LUCY DEMO ACADEMY — FULLY SEEDED                             ║');
+    console.log('║    LUCY DEMO ACADEMY — FULLY SEEDED                             ║');
     console.log('╠══════════════════════════════════════════════════════════════════════╣');
     console.log('║  School:   Lucy Demo Academy  (LUCY-DEMO-001)                      ║');
     console.log('║  Grades:   Grade 9, Grade 10, Grade 11                             ║');
@@ -251,11 +251,11 @@ async function main() {
         console.log(`║  ${role.padEnd(11)} ${email.padEnd(26)} ${pass.padEnd(22)} ║`);
     }
     console.log('╠══════════════════════════════════════════════════════════════════════╣');
-    console.log('║  🌐  https://5-cn.net/login                                        ║');
+    console.log('║   https://5-cn.net/login                                        ║');
     console.log('╚══════════════════════════════════════════════════════════════════════╝\n');
 }
 
 main().catch(e => {
-    console.error('\n❌  FATAL:', e.message);
+    console.error('\n FATAL:', e.message);
     process.exit(1);
 });

@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 /**
- * 🛡️ ADMINISTRATOR CLI AUDIT ENGINE
+ * ADMINISTRATOR CLI AUDIT ENGINE
  *
  * Scans codebase against all 17 Technical Defense Sentinels.
  * Outputs CI/CD annotations and terminal scorecard.

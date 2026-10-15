@@ -42,15 +42,15 @@ if (!TOKEN || !CHAT_ID) {
 
 // Map thread IDs to their new hashtag names, clearing custom emojis
 const topicConfig = {
-    5: { name: 'welcome-rules', emojiId: '5373251851074415873' }, // 📝
-    6: { name: 'announcements', emojiId: '5309984423003823246' }, // 📣
-    7: { name: 'general-chat', emojiId: '5417915203100613993' }, // 💬
-    8: { name: 'student-lounge', emojiId: '5350392020785437399' }, // ☕️
-    9: { name: 'help-support', emojiId: '5377316857231450742' }, // ❓
-    10: { name: 'classes-discussion', emojiId: '5350481781306958339' }, // 📚
-    11: { name: 'parent-updates', emojiId: '5386435923204382258' }, // 👨‍👩‍👧‍👦
-    12: { name: 'staff-room', emojiId: '5350548830041415279' }, // 🏛️
-    13: { name: 'telemetry-updates', emojiId: '5350554349074391003' } // 💻
+    5: { name: 'welcome-rules', emojiId: '5373251851074415873' }, //
+    6: { name: 'announcements', emojiId: '5309984423003823246' }, //
+    7: { name: 'general-chat', emojiId: '5417915203100613993' }, //
+    8: { name: 'student-lounge', emojiId: '5350392020785437399' }, //
+    9: { name: 'help-support', emojiId: '5377316857231450742' }, //
+    10: { name: 'classes-discussion', emojiId: '5350481781306958339' }, //
+    11: { name: 'parent-updates', emojiId: '5386435923204382258' }, //
+    12: { name: 'staff-room', emojiId: '5350548830041415279' }, //
+    13: { name: 'telemetry-updates', emojiId: '5350554349074391003' } //
 };
 
 function editForumTopic(threadId, newName, emojiId) {
@@ -99,9 +99,9 @@ async function run() {
     for (const [threadId, config] of Object.entries(topicConfig)) {
         try {
             await editForumTopic(Number(threadId), config.name, config.emojiId);
-            console.log(`✔ Topic ${threadId} updated to: "${config.name}" with icon ID ${config.emojiId}`);
+            console.log(`Topic ${threadId} updated to: "${config.name}" with icon ID ${config.emojiId}`);
         } catch (err) {
-            console.log(`⚠ Failed to update topic ${threadId}:`, err.message);
+            console.log(`Failed to update topic ${threadId}:`, err.message);
         }
     }
     console.log("Done!");

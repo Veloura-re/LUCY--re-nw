@@ -88,28 +88,32 @@ export default function AccessRequestsPage() {
                 </div>
             ) : (
                 <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                    {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
-                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Callsign / Identifier</div>
-                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Direct Comm Link</div>
-                        <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Payload Content</div>
-                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
-                    </div>
-                    
-                    {/* Table Rows */}
-                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                        {filteredRequests.map((req) => (
-                            <div key={req.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
-                                <div className="col-span-3 font-mono text-xs select-all truncate">{req.callsign}</div>
-                                <div className="col-span-3 font-mono text-xs text-zinc-600 dark:text-zinc-400 select-all truncate">{req.email}</div>
-                                <div className="col-span-4 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-mono select-all pr-2">
-                                    {req.message}
-                                </div>
-                                <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
-                                    {new Date(req.createdAt).toLocaleDateString()}
-                                </div>
+                    <div className="overflow-x-auto scrollbar-thin">
+                        <div className="min-w-[700px]">
+                            {/* Table Header */}
+                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Callsign / Identifier</div>
+                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Direct Comm Link</div>
+                                <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Payload Content</div>
+                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
                             </div>
-                        ))}
+                            
+                            {/* Table Rows */}
+                            <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                {filteredRequests.map((req) => (
+                                    <div key={req.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
+                                        <div className="col-span-3 font-mono text-xs select-all truncate">{req.callsign}</div>
+                                        <div className="col-span-3 font-mono text-xs text-zinc-600 dark:text-zinc-400 select-all truncate">{req.email}</div>
+                                        <div className="col-span-4 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed font-mono select-all pr-2">
+                                            {req.message}
+                                        </div>
+                                        <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
+                                            {new Date(req.createdAt).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

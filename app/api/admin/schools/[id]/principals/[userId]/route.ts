@@ -5,6 +5,7 @@ import { verifySuperAdmin } from '@/lib/admin-auth';
 import { revalidateTag } from 'next/cache';
 import { reportServerError } from '@/lib/error-capture';
 
+import { logActivity } from '@/lib/audit';
 // PATCH - Demote principal to TEACHER
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string, userId: string }> }) {
     const resolvedParams = await params;
@@ -25,7 +26,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
                 await logActivity({ userId: dbUser.id, schoolId: resolvedParams.id, action: 'DEMOTE_PRINCIPAL', resourceType: 'principal', ip: _ip || undefined });
@@ -68,7 +68,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
                 await logActivity({ userId: dbUser.id, schoolId: resolvedParams.id, action: 'DELETE_PRINCIPAL', resourceType: 'principal', ip: _ip || undefined });

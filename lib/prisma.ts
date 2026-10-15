@@ -8,6 +8,19 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'p
 }
 
 /**
+ * Optional PEM CA bundle for the database server (for example the Supabase CA certificate).
+ * When set, the pool verifies the server certificate against it. When unset, verification is
+ * skipped for compatibility with pooler certificates, which is reported once in production.
+ */
+function getDatabaseCa(): string | undefined {
+    const raw = process.env.DATABASE_SSL_CA;
+    if (!raw) return undefined;
+    return raw.includes('\\n') ? raw.replace(/\\n/g, '\n') : raw;
+}
+
+let warnedUnverifiedTls = false;
+
+/**
  * Sanitizes connection strings to ensure compatibility with driver adapter and transaction pooler.
  * Automatically upgrades Supabase session pooler (port 5432) to transaction pooler (port 6543)
  * to prevent EMAXCONNSESSION starvation in serverless environments.
@@ -25,8 +38,12 @@ function getSanitizedDbUrl(url?: string): string | undefined {
             parsed.searchParams.set('pgbouncer', 'true');
         }
 
-        // Ensure sslmode doesn't enforce strict CA rejection on self-signed pooler certs
-        if (parsed.searchParams.get('sslmode') === 'require' || parsed.searchParams.get('sslmode') === 'verify-full') {
+        if (getDatabaseCa()) {
+            // Strict mode: the explicit `ssl` option on the pool (with the CA) must decide, because
+            // pg gives precedence to `sslmode` in the connection string.
+            parsed.searchParams.delete('sslmode');
+        } else if (parsed.searchParams.get('sslmode') === 'require' || parsed.searchParams.get('sslmode') === 'verify-full') {
+            // Compatibility mode: do not enforce strict CA rejection on pooler certs.
             parsed.searchParams.set('sslmode', 'no-verify');
         }
         return parsed.toString();
@@ -50,9 +67,15 @@ const prismaClientSingleton = () => {
         // Severless instances should keep pool small (2-3) to avoid exhausting server connection limits
         const maxConnections = isServerless ? 3 : 5;
 
+        const databaseCa = getDatabaseCa();
+        if (!databaseCa && process.env.NODE_ENV === 'production' && !warnedUnverifiedTls) {
+            warnedUnverifiedTls = true;
+            console.warn('[Security] DATABASE_SSL_CA is not set: database TLS certificates are not verified. Set it to enable strict verification.');
+        }
+
         const pool = new Pool({
             connectionString: safeUrl,
-            ssl: { rejectUnauthorized: false },
+            ssl: databaseCa ? { ca: databaseCa, rejectUnauthorized: true } : { rejectUnauthorized: false },
             max: maxConnections,
             idleTimeoutMillis: 10000,
             connectionTimeoutMillis: 10000,

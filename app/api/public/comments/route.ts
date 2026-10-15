@@ -3,7 +3,7 @@ import { rateLimit, secureJson, validateStringInput } from "@/lib/security";
 import { unstable_cache } from "next/cache";
 import { rateLimitShared } from '@/lib/rate-limit';
 
-const EMOJIS = ["🔭", "⚡", "🛸", "🧠", "🌐", "⬡", "🔒", "🚀", "💡", "🌍", "🤖", "✨"];
+const EMOJIS = ["⬡", "◆", "●", "▲", "■", "★", "✦", "◈", "❖", "◉", "⬢", "✚"];
 
 const getApprovedComments = unstable_cache(
     async () => {

@@ -143,7 +143,7 @@ function SignalWallPreview() {
           <div className="py-12 text-center">
             <Link href="/wall">
               <motion.div whileHover={{ scale: 1.02 }} className="inline-block px-8 py-6 border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20 bg-white dark:bg-transparent transition-colors cursor-pointer space-y-2 rounded-xl dark:rounded-none shadow-sm dark:shadow-none">
-                <div className="text-2xl">🔭</div>
+                <div className="text-2xl"></div>
                 <div className="text-[10px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest font-bold">be first to signal</div>
               </motion.div>
             </Link>

@@ -3,7 +3,7 @@ require('dotenv').config();
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🌱 Seeding demo data...');
+    console.log('Seeding demo data...');
 
     // 1. Create a School
     const school = await prisma.school.create({
@@ -38,7 +38,7 @@ async function main() {
     });
     console.log(`Created Student: ${student.firstName} ${student.lastName} (Code: ${student.studentCode})`);
 
-    console.log('✅ Seeding complete!');
+    console.log('Seeding complete!');
 }
 
 main()

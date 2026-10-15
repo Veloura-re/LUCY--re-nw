@@ -47,9 +47,10 @@ export function EdgeHealthIndicator() {
     const Icon = current.icon;
 
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2" title={`${current.label}${latency !== null ? ` (RTT: ${latency}ms)` : ''}`}>
+            {/* Desktop Full Pill */}
             <div className={cn(
-                "hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl backdrop-blur-md border transition-all duration-500",
+                "hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl backdrop-blur-md border transition-all duration-500",
                 current.bg,
                 current.border
             )}>
@@ -66,9 +67,23 @@ export function EdgeHealthIndicator() {
                 </div>
             </div>
 
+            {/* Tablet Compact Badge */}
+            <div className={cn(
+                "hidden sm:flex lg:hidden items-center gap-1.5 px-2 py-1 rounded-lg backdrop-blur-md border transition-all duration-500",
+                current.bg,
+                current.border
+            )}>
+                <Icon className={cn("w-3 h-3", current.color, status === 'offline' && "animate-pulse")} />
+                {latency !== null && (
+                    <span className="text-[8px] text-zinc-600 dark:text-zinc-400 font-mono font-bold">
+                        {latency}ms
+                    </span>
+                )}
+            </div>
+
             {/* Mobile / Minimal Indicator */}
             <div className={cn(
-                "md:hidden w-2 h-2 rounded-full",
+                "sm:hidden w-2.5 h-2.5 rounded-full ring-2 ring-white/10",
                 status === 'stable' ? "bg-eduGreen-500" :
                 status === 'optimizing' ? "bg-blue-500" :
                 status === 'degraded' ? "bg-amber-500" : "bg-red-500 animate-pulse"

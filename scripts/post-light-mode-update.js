@@ -95,7 +95,7 @@ function discordRequest(method, path, body = null) {
     });
 }
 
-const UPDATE_TEXT_MD = `**[LUCY BROADCAST] 🟢 SYSTEM UPDATE 2.4.0**
+const UPDATE_TEXT_MD = `**[LUCY BROADCAST] SYSTEM UPDATE 2.4.0**
 
 The Global Light Mode patch has landed. 
 
@@ -107,9 +107,9 @@ We've synchronized a massive aesthetic overhaul across the entire institutional 
 - All modals and HUDs now feature intelligent dynamic gradients.
 
 Boot up your terminals and try the theme toggle. 
-The institutional node awaits your command. ☀️`;
+The institutional node awaits your command.`;
 
-const UPDATE_TEXT_HTML = `<b>[LUCY BROADCAST] 🟢 SYSTEM UPDATE 2.4.0</b>
+const UPDATE_TEXT_HTML = `<b>[LUCY BROADCAST] SYSTEM UPDATE 2.4.0</b>
 
 The Global Light Mode patch has landed. 
 
@@ -121,7 +121,7 @@ We've synchronized a massive aesthetic overhaul across the entire institutional 
 • All modals and HUDs now feature intelligent dynamic gradients.
 
 Boot up your terminals and try the theme toggle. 
-The institutional node awaits your command. ☀️`;
+The institutional node awaits your command.`;
 
 async function run() {
     try {
@@ -135,7 +135,7 @@ async function run() {
                 parse_mode: 'HTML',
                 disable_web_page_preview: true
             });
-            console.log("✔ Successfully posted update to Telegram general topic.");
+            console.log("Successfully posted update to Telegram general topic.");
         } catch (e) {
             console.error("Failed to post update to Telegram:", e);
         }
@@ -149,7 +149,7 @@ async function run() {
                 await discordRequest('POST', `/channels/${generalChan.id}/messages`, {
                     content: UPDATE_TEXT_MD
                 });
-                console.log("✔ Successfully posted update to Discord #general channel.");
+                console.log("Successfully posted update to Discord #general channel.");
             } else {
                 console.error("Failed to find Discord #general channel.");
             }

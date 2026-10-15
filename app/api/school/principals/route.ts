@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
 import { handleApiError } from '@/lib/security';
 
+import { logActivity } from '@/lib/audit';
 async function verifyOwner() {
     const supabase = await createClient();
     const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -82,7 +83,6 @@ export async function POST(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: owner.id, schoolId: owner.schoolId, action: 'INVITE_PRINCIPAL', resourceType: 'principal', ip: _ip || undefined });
         } catch { /* non-blocking */ }

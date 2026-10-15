@@ -163,15 +163,15 @@ const AVATARS = {
 // ─── Perfectly Crafted Conversational Dataset ───
 const CONVERSATIONS = {
     'welcome-rules': [
-        { user: 'system_node', name: 'SYSTEM_NODE', text: '⚙️ **SYSTEM NOTICE**: Global encryption layer verified. zero-trust handshake nominal.' },
+        { user: 'system_node', name: 'SYSTEM_NODE', text: '**SYSTEM NOTICE**: Global encryption layer verified. zero-trust handshake nominal.' },
         { user: 'principal_clara', name: 'principal_clara', text: 'Welcome all scholars, educators, and parent links to the LUCY ACADEMICS node. Please ensure your authentication vectors align with our server rules.' },
         { user: 'educator_bob', name: 'educator_bob', text: 'Reminder: Student access tokens must not be shared. Keep all credentials strictly local.' },
-        { user: 'system_node', name: 'SYSTEM_NODE', text: '🔒 **VAULT STATUS**: All school records and invoice statements encrypted via AES-256.' }
+        { user: 'system_node', name: 'SYSTEM_NODE', text: '**VAULT STATUS**: All school records and invoice statements encrypted via AES-256.' }
     ],
     'announcements': [
-        { user: 'principal_clara', name: 'principal_clara', text: '📢 **Release Notice**: Lucy OS v1.0.4 is now live. We have optimized the landing page with GPU-accelerated translate3d transformations, rendering at a smooth 60fps.' },
-        { user: 'principal_clara', name: 'principal_clara', text: '📢 **Invoice Cycle**: Term 2 invoice templates have been generated. Parents can review the detailed line-item breakdown on the dashboard.' },
-        { user: 'educator_helen', name: 'educator_helen', text: '📢 **Biology Mock Exams**: Scheduled for tomorrow. MCQ grading loops will execute instantly upon submission.' }
+        { user: 'principal_clara', name: 'principal_clara', text: '**Release Notice**: Lucy OS v1.0.4 is now live. We have optimized the landing page with GPU-accelerated translate3d transformations, rendering at a smooth 60fps.' },
+        { user: 'principal_clara', name: 'principal_clara', text: '**Invoice Cycle**: Term 2 invoice templates have been generated. Parents can review the detailed line-item breakdown on the dashboard.' },
+        { user: 'educator_helen', name: 'educator_helen', text: '**Biology Mock Exams**: Scheduled for tomorrow. MCQ grading loops will execute instantly upon submission.' }
     ],
     'general': [
         { user: 'scholar_alice', name: 'scholar_alice', text: 'Handshake completed. Glad to see the site is fully optimized. The lag is totally gone!' },
@@ -190,7 +190,7 @@ const CONVERSATIONS = {
     ],
     'help-support': [
         { user: 'scholar_david', name: 'scholar_david', text: 'I keep getting a database connection issue when loading my exams page. Anyone else?' },
-        { user: 'system_node', name: 'SYSTEM_NODE', text: '💡 **DIAGNOSTIC HINT**: Ensure you have resolved the latest API route parameters.' },
+        { user: 'system_node', name: 'SYSTEM_NODE', text: '**DIAGNOSTIC HINT**: Ensure you have resolved the latest API route parameters.' },
         { user: 'educator_bob', name: 'educator_bob', text: 'David, we patched the database RLS policies. Try refreshing your cache now.' },
         { user: 'scholar_david', name: 'scholar_david', text: 'Ah, it works perfectly now. Thank you, Bob!' },
         { user: 'parent_george', name: 'parent_george', text: 'Can I change my registered email address?' },
@@ -208,7 +208,7 @@ const CONVERSATIONS = {
         { user: 'parent_elena', name: 'parent_elena', text: 'Thank you Clara. Will we receive email notifications?' },
         { user: 'principal_clara', name: 'principal_clara', text: 'Yes, an automated mail transmission is queued for each parent link.' },
         { user: 'parent_george', name: 'parent_george', text: 'Payment cleared for George Jr. dashboard shows fee status as nominal.' },
-        { user: 'system_node', name: 'SYSTEM_NODE', text: '💳 **TRANSACTION COMPLETED**: Receipt reference #TXN-9304-OK dispatched.' }
+        { user: 'system_node', name: 'SYSTEM_NODE', text: '**TRANSACTION COMPLETED**: Receipt reference #TXN-9304-OK dispatched.' }
     ],
     'staff-room': [
         { user: 'principal_clara', name: 'principal_clara', text: 'Good morning faculty. Please make sure all syllabus updates are submitted today.' },
@@ -295,7 +295,7 @@ async function run() {
                     console.error(`Failed to delete webhook for #${chanName}:`, e.message);
                 }
             }
-            console.log("✔ Discord channels populated successfully.");
+            console.log("Discord channels populated successfully.");
         }
 
         // ─── Part 2: Populate Telegram Group Forum ───
@@ -313,7 +313,7 @@ async function run() {
                 // Format text with HTML bold prefix for sender names
                 const escapedName = msg.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 const escapedText = msg.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                const senderPrefix = msg.user === 'system_node' ? '' : `👤 <b>[${escapedName}]</b>:\n`;
+                const senderPrefix = msg.user === 'system_node' ? '' : `<b>[${escapedName}]</b>:\n`;
                 const fullText = `${senderPrefix}${escapedText}`;
 
                 try {
@@ -333,9 +333,9 @@ async function run() {
                 await sleep(3000); // spaced 3 seconds to strictly avoid Telegram group rate limit flags (20 msgs/min)
             }
         }
-        console.log("✔ Telegram supergroup topics populated successfully.");
+        console.log("Telegram supergroup topics populated successfully.");
 
-        console.log("\n✔ Community history population sequence complete!");
+        console.log("\nCommunity history population sequence complete!");
 
     } catch (err) {
         console.error("Execution failed:", err);

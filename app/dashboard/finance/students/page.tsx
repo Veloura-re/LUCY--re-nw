@@ -460,7 +460,7 @@ export default function StudentFinanceDossier() {
                                 </div>
                             </div>
 
-                            {/* 💳 PRIMARY ACTIONS BAR FOR DIRECTOR */}
+                            {/* PRIMARY ACTIONS BAR FOR DIRECTOR */}
                             <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20">
                                 <div>
                                     <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -495,7 +495,7 @@ export default function StudentFinanceDossier() {
                                 </div>
                             </div>
 
-                            {/* 📑 INVOICES & FEE SCHEDULE BREAKDOWN */}
+                            {/* INVOICES & FEE SCHEDULE BREAKDOWN */}
                             <div className="space-y-4 pt-2">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
@@ -568,7 +568,7 @@ export default function StudentFinanceDossier() {
                                 )}
                             </div>
 
-                            {/* 📸 PAYMENT PROOFS & TRANSACTION HISTORY */}
+                            {/* PAYMENT PROOFS & TRANSACTION HISTORY */}
                             <div className="space-y-4 pt-4 border-t border-zinc-200 dark:border-zinc-900">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
@@ -667,7 +667,7 @@ export default function StudentFinanceDossier() {
                 )}
             </AnimatePresence>
 
-            {/* 💰 RECORD / CONFIRM PAYMENT MODAL */}
+            {/* RECORD / CONFIRM PAYMENT MODAL */}
             <AnimatePresence>
                 {recordingPayment?.open && (
                     <motion.div 
@@ -808,7 +808,7 @@ export default function StudentFinanceDossier() {
                 )}
             </AnimatePresence>
 
-            {/* 📝 ISSUE NEW INVOICE MODAL */}
+            {/* ISSUE NEW INVOICE MODAL */}
             <AnimatePresence>
                 {billingInvoice?.open && (
                     <motion.div 
@@ -910,7 +910,7 @@ export default function StudentFinanceDossier() {
                 )}
             </AnimatePresence>
 
-            {/* 🔍 LIGHTBOX IMAGE ZOOM MODAL */}
+            {/* LIGHTBOX IMAGE ZOOM MODAL */}
             <AnimatePresence>
                 {zoomImage && (
                     <motion.div 

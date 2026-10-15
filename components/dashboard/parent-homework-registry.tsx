@@ -80,7 +80,7 @@ export default function ParentHomeworkRegistry({ initialAssignments, studentName
                 </div>
             </div>
 
-            {/* 📸 PARENT TO CHILD SCREENSHOT & NOTE TRANSMISSION CONSOLE */}
+            {/* PARENT TO CHILD SCREENSHOT & NOTE TRANSMISSION CONSOLE */}
             <div className="p-6 md:p-8 rounded-[2.5rem] bg-gradient-to-r from-eduGreen-950/20 via-zinc-950/40 to-emerald-950/20 border border-eduGreen-500/20 shadow-2xl">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="space-y-1">

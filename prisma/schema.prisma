@@ -163,6 +163,8 @@ model Grade {
   feeStructures FeeStructure[]
   school        School         @relation(fields: [schoolId], references: [id])
   students      Student[]
+
+  @@index([schoolId])
 }
 
 model Class {
@@ -185,6 +187,10 @@ model Class {
   timetable          Timetable[]
   School             School?             @relation(fields: [schoolId], references: [id])
   schoolId           String?
+
+  @@index([schoolId])
+  @@index([gradeId])
+  @@index([homeroomTeacherId])
 }
 
 model Subject {
@@ -201,6 +207,8 @@ model Subject {
   school             School              @relation(fields: [schoolId], references: [id])
   teacherAssignments TeacherAssignment[]
   timetable          Timetable[]
+
+  @@index([schoolId])
 }
 
 model TeacherAssignment {
@@ -322,6 +330,9 @@ model ExamAttempt {
   metadata    Json?
   exam        Exam      @relation(fields: [examId], references: [id])
   student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([examId, studentId])
+  @@index([studentId])
 }
 
 model GradeRecord {
@@ -438,6 +449,9 @@ model Certificate {
   issuedAt   DateTime @default(now())
   issuedBy   User     @relation(fields: [issuedById], references: [id])
   student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([issuedById])
 }
 
 model Event {
@@ -538,6 +552,9 @@ model InviteToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  @@index([schoolId])
+  @@index([email])
 }
 
 model StudentRemark {
@@ -926,7 +943,7 @@ model PublicComment {
   id        String   @id @default(uuid())
   callsign  String
   message   String
-  emoji     String   @default("🔭")
+  emoji     String   @default("⬡")
   approved  Boolean  @default(true)
   createdAt DateTime @default(now())
 

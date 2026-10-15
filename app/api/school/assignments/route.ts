@@ -4,6 +4,7 @@ import { requireRole, handleApiError } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
+import { logActivity } from '@/lib/audit';
 export async function GET(request: Request) {
     try {
         const user = await requireRole(['OWNER', 'TEACHER', 'HOMEROOM', 'PRINCIPAL', 'SUPERADMIN']);
@@ -74,7 +75,6 @@ export async function POST(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'CREATE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }
@@ -108,7 +108,6 @@ export async function PUT(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'UPDATE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }
@@ -139,7 +138,6 @@ export async function DELETE(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: user.id, schoolId: user.schoolId, action: 'DELETE_ASSIGNMENT', resourceType: 'assignment', ip: _ip || undefined });
         } catch { /* non-blocking */ }

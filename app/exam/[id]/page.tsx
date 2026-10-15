@@ -52,7 +52,7 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
                     } catch { /* ignore corrupted cache */ }
                 }
 
-                setTimeLeft((data.exam.duration || 60) * 60);
+                setTimeLeft(typeof data.exam.remainingSeconds === 'number' ? data.exam.remainingSeconds : (data.exam.duration || 60) * 60);
             } catch (e) {
                 toast.error("Failed to initialize assessment connection.");
             } finally {
