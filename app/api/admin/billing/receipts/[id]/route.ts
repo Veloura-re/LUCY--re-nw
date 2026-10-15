@@ -4,6 +4,7 @@ import { verifySuperAdmin } from '@/lib/admin-auth';
 import { prisma } from '@/lib/prisma';
 import { reportServerError } from '@/lib/error-capture';
 
+import { logActivity } from '@/lib/audit';
 export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -58,7 +59,6 @@ export async function PATCH(
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             if (dbUser?.id) {
                 await logActivity({ userId: dbUser.id, schoolId: schoolId || undefined, action: 'UPDATE_BILLING_RECEIPT', resourceType: 'billing', ip: _ip || undefined });

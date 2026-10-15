@@ -74,7 +74,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
                 >
                     {/* Name pill — desktop only */}
                     {userName && (
-                        <div className="hidden md:flex items-center gap-2 px-3 h-[42px] rounded-2xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shrink-0 mr-1">
+                        <div className="hidden lg:flex items-center gap-2 px-3 h-[42px] rounded-2xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shrink-0 mr-1">
                             <div className="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[9px] font-black text-zinc-900 dark:text-white shrink-0">
                                 {userName[0]?.toUpperCase()}
                             </div>
@@ -84,7 +84,7 @@ export function FloatingDock({ role, userEmail, userName }: { role: string, user
 
                     {/* Theme Toggle Switcher */}
                     <div className="shrink-0">
-                        <ThemeToggle className="!w-7 !h-7 sm:!w-[42px] sm:!h-[42px] !rounded-lg sm:!rounded-2xl" />
+                        <ThemeToggle className="!w-7 !h-7 sm:!w-[38px] sm:!h-[38px] lg:!w-[42px] lg:!h-[42px] !rounded-lg sm:!rounded-xl lg:!rounded-2xl" />
                     </div>
 
                     {items.map((item: any, i: number) => (
@@ -126,12 +126,17 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
     const widthSync = useTransform(distance, [-DISTANCE_THRESHOLD, 0, DISTANCE_THRESHOLD], [42, 42 * SCALING_FACTOR, 42]);
     const width = useSpring(widthSync, { mass: 0.1, stiffness: 280, damping: 20 });
 
-    const [isMobile, setIsMobile] = useState(false);
+    const [screenMode, setScreenMode] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        const checkScreen = () => {
+            const w = window.innerWidth;
+            if (w < 640) setScreenMode('mobile');
+            else if (w < 1024) setScreenMode('tablet');
+            else setScreenMode('desktop');
+        };
+        checkScreen();
+        window.addEventListener('resize', checkScreen);
+        return () => window.removeEventListener('resize', checkScreen);
     }, []);
 
     const [hovered, setHovered] = useState(false);
@@ -159,12 +164,12 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
         <motion.div
             id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
             ref={ref}
-            style={{ width: isMobile ? 32 : width }}
+            style={{ width: screenMode === 'mobile' ? 32 : screenMode === 'tablet' ? 38 : width }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={() => setHovered(false)}
             onClick={onClick}
             className={cn(
-                "group aspect-square rounded-lg sm:rounded-2xl flex items-center justify-center relative transition-all duration-100 cursor-pointer",
+                "group aspect-square rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center relative transition-all duration-100 cursor-pointer",
                 isActive
                     ? "bg-eduGreen-600 text-white shadow-lg shadow-eduGreen-900/40"
                     : variant === 'danger'
@@ -172,13 +177,17 @@ function IconContainer({ mouseX, icon, label, href, onClick, variant }: {
                         : variant === 'toggle'
                             ? "bg-ui-muted/10 text-eduGreen-600 dark:text-eduGreen-500 hover:bg-eduGreen-500 hover:text-white border border-ui-border md:hover:border-transparent md:hover:scale-105 active:scale-95"
                             : "bg-ui-muted/5 text-ui-muted hover:text-ui-text hover:bg-ui-muted/20 border border-ui-border md:hover:border-ui-muted/40 md:hover:scale-105 active:scale-95",
-                isMobile ? "min-w-[32px] min-h-[32px]" : "min-w-[42px] min-h-[42px]"
+                screenMode === 'mobile'
+                    ? "min-w-[32px] min-h-[32px]"
+                    : screenMode === 'tablet'
+                        ? "min-w-[38px] min-h-[38px]"
+                        : "min-w-[42px] min-h-[42px]"
             )}
         >
             {!isActive && (
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/5 dark:from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             )}
-            {Icon && <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
+            {Icon && <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />}
             {isActive && (
                 <motion.div
                     layoutId="active-dot"

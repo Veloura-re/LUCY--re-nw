@@ -11,7 +11,7 @@ import { ScanLines, CustomCursor, AnimatedGrid, TiltCard, Reveal, PageFooter, Gl
 
 interface Comment { id: string; callsign: string; message: string; emoji: string; createdAt: string; }
 
-const EMOJIS = ["🔭", "⚡", "🛸", "🧠", "🌐", "⬡", "🔒", "🚀", "💡", "🌍", "🤖", "✨"];
+const EMOJIS = ["⬡", "◆", "●", "▲", "■", "★", "✦", "◈", "❖", "◉", "⬢", "✚"];
 
 function timeAgo(iso: string) {
     const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
@@ -24,7 +24,7 @@ function timeAgo(iso: string) {
 export default function Wall() {
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(true);
-    const [form, setForm] = useState({ callsign: "", message: "", emoji: "🔭" });
+    const [form, setForm] = useState({ callsign: "", message: "", emoji: EMOJIS[0] });
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "limit">("idle");
 
     const fetchComments = useCallback(async () => {
@@ -59,7 +59,7 @@ export default function Wall() {
             if (!res.ok) { setStatus("error"); return; }
             const data = (await res.json()) as { comment: Comment };
             setComments(prev => [data.comment, ...prev]);
-            setForm({ callsign: "", message: "", emoji: "🔭" });
+            setForm({ callsign: "", message: "", emoji: EMOJIS[0] });
             setStatus("success");
             setTimeout(() => setStatus("idle"), 3000);
         } catch {

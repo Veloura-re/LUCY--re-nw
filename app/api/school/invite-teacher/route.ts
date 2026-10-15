@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 import { sendInviteEmail } from '@/lib/email';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
@@ -76,7 +77,6 @@ export async function POST(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {

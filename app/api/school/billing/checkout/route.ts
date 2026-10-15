@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { createSchoolSubscriptionCheckoutSession } from '@/lib/stripe';
 import { remainingAccessDays } from '@/lib/billing';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
@@ -36,7 +37,6 @@ export async function POST(request: Request) {
 
         // Non-blocking audit adhering to multi-tenant audit invariant
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({
                 userId: user.id,

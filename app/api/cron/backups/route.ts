@@ -1,3 +1,4 @@
+import { BACKUP_USER_SELECT } from '@/lib/backup-restore';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
                 const schoolId = school.id;
                 
                 const [users, students, grades, subjects, invoices, classes, payments] = await Promise.all([
-                    prisma.user.findMany({ where: { schoolId } }),
+                    prisma.user.findMany({ where: { schoolId }, select: BACKUP_USER_SELECT }),
                     prisma.student.findMany({ where: { schoolId } }),
                     prisma.grade.findMany({ where: { schoolId } }),
                     prisma.subject.findMany({ where: { schoolId } }),

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 import { AttendanceStatus } from '@prisma/client';
 
+import { logActivity } from '@/lib/audit';
 export async function GET(request: Request) {
     try {
         const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
         const targetDate = new Date(date);
         targetDate.setHours(0, 0, 0, 0);
 
-        // 🔮 Crystal Ball: prefetch ALL teacher IDs in ONE query — eliminates N+1 inside transaction
+        // Crystal Ball: prefetch ALL teacher IDs in ONE query — eliminates N+1 inside transaction
         const teacherIds = records.map(r => r.teacherId);
         const validTeachers = await prisma.user.findMany({
             where: {
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
         });
         const validTeacherIdSet = new Set(validTeachers.map(t => t.id));
 
-        // 💀 Necromancy: track skipped records so the caller knows what failed
+        // Necromancy: track skipped records so the caller knows what failed
         const skippedIds: string[] = [];
         const validRecords = records.filter(record => {
             if (!validTeacherIdSet.has(record.teacherId)) {
@@ -130,7 +131,6 @@ export async function POST(request: Request) {
 
         // Non-blocking audit
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: authUser.id, action: 'BULK_ATTENDANCE', resourceType: 'attendance', ip: _ip });
         } catch { /* non-blocking */ }

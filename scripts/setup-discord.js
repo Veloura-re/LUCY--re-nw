@@ -171,7 +171,7 @@ async function run() {
 
         // Helper to create voice channel in category
         async function createVoiceChannel(name, parentId) {
-            console.log(`Creating Voice Channel: 🔊 ${name}`);
+            console.log(`Creating Voice Channel: ${name}`);
             return await discordRequest('POST', `/guilds/${guildId}/channels`, {
                 name: name,
                 type: 2, // Voice channel type
@@ -259,12 +259,12 @@ async function run() {
         await sendMessage(welcomeChan.id, {
             embeds: [
                 {
-                    title: "🧬 Welcome to the LUCY ACADEMICS Hub",
-                    description: "Handshake protocols successfully resolved. You have connected to the official decentralized communications node for Lucy OS.\n\n### 🛡️ Core Rules & Protocols\n1. **Zero-Trust Interactions**: Maintain respectful, constructive communications. Zero tolerance for harassment or discrimination.\n2. **Information Classification**: Protect personal details. Do not post credentials, activation tokens, or sensitive student record cards.\n3. **Channel Compliance**: Keep discussions aligned with category topics (e.g., academic talk in `#classes-discussion`).\n4. **Uplink Integrity**: Do not spam, post malicious payload links, or attempt unauthorized entry scripts.\n\n### 🌐 Core Community Links\n• **Telegram Group**: https://t.me/+ElIFqzvGBlYzMDBk\n• **YouTube Channel**: https://www.youtube.com/@LucyAcademics",
+                    title: "Welcome to the LUCY ACADEMICS Hub",
+                    description: "Handshake protocols successfully resolved. You have connected to the official decentralized communications node for Lucy OS.\n\n### Core Rules & Protocols\n1. **Zero-Trust Interactions**: Maintain respectful, constructive communications. Zero tolerance for harassment or discrimination.\n2. **Information Classification**: Protect personal details. Do not post credentials, activation tokens, or sensitive student record cards.\n3. **Channel Compliance**: Keep discussions aligned with category topics (e.g., academic talk in `#classes-discussion`).\n4. **Uplink Integrity**: Do not spam, post malicious payload links, or attempt unauthorized entry scripts.\n\n### Core Community Links\n• **Telegram Group**: https://t.me/+ElIFqzvGBlYzMDBk\n• **YouTube Channel**: https://www.youtube.com/@LucyAcademics",
                     color: 65409,
                     fields: [
                         {
-                            name: "🔑 Node Roles",
+                            name: "Node Roles",
                             value: `• <@&${createdRoles['principal_node'].id}>: Institutional Administrators\n• <@&${createdRoles['faculty_node'].id}>: Educators & Staff\n• <@&${createdRoles['scholar_node'].id}>: Students & Learners\n• <@&${createdRoles['parent_uplink'].id}>: Parents & Guardians`
                         }
                     ]
@@ -276,12 +276,12 @@ async function run() {
         await sendMessage(announceChan.id, {
             embeds: [
                 {
-                    title: "📢 Lucy OS Node Active // Version 1.0.4",
-                    description: "We are proud to announce the live deployment of the **LUCY ACADEMICS** system cluster! Lucy OS is a modular cognitive platform designed to eliminate the friction between raw institutional data and academic output.\n\n### 🚀 Core Platform Modules:\n* **Zero-Trust Security**: Every transaction is cryptographically verified and recorded in append-only logs.\n* **Performance Telemetry**: Live attendance, grading matrices, and real-time class diagnostics.\n* **Neural Audit Grading**: Direct integration of AI MCQ evaluation loops with side-by-side verification consoles.\n* **Unified Communication**: Seamless, secure portals connecting school administrators, educators, students, and parents.",
+                    title: "Lucy OS Node Active // Version 1.0.4",
+                    description: "We are proud to announce the live deployment of the **LUCY ACADEMICS** system cluster! Lucy OS is a modular cognitive platform designed to eliminate the friction between raw institutional data and academic output.\n\n### Core Platform Modules:\n* **Zero-Trust Security**: Every transaction is cryptographically verified and recorded in append-only logs.\n* **Performance Telemetry**: Live attendance, grading matrices, and real-time class diagnostics.\n* **Neural Audit Grading**: Direct integration of AI MCQ evaluation loops with side-by-side verification consoles.\n* **Unified Communication**: Seamless, secure portals connecting school administrators, educators, students, and parents.",
                     color: 3901686,
                     fields: [
                         {
-                            name: "🌐 Core Web Portal",
+                            name: "Core Web Portal",
                             value: "Access the primary administrative interface here: https://www.5-cn.net"
                         }
                     ]
@@ -291,7 +291,7 @@ async function run() {
 
         // Post to general-chat
         await sendMessage(generalChan.id, {
-            content: "👋 Handshake established. Welcome to the central **LUCY ACADEMICS** chat node. Feel free to discuss assignments, system utilities, or general topics here."
+            content: "Handshake established. Welcome to the central **LUCY ACADEMICS** chat node. Feel free to discuss assignments, system utilities, or general topics here."
         });
 
         // Post to telemetry-updates
@@ -299,7 +299,7 @@ async function run() {
             content: "```diff\n+ [SYSTEM] LUCY_OS KERNEL BOOT SEQUENCE STARTED...\n+ [OK] CONNECTED TO CLOUD DB: PostgreSQL cluster\n+ [OK] ENCRYPTION SHIELD ACTIVE: AES-256 enabled\n+ [OK] PORTAL INTERFACE ACTIVE: https://www.5-cn.net\n+ [OK] WEBHOOK LOG PIPELINE ESTABLISHED\n+ [OK] TELEMETRY MATRIX NOMINAL\n+ [SYSTEM] SYSTEM ENVELOPE: 100% ONLINE AND SECURE\n```"
         });
 
-        console.log("\n\x1b[32m✔ Server Architecture successfully configured!\x1b[0m");
+        console.log("\n\x1b[32mServer Architecture successfully configured!\x1b[0m");
         console.log("\nNext Steps:");
         console.log("1. Open Discord and check your server 'lucy academincs'.");
         console.log("2. You will see roles created and channels beautifully categorized.");

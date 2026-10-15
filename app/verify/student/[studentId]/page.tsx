@@ -27,7 +27,11 @@ export default function StudentVerificationPage() {
         const timeoutId = setTimeout(() => controller.abort(), 25000);
 
         try {
-            const res = await fetch(`/api/school/students/${studentId}/report-card`, { signal: controller.signal });
+            const qs = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+            const sid = qs?.get("sid");
+            const sig = qs?.get("sig");
+            const query = sid && sig ? `?sid=${encodeURIComponent(sid)}&sig=${encodeURIComponent(sig)}` : "";
+            const res = await fetch(`/api/school/students/${studentId}/report-card${query}`, { signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (!res.ok) {
@@ -188,6 +192,7 @@ export default function StudentVerificationPage() {
                         </div>
                     </Card>
 
+                    {(student.guardianName || student.guardianPhone) && (
                     <Card className="bg-white/40 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-900 rounded-[2.5rem] p-8">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-10 h-10 rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
@@ -215,6 +220,7 @@ export default function StudentVerificationPage() {
                             )}
                         </div>
                     </Card>
+                    )}
                 </div>
 
                 {/* Footer */}

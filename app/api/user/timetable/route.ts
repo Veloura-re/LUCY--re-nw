@@ -24,6 +24,13 @@ export async function GET(request: Request) {
             const childId = searchParams.get('childId');
             if (!childId) return NextResponse.json({ error: "childId required for parents" }, { status: 400 });
 
+            // A parent may only read the timetable of a child they are linked to.
+            const link = await prisma.parentStudentLink.findFirst({
+                where: { parentId: user.id, studentId: childId },
+                select: { id: true }
+            });
+            if (!link) return NextResponse.json({ error: "Child not found" }, { status: 404 });
+
             const student = await prisma.student.findUnique({ where: { id: childId } });
             if (!student?.classId) return NextResponse.json({ timetable: [] });
             where.classId = student.classId;

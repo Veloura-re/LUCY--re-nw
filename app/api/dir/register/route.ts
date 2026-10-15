@@ -2,55 +2,79 @@ import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { rateLimitShared } from '@/lib/rate-limit';
+import { logActivity } from '@/lib/audit';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
-    const { token, userId, name, email } = await request.json() as { token: string; userId: string; name: string; email: string };
+    const limited = await rateLimitShared(request, 'dir/register', 10);
+    if (limited) return limited;
+
+    const body = (await request.json().catch(() => null)) as { token?: unknown; userId?: unknown; name?: unknown } | null;
+    const token = typeof body?.token === 'string' ? body.token : '';
+    const userId = typeof body?.userId === 'string' ? body.userId : '';
+    const name = typeof body?.name === 'string' ? body.name.trim() : '';
+
+    if (!token || !userId || name.length === 0 || name.length > 120) {
+        return NextResponse.json({ error: 'Invalid registration request' }, { status: 400 });
+    }
 
     const supabaseAdmin = createSupabaseAdmin(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('cf-connecting-ip') || undefined;
+    let tokenClaimed = false;
+
     try {
-        // 1. Validate Token
+        // 1. Validate token
         const { data: invite, error: inviteError } = await supabaseAdmin
             .from('InviteToken')
             .select('*')
             .eq('token', token)
             .maybeSingle();
 
-        if (inviteError || !invite) {
+        if (inviteError || !invite || !invite.email) {
             throw new Error("Invalid or expired token");
         }
         if (new Date(invite.expiresAt) < new Date()) {
             throw new Error("Invalid or expired token");
         }
 
-        // If token already used, check if the user already exists with this ID
+        // The invite is addressed to a specific email. The authenticated identity for `userId`
+        // must be that email; the email in the request body is never trusted.
+        const finalEmail: string = invite.email;
+        const { data: authLookup, error: authLookupError } = await supabaseAdmin.auth.admin.getUserById(userId);
+        if (authLookupError || !authLookup?.user || authLookup.user.email?.toLowerCase() !== finalEmail.toLowerCase()) {
+            throw new Error("Invalid or expired token");
+        }
+
+        // If the token was already used, only the same identity may re-finish (retry of a stuck attempt)
         if (invite.usedAt) {
             const { data: existingRegistered } = await supabaseAdmin
                 .from('User')
-                .select('*')
+                .select('id, schoolId')
                 .eq('id', userId)
                 .maybeSingle();
-                
-            if (existingRegistered) {
-                
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = userId || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'REGISTER', resourceType: 'director_registration', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({ success: true, userId });
+
+            if (existingRegistered && existingRegistered.schoolId === invite.schoolId) {
+                return NextResponse.json({ success: true, userId });
             }
             throw new Error("Token already used");
         }
 
-        const finalEmail = email || invite.email;
+        // Claim the token atomically so concurrent requests cannot both register with it.
+        const { data: claimed } = await supabaseAdmin
+            .from('InviteToken')
+            .update({ usedAt: new Date().toISOString() })
+            .eq('token', token)
+            .is('usedAt', null)
+            .select('token');
+        if (!claimed || claimed.length === 0) {
+            throw new Error("Token already used");
+        }
+        tokenClaimed = true;
 
         // 2. Find if a placeholder user exists
         const { data: existingUser } = await supabaseAdmin
@@ -60,6 +84,11 @@ return NextResponse.json({ success: true, userId });
             .maybeSingle();
 
         if (existingUser && existingUser.id !== userId) {
+            // Only a placeholder created for this invitation (same school, or not yet attached to any
+            // school) may be migrated; never take over an account that belongs to another school.
+            if (existingUser.schoolId && existingUser.schoolId !== invite.schoolId) {
+                throw new Error("Invalid or expired token");
+            }
             const placeholderId = existingUser.id;
 
             // 3. Sequential Migration of User relations
@@ -172,20 +201,24 @@ return NextResponse.json({ success: true, userId });
             }
         }
 
-        // 7. Burn Token
-        await supabaseAdmin.from('InviteToken').update({ usedAt: new Date().toISOString() }).eq('token', token);
-        
+        await logActivity({
+            userId,
+            schoolId: invite.schoolId || undefined,
+            action: 'REGISTER',
+            resourceType: 'invite_registration',
+            resourceId: invite.id,
+            ip,
+            after: { role: invite.role }
+        });
+
         // 8. Asynchronous Welcome Email Dispatch
         if (finalEmail && !finalEmail.endsWith('@lucy.local')) {
-            try {
-                const { sendWelcomeEmail } = await import('@/lib/email');
-                sendWelcomeEmail({
-                    toEmail: finalEmail,
-                    name: name,
-                    role: invite.role,
-                    schoolId: invite.schoolId || undefined
-                }).catch((emailErr) => console.warn('[dir-register] Welcome email failed:', emailErr));
-            } catch { /* non-blocking */ }
+            sendWelcomeEmail({
+                toEmail: finalEmail,
+                name: name,
+                role: invite.role,
+                schoolId: invite.schoolId || undefined
+            }).catch((emailErr) => console.warn('[dir-register] Welcome email failed:', emailErr));
         }
 
         if (invite.schoolId) {
@@ -198,6 +231,10 @@ return NextResponse.json({ success: true, userId });
 
     } catch (e: any) {
         console.error(e);
+        if (tokenClaimed) {
+            // Release the claim so the invitee can retry after a failed finalisation.
+            await supabaseAdmin.from('InviteToken').update({ usedAt: null }).eq('token', token);
+        }
         return NextResponse.json({ error: publicErrorMessage(e) }, { status: 400 });
     }
 }

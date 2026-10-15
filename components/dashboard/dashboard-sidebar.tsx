@@ -28,12 +28,19 @@ export function DashboardSidebar({ dbUser, menu }: DashboardSidebarProps) {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            setIsDesktop(window.innerWidth >= 1024);
+            const w = window.innerWidth;
+            setIsDesktop(w >= 1024);
+            if (w >= 768 && w < 1024) {
+                setCollapsed(true);
+            }
         }
     }, []);
 
     useEffect(() => {
-        const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+        const handleResize = () => {
+            const w = window.innerWidth;
+            setIsDesktop(w >= 1024);
+        };
         window.addEventListener("resize", handleResize);
         setMounted(true);
         return () => window.removeEventListener("resize", handleResize);

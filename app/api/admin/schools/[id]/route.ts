@@ -3,6 +3,9 @@ import { verifySuperAdmin } from '@/lib/admin-auth';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { prisma } from '@/lib/prisma';
+import { logActivity } from '@/lib/audit';
+import { archiveSchoolAuditTrail } from '@/lib/audit-archive';
+import { publicErrorMessage } from '@/lib/security';
 
 // PATCH - Update school status (suspend/activate)
 export async function PATCH(
@@ -57,7 +60,6 @@ export async function PATCH(
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id || undefined;
             if (_userId) {
@@ -95,8 +97,15 @@ export async function DELETE(
         console.log(`[AdminAPI] Purging School: ${id} via full dependency-graph SQL cascade`);
 
         let userIds: string[] = [];
+        let archive: { path: string; count: number } | null = null;
+        let purgedSchoolName: string | null = null;
 
         if (prisma) {
+            // The tenant's audit trail is deleted with its users, so keep a copy first. If the
+            // archive cannot be written, nothing is deleted.
+            purgedSchoolName = (await prisma.school.findUnique({ where: { id }, select: { name: true } }))?.name ?? null;
+            archive = await archiveSchoolAuditTrail(id);
+
             // Collect user IDs for Supabase Auth cleanup
             try {
                 const schoolUsers = await prisma.user.findMany({
@@ -221,22 +230,23 @@ export async function DELETE(
             }
         }
 
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = dbUser?.id || undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'DELETE', resourceType: 'school', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
+        // Platform-level record of the deletion (the school and its own trail no longer exist).
+        await logActivity({
+            userId: dbUser.id,
+            action: 'DELETE_SCHOOL',
+            resourceType: 'school',
+            resourceId: id,
+            level: 'WARN',
+            ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('cf-connecting-ip') || undefined,
+            before: { name: purgedSchoolName },
+            after: { archivedAuditEntries: archive?.count ?? null, archivePath: archive?.path ?? null, usersRemoved: userIds.length }
+        });
 
         return NextResponse.json({ success: true, message: 'School purged successfully' });
     } catch (error) {
         console.error("[AdminAPI] Error purging school:", error);
         return NextResponse.json({
-            error: 'Failed to delete school',
-            details: error instanceof Error ? error.message : String(error)
+            error: publicErrorMessage(error, 'Failed to delete school')
         }, { status: 500 });
     }
 }

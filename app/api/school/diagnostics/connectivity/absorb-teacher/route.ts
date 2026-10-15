@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
 import { withAudit } from '@/lib/with-audit';
+import { publicErrorMessage } from '@/lib/security';
 
 async function handlePOST(req: Request) {
     try {
@@ -14,13 +15,14 @@ async function handlePOST(req: Request) {
             select: { role: true, schoolId: true }
         });
 
-        if (!dbUser || (dbUser.role !== 'OWNER' && dbUser.role !== 'PRINCIPAL' && dbUser.role !== 'SUPERADMIN') || !dbUser.schoolId) {
+        // Orphaned teachers are only listed to a SUPERADMIN, so only a SUPERADMIN may assign one.
+        if (!dbUser || dbUser.role !== 'SUPERADMIN' || !dbUser.schoolId) {
             return new NextResponse("Forbidden", { status: 403 });
         }
 
-        const { teacherId } = await req.json() as any;
+        const { teacherId } = ((await req.json().catch(() => ({}))) || {}) as any;
 
-        if (!teacherId) {
+        if (!teacherId || typeof teacherId !== 'string') {
             return new NextResponse("Missing teacherId", { status: 400 });
         }
 
@@ -43,7 +45,7 @@ async function handlePOST(req: Request) {
 
     } catch (e: any) {
         console.error("[Absorb Teacher Error]", e);
-        return new NextResponse(e.message, { status: 500 });
+        return new NextResponse(publicErrorMessage(e), { status: 500 });
     }
 }
 

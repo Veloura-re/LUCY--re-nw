@@ -293,42 +293,47 @@ export default function AdminLogsPage() {
                         </div>
 
                         {/* Table */}
+                        {/* Table */}
                         <div className="bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden">
-                            <div className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
-                                <span>User</span><span>Action</span><span>Resource</span><span className="hidden md:block">IP</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
-                            </div>
-                            {loading ? (
-                                <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
-                            ) : logs.length === 0 ? (
-                                <div className="text-center py-16"><Activity className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mx-auto mb-2" /><p className="text-sm text-zinc-700">No logs found</p></div>
-                            ) : (
-                                <div className="divide-y divide-white/[0.03]">
-                                    {logs.map((log, i) => (
-                                        <motion.div key={log.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
-                                            onClick={() => setSelectedLog(log)}
-                                            className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] transition-all cursor-pointer group">
-                                            <div className="flex items-center gap-2 min-w-0">
-                                                <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
-                                                <div className="min-w-0">
-                                                    <div className="text-xs font-semibold text-zinc-900 dark:text-white truncate">{log.user.name || '—'}</div>
-                                                    <div className="text-[10px] text-zinc-600 truncate">{log.user.email}</div>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center">
-                                                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", getActionColor(log.action))}>
-                                                    {getActionIcon(log.action)}{log.action.length > 18 ? log.action.slice(0, 18) + '…' : log.action}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1.5 min-w-0">
-                                                <Database className="w-3 h-3 text-zinc-700 shrink-0" />
-                                                <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate">{log.resourceType}</span>
-                                            </div>
-                                            <div className="hidden md:flex items-center"><span className="text-[10px] text-zinc-700 font-mono">{log.ip || '—'}</span></div>
-                                            <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(log.createdAt)}</span></div>
-                                        </motion.div>
-                                    ))}
+                            <div className="overflow-x-auto scrollbar-thin">
+                                <div className="min-w-[680px]">
+                                    <div className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
+                                        <span>User</span><span>Action</span><span>Resource</span><span className="hidden md:block">IP</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
+                                    </div>
+                                    {loading ? (
+                                        <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
+                                    ) : logs.length === 0 ? (
+                                        <div className="text-center py-16"><Activity className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mx-auto mb-2" /><p className="text-sm text-zinc-700">No logs found</p></div>
+                                    ) : (
+                                        <div className="divide-y divide-white/[0.03]">
+                                            {logs.map((log, i) => (
+                                                <motion.div key={log.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
+                                                    onClick={() => setSelectedLog(log)}
+                                                    className="grid grid-cols-[1fr_1.2fr_1fr_auto_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] transition-all cursor-pointer group">
+                                                    <div className="flex items-center gap-2 min-w-0">
+                                                        <div className="w-6 h-6 rounded-full bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-white/10 flex items-center justify-center shrink-0 text-[9px] font-bold text-zinc-600 dark:text-zinc-500 uppercase">{(log.user.name || log.user.email)[0]}</div>
+                                                        <div className="min-w-0">
+                                                            <div className="text-xs font-semibold text-zinc-900 dark:text-white truncate">{log.user.name || '—'}</div>
+                                                            <div className="text-[10px] text-zinc-600 truncate">{log.user.email}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", getActionColor(log.action))}>
+                                                            {getActionIcon(log.action)}{log.action.length > 18 ? log.action.slice(0, 18) + '…' : log.action}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 min-w-0">
+                                                        <Database className="w-3 h-3 text-zinc-700 shrink-0" />
+                                                        <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate">{log.resourceType}</span>
+                                                    </div>
+                                                    <div className="hidden md:flex items-center"><span className="text-[10px] text-zinc-700 font-mono">{log.ip || '—'}</span></div>
+                                                    <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(log.createdAt)}</span></div>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
                         </div>
 
                         {/* Pagination */}
@@ -395,66 +400,70 @@ export default function AdminLogsPage() {
 
                         {/* Error Table */}
                         <div className="bg-white/[0.02] border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden">
-                            <div className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
-                                <span>Type</span><span>Message</span><span>Path</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
+                            <div className="overflow-x-auto scrollbar-thin">
+                                <div className="min-w-[680px]">
+                                    <div className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 border-b border-zinc-200 dark:border-white/5 text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.15em]">
+                                        <span>Type</span><span>Message</span><span>Path</span><span className="flex items-center gap-1"><Clock className="w-3 h-3" />Time</span>
+                                    </div>
+                                    {errorLoading ? (
+                                        <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
+                                    ) : errorGrouped ? (
+                                        errorGroups.length === 0 ? (
+                                            <div className="text-center py-16">
+                                                <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
+                                                <p className="text-sm text-zinc-700">No errors logged in this window</p>
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-white/[0.03]">
+                                                {errorGroups.map((g, i) => (
+                                                    <div key={`${g.type}-${g.path}-${i}`}
+                                                        onClick={() => { setErrorSearch(g.message.slice(0, 80)); setErrorGrouped(false); }}
+                                                        title="Show every occurrence"
+                                                        className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
+                                                        <div className="flex items-center">
+                                                            <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[g.type] || 'text-zinc-600 bg-zinc-500/10 border-zinc-500/20')}>
+                                                                {ERROR_TYPE_ICONS[g.type]}{g.type.replace('_', ' ')}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 min-w-0">
+                                                            <span className="shrink-0 px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-white/10 text-[10px] font-bold text-zinc-800 dark:text-white">{g.count.toLocaleString()}x</span>
+                                                            <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{g.message}</span>
+                                                        </div>
+                                                        <div className="flex items-center min-w-0"><span className="text-[10px] text-zinc-600 font-mono truncate">{g.path || '-'}</span></div>
+                                                        <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(g.lastSeen)}</span></div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )
+                                    ) : errors.length === 0 ? (
+                                        <div className="text-center py-16">
+                                            <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
+                                            <p className="text-sm text-zinc-700">No errors logged — system healthy</p>
+                                        </div>
+                                    ) : (
+                                        <div className="divide-y divide-white/[0.03]">
+                                            {errors.map((err, i) => (
+                                                <motion.div key={err.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
+                                                    onClick={() => setSelectedError(err)}
+                                                    className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
+                                                    <div className="flex items-center">
+                                                        <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[err.type] || 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
+                                                            {ERROR_TYPE_ICONS[err.type]}{err.type.replace('_', ' ')}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center min-w-0">
+                                                        <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{err.message}</span>
+                                                    </div>
+                                                    <div className="flex items-center min-w-0">
+                                                        <span className="text-[10px] text-zinc-600 font-mono truncate">{err.path || '—'}</span>
+                                                    </div>
+                                                    <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(err.createdAt)}</span></div>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            {errorLoading ? (
-                                <div className="flex items-center justify-center py-16"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}><RefreshCw className="w-5 h-5 text-zinc-700" /></motion.div></div>
-                            ) : errorGrouped ? (
-                                errorGroups.length === 0 ? (
-                                    <div className="text-center py-16">
-                                        <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
-                                        <p className="text-sm text-zinc-700">No errors logged in this window</p>
-                                    </div>
-                                ) : (
-                                    <div className="divide-y divide-white/[0.03]">
-                                        {errorGroups.map((g, i) => (
-                                            <div key={`${g.type}-${g.path}-${i}`}
-                                                onClick={() => { setErrorSearch(g.message.slice(0, 80)); setErrorGrouped(false); }}
-                                                title="Show every occurrence"
-                                                className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
-                                                <div className="flex items-center">
-                                                    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[g.type] || 'text-zinc-600 bg-zinc-500/10 border-zinc-500/20')}>
-                                                        {ERROR_TYPE_ICONS[g.type]}{g.type.replace('_', ' ')}
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center gap-2 min-w-0">
-                                                    <span className="shrink-0 px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-white/10 text-[10px] font-bold text-zinc-800 dark:text-white">{g.count.toLocaleString()}x</span>
-                                                    <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{g.message}</span>
-                                                </div>
-                                                <div className="flex items-center min-w-0"><span className="text-[10px] text-zinc-600 font-mono truncate">{g.path || '-'}</span></div>
-                                                <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(g.lastSeen)}</span></div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )
-                            ) : errors.length === 0 ? (
-                                <div className="text-center py-16">
-                                    <CheckCircle className="w-8 h-8 text-emerald-800 mx-auto mb-2" />
-                                    <p className="text-sm text-zinc-700">No errors logged — system healthy</p>
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-white/[0.03]">
-                                    {errors.map((err, i) => (
-                                        <motion.div key={err.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.008 }}
-                                            onClick={() => setSelectedError(err)}
-                                            className="grid grid-cols-[1fr_1.5fr_1fr_auto] gap-4 px-5 py-3 hover:bg-white/[0.03] cursor-pointer transition-all">
-                                            <div className="flex items-center">
-                                                <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase", ERROR_TYPE_COLORS[err.type] || 'text-zinc-600 dark:text-zinc-400 bg-zinc-500/10 border-zinc-500/20')}>
-                                                    {ERROR_TYPE_ICONS[err.type]}{err.type.replace('_', ' ')}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center min-w-0">
-                                                <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate">{err.message}</span>
-                                            </div>
-                                            <div className="flex items-center min-w-0">
-                                                <span className="text-[10px] text-zinc-600 font-mono truncate">{err.path || '—'}</span>
-                                            </div>
-                                            <div className="flex items-center"><span className="text-[10px] text-zinc-600 dark:text-zinc-500 whitespace-nowrap">{formatRelative(err.createdAt)}</span></div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            )}
                         </div>
 
                         {totalErrorPages > 1 && (

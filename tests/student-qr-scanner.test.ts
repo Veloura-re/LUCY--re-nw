@@ -95,3 +95,23 @@ describe("Student ID Security & QR Parsing", () => {
         });
     });
 });
+
+describe("Signing secret hardening", () => {
+    const original = { ...process.env };
+    afterEach(() => {
+        process.env = { ...original };
+    });
+
+    it("refuses to sign in production when no secret is configured", () => {
+        delete process.env.QR_HMAC_SECRET;
+        delete process.env.ADMIN_SECRET_KEY;
+        (process.env as any).NODE_ENV = "production";
+        expect(() => signStudentPayload("s", "school")).toThrow(/QR_HMAC_SECRET/);
+    });
+
+    it("signs with the configured secret in production", () => {
+        process.env.QR_HMAC_SECRET = "test-secret";
+        (process.env as any).NODE_ENV = "production";
+        expect(signStudentPayload("s", "school")).toMatch(/^[0-9a-f]{16}$/);
+    });
+});

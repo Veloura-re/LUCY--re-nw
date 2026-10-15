@@ -3,6 +3,7 @@ import { getCachedUser } from "@/lib/users";
 import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 
+import { logActivity } from '@/lib/audit';
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
@@ -36,7 +37,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {

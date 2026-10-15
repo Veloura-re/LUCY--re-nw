@@ -4,6 +4,7 @@ import { requireRole, handleApiError } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
+import { logActivity } from '@/lib/audit';
 /**
  * PUT: Update a student submission with grade and feedback
  */
@@ -49,7 +50,6 @@ export async function PUT(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {

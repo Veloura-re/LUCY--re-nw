@@ -270,7 +270,7 @@ export default function SchoolsLedgerPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔑 Invite Token</label>
+                            <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Invite Token</label>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-5 py-3.5 font-mono text-xl text-eduGreen-400 tracking-[0.25em] text-center">
                                     {inviteToken}
@@ -284,7 +284,7 @@ export default function SchoolsLedgerPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">🔗 Invite URL</label>
+                            <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Invite URL</label>
                             <div className="flex items-center gap-2">
                                 <div className="flex-1 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-4 py-3.5 font-mono text-[10px] text-zinc-600 dark:text-zinc-400 truncate">
                                     {inviteUrl}
@@ -353,86 +353,90 @@ export default function SchoolsLedgerPage() {
                 </div>
             ) : (
                 <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                    {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
-                        <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Institution</div>
-                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Staff</div>
-                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Students</div>
-                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Status</div>
-                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Actions</div>
-                    </div>
-
-                    {/* Table Rows */}
-                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                        {filteredSchools.map((school) => (
-                            <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
-                                <div className="col-span-4 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
-                                        <School className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-xs">{school.name}</h4>
-                                        <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
-                                    </div>
-                                </div>
-                                <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.users}</div>
-                                <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.students}</div>
-                                <div className="col-span-2 text-center">
-                                    <span className={cn(
-                                        "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider",
-                                        school.status === 'ACTIVE' && "bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400",
-                                        school.status === 'PENDING' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
-                                        school.status === 'SUSPENDED' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400"
-                                    )}>
-                                        {school.status}
-                                    </span>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="col-span-2 flex items-center justify-end gap-1.5">
-                                    {school.status === 'ACTIVE' ? (
-                                        <button
-                                            onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-300 dark:hover:border-amber-900/40 hover:text-amber-600 dark:text-amber-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
-                                            title="Suspend"
-                                        >
-                                            <PowerOff className="w-3 h-3" />
-                                            <span className="hidden lg:block">Suspend</span>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleActivateSchool(school.id)}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
-                                            title="Activate"
-                                        >
-                                            <Power className="w-3 h-3" />
-                                            <span className="hidden lg:block">Activate</span>
-                                        </button>
-                                    )}
-                                    <button
-                                        onClick={() => setManageOwnersSchool({ id: school.id, name: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
-                                        title="Manage Owners"
-                                    >
-                                        <ShieldCheck className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
-                                        title="Manage Principals"
-                                    >
-                                        <Users className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
-                                        className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-red-300 dark:hover:border-red-900/40 hover:text-red-600 dark:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
-                                        title="Delete"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
+                    <div className="overflow-x-auto scrollbar-thin">
+                        <div className="min-w-[760px]">
+                            {/* Table Header */}
+                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                                <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Institution</div>
+                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Staff</div>
+                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Students</div>
+                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Status</div>
+                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Actions</div>
                             </div>
-                        ))}
+
+                            {/* Table Rows */}
+                            <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                {filteredSchools.map((school) => (
+                                    <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
+                                        <div className="col-span-4 flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                                                <School className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-xs">{school.name}</h4>
+                                                <p className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.users}</div>
+                                        <div className="col-span-2 text-center text-xs font-mono text-zinc-600 dark:text-zinc-400">{school._count.students}</div>
+                                        <div className="col-span-2 text-center">
+                                            <span className={cn(
+                                                "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider",
+                                                school.status === 'ACTIVE' && "bg-eduGreen-950/20 border-eduGreen-900/50 text-eduGreen-400",
+                                                school.status === 'PENDING' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
+                                                school.status === 'SUSPENDED' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400"
+                                            )}>
+                                                {school.status}
+                                            </span>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="col-span-2 flex items-center justify-end gap-1.5">
+                                            {school.status === 'ACTIVE' ? (
+                                                <button
+                                                    onClick={() => setConfirmAction({ type: 'SUSPEND', schoolId: school.id, schoolName: school.name })}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-300 dark:hover:border-amber-900/40 hover:text-amber-600 dark:text-amber-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                                    title="Suspend"
+                                                >
+                                                    <PowerOff className="w-3 h-3" />
+                                                    <span className="hidden lg:block">Suspend</span>
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleActivateSchool(school.id)}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-900/40 hover:text-eduGreen-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-widest transition-all"
+                                                    title="Activate"
+                                                >
+                                                    <Power className="w-3 h-3" />
+                                                    <span className="hidden lg:block">Activate</span>
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => setManageOwnersSchool({ id: school.id, name: school.name })}
+                                                className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-purple-900/40 hover:text-purple-400 text-zinc-600 flex items-center justify-center transition-all"
+                                                title="Manage Owners"
+                                            >
+                                                <ShieldCheck className="w-3.5 h-3.5" />
+                                            </button>
+                                            <button
+                                                onClick={() => setManagePrincipalsSchool({ id: school.id, name: school.name })}
+                                                className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-blue-900/40 hover:text-blue-400 text-zinc-600 flex items-center justify-center transition-all"
+                                                title="Manage Principals"
+                                            >
+                                                <Users className="w-3.5 h-3.5" />
+                                            </button>
+                                            <button
+                                                onClick={() => setConfirmAction({ type: 'DELETE', schoolId: school.id, schoolName: school.name })}
+                                                className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-red-300 dark:hover:border-red-900/40 hover:text-red-600 dark:text-red-400 text-zinc-600 flex items-center justify-center transition-all"
+                                                title="Delete"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -444,7 +448,7 @@ export default function SchoolsLedgerPage() {
                 isLoading={isLoading}
                 title={confirmAction.type === 'DELETE' ? "Delete Institution" : "Suspend Institution"}
                 description={confirmAction.type === 'DELETE'
-                    ? `⚠️ This will permanently delete "${confirmAction.schoolName}" and all its data — students, staff, grades, records, and invoices. This action cannot be undone.`
+                    ? `This will permanently delete "${confirmAction.schoolName}" and all its data — students, staff, grades, records, and invoices. This action cannot be undone.`
                     : `Suspend access for "${confirmAction.schoolName}"? All active sessions will be terminated.`
                 }
                 confirmText={confirmAction.type === 'DELETE' ? "Delete Everything" : "Suspend"}

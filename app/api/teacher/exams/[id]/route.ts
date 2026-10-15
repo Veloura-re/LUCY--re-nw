@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { sendAssessmentReportEmail } from "@/lib/email";
 import { requireRole, requireSchoolLinked, handleApiError } from "@/lib/security";
 
+import { logActivity } from '@/lib/audit';
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     try {
@@ -12,8 +13,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         const { questions, isLocked, isPublished, title, duration, config } = body;
 
         // Verify ownership?
-        const exam = await prisma.exam.findUnique({ where: { id } });
+        const exam = await prisma.exam.findUnique({
+            where: { id },
+            include: { class: { select: { schoolId: true, grade: { select: { schoolId: true } } } } }
+        });
         if (!exam) return NextResponse.json({ error: "Not found" }, { status: 404 });
+        const examSchoolId = exam.class?.grade?.schoolId ?? exam.class?.schoolId;
+        if (!dbUser.schoolId || examSchoolId !== dbUser.schoolId) {
+            // Indistinguishable from a missing exam so cross-tenant ids cannot be probed.
+            return NextResponse.json({ error: "Not found" }, { status: 404 });
+        }
         if (exam.createdById !== dbUser.id && dbUser.role !== 'PRINCIPAL') {
             return NextResponse.json({ error: "Access Denied" }, { status: 403 });
         }
@@ -92,7 +101,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || req?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {
@@ -111,8 +119,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         const dbUser = await requireSchoolLinked();
         const exam = await prisma.exam.findUnique({
             where: { id },
-            include: { subject: true, class: true }
+            include: { subject: true, class: { include: { grade: { select: { schoolId: true } } } } }
         });
+        const examSchoolId = exam?.class?.grade?.schoolId ?? exam?.class?.schoolId;
+        if (!exam || !dbUser.schoolId || examSchoolId !== dbUser.schoolId) {
+            return NextResponse.json({ error: "Not found" }, { status: 404 });
+        }
         return NextResponse.json({ exam });
     } catch (e) {
         return handleApiError(e);

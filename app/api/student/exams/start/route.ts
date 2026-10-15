@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireSchoolLinked, handleApiError } from '@/lib/security';
+import { ensureAttemptStarted } from '@/lib/exam-attempts';
+import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
     try {
@@ -15,41 +17,32 @@ export async function POST(request: Request) {
         const student = await prisma.student.findUnique({ where: { userId: dbUser.id } });
         if (!student) return NextResponse.json({ error: 'Student profile not found' }, { status: 404 });
 
-        // 🛡️ Warding Spell: scope exam lookup via Class → schoolId to prevent IDOR cross-school access
-        // (Exam has no direct schoolId — it's owned by a Class which belongs to a school)
+        // Scope the exam lookup to the student's own class and school to prevent cross-tenant access.
+        // (Exam has no direct schoolId; it is owned by a Class which belongs to a school.)
         const exam = await prisma.exam.findFirst({
             where: {
                 id: examId,
                 isPublished: true,
-                class: { schoolId: student.schoolId }  // Tenant isolation via class relationship
+                isLocked: false,
+                classId: student.classId ?? '__no_class__',
+                class: { schoolId: student.schoolId }
             }
         });
         if (!exam) {
             return NextResponse.json({ error: 'Exam not available' }, { status: 404 });
         }
 
-        // 🔮 Dark Magic: prevent duplicate attempt creation under rapid double-submit
-        let attempt = await prisma.examAttempt.findFirst({
-            where: { examId, studentId: student.id }
+        // Idempotent: concurrent or repeated starts return the same attempt.
+        const attempt = await ensureAttemptStarted(prisma, exam.id, student.id);
+
+        await logActivity({
+            userId: dbUser.id,
+            schoolId: student.schoolId,
+            action: 'START_EXAM',
+            resourceType: 'exam',
+            resourceId: exam.id,
+            ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('cf-connecting-ip') || undefined
         });
-
-        if (!attempt) {
-            attempt = await prisma.examAttempt.create({
-                data: {
-                    examId,
-                    studentId: student.id,
-                    startedAt: new Date(),
-                    status: 'IN_PROGRESS'
-                }
-            });
-        }
-
-        // Non-blocking audit
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            await logActivity({ userId: dbUser.id, action: 'START_EXAM', resourceType: 'exam', resourceId: examId, ip: _ip });
-        } catch { /* non-blocking */ }
 
         return NextResponse.json({ attempt });
     } catch (e) {

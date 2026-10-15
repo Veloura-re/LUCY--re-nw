@@ -1,3 +1,4 @@
+import { BACKUP_USER_SELECT } from '@/lib/backup-restore';
 import { NextResponse } from 'next/server';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
 
         // 1. Fetch all critical data type-safely via Prisma to prevent schema drift and missing records
         const [users, students, grades, subjects, invoices, classes, payments] = await Promise.all([
-            prisma.user.findMany({ where: { schoolId: user.schoolId } }),
+            prisma.user.findMany({ where: { schoolId: user.schoolId }, select: BACKUP_USER_SELECT }),
             prisma.student.findMany({ where: { schoolId: user.schoolId } }),
             prisma.grade.findMany({ where: { schoolId: user.schoolId } }),
             prisma.subject.findMany({ where: { schoolId: user.schoolId } }),

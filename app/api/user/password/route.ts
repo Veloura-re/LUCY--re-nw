@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { reportServerError } from '@/lib/error-capture';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -30,7 +31,6 @@ export async function POST(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {

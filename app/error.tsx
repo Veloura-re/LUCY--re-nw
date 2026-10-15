@@ -27,7 +27,7 @@ export default function RootError({
         <div className="min-h-screen bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 flex items-center justify-center p-6">
             <div className="max-w-md w-full p-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950/80 backdrop-blur-xl shadow-2xl text-center space-y-6">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-2xl font-bold">
-                    ⚡
+                   
                 </div>
                 <div>
                     <h1 className="text-xl font-bold tracking-tight">Something Went Wrong</h1>

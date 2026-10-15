@@ -11,7 +11,7 @@ const supabase = createClient(
 );
 
 async function main() {
-    console.log('🌱 Seeding fresh test data...');
+    console.log('Seeding fresh test data...');
 
     // 1. Create School
     const school = await prisma.school.create({
@@ -21,7 +21,7 @@ async function main() {
             status: 'ACTIVE',
         }
     });
-    console.log(`✅ Created School: ${school.name}`);
+    console.log(`Created School: ${school.name}`);
 
     // 2. Create Grade & Class
     const grade = await prisma.grade.create({
@@ -37,7 +37,7 @@ async function main() {
             gradeId: grade.id,
         }
     });
-    console.log(`✅ Created Class: ${class10A.name}`);
+    console.log(`Created Class: ${class10A.name}`);
 
     // 3. Create Subject
     const math = await prisma.subject.create({
@@ -46,7 +46,7 @@ async function main() {
             schoolId: school.id,
         }
     });
-    console.log(`✅ Created Subject: ${math.name}`);
+    console.log(`Created Subject: ${math.name}`);
 
     // 4. Create Teacher (Auth + Prisma)
     const teacherEmail = 'teacher@lucy.edu';
@@ -61,7 +61,7 @@ async function main() {
     });
 
     if (teacherError) {
-        console.error('❌ Teacher Auth Error:', teacherError);
+        console.error('Teacher Auth Error:', teacherError);
     } else {
         const teacher = await prisma.user.create({
             data: {
@@ -82,7 +82,7 @@ async function main() {
                 subjectId: math.id,
             }
         });
-        console.log(`✅ Created Teacher: ${teacher.email}`);
+        console.log(`Created Teacher: ${teacher.email}`);
     }
 
     // 5. Create Student (Auth + Prisma)
@@ -97,7 +97,7 @@ async function main() {
     });
 
     if (studentError) {
-        console.error('❌ Student Auth Error:', studentError);
+        console.error('Student Auth Error:', studentError);
     } else {
         const studentUser = await prisma.user.create({
             data: {
@@ -122,10 +122,10 @@ async function main() {
                 studentCode: 'STU-001',
             }
         });
-        console.log(`✅ Created Student: ${student.email} (Code: ${student.studentCode})`);
+        console.log(`Created Student: ${student.email} (Code: ${student.studentCode})`);
     }
 
-    console.log('✨ Seeding complete!');
+    console.log('Seeding complete!');
     console.log('--- Credentials ---');
     console.log('Teacher: teacher@lucy.edu / Password123!');
     console.log('Student: student@lucy.edu / Password123!');

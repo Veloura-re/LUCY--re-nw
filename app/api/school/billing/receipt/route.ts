@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireRole, requireAuth, handleApiError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     try {
         const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
@@ -31,7 +32,6 @@ export async function POST(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {

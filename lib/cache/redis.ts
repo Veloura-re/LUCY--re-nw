@@ -1,5 +1,5 @@
 /**
- * ⚡ High-Performance Multi-Tier Redis & In-Memory Cache Manager
+ * High-Performance Multi-Tier Redis & In-Memory Cache Manager
  * 
  * Supports:
  * 1. Upstash Redis / Vercel KV REST API (Zero binary dependencies, fully serverless & Edge ready)

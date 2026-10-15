@@ -2,6 +2,7 @@ import { publicErrorMessage } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { reportServerError } from '@/lib/error-capture';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 async function fetchWithRetry(fn: () => PromiseLike<any>, retries = 3) {
     for (let i = 0; i < retries; i++) {
@@ -16,9 +17,12 @@ async function fetchWithRetry(fn: () => PromiseLike<any>, retries = 3) {
 
 export async function POST(request: Request) {
     try {
-        const { key } = (await request.json()) as { key: string };
+        const limited = await rateLimitShared(request, 'auth/validate-key', 10);
+        if (limited) return limited;
 
-        if (!key) {
+        const { key } = ((await request.json().catch(() => ({}))) || {}) as { key?: unknown };
+
+        if (typeof key !== 'string' || !key) {
             return NextResponse.json({ error: 'Deployment key is required' }, { status: 400 });
         }
 

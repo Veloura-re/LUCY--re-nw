@@ -2,8 +2,14 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
 import { canUserAccessChatRoom } from '@/lib/messaging';
+import { rateLimitShared } from '@/lib/rate-limit';
+import { logActivity } from '@/lib/audit';
+import { validateUpload, MESSAGE_RULES } from '@/lib/upload-validation';
 
 export async function POST(request: Request) {
+    const limited = await rateLimitShared(request, 'messages/upload', 30);
+    if (limited) return limited;
+
     const supabase = await createClient();
     const { data: { user: authUser } } = await supabase.auth.getUser();
 
@@ -11,11 +17,16 @@ export async function POST(request: Request) {
 
     try {
         const formData = await request.formData();
-        const file = formData.get('file') as File;
-        const chatRoomId = formData.get('chatRoomId') as string;
+        const file = formData.get('file');
+        const chatRoomId = formData.get('chatRoomId');
 
-        if (!file || !chatRoomId) {
+        if (!file || typeof chatRoomId !== 'string' || !chatRoomId) {
             return NextResponse.json({ error: 'Missing file or chatRoomId' }, { status: 400 });
+        }
+
+        const validation = await validateUpload(file, MESSAGE_RULES);
+        if (!validation.ok) {
+            return NextResponse.json({ error: validation.error }, { status: 400 });
         }
 
         // Verify room and access authorization
@@ -42,16 +53,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Forbidden: You are not authorized to upload to this channel' }, { status: 403 });
         }
 
-        const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+        const originalName = (file as File).name.replace(/[^a-zA-Z0-9.]/g, '_').slice(0, 80);
+        const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}-${originalName.replace(/\.[^.]*$/, '')}.${validation.extension}`;
         const filePath = `${chatRoomId}/${fileName}`;
 
         // Upload to Supabase Storage
         // NOTE: Ensure 'messages' bucket exists and is public or has appropriate policies
         const { data, error } = await supabase.storage
             .from('messages')
-            .upload(filePath, file, {
+            .upload(filePath, file as File, {
                 cacheControl: '3600',
-                upsert: false
+                upsert: false,
+                contentType: validation.mimeType
             });
 
         if (error) {
@@ -61,7 +74,7 @@ export async function POST(request: Request) {
                     error: 'Storage Infrastructure Missing: Please create a public bucket named "messages" in your Supabase project to enable attachments.'
                 }, { status: 404 });
             }
-            return NextResponse.json({ error: 'Upload failed: ' + error.message }, { status: 500 });
+            return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
         }
 
         // Get public URL
@@ -69,21 +82,19 @@ export async function POST(request: Request) {
             .from('messages')
             .getPublicUrl(filePath);
 
-        
-        // Audit log
-        try {
-            const { logActivity } = await import('@/lib/audit');
-            const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
-            const _userId = authUser?.id ?? undefined;
-            if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPLOAD', resourceType: 'message', ip: _ip || undefined });
-            }
-        } catch { /* non-blocking */ }
-return NextResponse.json({
+        await logActivity({
+            userId: dbUser.id,
+            schoolId: dbUser.schoolId || undefined,
+            action: 'UPLOAD',
+            resourceType: 'message',
+            resourceId: chatRoomId,
+            ip: request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined
+        });
+        return NextResponse.json({
             url: publicUrl,
-            name: file.name,
-            type: file.type,
-            size: file.size
+            name: (file as File).name,
+            type: validation.mimeType,
+            size: (file as File).size
         });
     } catch (e) {
         console.error(e);

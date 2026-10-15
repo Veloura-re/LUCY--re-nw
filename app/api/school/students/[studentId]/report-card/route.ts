@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth, handleApiError } from "@/lib/security";
+import { verifyStudentSignature } from "@/lib/student-id-security";
+import { canViewStudent } from "@/lib/student-access";
 
 export async function GET(
     request: Request,
@@ -8,15 +10,28 @@ export async function GET(
 ) {
     try {
         let dbUser: any = null;
+        let authUserId: string | null = null;
         try {
-            dbUser = await requireAuth();
+            const authUser = await requireAuth();
+            authUserId = authUser.id;
         } catch {
-            // Unauthenticated public verification request
+            // Anonymous caller: only the signed public verification path is allowed below.
+        }
+
+        if (authUserId) {
+            dbUser = await prisma.user.findUnique({
+                where: { id: authUserId },
+                select: { id: true, role: true, schoolId: true }
+            });
+            if (!dbUser) {
+                return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
+            }
         }
 
         const { studentId } = await params;
 
-        // 1. Robust Student Lookup (by id, userId, studentCode, or 'me')
+        // 1. Student lookup. Authenticated lookups are tenant-scoped; anonymous lookups are
+        // resolved strictly by id and must carry a valid signature (see below).
         const studentInclude = {
             school: {
                 select: {
@@ -46,47 +61,106 @@ export async function GET(
             }
         };
 
-        let student = await prisma.student.findFirst({
-            where: {
-                OR: [
-                    { id: studentId },
-                    { userId: studentId },
-                    { studentCode: { equals: studentId, mode: 'insensitive' } }
-                ]
-            },
-            include: studentInclude
-        });
+        // ---- Anonymous public verification (signed QR credential) ----
+        if (!dbUser) {
+            const url = new URL(request.url);
+            const sid = url.searchParams.get("sid") || "";
+            const sig = url.searchParams.get("sig") || "";
+            if (!sid || !sig) {
+                return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
+            }
 
-        // Fallback A: If studentId === 'me' or logged in user is a STUDENT
-        if (!student && dbUser && (studentId === "me" || dbUser.role === "STUDENT")) {
-            student = await prisma.student.findFirst({
-                where: { userId: dbUser.id },
-                include: studentInclude
+            const publicStudent = await prisma.student.findUnique({
+                where: { id: studentId },
+                include: {
+                    school: { select: { id: true, name: true, logoUrl: true } },
+                    class: { include: { grade: true } }
+                }
+            });
+
+            if (
+                !publicStudent ||
+                publicStudent.schoolId !== sid ||
+                !verifyStudentSignature(publicStudent.id, publicStudent.schoolId, sig)
+            ) {
+                return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
+            }
+
+            const publicAttendance = await prisma.attendanceRecord.findMany({
+                where: { studentId: publicStudent.id },
+                select: { status: true }
+            });
+            const publicPresent = publicAttendance.filter((a) => a.status === "PRESENT" || a.status === "LATE").length;
+            const publicAbsent = publicAttendance.filter((a) => a.status === "ABSENT").length;
+
+            return NextResponse.json({
+                student: {
+                    id: publicStudent.id,
+                    firstName: publicStudent.firstName,
+                    lastName: publicStudent.lastName,
+                    studentCode: publicStudent.studentCode,
+                    photoUrl: publicStudent.photoUrl,
+                    school: publicStudent.school,
+                    class: publicStudent.class
+                        ? { name: publicStudent.class.name, grade: { name: publicStudent.class.grade?.name ?? null } }
+                        : null
+                },
+                userRole: "GUEST",
+                canEditRemarks: false,
+                attendance: {
+                    rate: publicAttendance.length > 0 ? Math.round((publicPresent / publicAttendance.length) * 100) : 0,
+                    present: publicPresent,
+                    absent: publicAbsent,
+                    total: publicAttendance.length
+                }
             });
         }
 
-        // Fallback B: If logged in user is a PARENT, check linked students
-        if (!student && dbUser?.role === "PARENT") {
-            const link = await prisma.parentStudentLink.findFirst({
-                where: { parentId: dbUser.id }
-            });
-            if (link?.studentId) {
-                student = await prisma.student.findUnique({
-                    where: { id: link.studentId },
+        // ---- Authenticated path ----
+        const isSuperAdmin = dbUser.role === "SUPERADMIN";
+        const tenantScope = isSuperAdmin ? {} : { schoolId: dbUser.schoolId ?? "__no_school__" };
+
+        let student: any = null;
+
+        if (studentId === "me") {
+            if (dbUser.role === "STUDENT") {
+                student = await prisma.student.findFirst({
+                    where: { userId: dbUser.id, ...tenantScope },
                     include: studentInclude
                 });
+            } else if (dbUser.role === "PARENT") {
+                const link = await prisma.parentStudentLink.findFirst({
+                    where: { parentId: dbUser.id }
+                });
+                if (link?.studentId) {
+                    student = await prisma.student.findFirst({
+                        where: { id: link.studentId, ...tenantScope },
+                        include: studentInclude
+                    });
+                }
             }
-        }
-
-        // Fallback C: Fetch first student in school if ID is generic
-        if (!student && dbUser?.schoolId) {
+        } else {
             student = await prisma.student.findFirst({
-                where: { schoolId: dbUser.schoolId },
+                where: {
+                    ...tenantScope,
+                    OR: [
+                        { id: studentId },
+                        { userId: studentId },
+                        { studentCode: { equals: studentId, mode: "insensitive" } }
+                    ]
+                },
                 include: studentInclude
             });
         }
 
         if (!student) {
+            return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
+        }
+
+        // Per-record authorization
+        const authorized = await canViewStudent(dbUser, student);
+        if (!authorized) {
+            // Indistinguishable from "not found" to prevent enumeration.
             return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
         }
 
@@ -327,20 +401,23 @@ export async function GET(
             }
         }
 
-        // Privacy redaction for unauthenticated verification
-        const sanitizedStudent = dbUser ? student : {
-            ...student,
-            guardianPhone: undefined,
-            secondaryPhone: undefined,
-            parentLinks: []
-        };
+        // Parents and students must not see staff contact details or internal staff notes.
+        const isStaff = ["SUPERADMIN", "OWNER", "PRINCIPAL", "TEACHER", "HOMEROOM"].includes(dbUser.role);
+        const sanitizedStudent = isStaff
+            ? student
+            : {
+                ...student,
+                parentLinks: dbUser.role === "PARENT"
+                    ? student.parentLinks.filter((l: any) => l.parentId === dbUser.id)
+                    : []
+            };
 
         return NextResponse.json({
             student: sanitizedStudent,
             principal,
             term: termData,
             grades,
-            userRole: dbUser?.role || "GUEST",
+            userRole: dbUser.role,
             canEditRemarks,
             summary: {
                 overallPercentage,
@@ -358,7 +435,7 @@ export async function GET(
                 total: attendanceRecords.length
             },
             remarks,
-            internalNotes: dbUser ? internalNotes : []
+            internalNotes: isStaff ? internalNotes : []
         });
     } catch (e) {
         return handleApiError(e);

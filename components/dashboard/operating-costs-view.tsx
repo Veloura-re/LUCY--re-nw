@@ -128,16 +128,16 @@ export function OperatingCostsView() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                        <Receipt className="w-8 h-8 text-eduGreen-500" />
+                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                        <Receipt className="w-7 h-7 sm:w-8 sm:h-8 text-eduGreen-500 shrink-0" />
                         Operating Costs
                     </h2>
-                    <p className="text-slate-500 dark:text-zinc-500 font-medium">Internal ledger for tracking institutional assets and expenses.</p>
+                    <p className="text-slate-500 dark:text-zinc-500 font-medium text-xs sm:text-sm">Internal ledger for tracking institutional assets and expenses.</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 shrink-0">
                     <CachedSyncBadge 
                         isRevalidating={isRevalidating} 
                         isOffline={isOffline} 
@@ -269,26 +269,26 @@ export function OperatingCostsView() {
                     ) : (
                         <div className="space-y-4">
                             {expenses.map((expense) => (
-                                <div key={expense.id} className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
+                                <div key={expense.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/50 hover:bg-slate-100 dark:hover:bg-zinc-900 transition-colors">
+                                    <div className="flex items-start gap-3 sm:gap-4 min-w-0">
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
                                             {CATEGORY_ICONS[expense.category]}
                                         </div>
-                                        <div>
-                                            <p className="text-slate-900 dark:text-white font-medium">{expense.title}</p>
-                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-slate-500 dark:text-zinc-500 mt-1">
+                                        <div className="min-w-0">
+                                            <p className="text-slate-900 dark:text-white font-medium truncate">{expense.title}</p>
+                                            <div className="flex flex-wrap items-center gap-1 sm:gap-4 text-xs text-slate-500 dark:text-zinc-500 mt-1">
                                                 <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(new Date(expense.createdAt), 'MMM d, yyyy')}</span>
                                                 <span className="hidden sm:inline">•</span>
-                                                <span>Logged by {expense.loggedBy.name}</span>
+                                                <span className="truncate">Logged by {expense.loggedBy.name}</span>
                                             </div>
                                             {expense.description && (
-                                                <p className="text-xs text-slate-600 dark:text-zinc-400 mt-2 bg-white dark:bg-zinc-950 p-2 rounded border border-slate-200 dark:border-zinc-900 inline-block">{expense.description}</p>
+                                                <p className="text-xs text-slate-600 dark:text-zinc-400 mt-2 bg-white dark:bg-zinc-950 p-2 rounded border border-slate-200 dark:border-zinc-900 inline-block break-words">{expense.description}</p>
                                             )}
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-lg font-medium text-slate-900 dark:text-white">R {parseFloat(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                                        <p className="text-[10px] uppercase tracking-wider font-semibold text-eduGreen-500 mt-1">{expense.category}</p>
+                                    <div className="text-left sm:text-right shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-zinc-800/60">
+                                        <p className="text-base sm:text-lg font-medium text-slate-900 dark:text-white">R {parseFloat(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                        <p className="text-[10px] uppercase tracking-wider font-semibold text-eduGreen-500 mt-0.5 sm:mt-1">{expense.category}</p>
                                     </div>
                                 </div>
                             ))}

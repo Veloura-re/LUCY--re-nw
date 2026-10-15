@@ -4,6 +4,7 @@ import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
+import { logActivity } from '@/lib/audit';
 export async function GET(request: Request) {
     try {
         const dbUser = await requireSchoolLinked();
@@ -39,7 +40,6 @@ export async function POST(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: dbUser.id, schoolId: dbUser.schoolId, action: 'CREATE_SUBJECT', resourceType: 'subject', ip: _ip || undefined });
         } catch { /* non-blocking */ }
@@ -92,7 +92,6 @@ export async function DELETE(request: Request) {
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const targetSchoolId = subjectToDelete?.schoolId || dbUser.schoolId!;
             await logActivity({

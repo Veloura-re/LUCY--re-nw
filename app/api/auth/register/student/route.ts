@@ -3,6 +3,8 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
 import { rateLimitShared } from '@/lib/rate-limit';
 
+import { logActivity } from '@/lib/audit';
+import { sendWelcomeEmail } from '@/lib/email';
 export async function POST(req: Request) {
     // The access code is the only credential here, so guessing must be slow
     const limited = await rateLimitShared(req, 'auth/register-student', 5, 10 * 60_000);
@@ -76,6 +78,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Authentication Provider Failed" }, { status: 500 });
         }
 
+        // Never repurpose an existing account: a user who already exists may only be (re)linked when
+        // they are already a student of this same school.
+        const { data: existingAccount } = await supabaseAdmin
+            .from('User')
+            .select('id, role, schoolId')
+            .eq('id', authUser.id)
+            .maybeSingle();
+        if (existingAccount && (existingAccount.role !== 'STUDENT' || (existingAccount.schoolId && existingAccount.schoolId !== student.schoolId))) {
+            return NextResponse.json({ error: "This account cannot be used to claim a student token" }, { status: 409 });
+        }
+
         // 3. Create User Account in Database (Synced with Supabase ID)
         try {
             const { data: user, error: upsertError } = await supabaseAdmin.from('User').upsert({
@@ -91,24 +104,29 @@ export async function POST(req: Request) {
             if (upsertError) throw upsertError;
 
             // 4. Link Student to User
-            await supabaseAdmin.from('Student').update({ userId: user.id }).eq('id', student.id);
+            // Conditional update: only one concurrent request can claim the token.
+            const { data: claimed } = await supabaseAdmin
+                .from('Student')
+                .update({ userId: user.id })
+                .eq('id', student.id)
+                .is('userId', null)
+                .select('id');
+            if (!claimed || claimed.length === 0) {
+                return NextResponse.json({ error: "Token already claimed" }, { status: 409 });
+            }
 
             // 5. Asynchronous Welcome Email Dispatch
             if (user.email && !user.email.endsWith('@lucy.local')) {
-                try {
-                    const { sendWelcomeEmail } = await import('@/lib/email');
-                    sendWelcomeEmail({
-                        toEmail: user.email,
-                        name: user.name,
-                        role: 'STUDENT',
-                        schoolId: student.schoolId
-                    }).catch((emailErr) => console.warn('[register-student] Welcome email failed:', emailErr));
-                } catch { /* non-blocking */ }
+                sendWelcomeEmail({
+                    toEmail: user.email,
+                    name: user.name,
+                    role: 'STUDENT',
+                    schoolId: student.schoolId
+                }).catch((emailErr) => console.warn('[register-student] Welcome email failed:', emailErr));
             }
 
             // Audit log
             try {
-                const { logActivity } = await import('@/lib/audit');
                 const _ip = req instanceof Request ? (req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || undefined) : undefined;
                 const _userId = user.id;
                 if (_userId) {
@@ -124,8 +142,7 @@ export async function POST(req: Request) {
         } catch (dbError: any) {
             console.error("Database Sync Error:", dbError);
             return NextResponse.json({
-                error: "Critical sync error. Please contact support with your student code.",
-                details: dbError.message
+                error: "Critical sync error. Please contact support with your student code."
             }, { status: 500 });
         }
 

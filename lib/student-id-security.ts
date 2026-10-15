@@ -1,13 +1,22 @@
 import crypto from "crypto";
 
-const QR_SIGNING_SECRET = process.env.QR_HMAC_SECRET || process.env.ADMIN_SECRET_KEY || "lucy-institutional-credential-seal-2026";
+const DEV_ONLY_SIGNING_SECRET = "lucy-dev-only-credential-seal";
+
+function getSigningSecret(): string {
+    const secret = process.env.QR_HMAC_SECRET || process.env.ADMIN_SECRET_KEY;
+    if (secret) return secret;
+    if (process.env.NODE_ENV === "production") {
+        throw new Error("QR_HMAC_SECRET must be configured in production");
+    }
+    return DEV_ONLY_SIGNING_SECRET;
+}
 
 /**
  * Creates an HMAC-SHA256 signature for a student and school pair.
  */
 export function signStudentPayload(studentId: string, schoolId: string): string {
     return crypto
-        .createHmac("sha256", QR_SIGNING_SECRET)
+        .createHmac("sha256", getSigningSecret())
         .update(`${studentId}:${schoolId}`)
         .digest("hex")
         .substring(0, 16);

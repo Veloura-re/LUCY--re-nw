@@ -143,10 +143,10 @@ async function handlePOST(request: Request) {
         // Find school name
         const school = await prisma.school.findUnique({ where: { id: user.schoolId } });
 
-        console.log(`📨 [TEACHERS API] Sending invite to ${email} as ${role} for school "${school?.name}"`);
+        console.log(`[TEACHERS API] Sending invite to ${email} as ${role} for school "${school?.name}"`);
         const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', token, role, user.schoolId);
         const res = emailResult as any;
-        console.log(`📨 [TEACHERS API] Invite email result:`, JSON.stringify(res));
+        console.log(`[TEACHERS API] Invite email result:`, JSON.stringify(res));
 
         return secureJson({ 
             user: newUser, 

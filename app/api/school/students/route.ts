@@ -435,7 +435,7 @@ export async function POST(request: Request) {
                 const inviteUrl = `${origin}/invite/${result.token}`;
                 const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
                 
-                console.log(`📨 [STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
+                console.log(`[STUDENTS API] Sending invite to ${email} as STUDENT for school "${school?.name}"`);
                 const emailResult = await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', result.token, 'STUDENT', targetSchoolId!);
                 const res = emailResult as any;
                 
@@ -459,7 +459,7 @@ export async function POST(request: Request) {
         return secureJson({ student: result.student });
 
     } catch (e: any) {
-        console.error("❌ [STUDENTS API POST ERROR]:", e);
+        console.error("[STUDENTS API POST ERROR]:", e);
         const msg = e?.message || "Failed to create student record";
         if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
         if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);
@@ -593,7 +593,7 @@ export async function PUT(request: Request) {
         return secureJson({ student });
 
     } catch (e: any) {
-        console.error("❌ [STUDENTS API PUT ERROR]:", e);
+        console.error("[STUDENTS API PUT ERROR]:", e);
         const msg = e?.message || "Failed to update student";
         if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
         if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);
@@ -681,7 +681,7 @@ export async function DELETE(request: Request) {
         return secureJson({ success: true });
 
     } catch (e: any) {
-        console.error("❌ [STUDENTS API DELETE ERROR]:", e);
+        console.error("[STUDENTS API DELETE ERROR]:", e);
         const msg = e?.message || "Failed to delete student";
         if (msg.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
         if (msg.startsWith("Forbidden")) return secureJson({ error: msg }, 403);

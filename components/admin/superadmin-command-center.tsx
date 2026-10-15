@@ -138,7 +138,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
     return (
         <div className="space-y-8">
             {/* Header Telemetry Bar */}
-            <div className="relative overflow-hidden bg-white/90 dark:bg-zinc-950/90 backdrop-blur-3xl border border-zinc-300 dark:border-zinc-800/80 p-8 rounded-[2.5rem] shadow-2xl">
+            <div className="relative overflow-hidden bg-white/90 dark:bg-zinc-950/90 backdrop-blur-3xl border border-zinc-300 dark:border-zinc-800/80 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] shadow-2xl">
                 {/* Backlight Glow Overlay */}
                 <div className="absolute -top-24 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -154,7 +154,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                                 LATENCY: 12ms
                             </span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white tracking-tight uppercase font-orbitron">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-900 dark:text-white tracking-tight uppercase font-orbitron">
                             Command Node Dashboard
                         </h1>
                         <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium tracking-wide mt-1">
@@ -162,11 +162,11 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
                         <button
                             onClick={handleRefresh}
                             disabled={isRefreshing}
-                            className="h-12 px-5 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-2 transition-all active:scale-95"
+                            className="h-11 sm:h-12 px-4 sm:px-5 flex-1 sm:flex-initial justify-center rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-2 transition-all active:scale-95"
                         >
                             <RefreshCw className={cn("w-4 h-4 text-emerald-400", isRefreshing && "animate-spin")} />
                             Sync System
@@ -174,7 +174,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
 
                         <Link
                             href="/admin/schools"
-                            className="h-12 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95"
+                            className="h-11 sm:h-12 px-5 sm:px-6 flex-1 sm:flex-initial justify-center rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95"
                         >
                             <Zap className="w-4 h-4" />
                             Provision Tenant
@@ -184,7 +184,7 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
             </div>
 
             {/* Backlit Navigation Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto p-1.5 rounded-3xl bg-white/80 dark:bg-zinc-950/80 border border-zinc-300 dark:border-zinc-800/80 backdrop-blur-2xl scrollbar-none">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto p-1.5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-zinc-950/80 border border-zinc-300 dark:border-zinc-800/80 backdrop-blur-2xl scrollbar-none">
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.id;
                     const Icon = tab.icon;
@@ -193,14 +193,14 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={cn(
-                                "relative px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2.5 whitespace-nowrap",
+                                "relative px-3.5 sm:px-6 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 sm:gap-2.5 whitespace-nowrap",
                                 isActive ? "text-zinc-900 dark:text-white" : "text-zinc-600 dark:text-zinc-500 hover:text-zinc-300"
                             )}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="activeAdminTab"
-                                    className="absolute inset-0 bg-emerald-500/15 border border-emerald-500/40 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.25)]"
+                                    className="absolute inset-0 bg-emerald-500/15 border border-emerald-500/40 rounded-xl sm:rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.25)]"
                                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                                 />
                             )}
@@ -427,16 +427,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-3xl p-8 space-y-6"
+                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 space-y-6"
                     >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Institutional Tenants</h3>
                                 <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Cryptographically isolated school PostgreSQL schemas</p>
                             </div>
                             <Link
                                 href="/admin/schools"
-                                className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-xs font-mono text-zinc-900 dark:text-white flex items-center gap-2"
+                                className="px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-300 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-800 text-xs font-mono text-zinc-900 dark:text-white flex items-center gap-2 w-max"
                             >
                                 Manage All Nodes <ExternalLink className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400" />
                             </Link>
@@ -444,16 +444,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
 
                         <div className="divide-y divide-zinc-900 border border-zinc-200 dark:border-zinc-900 rounded-2xl overflow-hidden bg-zinc-100/30 dark:bg-zinc-900/30">
                             {schools.map((school) => (
-                                <div key={school.id} className="p-4 flex items-center justify-between hover:bg-zinc-200 dark:hover:bg-zinc-900/50 transition-colors">
+                                <div key={school.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-200 dark:hover:bg-zinc-900/50 transition-colors">
                                     <div className="flex items-center gap-3.5">
-                                        <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10B981]" />
+                                        <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10B981] shrink-0" />
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{school.name}</div>
                                             <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">CODE: {school.schoolCode}</div>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-6 font-mono text-xs">
-                                        <div className="text-right">
+                                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 font-mono text-xs w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-zinc-200 dark:border-zinc-800">
+                                        <div className="text-left sm:text-right">
                                             <div className="text-zinc-700 dark:text-zinc-300 font-bold">{school._count?.users || 0} Staff</div>
                                             <div className="text-[10px] text-zinc-600 dark:text-zinc-500">{school._count?.students || 0} Students</div>
                                         </div>
@@ -473,16 +473,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-3xl p-8 space-y-6"
+                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 space-y-6"
                     >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Inbound Wants-Access Ledger</h3>
                                 <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Pending school registrations awaiting owner invite token dispatches</p>
                             </div>
                             <Link
                                 href="/admin/requests"
-                                className="px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono font-bold flex items-center gap-2"
+                                className="px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono font-bold flex items-center gap-2 w-max"
                             >
                                 Open Request Vault <ExternalLink className="w-3.5 h-3.5" />
                             </Link>
@@ -493,14 +493,14 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         ) : (
                             <div className="space-y-3">
                                 {wantsAccessRequests.slice(0, 5).map((req, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex items-center justify-between">
+                                    <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{req.name || req.email}</div>
                                             <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">{req.email} • {req.schoolName || 'Institution'}</div>
                                         </div>
                                         <Link
                                             href="/admin/requests"
-                                            className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-zinc-900 dark:text-white text-xs font-bold uppercase tracking-wider"
+                                            className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-zinc-900 dark:text-white text-xs font-bold uppercase tracking-wider w-max"
                                         >
                                             Dispatch Token
                                         </Link>
@@ -517,16 +517,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-3xl p-8 space-y-6"
+                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 space-y-6"
                     >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Vulnerability Disclosure Vault</h3>
                                 <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Real-time white-hat security logs</p>
                             </div>
                             <Link
                                 href="/admin/security"
-                                className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono font-bold flex items-center gap-2"
+                                className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-mono font-bold flex items-center gap-2 w-max"
                             >
                                 Open Security Vault <ExternalLink className="w-3.5 h-3.5" />
                             </Link>
@@ -537,12 +537,12 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         ) : (
                             <div className="space-y-3">
                                 {securityReports.map((rep, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-orange-950/10 border border-orange-900/30 flex items-center justify-between">
+                                    <div key={i} className="p-4 rounded-2xl bg-orange-950/10 border border-orange-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <div>
                                             <div className="text-sm font-bold text-orange-400">{rep.title || 'Security Report'}</div>
                                             <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-400">Reporter: {rep.reporterEmail || 'Anonymous'}</div>
                                         </div>
-                                        <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-mono font-bold uppercase">
+                                        <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-[10px] font-mono font-bold uppercase w-max">
                                             {rep.severity || 'DISCLOSED'}
                                         </span>
                                     </div>
@@ -558,16 +558,16 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-3xl p-8 space-y-6"
+                        className="bg-white/90 dark:bg-zinc-950/90 border border-zinc-300 dark:border-zinc-800/80 rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 space-y-6"
                     >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-orbitron uppercase">Billing & Wire Receipts</h3>
                                 <p className="text-xs text-zinc-600 dark:text-zinc-500 font-mono mt-1">Manual bank transfer verifications</p>
                             </div>
                             <Link
                                 href="/admin/billing"
-                                className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-bold flex items-center gap-2"
+                                className="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-bold flex items-center gap-2 w-max"
                             >
                                 Open Billing Console <ExternalLink className="w-3.5 h-3.5" />
                             </Link>
@@ -578,13 +578,13 @@ export function SuperAdminCommandCenter({ userName }: { userName: string }) {
                         ) : (
                             <div className="space-y-3">
                                 {receipts.map((rcpt, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex items-center justify-between">
+                                    <div key={i} className="p-4 rounded-2xl bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <div>
                                             <div className="text-sm font-bold text-zinc-900 dark:text-white">{rcpt.schoolName || 'School Node'}</div>
                                             <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-500">Amount: ${rcpt.amount || '0.00'} • Ref: {rcpt.reference || 'N/A'}</div>
                                         </div>
                                         <span className={cn(
-                                            "px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase",
+                                            "px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase w-max",
                                             rcpt.status === 'VERIFIED' ? "bg-emerald-500/20 text-emerald-400" : "bg-orange-500/20 text-orange-400"
                                         )}>
                                             {rcpt.status}

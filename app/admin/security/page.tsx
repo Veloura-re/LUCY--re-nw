@@ -175,44 +175,48 @@ export default function SecurityDisclosuresPage() {
                         </div>
                     ) : (
                         <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                            {/* Table Header */}
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Reporter Email</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Category</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Severity</div>
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Description</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
-                            </div>
-                            
-                            {/* Table Rows */}
-                            <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                                {filteredReports.map((report) => (
-                                    <div key={report.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
-                                        <div className="col-span-3 font-mono text-xs select-all truncate">{report.email}</div>
-                                        <div className="col-span-2 text-center">
-                                            <span className="px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-[9px] font-bold text-zinc-600 dark:text-zinc-400">
-                                                {report.vulnerabilityType}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full border text-[9px] font-bold",
-                                                report.severity === 'CRITICAL' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400",
-                                                report.severity === 'HIGH' && "bg-orange-950/20 border-orange-900/50 text-orange-400",
-                                                report.severity === 'MEDIUM' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
-                                                report.severity === 'LOW' && "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
-                                            )}>
-                                                {report.severity}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-3 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-mono select-all pr-2">
-                                            {report.description}
-                                        </div>
-                                        <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
-                                            {new Date(report.createdAt).toLocaleDateString()}
-                                        </div>
+                            <div className="overflow-x-auto scrollbar-thin">
+                                <div className="min-w-[720px]">
+                                    {/* Table Header */}
+                                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Reporter Email</div>
+                                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Category</div>
+                                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-center">Severity</div>
+                                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Description</div>
+                                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Logged At</div>
                                     </div>
-                                ))}
+                                    
+                                    {/* Table Rows */}
+                                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                        {filteredReports.map((report) => (
+                                            <div key={report.id} className="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
+                                                <div className="col-span-3 font-mono text-xs select-all truncate">{report.email}</div>
+                                                <div className="col-span-2 text-center">
+                                                    <span className="px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 text-[9px] font-bold text-zinc-600 dark:text-zinc-400">
+                                                        {report.vulnerabilityType}
+                                                    </span>
+                                                </div>
+                                                <div className="col-span-2 text-center">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded-full border text-[9px] font-bold",
+                                                        report.severity === 'CRITICAL' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400",
+                                                        report.severity === 'HIGH' && "bg-orange-950/20 border-orange-900/50 text-orange-400",
+                                                        report.severity === 'MEDIUM' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
+                                                        report.severity === 'LOW' && "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400"
+                                                    )}>
+                                                        {report.severity}
+                                                    </span>
+                                                </div>
+                                                <div className="col-span-3 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-mono select-all pr-2">
+                                                    {report.description}
+                                                </div>
+                                                <div className="col-span-2 text-right text-[10px] text-zinc-600 font-mono">
+                                                    {new Date(report.createdAt).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -243,34 +247,38 @@ export default function SecurityDisclosuresPage() {
                         </div>
                     ) : (
                         <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Timestamp</div>
-                                <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">IP Address</div>
-                                <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Account Email</div>
-                                <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Status</div>
-                            </div>
-                            
-                            <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                                {auditLogs.map((log) => (
-                                    <div key={log.id} className="grid grid-cols-12 gap-4 px-6 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
-                                        <div className="col-span-3 text-[10px] text-zinc-600 font-mono">
-                                            {new Date(log.created_at).toLocaleString()}
-                                        </div>
-                                        <div className="col-span-3 font-mono text-xs select-all">{log.ip_address}</div>
-                                        <div className="col-span-4 font-mono text-xs select-all truncate text-zinc-600 dark:text-zinc-400">{log.email}</div>
-                                        <div className="col-span-2 text-right">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase",
-                                                log.status === 'SUCCESS' && "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400",
-                                                log.status === 'FAILED_PASSWORD' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
-                                                log.status === 'RATE_LIMITED' && "bg-orange-950/20 border-orange-900/50 text-orange-500",
-                                                log.status === 'BLOCKED_TURNSTILE' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-500"
-                                            )}>
-                                                {log.status.replace('_', ' ')}
-                                            </span>
-                                        </div>
+                            <div className="overflow-x-auto scrollbar-thin">
+                                <div className="min-w-[720px]">
+                                    <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5">
+                                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Timestamp</div>
+                                        <div className="col-span-3 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">IP Address</div>
+                                        <div className="col-span-4 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">Account Email</div>
+                                        <div className="col-span-2 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest text-right">Status</div>
                                     </div>
-                                ))}
+                                    
+                                    <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                        {auditLogs.map((log) => (
+                                            <div key={log.id} className="grid grid-cols-12 gap-4 px-6 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-zinc-900 dark:text-white">
+                                                <div className="col-span-3 text-[10px] text-zinc-600 font-mono">
+                                                    {new Date(log.created_at).toLocaleString()}
+                                                </div>
+                                                <div className="col-span-3 font-mono text-xs select-all">{log.ip_address}</div>
+                                                <div className="col-span-4 font-mono text-xs select-all truncate text-zinc-600 dark:text-zinc-400">{log.email}</div>
+                                                <div className="col-span-2 text-right">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase",
+                                                        log.status === 'SUCCESS' && "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400",
+                                                        log.status === 'FAILED_PASSWORD' && "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-600 dark:text-amber-400",
+                                                        log.status === 'RATE_LIMITED' && "bg-orange-950/20 border-orange-900/50 text-orange-500",
+                                                        log.status === 'BLOCKED_TURNSTILE' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-500"
+                                                    )}>
+                                                        {log.status.replace('_', ' ')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}

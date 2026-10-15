@@ -24,28 +24,28 @@ const sb = createClient(
 function pad(str, n) { return String(str).padEnd(n); }
 
 async function nukeAllAuthUsers() {
-    console.log('\n🗑  Fetching all Auth users…');
+    console.log('\n Fetching all Auth users…');
     let page = 1;
     let deleted = 0;
     while (true) {
         const { data, error } = await sb.auth.admin.listUsers({ page, perPage: 1000 });
-        if (error) { console.warn('  ⚠  listUsers error:', error.message); break; }
+        if (error) { console.warn('   listUsers error:', error.message); break; }
         const users = data?.users ?? [];
         if (users.length === 0) break;
         console.log(`    Page ${page}: ${users.length} auth users`);
         for (const u of users) {
             const { error: de } = await sb.auth.admin.deleteUser(u.id);
-            if (de) console.warn(`    ⚠  Auth delete ${u.email}: ${de.message}`);
+            if (de) console.warn(`     Auth delete ${u.email}: ${de.message}`);
             else deleted++;
         }
         if (users.length < 1000) break;
         page++;
     }
-    console.log(`  ✅  Deleted ${deleted} auth accounts`);
+    console.log(`   Deleted ${deleted} auth accounts`);
 }
 
 async function nukeAllDbUsers() {
-    console.log('\n🗑  Purging User table…');
+    console.log('\n Purging User table…');
     // Delete dependents that don't auto-cascade
     const tables = [
         'StaffPayroll',
@@ -76,17 +76,17 @@ async function nukeAllDbUsers() {
     for (const t of tables) {
         // deleteMany equivalent — delete all rows
         const { error } = await sb.from(t).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        if (error) console.warn(`    ⚠  ${t}: ${error.message}`);
+        if (error) console.warn(`     ${t}: ${error.message}`);
         else console.log(`    ✓  ${t} cleared`);
     }
 
     const { error } = await sb.from('User').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    if (error) console.warn('    ⚠  User:', error.message);
+    if (error) console.warn('     User:', error.message);
     else console.log('    ✓  User cleared');
 }
 
 async function nukeAllSchools() {
-    console.log('\n🗑  Purging Schools…');
+    console.log('\n Purging Schools…');
     // Most school-related records should be gone after nuking users/students.
     // Clean remaining child tables then schools.
     const schoolTables = [
@@ -101,12 +101,12 @@ async function nukeAllSchools() {
     ];
     for (const t of schoolTables) {
         const { error } = await sb.from(t).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        if (error) console.warn(`    ⚠  ${t}: ${error.message}`);
+        if (error) console.warn(`     ${t}: ${error.message}`);
         else console.log(`    ✓  ${t} cleared`);
     }
 
     const { error } = await sb.from('School').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    if (error) console.warn('    ⚠  School:', error.message);
+    if (error) console.warn('     School:', error.message);
     else console.log('    ✓  School cleared');
 }
 
@@ -140,7 +140,7 @@ async function mkUser(email, password, name, role, extra = {}) {
 
 async function main() {
     console.log('\n╔══════════════════════════════════════════════╗');
-    console.log('║   🚨  LUCY — NUKE & SEED                    ║');
+    console.log('║    LUCY — NUKE & SEED                    ║');
     console.log('╚══════════════════════════════════════════════╝');
 
     // ── Step 1: Wipe everything ───────────────────────────────────────────────
@@ -149,7 +149,7 @@ async function main() {
     await nukeAllAuthUsers();
 
     // ── Step 2: Seed one user per role ────────────────────────────────────────
-    console.log('\n✨  Creating seed users…\n');
+    console.log('\n Creating seed users…\n');
 
     const users = [
         // [email, password, name, role]
@@ -165,15 +165,15 @@ async function main() {
         try {
             const id = await mkUser(email, password, name, role);
             created.push({ role, email, password, id });
-            console.log(`  ✅  ${pad(role, 12)}  ${email}`);
+            console.log(`   ${pad(role, 12)}  ${email}`);
         } catch (e) {
-            console.error(`  ❌  ${pad(role, 12)}  ${email}  →  ${e.message}`);
+            console.error(`   ${pad(role, 12)}  ${email}  →  ${e.message}`);
         }
     }
 
     // ── Step 3: Credentials summary ───────────────────────────────────────────
     console.log('\n╔══════════════════════════════════════════════════════════════════╗');
-    console.log('║   ✅  SEED COMPLETE — LOGIN CREDENTIALS                         ║');
+    console.log('║    SEED COMPLETE — LOGIN CREDENTIALS                         ║');
     console.log('╠══════════════════════════════════════════════════════════════════╣');
     console.log(`║  ${'Role'.padEnd(14)} ${'Email'.padEnd(26)} ${'Password'.padEnd(22)} ║`);
     console.log('╠══════════════════════════════════════════════════════════════════╣');
@@ -181,11 +181,11 @@ async function main() {
         console.log(`║  ${pad(role, 14)} ${pad(email, 26)} ${pad(password, 22)} ║`);
     }
     console.log('╠══════════════════════════════════════════════════════════════════╣');
-    console.log('║  🌐  Login: https://5-cn.net/login                              ║');
+    console.log('║   Login: https://5-cn.net/login                              ║');
     console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 }
 
 main().catch(e => {
-    console.error('\n❌  FATAL:', e.message);
+    console.error('\n FATAL:', e.message);
     process.exit(1);
 });

@@ -214,71 +214,75 @@ export default function BillingControlsPage() {
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
-                            <div className="col-span-3">School Node</div>
-                            <div className="col-span-2">Submitter</div>
-                            <div className="col-span-2 text-center">Amount</div>
-                            <div className="col-span-2">Reference ID</div>
-                            <div className="col-span-1 text-center">Receipt</div>
-                            <div className="col-span-2 text-right">Actions</div>
-                        </div>
-                        <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                            {filteredReceipts.map((receipt) => (
-                                <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
-                                    <div className="col-span-3 font-semibold">
-                                        {receipt.school?.name || 'Unknown School'}
-                                    </div>
-                                    <div className="col-span-2 text-zinc-600 dark:text-zinc-400">
-                                        {receipt.submittedBy?.name || 'Unknown User'}
-                                    </div>
-                                    <div className="col-span-2 text-center font-bold text-emerald-400">
-                                        ${parseFloat(receipt.amount).toFixed(2)}
-                                    </div>
-                                    <div className="col-span-2 font-mono text-zinc-700 dark:text-zinc-300 truncate select-all">
-                                        {receipt.reference}
-                                    </div>
-                                    <div className="col-span-1 text-center">
-                                        <a 
-                                            href={receipt.receiptUrl} 
-                                            target="_blank" 
-                                            rel="noreferrer" 
-                                            className="inline-flex text-[10px] text-zinc-600 dark:text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
-                                        >
-                                            View
-                                        </a>
-                                    </div>
-                                    <div className="col-span-2 flex items-center justify-end gap-2">
-                                        {receipt.status === 'PENDING' ? (
-                                            <>
-                                                <button
-                                                    onClick={() => handleResolveReceipt(receipt.id, 'APPROVED')}
-                                                    className="px-2.5 py-1 rounded-md bg-emerald-950/20 border border-emerald-900/50 hover:bg-emerald-900/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider transition-all"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        const reason = prompt('Rejection reason (optional):') || '';
-                                                        handleResolveReceipt(receipt.id, 'REJECTED', reason);
-                                                    }}
-                                                    className="px-2.5 py-1 rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
-                                                >
-                                                    Reject
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <span className={cn(
-                                                "px-2.5 py-0.5 rounded text-[9px] font-bold uppercase border",
-                                                receipt.status === 'APPROVED' 
-                                                    ? "border-emerald-900/30 text-emerald-500 bg-emerald-950/10" 
-                                                    : "border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-500 bg-red-950/10"
-                                            )}>
-                                                {receipt.status}
-                                            </span>
-                                        )}
-                                    </div>
+                        <div className="overflow-x-auto scrollbar-thin">
+                            <div className="min-w-[760px]">
+                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                                    <div className="col-span-3">School Node</div>
+                                    <div className="col-span-2">Submitter</div>
+                                    <div className="col-span-2 text-center">Amount</div>
+                                    <div className="col-span-2">Reference ID</div>
+                                    <div className="col-span-1 text-center">Receipt</div>
+                                    <div className="col-span-2 text-right">Actions</div>
                                 </div>
-                            ))}
+                                <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                    {filteredReceipts.map((receipt) => (
+                                        <div key={receipt.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
+                                            <div className="col-span-3 font-semibold">
+                                                {receipt.school?.name || 'Unknown School'}
+                                            </div>
+                                            <div className="col-span-2 text-zinc-600 dark:text-zinc-400">
+                                                {receipt.submittedBy?.name || 'Unknown User'}
+                                            </div>
+                                            <div className="col-span-2 text-center font-bold text-emerald-400">
+                                                ${parseFloat(receipt.amount).toFixed(2)}
+                                            </div>
+                                            <div className="col-span-2 font-mono text-zinc-700 dark:text-zinc-300 truncate select-all">
+                                                {receipt.reference}
+                                            </div>
+                                            <div className="col-span-1 text-center">
+                                                <a 
+                                                    href={receipt.receiptUrl} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    className="inline-flex text-[10px] text-zinc-600 dark:text-zinc-400 hover:text-white uppercase font-bold tracking-widest"
+                                                >
+                                                    View
+                                                </a>
+                                            </div>
+                                            <div className="col-span-2 flex items-center justify-end gap-2">
+                                                {receipt.status === 'PENDING' ? (
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleResolveReceipt(receipt.id, 'APPROVED')}
+                                                            className="px-2.5 py-1 rounded-md bg-emerald-950/20 border border-emerald-900/50 hover:bg-emerald-900/30 text-emerald-400 text-[10px] font-bold uppercase tracking-wider transition-all"
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                const reason = prompt('Rejection reason (optional):') || '';
+                                                                handleResolveReceipt(receipt.id, 'REJECTED', reason);
+                                                            }}
+                                                            className="px-2.5 py-1 rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase tracking-wider transition-all"
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <span className={cn(
+                                                        "px-2.5 py-0.5 rounded text-[9px] font-bold uppercase border",
+                                                        receipt.status === 'APPROVED' 
+                                                            ? "border-emerald-900/30 text-emerald-500 bg-emerald-950/10" 
+                                                            : "border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-500 bg-red-950/10"
+                                                    )}>
+                                                        {receipt.status}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -332,75 +336,79 @@ export default function BillingControlsPage() {
                     </div>
                 ) : (
                     <div className="rounded-2xl border border-zinc-200 dark:border-white/5 overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
-                            <div className="col-span-3">School Name</div>
-                            <div className="col-span-2">Trial Ends</div>
-                            <div className="col-span-2 text-center">Remaining</div>
-                            <div className="col-span-2 text-center">Billing State</div>
-                            <div className="col-span-3 text-right">Billing Actions</div>
-                        </div>
-                        <div className="divide-y divide-white/5 bg-white dark:bg-black">
-                            {filteredSchools.map((school) => {
-                                const now = new Date();
-                                let trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
-                                
-                                // Default to 120 days from creation if no explicit trial date is set
-                                if (!trialEndsAt && school.createdAt) {
-                                    trialEndsAt = new Date(school.createdAt);
-                                    trialEndsAt.setDate(trialEndsAt.getDate() + 120);
-                                }
-                                
-                                const remainingDays = trialEndsAt 
-                                    ? Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-                                    : 0;
-                                const expired = trialEndsAt ? now > trialEndsAt : false;
-                                const activeSub = school.subscriptionStatus === 'active';
+                        <div className="overflow-x-auto scrollbar-thin">
+                            <div className="min-w-[760px]">
+                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-200 dark:bg-white/5 border-b border-zinc-200 dark:border-white/5 text-[9px] font-semibold text-zinc-600 uppercase tracking-widest">
+                                    <div className="col-span-3">School Name</div>
+                                    <div className="col-span-2">Trial Ends</div>
+                                    <div className="col-span-2 text-center">Remaining</div>
+                                    <div className="col-span-2 text-center">Billing State</div>
+                                    <div className="col-span-3 text-right">Billing Actions</div>
+                                </div>
+                                <div className="divide-y divide-white/5 bg-white dark:bg-black">
+                                    {filteredSchools.map((school) => {
+                                        const now = new Date();
+                                        let trialEndsAt = school.trialEndsAt ? new Date(school.trialEndsAt) : null;
+                                        
+                                        // Default to 120 days from creation if no explicit trial date is set
+                                        if (!trialEndsAt && school.createdAt) {
+                                            trialEndsAt = new Date(school.createdAt);
+                                            trialEndsAt.setDate(trialEndsAt.getDate() + 120);
+                                        }
+                                        
+                                        const remainingDays = trialEndsAt 
+                                            ? Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                                            : 0;
+                                        const expired = trialEndsAt ? now > trialEndsAt : false;
+                                        const activeSub = school.subscriptionStatus === 'active';
 
-                                return (
-                                    <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
-                                        <div className="col-span-3">
-                                            <div className="font-semibold">{school.name}</div>
-                                            <div className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
-                                        </div>
-                                        <div className="col-span-2 font-mono text-zinc-600 dark:text-zinc-400">
-                                            {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (120d Default)'}
-                                        </div>
-                                        <div className="col-span-2 text-center font-mono">
-                                            {activeSub ? (
-                                                <span className="text-emerald-500 font-bold">UNLIMITED</span>
-                                            ) : expired ? (
-                                                <span className="text-red-600 dark:text-red-500 font-bold">EXPIRED</span>
-                                            ) : (
-                                                <span className="text-zinc-700 dark:text-zinc-300 font-semibold">{remainingDays} days</span>
-                                            )}
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border",
-                                                activeSub 
-                                                    ? "bg-emerald-950/20 border-emerald-900/50 text-emerald-400" 
-                                                    : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500"
-                                            )}>
-                                                {activeSub ? 'Paying' : 'Non-paying'}
-                                            </span>
-                                        </div>
-                                        <div className="col-span-3 flex items-center justify-end gap-1.5">
-                                            <button
-                                                onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
-                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
-                                            >
-                                                {activeSub ? 'Set Non-paying' : 'Set Paying'}
-                                            </button>
-                                            <button
-                                                onClick={() => handleExtendTrial(school.id, 30)}
-                                                className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
-                                            >
-                                                +30 Days
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                        return (
+                                            <div key={school.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-zinc-200 dark:hover:bg-zinc-900/30 items-center transition-colors text-xs text-zinc-900 dark:text-white">
+                                                <div className="col-span-3">
+                                                    <div className="font-semibold">{school.name}</div>
+                                                    <div className="text-[9px] text-zinc-600 dark:text-zinc-500 font-mono mt-0.5 select-all">{school.schoolCode}</div>
+                                                </div>
+                                                <div className="col-span-2 font-mono text-zinc-600 dark:text-zinc-400">
+                                                    {trialEndsAt ? trialEndsAt.toLocaleDateString() : 'N/A (120d Default)'}
+                                                </div>
+                                                <div className="col-span-2 text-center font-mono">
+                                                    {activeSub ? (
+                                                        <span className="text-emerald-500 font-bold">UNLIMITED</span>
+                                                    ) : expired ? (
+                                                        <span className="text-red-600 dark:text-red-500 font-bold">EXPIRED</span>
+                                                    ) : (
+                                                        <span className="text-zinc-700 dark:text-zinc-300 font-semibold">{remainingDays} days</span>
+                                                    )}
+                                                </div>
+                                                <div className="col-span-2 text-center">
+                                                    <span className={cn(
+                                                        "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border",
+                                                        activeSub 
+                                                            ? "bg-emerald-950/20 border-emerald-900/50 text-emerald-400" 
+                                                            : "bg-white dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-500"
+                                                    )}>
+                                                        {activeSub ? 'Paying' : 'Non-paying'}
+                                                    </span>
+                                                </div>
+                                                <div className="col-span-3 flex items-center justify-end gap-1.5">
+                                                    <button
+                                                        onClick={() => handleUpdateBillingStatus(school.id, activeSub ? 'trialing' : 'active')}
+                                                        className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-emerald-900/30 hover:text-emerald-400 text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                    >
+                                                        {activeSub ? 'Set Non-paying' : 'Set Paying'}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleExtendTrial(school.id, 30)}
+                                                        className="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-zinc-700 hover:text-white text-zinc-600 dark:text-zinc-500 text-[10px] font-semibold uppercase tracking-wider transition-all"
+                                                    >
+                                                        +30 Days
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

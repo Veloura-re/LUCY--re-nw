@@ -79,14 +79,14 @@ function telegramRequest(method, body = null) {
 
 // Forums Topics Matrix
 const TOPICS = [
-    { name: 'welcome-rules', key: 'welcome', emojiId: '5373251851074415873' }, // 📝
-    { name: 'announcements', key: 'announce', emojiId: '5309984423003823246' }, // 📣
-    { name: 'student-lounge', key: 'lounge', emojiId: '5350392020785437399' }, // ☕️
-    { name: 'help-support', key: 'support', emojiId: '5377316857231450742' }, // ❓
-    { name: 'classes-discussion', key: 'classes', emojiId: '5350481781306958339' }, // 📚
-    { name: 'parent-updates', key: 'parents', emojiId: '5386435923204382258' }, // 👨‍👩‍👧‍👦
-    { name: 'staff-room', key: 'staff', emojiId: '5350548830041415279' }, // 🏛️
-    { name: 'telemetry-updates', key: 'telemetry', emojiId: '5350554349074391003' } // 💻
+    { name: 'welcome-rules', key: 'welcome', emojiId: '5373251851074415873' }, //
+    { name: 'announcements', key: 'announce', emojiId: '5309984423003823246' }, //
+    { name: 'student-lounge', key: 'lounge', emojiId: '5350392020785437399' }, //
+    { name: 'help-support', key: 'support', emojiId: '5377316857231450742' }, //
+    { name: 'classes-discussion', key: 'classes', emojiId: '5350481781306958339' }, //
+    { name: 'parent-updates', key: 'parents', emojiId: '5386435923204382258' }, //
+    { name: 'staff-room', key: 'staff', emojiId: '5350548830041415279' }, //
+    { name: 'telemetry-updates', key: 'telemetry', emojiId: '5350554349074391003' } //
 ];
 
 async function run() {
@@ -101,7 +101,7 @@ async function run() {
     // 1. Test bot connection
     try {
         const botInfo = await telegramRequest('getMe');
-        console.log(`\x1b[32m✔ Successfully authenticated as Bot: @${botInfo.username} (${botInfo.first_name})\x1b[0m`);
+        console.log(`\x1b[32mSuccessfully authenticated as Bot: @${botInfo.username} (${botInfo.first_name})\x1b[0m`);
     } catch (err) {
         console.error("\x1b[31mAuthentication failed. Check your TELEGRAM_BOT_TOKEN.\x1b[0m");
         console.error(err.message);
@@ -147,7 +147,7 @@ async function run() {
         }
 
         CHAT_ID = detectedChat.id;
-        console.log(`\n\x1b[32m✔ Detected Chat Node: "${detectedChat.title || detectedChat.username || detectedChat.first_name}" (ID: ${CHAT_ID})\x1b[0m`);
+        console.log(`\n\x1b[32mDetected Chat Node: "${detectedChat.title || detectedChat.username || detectedChat.first_name}" (ID: ${CHAT_ID})\x1b[0m`);
         console.log(`Please add this Chat ID to your .env.local:\n\x1b[34mTELEGRAM_CHAT_ID="${CHAT_ID}"\x1b[0m\n`);
     }
 
@@ -157,9 +157,9 @@ async function run() {
     // Change title
     try {
         await telegramRequest('setChatTitle', { chat_id: CHAT_ID, title: 'LUCY ACADEMICS' });
-        console.log("✔ Chat Title successfully set to: 'LUCY ACADEMICS'");
+        console.log("Chat Title successfully set to: 'LUCY ACADEMICS'");
     } catch (err) {
-        console.log("⚠ Could not set chat title (requires Admin permissions or is already set):", err.message);
+        console.log("Could not set chat title (requires Admin permissions or is already set):", err.message);
     }
 
     // Change description
@@ -168,9 +168,9 @@ async function run() {
             chat_id: CHAT_ID, 
             description: 'Official community topics node for Lucy OS. https://www.5-cn.net' 
         });
-        console.log("✔ Chat Description successfully updated.");
+        console.log("Chat Description successfully updated.");
     } catch (err) {
-        console.log("⚠ Could not set chat description (requires Admin permissions):", err.message);
+        console.log("Could not set chat description (requires Admin permissions):", err.message);
     }
 
     // 4. Create Forum Topics
@@ -186,9 +186,9 @@ async function run() {
                 icon_custom_emoji_id: topic.emojiId
             });
             topicThreadIds[topic.key] = topicResult.message_thread_id;
-            console.log(`✔ Created Topic: "${topic.name}" (Thread ID: ${topicResult.message_thread_id})`);
+            console.log(`Created Topic: "${topic.name}" (Thread ID: ${topicResult.message_thread_id})`);
         } catch (err) {
-            console.log(`⚠ Failed to create topic "${topic.name}". Make sure "Topics" is enabled in group settings.`);
+            console.log(`Failed to create topic "${topic.name}". Make sure "Topics" is enabled in group settings.`);
             console.log(`Error details: ${err.message}`);
         }
     }
@@ -199,17 +199,17 @@ async function run() {
     // Welcome rules topic
     const welcomeThread = topicThreadIds['welcome'];
     if (welcomeThread) {
-        const welcomeText = `🧬 *Welcome to the LUCY ACADEMICS Hub*
+        const welcomeText = `*Welcome to the LUCY ACADEMICS Hub*
 
 Handshake protocols successfully resolved. You have connected to the official decentralized communications node for *Lucy OS*.
 
-🛡️ *Core Rules & Protocols*
+*Core Rules & Protocols*
 1. *Zero-Trust Interactions*: Maintain respectful, constructive communications. Zero tolerance for harassment or discrimination.
 2. *Information Classification*: Protect personal details. Do not post credentials, activation tokens, or sensitive student record cards.
 3. *Topic Compliance*: Keep discussions aligned with topic themes (e.g. academic talk in *classes-discussion*).
 4. *Uplink Integrity*: Do not spam, post malicious payload links, or attempt unauthorized entry scripts.
 
-🌐 *Core Community Links*
+*Core Community Links*
 • *Discord Server*: https://discord.gg/Kbm4XhzfMJ
 • *YouTube Channel*: https://www.youtube.com/@LucyAcademics
 • *Web Portal*: https://www.5-cn.net`;
@@ -222,7 +222,7 @@ Handshake protocols successfully resolved. You have connected to the official de
                 parse_mode: 'Markdown',
                 disable_web_page_preview: true
             });
-            console.log("✔ Sent welcome rules to #welcome-rules topic.");
+            console.log("Sent welcome rules to #welcome-rules topic.");
 
             // Try to pin the message in the topic
             try {
@@ -230,29 +230,29 @@ Handshake protocols successfully resolved. You have connected to the official de
                     chat_id: CHAT_ID,
                     message_id: welcomeMsg.message_id
                 });
-                console.log("✔ Pinned rules inside topic.");
+                console.log("Pinned rules inside topic.");
             } catch (pinErr) {
-                console.log("⚠ Could not pin rules (requires Admin pin_messages permission):", pinErr.message);
+                console.log("Could not pin rules (requires Admin pin_messages permission):", pinErr.message);
             }
         } catch (err) {
-            console.error("⚠ Failed to send welcome rules:", err.message);
+            console.error("Failed to send welcome rules:", err.message);
         }
     }
 
     // Announcements topic
     const announceThread = topicThreadIds['announce'];
     if (announceThread) {
-        const announceText = `📢 *Lucy OS Node Active // Version 1.0.4*
+        const announceText = `*Lucy OS Node Active // Version 1.0.4*
 
 We are proud to announce the live deployment of the *LUCY ACADEMICS* system cluster! Lucy OS is a modular cognitive platform designed to eliminate the friction between raw institutional data and academic output.
 
-🚀 *Core Platform Modules:*
+*Core Platform Modules:*
 • *Zero-Trust Security*: Every transaction is cryptographically verified and recorded in append-only logs.
 • *Performance Telemetry*: Live attendance, grading matrices, and real-time class diagnostics.
 • *Neural Audit Grading*: Direct integration of AI MCQ evaluation loops with side-by-side verification consoles.
 • *Unified Communication*: Seamless, secure portals connecting school administrators, educators, students, and parents.
 
-🌐 *Core Web Portal*: https://www.5-cn.net`;
+*Core Web Portal*: https://www.5-cn.net`;
 
         try {
             await telegramRequest('sendMessage', {
@@ -262,9 +262,9 @@ We are proud to announce the live deployment of the *LUCY ACADEMICS* system clus
                 parse_mode: 'Markdown',
                 disable_web_page_preview: true
             });
-            console.log("✔ Sent official announcement to #announcements topic.");
+            console.log("Sent official announcement to #announcements topic.");
         } catch (err) {
-            console.error("⚠ Failed to send announcement:", err.message);
+            console.error("Failed to send announcement:", err.message);
         }
     }
 
@@ -272,11 +272,11 @@ We are proud to announce the live deployment of the *LUCY ACADEMICS* system clus
     try {
         await telegramRequest('sendMessage', {
             chat_id: CHAT_ID,
-            text: "👋 Handshake established. Welcome to the central *LUCY ACADEMICS* chat node. Feel free to discuss assignments, system utilities, or general topics here."
+            text: "Handshake established. Welcome to the central *LUCY ACADEMICS* chat node. Feel free to discuss assignments, system utilities, or general topics here."
         });
-        console.log("✔ Sent greeting to #general topic.");
+        console.log("Sent greeting to #general topic.");
     } catch (err) {
-        console.error("⚠ Failed to send general chat message:", err.message);
+        console.error("Failed to send general chat message:", err.message);
     }
 
     // Telemetry updates topic
@@ -298,9 +298,9 @@ We are proud to announce the live deployment of the *LUCY ACADEMICS* system clus
                 text: telemetryText,
                 parse_mode: 'Markdown'
             });
-            console.log("✔ Sent system telemetry block to #telemetry-updates topic.");
+            console.log("Sent system telemetry block to #telemetry-updates topic.");
         } catch (err) {
-            console.error("⚠ Failed to send telemetry update:", err.message);
+            console.error("Failed to send telemetry update:", err.message);
         }
     }
 
@@ -308,12 +308,12 @@ We are proud to announce the live deployment of the *LUCY ACADEMICS* system clus
     try {
         const idsPath = path.join(__dirname, 'telegram-thread-ids.json');
         fs.writeFileSync(idsPath, JSON.stringify(topicThreadIds, null, 2));
-        console.log(`✔ Saved topic thread IDs to: ${idsPath}`);
+        console.log(`Saved topic thread IDs to: ${idsPath}`);
     } catch (e) {
-        console.error("⚠ Failed to save topic thread IDs:", e.message);
+        console.error("Failed to save topic thread IDs:", e.message);
     }
 
-    console.log("\n\x1b[32m✔ Telegram Forum Server Architecture successfully configured!\x1b[0m\n");
+    console.log("\n\x1b[32mTelegram Forum Server Architecture successfully configured!\x1b[0m\n");
 }
 
 run();

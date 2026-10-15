@@ -204,22 +204,22 @@ export default function AttendanceClientWrapper({ initialClasses, initialSystem 
                         <div className="h-[1px] w-6 sm:w-8 bg-zinc-200 dark:bg-zinc-800" />
                         <span className="text-[8px] sm:text-[10px] font-bold text-zinc-600 dark:text-zinc-500 uppercase tracking-[0.2em] sm:tracking-[0.4em]">Smart Link Protocol 0.2</span>
                     </div>
-                    <h2 className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter text-zinc-900 dark:text-white italic leading-none">
                         AUTHORITY <span className="text-zinc-800 dark:text-zinc-200 not-italic">LOG</span>
                     </h2>
                 </motion.div>
 
-                <div className="flex items-center gap-2 sm:gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                     <ScannerTriggerButton
                         variant="button"
                         label="Scan Student Badge"
-                        className="h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-10 rounded-lg sm:rounded-2xl md:rounded-[2rem] text-[8px] sm:text-[10px] md:text-[11px] tracking-[0.15em] sm:tracking-[0.3em]"
+                        className="h-9 sm:h-11 md:h-12 lg:h-14 px-3.5 sm:px-6 md:px-8 rounded-lg sm:rounded-xl md:rounded-2xl text-[8px] sm:text-[10px] md:text-[11px] tracking-[0.12em] sm:tracking-[0.2em]"
                     />
                     <Button
                         onClick={handleSave}
                         disabled={isLocked || loading || saving}
                         className={cn(
-                            "h-9 sm:h-14 md:h-20 px-4 sm:px-8 md:px-12 rounded-lg sm:rounded-2xl md:rounded-[2rem] font-bold text-[8px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.3em] transition-all shadow-xl relative overflow-hidden group active:scale-95",
+                            "h-9 sm:h-11 md:h-12 lg:h-14 px-3.5 sm:px-6 md:px-8 rounded-lg sm:rounded-xl md:rounded-2xl font-bold text-[8px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.12em] sm:tracking-[0.2em] transition-all shadow-xl relative overflow-hidden group active:scale-95",
                             isLocked ? "bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-600 grayscale" : "bg-white text-black hover:bg-zinc-200"
                         )}
                     >

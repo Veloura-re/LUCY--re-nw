@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Printer, ShieldCheck, Phone, User, Calendar, MapPin, Sparkles, RefreshCcw } from "lucide-react";
 import QRCode from "react-qr-code";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useReactToPrint } from "react-to-print";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, calculateAge } from "@/lib/utils";
@@ -28,6 +28,20 @@ interface IDCardModalProps {
 export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY ACADEMY", schoolAddress, schoolLogo }: IDCardModalProps) {
     const componentRef = useRef<HTMLDivElement>(null);
     const [isFlipped, setIsFlipped] = useState(false);
+    const [credential, setCredential] = useState<{ sid: string; sig: string; code: string | null } | null>(null);
+
+    useEffect(() => {
+        if (!isOpen || !user || type !== "STUDENT") {
+            setCredential(null);
+            return;
+        }
+        let cancelled = false;
+        fetch(`/api/school/students/${user.id}/qr`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => { if (!cancelled && data) setCredential(data as any); })
+            .catch(() => { if (!cancelled) setCredential(null); });
+        return () => { cancelled = true; };
+    }, [isOpen, user?.id, type]);
 
     const handlePrint = useReactToPrint({
         contentRef: componentRef,
@@ -43,8 +57,10 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
     const age = type === "STUDENT" ? calculateAge(user.dob) : null;
 
     const origin = typeof window !== 'undefined' ? window.location.origin : "";
-    const schoolParam = user.schoolId ? `?sid=${encodeURIComponent(user.schoolId)}&code=${encodeURIComponent(code || '')}` : (code ? `?code=${encodeURIComponent(code)}` : "");
-    const qrValue = origin ? `${origin}/verify/student/${user.id}${schoolParam}` : "";
+    // The public verification link must carry a server-issued signature (see /api/school/students/[id]/qr).
+    const qrValue = origin && type === "STUDENT" && credential
+        ? `${origin}/verify/student/${user.id}?sid=${encodeURIComponent(credential.sid)}&sig=${encodeURIComponent(credential.sig)}&code=${encodeURIComponent(credential.code || '')}`
+        : "";
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -207,12 +223,18 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                 {/* QR Section Area */}
                                 <div className="relative z-10 w-48 flex flex-col items-center gap-4 shrink-0 border-l border-slate-200 dark:border-zinc-900/50 pl-8">
                                     <div className="relative p-3 bg-white rounded-[15px] shadow-[0_0_40px_rgba(255,255,255,0.05)] group/qr hover:scale-110 transition-transform duration-300">
-                                        <QRCode
-                                            value={qrValue}
-                                            size={140}
-                                            level="H"
-                                            className="rounded-lg"
-                                        />
+                                        {qrValue ? (
+                                            <QRCode
+                                                value={qrValue}
+                                                size={140}
+                                                level="H"
+                                                className="rounded-lg"
+                                            />
+                                        ) : (
+                                            <div className="w-[140px] h-[140px] flex items-center justify-center text-[9px] font-medium uppercase tracking-widest text-zinc-500">
+                                                Preparing credential
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="text-center space-y-0.5">
                                         <p className="text-[7px] font-medium text-slate-400 dark:text-zinc-500 uppercase tracking-[0.3em]">System Validation</p>
@@ -341,7 +363,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
 
                                 <div className="relative z-10 w-[35mm] flex flex-col items-center shrink-0 border-l border-slate-200 dark:border-white/5 pl-[6mm] gap-[3mm]">
                                     <div className="p-[2.5mm] bg-white rounded-[4mm] shadow-2xl">
-                                        <QRCode value={qrValue} size={110} level="H" />
+                                        {qrValue ? <QRCode value={qrValue} size={110} level="H" /> : <div className="w-[110px] h-[110px]" />}
                                     </div>
                                     <div className="text-center">
                                         <p className="text-[5.5pt] font-medium uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500">Validation Protocol</p>

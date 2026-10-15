@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAuth, handleApiError } from '@/lib/security';
+import { mergeUserPreferences } from '@/lib/user-preferences';
 
+import { logActivity } from '@/lib/audit';
 export async function GET() {
     try {
         const dbUser = await requireAuth();
@@ -125,18 +127,29 @@ export async function GET() {
             const dbUser = await requireAuth();
             const { name, bio, preferences } = ((await request.json()) || {}) as any;
 
+            const data: { name?: string; bio?: string | null; preferences?: any } = {};
+            if (typeof name === 'string' && name.trim().length > 0 && name.length <= 120) {
+                data.name = name.trim();
+            }
+            if (bio === null || (typeof bio === 'string' && bio.length <= 2000)) {
+                data.bio = bio;
+            }
+            if (preferences !== undefined) {
+                // Whitelisted UI toggles only; server-owned flags (e.g. fullAccess) are preserved.
+                const current = await prisma.user.findUnique({
+                    where: { id: dbUser.id },
+                    select: { preferences: true }
+                });
+                data.preferences = mergeUserPreferences(current?.preferences, preferences);
+            }
+
             const user = await prisma.user.update({
                 where: { id: dbUser.id },
-                data: {
-                    name,
-                    bio,
-                    preferences
-                }
+                data
             });
 
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = dbUser?.id ?? undefined;
             if (_userId) {

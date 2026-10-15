@@ -14,18 +14,8 @@ const behaviors = [
     { title: "Tactical Response", desc: "Real-time adjustments to scheduling and resource allocation. The system detects friction points and reroutes before they compound.", icon: Target, id: "BEH_03", metric: "3s", metricLabel: "alert_latency" },
 ];
 
-const personas = [
-    { name: "Core Intelligence", role: "Primary logic gate and system oversight. Handles inter-module coordination.", id: "LUCY_CORE", color: "rgba(255,255,255,0.15)" },
-    { name: "Teacher Collective", role: "Specialized academic instruction — grading, lesson notes, and student feedback.", id: "TEACHER_COLL", color: "rgba(255,255,255,0.08)" },
-    { name: "Administrative Hub", role: "Logistics, attendance, timetabling, and fiscal management.", id: "ADMIN_HUB", color: "rgba(255,255,255,0.08)" },
-    { name: "Geography Expert", role: "Geographic and spatial intelligence specialist — maps, biomes, geopolitics.", id: "GEO_PROTO", color: "rgba(255,255,255,0.08)" },
-
-    { name: "Math Architect", role: "Advanced mathematical reasoning — calculus, algebra, and proof-based problem solving.", id: "MATH_ARCH", color: "rgba(255,255,255,0.08)" },
-];
-
 const thoughtStream = [
     "> initializing system...",
-    "> loading persona_registry: 5 schools",
     "> cognitive_routing: ACTIVE",
     "> behavioral_pattern: NOMINAL",
     "> threat_detection: CLEAR",
@@ -84,7 +74,6 @@ export default function Intelligence() {
                         {/* Animated live stats */}
                         <Reveal delay={0.3} className="flex flex-wrap gap-10 py-8 border-t border-slate-200 dark:border-white/5">
                             {[
-                                { label: "active_personas", val: 6, suffix: "" },
                                 { label: "neurons_simulated", val: 12400, suffix: "" },
                                 { label: "context_window", val: 32, suffix: "k_tokens" },
                                 { label: "response_time", val: 340, suffix: "ms" },
@@ -118,7 +107,7 @@ export default function Intelligence() {
                                 <div className="relative">
                                     <OrbitRing nodeCount={7} radius={72} duration={10} />
                                 </div>
-                                <div className="text-[9px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest text-center">6_personas // 1_core_mesh</div>
+                                <div className="text-[9px] text-slate-500 dark:text-zinc-600 uppercase tracking-widest text-center">1_core_mesh</div>
                             </div>
                         </TiltCard>
                     </section>
@@ -163,38 +152,6 @@ export default function Intelligence() {
                                         </div>
                                     </motion.div>
                                 </TiltCard>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Persona Registry */}
-                    <section className="space-y-8">
-                        <Reveal className="flex items-center gap-4 text-slate-400 dark:text-zinc-500">
-                            <div className="h-px w-12 bg-slate-300 dark:bg-zinc-800" />
-                            <span className="text-[10px] uppercase tracking-[0.4em]">persona_registry // {personas.length}_active_schools</span>
-                        </Reveal>
-                        <div className="space-y-px overflow-hidden border border-slate-200 dark:border-white/5 rounded-xl dark:rounded-none">
-                            {personas.map((p, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: false }}
-                                    transition={{ delay: i * 0.07 }}
-                                    whileHover={{ paddingLeft: "2.5rem" }}
-                                    className="group p-6 border-b last:border-b-0 border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-default transition-all bg-white dark:bg-black hover:bg-slate-50 dark:hover:bg-zinc-900/15"
-                                >
-                                    <div className="flex items-center gap-5">
-                                        <motion.div animate={{ opacity: [0.2, 0.8, 0.2] }} transition={{ duration: 2.8, repeat: Infinity, delay: i * 0.5 }} className="w-1.5 h-1.5 bg-slate-900 dark:bg-white rounded-full shrink-0" />
-                                        <div>
-                                            <h4 className="font-bold uppercase tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-white transition-colors">{p.name}</h4>
-                                            <p className="text-slate-500 dark:text-zinc-600 text-xs mt-0.5">{p.role}</p>
-                                        </div>
-                                    </div>
-                                    <motion.div whileHover={{ scale: 1.05 }} className="px-3 py-1.5 bg-slate-100 dark:bg-zinc-950 border border-slate-200 dark:border-white/5 text-[9px] text-slate-500 dark:text-zinc-600 group-hover:text-slate-900 dark:group-hover:text-white group-hover:border-slate-300 dark:group-hover:border-white/20 transition-all shrink-0 rounded-md dark:rounded-none">
-                                        {p.id}
-                                    </motion.div>
-                                </motion.div>
                             ))}
                         </div>
                     </section>

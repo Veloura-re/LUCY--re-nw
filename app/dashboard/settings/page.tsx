@@ -396,9 +396,9 @@ export default function SettingsPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in duration-300 relative z-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-10">
-                <div className="flex items-center gap-6 group">
-                    <label className={`w-16 h-16 shrink-0 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 dark:border-zinc-900 pb-6 md:pb-10">
+                <div className="flex items-center gap-4 sm:gap-6 group min-w-0">
+                    <label className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
                         {schoolData?.logoUrl ? (
                             <Image src={schoolData.logoUrl} alt="School Logo" width={64} height={64} className="w-full h-full object-contain" />
                         ) : (
@@ -417,55 +417,57 @@ export default function SettingsPage() {
                             </>
                         )}
                     </label>
-                    <div>
-                        <h1 className="text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center gap-4">
+                    <div className="min-w-0">
+                        <h1 className="text-2xl sm:text-4xl md:text-5xl font-medium tracking-tighter text-zinc-900 dark:text-white flex items-center gap-2 sm:gap-4 truncate">
                             System <span className="text-eduGreen-500 italic">Configuration</span>
                         </h1>
-                        <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-xs mt-3">Advanced Institutional Protocols</p>
+                        <p className="text-zinc-600 font-medium uppercase tracking-[0.2em] text-[10px] sm:text-xs mt-1 sm:mt-3 truncate">Advanced Institutional Protocols</p>
                     </div>
                 </div>
 
                 <Button
                     onClick={handleSave}
                     isLoading={saving}
-                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-14 px-10 rounded-2xl font-medium text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95 mb-1"
+                    className="bg-eduGreen-600 hover:bg-eduGreen-500 text-white h-11 sm:h-14 px-6 sm:px-10 rounded-xl sm:rounded-2xl font-medium text-[10px] sm:text-xs uppercase tracking-[0.2em] shadow-2xl shadow-eduGreen-900/20 transition-all active:scale-95 mb-1 w-full sm:w-auto shrink-0"
                 >
                     {saving ? "Synchronizing..." : "Commit Protocol"}
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
                 {/* Navigation Sidebar */}
-                <div className="lg:col-span-3 space-y-2">
-                    {[
-                        { id: 'profile', icon: User, label: "Profile Identity" },
-                        { id: 'security', icon: Shield, label: "Security Layer" },
-                        { id: 'preferences', icon: Sliders, label: "App Experience" },
-                        ...(userData?.role === 'PARENT' ? [{ id: 'family', icon: Trophy, label: "Family Hub" }] : []),
-                        ...(userData?.role === 'TEACHER' || userData?.role === 'HOMEROOM' ? [{ id: 'workload', icon: Briefcase, label: "Teaching Load" }] : []),
-                        { id: 'school', icon: Zap, label: "Institutional Hub" },
-                        ...(isPrincipal ? [{ id: 'academic', icon: Calendar, label: "Academic Terms" }, { id: 'communications', icon: Bell, label: "Institutional Communications" }] : [])
-                    ].map((item) => (
-                        <button
-                            key={item.id}
-                            onClick={() => setActiveTab(item.id as any)}
-                            className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-medium text-[10px] uppercase tracking-widest ${activeTab === item.id ? 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 shadow-xl' : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/50 dark:bg-zinc-950/50'}`}
-                        >
-                            <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-eduGreen-500' : 'text-zinc-800 dark:text-zinc-200'}`} />
-                            {item.label}
-                        </button>
-                    ))}
-                    <div className="pt-6">
-                        <Button
-                            variant="ghost"
-                            onClick={handleLogout}
-                            disabled={loggingOut}
-                            isLoading={loggingOut}
-                            className="w-full justify-start gap-4 px-6 py-4 h-auto rounded-2xl text-red-900 hover:text-red-600 dark:text-red-500 hover:bg-red-950/10 transition-all font-medium text-[10px] uppercase tracking-widest border-transparent"
-                        >
-                            <LogOut className="w-4 h-4" />
-                            Terminate Session
-                        </Button>
+                <div className="lg:col-span-3">
+                    <div className="flex flex-row lg:flex-col overflow-x-auto scrollbar-none gap-2 pb-2 lg:pb-0 -mx-1 px-1">
+                        {[
+                            { id: 'profile', icon: User, label: "Profile Identity" },
+                            { id: 'security', icon: Shield, label: "Security Layer" },
+                            { id: 'preferences', icon: Sliders, label: "App Experience" },
+                            ...(userData?.role === 'PARENT' ? [{ id: 'family', icon: Trophy, label: "Family Hub" }] : []),
+                            ...(userData?.role === 'TEACHER' || userData?.role === 'HOMEROOM' ? [{ id: 'workload', icon: Briefcase, label: "Teaching Load" }] : []),
+                            { id: 'school', icon: Zap, label: "Institutional Hub" },
+                            ...(isPrincipal ? [{ id: 'academic', icon: Calendar, label: "Academic Terms" }, { id: 'communications', icon: Bell, label: "Communications" }] : [])
+                        ].map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id as any)}
+                                className={`flex items-center gap-2.5 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all font-medium text-[10px] uppercase tracking-widest shrink-0 whitespace-nowrap ${activeTab === item.id ? 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white border border-zinc-300 dark:border-zinc-800 shadow-xl' : 'text-zinc-600 hover:text-zinc-400 hover:bg-white/50 dark:hover:bg-zinc-950/50'}`}
+                            >
+                                <item.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === item.id ? 'text-eduGreen-500' : 'text-zinc-800 dark:text-zinc-200'}`} />
+                                <span>{item.label}</span>
+                            </button>
+                        ))}
+                        <div className="hidden lg:block pt-6">
+                            <Button
+                                variant="ghost"
+                                onClick={handleLogout}
+                                disabled={loggingOut}
+                                isLoading={loggingOut}
+                                className="w-full justify-start gap-4 px-6 py-4 h-auto rounded-2xl text-red-900 hover:text-red-600 dark:text-red-500 hover:bg-red-950/10 transition-all font-medium text-[10px] uppercase tracking-widest border-transparent"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Terminate Session
+                            </Button>
+                        </div>
                     </div>
                 </div>
 

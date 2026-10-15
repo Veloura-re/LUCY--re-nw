@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { handleApiError, requireRole } from '@/lib/security';
+import { mergeUserPreferences } from '@/lib/user-preferences';
 
+import { logActivity } from '@/lib/audit';
 export async function PATCH(request: Request) {
     try {
         const user = await requireRole(['PRINCIPAL', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT', 'SUPERADMIN']);
@@ -17,8 +19,8 @@ export async function PATCH(request: Request) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        const currentPrefs = (dbUser.preferences as any) || {};
-        const updatedPrefs = { ...currentPrefs, ...(body || {}) };
+        // Only whitelisted UI toggles are accepted; server-owned flags (e.g. fullAccess) are preserved.
+        const updatedPrefs = mergeUserPreferences(dbUser.preferences, body);
 
         await prisma.user.update({
             where: { id: user.id },
@@ -28,11 +30,10 @@ export async function PATCH(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = user?.id ?? undefined;
             if (_userId) {
-                await logActivity({ userId: _userId, action: 'UPDATE_PREFERENCES', resourceType: 'user', ip: _ip || undefined });
+                await logActivity({ userId: _userId, schoolId: user.schoolId || undefined, action: 'UPDATE_PREFERENCES', resourceType: 'user', ip: _ip || undefined });
             }
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true, preferences: updatedPrefs });

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, handleApiError } from "@/lib/security";
+import { ensureAttemptStarted, remainingSeconds } from "@/lib/exam-attempts";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -20,9 +21,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
         if (!exam) return NextResponse.json({ error: "Exam not found" }, { status: 404 });
 
-        // Ensure student is in the class
-        if (exam.classId !== student.classId) {
+        // Ensure student is in the class and the exam is open to students
+        if (exam.classId !== student.classId || student.schoolId == null) {
             return NextResponse.json({ error: "Access Denied" }, { status: 403 });
+        }
+        if (!exam.isPublished || exam.isLocked) {
+            return NextResponse.json({ error: "Assessment not available" }, { status: 403 });
         }
 
         const now = new Date();
@@ -47,6 +51,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             return NextResponse.json({ error: "Assessment already submitted" }, { status: 400 });
         }
 
+        // Record the start time on the server (idempotent) so the time limit cannot be reset by reloading.
+        const attempt = await ensureAttemptStarted(prisma, exam.id, student.id);
+        const secondsLeft = remainingSeconds(exam.duration, attempt.startedAt);
+        if (secondsLeft <= 0) {
+            return NextResponse.json({ error: "The time limit for this assessment has passed" }, { status: 403 });
+        }
+
         // Prepare safe question data (hide correct answers if they are in the same JSON)
         const rawQuestions = exam.questions as any[] || [];
         const safeQuestions = rawQuestions.map((q: any) => ({
@@ -62,6 +73,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 id: exam.id,
                 title: exam.title,
                 duration: exam.duration,
+                remainingSeconds: secondsLeft,
                 subject: exam.subject.name,
                 questions: safeQuestions
             }

@@ -117,7 +117,7 @@ async function run() {
             const idsPath = path.join(__dirname, 'telegram-thread-ids.json');
             if (fs.existsSync(idsPath)) {
                 TELEGRAM_TOPIC_IDS = JSON.parse(fs.readFileSync(idsPath, 'utf8'));
-                console.log("✔ Loaded live Telegram thread IDs from JSON file.");
+                console.log("Loaded live Telegram thread IDs from JSON file.");
             }
         } catch (e) {
             console.log("Using defaults for thread IDs.");
@@ -143,11 +143,11 @@ async function run() {
                     params.message_thread_id = threadId;
                 }
                 await telegramRequest('sendMessage', params);
-                console.log(`  ✔ Posted to Telegram topic: ${topicName}`);
+                console.log(`  Posted to Telegram topic: ${topicName}`);
             } catch (e) {
-                console.error(`  ⚠ Failed to post to Telegram ${topicName}:`, e.message);
+                console.error(`  Failed to post to Telegram ${topicName}:`, e.message);
                 try {
-                    console.log(`  🔄 Retrying post for ${topicName} directly to General thread...`);
+                    console.log(`  Retrying post for ${topicName} directly to General thread...`);
                     const fallbackParams = {
                         chat_id: TELEGRAM_CHAT_ID,
                         text: fullText,
@@ -155,9 +155,9 @@ async function run() {
                         disable_web_page_preview: true
                     };
                     await telegramRequest('sendMessage', fallbackParams);
-                    console.log(`  ✔ Posted to Telegram General fallback successfully.`);
+                    console.log(`  Posted to Telegram General fallback successfully.`);
                 } catch (err2) {
-                    console.error(`  ❌ Fallback failed for ${topicName}:`, err2.message);
+                    console.error(`  Fallback failed for ${topicName}:`, err2.message);
                 }
             }
             await sleep(2000);
@@ -182,9 +182,9 @@ async function run() {
                                 }
                             ]
                         });
-                        console.log(`  ✔ Posted to Discord channel: #${chanName}`);
+                        console.log(`  Posted to Discord channel: #${chanName}`);
                     } catch (e) {
-                        console.error(`  ⚠ Failed to post to Discord #${chanName}:`, e.message);
+                        console.error(`  Failed to post to Discord #${chanName}:`, e.message);
                     }
                     await sleep(1000);
                 }

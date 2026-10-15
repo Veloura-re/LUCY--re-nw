@@ -69,7 +69,7 @@ export default function MarklistIndexPage() {
     }, [fetchConfigs]);
 
     return (
-        <div className="p-8 max-w-7xl mx-auto space-y-8 pb-24 animate-in fade-in duration-300">
+        <div className="p-3 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 animate-in fade-in duration-300">
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-900 pb-6">
                 <div>
@@ -157,11 +157,11 @@ export default function MarklistIndexPage() {
             {/* Filter Tabs & Search Controls */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
                 {/* Tabs */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
                     <button
                         type="button"
                         onClick={() => { setTermFilter("active"); setPage(1); }}
-                        className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border ${
+                        className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border whitespace-nowrap shrink-0 ${
                             termFilter === "active"
                                 ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
                                 : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800"
@@ -172,7 +172,7 @@ export default function MarklistIndexPage() {
                     <button
                         type="button"
                         onClick={() => { setTermFilter("all"); setPage(1); }}
-                        className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border ${
+                        className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border whitespace-nowrap shrink-0 ${
                             termFilter === "all"
                                 ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 border-zinc-900 dark:border-white shadow-sm"
                                 : "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800"
@@ -180,10 +180,10 @@ export default function MarklistIndexPage() {
                     >
                         All Marklists
                     </button>
-                    <Link href="/dashboard/marklist/archive">
+                    <Link href="/dashboard/marklist/archive" className="shrink-0">
                         <button
                             type="button"
-                            className="px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800 flex items-center gap-1.5"
+                            className="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all border bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-800 flex items-center gap-1.5 whitespace-nowrap"
                         >
                             <Archive className="w-3.5 h-3.5" />
                             Finished Terms Archive

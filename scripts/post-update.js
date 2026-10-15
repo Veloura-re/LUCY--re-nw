@@ -135,7 +135,7 @@ async function run() {
                 parse_mode: 'HTML',
                 disable_web_page_preview: true
             });
-            console.log("✔ Successfully posted update to Telegram general topic.");
+            console.log("Successfully posted update to Telegram general topic.");
         } catch (e) {
             console.error("Failed to post update to Telegram:", e);
         }
@@ -151,7 +151,7 @@ async function run() {
                     await discordRequest('POST', `/channels/${generalChan.id}/messages`, {
                         content: UPDATE_TEXT_MD
                     });
-                    console.log("✔ Successfully posted update to Discord #general channel.");
+                    console.log("Successfully posted update to Discord #general channel.");
                 } else {
                     console.error("Failed to find Discord #general channel.");
                 }

@@ -89,10 +89,6 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Compass', label: "Control Center", href: "/admin/dashboard" },
         { icon: 'Shield', label: "Sanctuary Moderation", href: "/admin/sanctuary" },
         { icon: 'Landmark', label: "Schools", href: "/admin/schools" },
-        { icon: 'Users', label: "Users", href: "/admin/users" },
-        { icon: 'Wrench', label: "System Status", href: "/admin/status" },
-        { icon: 'Sparkles', label: "AI Config", href: "/admin/ai" },
-        { icon: 'Cog', label: "Engine Settings", href: "/admin/settings" },
         { icon: 'HelpCircle', label: "Help Center", href: "/dashboard/help" },
     ],
     OWNER: [

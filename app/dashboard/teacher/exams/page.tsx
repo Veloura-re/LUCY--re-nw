@@ -642,7 +642,7 @@ function ExamsPageContent() {
                                                 : "bg-eduGreen-500/10 border-eduGreen-500/30 text-eduGreen-500"
                                         )}
                                     >
-                                        {newExam.isLocked ? "🔒 Exam is Locked (Hidden)" : "🔓 Exam is Unlocked (Visible)"}
+                                        {newExam.isLocked ? "Exam is Locked (Hidden)" : "Exam is Unlocked (Visible)"}
                                     </button>
                                     <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-1">Locked exams cannot be taken until deployed</p>
                                 </div>

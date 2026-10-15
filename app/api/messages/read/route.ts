@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { canUserAccessChatRoom } from '@/lib/messaging';
 
+import { logActivity } from '@/lib/audit';
 export async function PATCH(request: Request) {
     const supabase = await createClient();
     const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -54,7 +55,6 @@ export async function PATCH(request: Request) {
         
         // Audit log
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             const _userId = authUser?.id ?? undefined;
             if (_userId) {

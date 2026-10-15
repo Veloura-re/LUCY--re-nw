@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateExamQuestions } from '@/lib/ai';
 import { requireRole, handleApiError } from '@/lib/security';
 
+import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
     try {
         // Auth guard: only teachers and above can generate AI exams
@@ -26,7 +27,6 @@ export async function POST(request: Request) {
 
         // Non-blocking audit
         try {
-            const { logActivity } = await import('@/lib/audit');
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;
             await logActivity({ userId: authUser.id, action: 'GENERATE', resourceType: 'exam', ip: _ip });
         } catch { /* non-blocking */ }
