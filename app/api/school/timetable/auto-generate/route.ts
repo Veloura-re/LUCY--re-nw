@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, secureRandomInt } from '@/lib/security';
 import { DayOfWeek } from '@prisma/client';
 
 import { logActivity } from '@/lib/audit';
@@ -45,8 +45,15 @@ export async function POST(request: Request) {
         const newTimetableEntries: any[] = [];
         let unassignedCount = 0;
 
-        // Shuffle helper
-        const shuffle = (array: any[]) => array.sort(() => Math.random() - 0.5);
+        // Shuffle helper (Fisher-Yates)
+        const shuffle = (array: any[]) => {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = secureRandomInt(0, i);
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        };
 
         // Sort assignments by periodsPerWeek descending to schedule the hardest ones first
         const sortedAssignments = [...assignments].sort((a: any, b: any) => b.periodsPerWeek - a.periodsPerWeek);
