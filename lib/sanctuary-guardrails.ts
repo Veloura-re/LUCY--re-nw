@@ -5,6 +5,7 @@
  * PII interception, obfuscated handle scrubbing, profanity/toxic language filtering,
  * acute crisis detection, threat category classification, and deterministic pseudonym generation.
  */
+import { secureRandomInt } from '@/lib/security';
 
 export type SanctuaryThreatType = 'PII_PHONE' | 'PII_EMAIL' | 'SOCIAL_HANDLE' | 'ACUTE_CRISIS' | 'TOXIC_LANGUAGE';
 
@@ -212,7 +213,7 @@ export function sanitizeSanctuaryContent(rawContent: string): SanctuarySafetyRes
  * Generates an anonymous pseudonym tailored to participant role.
  */
 export function generateSanctuaryPseudonym(role: string): string {
-    const randomId = Math.floor(100 + Math.random() * 900);
+    const randomId = secureRandomInt(100, 999);
     switch (role) {
         case 'TEACHER':
         case 'HOMEROOM':

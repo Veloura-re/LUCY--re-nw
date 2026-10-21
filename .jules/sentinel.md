@@ -1,0 +1,4 @@
+## 2025-02-12 - [Weak PRNG and Biased Shuffle in Sensitive Contexts]
+**Vulnerability:** Weak PRNG (`Math.random()`) used for pseudonym generation in `sanctuary-guardrails.ts` and biased array shuffle pattern (`array.sort(() => Math.random() - 0.5)`) in `timetable/auto-generate/route.ts`. Both files had exemptions from the static analysis security guardrails check.
+**Learning:** `Math.random()` is not cryptographically secure, and the sort-based shuffle pattern introduces bias. The codebase already provides a secure alternative, `secureRandomInt`, in `@/lib/security`. When fixing these issues, any temporary exemptions added to the static analysis suite must be removed.
+**Prevention:** Always use `secureRandomInt` from `@/lib/security` for random integer generation in sensitive logic and implement a Fisher-Yates shuffle utilizing `secureRandomInt` when randomizing arrays. Never exempt sensitive directories from the `Math.random()` static analysis rule.
