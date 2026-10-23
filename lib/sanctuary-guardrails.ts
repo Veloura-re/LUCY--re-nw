@@ -6,7 +6,7 @@
  * acute crisis detection, threat category classification, and deterministic pseudonym generation.
  */
 
-import { secureRandomInt } from '@/lib/security';
+import { secureRandomInt } from '@/lib/random';
 
 export type SanctuaryThreatType = 'PII_PHONE' | 'PII_EMAIL' | 'SOCIAL_HANDLE' | 'ACUTE_CRISIS' | 'TOXIC_LANGUAGE';
 
