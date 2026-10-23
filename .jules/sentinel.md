@@ -1,0 +1,4 @@
+## 2024-05-24 - [MEDIUM] Fix weak RNG in pseudonym generation
+**Vulnerability:** The `generateSanctuaryPseudonym` function in `lib/sanctuary-guardrails.ts` used `Math.random()` to create pseudo-random numeric IDs for anonymous participants. `Math.random()` is predictable and not cryptographically secure, posing a risk of de-anonymization. This was masked by a test exemption in `route-guardrails.test.ts`.
+**Learning:** Security-sensitive files that require random numbers should not rely on `Math.random()`, and exemptions in security guardrail tests (like the regex ignore `|sanctuary-guardrails`) should be investigated and removed rather than accepted.
+**Prevention:** Use the platform CSPRNG (e.g., via `secureRandomInt` from `lib/security.ts`) for generating any security-adjacent identifiers or tokens, and strictly enforce the `Math.random()` static analysis check across the codebase without adding new file exemptions.

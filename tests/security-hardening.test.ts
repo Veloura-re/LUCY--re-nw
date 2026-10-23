@@ -119,7 +119,7 @@ describe('requireStudentAccess', () => {
 
 describe('secureRandomInt', () => {
     test('stays within bounds and varies', () => {
-        const { secureRandomInt } = require('@/lib/security');
+        const { secureRandomInt } = require('@/lib/random');
         const seen = new Set<number>();
         for (let i = 0; i < 400; i++) {
             const n = secureRandomInt(100, 999);
