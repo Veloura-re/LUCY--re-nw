@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
+import { secureRandomInt } from '@/lib/random';
 import { DayOfWeek } from '@prisma/client';
 
 import { logActivity } from '@/lib/audit';
@@ -46,7 +47,14 @@ export async function POST(request: Request) {
         let unassignedCount = 0;
 
         // Shuffle helper
-        const shuffle = (array: any[]) => array.sort(() => Math.random() - 0.5);
+        const shuffle = (array: any[]) => {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = secureRandomInt(0, i);
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        };
 
         // Sort assignments by periodsPerWeek descending to schedule the hardest ones first
         const sortedAssignments = [...assignments].sort((a: any, b: any) => b.periodsPerWeek - a.periodsPerWeek);

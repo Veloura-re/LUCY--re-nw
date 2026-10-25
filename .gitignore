@@ -65,3 +65,4 @@ prisma_error.txt
 /.wrangler/
 *.bundle
 remote_stale_branches_manifest.json
+dist/
