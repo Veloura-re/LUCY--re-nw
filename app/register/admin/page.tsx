@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShieldAlert, KeyRound, Mail, Lock, User, Check, AlertCircle } from "lucide-react";
 import { InteractiveParticleSimulation } from "@/components/public/animations";
+import posthog from "posthog-js";
 
 export default function AdminRegister() {
     const [email, setEmail] = useState("");
@@ -64,6 +65,7 @@ export default function AdminRegister() {
             const data = await res.json() as { error?: string };
 
             if (res.ok) {
+                posthog.capture('account_registered', { account_role: 'superadmin' });
                 router.push('/admin/dashboard');
             } else {
                 setError(data.error || "Registration failed.");

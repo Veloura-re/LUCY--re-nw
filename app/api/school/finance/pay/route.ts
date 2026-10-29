@@ -7,6 +7,7 @@ import { GEMINI_MODEL } from '@/lib/ai-config';
 import { parseReceiptImage, sanitizeAiNote } from '@/lib/receipt-evidence';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { extractAndParseJson } from '@/lib/ai';
+import { createAiObservationContext, observeGeminiCall } from '@/lib/ai-observability';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 const PAYMENT_METHODS = ["CASH", "CARD", "BANK_TRANSFER", "MOBILE_MONEY", "OTHER"] as const;
@@ -108,10 +109,11 @@ export async function POST(req: Request) {
 The expected amount is ${Number(invoice.amount)}.
 Respond strictly in JSON: {"isValid": boolean, "amount": number, "reason": "short factual explanation"}`;
 
-                const aiResult = await model.generateContent([
+                const input = [
                     prompt,
                     { inlineData: { data: receipt.base64, mimeType: receipt.mimeType } }
-                ]);
+                ];
+                const aiResult = await observeGeminiCall(() => model.generateContent(input), input, createAiObservationContext({ distinctId: authUser.id, spanName: 'payment_receipt_review' }));
 
                 const parsed = extractAndParseJson<{ isValid: boolean; amount: number; reason: string } | null>(aiResult.response.text(), null);
                 if (parsed) {

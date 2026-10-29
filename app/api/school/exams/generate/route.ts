@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateExamQuestions } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 import { requireRole, handleApiError } from '@/lib/security';
 
 import { logActivity } from '@/lib/audit';
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
             gradeLevel,
             count: maxCount,
             type: type || 'MIXED'
-        });
+        }, createAiObservationContext({ distinctId: authUser.id, spanName: 'exam_question_generation' }));
 
         // Non-blocking audit
         try {

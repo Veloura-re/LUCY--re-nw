@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { analyzeStudentRisk } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 import { handleApiError, requireStudentAccess } from '@/lib/security';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { logActivity, getIp } from '@/lib/audit';
@@ -53,7 +54,7 @@ export async function GET(
             internalNotes: student.internalNotes.map(n => n.content)
         };
 
-        const analysis = await analyzeStudentRisk(aiContext);
+        const analysis = await analyzeStudentRisk(aiContext, createAiObservationContext({ distinctId: user.id, spanName: 'student_risk_analysis' }));
 
         await logActivity({
             userId: user.id,

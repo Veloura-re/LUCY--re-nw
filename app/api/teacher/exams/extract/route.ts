@@ -4,6 +4,7 @@ import { AiQuestionsArraySchema } from "@/lib/schemas";
 import { rateLimitShared } from '@/lib/rate-limit';
 import { withAudit } from '@/lib/with-audit';
 import { sandboxedModel, userInput } from '@/lib/ai';
+import { createAiObservationContext, observeGeminiCall } from '@/lib/ai-observability';
 
 async function handlePOST(req: Request) {
     const limit = await rateLimitShared(req, "teacher/exams/extract", 10);
@@ -71,14 +72,16 @@ async function handlePOST(req: Request) {
             ${rawText ? userInput(rawText, 30000) : "See attached image for context."}
         `;
 
+        const aiContext = createAiObservationContext({ distinctId: dbUser.id, spanName: 'exam_question_extraction' });
         let result;
         if (imagePart) {
-            result = await model.generateContent([
+            const input = [
                 prompt,
                 { inlineData: imagePart },
-            ]);
+            ];
+            result = await observeGeminiCall(() => model.generateContent(input), input, aiContext);
         } else {
-            result = await model.generateContent(prompt);
+            result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
         }
 
         const response = await result.response;

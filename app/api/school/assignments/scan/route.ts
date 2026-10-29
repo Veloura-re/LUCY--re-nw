@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, STAFF_ROLES } from '@/lib/security';
 import { scanEssaySubmission } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 import { logActivity, getIp } from '@/lib/audit';
 
 export const dynamic = 'force-dynamic';
@@ -78,7 +79,7 @@ export async function POST(request: Request) {
                 content: essayText,
                 subject: submission.assignment?.subject?.name || 'General Academic',
                 maxScore: submission.assignment?.maxScore || 100
-            });
+            }, createAiObservationContext({ distinctId: user.id, spanName: 'essay_submission_scan' }));
 
             // Persist scan result to database
             await prisma.assignmentSubmission.update({
@@ -116,7 +117,7 @@ export async function POST(request: Request) {
             content,
             subject: subject || 'General Academic',
             maxScore: maxScore || 100
-        });
+        }, createAiObservationContext({ distinctId: user.id, spanName: 'ad_hoc_essay_scan' }));
 
         logActivity({
             userId: user.id,

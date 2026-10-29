@@ -10,6 +10,7 @@ import Link from "next/link";
 import { User, CheckCircle2, ArrowLeft, School, Loader2, AlertCircle, ShieldCheck, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InteractiveParticleSimulation } from "@/components/public/animations";
+import posthog from "posthog-js";
 
 // Types
 type Step = 'CODE' | 'CONFIRM' | 'DETAILS' | 'SUCCESS';
@@ -151,6 +152,7 @@ export default function ParentRegister() {
             });
 
             if (res.ok) {
+                posthog.capture('account_registered', { account_role: 'parent' });
                 setStep('SUCCESS');
                 setTimeout(() => router.push('/dashboard'), 2000);
             } else {

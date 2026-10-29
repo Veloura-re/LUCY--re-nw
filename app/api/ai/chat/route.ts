@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { rateLimitShared } from '@/lib/rate-limit';
 import { GEMINI_MODEL } from '@/lib/ai-config';
 import { untrustedContentDirective, wrapUntrusted } from '@/lib/prompt-safety';
+import { captureGeminiGeneration, createAiObservationContext } from '@/lib/ai-observability';
+import { flushPostHogLogs, posthogLogs } from '@/lib/posthog-logs';
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -57,19 +59,52 @@ Help only with education, school administration, study, teaching and use of the 
 ${untrustedContentDirective('untrusted_user_input')}`
         });
 
-        const result = await model.generateContentStream(wrapUntrusted(last.content, 4000, 'untrusted_user_input'));
+        const aiInput = wrapUntrusted(last.content, 4000, 'untrusted_user_input');
+        const aiContext = createAiObservationContext({ distinctId: user.id, spanName: 'assistant_chat' });
+        const aiStartedAt = Date.now();
+        posthogLogs.info('ai_chat_generation_started', {
+            route: '/api/ai/chat',
+            operation: 'assistant_chat',
+        });
+        const result = await model.generateContentStream(aiInput);
         
         const stream = new ReadableStream({
             async start(controller) {
+                let output = '';
+                let firstTokenAt: number | undefined;
                 try {
                     for await (const chunk of result.stream) {
                         const chunkText = chunk.text();
                         if (chunkText) {
+                            firstTokenAt ??= Date.now();
+                            output += chunkText;
                             controller.enqueue(new TextEncoder().encode(chunkText));
                         }
                     }
+                    const response = await result.response;
+                    await captureGeminiGeneration({
+                        input: aiInput,
+                        output,
+                        context: aiContext,
+                        startedAt: aiStartedAt,
+                        usageMetadata: response.usageMetadata,
+                        stream: true,
+                        timeToFirstToken: firstTokenAt ? (firstTokenAt - aiStartedAt) / 1000 : undefined,
+                    });
+                    posthogLogs.info('ai_chat_generation_completed', {
+                        route: '/api/ai/chat',
+                        operation: 'assistant_chat',
+                        duration_ms: Date.now() - aiStartedAt,
+                        response_character_count: output.length,
+                    });
+                    await flushPostHogLogs();
                     controller.close();
                 } catch (error) {
+                    posthogLogs.warn('ai_chat_generation_stream_failed', {
+                        route: '/api/ai/chat',
+                        operation: 'assistant_chat',
+                    });
+                    await flushPostHogLogs();
                     controller.error(error);
                 }
             }
@@ -83,6 +118,11 @@ ${untrustedContentDirective('untrusted_user_input')}`
             },
         });
     } catch (error: any) {
+        posthogLogs.warn('ai_chat_request_failed', {
+            route: '/api/ai/chat',
+            operation: 'assistant_chat',
+        });
+        await flushPostHogLogs();
         console.error("[AI Chat] API error:", error?.message);
         return secureJson({ 
             error: "AI API Error" }, 500);

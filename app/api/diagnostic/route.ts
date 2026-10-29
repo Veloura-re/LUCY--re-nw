@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
-import { rateLimit } from '@/lib/security';
+import { rateLimitShared } from '@/lib/rate-limit';
 
 /**
  * Connectivity self-check for signed-in users. Reports pass/fail only; internal error text,
  * identifiers and configuration state are never returned.
  */
 export async function GET(request: Request) {
-    const limited = rateLimit(request, 'diagnostic', 10);
+    const limited = await rateLimitShared(request, 'diagnostic', 10);
     if (limited) return limited;
 
     const results: Record<string, { ok: boolean }> = {};

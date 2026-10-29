@@ -4,6 +4,7 @@ import { requireRole, handleApiError,  } from "@/lib/security";
 import { logActivity, getIp } from "@/lib/audit";
 import { rateLimitShared } from '@/lib/rate-limit';
 import { sandboxedModel } from '@/lib/ai';
+import { createAiObservationContext, observeGeminiCall } from '@/lib/ai-observability';
 
 const MAX_IMAGE_CHARS = 6 * 1024 * 1024; // roughly 4.5MB of decoded image data
 
@@ -53,7 +54,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             Return ONLY the raw JSON array. No markdown code blocks, no preamble.
         `;
 
-        const result = await model.generateContent([
+        const input = [
             prompt,
             {
                 inlineData: {
@@ -61,7 +62,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
                     mimeType: "image/jpeg",
                 },
             },
-        ]);
+        ];
+        const result = await observeGeminiCall(() => model.generateContent(input), input, createAiObservationContext({ distinctId: user.id, spanName: 'exam_image_extraction' }));
 
         const response = await result.response;
         let text = response.text().trim();

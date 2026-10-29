@@ -101,13 +101,14 @@ export async function POST(request: Request) {
                     });
                     if (assignmentMeta) {
                         const { scanEssaySubmission } = await import('@/lib/ai');
+                        const { createAiObservationContext } = await import('@/lib/ai-observability');
                         const scanResult = await scanEssaySubmission({
                             title: assignmentMeta.title,
                             description: assignmentMeta.description || '',
                             content,
                             subject: assignmentMeta.subject?.name || 'General Academic',
                             maxScore: assignmentMeta.maxScore || 100
-                        });
+                        }, createAiObservationContext({ distinctId: user.id, spanName: 'background_essay_scan' }));
                         await prisma.assignmentSubmission.update({
                             where: { id: submission.id },
                             data: { aiScanResult: scanResult as any } as any

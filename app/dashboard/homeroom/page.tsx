@@ -11,6 +11,7 @@ import { format, addDays, subDays } from "date-fns";
 import Link from "next/link";
 import { AlertModal } from "@/components/ui/confirmation-modal";
 import { Badge } from "@/components/ui/badge";
+import posthog from "posthog-js";
 
 type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
 
@@ -154,6 +155,13 @@ export default function HomeroomDashboard() {
             });
 
             if (res.ok) {
+                posthog.capture('attendance_saved', {
+                    record_count: recordsToSave.length,
+                    present_count: stats.present,
+                    absent_count: stats.absent,
+                    late_count: stats.late,
+                    excused_count: stats.excused,
+                });
                 setShowAlert(true);
             }
         } catch (e) {

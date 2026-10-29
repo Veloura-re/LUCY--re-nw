@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { rateLimit, secureJson, validateStringInput } from "@/lib/security";
+import { secureJson, validateStringInput } from "@/lib/security";
 import { unstable_cache } from "next/cache";
 import { rateLimitShared } from '@/lib/rate-limit';
 
@@ -23,7 +23,7 @@ const getApprovedComments = unstable_cache(
 // GET /api/public/comments — fetch latest 50 approved comments
 export async function GET(request: Request) {
     // Rate limit: 30 requests/min per IP
-    const limited = rateLimit(request, "public/comments/GET", 30);
+    const limited = await rateLimitShared(request, "public/comments/GET", 30);
     if (limited) return limited;
 
     try {

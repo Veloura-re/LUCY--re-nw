@@ -8,6 +8,10 @@ export async function POST(request: Request) {
     const limit = await rateLimitShared(request, "auth/verify-code", 5, 60_000);
     if (limit) return limit;
 
+    // Slower, longer window so a single address cannot walk the code space at the per-minute pace all day.
+    const hourly = await rateLimitShared(request, "auth/verify-code-hourly", 25, 60 * 60_000);
+    if (hourly) return hourly;
+
     const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
     const userAgent = request.headers.get('user-agent') || undefined;
 
@@ -59,7 +63,8 @@ export async function POST(request: Request) {
             student: {
                 id: student.id,
                 firstName: student.firstName,
-                lastName: student.lastName,
+                // Only the initial: enough for a parent to confirm the child, useless for harvesting names.
+                lastName: student.lastName ? `${student.lastName.trim().charAt(0).toUpperCase()}.` : "",
                 schoolName: student.school.name,
                 gradeLevel: student.grade?.level || 0,
                 gradeName: student.grade?.name || undefined
