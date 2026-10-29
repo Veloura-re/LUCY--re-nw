@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateGradeFeedback } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 import { requireRole, STAFF_ROLES } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const feedback = await generateGradeFeedback(score, maxScore, subject, previousContext);
+        const feedback = await generateGradeFeedback(score, maxScore, subject, previousContext, createAiObservationContext({ distinctId: user.id, spanName: 'grade_feedback' }));
 
         if (user?.id) {
             logActivity({

@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GEMINI_MODEL } from './ai-config';
+import { AiObservationContext, observeGeminiCall } from './ai-observability';
 import { STUDENT_SUBMISSION_TAG, neutralizeDelimiters, wrapUntrusted, untrustedContentDirective } from './prompt-safety';
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || '';
@@ -46,7 +47,7 @@ export function extractAndParseJson<T>(rawText: string, fallback: T): T {
     }
 }
 
-export async function analyzeStudentRisk(studentData: any) {
+export async function analyzeStudentRisk(studentData: any, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = sandboxedModel();
@@ -66,7 +67,7 @@ Respond strictly in the following JSON format without any markdown wrappers or a
 }
 `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         riskLevel: "Low",
@@ -76,7 +77,7 @@ Respond strictly in the following JSON format without any markdown wrappers or a
     });
 }
 
-export async function generateGradeFeedback(score: number, maxScore: number, subject: string, previousContext?: string) {
+export async function generateGradeFeedback(score: number, maxScore: number, subject: string, previousContext?: string, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = sandboxedModel();
@@ -87,11 +88,11 @@ Subject: ${userInput(subject, 200)}
 ${previousContext ? `Additional context: ${userInput(previousContext, 1000)}` : ''}
 The feedback should be addressed to the student (e.g., "Great job on your...", "I noticed you struggled with..."). Keep it professional but warm. Do not use quotes around the output.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     return result.response.text().trim();
 }
 
-export async function processParentChat(contextData: any, userMessage: string, previousHistory?: any[]) {
+export async function processParentChat(contextData: any, userMessage: string, previousHistory?: any[], aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = genAI.getGenerativeModel({ 
@@ -120,14 +121,15 @@ ${userInput(JSON.stringify(contextData ?? {}), 20000)}
         }));
 
     const chat = model.startChat({ history });
-    const result = await chat.sendMessage([{ text: neutralizeDelimiters(userMessage, 2000, USER_INPUT_TAG) }]);
+    const chatMessage = [{ text: neutralizeDelimiters(userMessage, 2000, USER_INPUT_TAG) }];
+    const result = await observeGeminiCall(() => chat.sendMessage(chatMessage), { history, message: chatMessage }, aiContext);
     return result.response.text();
 }
 
 /**
  * Generate a draft for a new assignment based on teacher input.
  */
-export async function generateAssignmentDraft({ subject, topic, gradeLevel, requirements }: any) {
+export async function generateAssignmentDraft({ subject, topic, gradeLevel, requirements }: any, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -147,7 +149,7 @@ Respond STRICTLY in the following JSON format:
 }
 `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         title: topic || "New Academic Assignment",
@@ -160,7 +162,7 @@ Respond STRICTLY in the following JSON format:
 /**
  * Analyze an assignment task for a student and provide tips.
  */
-export async function analyzeStudentTask(assignment: any) {
+export async function analyzeStudentTask(assignment: any, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -180,7 +182,7 @@ Respond strictly in the following JSON format:
 }
 `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         summary: assignment.title || "Academic Assignment Task",
@@ -193,7 +195,7 @@ Respond strictly in the following JSON format:
 /**
  * Pre-evaluate a student's submission before they finalize it.
  */
-export async function preEvaluateSubmission(assignment: any, studentContent: string) {
+export async function preEvaluateSubmission(assignment: any, studentContent: string, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -215,7 +217,7 @@ export async function preEvaluateSubmission(assignment: any, studentContent: str
     }
     `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         status: "Ready",
@@ -227,7 +229,7 @@ export async function preEvaluateSubmission(assignment: any, studentContent: str
 /**
  * Summarize a student's submission for the teacher.
  */
-export async function summarizeSubmission(studentContent: string) {
+export async function summarizeSubmission(studentContent: string, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -238,14 +240,14 @@ export async function summarizeSubmission(studentContent: string) {
     
     Keep it technical and objective. Max 100 words.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     return result.response.text().trim();
 }
 
 /**
  * Synthesize school-wide assignment analytics for institutional oversight.
  */
-export async function generateInstitutionalInsight(analytics: any) {
+export async function generateInstitutionalInsight(analytics: any, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -266,7 +268,7 @@ export async function generateInstitutionalInsight(analytics: any) {
     }
     `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         status: "Operational",
@@ -279,7 +281,7 @@ export async function generateInstitutionalInsight(analytics: any) {
 /**
  * Provide a parent-friendly breakdown and support tips for an assignment.
  */
-export async function analyzeTaskForParent(assignment: any) {
+export async function analyzeTaskForParent(assignment: any, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -299,7 +301,7 @@ export async function analyzeTaskForParent(assignment: any) {
     }
     `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, {
         parentSummary: assignment.title || "Classroom academic assignment",
@@ -312,7 +314,7 @@ export async function analyzeTaskForParent(assignment: any) {
 /**
  * Generate a set of interactive exam questions.
  */
-export async function generateExamQuestions({ subject, topic, gradeLevel, count, type }: { subject: string, topic: string, gradeLevel: string, count: number, type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'SHORT_ANSWER' | 'MIXED' }) {
+export async function generateExamQuestions({ subject, topic, gradeLevel, count, type }: { subject: string, topic: string, gradeLevel: string, count: number, type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'SHORT_ANSWER' | 'MIXED' }, aiContext?: AiObservationContext) {
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -335,7 +337,7 @@ export async function generateExamQuestions({ subject, topic, gradeLevel, count,
     ]
     `;
 
-    const result = await model.generateContent(prompt);
+    const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
     const text = result.response.text();
     return extractAndParseJson(text, []);
 }
@@ -393,7 +395,7 @@ export async function scanEssaySubmission({
     subject = "General Academic",
     maxScore = 100,
     previousContext = ""
-}: ScanEssayParams): Promise<EssayScanResult> {
+}: ScanEssayParams, aiContext?: AiObservationContext): Promise<EssayScanResult> {
     const rawWords = content.trim().split(/\s+/).filter(Boolean);
     const wordCount = rawWords.length;
     
@@ -489,7 +491,7 @@ Respond strictly in the following valid JSON format without markdown code fences
 `;
 
     try {
-        const result = await model.generateContent(prompt);
+        const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, aiContext);
         const text = result.response.text();
         const parsed = extractAndParseJson<Partial<EssayScanResult>>(text, {});
         

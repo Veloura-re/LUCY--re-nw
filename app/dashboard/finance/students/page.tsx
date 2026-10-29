@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import posthog from "posthog-js";
 
 export default function StudentFinanceDossier() {
     const router = useRouter();
@@ -161,6 +162,7 @@ export default function StudentFinanceDossier() {
             const data = await res.json() as any;
 
             if (res.ok) {
+                posthog.capture('payment_confirmed', { payment_method: recordingPayment.method });
                 toast.success(`Payment of $${recordingPayment.amount} confirmed successfully! Invoice marked PAID.`);
                 setRecordingPayment(null);
                 await fetchData();
@@ -226,6 +228,7 @@ export default function StudentFinanceDossier() {
             const data = await res.json() as any;
 
             if (res.ok) {
+                posthog.capture('invoice_created', { has_due_date: Boolean(billingInvoice.dueDate) });
                 toast.success(`Invoice for "${billingInvoice.name}" billed successfully!`);
                 const studentRef = billingInvoice.student;
                 setBillingInvoice(null);

@@ -4,6 +4,7 @@ import { AiQuestionsArraySchema } from "@/lib/schemas";
 import { rateLimitShared } from '@/lib/rate-limit';
 import { withAudit } from '@/lib/with-audit';
 import { sandboxedModel, userInput } from '@/lib/ai';
+import { createAiObservationContext, observeGeminiCall } from '@/lib/ai-observability';
 
 async function handlePOST(req: Request) {
     const limit = await rateLimitShared(req, "teacher/exams/remix", 10);
@@ -36,7 +37,7 @@ async function handlePOST(req: Request) {
             Return ONLY a raw JSON array of the remixed questions. DO NOT include the original questions. DO NOT include any text outside the JSON.
         `;
 
-        const result = await model.generateContent(prompt);
+        const result = await observeGeminiCall(() => model.generateContent(prompt), prompt, createAiObservationContext({ distinctId: dbUser.id, spanName: 'exam_remix' }));
         const response = await result.response;
         let text = response.text().trim();
 

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { rateLimit, secureJson } from "@/lib/security";
+import { secureJson } from "@/lib/security";
+import { rateLimitShared } from "@/lib/rate-limit";
 import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ const getPublicStats = unstable_cache(
 // GET /api/public/stats — public aggregate stats
 export async function GET(request: Request) {
     // Rate limit: 30 requests/min per IP
-    const limited = rateLimit(request, "public/stats/GET", 30);
+    const limited = await rateLimitShared(request, "public/stats/GET", 30);
     if (limited) return limited;
 
     try {

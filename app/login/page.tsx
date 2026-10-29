@@ -12,6 +12,7 @@ import { Logo } from "@/components/ui/logo";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Turnstile } from '@marsidev/react-turnstile';
+import posthog from 'posthog-js';
 import { InteractiveParticleSimulation } from "@/components/public/animations";
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -59,12 +60,17 @@ function LoginContent() {
                 body: JSON.stringify({ email, password, turnstileToken })
             });
 
-            const data = (await res.json()) as { error?: string };
+            const data = (await res.json()) as { error?: string; userId?: string };
 
-            if (!res.ok) {
+            if (!res.ok || !data.userId) {
                 setError(data.error || "Authentication failed");
                 setIsLoading(false);
                 return;
+            }
+
+            if (process.env.NEXT_PUBLIC_POSTHOG_KEY && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
+                posthog.identify(data.userId, { email });
+                posthog.capture('user_logged_in');
             }
         } catch (e: any) {
             setError("Internal Server Error");

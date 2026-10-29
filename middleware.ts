@@ -9,6 +9,8 @@ import { createServerClient } from '@supabase/ssr'
 export const runtime = 'experimental-edge'
 
 const rateLimitMap = new Map<string, { count: number, resetTime: number }>();
+const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+const posthogAssetsHost = posthogHost?.replace(/^https?:\/\/[^.]+/, 'https://*') ?? '';
 
 function checkRateLimit(ip: string, path: string): boolean {
     // Development bypass only. A missing IP header must never exempt a request in production.
@@ -97,7 +99,7 @@ function applySecurityHeaders(response: NextResponse) {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
         'Cross-Origin-Opener-Policy': 'same-origin',
-        'Content-Security-Policy': "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co; frame-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob:;",
+        'Content-Security-Policy': `default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com ${posthogAssetsHost}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co ${posthogHost ?? ''}; frame-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob:;`, 
         'Link': process.env.NEXT_PUBLIC_SUPABASE_URL ? `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect` : '',
     }
     Object.entries(securityHeaders).forEach(([key, value]) => {

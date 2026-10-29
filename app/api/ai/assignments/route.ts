@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireRole, handleApiError } from '@/lib/security';
 import { generateAssignmentDraft, analyzeStudentTask, preEvaluateSubmission, summarizeSubmission, generateInstitutionalInsight, analyzeTaskForParent } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 
 import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
             if (user.role === 'STUDENT' || user.role === 'PARENT') {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
-            const draft = await generateAssignmentDraft(context);
+            const draft = await generateAssignmentDraft(context, createAiObservationContext({ distinctId: user.id, spanName: 'assignment_draft' }));
             
         // Audit log
         try {
@@ -28,12 +29,12 @@ return NextResponse.json({ draft });
         }
 
         if (mode === 'analyze') {
-            const analysis = await analyzeStudentTask(context);
+            const analysis = await analyzeStudentTask(context, createAiObservationContext({ distinctId: user.id, spanName: 'assignment_analysis' }));
             return NextResponse.json({ analysis });
         }
 
         if (mode === 'pre-eval') {
-            const evaluation = await preEvaluateSubmission(context.assignment, context.content);
+            const evaluation = await preEvaluateSubmission(context.assignment, context.content, createAiObservationContext({ distinctId: user.id, spanName: 'assignment_pre_evaluation' }));
             return NextResponse.json({ evaluation });
         }
 
@@ -41,7 +42,7 @@ return NextResponse.json({ draft });
             if (user.role === 'STUDENT' || user.role === 'PARENT') {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
-            const summary = await summarizeSubmission(context.content);
+            const summary = await summarizeSubmission(context.content, createAiObservationContext({ distinctId: user.id, spanName: 'assignment_summary' }));
             return NextResponse.json({ summary });
         }
 
@@ -49,12 +50,12 @@ return NextResponse.json({ draft });
             if (user.role !== 'PRINCIPAL' && user.role !== 'HOMEROOM') { // Adjust roles as needed
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
             }
-            const insight = await generateInstitutionalInsight(context);
+            const insight = await generateInstitutionalInsight(context, createAiObservationContext({ distinctId: user.id, spanName: 'institutional_assignment_insight' }));
             return NextResponse.json({ insight });
         }
 
         if (mode === 'parent-analysis') {
-            const analysis = await analyzeTaskForParent(context);
+            const analysis = await analyzeTaskForParent(context, createAiObservationContext({ distinctId: user.id, spanName: 'parent_assignment_analysis' }));
             return NextResponse.json({ analysis });
         }
 

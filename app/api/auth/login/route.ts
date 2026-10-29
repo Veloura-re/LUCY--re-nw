@@ -181,7 +181,8 @@ export async function POST(req: Request) {
         }
 
         // 7. Prepare response and set cookie directly to prevent race conditions
-        const response = NextResponse.json({ success: true, sessionToken });
+        // The device session lives only in the HttpOnly cookie so page scripts can never read it.
+        const response = NextResponse.json({ success: true, userId: authData.user.id });
         response.cookies.set({
             name: 'lucy_device_session',
             value: sessionToken,

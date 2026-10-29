@@ -12,6 +12,7 @@ import { Building2, KeyRound, Mail, Lock, User, Check, AlertCircle, ArrowRight, 
 
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { InteractiveParticleSimulation } from "@/components/public/animations";
+import posthog from "posthog-js";
 
 export default function DirectorRegister() {
     const [step, setStep] = useState(1); // 1: Validate Key, 2: Register Details
@@ -108,6 +109,7 @@ export default function DirectorRegister() {
                         email,
                         password
                     });
+                    posthog.capture('account_registered', { account_role: 'principal' });
                     router.push('/dashboard');
                 } else {
                     const data = await res.json() as { error?: string };

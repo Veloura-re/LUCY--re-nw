@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { processParentChat } from '@/lib/ai';
+import { createAiObservationContext } from '@/lib/ai-observability';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { reportServerError } from '@/lib/error-capture';
 
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
         });
 
         // Pass context to AI along with the prompt
-        const responseText = await processParentChat(parentContext, message, previousHistory);
+        const responseText = await processParentChat(parentContext, message, previousHistory, createAiObservationContext({ distinctId: user.id, spanName: 'parent_chat' }));
         
         // Audit log
         try {

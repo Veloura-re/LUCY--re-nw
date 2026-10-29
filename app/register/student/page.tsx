@@ -13,6 +13,7 @@ import { Loader2, ArrowRight, ShieldCheck, KeyRound, Mail, Lock } from "lucide-r
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { InteractiveParticleSimulation } from "@/components/public/animations";
+import posthog from "posthog-js";
 
 export default function StudentRegisterPage() {
     const router = useRouter();
@@ -55,6 +56,7 @@ export default function StudentRegisterPage() {
                 throw new Error(data.error || "Failed to initialize student node");
             }
 
+            posthog.capture('account_registered', { account_role: 'student' });
             toast.success("Identity established successfully!");
             router.push("/dashboard");
         } catch (error: any) {

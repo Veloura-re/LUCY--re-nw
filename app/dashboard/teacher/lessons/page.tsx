@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import posthog from "posthog-js";
 
 export default function TeacherLessonsPage() {
     const [lessons, setLessons] = useState<any[]>([]);
@@ -52,6 +53,10 @@ export default function TeacherLessonsPage() {
             });
             const data = (await res.json()) as any;
             if (res.ok) {
+                posthog.capture('lesson_logged', {
+                    has_objectives: Boolean(form.objectives),
+                    has_period: Boolean(form.periodId),
+                });
                 // Refetch
                 const updated = await fetch('/api/teacher/lessons').then(r => r.json() as Promise<any>);
                 setLessons(updated.lessons || []);

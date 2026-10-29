@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import SpringingLoader from "@/components/dashboard/springing-loader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 
 function ExamsPageContent() {
     const router = useRouter();
@@ -113,10 +114,16 @@ function ExamsPageContent() {
         e.preventDefault();
         setCreateLoading(true);
         try {
-            await fetch('/api/teacher/exams', {
+            const res = await fetch('/api/teacher/exams', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newExam)
+            });
+            if (!res.ok) return;
+
+            posthog.capture('exam_created', {
+                has_duration: Boolean(newExam.duration),
+                is_locked: newExam.isLocked,
             });
             setIsCreating(false);
             setNewExam({ ...newExam, title: "", date: "", duration: "" });

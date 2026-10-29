@@ -45,7 +45,7 @@ export async function POST() {
         }
 
         // Set the active session token in an HTTP-only cookie
-        const response = NextResponse.json({ success: true, sessionToken });
+        const response = NextResponse.json({ success: true });
         
         response.cookies.set({
             name: 'lucy_device_session',

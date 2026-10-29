@@ -10,6 +10,7 @@ import { wrapUntrusted, untrustedContentDirective, neutralizeDelimiters, STUDENT
 import { normalizeAnswers } from "@/lib/exam-answers";
 import { GEMINI_MODEL } from "@/lib/ai-config";
 import { claimAttemptForGrading, releaseAttemptClaim } from "@/lib/exam-attempts";
+import { createAiObservationContext, observeGeminiCall } from "@/lib/ai-observability";
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -25,6 +26,7 @@ export async function POST(
         if (limited) return limited;
 
         const user = await requireRole(['STUDENT']);
+        const aiContext = createAiObservationContext({ distinctId: user.id, spanName: 'exam_long_answer_grading' });
 
         const student = await prisma.student.findFirst({ where: { userId: user.id } });
         if (!student) return NextResponse.json({ error: "Student profile missing" }, { status: 404 });
@@ -127,7 +129,7 @@ Respond with JSON format:
 }
                         `.trim();
 
-                        const res = await model.generateContent(aiPrompt);
+                        const res = await observeGeminiCall(() => model.generateContent(aiPrompt), aiPrompt, aiContext);
                         let cleanedText = res.response.text().trim();
                         
                         const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);

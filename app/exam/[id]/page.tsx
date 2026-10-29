@@ -14,6 +14,7 @@ import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Loader2 as Loader2Icon, Timer, ShieldAlert, WifiOff, Wifi, CloudCheck } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import posthog from "posthog-js";
 
 export default function ExamRoomPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -128,6 +129,10 @@ export default function ExamRoomPage({ params }: { params: Promise<{ id: string 
             const data = (await res.json()) as any;
 
             if (data.success) {
+                posthog.capture('exam_submitted', {
+                    answer_count: Object.keys(answers).length,
+                    question_count: examData?.questions?.length ?? 0,
+                });
                 // Clear cache upon successful transmission
                 localStorage.removeItem(`exam_cache_${id}`);
                 toast.success(`Assessment Concluded. Score: ${data.score.toFixed(1)}%`);
