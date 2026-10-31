@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 
 export async function POST(req: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
+        const dbUser = await requireRole([...FINANCE_ROLES, 'TEACHER']);
 
         const body: any = await req.json().catch(() => ({}));
         const paymentId = body.paymentId || body.payId;

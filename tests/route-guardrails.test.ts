@@ -128,6 +128,7 @@ describe('audit trail coverage', () => {
     const NOT_AUDITED: Record<string, string> = {
         'app/api/ai/chat/route.ts': 'read-only assistant call; rate limited',
         'app/api/auth/forgot-password/route.ts': 'recorded by the authentication flow',
+        'app/api/auth/accept-terms/route.ts': 'ACCEPT_TERMS is audited inside recordConsent, next to the ConsentRecord rows',
         'app/api/auth/login/route.ts': 'recorded in auth_audit_logs, shown on the security page',
         'app/api/auth/register-session/route.ts': 'session bookkeeping',
         'app/api/auth/validate-key/route.ts': 'read-only key check',

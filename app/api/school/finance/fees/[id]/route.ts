@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 import { logActivity } from "@/lib/audit";
 
 export async function DELETE(
@@ -9,7 +9,7 @@ export async function DELETE(
 ) {
     const { id: feeId } = await params;
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
 
         const fee = await prisma.feeStructure.findUnique({
             where: { id: feeId }

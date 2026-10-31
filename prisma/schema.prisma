@@ -27,6 +27,7 @@ model User {
   qualification          String?
   teacherCode            String?                 @unique
   activeSessionId        String?
+  legalVersionAccepted   String?
   authRequests           AbsenceAuthorization[]  @relation("AuthRequests")
   absenceAuthorizations  AbsenceAuthorization[]  @relation("UserAbsence")
   createdAssignments     Assignment[]
@@ -63,6 +64,7 @@ model User {
   loggedExpenses         InstitutionalExpense[]  @relation("LoggedExpenses")
   school                 School?                 @relation(fields: [schoolId], references: [id])
   billingReceipts        BillingReceipt[]
+  consentRecords         ConsentRecord[]
 
   @@index([schoolId, role])
 }
@@ -145,6 +147,7 @@ model RestorePoint {
   createdAt   DateTime @default(now())
   triggeredBy String   @default("SYSTEM")
   fileUrl     String
+  filePath    String?
   sizeBytes   Int
   status      String   @default("COMPLETED")
   metadata    Json?    @default("{}")
@@ -998,6 +1001,8 @@ enum Role {
   HOMEROOM
   PARENT
   STUDENT
+  ACCOUNTANT
+  RECORDER
 }
 
 enum SchoolStatus {
@@ -1195,6 +1200,22 @@ model BillingReceipt {
   updatedAt     DateTime @updatedAt
 
   @@index([schoolId])
+}
+
+/// Proof that a user accepted a version of the Terms or Privacy Policy. One row per user, document and version.
+model ConsentRecord {
+  id           String   @id @default(uuid())
+  userId       String
+  documentType String // TERMS | PRIVACY
+  version      String
+  acceptedAt   DateTime @default(now())
+  ip           String?
+  userAgent    String?
+  source       String // login | register-student | register-parent | register-admin | register-invite | accept-terms
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, documentType, version])
+  @@index([userId])
 }
 
 model AuthRateLimit {

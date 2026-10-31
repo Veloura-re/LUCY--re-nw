@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
 import { withAudit } from '@/lib/with-audit';
 
 export async function GET(request: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
         const { searchParams } = new URL(request.url);
         
         const page = parseInt(searchParams.get('page') || '1', 10);
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 
 async function handlePOST(request: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
         const body: any = await request.json().catch(() => ({}));
         const { studentId, amount, name = 'Tuition & Fee', description, dueDate } = body;
 

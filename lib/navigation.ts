@@ -36,7 +36,7 @@ import {
     Shield
 } from "lucide-react";
 
-export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT';
+export type Role = 'SUPERADMIN' | 'OWNER' | 'PRINCIPAL' | 'TEACHER' | 'HOMEROOM' | 'PARENT' | 'STUDENT' | 'ACCOUNTANT' | 'RECORDER';
 
 export const ICON_MAP = {
     Compass,
@@ -94,6 +94,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
     OWNER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'Crown', label: "Principals", href: "/dashboard/principals" },
+        { icon: 'Briefcase', label: "Finance & Records Staff", href: "/dashboard/staff-roles" },
         { icon: 'CreditCard', label: "Billing & Subscription", href: "/dashboard/billing" },
         { icon: 'CheckSquare', label: "Approvals", href: "/dashboard/approvals" },
         { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
@@ -109,6 +110,7 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'CreditCard', label: "Billing & Subscription", href: "/dashboard/billing" },
         { icon: 'UserRound', label: "Teachers", href: "/dashboard/teachers" },
+        { icon: 'Briefcase', label: "Finance & Records Staff", href: "/dashboard/staff-roles" },
         { icon: 'Scroll', label: "Students", href: "/dashboard/students" },
         { icon: 'Library', label: "Classes", href: "/dashboard/classes" },
         { icon: 'Users', label: "Parents", href: "/dashboard/parents" },
@@ -178,6 +180,25 @@ export const NAV_ITEMS: Record<Role, NavItem[]> = {
         { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         // { icon: 'Sparkles', label: "Neural Link", href: "/dashboard/ai" },
         { icon: 'Pencil', label: "Assignments", href: "/dashboard/assignments" },
+        { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
+    ],
+    ACCOUNTANT: [
+        { icon: 'Compass', label: "Overview", href: "/dashboard" },
+        { icon: 'Coins', label: "Finance", href: "/dashboard/finance" },
+        { icon: 'DollarSign', label: "Revenue", href: "/dashboard/revenue" },
+        { icon: 'Briefcase', label: "Payroll", href: "/dashboard/payroll" },
+        { icon: 'Receipt', label: "Operating Costs", href: "/dashboard/operating-costs" },
+        { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
+        { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
+        { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
+    ],
+    RECORDER: [
+        { icon: 'Compass', label: "Overview", href: "/dashboard" },
+        { icon: 'Scroll', label: "Students", href: "/dashboard/students" },
+        { icon: 'Library', label: "Classes", href: "/dashboard/classes" },
+        { icon: 'Users', label: "Parents", href: "/dashboard/parents" },
+        { icon: 'Mail', label: "Messages", href: "/dashboard/messages" },
         { icon: 'Cog', label: "Settings", href: "/dashboard/settings" },
         { icon: 'HelpCircle', label: "Guideline Book", href: "/dashboard/help" },
     ],

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
 
 export async function GET(request: Request) {
     try {
-        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(FINANCE_ROLES);
         const { searchParams } = new URL(request.url);
         const classId = searchParams.get('classId') || '';
         const gradeId = searchParams.get('gradeId') || '';

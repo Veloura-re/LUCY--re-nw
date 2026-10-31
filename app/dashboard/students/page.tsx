@@ -1,3 +1,4 @@
+import { REGISTRY_ROLES } from "@/lib/security";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getCachedUser } from "@/lib/users";
@@ -21,7 +22,8 @@ export default async function StudentsPage() {
     } catch (e) {
         console.error('[StudentsPage] Profile fetch error:', e);
     }
-    if (!dbUser || !dbUser.schoolId) {
+    // Registry data is for school staff only; parents, students and finance staff never see it.
+    if (!dbUser || !dbUser.schoolId || !REGISTRY_ROLES.includes(dbUser.role)) {
         redirect("/dashboard");
     }
 

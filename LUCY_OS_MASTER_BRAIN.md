@@ -56,6 +56,8 @@ graph LR
 | **`HOMEROOM`** | Assigned Class | Oversee class attendance, student report cards, aggregate term marklists. | Cannot modify global school fee structures. |
 | **`PARENT`** | Linked Children | View grades, attendance history, pay tuition invoices, submit absence notes. | Strictly isolated to verified `ParentStudentLink` IDs. |
 | **`STUDENT`** | Self Profile | View assignments, sit for online exams, view report cards, check timetable. | Read-only permissions on grades and attendance. |
+| **`ACCOUNTANT`** | Single School | Fees, invoices, expenses, payment checks, payroll (`FINANCE_ROLES`). Invited by a director. | Cannot manage the school's LUCY subscription or open student records. |
+| **`RECORDER`** | Single School | Create and edit students, parents and classes (`RECORDS_ROLES`). Invited by a director. | Cannot delete records or see finance. |
 
 ---
 

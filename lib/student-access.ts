@@ -16,7 +16,7 @@ export interface StudentRef {
  * Per-record authorization for reading a student's record.
  *
  * - SUPERADMIN: any student.
- * - OWNER, PRINCIPAL, TEACHER, HOMEROOM: students of their own school.
+ * - OWNER, PRINCIPAL, TEACHER, HOMEROOM, RECORDER: students of their own school.
  * - STUDENT: only their own record.
  * - PARENT: only a linked child.
  */
@@ -28,6 +28,7 @@ export async function canViewStudent(viewer: StudentViewer, student: StudentRef)
         case 'PRINCIPAL':
         case 'TEACHER':
         case 'HOMEROOM':
+        case 'RECORDER':
             return Boolean(viewer.schoolId) && student.schoolId === viewer.schoolId;
         case 'STUDENT':
             return student.userId === viewer.id;

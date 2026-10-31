@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 import { FeeCategory, FeeFrequency } from "@prisma/client";
 import { withAudit } from '@/lib/with-audit';
 
@@ -25,7 +25,7 @@ const VALID_FREQUENCIES: Record<string, FeeFrequency> = {
 
 export async function GET() {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
         const schoolId = dbUser.schoolId!;
 
         const fees = await prisma.feeStructure.findMany({
@@ -42,7 +42,7 @@ export async function GET() {
 
 async function handlePOST(req: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
         const schoolId = dbUser.schoolId!;
 
         const body: any = await req.json();
