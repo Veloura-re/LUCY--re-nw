@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
 import { createTerminalConnectionToken, createTerminalPaymentIntent } from '@/lib/stripe';
 import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
+        const user = await requireRole([...FINANCE_ROLES, 'TEACHER']);
         const schoolId = user.schoolId!;
 
         const body = (await request.json().catch(() => ({}))) as any;

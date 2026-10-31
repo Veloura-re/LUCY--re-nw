@@ -17,6 +17,8 @@ LUCY operates on strict Role-Based Access Control (RBAC) backed by institutional
 5. `HOMEROOM`: Class section shepherd, conduct/effort evaluations, student pastoral care, and parent absence authorization.
 6. `PARENT`: Guardian portal, multi-scholar linking, real-time arrival alerts, fee settlement (Chapa/Stripe), and absence permit filings.
 7. `STUDENT`: Scholar terminal, period timetable schedules, timed assessments, lesson file downloads, and The Sanctuary anonymous counseling.
+8. `ACCOUNTANT`: School finance staff invited by a director. Fees, invoices, expenses, payment checks and payroll. No access to the school's LUCY subscription or to student academic records.
+9. `RECORDER`: Student records staff invited by a director. Creates and edits student, parent and class records. Cannot delete records and cannot see finance.
 
 ---
 
@@ -233,6 +235,24 @@ Super Administrators are platform custodians who manage multi-tenant school lice
   - The Sanctuary emergency escalation reports requiring immediate crisis intervention.
 - **Strict Governance Constraints**:
   - All interventions into tenant accounts are cryptographically signed and logged in permanent audit records.
+
+---
+
+## 8A. Finance Accountant (`ACCOUNTANT`) and Records Recorder (`RECORDER`)
+
+### Role Summary
+Directors (principal or owner) invite both roles by email from `/dashboard/staff-roles` (Finance & Records Staff). The invitation expires after 7 days and can be revoked while unused. Each invitation and revocation is written to the audit log.
+
+### Accountant
+- **Can**: define fees, generate and review invoices, log operating costs, check pending payments, run payroll, and view revenue.
+- **Cannot**: change the school's LUCY subscription or billing receipts, open the student registry, or invite staff.
+
+### Recorder
+- **Can**: create and edit students, parents and classes, and open the student registry.
+- **Cannot**: delete student records, see finance pages, or invite staff.
+
+### Removal
+Remove an active accountant or recorder from the staff list the same way as other staff. A principal without full access creates a request that the owner approves.
 
 ---
 

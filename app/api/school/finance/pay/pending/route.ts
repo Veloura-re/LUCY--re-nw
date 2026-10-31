@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 
 export async function GET() {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER']);
+        const dbUser = await requireRole([...FINANCE_ROLES, 'TEACHER']);
 
         const pendingPayments = await prisma.payment.findMany({
             where: {

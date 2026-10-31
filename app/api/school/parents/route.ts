@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, RECORDS_ROLES } from '@/lib/security';
 
 export async function GET(request: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(RECORDS_ROLES);
 
         const parents = await prisma.user.findMany({
             where: {

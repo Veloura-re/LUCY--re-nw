@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 
 export async function GET() {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
 
         // 1. Get Monthly Revenue (Last 12 Months)
         const labels: string[] = [];

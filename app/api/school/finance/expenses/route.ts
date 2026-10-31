@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError, secureJson } from "@/lib/security";
+import { requireRole, handleApiError, secureJson, FINANCE_ROLES } from "@/lib/security";
 import { withAudit } from '@/lib/with-audit';
 
 export async function GET(req: Request) {
     try {
-        const dbUser = await requireRole(["SUPERADMIN", "OWNER", "PRINCIPAL"]);
+        const dbUser = await requireRole(FINANCE_ROLES);
 
         const schoolId = dbUser.schoolId;
         if (!schoolId) {
@@ -31,7 +31,7 @@ export async function GET(req: Request) {
 
 async function handlePOST(req: Request) {
     try {
-        const dbUser = await requireRole(["SUPERADMIN", "OWNER", "PRINCIPAL"]);
+        const dbUser = await requireRole(FINANCE_ROLES);
 
         const schoolId = dbUser.schoolId;
         if (!schoolId) {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireAuth, requireRole } from '@/lib/security';
+import { handleApiError, requireAuth, requireRole, FINANCE_ROLES } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
     try {
-        const user = await requireRole(['SUPERADMIN', 'OWNER', 'PRINCIPAL']);
+        const user = await requireRole(FINANCE_ROLES);
         const targetSchoolId = user.schoolId || (user.role === 'SUPERADMIN' ? (await prisma.school.findFirst({ select: { id: true } }))?.id : null);
 
         if (!targetSchoolId) {

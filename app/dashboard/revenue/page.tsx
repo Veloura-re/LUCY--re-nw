@@ -19,7 +19,7 @@ export default async function RevenuePage() {
 
     const schoolId = dbUser.schoolId;
 
-    if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN') {
+    if (dbUser.role === 'OWNER' || dbUser.role === 'PRINCIPAL' || dbUser.role === 'SUPERADMIN' || dbUser.role === 'ACCOUNTANT') {
         const [school, grades] = await Promise.all([
             prisma.school.findUnique({
                 where: { id: schoolId || '' },

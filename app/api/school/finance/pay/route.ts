@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         if (!invoice) return new NextResponse("Invoice not found", { status: 404 });
 
         let isAuthorized = false;
-        if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER'].includes(dbUser.role)) {
+        if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'ACCOUNTANT', 'TEACHER'].includes(dbUser.role)) {
             if (dbUser.schoolId === invoice.schoolId) isAuthorized = true;
         } else if (dbUser.role === 'PARENT') {
             const linked = dbUser.parentLinks.some(link => link.studentId === invoice.studentId);
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
             }
         });
 
-        const isDirector = ['OWNER', 'PRINCIPAL', 'SUPERADMIN'].includes(dbUser.role);
+        const isDirector = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'ACCOUNTANT'].includes(dbUser.role);
 
         // If a parent submits and there's already a pending payment, ask to wait for verification
         if (existingPending && !isDirector) {

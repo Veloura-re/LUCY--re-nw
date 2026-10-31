@@ -16,7 +16,7 @@ export default async function OperatingCostsPage() {
     const dbUser = await getCachedUser(user.id) as any;
     if (!dbUser) redirect("/login");
 
-    const allowedRoles = ["SUPERADMIN", "OWNER", "PRINCIPAL"];
+    const allowedRoles = ["SUPERADMIN", "OWNER", "PRINCIPAL", "ACCOUNTANT"];
     if (!allowedRoles.includes(dbUser.role)) {
         redirect("/dashboard");
     }

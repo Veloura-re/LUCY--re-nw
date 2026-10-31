@@ -11,7 +11,13 @@ import type { Role } from '@prisma/client';
 export const ADMIN_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN'];
 export const TEACHER_ROLES: Role[] = ['TEACHER', 'HOMEROOM'];
 export const STAFF_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'];
-export const ALL_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT'];
+export const ALL_ROLES: Role[] = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM', 'PARENT', 'STUDENT', 'ACCOUNTANT', 'RECORDER'];
+/** Who may run school finance: fees, invoices, expenses, banking, payment checks and payroll. Not the platform subscription. */
+export const FINANCE_ROLES: Role[] = [...ADMIN_ROLES, 'ACCOUNTANT'];
+/** Who may create and edit student records (deleting stays with ADMIN_ROLES). */
+export const RECORDS_ROLES: Role[] = [...ADMIN_ROLES, 'RECORDER'];
+/** Everyone who may open the student registry and class lists. */
+export const REGISTRY_ROLES: Role[] = [...STAFF_ROLES, 'RECORDER'];
 
 import { headers } from 'next/headers';
 

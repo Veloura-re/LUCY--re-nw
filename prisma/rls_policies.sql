@@ -63,6 +63,7 @@ ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "School" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "AcademicTerm" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "RestorePoint" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "ConsentRecord" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Grade" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Class" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Subject" ENABLE ROW LEVEL SECURITY;
@@ -205,7 +206,7 @@ CREATE POLICY "attendance_parent_read" ON "AttendanceRecord" FOR SELECT USING (
 -- ==========================================
 CREATE POLICY "finance_staff_all" ON "Invoice" FOR ALL USING (
     "studentId" IN (SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()) 
-    AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'ACCOUNTANT')
 );
 CREATE POLICY "finance_student_read" ON "Invoice" FOR SELECT USING (
     "studentId" IN (SELECT id FROM "Student" WHERE "userId" = auth.uid()::text)
@@ -220,7 +221,7 @@ CREATE POLICY "payment_staff_all" ON "Payment" FOR ALL USING (
             SELECT id FROM "Student" WHERE "schoolId" = get_auth_school_id()
         )
     )
-    AND get_auth_role() IN ('OWNER', 'PRINCIPAL')
+    AND get_auth_role() IN ('OWNER', 'PRINCIPAL', 'ACCOUNTANT')
 );
 
 -- ==========================================

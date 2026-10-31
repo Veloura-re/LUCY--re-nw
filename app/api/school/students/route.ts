@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireRole, requireSchoolLinked, secureJson, sanitizeInput } from '@/lib/security';
+import { handleApiError, requireRole, requireSchoolLinked, secureJson, sanitizeInput, RECORDS_ROLES, REGISTRY_ROLES } from '@/lib/security';
 import { logActivity, logError } from '@/lib/audit';
 import { sendInviteEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
@@ -48,7 +48,8 @@ const StudentUpdateSchema = z.object({
 export async function GET(request: Request) {
     try {
         const user = await requireSchoolLinked();
-        if (user.role === 'PARENT' || user.role === 'STUDENT') {
+        // Allow-list, not "anyone but parents and students": a new role must never inherit the registry.
+        if (!REGISTRY_ROLES.includes(user.role)) {
             return secureJson({ error: 'Forbidden: Access denied' }, 403);
         }
         const { searchParams } = new URL(request.url);
@@ -94,7 +95,7 @@ export async function GET(request: Request) {
 // POST: Add a new student
 export async function POST(request: Request) {
     try {
-        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(RECORDS_ROLES);
         const rawBody = await request.json();
         
         let targetSchoolId = user.schoolId;
@@ -470,7 +471,7 @@ export async function POST(request: Request) {
 // PUT: Update student details with strict tenant isolation
 export async function PUT(request: Request) {
     try {
-        const user = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const user = await requireRole(RECORDS_ROLES);
         const rawBody = await request.json();
         const parseResult = StudentUpdateSchema.safeParse(rawBody);
 

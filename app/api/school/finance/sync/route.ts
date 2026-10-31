@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError } from "@/lib/security";
+import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 import { Decimal } from "decimal.js";
 import { withAudit } from '@/lib/with-audit';
 
 async function handlePOST(req: Request) {
     try {
-        const dbUser = await requireRole(['OWNER', 'PRINCIPAL', 'SUPERADMIN']);
+        const dbUser = await requireRole(FINANCE_ROLES);
         const schoolId = dbUser.schoolId!;
 
         // 1. Fetch all active fee structures in the school
