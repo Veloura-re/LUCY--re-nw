@@ -4,6 +4,7 @@ import { requireRole, ALL_ROLES, publicErrorMessage, handleApiError } from '@/li
 import { reportServerError } from '@/lib/error-capture';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { logActivity } from '@/lib/audit';
+import { fileRef } from '@/lib/storage-files';
 import { validateUpload, GENERAL_RULES, IMAGE_RULES, resolveUploadFolder } from '@/lib/upload-validation';
 
 export async function POST(request: Request) {
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: validation.error }, { status: 400 });
         }
 
-        const targetBucket = 'school-assets';
+        const targetBucket = 'school-assets' as const;
         const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}.${validation.extension}`;
         // Tenant-scoped path inside the school-assets bucket
         const filePath = `${dbUser.schoolId ?? `unscoped/${dbUser.id}`}/${folder}/${fileName}`;
@@ -43,10 +44,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
         }
 
-        const { data: { publicUrl } } = supabase.storage
-            .from(targetBucket)
-            .getPublicUrl(filePath);
-
         await logActivity({
             userId: dbUser.id,
             schoolId: dbUser.schoolId || undefined,
@@ -55,7 +52,7 @@ export async function POST(request: Request) {
             resourceId: filePath,
             ip: request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined
         });
-        return NextResponse.json({ url: publicUrl });
+        return NextResponse.json({ url: fileRef(targetBucket, filePath) });
 
     } catch (e) {
         return handleApiError(e);

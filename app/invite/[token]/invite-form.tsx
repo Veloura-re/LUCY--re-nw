@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { User, Lock, Mail, AlertCircle, ArrowRight, ShieldCheck, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,6 +15,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
     const [isLoading, setIsLoading] = useState(false);
     const [statusText, setStatusText] = useState("");
     const [error, setError] = useState<string | null>(null);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
     const router = useRouter();
     const supabase = createClient();
 
@@ -87,7 +89,8 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                 token,
                 userId,
                 name,
-                email
+                email,
+                acceptedTerms
             })
         });
 
@@ -185,9 +188,22 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
                     )}
                 </AnimatePresence>
 
+                <div className="flex items-start space-x-3">
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        checked={acceptedTerms}
+                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        className="mt-1 w-4 h-4 rounded border-zinc-400 dark:border-zinc-700 bg-white dark:bg-zinc-950 accent-eduGreen-500 cursor-pointer"
+                    />
+                    <label htmlFor="terms" className="text-xs text-zinc-600 dark:text-zinc-400 leading-tight cursor-pointer select-none">
+                        I agree to the <Link href="/terms" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Terms of Service</Link> and <Link href="/privacy" target="_blank" className="text-eduGreen-500 hover:underline font-semibold">Privacy Policy</Link>.
+                    </label>
+                </div>
+
                 <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !acceptedTerms}
                     className="w-full h-14 bg-eduGreen-600 hover:bg-eduGreen-500 text-white rounded-xl text-sm font-semibold tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(34,197,94,0.15)] hover:shadow-[0_0_30px_rgba(34,197,94,0.3)] group relative overflow-hidden"
                 >
                     <span className="relative z-10 flex items-center justify-center gap-2">

@@ -1,3 +1,4 @@
+import { LEGAL_VERSION } from "@/lib/legal-versions";
 import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
 import { cookies, headers } from "next/headers";
@@ -100,6 +101,12 @@ export default async function DashboardLayout({
 
     if (!dbUser) {
         redirect("/login?error=profile_not_found");
+    }
+
+    // Everyone must have accepted the current Terms and Privacy Policy. Registration and login record
+    // it; this catches sessions that predate the record or follow a new LEGAL_VERSION.
+    if (dbUser.legalVersionAccepted !== LEGAL_VERSION) {
+        redirect("/accept-terms");
     }
 
     // Enforce School Suspension

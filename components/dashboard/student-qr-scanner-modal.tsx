@@ -544,6 +544,7 @@ export function StudentQRScannerModal({
                                         <div className="w-24 h-24 rounded-2xl bg-zinc-200 dark:bg-zinc-800 border-2 border-eduGreen-500/30 overflow-hidden relative shadow-lg shrink-0">
                                             {scanResult.student.photoUrl ? (
                                                 <Image
+                                                    unoptimized
                                                     src={scanResult.student.photoUrl}
                                                     alt={scanResult.student.fullName}
                                                     fill

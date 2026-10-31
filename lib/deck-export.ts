@@ -193,7 +193,7 @@ export const DECK_SLIDES_EXPORT_DATA: DeckSlideData[] = [
     id: "act_08",
     act: "ACT 08 // ENTERPRISE SECURITY",
     title: "Permanent Cloud Records & Immutable Audit Trails",
-    subtitle: "Academic marks and institutional finances protected with cryptographic tenant isolation, role-based boundaries, and zero on-premise hardware costs.",
+    subtitle: "Academic marks and institutional finances protected with per-school isolation enforced on every request, role-based boundaries, and zero on-premise hardware costs.",
     stats: [
       { label: "Platform Uptime", value: "99.9%", sub: "High-availability cloud" },
       { label: "Server Hardware Cost", value: "$0", sub: "Zero local server overhead" }
@@ -210,7 +210,7 @@ export const DECK_SLIDES_EXPORT_DATA: DeckSlideData[] = [
         badge: "AES-256 Cloud"
       }
     ],
-    speakerNotes: `Academic and financial records are sacred institutional assets. LUCY provides 99.9% uptime, zero hardware costs, cryptographic multi-tenant isolation, and immutable audit logs.`
+    speakerNotes: `Academic and financial records are sacred institutional assets. LUCY provides 99.9% uptime, zero hardware costs, per-school isolation enforced on every request, and audit logs.`
   },
   {
     id: "act_09",

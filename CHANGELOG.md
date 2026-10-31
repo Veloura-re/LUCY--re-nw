@@ -2,6 +2,23 @@
 
 All notable changes, security enhancements, and feature releases for LUCY OS are documented here.
 
+## [3.4.0] — 2026-10-31
+
+### Security
+- **Private file storage**: uploaded files (photos, logos, books, coursework, receipts) are served through `/api/files/<bucket>/<path>`, which checks the caller's school and redirects to a short-lived signed URL. Run `scripts/migrate-file-urls.ts --apply` and then `storage-private-files.sql` (in that order) when deploying.
+- **Tenant-scoped storage writes**: `storage-hardening.sql` limits uploads and deletes to the caller's own school folder.
+- **Sanctuary retention**: messages are deleted when a session ends unless it was reported; all session records are removed after 30 days.
+- **AI telemetry**: prompts and responses are no longer sent to analytics, only sizes and token counts.
+
+### Added
+- **Accountant and Recorder roles**: directors (principal or owner) invite them by email from the new Finance & Records Staff page. Accountants run school finance (fees, invoices, expenses, payment checks, payroll) but not the school's LUCY subscription; recorders create and edit student records but cannot delete them or see finance. Run the `add_accountant_recorder_roles` migration before deploying.
+- **Recorded consent**: acceptance of the Terms and Privacy Policy is stored per user and version (`ConsentRecord`). Users are asked to accept again when `LEGAL_VERSION` changes.
+- **Backup retention**: automatic backups are removed after 30 days and manual ones after 90, always keeping the newest three. Backup download links are refreshed on every listing.
+
+### Changed
+- The student registry and class pages, and the student list API, now check an allow-list of staff roles. Previously any signed-in user who was not a parent or student could open them.
+- Privacy Policy and Terms of Service rewritten to match the platform's actual data handling; school deletion now also removes stored backups and uploads.
+
 ## [3.3.0] — 2026-08-21
 
 ### Fixed

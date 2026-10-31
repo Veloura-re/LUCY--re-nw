@@ -106,6 +106,7 @@ export async function GET(request: Request) {
                     schoolId,
                     triggeredBy: "SYSTEM_CRON",
                     fileUrl,
+                    filePath: fileName,
                     sizeBytes: buffer.length,
                     status: "COMPLETED",
                     createdAt: new Date().toISOString(),

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { reportServerError } from '@/lib/error-capture';
+import { BACKUP_BUCKET, backupObjectPath } from '@/lib/backup-retention';
 
 export async function GET(request: Request) {
     try {
@@ -21,7 +22,15 @@ export async function GET(request: Request) {
 
         if (error) throw error;
 
-        return NextResponse.json({ restorePoints: restorePoints || [] });
+        // Stored links expire after 7 days, so every listing signs a fresh one from the object path.
+        const withLinks = await Promise.all((restorePoints || []).map(async (point) => {
+            const path = backupObjectPath(point);
+            if (!path) return point;
+            const { data } = await supabaseAdmin.storage.from(BACKUP_BUCKET).createSignedUrl(path, 3600);
+            return data?.signedUrl ? { ...point, fileUrl: data.signedUrl } : point;
+        }));
+
+        return NextResponse.json({ restorePoints: withLinks });
     } catch (error: any) {
         console.error("Fetch Backups Error:", error);
         void reportServerError(error, { status: 500 });

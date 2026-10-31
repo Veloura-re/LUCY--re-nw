@@ -559,7 +559,7 @@ export default function StudentsClientWrapper({ initialStudents, initialGrades, 
                                     <div className="flex items-center gap-2.5 sm:gap-4">
                                         <div className="w-9 h-12 sm:w-12 sm:h-16 relative rounded-lg bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center text-sm sm:text-xl font-medium text-zinc-900 dark:text-white shadow-inner overflow-hidden shrink-0">
                                             {student.photoUrl ? (
-                                                <Image src={student.photoUrl} alt="" fill sizes="48px" className="object-cover" />
+                                                <Image unoptimized src={student.photoUrl} alt="" fill sizes="48px" className="object-cover" />
                                             ) : (
                                                 `${student.firstName?.[0] || ""}${student.lastName?.[0] || ""}`
                                             )}

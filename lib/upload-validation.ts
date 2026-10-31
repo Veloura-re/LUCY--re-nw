@@ -101,7 +101,7 @@ export async function validateUpload(file: unknown, rules: UploadRules): Promise
 }
 
 /** Folder names the generic upload route may write into. */
-export const ALLOWED_UPLOAD_FOLDERS = ['avatars', 'logos', 'materials', 'submissions'] as const;
+export const ALLOWED_UPLOAD_FOLDERS = ['avatars', 'logos', 'materials', 'submissions', 'receipts'] as const;
 
 export function resolveUploadFolder(value: unknown): (typeof ALLOWED_UPLOAD_FOLDERS)[number] {
     return ALLOWED_UPLOAD_FOLDERS.find((folder) => folder === value) ?? 'avatars';

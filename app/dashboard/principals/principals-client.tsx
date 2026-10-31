@@ -230,7 +230,7 @@ export default function PrincipalsClient({ schoolId, schoolName }: { schoolId: s
                                         <div className="flex items-center gap-5">
                                             <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center overflow-hidden border border-zinc-300 dark:border-zinc-800">
                                                 {p.photoUrl ? (
-                                                    <Image src={p.photoUrl} alt={p.name || ''} width={48} height={48} className="w-full h-full object-cover" />
+                                                    <Image unoptimized src={p.photoUrl} alt={p.name || ''} width={48} height={48} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <User className="w-5 h-5 text-zinc-600 dark:text-zinc-500" />
                                                 )}

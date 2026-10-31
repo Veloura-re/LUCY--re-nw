@@ -6,11 +6,13 @@ import { secureJson, sanitizeInput } from '@/lib/security';
 import { logActivity, logError } from '@/lib/audit';
 import { z } from 'zod';
 import { rateLimitShared } from '@/lib/rate-limit';
+import { storeConsent } from '@/lib/consent';
 
 const RegisterParentSchema = z.object({
     userId: z.string().uuid().optional(),
     email: z.string().email().transform(val => sanitizeInput(val).toLowerCase()),
     name: z.string().min(1).max(100).optional().transform(val => val ? sanitizeInput(val) : 'Parent'),
+    acceptedTerms: z.literal(true),
     studentCode: z.string().max(32).optional().transform(val => val ? sanitizeInput(val).toUpperCase() : undefined)
 });
 
@@ -148,6 +150,9 @@ export async function POST(request: Request) {
                     schoolId: studentInfo ? studentInfo.schoolId : undefined
                 }
             });
+
+            // Same transaction as the account, so a parent never exists without a consent record.
+            await storeConsent(tx, { userId: user.id, source: 'register-parent', request });
 
             let linkRecord = null;
 

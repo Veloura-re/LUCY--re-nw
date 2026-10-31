@@ -58,7 +58,8 @@ export default function AdminRegister() {
                     userId: authData.user.id,
                     email,
                     name,
-                    secretKey
+                    secretKey,
+                    acceptedTerms: agreedToTerms
                 })
             });
 

@@ -641,6 +641,156 @@ const ROLE_GUIDES: Record<string, RoleGuide> = {
                 solution: "Inspect /admin/dashboard error logs for authentication failures. Ensure TURNSTILE_SECRET_KEY is active and verify the school status is 'ACTIVE' at /admin/schools."
             }
         ]
+    },
+    ACCOUNTANT: {
+        id: "ACCOUNTANT",
+        name: "Accountant",
+        badge: "School Finance",
+        icon: CreditCard,
+        color: "teal",
+        summary: "Accountants run the school's money on behalf of the director: fee structures, invoices, payment verification, expenses, banking details and staff payroll. They are invited by email from the director's Finance & Records Staff page.",
+        dataAccess: {
+            visible: [
+                "Fee structures, invoices, and payment records",
+                "Pending payments awaiting verification, with the uploaded receipts",
+                "Institutional expenses and operating costs",
+                "Revenue analytics and the school's banking accounts",
+                "Staff payroll and paychecks",
+                "Student names and guardians as shown on fee dossiers"
+            ],
+            restricted: [
+                "Student grades, marklists, remarks, and academic records",
+                "The school's LUCY subscription, checkout, and platform billing",
+                "Sanctuary sessions and moderation",
+                "Inviting, removing, or changing staff accounts",
+                "School settings, backups, and data export"
+            ]
+        },
+        dailyRoutine: [
+            "Open Finance and review payments waiting for verification.",
+            "Approve or reject each payment against its receipt and reference.",
+            "Record any expenses paid since the last visit under Operating Costs.",
+            "Month end: review revenue, then prepare staff payroll."
+        ],
+        tasks: [
+            {
+                title: "1. Verifying a Submitted Payment",
+                objective: "Confirm that a parent's payment really arrived before it is marked as paid.",
+                steps: [
+                    "Open /dashboard/finance and go to the student fee records.",
+                    "Find the invoice with a payment marked as pending.",
+                    "Compare the uploaded receipt and reference with your bank statement.",
+                    "Approve the payment if it matches, or reject it so the parent can resubmit."
+                ],
+                result: "The invoice status updates and the action is written to the audit log.",
+                route: "/dashboard/finance"
+            },
+            {
+                title: "2. Recording an Expense",
+                objective: "Keep the school's operating costs complete and categorised.",
+                steps: [
+                    "Open /dashboard/operating-costs.",
+                    "Add the expense with its category, amount, and date."
+                ],
+                result: "The expense appears in the school's cost reports.",
+                route: "/dashboard/operating-costs"
+            },
+            {
+                title: "3. Preparing Payroll",
+                objective: "Pay staff accurately each period.",
+                steps: [
+                    "Open /dashboard/payroll.",
+                    "Review each staff member's paycheck for the period.",
+                    "Adjust and confirm the amounts, then save."
+                ],
+                result: "Staff can see their paycheck in their own dashboard.",
+                route: "/dashboard/payroll"
+            }
+        ],
+        troubleshooting: [
+            {
+                issue: "I cannot open Billing & Subscription.",
+                solution: "That area is the school's own LUCY subscription and belongs to the director. Ask your director to manage it."
+            },
+            {
+                issue: "I need to see a student's grades.",
+                solution: "Accountants do not have access to academic records. Ask the director or the school's Recorder."
+            }
+        ]
+    },
+    RECORDER: {
+        id: "RECORDER",
+        name: "Recorder",
+        badge: "Student Records",
+        icon: FileSpreadsheet,
+        color: "indigo",
+        summary: "Recorders keep the school's student registry accurate: registering and updating students, checking parent links, and reading classes and report cards. They are invited by email from the director's Finance & Records Staff page.",
+        dataAccess: {
+            visible: [
+                "The student registry, with guardian details",
+                "Parent accounts and which students they are linked to",
+                "Classes and grades",
+                "Student report cards and dossiers"
+            ],
+            restricted: [
+                "Deleting or archiving students (directors only)",
+                "Fees, invoices, payments, payroll, and billing",
+                "Entering or changing marks on marklists",
+                "Inviting, removing, or changing staff accounts",
+                "Sanctuary sessions and moderation"
+            ]
+        },
+        dailyRoutine: [
+            "Open Students and add any newly enrolled learners.",
+            "Correct contact or guardian details reported by parents.",
+            "Check that each new student has a parent or guardian linked.",
+            "Share the student access code with the family so they can register."
+        ],
+        tasks: [
+            {
+                title: "1. Registering a New Student",
+                objective: "Add a learner to the registry and generate their access code.",
+                steps: [
+                    "Open /dashboard/students and choose to add a student.",
+                    "Enter the name, date of birth, grade and class, and guardian details.",
+                    "Save the record. The student's access code is generated automatically."
+                ],
+                result: "The student appears in the registry and can register with their code.",
+                route: "/dashboard/students"
+            },
+            {
+                title: "2. Updating a Student Record",
+                objective: "Keep contact and class details correct.",
+                steps: [
+                    "Open /dashboard/students and search for the student.",
+                    "Open the record and edit the details that changed.",
+                    "Save. Changes are written to the audit log."
+                ],
+                result: "The corrected details show for staff and parents.",
+                route: "/dashboard/students"
+            },
+            {
+                title: "3. Checking Parent Links",
+                objective: "Make sure each family sees the right children.",
+                steps: [
+                    "Open /dashboard/parents.",
+                    "Search for the parent and review the students linked to them.",
+                    "If a link is wrong, tell the director so it can be corrected."
+                ],
+                result: "Parents only see their own children.",
+                route: "/dashboard/parents"
+            }
+        ],
+        troubleshooting: [
+            {
+                issue: "I cannot delete a student.",
+                solution: "Deleting records is reserved for directors so that history is never lost by accident. Ask your director."
+            },
+            {
+                issue: "I need to change a mark.",
+                solution: "Marks are entered by teachers on marklists. Recorders manage registry details only."
+            }
+        ]
     }
 };
 
@@ -743,7 +893,7 @@ function GuidelinesContent() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-2">
                             {Object.values(ROLE_GUIDES).map((guide) => {
                                 const IconComponent = guide.icon;
                                 const isSelected = selectedRole === guide.id;

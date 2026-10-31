@@ -4,7 +4,7 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { prisma } from '@/lib/prisma';
 import { logActivity } from '@/lib/audit';
-import { archiveSchoolAuditTrail } from '@/lib/audit-archive';
+import { archiveSchoolAuditTrail, purgeSchoolFiles } from '@/lib/audit-archive';
 import { publicErrorMessage } from '@/lib/security';
 
 // PATCH - Update school status (suspend/activate)
@@ -230,6 +230,15 @@ export async function DELETE(
             }
         }
 
+        // Backups and uploads hold personal data too. A failure here must not undo the purge, so it
+        // is logged for follow-up instead of failing the request.
+        let filesRemoved: number | null = null;
+        try {
+            filesRemoved = await purgeSchoolFiles(id);
+        } catch (fileErr) {
+            console.error("[AdminAPI] Stored file cleanup failed (school already purged):", fileErr);
+        }
+
         // Platform-level record of the deletion (the school and its own trail no longer exist).
         await logActivity({
             userId: dbUser.id,
@@ -239,7 +248,7 @@ export async function DELETE(
             level: 'WARN',
             ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('cf-connecting-ip') || undefined,
             before: { name: purgedSchoolName },
-            after: { archivedAuditEntries: archive?.count ?? null, archivePath: archive?.path ?? null, usersRemoved: userIds.length }
+            after: { archivedAuditEntries: archive?.count ?? null, archivePath: archive?.path ?? null, usersRemoved: userIds.length, filesRemoved }
         });
 
         return NextResponse.json({ success: true, message: 'School purged successfully' });

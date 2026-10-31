@@ -90,7 +90,7 @@ export default function ParentDashboard() {
                                                 <div className="relative shrink-0">
                                                     {student.photoUrl ? (
                                                         <div className="relative w-20 h-20 overflow-hidden rounded-[1.5rem] border-2 border-zinc-300 dark:border-zinc-800">
-                                                            <Image src={student.photoUrl} alt="" fill sizes="80px" className="object-cover" />
+                                                            <Image unoptimized src={student.photoUrl} alt="" fill sizes="80px" className="object-cover" />
                                                         </div>
                                                     ) : (
                                                         <div className="w-20 h-20 rounded-[1.5rem] bg-eduGreen-950/30 border-2 border-eduGreen-900/30 flex items-center justify-center text-2xl font-black text-eduGreen-500">

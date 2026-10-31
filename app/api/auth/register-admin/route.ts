@@ -5,12 +5,13 @@ import { rateLimitShared } from '@/lib/rate-limit';
 import { logActivity } from '@/lib/audit';
 import { sendWelcomeEmail } from '@/lib/email';
 import { isValidEmail } from '@/lib/security';
+import { recordConsent } from '@/lib/consent';
 
 export async function POST(request: Request) {
     const limit = await rateLimitShared(request, "auth/register-admin", 3); // Very strict for admin reg
     if (limit) return limit;
 
-    const { userId, email, name, secretKey } = ((await request.json().catch(() => ({}))) || {}) as any;
+    const { userId, email, name, secretKey, acceptedTerms } = ((await request.json().catch(() => ({}))) || {}) as any;
 
     // Check against ENV variable (REQUIRED)
     const VALID_SECRET = process.env.ADMIN_SECRET_KEY;
@@ -25,6 +26,10 @@ export async function POST(request: Request) {
     }
 
     try {
+        if (acceptedTerms !== true) {
+            return secureJson({ error: 'You must accept the Terms of Service and Privacy Policy.' }, 400);
+        }
+
         const supabaseAdmin = createSupabaseAdmin(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -50,6 +55,8 @@ export async function POST(request: Request) {
         }).select().single();
 
         if (error) throw error;
+
+        await recordConsent({ userId, source: 'register-admin', request });
 
         // Platform-level action: there is no tenant, so the audit entry carries no schoolId.
         await logActivity({

@@ -400,7 +400,7 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4 sm:gap-6 group min-w-0">
                     <label className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800 flex items-center justify-center p-2 shadow-2xl relative transition-all ${isPrincipal ? 'cursor-pointer hover:border-eduGreen-500' : ''}`}>
                         {schoolData?.logoUrl ? (
-                            <Image src={schoolData.logoUrl} alt="School Logo" width={64} height={64} className="w-full h-full object-contain" />
+                            <Image unoptimized src={schoolData.logoUrl} alt="School Logo" width={64} height={64} className="w-full h-full object-contain" />
                         ) : (
                             <div className="w-full h-full bg-zinc-100 dark:bg-zinc-900 rounded-xl flex items-center justify-center">
                                 <Zap className="w-6 h-6 text-zinc-700 group-hover:text-eduGreen-500 transition-colors" />
@@ -514,7 +514,7 @@ export default function SettingsPage() {
                                             <div className="flex items-center gap-6 p-6 bg-zinc-200 dark:bg-white/50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-900 rounded-2xl">
                                                 {schoolForm.logoUrl ? (
                                                     <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border border-zinc-300 dark:border-zinc-800 p-2">
-                                                        <Image src={schoolForm.logoUrl} alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
+                                                        <Image unoptimized src={schoolForm.logoUrl} alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
                                                     </div>
                                                 ) : (
                                                     <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border border-zinc-300 dark:border-zinc-800">
@@ -1084,7 +1084,7 @@ export default function SettingsPage() {
                                     {schoolForm.logoUrl ? (
                                         <div className="relative mb-6 group">
                                             <div className="w-32 h-32 rounded-3xl bg-zinc-100 dark:bg-zinc-900 overflow-hidden border-2 border-eduGreen-600/50 flex items-center justify-center relative">
-                                                <Image src={schoolForm.logoUrl} alt="School Logo" className="object-contain" fill sizes="128px" />
+                                                <Image unoptimized src={schoolForm.logoUrl} alt="School Logo" className="object-contain" fill sizes="128px" />
                                             </div>
                                             {isPrincipal && (
                                                 <label className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-full flex items-center justify-center cursor-pointer hover:border-eduGreen-500 transition-all shadow-xl">

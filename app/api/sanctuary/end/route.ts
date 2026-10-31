@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, publicErrorMessage } from '@/lib/security';
+import { purgeUnreportedMessages } from '@/lib/sanctuary-retention';
 
 export async function POST(req: NextRequest) {
     try {
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
                         endedAt: new Date()
                     }
                 });
+                await purgeUnreportedMessages({ id: session.id });
             }
         } else {
             // Terminate any active or waiting sessions for this user
@@ -45,6 +47,7 @@ export async function POST(req: NextRequest) {
                     endedAt: new Date()
                 }
             });
+            await purgeUnreportedMessages({ OR: [{ userAId: user.id }, { userBId: user.id }] });
         }
 
         return NextResponse.json({ success: true, message: 'Session dissolved successfully.' });

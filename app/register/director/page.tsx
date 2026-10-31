@@ -100,7 +100,8 @@ export default function DirectorRegister() {
                         token: key,
                         userId: authUser.id,
                         name,
-                        email
+                        email,
+                        acceptedTerms: agreedToTerms
                     })
                 });
 

@@ -5,18 +5,23 @@ import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { logActivity } from '@/lib/audit';
 import { sendWelcomeEmail } from '@/lib/email';
+import { recordConsent } from '@/lib/consent';
 
 export async function POST(request: Request) {
     const limited = await rateLimitShared(request, 'dir/register', 10);
     if (limited) return limited;
 
-    const body = (await request.json().catch(() => null)) as { token?: unknown; userId?: unknown; name?: unknown } | null;
+    const body = (await request.json().catch(() => null)) as { token?: unknown; userId?: unknown; name?: unknown; acceptedTerms?: unknown } | null;
     const token = typeof body?.token === 'string' ? body.token : '';
     const userId = typeof body?.userId === 'string' ? body.userId : '';
     const name = typeof body?.name === 'string' ? body.name.trim() : '';
 
     if (!token || !userId || name.length === 0 || name.length > 120) {
         return NextResponse.json({ error: 'Invalid registration request' }, { status: 400 });
+    }
+
+    if (body?.acceptedTerms !== true) {
+        return NextResponse.json({ error: 'You must accept the Terms of Service and Privacy Policy' }, { status: 400 });
     }
 
     const supabaseAdmin = createSupabaseAdmin(
@@ -210,6 +215,8 @@ export async function POST(request: Request) {
             ip,
             after: { role: invite.role }
         });
+
+        await recordConsent({ userId, source: 'register-invite', request });
 
         // 8. Asynchronous Welcome Email Dispatch
         if (finalEmail && !finalEmail.endsWith('@lucy.local')) {

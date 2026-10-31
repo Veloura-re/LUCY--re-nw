@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth, handleApiError } from "@/lib/security";
 import { verifyStudentSignature } from "@/lib/student-id-security";
 import { canViewStudent } from "@/lib/student-access";
+import { signStoredFile } from "@/lib/storage-files";
 
 export async function GET(
     request: Request,
@@ -99,8 +100,11 @@ export async function GET(
                     firstName: publicStudent.firstName,
                     lastName: publicStudent.lastName,
                     studentCode: publicStudent.studentCode,
-                    photoUrl: publicStudent.photoUrl,
-                    school: publicStudent.school,
+                    // This branch has no session, so the private files are signed here (the HMAC link already authorizes it).
+                    photoUrl: await signStoredFile(publicStudent.photoUrl),
+                    school: publicStudent.school
+                        ? { ...publicStudent.school, logoUrl: await signStoredFile(publicStudent.school.logoUrl) }
+                        : publicStudent.school,
                     class: publicStudent.class
                         ? { name: publicStudent.class.name, grade: { name: publicStudent.class.grade?.name ?? null } }
                         : null
