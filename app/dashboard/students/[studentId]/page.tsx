@@ -524,7 +524,7 @@ function StudentProfileContent() {
                     <div className="relative">
                         <div className="w-32 h-32 rounded-[2.5rem] bg-white dark:bg-zinc-950 border-2 border-eduGreen-900/30 flex items-center justify-center text-4xl font-black text-eduGreen-500 shadow-2xl relative overflow-hidden">
                             {student.photoUrl ? (
-                                <Image src={student.photoUrl} alt="" fill sizes="128px" className="object-cover" />
+                                <Image unoptimized src={student.photoUrl} alt="" fill sizes="128px" className="object-cover" />
                             ) : (
                                 <>{student.firstName?.[0] || "S"}{student.lastName?.[0] || "T"}</>
                             )}

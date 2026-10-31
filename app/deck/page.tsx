@@ -542,7 +542,7 @@ export default function PresentationDeck() {
       id: "sol_security",
       tag: "Act 08 // Enterprise Security",
       title: "Permanent Cloud Records & Immutable Audit Trails",
-      sub: "Academic marks and institutional finances protected with cryptographic tenant isolation, role-based boundaries, and zero on-premise hardware costs.",
+      sub: "Academic marks and institutional finances protected with per-school isolation enforced on every request, role-based boundaries, and zero on-premise hardware costs.",
       content: (
         <div className="space-y-4 w-full text-left">
           <div className="grid grid-cols-2 gap-4">
@@ -568,7 +568,7 @@ export default function PresentationDeck() {
         </div>
       ),
       technicalAppendix: [
-        "PostgreSQL Row-Level Security (RLS) guarantees total multi-tenant database isolation.",
+        "Every request is authorized against the caller's school and role, with database row-level security as an additional layer.",
         "Automatic cloud snapshot backups ensure zero institutional data loss."
       ]
     },

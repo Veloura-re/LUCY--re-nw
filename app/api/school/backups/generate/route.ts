@@ -96,6 +96,7 @@ export async function POST(request: Request) {
             schoolId: user.schoolId,
             triggeredBy: user.id,
             fileUrl,
+            filePath: fileName,
             sizeBytes: buffer.length,
             status: "COMPLETED",
             createdAt: new Date().toISOString(),
@@ -112,7 +113,7 @@ export async function POST(request: Request) {
             resourceType: 'RESTORE_POINT',
             resourceId: restorePoint?.id,
             ip,
-            after: { sizeBytes: buffer.length, fileUrl }
+            after: { sizeBytes: buffer.length, filePath: fileName }
         });
 
         return NextResponse.json({ success: true, restorePoint });

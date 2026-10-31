@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireRole, publicErrorMessage } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
+import { purgeUnreportedMessages } from '@/lib/sanctuary-retention';
 
 export async function POST(req: NextRequest) {
     try {
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest) {
                 },
                 include: { reports: true }
             });
+            await purgeUnreportedMessages({ id: sessionId });
         } else if (action === 'FLAG_SESSION' || action === 'ESCALATE_TO_COUNSELOR') {
             updatedSession = await prisma.sanctuarySession.update({
                 where: { id: sessionId },

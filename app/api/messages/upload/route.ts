@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { prisma } from '@/lib/prisma';
 import { canUserAccessChatRoom } from '@/lib/messaging';
 import { rateLimitShared } from '@/lib/rate-limit';
@@ -57,9 +58,9 @@ export async function POST(request: Request) {
         const fileName = `${Date.now()}-${crypto.randomUUID().substring(0, 8)}-${originalName.replace(/\.[^.]*$/, '')}.${validation.extension}`;
         const filePath = `${chatRoomId}/${fileName}`;
 
-        // Upload to Supabase Storage
-        // NOTE: Ensure 'messages' bucket exists and is public or has appropriate policies
-        const { data, error } = await supabase.storage
+        // The bucket is private and has no client policies: access was authorized above, so the
+        // service role writes the object and reads go through /api/messages/attachment.
+        const { error } = await createAdminClient().storage
             .from('messages')
             .upload(filePath, file as File, {
                 cacheControl: '3600',
@@ -69,18 +70,8 @@ export async function POST(request: Request) {
 
         if (error) {
             console.error('Storage error:', error);
-            if ((error as any).status === 404 || (error as any).message?.includes('not found')) {
-                return NextResponse.json({
-                    error: 'Storage Infrastructure Missing: Please create a public bucket named "messages" in your Supabase project to enable attachments.'
-                }, { status: 404 });
-            }
             return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
         }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('messages')
-            .getPublicUrl(filePath);
 
         await logActivity({
             userId: dbUser.id,
@@ -91,7 +82,7 @@ export async function POST(request: Request) {
             ip: request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined
         });
         return NextResponse.json({
-            url: publicUrl,
+            url: `/api/messages/attachment?room=${encodeURIComponent(chatRoomId)}&file=${encodeURIComponent(fileName)}`,
             name: (file as File).name,
             type: validation.mimeType,
             size: (file as File).size

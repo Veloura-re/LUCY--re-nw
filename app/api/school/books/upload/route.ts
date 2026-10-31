@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { validateUpload, IMAGE_RULES, BOOK_FILE_RULES } from '@/lib/upload-validation';
+import { fileRef } from '@/lib/storage-files';
 
 export async function POST(request: Request) {
     try {
@@ -37,16 +38,11 @@ export async function POST(request: Request) {
             console.error('Storage error:', error);
             if ((error as any).status === 404 || (error as any).message?.toLowerCase().includes('not found')) {
                 return NextResponse.json({
-                    error: `Storage Infrastructure Missing: The "books" bucket does not exist. Please create a PUBLIC bucket named "books" in your Supabase project dashboard.`
+                    error: `Storage Infrastructure Missing: The "books" bucket does not exist. Please create a private bucket named "books" in your Supabase project dashboard.`
                 }, { status: 404 });
             }
             return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
         }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('books')
-            .getPublicUrl(filePath);
 
         await logActivity({
             userId: dbUser.id,
@@ -57,7 +53,7 @@ export async function POST(request: Request) {
             ip: request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined
         });
         return NextResponse.json({
-            url: publicUrl,
+            url: fileRef('books', filePath),
             name: (file as File).name,
             size: (file as File).size
         });

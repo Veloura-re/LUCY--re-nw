@@ -57,7 +57,7 @@ function LoginContent() {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, turnstileToken })
+                body: JSON.stringify({ email, password, turnstileToken, acceptedTerms: agreedToTerms })
             });
 
             const data = (await res.json()) as { error?: string; userId?: string };
@@ -69,7 +69,7 @@ function LoginContent() {
             }
 
             if (process.env.NEXT_PUBLIC_POSTHOG_KEY && process.env.NEXT_PUBLIC_POSTHOG_HOST) {
-                posthog.identify(data.userId, { email });
+                posthog.identify(data.userId);
                 posthog.capture('user_logged_in');
             }
         } catch (e: any) {

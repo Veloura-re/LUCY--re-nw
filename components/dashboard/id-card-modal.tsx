@@ -85,7 +85,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="flex items-center gap-2">
                                         {schoolLogo ? (
                                             <div className="w-6 h-6 rounded-lg overflow-hidden bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-900 shadow-[0_0_10px_rgba(59,214,141,0.3)] relative">
-                                                <Image src={schoolLogo} className="object-contain p-0.5" alt="Logo" fill sizes="24px" />
+                                                <Image unoptimized src={schoolLogo} className="object-contain p-0.5" alt="Logo" fill sizes="24px" />
                                             </div>
                                         ) : (
                                             <div className="w-6 h-6 rounded-lg bg-eduGreen-600 flex items-center justify-center shadow-[0_0_10px_rgba(59,214,141,0.3)]">
@@ -105,7 +105,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-2xl sm:rounded-[2rem] p-1 bg-gradient-to-tr from-eduGreen-600 to-slate-200 dark:to-zinc-800 shadow-2xl shrink-0">
                                         <div className="w-full h-full rounded-xl sm:rounded-[1.8rem] overflow-hidden bg-slate-50 dark:bg-zinc-950 relative border border-slate-200 dark:border-zinc-900">
                                             {user.photoUrl ? (
-                                                <Image src={user.photoUrl} alt="ID" className="object-cover" fill sizes="128px" />
+                                                <Image unoptimized src={user.photoUrl} alt="ID" className="object-cover" fill sizes="128px" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-slate-50 dark:bg-zinc-950 text-2xl sm:text-4xl font-medium text-slate-400 dark:text-zinc-800">
                                                     {initial}
@@ -268,7 +268,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="flex items-center gap-1.5">
                                         {schoolLogo ? (
                                             <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-slate-50 dark:bg-black overflow-hidden flex items-center justify-center relative">
-                                                <Image src={schoolLogo} alt="Logo" className="object-contain" fill sizes="20px" />
+                                                <Image unoptimized src={schoolLogo} alt="Logo" className="object-contain" fill sizes="20px" />
                                             </div>
                                         ) : (
                                             <div className="w-[3.5mm] h-[3.5mm] rounded-sm bg-eduGreen-600 flex items-center justify-center">
@@ -286,7 +286,7 @@ export function IDCardModal({ isOpen, onClose, user, type, schoolName = "LUCY AC
                                     <div className="w-[22mm] h-[22mm] rounded-[4mm] p-[0.3mm] bg-gradient-to-tr from-eduGreen-600 to-slate-200 dark:to-zinc-700 shadow-xl shrink-0">
                                         <div className="w-full h-full rounded-[3.8mm] overflow-hidden bg-slate-50 dark:bg-black relative border border-slate-200 dark:border-white/5">
                                             {user.photoUrl ? (
-                                                <Image src={user.photoUrl} alt="Photo" className="object-cover" fill sizes="100px" />
+                                                <Image unoptimized src={user.photoUrl} alt="Photo" className="object-cover" fill sizes="100px" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-[22pt] font-medium text-slate-400 dark:text-zinc-800">{initial}</div>
                                             )}

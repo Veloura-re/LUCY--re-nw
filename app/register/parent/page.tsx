@@ -147,7 +147,8 @@ export default function ParentRegister() {
                     userId: authUser.id,
                     email,
                     name,
-                    studentCode // Pass code to link immediately
+                    studentCode, // Pass code to link immediately
+                    acceptedTerms: agreedToTerms
                 })
             });
 

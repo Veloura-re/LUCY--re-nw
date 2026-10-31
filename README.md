@@ -2,7 +2,7 @@
 
 Multi-tenant school management platform. One deployment serves many schools; every school's data is isolated by `schoolId`.
 
-Roles: `SUPERADMIN`, `OWNER`, `PRINCIPAL`, `TEACHER`, `HOMEROOM`, `PARENT`, `STUDENT`. The per-role manual is in `docs/USER_GUIDELINES_BY_ROLE.md`; the architecture blueprint is in `LUCY_OS_MASTER_BRAIN.md`.
+Roles: `SUPERADMIN`, `OWNER`, `PRINCIPAL`, `TEACHER`, `HOMEROOM`, `PARENT`, `STUDENT`, `ACCOUNTANT`, `RECORDER`. Directors invite accountants (school finance) and recorders (student records) by email from the Finance & Records Staff page. The per-role manual is in `docs/USER_GUIDELINES_BY_ROLE.md`; the architecture blueprint is in `LUCY_OS_MASTER_BRAIN.md`.
 
 ## Stack
 

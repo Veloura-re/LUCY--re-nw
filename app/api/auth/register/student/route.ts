@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { rateLimitShared } from '@/lib/rate-limit';
 
 import { logActivity } from '@/lib/audit';
+import { recordConsent } from '@/lib/consent';
 import { sendWelcomeEmail } from '@/lib/email';
 export async function POST(req: Request) {
     // The access code is the only credential here, so guessing must be slow
@@ -11,7 +12,11 @@ export async function POST(req: Request) {
     if (limited) return limited;
 
     try {
-        const { studentCode, email, password } = await req.json() as any;
+        const { studentCode, email, password, acceptedTerms } = await req.json() as any;
+
+        if (acceptedTerms !== true) {
+            return NextResponse.json({ error: "You must accept the Terms of Service and Privacy Policy" }, { status: 400 });
+        }
 
         if (!studentCode || !password) {
             return NextResponse.json({ error: "Student Token and Secure Keyphrase required" }, { status: 400 });
@@ -114,6 +119,8 @@ export async function POST(req: Request) {
             if (!claimed || claimed.length === 0) {
                 return NextResponse.json({ error: "Token already claimed" }, { status: 409 });
             }
+
+            await recordConsent({ userId: user.id, source: 'register-student', request: req });
 
             // 5. Asynchronous Welcome Email Dispatch
             if (user.email && !user.email.endsWith('@lucy.local')) {

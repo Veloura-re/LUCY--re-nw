@@ -106,6 +106,7 @@ export async function sendInviteEmail(toEmail: string, inviteUrl: string, school
     }
 
     const roleLabel = role === 'PRINCIPAL' ? 'Director' : role.charAt(0) + role.slice(1).toLowerCase();
+    const article = /^[AEIOU]/.test(roleLabel) ? 'an' : 'a';
 
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
@@ -114,7 +115,7 @@ export async function sendInviteEmail(toEmail: string, inviteUrl: string, school
             </div>
             
             <h2 style="font-size: 24px; font-weight: 800; color: #101314; margin-bottom: 16px;">Institutional Invitation</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: #4A4E52;">You have been invited to join <strong>${schoolName}</strong> on the LUCY School Management Platform as a <strong>${roleLabel}</strong>.</p>
+            <p style="font-size: 16px; line-height: 1.6; color: #4A4E52;">You have been invited to join <strong>${schoolName}</strong> on the LUCY School Management Platform as ${article} <strong>${roleLabel}</strong>.</p>
             
             <div style="background-color: #f8faf9; padding: 24px; border-radius: 16px; margin: 32px 0; border: 1px solid #eef2f0;">
                 <p style="margin: 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #6E7377;">Access Key</p>
@@ -133,7 +134,7 @@ export async function sendInviteEmail(toEmail: string, inviteUrl: string, school
         </div>
     `;
 
-    const result = await sendEmail({ to: toEmail, subject: `Invitation: Join ${schoolName} as a ${roleLabel}`, html, replyTo });
+    const result = await sendEmail({ to: toEmail, subject: `Invitation: Join ${schoolName} as ${article} ${roleLabel}`, html, replyTo });
     console.log(`[INVITE] sendEmail result for ${toEmail}:`, JSON.stringify(result));
     return result;
 }

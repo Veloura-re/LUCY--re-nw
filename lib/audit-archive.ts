@@ -64,3 +64,41 @@ export async function archiveSchoolAuditTrail(schoolId: string): Promise<AuditAr
 
     return { path, count: rows.length };
 }
+
+const SCHOOL_FILE_BUCKETS = ['school-backups', 'books', 'school-assets'];
+
+/**
+ * Removes a purged school's stored files: its backups and uploaded materials. The audit archive
+ * lives under `purged-schools/` and is deliberately left alone. Returns the number of objects removed.
+ */
+export async function purgeSchoolFiles(schoolId: string): Promise<number> {
+    const admin = createSupabaseAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Folders come back as entries without an id, so descend into them (bounded depth).
+    const listPaths = async (bucket: string, prefix: string, depth = 0): Promise<string[]> => {
+        if (depth > 6) return [];
+        const { data } = await admin.storage.from(bucket).list(prefix, { limit: 1000 });
+        const paths: string[] = [];
+        for (const entry of data ?? []) {
+            const path = `${prefix}/${entry.name}`;
+            if (entry.id) paths.push(path);
+            else paths.push(...(await listPaths(bucket, path, depth + 1)));
+        }
+        return paths;
+    };
+
+    let removed = 0;
+    for (const bucket of SCHOOL_FILE_BUCKETS) {
+        const paths = await listPaths(bucket, schoolId);
+        for (let i = 0; i < paths.length; i += 100) {
+            const batch = paths.slice(i, i + 100);
+            const { error } = await admin.storage.from(bucket).remove(batch);
+            if (error) throw error;
+            removed += batch.length;
+        }
+    }
+    return removed;
+}

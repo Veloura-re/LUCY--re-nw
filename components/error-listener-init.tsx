@@ -10,12 +10,10 @@ const isPostHogConfigured = Boolean(
 );
 
 function getPersonProperties(user: User) {
+    // Only the role is sent: analytics must not hold names or email addresses.
     const properties: Record<string, string> = {};
-    const name = user.user_metadata.full_name ?? user.user_metadata.name;
     const role = user.user_metadata.role;
 
-    if (user.email) properties.email = user.email;
-    if (typeof name === 'string') properties.name = name;
     if (typeof role === 'string') properties.role = role;
 
     return properties;

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { prisma } from '@/lib/prisma';
+import { recordConsent } from '@/lib/consent';
 
 // Helper to safely extract and validate client IP
 function getClientIp(req: Request): string {
@@ -178,6 +179,14 @@ export async function POST(req: Request) {
             } catch {
                 // Suppress error if function is missing
             }
+        }
+
+        // The sign-in form only submits with the Terms box ticked. Recording it here also covers
+        // accounts created before consent was stored; the dashboard gate catches any miss.
+        if (body?.acceptedTerms === true) {
+            await recordConsent({ userId: authData.user.id, source: 'login', request: req }).catch((consentErr) => {
+                console.warn("[Login Route] Consent record failed:", consentErr?.message);
+            });
         }
 
         // 7. Prepare response and set cookie directly to prevent race conditions

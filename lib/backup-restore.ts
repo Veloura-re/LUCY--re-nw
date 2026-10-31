@@ -6,6 +6,8 @@
  * treated as attacker controlled. These helpers define what a restore may write.
  */
 
+import { rewriteLegacyUrls } from './storage-refs';
+
 export type RestoreTable = 'User' | 'Student' | 'Class' | 'Grade' | 'Subject' | 'Invoice' | 'Payment';
 
 /** Columns a restore is allowed to write, per table. Anything else in the file is dropped. */
@@ -42,7 +44,8 @@ export function sanitizeRestoreRow(
     const clean: Record<string, unknown> = {};
     for (const column of RESTORE_COLUMNS[table]) {
         if (column in source && source[column] !== undefined) {
-            clean[column] = source[column];
+            // Backups taken before files moved to private storage hold public URLs that no longer open.
+            clean[column] = column === 'photoUrl' ? rewriteLegacyUrls(source[column]) : source[column];
         }
     }
     if (TENANT_STAMPED.has(table)) {

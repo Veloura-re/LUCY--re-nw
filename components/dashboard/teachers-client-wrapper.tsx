@@ -261,7 +261,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
                             <div key={idx} className="p-3 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 hover:bg-eduGreen-950/5 transition-all group">
                                 <Link href={teacher.id ? `/dashboard/teachers/${teacher.id}` : '#'} className="flex items-center gap-3 sm:gap-6 cursor-pointer w-full sm:w-auto">
                                     <div className="w-9 h-11 sm:w-12 sm:h-16 rounded-md sm:rounded-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900/50 flex items-center justify-center font-medium text-xs sm:text-base text-zinc-800 dark:text-zinc-200 uppercase group-hover:border-eduGreen-900/30 relative overflow-hidden transition-all shrink-0">
-                                        {teacher.photoUrl ? <Image src={teacher.photoUrl} alt="" fill sizes="48px" className="object-cover" /> : (teacher.name?.[0] || "?")}
+                                        {teacher.photoUrl ? <Image unoptimized src={teacher.photoUrl} alt="" fill sizes="48px" className="object-cover" /> : (teacher.name?.[0] || "?")}
                                     </div>
                                     <div className="min-w-0">
                                         <p className="font-medium text-zinc-900 dark:text-white dark:text-zinc-100 group-hover:text-eduGreen-400 tracking-tight text-xs sm:text-lg transition-colors truncate">{teacher.name || "Awaiting Setup"}</p>

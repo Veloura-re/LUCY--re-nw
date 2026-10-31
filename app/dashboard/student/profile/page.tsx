@@ -65,7 +65,7 @@ export default function StudentProfilePage() {
                             <div className="relative inline-block mb-6">
                                 {student.photoUrl ? (
                                     <div className="relative w-28 h-28 mx-auto">
-                                        <Image src={student.photoUrl} alt="" fill sizes="112px" className="rounded-[2rem] object-cover border-2 border-zinc-300 dark:border-zinc-800" />
+                                        <Image unoptimized src={student.photoUrl} alt="" fill sizes="112px" className="rounded-[2rem] object-cover border-2 border-zinc-300 dark:border-zinc-800" />
                                     </div>
                                 ) : (
                                     <div className="w-28 h-28 rounded-[2rem] bg-eduGreen-950/30 border-2 border-eduGreen-900/30 flex items-center justify-center text-5xl font-black text-eduGreen-500 mx-auto">

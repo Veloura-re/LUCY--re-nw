@@ -15,7 +15,7 @@ if ((!posthogKey || !posthogHost) && process.env.NODE_ENV === 'development') {
 const posthog = posthogKey && posthogHost
     ? new PostHog(posthogKey, {
         host: posthogHost,
-        privacyMode: false,
+        privacyMode: true,
         enableExceptionAutocapture: true,
         flushAt: 1,
         flushInterval: 0,
@@ -79,10 +79,11 @@ export async function captureGeminiGeneration({
                 $ai_span_name: activeContext.spanName,
                 $ai_model: GEMINI_MODEL,
                 $ai_provider: 'gemini',
-                $ai_input: [{ role: 'user', content: input }],
                 $ai_input_tokens: usageMetadata?.promptTokenCount,
-                $ai_output_choices: [{ role: 'assistant', content: output }],
                 $ai_output_tokens: usageMetadata?.candidatesTokenCount,
+                // Prompts embed student and staff data, so only sizes are sent, never content.
+                input_chars: JSON.stringify(input ?? '').length,
+                output_chars: output.length,
                 $ai_latency: (Date.now() - startedAt) / 1000,
                 $ai_stream: stream || undefined,
                 $ai_time_to_first_token: timeToFirstToken,

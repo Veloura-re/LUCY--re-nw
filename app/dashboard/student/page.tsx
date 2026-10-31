@@ -126,7 +126,7 @@ export default function StudentDashboard() {
                         title="Update your ID photo"
                     >
                         {photoUrl ? (
-                            <Image src={photoUrl} alt="" fill sizes="48px" className="object-cover" />
+                            <Image unoptimized src={photoUrl} alt="" fill sizes="48px" className="object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-lg font-black text-zinc-700 group-hover:text-zinc-500">
                                 {data?.student?.firstName?.[0] || '?'}
