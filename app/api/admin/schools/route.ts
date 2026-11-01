@@ -1,4 +1,5 @@
-import { publicErrorMessage, secureRandomInt } from '@/lib/security';
+import { publicErrorMessage } from '@/lib/security';
+import { secureRandomInt } from '@/lib/random';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { sendInviteEmail } from '@/lib/email';
