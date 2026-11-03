@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/security";
+import { requireRole, handleApiError, clientDataError } from "@/lib/security";
 import { logActivity } from "@/lib/audit";
 import { revalidateTag } from "next/cache";
 import { CACHE_TAGS, getSchoolTag } from "@/lib/cache-keys";
@@ -198,12 +198,16 @@ export async function POST(req: Request) {
                     ip: _ip
                 });
             } catch (auditErr) {
+                { const bad = clientDataError(auditErr); if (bad) return bad; }
+                if (/^(Unauthorized|Forbidden)/.test(String((auditErr as any)?.message))) return handleApiError(auditErr);
                 console.error("Audit log error:", auditErr);
             }
         }
 
         return NextResponse.json({ success: true, ...stats });
     } catch (error) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Marklist Sync Error:", error);
         return NextResponse.json({ error: "Failed to sync marklist" }, { status: 500 });
     }

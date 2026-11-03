@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth, handleApiError } from '@/lib/security';
+import { requireAuth, handleApiError, FINANCE_ROLES } from '@/lib/security';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { logActivity } from '@/lib/audit';
 import { GEMINI_MODEL } from '@/lib/ai-config';
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
         if (!invoice) return new NextResponse("Invoice not found", { status: 404 });
 
         let isAuthorized = false;
-        if (['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'ACCOUNTANT', 'TEACHER'].includes(dbUser.role)) {
+        if (FINANCE_ROLES.includes(dbUser.role)) {
             if (dbUser.schoolId === invoice.schoolId) isAuthorized = true;
         } else if (dbUser.role === 'PARENT') {
             const linked = dbUser.parentLinks.some(link => link.studentId === invoice.studentId);
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
             }
         });
 
-        const isDirector = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'ACCOUNTANT'].includes(dbUser.role);
+        const isDirector = FINANCE_ROLES.includes(dbUser.role);
 
         // If a parent submits and there's already a pending payment, ask to wait for verification
         if (existingPending && !isDirector) {

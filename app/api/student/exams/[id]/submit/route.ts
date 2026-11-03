@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/security";
+import { requireRole, handleApiError, clientDataError } from "@/lib/security";
 import { sendAssessmentReportEmail } from "@/lib/email";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiGradingSchema } from "@/lib/schemas";
@@ -252,6 +252,8 @@ Respond with JSON format:
         });
 
     } catch (e) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         if (claimedAttemptId) {
             // Let the student retry after a server-side failure.

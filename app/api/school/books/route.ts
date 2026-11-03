@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireSchoolLinked, requireRole, handleApiError } from '@/lib/security';
+import { requireSchoolLinked, requireRole, handleApiError, clampLimit, clampPage } from '@/lib/security';
 import { withAudit } from '@/lib/with-audit';
 
 export async function GET(req: Request) {
     try {
         const dbUser = await requireSchoolLinked();
+
+        // A platform superadmin has no school of their own, so there is nothing to list.
+        if (!dbUser.schoolId) {
+            return NextResponse.json({ books: [], pagination: { page: 1, limit: 50, total: 0, totalPages: 0 } });
+        }
 
         const { searchParams } = new URL(req.url);
         const gradeId = searchParams.get("gradeId");
@@ -43,8 +48,8 @@ export async function GET(req: Request) {
             }
         }
 
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const skip = (page - 1) * limit;
 
         const where: any = {

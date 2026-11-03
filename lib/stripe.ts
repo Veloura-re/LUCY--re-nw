@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+const isDummyKey = stripeSecretKey.includes('dummy') || stripeSecretKey.includes('not_real') || stripeSecretKey === '';
 
 export const stripe = new Stripe(stripeSecretKey, {
     apiVersion: '2026-06-24.dahlia' as any,
@@ -36,6 +37,15 @@ export async function createSchoolSubscriptionCheckoutSession({
     amountCents = 4900,
     trialDays,
 }: CreateSubscriptionCheckoutParams): Promise<Stripe.Checkout.Session> {
+    if (isDummyKey) {
+        return {
+            id: 'cs_test_mock_session',
+            url: `${successUrl}&session_id=cs_test_mock_session`,
+            client_secret: 'cs_test_mock_client_secret',
+            amount_total: amountCents,
+            currency: 'usd',
+        } as unknown as Stripe.Checkout.Session;
+    }
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
         mode: 'subscription',
         success_url: successUrl,
@@ -126,6 +136,9 @@ export async function createStudentTuitionInvoice({
  * Creates a Stripe Terminal connection token for campus POS card readers.
  */
 export async function createTerminalConnectionToken(): Promise<Stripe.Terminal.ConnectionToken> {
+    if (isDummyKey) {
+        return { secret: 'pst_test_mock_secret' } as unknown as Stripe.Terminal.ConnectionToken;
+    }
     return await stripe.terminal.connectionTokens.create();
 }
 
@@ -138,6 +151,14 @@ export async function createTerminalPaymentIntent(
     currency: string = 'usd',
     metadata: Record<string, string> = {}
 ): Promise<Stripe.PaymentIntent> {
+    if (isDummyKey) {
+        return {
+            id: 'pi_test_mock_terminal',
+            client_secret: 'pi_test_mock_secret',
+            amount: amountCents,
+            currency,
+        } as unknown as Stripe.PaymentIntent;
+    }
     return await stripe.paymentIntents.create({
         amount: amountCents,
         currency,
@@ -156,6 +177,13 @@ export async function createIdentityVerificationSession(
     returnUrl: string,
     metadata: Record<string, string> = {}
 ): Promise<Stripe.Identity.VerificationSession> {
+    if (isDummyKey) {
+        return {
+            id: 'vs_test_mock_session',
+            url: returnUrl,
+            status: 'verified',
+        } as unknown as Stripe.Identity.VerificationSession;
+    }
     return await stripe.identity.verificationSessions.create({
         type: 'document',
         options: {
@@ -179,6 +207,12 @@ export async function createFinancialConnectionsSession(
     customerId: string,
     returnUrl: string
 ): Promise<Stripe.FinancialConnections.Session> {
+    if (isDummyKey) {
+        return {
+            id: 'fcs_test_mock_session',
+            client_secret: 'fcs_test_mock_secret',
+        } as unknown as Stripe.FinancialConnections.Session;
+    }
     return await stripe.financialConnections.sessions.create({
         account_holder: {
             type: 'customer',

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/security";
+import { requireRole, handleApiError, clampLimit, clampPage, clientDataError } from "@/lib/security";
 
 export async function GET(req: Request) {
     try {
@@ -11,8 +11,8 @@ export async function GET(req: Request) {
         }
 
         const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '12');
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 12);
         const skip = (page - 1) * limit;
 
         const configs = await prisma.marklistConfig.findMany({
@@ -43,6 +43,8 @@ export async function GET(req: Request) {
 
         return NextResponse.json({ configs, hasMore });
     } catch (error) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Fetch Marklists Error:", error);
         return NextResponse.json({ error: "Failed to fetch marklist configurations" }, { status: 500 });
     }

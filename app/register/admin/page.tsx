@@ -67,7 +67,7 @@ export default function AdminRegister() {
 
             if (res.ok) {
                 posthog.capture('account_registered', { account_role: 'superadmin' });
-                router.push('/admin/dashboard');
+                router.push('/logout?reason=registered')
             } else {
                 setError(data.error || "Registration failed.");
                 // Optional: Delete supabase user if DB failed? 

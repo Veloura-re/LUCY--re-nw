@@ -82,6 +82,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
     const [loadingStudents] = useState(false);
     const [isAdding, setIsAdding] = useState(childrenData?.length === 0);
     const [code, setCode] = useState("");
+    const [dob, setDob] = useState("");
     const [status, setStatus] = useState<'IDLE' | 'VERIFYING' | 'CONFIRMING' | 'LINKING' | 'SUCCESS'>('IDLE');
     const [error, setError] = useState<string | null>(null);
     const [recovery, setRecovery] = useState<RecoveryDetails | null>(null);
@@ -118,7 +119,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
             const res = await fetch('/api/parent/link-student', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ studentCode: code, confirm: false })
+                body: JSON.stringify({ studentCode: code, dob, confirm: false })
             });
             const data = (await res.json()) as any;
             if (!res.ok) {
@@ -140,7 +141,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
             const res = await fetch('/api/parent/link-student', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ studentCode: code, confirm: true })
+                body: JSON.stringify({ studentCode: code, dob, confirm: true })
             });
             const data = (await res.json()) as any;
             if (!res.ok) {
@@ -152,6 +153,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                 router.refresh();
                 setIsAdding(false);
                 setCode("");
+                setDob("");
                 setStatus('IDLE');
                 setFoundStudent(null);
             }, 1800);
@@ -283,6 +285,15 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                             required
                                             disabled={status === 'VERIFYING'}
                                         />
+                                        <label className="block text-[8px] sm:text-[10px] font-medium text-zinc-700 uppercase tracking-[0.2em] sm:tracking-[0.3em] ml-2 sm:ml-3">Student Date of Birth</label>
+                                        <Input
+                                            type="date"
+                                            value={dob}
+                                            onChange={(e) => setDob(e.target.value)}
+                                            className="text-center h-11 sm:h-14 bg-zinc-100/30 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-900 text-zinc-900 dark:text-white focus:border-eduGreen-600 transition-all border-2 rounded-xl"
+                                            required
+                                            disabled={status === 'VERIFYING'}
+                                        />
                                     </div>
 
                                     {error && (
@@ -302,7 +313,7 @@ export function ParentView({ user, childrenData }: { user: any, childrenData: an
                                         <Button
                                             type="submit"
                                             className="w-full h-10 sm:h-16 bg-white text-black hover:bg-zinc-200 rounded-lg sm:rounded-2xl font-medium text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all"
-                                            disabled={status === 'VERIFYING' || !code}
+                                            disabled={status === 'VERIFYING' || !code || !dob}
                                         >
                                             {status === 'VERIFYING' ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> : "Initiate Verification"}
                                         </Button>

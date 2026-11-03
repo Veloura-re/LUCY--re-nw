@@ -302,6 +302,23 @@ export default function SettingsPage() {
         }
     };
 
+    const handleForgetDevices = async () => {
+        setSaving(true);
+        try {
+            const res = await fetch('/api/user/trusted-devices', { method: 'DELETE' });
+            setAlertConfig({
+                title: res.ok ? "Devices Forgotten" : "Request Failed",
+                message: res.ok ? "Every browser will ask for an emailed code at its next sign-in." : "We could not forget your trusted devices. Please try again.",
+                isOpen: true,
+                variant: res.ok ? "success" : "error"
+            });
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const handlePasswordUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (passwordData.new !== passwordData.confirm) {
@@ -583,6 +600,14 @@ export default function SettingsPage() {
                                         Update Password
                                     </Button>
                                 </form>
+
+                                <div className="pt-6 border-t border-zinc-200 dark:border-zinc-900 space-y-3">
+                                    <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest">Trusted devices</p>
+                                    <p className="text-[11px] text-zinc-600 dark:text-zinc-400">Browsers that entered an emailed code skip it for 30 days. Forget them if you lost a device or used a shared computer.</p>
+                                    <Button type="button" onClick={handleForgetDevices} isLoading={saving} variant="outline" className="h-12 rounded-2xl text-[10px] uppercase tracking-[0.2em]">
+                                        Forget trusted devices
+                                    </Button>
+                                </div>
 
                                 <div className="pt-6 border-t border-zinc-200 dark:border-zinc-900">
                                     <p className="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mb-4">Active Session Logs</p>

@@ -7,13 +7,15 @@ import { logActivity, logError } from '@/lib/audit';
 import { z } from 'zod';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { storeConsent } from '@/lib/consent';
+import { dobMatches, INVALID_CODE_OR_DOB } from '@/lib/student-code';
 
 const RegisterParentSchema = z.object({
     userId: z.string().uuid().optional(),
     email: z.string().email().transform(val => sanitizeInput(val).toLowerCase()),
     name: z.string().min(1).max(100).optional().transform(val => val ? sanitizeInput(val) : 'Parent'),
     acceptedTerms: z.literal(true),
-    studentCode: z.string().max(32).optional().transform(val => val ? sanitizeInput(val).toUpperCase() : undefined)
+    studentCode: z.string().max(32).optional().transform(val => val ? sanitizeInput(val).toUpperCase() : undefined),
+    dob: z.string().max(10).optional()
 });
 
 export async function POST(request: Request) {
@@ -34,7 +36,7 @@ export async function POST(request: Request) {
             }, 400);
         }
 
-        const { userId, email, name, studentCode } = parseResult.data;
+        const { userId, email, name, studentCode, dob } = parseResult.data;
 
         const supabaseAdmin = createSupabaseAdmin(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -104,10 +106,10 @@ export async function POST(request: Request) {
         if (studentCode) {
             const student = await prisma.student.findUnique({
                 where: { studentCode },
-                select: { id: true, schoolId: true, firstName: true, lastName: true, school: { select: { name: true } } }
+                select: { id: true, schoolId: true, firstName: true, lastName: true, dob: true, school: { select: { name: true } } }
             });
 
-            if (!student) {
+            if (!student || !dobMatches(student.dob, dob)) {
                 await logError({
                     type: 'auth_failure',
                     message: `Invalid student code attempted: ${studentCode}`,
@@ -119,7 +121,7 @@ export async function POST(request: Request) {
                 });
 
                 return secureJson({
-                    error: `Student Code "${studentCode}" is invalid or could not be found.`,
+                    error: INVALID_CODE_OR_DOB,
                     recovery: {
                         help: "Please double check the code printed on the official registration dossier or contact your school's administration.",
                         format: "Expected format: ST-XXXXXX-YYYY"

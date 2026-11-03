@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, clientDataError } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 import { purgeUnreportedMessages } from '@/lib/sanctuary-retention';
 
@@ -93,6 +93,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         console.error('[Sanctuary Moderation Action Error]:', err.message);
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Action execution failure') },

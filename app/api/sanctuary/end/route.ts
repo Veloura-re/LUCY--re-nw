@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, clientDataError } from '@/lib/security';
 import { purgeUnreportedMessages } from '@/lib/sanctuary-retention';
 
 export async function POST(req: NextRequest) {
@@ -14,8 +14,14 @@ export async function POST(req: NextRequest) {
             'SUPERADMIN'
         ]);
 
-        const body = (await req.json().catch(() => ({}))) as { sessionId?: string };
-        const { sessionId } = body;
+        const body = (await req.json().catch(() => ({}))) as { sessionId?: unknown };
+        const rawSessionId = body.sessionId;
+
+        if (rawSessionId !== undefined && (typeof rawSessionId !== 'string' || !rawSessionId.trim())) {
+            return NextResponse.json({ error: 'sessionId must be a valid string' }, { status: 400 });
+        }
+
+        const sessionId = typeof rawSessionId === 'string' ? rawSessionId.trim() : undefined;
 
         if (sessionId) {
             const session = await prisma.sanctuarySession.findUnique({
@@ -53,6 +59,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true, message: 'Session dissolved successfully.' });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         console.error('[Sanctuary End Error]:', err.message);
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Failed to end session') },

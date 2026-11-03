@@ -143,9 +143,11 @@ export async function GET() {
                 data.preferences = mergeUserPreferences(current?.preferences, preferences);
             }
 
+            // Never return the whole row: it holds the device session token, which is HttpOnly on purpose.
             const user = await prisma.user.update({
                 where: { id: dbUser.id },
-                data
+                data,
+                select: { id: true, name: true, email: true, role: true, schoolId: true, bio: true, gender: true, phone: true, photoUrl: true, qualification: true, preferences: true, verified: true, createdAt: true }
             });
 
         // Audit log

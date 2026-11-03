@@ -65,5 +65,13 @@ export function canReadStoragePath(viewer: FileViewer, path: string): boolean {
     if (segments.length < 2 || segments.some((segment) => segment === '..' || !SAFE_SEGMENT.test(segment))) return false;
     if (viewer.role === 'SUPERADMIN') return true;
     if (segments[0] === 'unscoped') return segments[1] === viewer.id;
-    return Boolean(viewer.schoolId) && segments[0] === viewer.schoolId;
+    if (!viewer.schoolId || segments[0] !== viewer.schoolId) return false;
+
+    // Payment receipts are finance records; a student's coursework is for its author and the school's teaching staff.
+    if (segments[1] === 'receipts') return FINANCE_VIEWERS.includes(viewer.role);
+    if (segments[1] === 'student-submissions') return segments[2] === viewer.id || TEACHING_VIEWERS.includes(viewer.role);
+    return true;
 }
+
+const FINANCE_VIEWERS = ['OWNER', 'PRINCIPAL', 'ACCOUNTANT'];
+const TEACHING_VIEWERS = ['OWNER', 'PRINCIPAL', 'TEACHER', 'HOMEROOM'];

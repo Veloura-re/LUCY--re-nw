@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { syncAllSchoolMembers } from '@/lib/messaging';
 import { withAudit } from '@/lib/with-audit';
 import { reportServerError } from '@/lib/error-capture';
@@ -14,6 +14,8 @@ async function handlePOST(request: Request) {
 
         return NextResponse.json({ success: true, message: 'All school members synced into group chats.' });
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error('Group sync failed:', e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, 'Sync failed') }, { status: 500 });

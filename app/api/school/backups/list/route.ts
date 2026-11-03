@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
 import { reportServerError } from '@/lib/error-capture';
 import { BACKUP_BUCKET, backupObjectPath } from '@/lib/backup-retention';
@@ -32,6 +32,8 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ restorePoints: withLinks });
     } catch (error: any) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Fetch Backups Error:", error);
         void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Failed to fetch backups') }, { status: 500 });

@@ -48,6 +48,7 @@ function formatStudentCodeInput(val: string): string {
 export default function ParentRegister() {
     const [step, setStep] = useState<Step>('CODE');
     const [studentCode, setStudentCode] = useState("");
+    const [dob, setDob] = useState("");
     const [studentDetails, setStudentDetails] = useState<StudentDetails | null>(null);
 
     // Auth State
@@ -85,7 +86,7 @@ export default function ParentRegister() {
             const res = await fetch('/api/auth/verify-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: studentCode })
+                body: JSON.stringify({ code: studentCode, dob })
             });
 
             const data = await res.json() as { error?: string; student?: StudentDetails; recovery?: RecoveryDetails };
@@ -148,6 +149,7 @@ export default function ParentRegister() {
                     email,
                     name,
                     studentCode, // Pass code to link immediately
+                    dob,
                     acceptedTerms: agreedToTerms
                 })
             });
@@ -155,7 +157,7 @@ export default function ParentRegister() {
             if (res.ok) {
                 posthog.capture('account_registered', { account_role: 'parent' });
                 setStep('SUCCESS');
-                setTimeout(() => router.push('/dashboard'), 2000);
+                setTimeout(() => router.push('/logout?reason=registered'), 2000);
             } else {
                 const errData = (await res.json().catch(() => ({}))) as { error?: string };
                 setError(errData.error || "Account created but linking failed. Please try linking from your parent dashboard.");
@@ -230,6 +232,16 @@ export default function ParentRegister() {
                                         </div>
                                     )}
                                 </div>
+                                <label className="block mt-3 text-left text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+                                    Student date of birth
+                                    <Input
+                                        type="date"
+                                        className="mt-1 h-11 bg-zinc-200 dark:bg-zinc-950/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white"
+                                        value={dob}
+                                        onChange={(e) => setDob(e.target.value)}
+                                        required
+                                    />
+                                </label>
 
                                 {error && (
                                     <div className="mt-3 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl space-y-1 text-left">

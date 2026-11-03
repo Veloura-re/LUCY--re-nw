@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, publicErrorMessage } from "@/lib/security";
+import { requireRole, publicErrorMessage, handleApiError, clientDataError } from "@/lib/security";
 import { logActivity } from "@/lib/audit";
 import { reportServerError } from '@/lib/error-capture';
 
@@ -37,6 +37,8 @@ export async function GET(req: Request) {
 
         return NextResponse.json(entries);
     } catch (error) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Fetch Entries Error:", error);
         return NextResponse.json({ error: "Failed to fetch entries" }, { status: 500 });
     }
@@ -267,6 +269,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
+        if (/^(Unauthorized|Forbidden)/.test(String(error?.message))) return handleApiError(error);
         console.error("Save Marks Error:", error);
         if (error.message === "term_completed") {
             return NextResponse.json({

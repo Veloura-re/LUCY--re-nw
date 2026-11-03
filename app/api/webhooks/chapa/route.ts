@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     try {
         const secret = process.env.CHAPA_WEBHOOK_SECRET;
         if (!secret) {
-            console.error('Missing CHAPA_WEBHOOK_SECRET');
-            return NextResponse.json({ error: 'Webhook secret missing' }, { status: 500 });
+            console.error('Missing CHAPA_WEBHOOK_SECRET: set it in the host environment to the secret saved in the Chapa dashboard.');
+            return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 });
         }
 
         const signature = request.headers.get('chapa-signature');
@@ -100,6 +100,14 @@ export async function POST(request: Request) {
             const newAccessEnd = accessEndAfterPurchase(school, CHAPA_ACCESS_DAYS);
 
             await prisma.$transaction(async (tx) => {
+                // Two simultaneous deliveries of one event serialize here, so the second sees the first's audit row.
+                await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${`chapa:${txRef}`}))`;
+                const duplicate = await tx.auditLog.findFirst({
+                    where: { schoolId: school.id, action: 'CHAPA_PAYMENT_CONFIRMED', resourceId: txRef },
+                    select: { id: true }
+                });
+                if (duplicate) return;
+
                 await tx.school.update({
                     where: { id: school.id },
                     data: {

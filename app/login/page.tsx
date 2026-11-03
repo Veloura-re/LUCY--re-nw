@@ -33,6 +33,7 @@ function LoginContent() {
     const searchParams = useSearchParams();
     const errorParam = searchParams.get('error');
     const resetParam = searchParams.get('reset');
+    const registeredParam = searchParams.get('registered');
     const supabase = createClient();
 
     const [email, setEmail] = useState("");
@@ -60,7 +61,13 @@ function LoginContent() {
                 body: JSON.stringify({ email, password, turnstileToken, acceptedTerms: agreedToTerms })
             });
 
-            const data = (await res.json()) as { error?: string; userId?: string };
+            const data = (await res.json()) as { error?: string; userId?: string; otpRequired?: boolean };
+
+            if (res.ok && data.otpRequired) {
+                // Password accepted; the emailed code is the second step.
+                router.push('/login/verify');
+                return;
+            }
 
             if (!res.ok || !data.userId) {
                 setError(data.error || "Authentication failed");
@@ -80,6 +87,15 @@ function LoginContent() {
 
         router.refresh();
         router.push("/dashboard");
+    };
+
+    const handleGoogle = async () => {
+        setError(null);
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard&flow=google` },
+        });
+        if (oauthError) setError(oauthError.message);
     };
 
     return (
@@ -115,6 +131,12 @@ function LoginContent() {
                             <div className="mb-4 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-mono flex items-center gap-2">
                                 <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
                                 <span>Password updated successfully! Please log in with your new credentials.</span>
+                            </div>
+                        )}
+                        {registeredParam && (
+                            <div className="mb-4 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-mono flex items-center gap-2">
+                                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                                <span>Account created. Sign in to continue.</span>
                             </div>
                         )}
                         <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
@@ -182,6 +204,23 @@ function LoginContent() {
                                 <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </form>
+
+                        <div className="flex items-center gap-3 my-4 sm:my-5">
+                            <div className="h-px flex-1 bg-slate-200 dark:bg-zinc-800" />
+                            <span className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-zinc-600">or</span>
+                            <div className="h-px flex-1 bg-slate-200 dark:bg-zinc-800" />
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleGoogle}
+                            className="w-full h-11 sm:h-12 text-sm font-medium rounded-xl sm:rounded-2xl"
+                        >
+                            Continue with Google
+                        </Button>
+                        <p className="mt-2 text-[10px] text-center text-slate-500 dark:text-zinc-500">
+                            Google sign-in works only for accounts that already exist.
+                        </p>
                     </CardContent>
 
                     <CardFooter className="flex flex-col gap-3 sm:gap-4 border-t border-slate-200/80 dark:border-zinc-800 py-4 sm:py-6 px-4 sm:px-6 justify-center bg-slate-50/80 dark:bg-zinc-950/40">

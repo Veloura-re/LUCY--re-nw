@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, STAFF_ROLES } from '@/lib/security';
+import { requireRole, STAFF_ROLES, handleApiError, clientDataError } from '@/lib/security';
 import { scanEssaySubmission } from '@/lib/ai';
 import { createAiObservationContext } from '@/lib/ai-observability';
 import { logActivity, getIp } from '@/lib/audit';
@@ -134,6 +134,8 @@ export async function POST(request: Request) {
         });
 
     } catch (error: any) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error('[AI Essay Scan API Error]', error);
         return NextResponse.json(
             { error: 'Failed to scan submission' },

@@ -110,7 +110,7 @@ export function InviteForm({ token, email, schoolName, role, prefilledName }: { 
         });
 
         setStatusText("Access Granted. Redirecting...");
-        router.push('/dashboard');
+        router.push('/logout?reason=registered')
     };
 
     return (

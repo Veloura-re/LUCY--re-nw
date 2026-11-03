@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { secureJson, sanitizeInput } from '@/lib/security';
 import { logError } from '@/lib/audit';
 import { rateLimitShared } from '@/lib/rate-limit';
+import { dobMatches, INVALID_CODE_OR_DOB } from '@/lib/student-code';
 
 export async function POST(request: Request) {
     // 1. Throttling: Max 5 code verification attempts per minute per IP to block enumeration attacks
@@ -16,8 +17,8 @@ export async function POST(request: Request) {
     const userAgent = request.headers.get('user-agent') || undefined;
 
     try {
-        const body = (await request.json().catch(() => ({}))) as { code?: string };
-        const { code } = body;
+        const body = (await request.json().catch(() => ({}))) as { code?: string; dob?: string };
+        const { code, dob } = body;
 
         if (!code || typeof code !== 'string') {
             return secureJson({ error: "Student access code is required" }, 400);
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
             }
         });
 
-        if (!student) {
+        if (!student || !dobMatches(student.dob, dob)) {
             await logError({
                 type: 'auth_failure',
                 message: `Failed student access code verification attempt: "${sanitizedCode}"`,
@@ -49,9 +50,9 @@ export async function POST(request: Request) {
             });
 
             return secureJson({ 
-                error: "Invalid Student Access Code", 
+                error: INVALID_CODE_OR_DOB, 
                 recovery: {
-                    message: "The student code was not found. Please verify the code printed on the official registration sheet provided by your school.",
+                    message: "Check the code printed on the official registration sheet and the date of birth your school has on record.",
                     format: "Expected format: ST-XXXXXX-YYYY"
                 }
             }, 404);

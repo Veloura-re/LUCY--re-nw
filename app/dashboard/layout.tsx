@@ -5,6 +5,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCachedUser, getCachedUserByEmail } from "@/lib/users";
 import { healUserMismatch } from "@/lib/auth-healing";
+import { getDeviceSessionState } from "@/lib/device-session";
 import { Shield, LayoutDashboard, BookOpen } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { NAV_ITEMS, Role as NavRole } from "@/lib/navigation";
@@ -45,6 +46,13 @@ export default async function DashboardLayout({
         redirect("/login");
     }
 
+    // The Supabase session alone is not a sign-in: the device session is issued only after the full
+    // sign-in (password plus code or trusted device, or Google). A newer sign-in elsewhere supersedes it.
+    const deviceState = await getDeviceSessionState(user.id);
+    if (deviceState !== 'valid') {
+        redirect(deviceState === 'superseded' ? "/logout?reason=concurrent" : "/logout?reason=session");
+    }
+
     // Fetch full user profile with deduplication
     let dbUser = await getCachedUser(user.id);
 
@@ -66,14 +74,6 @@ export default async function DashboardLayout({
         }
     }
 
-    // Concurrent Session Enforcement
-    // Only evict if this client had an active device session cookie that was explicitly superseded by a newer login
-    if (dbUser && dbUser.activeSessionId) {
-        const deviceSession = cookieStore.get('lucy_device_session')?.value;
-        if (deviceSession && deviceSession !== dbUser.activeSessionId) {
-            redirect("/logout?reason=concurrent");
-        }
-    }
     if (!dbUser) {
         // Handle database connection interruptions or missing profiles
         return (

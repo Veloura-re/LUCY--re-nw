@@ -407,6 +407,12 @@ export async function GET(
 
         // Parents and students must not see staff contact details or internal staff notes.
         const isStaff = ["SUPERADMIN", "OWNER", "PRINCIPAL", "TEACHER", "HOMEROOM"].includes(dbUser.role);
+        // Internal notes are confidential: leadership, or the homeroom teacher of the student's class (same rule as the notes API).
+        let canSeeInternalNotes = ["SUPERADMIN", "OWNER", "PRINCIPAL"].includes(dbUser.role);
+        if (!canSeeInternalNotes && ["TEACHER", "HOMEROOM"].includes(dbUser.role) && student.classId) {
+            const homeroom = await prisma.class.findUnique({ where: { id: student.classId }, select: { homeroomTeacherId: true } });
+            canSeeInternalNotes = homeroom?.homeroomTeacherId === dbUser.id;
+        }
         const sanitizedStudent = isStaff
             ? student
             : {
@@ -439,7 +445,7 @@ export async function GET(
                 total: attendanceRecords.length
             },
             remarks,
-            internalNotes: isStaff ? internalNotes : []
+            internalNotes: canSeeInternalNotes ? internalNotes : []
         });
     } catch (e) {
         return handleApiError(e);

@@ -4,7 +4,7 @@ import { requireRole, handleApiError, FINANCE_ROLES } from "@/lib/security";
 
 export async function GET() {
     try {
-        const dbUser = await requireRole([...FINANCE_ROLES, 'TEACHER']);
+        const dbUser = await requireRole(FINANCE_ROLES);
 
         const pendingPayments = await prisma.payment.findMany({
             where: {

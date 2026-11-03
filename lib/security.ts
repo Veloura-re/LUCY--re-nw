@@ -19,39 +19,41 @@ export const RECORDS_ROLES: Role[] = [...ADMIN_ROLES, 'RECORDER'];
 /** Everyone who may open the student registry and class lists. */
 export const REGISTRY_ROLES: Role[] = [...STAFF_ROLES, 'RECORDER'];
 
-import { headers } from 'next/headers';
+import { hasValidDeviceSession } from '@/lib/device-session';
+import { getClientIp, isExemptFromRateLimit } from '@/lib/client-ip';
 
 /**
- * Ensures a user is authenticated.
- * Returns the Supabase User object or throws an error.
+ * Ensures a user is authenticated AND signed in through this server.
+ * The Supabase session alone is not enough: Supabase Auth can be called directly with a password,
+ * so the request must also carry the device session issued after the full sign-in (password plus
+ * emailed code or trusted device, or Google). Returns the Supabase User object or throws.
  */
-export async function requireAuth() {
+// Typed loosely on purpose: callers have always read profile fields off this value (it was implicitly any).
+export async function requireAuth(): Promise<any> {
     const supabase = await createClient();
-    
-    // First check Authorization header for API access
-    const reqHeaders = await headers();
-    const authHeader = reqHeaders.get('authorization');
-    
-    let user;
-    let error;
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
-        const { data, error: err } = await supabase.auth.getUser(token);
-        user = data?.user;
-        error = err;
-    } else {
-        // Fallback to cookie based session (Frontend)
-        const { data, error: err } = await supabase.auth.getUser();
-        user = data?.user;
-        error = err;
-    }
+    // Cookie session only. A bearer token would skip the device-session check below.
+    const { data, error } = await supabase.auth.getUser();
+    const user = data?.user;
 
     if (error || !user) {
         throw new Error("Unauthorized: Login required");
     }
 
+    if (!(await hasValidDeviceSession(user.id))) {
+        throw new Error("Unauthorized: Sign-in not completed on this device");
+    }
+
     return user;
+}
+
+/** Same checks as requireAuth, but returns null instead of throwing, for routes that shape their own 401. */
+export async function getVerifiedUser(): Promise<any | null> {
+    try {
+        return await requireAuth();
+    } catch {
+        return null;
+    }
 }
 
 /**
@@ -250,7 +252,26 @@ export function publicErrorMessage(error: unknown, fallback: string = "Internal 
     return message;
 }
 
+/**
+ * Input the database rejects (wrong type, too long, duplicate, missing parent) is the caller's mistake:
+ * answer 400, 404 or 409 instead of a 500. Returns null for anything else.
+ */
+export function clientDataError(error: unknown): NextResponse | null {
+    const e = error as any;
+    if (e?.name === 'PrismaClientValidationError') return secureJson({ error: 'Invalid request data' }, 400);
+    if (e?.name === 'PrismaClientKnownRequestError') {
+        if (e.code === 'P2025') return secureJson({ error: 'Not found' }, 404);
+        if (e.code === 'P2002') return secureJson({ error: 'Already exists' }, 409);
+        if (['P2000', 'P2003', 'P2005', 'P2006', 'P2007', 'P2008', 'P2009', 'P2011', 'P2012', 'P2013', 'P2014', 'P2019', 'P2020', 'P2023'].includes(e.code)) {
+            return secureJson({ error: 'Invalid request data' }, 400);
+        }
+    }
+    return null;
+}
+
 export function handleApiError(error: unknown) {
+    const dataError = clientDataError(error);
+    if (dataError) return dataError;
     console.error("API Security Error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
     if (message.startsWith("Unauthorized")) return secureJson({ error: "Unauthorized" }, 401);
@@ -310,17 +331,9 @@ export function rateLimit(
     windowMs: number = 60_000
 ): NextResponse | null {
     cleanupRateLimits();
-    const rawForwarded = request.headers.get('x-forwarded-for');
-    const rawIp = request.headers.get('cf-connecting-ip')
-        || request.headers.get('x-real-ip')
-        || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
-        || 'unknown';
-    const ip = rawIp.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
+    const ip = getClientIp(request);
 
-    // Bypass localhost/dev testing
-    if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') {
-        return null;
-    }
+    if (isExemptFromRateLimit(ip)) return null;
 
     const key = `${ip}:${endpoint}`;
     const now = Date.now();
@@ -393,6 +406,18 @@ export function secureRandomInt(min: number, max: number): number {
         globalThis.crypto.getRandomValues(buf);
     } while (buf[0] >= limit);
     return min + (buf[0] % range);
+}
+
+/** Page size from a query string: a positive integer, never above `max`, so a caller cannot ask for the whole table. */
+export function clampLimit(raw: string | null | undefined, fallback = 50, max = 200): number {
+    const n = parseInt(raw ?? '', 10);
+    return Number.isFinite(n) && n > 0 ? Math.min(n, max) : fallback;
+}
+
+/** Page number from a query string: a positive integer. */
+export function clampPage(raw: string | null | undefined): number {
+    const n = parseInt(raw ?? '', 10);
+    return Number.isFinite(n) && n > 0 ? Math.min(n, 100_000) : 1;
 }
 
 export function sanitizeInput(input: string): string {

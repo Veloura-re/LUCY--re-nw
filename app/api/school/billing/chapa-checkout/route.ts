@@ -5,10 +5,15 @@ import { SUBSCRIPTION_PRICE_USD, CHAPA_CURRENCY } from '@/lib/chapa';
 import { quoteUsdInEtb } from '@/lib/fx';
 import { logActivity, getIp } from '@/lib/audit';
 
+/** Chapa checkout is paused while it is rebuilt. The payment webhook stays active for payments already in flight. */
+const CHAPA_CHECKOUT_ENABLED = false;
+const PAUSED = { error: 'Telebirr / CBE payments are being built. Please pay by card or bank transfer for now.' };
+
 /** Today's price in birr, shown before the owner commits to checkout. */
 export async function GET() {
     try {
         await requireRole(['OWNER', 'PRINCIPAL']);
+        if (!CHAPA_CHECKOUT_ENABLED) return NextResponse.json(PAUSED, { status: 503 });
         const quote = await quoteUsdInEtb(SUBSCRIPTION_PRICE_USD);
         if (!quote) {
             return NextResponse.json({ error: 'Exchange rate is temporarily unavailable.' }, { status: 503 });
@@ -23,6 +28,7 @@ export async function POST(request: Request) {
     try {
         // Enforce that only Owner or Principal can create a checkout session
         const user = await requireRole(['OWNER', 'PRINCIPAL']);
+        if (!CHAPA_CHECKOUT_ENABLED) return NextResponse.json(PAUSED, { status: 503 });
 
         // Use top-level prisma import to prevent dynamic require cold-start failures
         const school = await prisma.school.findUnique({ where: { id: user.schoolId! } });

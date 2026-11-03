@@ -1,4 +1,4 @@
-import { publicErrorMessage, requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
+import { publicErrorMessage, requireRole, handleApiError, FINANCE_ROLES, clientDataError } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAudit } from '@/lib/with-audit';
@@ -10,10 +10,8 @@ export async function GET() {
     try {
         const dbUser = await requireRole(FINANCE_ROLES);
 
-        let targetSchoolId = dbUser.schoolId;
-        if (!targetSchoolId && dbUser.role === 'SUPERADMIN') {
-            targetSchoolId = 'c4020909-c825-4490-9790-18e0632dbeaf';
-        }
+        const targetSchoolId = dbUser.schoolId;
+        if (!targetSchoolId) return NextResponse.json([]);
 
         const paychecks = await prisma.staffPayroll.findMany({
             where: {
@@ -79,6 +77,7 @@ async function handlePOST(req: Request) {
 
         return NextResponse.json(payroll);
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
         if (/^(Unauthorized|Forbidden)/.test(String(e?.message))) return handleApiError(e);
         console.error(e);
         void reportServerError(e, { status: 500 });

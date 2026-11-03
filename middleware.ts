@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { getClientIp } from '@/lib/client-ip'
+import { DEVICE_MARK_COOKIE, LEGACY_UPGRADE_UNTIL, isValidDeviceMark } from '@/lib/device-mark'
 
 /**
  * Next.js Edge Middleware.
@@ -99,7 +101,7 @@ function applySecurityHeaders(response: NextResponse) {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
         'Cross-Origin-Opener-Policy': 'same-origin',
-        'Content-Security-Policy': `default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com ${posthogAssetsHost}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co ${posthogHost ?? ''}; frame-src 'self' https://challenges.cloudflare.com https://*.supabase.co https://*.supabase.in; worker-src 'self' blob:;`, 
+        'Content-Security-Policy': `default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com https://*.posthog.com https://*.i.posthog.com ${posthogAssetsHost}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co https://*.posthog.com https://*.i.posthog.com ${posthogHost ?? ''}; frame-src 'self' https://challenges.cloudflare.com https://*.supabase.co https://*.supabase.in; worker-src 'self' blob:;`, 
         'Link': process.env.NEXT_PUBLIC_SUPABASE_URL ? `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect` : '',
     }
     Object.entries(securityHeaders).forEach(([key, value]) => {
@@ -110,7 +112,7 @@ function applySecurityHeaders(response: NextResponse) {
     // resource that would break once 'unsafe-eval' is removed. Use it to plan the move to nonces.
     response.headers.set(
         'Content-Security-Policy-Report-Only',
-        securityHeaders['Content-Security-Policy'].replace(" 'unsafe-eval'", '')
+        securityHeaders['Content-Security-Policy'].replace(" 'unsafe-eval'", '').replace('upgrade-insecure-requests;', '')
     )
 }
 
@@ -139,14 +141,7 @@ export async function middleware(request: NextRequest) {
     // RATE LIMITING, CSRF, SIZE LIMIT AND HEADERS FOR API ROUTES
     // ─────────────────────────────────────────────────
     if (isApiPage) {
-        const rawForwarded = request.headers.get('x-forwarded-for');
-        const ip = request.headers.get('cf-connecting-ip')
-            || request.headers.get('x-real-ip')
-            || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
-            || 'unknown';
-        const cleanIp = ip.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
-
-        if (!checkRateLimit(cleanIp, path)) {
+        if (!checkRateLimit(getClientIp(request), path)) {
             return jsonError(429, "Too Many Requests. Please wait before retrying.", { 'Retry-After': '60' })
         }
 
@@ -203,11 +198,31 @@ export async function middleware(request: NextRequest) {
 
     // 4. Handle Unauthenticated Users for UI Pages
     if (!user) {
-        if (isAdminPage || isDashboardPage) {
+        if (isAdminPage || isDashboardPage || path.startsWith('/exam')) {
             url.pathname = '/login'
             return NextResponse.redirect(url)
         }
     } else {
+        // A Supabase session alone is not a completed sign-in. Dashboard and admin pages also need the
+        // device session this server issues after the full sign-in; this catches partial-page requests
+        // that skip the layout check.
+        if (isAdminPage || isDashboardPage || path.startsWith('/exam')) {
+            const session = request.cookies.get('lucy_device_session')?.value
+            const mark = request.cookies.get(DEVICE_MARK_COOKIE)?.value
+            if (!(await isValidDeviceMark(user.id, session, mark))) {
+                // A legacy device cookie with no mark is upgraded once by /auth/upgrade (which checks it against the database).
+                if (session && !mark && request.method === 'GET' && Date.now() < LEGACY_UPGRADE_UNTIL) {
+                    const back = `${path}${request.nextUrl.search}`
+                    url.pathname = '/auth/upgrade'
+                    url.search = `?next=${encodeURIComponent(back)}`
+                    return NextResponse.redirect(url)
+                }
+                url.pathname = '/logout'
+                url.search = '?reason=session'
+                return NextResponse.redirect(url)
+            }
+        }
+
         // 5. Handle Authenticated Users for UI Pages
         const metadataRole = user.user_metadata?.role
 

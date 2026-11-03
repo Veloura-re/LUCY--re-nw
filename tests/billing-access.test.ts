@@ -9,7 +9,8 @@ const mockUserFind = jest.fn();
 jest.mock('@/lib/prisma', () => {
     const tx = {
         school: { update: (...a: any[]) => mockSchoolUpdate(...a) },
-        auditLog: { create: (...a: any[]) => mockAuditCreate(...a) },
+        auditLog: { findFirst: (...a: any[]) => mockAuditFind(...a), create: (...a: any[]) => mockAuditCreate(...a) },
+        $queryRaw: async () => [],
     };
     return {
         prisma: {

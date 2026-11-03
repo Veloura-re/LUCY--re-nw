@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateGradeFeedback } from '@/lib/ai';
 import { createAiObservationContext } from '@/lib/ai-observability';
-import { requireRole, STAFF_ROLES } from '@/lib/security';
+import { requireRole, STAFF_ROLES, handleApiError, clientDataError } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(request: Request) {
@@ -33,6 +33,8 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ feedback });
     } catch (error: any) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error('[AI Grading Feedback Error]', error);
         return NextResponse.json({ error: 'Failed to generate AI feedback' }, { status: 500 });
     }

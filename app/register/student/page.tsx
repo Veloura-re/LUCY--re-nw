@@ -23,6 +23,7 @@ export default function StudentRegisterPage() {
 
     const [formData, setFormData] = useState({
         studentCode: "",
+        dob: "",
         email: "",
         password: "",
         confirmPassword: ""
@@ -45,6 +46,7 @@ export default function StudentRegisterPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     studentCode: formData.studentCode,
+                    dob: formData.dob,
                     email: formData.email,
                     password: formData.password,
                     acceptedTerms: agreedToTerms
@@ -59,7 +61,7 @@ export default function StudentRegisterPage() {
 
             posthog.capture('account_registered', { account_role: 'student' });
             toast.success("Identity established successfully!");
-            router.push("/dashboard");
+            router.push("/logout?reason=registered");
         } catch (error: any) {
             toast.error(error.message);
         } finally {
@@ -129,11 +131,22 @@ export default function StudentRegisterPage() {
                                             </p>
                                         </div>
 
+                                        <div className="space-y-2 sm:space-y-3">
+                                            <Label className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-500 ml-1">Date of Birth</Label>
+                                            <Input
+                                                type="date"
+                                                value={formData.dob}
+                                                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                                                className="h-12 sm:h-14 bg-zinc-100/50 dark:bg-zinc-900/50 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white text-sm sm:text-lg focus:border-eduGreen-500 focus:ring-eduGreen-500/20 rounded-xl transition-all"
+                                                required
+                                            />
+                                        </div>
+
                                         <Button
                                             type="button"
                                             onClick={() => {
-                                                if (formData.studentCode.length < 5) {
-                                                    toast.error("Invalid Token Format");
+                                                if (formData.studentCode.length < 5 || !formData.dob) {
+                                                    toast.error("Enter your token and date of birth");
                                                     return;
                                                 }
                                                 setStep(2);

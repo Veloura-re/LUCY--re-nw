@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
 import { withAudit } from '@/lib/with-audit';
-import { publicErrorMessage } from '@/lib/security';
+import { publicErrorMessage, getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 
 async function handlePOST(req: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getVerifiedUser();
         if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
         const dbUser = await prisma.user.findUnique({
@@ -44,6 +42,8 @@ async function handlePOST(req: Request) {
         return NextResponse.json({ success: true });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error("[Absorb Teacher Error]", e);
         return new NextResponse(publicErrorMessage(e), { status: 500 });
     }

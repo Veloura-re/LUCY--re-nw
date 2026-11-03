@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { handleApiError, requireRole, requireSchoolLinked, secureJson, sanitizeInput, RECORDS_ROLES, REGISTRY_ROLES } from '@/lib/security';
+import { handleApiError, requireRole, requireSchoolLinked, secureJson, sanitizeInput, RECORDS_ROLES, REGISTRY_ROLES, clampLimit, clampPage } from '@/lib/security';
 import { logActivity, logError } from '@/lib/audit';
 import { sendInviteEmail } from '@/lib/email';
 import { revalidateTag } from 'next/cache';
@@ -56,8 +56,8 @@ export async function GET(request: Request) {
         const id = searchParams.get('id');
         const classId = searchParams.get('classId') || undefined;
         const search = searchParams.get('search') || undefined;
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const sortBy = (searchParams.get('sortBy') as 'NAME' | 'CLASS') || 'NAME';
         const sortDir = (searchParams.get('sortDir') as 'ASC' | 'DESC') || 'ASC';
 
@@ -262,10 +262,7 @@ export async function POST(request: Request) {
                 }
             }
 
-            const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
-            if (existingInvite) {
-                await prisma.inviteToken.delete({ where: { id: existingInvite.id } }).catch(() => {});
-            }
+            await prisma.inviteToken.deleteMany({ where: { email, schoolId: targetSchoolId } }).catch(() => {});
         }
 
         // 4. Generate Unique Collision-Resistant Student Code with Retry Loop

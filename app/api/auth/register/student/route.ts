@@ -5,14 +5,15 @@ import { rateLimitShared } from '@/lib/rate-limit';
 
 import { logActivity } from '@/lib/audit';
 import { recordConsent } from '@/lib/consent';
+import { dobMatches, INVALID_CODE_OR_DOB } from '@/lib/student-code';
 import { sendWelcomeEmail } from '@/lib/email';
 export async function POST(req: Request) {
-    // The access code is the only credential here, so guessing must be slow
+    // The access code plus date of birth is the credential here, so guessing must be slow
     const limited = await rateLimitShared(req, 'auth/register-student', 5, 10 * 60_000);
     if (limited) return limited;
 
     try {
-        const { studentCode, email, password, acceptedTerms } = await req.json() as any;
+        const { studentCode, dob, email, password, acceptedTerms } = await req.json() as any;
 
         if (acceptedTerms !== true) {
             return NextResponse.json({ error: "You must accept the Terms of Service and Privacy Policy" }, { status: 400 });
@@ -36,8 +37,8 @@ export async function POST(req: Request) {
             .eq('studentCode', sanitizedCode)
             .maybeSingle();
 
-        if (!student) {
-            return NextResponse.json({ error: "Invalid Authorization Token" }, { status: 404 });
+        if (!student || !dobMatches(student.dob, dob)) {
+            return NextResponse.json({ error: INVALID_CODE_OR_DOB }, { status: 404 });
         }
 
         if (student.userId) {

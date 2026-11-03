@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError } from '@/lib/security';
+import { requireRole, handleApiError, isValidEmail } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
@@ -9,9 +9,13 @@ export async function DELETE(request: Request) {
     try {
         const dbUser = await requireRole(['PRINCIPAL', 'OWNER', 'SUPERADMIN']);
 
-        const { email } = await request.json() as any;
+        const body = (await request.json().catch(() => ({}))) as { email?: unknown };
+        const rawEmail = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
 
-        if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 });
+        if (!rawEmail || !isValidEmail(rawEmail)) {
+            return NextResponse.json({ error: 'A valid email address is required' }, { status: 400 });
+        }
+        const email = rawEmail;
 
         if (!dbUser.schoolId) return NextResponse.json({ error: 'No school linked' }, { status: 400 });
 
@@ -23,9 +27,22 @@ export async function DELETE(request: Request) {
             }
         });
 
-        // 2. Check if user record exists in this school
+        // 2. Prevent removing administrative leaders
+        const existingAny = await prisma.user.findFirst({
+            where: { email, schoolId: dbUser.schoolId },
+            select: { id: true, role: true }
+        });
+        if (existingAny && !['TEACHER', 'RECORDER', 'ACCOUNTANT'].includes(existingAny.role)) {
+            return NextResponse.json({ error: 'Cannot remove administrative leaders via staff deletion' }, { status: 403 });
+        }
+
+        // 3. Check if staff record exists in this school
         const teacher = await prisma.user.findFirst({
-            where: { email: email, schoolId: dbUser.schoolId }
+            where: {
+                email: email,
+                schoolId: dbUser.schoolId,
+                role: { in: ['TEACHER', 'RECORDER', 'ACCOUNTANT'] }
+            }
         });
 
         if (teacher) {

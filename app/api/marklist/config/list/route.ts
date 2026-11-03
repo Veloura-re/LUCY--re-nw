@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireSchoolLinked, handleApiError } from "@/lib/security";
+import { requireSchoolLinked, handleApiError, clampLimit, clampPage } from "@/lib/security";
 
 export async function GET(req: Request) {
     try {
@@ -8,8 +8,8 @@ export async function GET(req: Request) {
         const schoolId = dbUser.schoolId!;
 
         const { searchParams } = new URL(req.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const termStatus = searchParams.get('termStatus') || 'all'; // 'active' | 'finished' | 'all'
         const termId = searchParams.get('termId');
         const search = searchParams.get('search')?.trim() || '';

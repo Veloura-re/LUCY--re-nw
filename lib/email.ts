@@ -9,8 +9,40 @@ function getResend() {
     return new Resend(apiKey);
 }
 
-// Generic email sender using Resend (fetch-based, CF Workers compatible)
-export async function sendEmail({ to, subject, html, replyTo }: { to: string; subject: string; html: string; replyTo?: string }) {
+interface EmailInput { to: string; subject: string; html: string; replyTo?: string }
+interface EmailResult { success: boolean; error?: string; simulated?: boolean; fallback?: boolean }
+
+/**
+ * Second delivery path for when Resend is down or rejects a message, so sign-in codes and reset links
+ * still arrive. Used only when GMAIL_USER and GMAIL_APP_PASSWORD are set (SMTP_HOST/SMTP_PORT/SMTP_FROM
+ * override the Gmail defaults). Needs a Node runtime; it returns null when not configured.
+ * shortcut: one SMTP account with no queue or retry, move to a second API provider if volume grows.
+ */
+async function sendViaSmtp({ to, subject, html, replyTo }: EmailInput): Promise<EmailResult | null> {
+    const user = process.env.GMAIL_USER;
+    const pass = process.env.GMAIL_APP_PASSWORD;
+    if (!user || !pass) return null;
+    try {
+        const { default: nodemailer } = await import('nodemailer');
+        const port = Number(process.env.SMTP_PORT || 465);
+        const transport = nodemailer.createTransport({ host: process.env.SMTP_HOST || 'smtp.gmail.com', port, secure: port === 465, auth: { user, pass } });
+        await transport.sendMail({ from: `LUCY Platform <${process.env.SMTP_FROM || user}>`, to, subject, html, replyTo });
+        console.log(`[EMAIL] Sent via SMTP fallback to: ${to}`);
+        return { success: true, fallback: true };
+    } catch (error: any) {
+        console.error('[EMAIL] SMTP fallback failed:', error?.message);
+        return { success: false, error: error?.message || 'SMTP fallback failed' };
+    }
+}
+
+export async function sendEmail(input: EmailInput): Promise<EmailResult> {
+    const primary = await sendViaResend(input);
+    if (primary.success) return primary;
+    return (await sendViaSmtp(input)) ?? primary;
+}
+
+// Resend (fetch-based, CF Workers compatible)
+async function sendViaResend({ to, subject, html, replyTo }: EmailInput): Promise<EmailResult> {
     const resend = getResend();
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@5-cn.net';
 
@@ -18,13 +50,16 @@ export async function sendEmail({ to, subject, html, replyTo }: { to: string; su
 
     if (!resend) {
         console.warn('[EMAIL] RESEND_API_KEY is missing. Email will NOT be sent.');
-        console.log('='.repeat(80));
-        console.log(`[EMAIL] SIMULATED EMAIL TO: ${to}`);
-        if (replyTo) console.log(`Reply-To: ${replyTo}`);
-        console.log(`Subject: ${subject}`);
-        console.log('-'.repeat(40));
-        console.log(html.replace(/<[^>]*>?/gm, ''));
-        console.log('='.repeat(80));
+        // The body carries sign-in codes and reset links, so it is only printed outside production.
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('='.repeat(80));
+            console.log(`[EMAIL] SIMULATED EMAIL TO: ${to}`);
+            if (replyTo) console.log(`Reply-To: ${replyTo}`);
+            console.log(`Subject: ${subject}`);
+            console.log('-'.repeat(40));
+            console.log(html.replace(/<[^>]*>?/gm, ''));
+            console.log('='.repeat(80));
+        }
         return { success: false, error: 'Missing Resend API key', simulated: true };
     }
 
@@ -431,6 +466,30 @@ export async function sendRecoveryEmail(toEmail: string, resetUrl: string) {
     `;
 
     return sendEmail({ to: toEmail, subject: "LUCY: Reset your password", html });
+}
+
+export async function sendLoginCodeEmail(toEmail: string, code: string) {
+    const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; color: #101314; background-color: #ffffff; border-radius: 24px; border: 1px solid #f0f0f0;">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <h1 style="color: #147A52; margin-top: 16px; font-weight: 900; letter-spacing: -0.05em;">LUCY</h1>
+            </div>
+
+            <h2 style="font-size: 24px; font-weight: 800; color: #101314; margin-bottom: 16px;">Your sign-in code</h2>
+            <p style="font-size: 16px; line-height: 1.6; color: #4A4E52;">Enter this code to finish signing in to your LUCY account. It expires in 10 minutes and works once.</p>
+
+            <div style="text-align: center; margin: 32px 0;">
+                <span style="font-family: monospace; font-size: 36px; font-weight: 800; letter-spacing: 0.4em; color: #147A52; background-color: #f4faf7; padding: 16px 24px; border-radius: 14px; display: inline-block;">${code}</span>
+            </div>
+
+            <p style="font-size: 12px; line-height: 1.6; color: #6E7377; margin-top: 32px;">If you did not try to sign in, change your password now. Nobody at LUCY will ever ask you for this code.</p>
+
+            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 40px 0;" />
+            <p style="font-size: 11px; text-align: center; color: #9EA3A7; text-transform: uppercase; letter-spacing: 0.1em;">LUCY Advanced Academic Infrastructure &copy; 2026</p>
+        </div>
+    `;
+
+    return sendEmail({ to: toEmail, subject: "LUCY: Your sign-in code", html });
 }
 
 export async function sendWelcomeEmail({

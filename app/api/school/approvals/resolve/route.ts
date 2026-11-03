@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, requireSchoolLinked, publicErrorMessage } from '@/lib/security';
+import { requireRole, requireSchoolLinked, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
@@ -109,6 +109,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: true, resolution });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to resolve request") }, { status: 500 });
     }

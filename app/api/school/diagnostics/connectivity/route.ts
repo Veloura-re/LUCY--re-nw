@@ -1,11 +1,10 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
 
 export async function GET() {
     try {
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getVerifiedUser();
         if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
         const dbUser = await prisma.user.findUnique({
@@ -56,6 +55,8 @@ export async function GET() {
 
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error("[Connectivity Diagnostic] Error:", e);
         return new NextResponse(e.message, { status: 500 });
     }

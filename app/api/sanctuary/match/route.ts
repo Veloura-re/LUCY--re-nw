@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, clientDataError } from '@/lib/security';
 import { generateSanctuaryPseudonym } from '@/lib/sanctuary-guardrails';
 import type { SanctuaryMode } from '@prisma/client';
 
@@ -113,9 +113,10 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Polling error') },
-            { status: err.message?.includes('Unauthorized') ? 401 : 500 }
+            { status: err.message?.includes('Unauthorized') ? 401 : err.message?.includes('Forbidden') ? 403 : 500 }
         );
     }
 }
@@ -315,6 +316,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         console.error('[Sanctuary Match Error]:', err.message);
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Internal matchmaking failure') },

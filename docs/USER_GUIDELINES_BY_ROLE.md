@@ -9,6 +9,11 @@ This document serves as the master operational reference for all user roles acro
 
 LUCY operates on strict Role-Based Access Control (RBAC) backed by institutional multi-tenancy. Every request is verified against the user's active session, cryptographic role claims, and school isolation boundaries.
 
+### Signing in
+- **Password, then a code.** After the correct password, LUCY emails a 6-digit code (valid for 10 minutes, five attempts). Tick "Trust this device for 30 days" to skip the code on that browser; use Settings > Security > Forget trusted devices on a lost or shared computer. Changing your password also forgets every trusted device.
+- **Continue with Google.** Works only for accounts that already exist and whose email matches the Google account. It does not ask for a code. A Google account with no LUCY account is refused; ask your school for an invite.
+- Students who registered with a code and no email sign in with their password alone.
+
 ### Platform Roles:
 1. `SUPERADMIN`: Global system owner, infrastructure defense, multi-school tenant management, and emergency content moderation.
 2. `OWNER`: School proprietor, institutional revenue management, financial accounts, and high-level faculty governance.

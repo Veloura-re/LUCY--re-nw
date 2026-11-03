@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAuth, handleApiError } from '@/lib/security';
+import { requireAuth, handleApiError, clientDataError } from '@/lib/security';
 
 import { logActivity } from '@/lib/audit';
 export async function GET(request: Request) {
@@ -19,6 +19,8 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ authorizations });
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         console.error(`[GET /api/user/authorizations] Error: ${e.message}`, e.stack);
 
@@ -83,6 +85,8 @@ export async function POST(request: Request) {
         } catch { /* non-blocking */ }
 return NextResponse.json({ authorization });
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         console.error(`[POST /api/user/authorizations] Error: ${e.message}`, e.stack);
 

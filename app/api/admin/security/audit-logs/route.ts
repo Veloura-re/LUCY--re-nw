@@ -1,25 +1,25 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: Request) {
     try {
         // Authenticate requesting user
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const user = await getVerifiedUser();
 
-        if (authError || !user) {
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Verify role is ADMIN or SUPERADMIN
+        // Verify role is SUPERADMIN
         if (prisma) {
             const dbUser = await prisma.user.findUnique({
                 where: { id: user.id },
                 select: { role: true }
             });
 
-            if (!dbUser || (dbUser.role !== 'SUPERADMIN' && dbUser.role !== 'OWNER' && dbUser.role !== 'PRINCIPAL')) {
+            // auth_audit_logs spans every school (emails and IP addresses), so it is for the platform operator only.
+            if (!dbUser || dbUser.role !== 'SUPERADMIN') {
                 return NextResponse.json({ error: "Forbidden: insufficient permissions" }, { status: 403 });
             }
         }
@@ -34,6 +34,8 @@ export async function GET(req: Request) {
                     LIMIT 100
                 `;
             } catch (e) {
+                { const bad = clientDataError(e); if (bad) return bad; }
+                if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
                 // Table might not exist yet
                 console.warn("Audit logs table not accessible:", e);
             }
@@ -41,6 +43,8 @@ export async function GET(req: Request) {
         
         return NextResponse.json({ logs });
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error("Failed to fetch audit logs", e);
         return NextResponse.json({ error: "Failed to fetch audit logs" }, { status: 500 });
     }
