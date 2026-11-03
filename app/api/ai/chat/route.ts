@@ -8,9 +8,6 @@ import { untrustedContentDirective, wrapUntrusted } from '@/lib/prompt-safety';
 import { captureGeminiGeneration, createAiObservationContext } from '@/lib/ai-observability';
 import { flushPostHogLogs, posthogLogs } from '@/lib/posthog-logs';
 
-const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
-
 export async function POST(req: Request) {
     try {
         // 1. Rate Limiting (10 requests per minute)
@@ -52,6 +49,8 @@ export async function POST(req: Request) {
             return secureJson({ error: "Invalid messages format" }, 400);
         }
 
+        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+        const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
             model: GEMINI_MODEL,
             systemInstruction: `You are LUCY, the assistant for a school management platform. The person writing is a ${String(dbUser.role).toLowerCase()} at a school.
