@@ -3,8 +3,14 @@ import { GEMINI_MODEL } from './ai-config';
 import { AiObservationContext, observeGeminiCall } from './ai-observability';
 import { STUDENT_SUBMISSION_TAG, neutralizeDelimiters, wrapUntrusted, untrustedContentDirective } from './prompt-safety';
 
-const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || '';
-const genAI = new GoogleGenerativeAI(apiKey);
+let cachedGenAI: GoogleGenerativeAI | null = null;
+export function getGenAI() {
+    if (!cachedGenAI) {
+        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || '';
+        cachedGenAI = new GoogleGenerativeAI(apiKey);
+    }
+    return cachedGenAI;
+}
 
 /** Boundary tag for any non-submission text that originates from users (titles, topics, remarks, chat). */
 const USER_INPUT_TAG = 'untrusted_user_input';
@@ -17,7 +23,7 @@ const studentText = (value: unknown, max: number = 8000) => wrapUntrusted(value,
  * that anything inside the boundary tags is data, never instructions.
  */
 export function sandboxedModel(extraInstruction: string = '') {
-    return genAI.getGenerativeModel({
+    return getGenAI().getGenerativeModel({
         model: GEMINI_MODEL,
         systemInstruction: [
             extraInstruction,
@@ -48,6 +54,7 @@ export function extractAndParseJson<T>(rawText: string, fallback: T): T {
 }
 
 export async function analyzeStudentRisk(studentData: any, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = sandboxedModel();
@@ -78,6 +85,7 @@ Respond strictly in the following JSON format without any markdown wrappers or a
 }
 
 export async function generateGradeFeedback(score: number, maxScore: number, subject: string, previousContext?: string, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
     const model = sandboxedModel();
@@ -93,9 +101,10 @@ The feedback should be addressed to the student (e.g., "Great job on your...", "
 }
 
 export async function processParentChat(contextData: any, userMessage: string, previousHistory?: any[], aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     
-    const model = genAI.getGenerativeModel({ 
+    const model = getGenAI().getGenerativeModel({
         model: GEMINI_MODEL,
         systemInstruction: `You are LUCY, a friendly and professional AI assistant for parents in a school management system.
 You MUST answer the parent's questions based EXCLUSIVELY on the context data about their children, school, and fees given below.
@@ -130,6 +139,7 @@ ${userInput(JSON.stringify(contextData ?? {}), 20000)}
  * Generate a draft for a new assignment based on teacher input.
  */
 export async function generateAssignmentDraft({ subject, topic, gradeLevel, requirements }: any, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -163,6 +173,7 @@ Respond STRICTLY in the following JSON format:
  * Analyze an assignment task for a student and provide tips.
  */
 export async function analyzeStudentTask(assignment: any, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -196,6 +207,7 @@ Respond strictly in the following JSON format:
  * Pre-evaluate a student's submission before they finalize it.
  */
 export async function preEvaluateSubmission(assignment: any, studentContent: string, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -230,6 +242,7 @@ export async function preEvaluateSubmission(assignment: any, studentContent: str
  * Summarize a student's submission for the teacher.
  */
 export async function summarizeSubmission(studentContent: string, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -248,6 +261,7 @@ export async function summarizeSubmission(studentContent: string, aiContext?: Ai
  * Synthesize school-wide assignment analytics for institutional oversight.
  */
 export async function generateInstitutionalInsight(analytics: any, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -282,6 +296,7 @@ export async function generateInstitutionalInsight(analytics: any, aiContext?: A
  * Provide a parent-friendly breakdown and support tips for an assignment.
  */
 export async function analyzeTaskForParent(assignment: any, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -315,6 +330,7 @@ export async function analyzeTaskForParent(assignment: any, aiContext?: AiObserv
  * Generate a set of interactive exam questions.
  */
 export async function generateExamQuestions({ subject, topic, gradeLevel, count, type }: { subject: string, topic: string, gradeLevel: string, count: number, type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'SHORT_ANSWER' | 'MIXED' }, aiContext?: AiObservationContext) {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) throw new Error("AI is not configured. Missing API Key.");
     const model = sandboxedModel();
 
@@ -434,11 +450,12 @@ export async function scanEssaySubmission({
         degraded: true
     };
 
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
         return fallbackResult;
     }
 
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI().getGenerativeModel({
         model: GEMINI_MODEL,
         systemInstruction: `You are the LUCY Autonomous Academic Authenticity & Essay Evaluation Sentinel.
 Your mandate is to analyze student essay submissions for teachers and school leadership.

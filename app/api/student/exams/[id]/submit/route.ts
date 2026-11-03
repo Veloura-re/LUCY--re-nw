@@ -12,9 +12,6 @@ import { GEMINI_MODEL } from "@/lib/ai-config";
 import { claimAttemptForGrading, releaseAttemptClaim } from "@/lib/exam-attempts";
 import { createAiObservationContext, observeGeminiCall } from "@/lib/ai-observability";
 
-const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
-
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -101,6 +98,8 @@ export async function POST(
                 case "LONG":
                     // AI EVALUATION WITH PROMPT INJECTION DEFENSE (Sentinel 12)
                     try {
+                        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
+                        const genAI = new GoogleGenerativeAI(apiKey);
                         const model = genAI.getGenerativeModel({ model: GEMINI_MODEL, systemInstruction: untrustedContentDirective() });
                         
                         const aiPrompt = `
