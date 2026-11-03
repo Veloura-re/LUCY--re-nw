@@ -3,9 +3,11 @@ import { requireRole, handleApiError, secureJson, sanitizeInput } from '@/lib/se
 import { logActivity, logError } from '@/lib/audit';
 import { z } from 'zod';
 import { rateLimitShared } from '@/lib/rate-limit';
+import { dobMatches, INVALID_CODE_OR_DOB } from '@/lib/student-code';
 
 const LinkStudentSchema = z.object({
     studentCode: z.string().min(1).max(32).transform(val => sanitizeInput(val).toUpperCase()),
+    dob: z.string().max(10),
     confirm: z.boolean().optional()
 });
 
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
             return secureJson({ error: "Invalid student code format", details: parseResult.error.flatten().fieldErrors }, 400);
         }
 
-        const { studentCode, confirm } = parseResult.data;
+        const { studentCode, dob, confirm } = parseResult.data;
 
         const student = await prisma.student.findUnique({
             where: { studentCode },
@@ -35,7 +37,7 @@ export async function POST(request: Request) {
             }
         });
 
-        if (!student) {
+        if (!student || !dobMatches(student.dob, dob)) {
             await logError({
                 type: 'auth_failure',
                 message: `Parent ${dbParent.id} searched for non-existent student code: ${studentCode}`,
@@ -46,9 +48,9 @@ export async function POST(request: Request) {
             });
 
             return secureJson({ 
-                error: 'Invalid Student Code', 
+                error: INVALID_CODE_OR_DOB, 
                 recovery: {
-                    message: "The student code entered could not be found. Please check with your school's administration.",
+                    message: "Check the code and the date of birth your school has on record, or ask your school's administration.",
                     format: "Expected format: ST-XXXXXX-YYYY"
                 }
             }, 404);

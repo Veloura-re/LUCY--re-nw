@@ -111,7 +111,7 @@ export default function DirectorRegister() {
                         password
                     });
                     posthog.capture('account_registered', { account_role: 'principal' });
-                    router.push('/dashboard');
+                    router.push('/logout?reason=registered')
                 } else {
                     const data = await res.json() as { error?: string };
                     throw new Error(data.error || "Failed to finalize registration.");

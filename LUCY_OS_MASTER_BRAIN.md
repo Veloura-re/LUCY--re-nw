@@ -232,6 +232,10 @@ erDiagram
 | `POST` | `/api/auth/register-admin` | Public / Token | `User`, `School` | Provisions new School Owner and tenant DB records. |
 | `POST` | `/api/auth/register/student` | Public | `Student`, `User` | Links student user account to existing Student profile. |
 | `POST` | `/api/auth/forgot-password` | Public | `User` | Dispatches reset password email. |
+| `POST` | `/api/auth/verify-otp` | Password session | `LoginChallenge`, `TrustedDevice`, `User` | Checks the emailed 6-digit code, issues the device session, optionally trusts the browser for 30 days. |
+| `POST` | `/api/auth/resend-otp` | Password session | `LoginChallenge` | Sends a fresh code (60 s cooldown, capped per hour). |
+| `GET` | `/auth/callback` | OAuth / recovery | `User` | Google sign-in for existing accounts only (unmatched Google users are deleted); recovery links. |
+| `DELETE` | `/api/user/trusted-devices` | Authenticated | `TrustedDevice` | Forgets every trusted browser. |
 | `PATCH` | `/api/user/password` | Authenticated | `User` | Updates user password in Supabase & Prisma. |
 | `GET`/`PATCH` | `/api/user/settings` | Authenticated | `User` | User preferences, theme, notification settings. |
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
+import { requireRole, handleApiError, FINANCE_ROLES, clampLimit, clampPage } from '@/lib/security';
 
 export async function GET(request: Request) {
     try {
@@ -10,8 +10,8 @@ export async function GET(request: Request) {
         const gradeId = searchParams.get('gradeId') || '';
         const status = searchParams.get('status') || ''; // PAID | PENDING | OVERDUE | NO_INVOICE
         const search = searchParams.get('search') || '';
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const skip = (page - 1) * limit;
 
         const schoolId = user.schoolId!;

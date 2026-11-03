@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { rateLimit, secureJson } from '@/lib/security';
+import { getClientIp, isExemptFromRateLimit } from '@/lib/client-ip';
 
 /**
  * Cross-instance rate limiting for abuse-prone endpoints (login-adjacent flows, public forms,
@@ -19,15 +20,6 @@ type KvNamespaceLike = {
 };
 
 const CLOUDFLARE_CONTEXT = Symbol.for('__cloudflare-context__');
-
-function getClientIp(request: Request): string {
-    const rawForwarded = request.headers.get('x-forwarded-for');
-    const rawIp = request.headers.get('cf-connecting-ip')
-        || request.headers.get('x-real-ip')
-        || (rawForwarded ? rawForwarded.split(',')[0].trim() : null)
-        || 'unknown';
-    return rawIp.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
-}
 
 function getKv(): KvNamespaceLike | null {
     const ctx = (globalThis as Record<symbol, any>)[CLOUDFLARE_CONTEXT];
@@ -75,7 +67,7 @@ export async function rateLimitShared(
     const ip = getClientIp(request);
 
     // Development bypass, consistent with the in-memory limiter
-    if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') return null;
+    if (isExemptFromRateLimit(ip)) return null;
 
     const windowSeconds = Math.max(1, Math.ceil(windowMs / 1000));
     const bucket = Math.floor(Date.now() / windowMs);

@@ -66,3 +66,6 @@ prisma_error.txt
 *.bundle
 remote_stale_branches_manifest.json
 .env
+
+# e2e tooling dependencies
+/scripts/e2e/node_modules

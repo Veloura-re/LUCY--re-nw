@@ -79,6 +79,8 @@ const prismaClientSingleton = () => {
             max: maxConnections,
             idleTimeoutMillis: 10000,
             connectionTimeoutMillis: 10000,
+            statement_timeout: 10000,
+            query_timeout: 10000,
             keepAlive: true,
             keepAliveInitialDelayMillis: 5000,
         });

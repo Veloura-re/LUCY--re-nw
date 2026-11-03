@@ -55,12 +55,15 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'This person is already a member of your school.' }, { status: 400 });
         }
 
-        // A newer invitation replaces an unused one for the same address, in this school only.
-        await prisma.inviteToken.deleteMany({ where: { email, schoolId, usedAt: null } });
-
         const token = `inv_${globalThis.crypto.randomUUID().replace(/-/g, '')}`;
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-        await prisma.inviteToken.create({ data: { token, email, role, schoolId, expiresAt } });
+        // A newer invitation replaces an unused one for the same address, in this school only. The lock
+        // makes simultaneous requests take turns, so exactly one invitation stays live.
+        await prisma.$transaction(async (tx) => {
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`invite:${schoolId}:${email}`}))`;
+            await tx.inviteToken.deleteMany({ where: { email, schoolId, usedAt: null } });
+            await tx.inviteToken.create({ data: { token, email, role, schoolId, expiresAt } });
+        });
 
         const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { name: true } });
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;

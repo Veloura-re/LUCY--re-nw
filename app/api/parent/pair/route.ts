@@ -3,11 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { requireRole, handleApiError } from '@/lib/security';
 
 import { logActivity } from '@/lib/audit';
+import { dobMatches, INVALID_CODE_OR_DOB } from '@/lib/student-code';
 export async function POST(request: Request) {
     try {
         const dbParent = await requireRole(['PARENT']);
         const body = await request.json() as any;
-        const { studentCode } = body || {};
+        const { studentCode, dob } = body || {};
 
         if (!studentCode) {
             return NextResponse.json({ error: 'Student code is required' }, { status: 400 });
@@ -19,8 +20,8 @@ export async function POST(request: Request) {
             include: { school: true }
         });
 
-        if (!student) {
-            return NextResponse.json({ error: 'Invalid student code' }, { status: 404 });
+        if (!student || !dobMatches(student.dob, dob)) {
+            return NextResponse.json({ error: INVALID_CODE_OR_DOB }, { status: 404 });
         }
 
         // 3. Check if link already exists

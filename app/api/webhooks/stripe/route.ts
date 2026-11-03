@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
         if (!process.env.STRIPE_WEBHOOK_SECRET) {
             console.error('Missing STRIPE_WEBHOOK_SECRET');
-            return NextResponse.json({ error: 'Webhook secret missing' }, { status: 500 });
+            return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 });
         }
 
         let event: Stripe.Event;

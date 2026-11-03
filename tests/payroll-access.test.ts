@@ -12,6 +12,7 @@ jest.mock('@/lib/security', () => ({
     FINANCE_ROLES: ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'ACCOUNTANT'],
     requireRole: (...args: any[]) => mockRequireRole(...args),
     publicErrorMessage: (e: any) => String(e?.message || e),
+    clientDataError: () => null,
     handleApiError: (e: any) =>
         new Response(JSON.stringify({ error: String(e?.message) }), { status: String(e?.message).startsWith('Forbidden') ? 403 : 500 }),
 }));

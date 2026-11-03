@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError,  } from "@/lib/security";
+import { requireRole, handleApiError, clientDataError } from "@/lib/security";
 import { logActivity, getIp } from "@/lib/audit";
 import { rateLimitShared } from '@/lib/rate-limit';
 import { sandboxedModel } from '@/lib/ai';
@@ -88,11 +88,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
             });
             return NextResponse.json({ questions });
         } catch (parseError) {
+            { const bad = clientDataError(parseError); if (bad) return bad; }
+            if (/^(Unauthorized|Forbidden)/.test(String((parseError as any)?.message))) return handleApiError(parseError);
             console.error("Failed to parse Gemini response:", text);
             return NextResponse.json({ error: "AI returned invalid format" }, { status: 500 });
         }
 
     } catch (e) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         return NextResponse.json({ error: "Failed to process image" }, { status: 500 });
     }

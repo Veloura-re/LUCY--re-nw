@@ -51,7 +51,8 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     try {
         const authUser = await requireAuth();
-        
+
+        // The school's own subscription payments: leadership only, like submitting a receipt.
         const dbUser = await prisma.user.findUnique({
             where: { id: authUser.id },
             select: {
@@ -62,6 +63,10 @@ export async function GET(request: Request) {
             }
         });
         
+        if (!dbUser || !['SUPERADMIN', 'OWNER', 'PRINCIPAL'].includes(dbUser.role)) {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
         let schoolId = dbUser?.schoolId || dbUser?.student?.schoolId || dbUser?.parentLinks?.[0]?.student?.schoolId || null;
         if (!schoolId && dbUser?.role === 'SUPERADMIN') {
             const url = new URL(request.url);

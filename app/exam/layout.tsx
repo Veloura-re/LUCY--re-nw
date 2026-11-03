@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 // import { getUserSession } from "@/lib/auth"; // Assumption
 import { createClient } from "@/utils/supabase/server";
+import { getDeviceSessionState } from "@/lib/device-session";
 
 export default async function ExamLayout({
     children,
@@ -12,6 +13,10 @@ export default async function ExamLayout({
 
     if (!user) {
         redirect("/login");
+    }
+
+    if ((await getDeviceSessionState(user.id)) !== 'valid') {
+        redirect("/logout?reason=session");
     }
 
     return (

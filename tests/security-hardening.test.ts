@@ -15,7 +15,8 @@ jest.mock('@/utils/supabase/server', () => ({
     createClient: async () => ({ auth: { getUser: (...a: any[]) => mockGetUser(...a) } }),
 }));
 jest.mock('@/lib/users', () => ({ getCachedUser: (...a: any[]) => mockGetCachedUser(...a) }));
-jest.mock('next/headers', () => ({ headers: async () => new Headers() }));
+jest.mock('next/headers', () => ({ headers: async () => new Headers(), cookies: async () => ({ get: () => undefined }) }));
+jest.mock('@/lib/device-session', () => ({ hasValidDeviceSession: async () => true }));
 
 import {
     escapeHtml,

@@ -29,7 +29,7 @@ const sourceFiles = [
     ...walk(path.join(ROOT, 'components'), f => /\.(ts|tsx)$/.test(f)),
 ];
 
-const AUTH_MARKERS = /requireRole|requireSchoolLinked|requireAuth|requireStudentAccess|requireHomeroomAccess|verifySuperAdmin|isAuthorizedCron|constructEvent|safeEqual|auth\.getUser|getUser\(/;
+const AUTH_MARKERS = /requireRole|requireSchoolLinked|requireAuth|requireStudentAccess|requireHomeroomAccess|verifySuperAdmin|isAuthorizedCron|constructEvent|safeEqual|auth\.getUser|getUser\(|getVerifiedUser/;
 
 /** Routes that are intentionally reachable without a session, each with the control that protects it. */
 const PUBLIC_ROUTES: Record<string, string> = {
@@ -130,7 +130,6 @@ describe('audit trail coverage', () => {
         'app/api/auth/forgot-password/route.ts': 'recorded by the authentication flow',
         'app/api/auth/accept-terms/route.ts': 'ACCEPT_TERMS is audited inside recordConsent, next to the ConsentRecord rows',
         'app/api/auth/login/route.ts': 'recorded in auth_audit_logs, shown on the security page',
-        'app/api/auth/register-session/route.ts': 'session bookkeeping',
         'app/api/auth/validate-key/route.ts': 'read-only key check',
         'app/api/auth/verify-code/route.ts': 'failures go to the error log',
         'app/api/client-error/route.ts': 'is the error log writer',

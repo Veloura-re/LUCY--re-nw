@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, requireSchoolLinked, handleApiError } from '@/lib/security';
+import { requireRole, requireSchoolLinked, handleApiError, clampLimit, clampPage } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 
@@ -13,16 +13,30 @@ export async function GET(request: Request) {
         const studentId = searchParams.get('studentId');
         const status = searchParams.get('status') as any;
 
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '50');
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const skip = (page - 1) * limit;
 
-        const where = {
-            OR: [
+        // Leadership and teaching staff see the whole school. Families see only their own requests and
+        // linked children; students see their own. Finance and records staff have no use for absence notes.
+        const STAFF_VIEW = ['OWNER', 'PRINCIPAL', 'SUPERADMIN', 'TEACHER', 'HOMEROOM'];
+        let scope: any[];
+        if (STAFF_VIEW.includes(dbUser.role)) {
+            scope = [
                 { student: { schoolId: dbUser.schoolId! } },
                 { user: { schoolId: dbUser.schoolId! } },
                 { requestor: { schoolId: dbUser.schoolId! } }
-            ],
+            ];
+        } else if (dbUser.role === 'PARENT') {
+            scope = [{ requestorId: dbUser.id }, { student: { parentLinks: { some: { parentId: dbUser.id } } } }];
+        } else if (dbUser.role === 'STUDENT') {
+            scope = [{ userId: dbUser.id }, { requestorId: dbUser.id }, { student: { userId: dbUser.id } }];
+        } else {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const where = {
+            OR: scope,
             ...(studentId ? { studentId } : {}),
             ...(status ? { status } : {}),
         };

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/utils/supabase/server';
 import { sendInviteEmail } from '@/lib/email';
-import { requireRole, handleApiError, secureJson, STAFF_ROLES } from '@/lib/security';
+import { requireRole, handleApiError, secureJson, STAFF_ROLES, clampLimit, clampPage } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
 import { getCachedTeacherRegistry, getCachedSchoolInfoForRegistry } from '@/lib/services/teachers';
@@ -13,8 +13,8 @@ export async function GET(request: Request) {
         const dbUser = await requireRole(STAFF_ROLES);
         const { searchParams } = new URL(request.url);
         
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const search = searchParams.get('search')?.toLowerCase() || '';
         const status = searchParams.get('status') || 'ALL';
         const sortBy = searchParams.get('sortBy') || 'NAME';
@@ -101,10 +101,7 @@ async function handlePOST(request: Request) {
             });
         }
 
-        const existingInvite = await prisma.inviteToken.findFirst({ where: { email } });
-        if (existingInvite) {
-            await prisma.inviteToken.delete({ where: { id: existingInvite.id } });
-        }
+        await prisma.inviteToken.deleteMany({ where: { email, schoolId: user.schoolId } });
 
         // Create User if doesn't exist
         const newUser = existing || await prisma.user.create({
@@ -148,8 +145,9 @@ async function handlePOST(request: Request) {
         const res = emailResult as any;
         console.log(`[TEACHERS API] Invite email result:`, JSON.stringify(res));
 
+        const { passwordHash: _ph, activeSessionId: _as, legalVersionAccepted: _lv, ...safeUser } = newUser as any;
         return secureJson({ 
-            user: newUser, 
+            user: safeUser, 
             token, 
             emailSent: res.success && !res.skipped, 
             emailError: res.error || null 

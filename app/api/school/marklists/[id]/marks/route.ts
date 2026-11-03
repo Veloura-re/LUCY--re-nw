@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { reportServerError } from '@/lib/error-capture';
 
@@ -141,12 +141,16 @@ export async function POST(
                     ip
                 });
             } catch (auditErr) {
+                { const bad = clientDataError(auditErr); if (bad) return bad; }
+                if (/^(Unauthorized|Forbidden)/.test(String((auditErr as any)?.message))) return handleApiError(auditErr);
                 console.error("Audit log error:", auditErr);
             }
         }
 
         return NextResponse.json({ success: true, count: updates.length });
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error("Save Marks Error:", e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to save marks") }, { status: 500 });
@@ -237,6 +241,8 @@ export async function GET(
         });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e) }, { status: 500 });
     }

@@ -1,42 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { recordConsent } from '@/lib/consent';
-
-// Helper to safely extract and validate client IP
-function getClientIp(req: Request): string {
-    // Cloudflare verified connecting IP is the most trustworthy
-    const cfIp = req.headers.get('cf-connecting-ip');
-    const realIp = req.headers.get('x-real-ip');
-    const forwarded = req.headers.get('x-forwarded-for');
-
-    let candidate = cfIp || realIp || (forwarded ? forwarded.split(',')[0].trim() : null) || '127.0.0.1';
-    
-    // Remove port if present (e.g. 192.168.1.1:4532 or [::1]:80)
-    candidate = candidate.replace(/^\[?([^\]]+)\]?:[0-9]+$/, '$1').trim();
-
-    // Normalize and validate IPv4 or IPv6
-    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    const ipv6Regex = /^[0-9a-fA-F:]{2,39}$/;
-
-    if (ipv4Regex.test(candidate) || ipv6Regex.test(candidate)) {
-        return candidate;
-    }
-    return '127.0.0.1';
-}
-
-async function recordAuditLog(ip: string, email: string, status: string) {
-    if (!prisma) return;
-    try {
-        await prisma.$executeRaw`
-            INSERT INTO auth_audit_logs (ip_address, email, status)
-            VALUES (${ip}::inet, ${email}, ${status})
-        `;
-    } catch {
-        // Suppress audit log errors to prevent blocking authentication
-    }
-}
+import { getValidatedClientIp } from '@/lib/client-ip';
+import { recordAuthAudit as recordAuditLog } from '@/lib/auth-audit';
+import { issueDeviceSession, setDeviceCookies } from '@/lib/device-session';
+import { createChallenge, isOtpRequiredFor, isTrustedDevice, trustedCookieOptions, TRUSTED_COOKIE } from '@/lib/login-otp';
+import { sendLoginCodeEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
     try {
@@ -67,8 +38,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Invalid verification token." }, { status: 400 });
         }
 
-        const clientIp = getClientIp(req);
-        const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1';
+        const clientIp = getValidatedClientIp(req);
+        const isLocalhost = process.env.NODE_ENV !== 'production';
 
         // 2. Validate Turnstile Token with Cloudflare (safe URL encoded parameters).
         // In production this fails closed: a missing secret, an unreachable verifier or an
@@ -138,39 +109,42 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: authError?.message || "Authentication failed" }, { status: 401 });
         }
 
-        // 5. Invalidate previous sessions & establish new single-active-session token
-        const sessionToken = crypto.randomUUID();
+        // 5. Password is correct. Decide whether this browser still has to prove it with the emailed code.
+        const userId = authData.user.id;
+        const needsCode = isOtpRequiredFor(authData.user.email);
+        const cookieStore = await cookies();
+        const trusted = needsCode && await isTrustedDevice(userId, cookieStore.get(TRUSTED_COOKIE)?.value);
 
-        let updatedDb = false;
-        if (prisma) {
+        if (needsCode && !trusted) {
             try {
-                await prisma.user.update({
-                    where: { id: authData.user.id },
-                    data: { activeSessionId: sessionToken }
+                const { code } = await createChallenge({
+                    userId,
+                    ip: clientIp,
+                    userAgent: req.headers.get('user-agent') || undefined,
+                    acceptedTerms: body?.acceptedTerms === true,
                 });
-                updatedDb = true;
-            } catch (updateErr: any) {
-                console.warn("[Login Route] Prisma update failed, falling back to Supabase Admin:", updateErr.message);
+                const sent = await sendLoginCodeEmail(authData.user.email!, code);
+                // Without a mail key the code is printed to the server console, outside production only.
+                if (!sent.success && !(sent.simulated && process.env.NODE_ENV !== 'production')) {
+                    throw new Error('Sign-in code email failed');
+                }
+            } catch (otpErr: any) {
+                console.error('[Login Route] Could not send the sign-in code:', otpErr?.message);
+                await supabase.auth.signOut();
+                if (otpErr?.message === 'TOO_MANY_CODES') {
+                    return NextResponse.json({ error: "Too many codes requested. Please wait an hour and try again." }, { status: 429 });
+                }
+                return NextResponse.json({ error: "We could not send your sign-in code. Please try again shortly." }, { status: 503 });
             }
+            await recordAuditLog(clientIp, sanitizedEmail, 'OTP_SENT');
+            // The Supabase session exists but is not usable: no device session is issued until the code is entered.
+            return NextResponse.json({ success: true, otpRequired: true });
         }
 
-        if (!updatedDb && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-            try {
-                const supabaseAdmin = createSupabaseAdmin(
-                    process.env.NEXT_PUBLIC_SUPABASE_URL,
-                    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-                );
-                await supabaseAdmin
-                    .from('User')
-                    .update({ activeSessionId: sessionToken })
-                    .eq('id', authData.user.id);
-            } catch (supaErr: any) {
-                console.warn("[Login Route] Supabase Admin fallback session update failed:", supaErr.message);
-            }
-        }
+        // 6. Fully signed in: single active session, audit entry, limiter reset.
+        const sessionToken = await issueDeviceSession(userId);
 
-        // 6. Successful login: reset failed counter for this IP and record audit log
-        await recordAuditLog(clientIp, sanitizedEmail, 'SUCCESS');
+        await recordAuditLog(clientIp, sanitizedEmail, trusted ? 'SUCCESS_TRUSTED_DEVICE' : 'SUCCESS');
         if (prisma && !isLocalhost) {
             try {
                 await prisma.$executeRaw`
@@ -184,23 +158,18 @@ export async function POST(req: Request) {
         // The sign-in form only submits with the Terms box ticked. Recording it here also covers
         // accounts created before consent was stored; the dashboard gate catches any miss.
         if (body?.acceptedTerms === true) {
-            await recordConsent({ userId: authData.user.id, source: 'login', request: req }).catch((consentErr) => {
+            await recordConsent({ userId, source: 'login', request: req }).catch((consentErr) => {
                 console.warn("[Login Route] Consent record failed:", consentErr?.message);
             });
         }
 
-        // 7. Prepare response and set cookie directly to prevent race conditions
-        // The device session lives only in the HttpOnly cookie so page scripts can never read it.
-        const response = NextResponse.json({ success: true, userId: authData.user.id });
-        response.cookies.set({
-            name: 'lucy_device_session',
-            value: sessionToken,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30, // 30 days
-        });
+        // 7. The device session lives only in the HttpOnly cookie so page scripts can never read it.
+        const response = NextResponse.json({ success: true, userId });
+        await setDeviceCookies(response, userId, sessionToken);
+        if (trusted) {
+            // isTrustedDevice already extended the stored expiry; extend the cookie to match.
+            response.cookies.set({ name: TRUSTED_COOKIE, value: cookieStore.get(TRUSTED_COOKIE)!.value, ...trustedCookieOptions() });
+        }
 
         return response;
 

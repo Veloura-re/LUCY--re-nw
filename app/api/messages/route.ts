@@ -1,7 +1,7 @@
 import { rateLimitShared } from '@/lib/rate-limit';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireSchoolLinked, handleApiError, secureJson } from '@/lib/security';
+import { requireSchoolLinked, handleApiError, secureJson, clampLimit } from '@/lib/security';
 import { getCachedRoomMessages, invalidateRoomCache } from '@/lib/services/messages';
 import { ensureDbUser, canUserAccessChatRoom } from '@/lib/messaging';
 
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const chatRoomId = searchParams.get('chatRoomId');
         const cursor = searchParams.get('cursor') || undefined;
-        const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50') || 50));
+        const limit = Math.min(100, Math.max(1, clampLimit(searchParams.get('limit'), 50) || 50));
 
         if (!chatRoomId) {
             return NextResponse.json({ error: 'Chat Room ID is required' }, { status: 400 });

@@ -1,5 +1,5 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { prisma } from '@/lib/prisma';
 import { canUserAccessChatRoom } from '@/lib/messaging';
@@ -11,8 +11,7 @@ export async function POST(request: Request) {
     const limited = await rateLimitShared(request, 'messages/upload', 30);
     if (limited) return limited;
 
-    const supabase = await createClient();
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const authUser = await getVerifiedUser();
 
     if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -88,6 +87,8 @@ export async function POST(request: Request) {
             size: (file as File).size
         });
     } catch (e) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }

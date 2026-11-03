@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, clampLimit, clampPage, clientDataError } from '@/lib/security';
 
 export async function GET(req: NextRequest) {
     try {
@@ -9,8 +9,8 @@ export async function GET(req: NextRequest) {
         const url = new URL(req.url);
         const requestedSchoolId = url.searchParams.get('schoolId');
         const filterType = url.searchParams.get('filter') || 'ALL'; // ALL | CRISIS | DOXXING | REPORTS
-        const page = parseInt(url.searchParams.get('page') || '1', 10);
-        const limit = parseInt(url.searchParams.get('limit') || '20', 10);
+        const page = clampPage(url.searchParams.get('page'));
+        const limit = clampLimit(url.searchParams.get('limit'), 20);
         const skip = (page - 1) * limit;
 
         const isSuperAdmin = user.role === 'SUPERADMIN';
@@ -215,6 +215,7 @@ export async function GET(req: NextRequest) {
         });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         console.error('[Sanctuary Moderation API Error]:', err.message);
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Internal failure') },

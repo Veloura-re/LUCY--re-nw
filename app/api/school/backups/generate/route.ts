@@ -1,6 +1,6 @@
 import { BACKUP_USER_SELECT } from '@/lib/backup-restore';
 import { NextResponse } from 'next/server';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { prisma } from '@/lib/prisma';
 import { logActivity } from '@/lib/audit';
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
@@ -118,6 +118,8 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, restorePoint });
     } catch (error: any) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Backup Generation Error:", error);
         void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Failed to generate backup') }, { status: 500 });

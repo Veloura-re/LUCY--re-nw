@@ -1,11 +1,10 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
 
 export async function GET() {
     try {
-        const supabase = await createClient();
-        const { data: { user: authUser } } = await supabase.auth.getUser();
+        const authUser = await getVerifiedUser();
         if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         // Get student record for classId
@@ -55,6 +54,8 @@ export async function GET() {
 
         return NextResponse.json(grouped);
     } catch (error) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Timetable Fetch Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, requireSchoolLinked, publicErrorMessage } from '@/lib/security';
+import { requireRole, requireSchoolLinked, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { logActivity } from '@/lib/audit';
 import { reportServerError } from '@/lib/error-capture';
 
@@ -64,6 +64,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ exams });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to fetch marklists") }, { status: 500 });
     }
@@ -139,6 +141,8 @@ export async function POST(request: Request) {
                     ip: _ip
                 });
             } catch (auditErr) {
+                { const bad = clientDataError(auditErr); if (bad) return bad; }
+                if (/^(Unauthorized|Forbidden)/.test(String((auditErr as any)?.message))) return handleApiError(auditErr);
                 console.error("Audit log error:", auditErr);
             }
         }
@@ -146,6 +150,8 @@ export async function POST(request: Request) {
         return NextResponse.json({ marklist });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to create marklist") }, { status: 500 });
     }

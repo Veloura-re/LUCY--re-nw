@@ -1,0 +1,6 @@
+{
+  "name": "lucy-e2e-tools",
+  "private": true,
+  "description": "Browser tooling for the end-to-end security run; kept apart from the app's dependencies.",
+  "devDependencies": { "playwright-core": "1.56.1" }
+}

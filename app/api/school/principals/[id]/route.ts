@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
-import { handleApiError } from '@/lib/security';
+import { handleApiError, getVerifiedUser } from '@/lib/security';
 import { revalidateTag } from 'next/cache';
 
 import { logActivity } from '@/lib/audit';
 async function verifyOwner() {
-    const supabase = await createClient();
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const authUser = await getVerifiedUser();
     if (!authUser) return null;
 
     const dbUser = await prisma.user.findUnique({ where: { id: authUser.id }});

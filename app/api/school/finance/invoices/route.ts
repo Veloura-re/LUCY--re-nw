@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireRole, handleApiError, FINANCE_ROLES } from '@/lib/security';
+import { requireRole, handleApiError, FINANCE_ROLES, clampLimit, clampPage } from '@/lib/security';
 import { withAudit } from '@/lib/with-audit';
 
 export async function GET(request: Request) {
@@ -8,8 +8,8 @@ export async function GET(request: Request) {
         const dbUser = await requireRole(FINANCE_ROLES);
         const { searchParams } = new URL(request.url);
         
-        const page = parseInt(searchParams.get('page') || '1', 10);
-        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const page = clampPage(searchParams.get('page'));
+        const limit = clampLimit(searchParams.get('limit'), 50);
         const search = searchParams.get('search')?.toLowerCase() || '';
         const status = searchParams.get('status') || 'ALL';
         const offset = (page - 1) * limit;

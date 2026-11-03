@@ -1,10 +1,9 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: Request) {
-    const supabase = await createClient();
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const authUser = await getVerifiedUser();
 
     if (!authUser) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -34,6 +33,8 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ user });
     } catch (e) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         console.error(e);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

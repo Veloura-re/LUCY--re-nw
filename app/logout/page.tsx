@@ -23,6 +23,10 @@ function LogoutContent() {
             // Redirect to login with error
             if (reason === 'concurrent') {
                 router.push('/login?error=You have been logged out because your account was accessed from another device.');
+            } else if (reason === 'registered') {
+                router.push('/login?registered=1');
+            } else if (reason === 'session') {
+                router.push('/login?error=Please sign in to continue.');
             } else {
                 router.push('/login');
             }

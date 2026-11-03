@@ -10,6 +10,8 @@
     "start": "node node_modules/next/dist/bin/next start",
     "lint": "eslint",
     "test": "jest",
+    "pentest:scan": "bash scripts/pentest-scan.sh",
+    "e2e:security": "E2E_ALLOW_LIVE=yes node scripts/e2e/run.mjs",
     "audit:administrator": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts",
     "audit:administrator:fix": "npx ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/audit-administrator.ts --fix",
     "release:broadcast": "node scripts/broadcast-release.js",

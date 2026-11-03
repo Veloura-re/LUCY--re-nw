@@ -1,10 +1,12 @@
 import { publicErrorMessage } from '@/lib/security';
-import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { revokeTrustedDevices } from '@/lib/login-otp';
+import { NextResponse } from 'next/server';
 import { reportServerError } from '@/lib/error-capture';
 
 import { logActivity } from '@/lib/audit';
 export async function POST(request: Request) {
+    // Not behind the device-session check: the password reset page arrives here with a recovery-link session.
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -28,7 +30,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: publicErrorMessage(error) }, { status: 500 });
         }
 
-        
+        // A new password invalidates every browser that was trusted to skip the emailed code.
+        await revokeTrustedDevices(user.id).catch((e) => console.warn('[password] Could not revoke trusted devices:', e?.message));
+
         // Audit log
         try {
             const _ip = request?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || request?.headers?.get('cf-connecting-ip') || undefined;

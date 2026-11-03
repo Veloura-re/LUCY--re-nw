@@ -118,6 +118,7 @@ ${untrustedContentDirective('untrusted_user_input')}`
             },
         });
     } catch (error: any) {
+        if (/^(Unauthorized|Forbidden)/.test(String(error?.message))) return handleApiError(error);
         posthogLogs.warn('ai_chat_request_failed', {
             route: '/api/ai/chat',
             operation: 'assistant_chat',

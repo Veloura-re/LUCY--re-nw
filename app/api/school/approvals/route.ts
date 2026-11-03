@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, requireSchoolLinked, publicErrorMessage } from '@/lib/security';
+import { requireRole, requireSchoolLinked, publicErrorMessage, handleApiError, clientDataError } from '@/lib/security';
 import { reportServerError } from '@/lib/error-capture';
 
 export async function GET(request: Request) {
@@ -27,6 +27,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ requests });
 
     } catch (e: any) {
+        { const bad = clientDataError(e); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((e as any)?.message))) return handleApiError(e);
         void reportServerError(e, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(e, "Failed to fetch approvals") }, { status: 500 });
     }

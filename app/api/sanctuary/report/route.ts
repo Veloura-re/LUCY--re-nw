@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireRole, publicErrorMessage } from '@/lib/security';
+import { requireRole, publicErrorMessage, clientDataError } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 
 export async function POST(req: NextRequest) {
@@ -14,11 +14,12 @@ export async function POST(req: NextRequest) {
             'SUPERADMIN'
         ]);
 
-        const body = (await req.json()) as { sessionId: string; reason: string };
-        const { sessionId, reason } = body;
+        const body = (await req.json().catch(() => ({}))) as { sessionId?: unknown; reason?: unknown };
+        const sessionId = typeof body?.sessionId === 'string' ? body.sessionId.trim() : '';
+        const reason = typeof body?.reason === 'string' ? body.reason.trim() : '';
 
         if (!sessionId || !reason) {
-            return NextResponse.json({ error: 'Missing sessionId or report reason' }, { status: 400 });
+            return NextResponse.json({ error: 'Missing or invalid sessionId or report reason' }, { status: 400 });
         }
 
         const session = await prisma.sanctuarySession.findUnique({
@@ -92,6 +93,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (err: any) {
+        { const bad = clientDataError(err); if (bad) return bad; }
         console.error('[Sanctuary Report Error]:', err.message);
         return NextResponse.json(
             { error: publicErrorMessage(err, 'Failed to submit report') },

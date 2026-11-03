@@ -1,14 +1,13 @@
+import { getVerifiedUser, handleApiError, clientDataError } from '@/lib/security';
 import { NextResponse } from "next/server";
 import { getCachedUser } from "@/lib/users";
-import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 
 import { logActivity } from '@/lib/audit';
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getVerifiedUser();
 
         if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -45,6 +44,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         } catch { /* non-blocking */ }
 return NextResponse.json({ success: true, remark });
     } catch (error) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Error creating teacher remark:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

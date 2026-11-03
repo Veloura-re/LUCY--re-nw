@@ -65,6 +65,8 @@ model User {
   school                 School?                 @relation(fields: [schoolId], references: [id])
   billingReceipts        BillingReceipt[]
   consentRecords         ConsentRecord[]
+  loginChallenges        LoginChallenge[]
+  trustedDevices         TrustedDevice[]
 
   @@index([schoolId, role])
 }
@@ -1215,6 +1217,37 @@ model ConsentRecord {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, documentType, version])
+  @@index([userId])
+}
+
+/// One emailed sign-in code. Only a keyed hash of the code is stored; the row is single use and expires.
+model LoginChallenge {
+  id            String    @id @default(uuid())
+  userId        String
+  codeHash      String
+  expiresAt     DateTime
+  attempts      Int       @default(0)
+  consumedAt    DateTime?
+  acceptedTerms Boolean   @default(false)
+  ip            String?
+  userAgent     String?
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/// A browser that completed the emailed code. Only the SHA-256 of the cookie token is stored.
+model TrustedDevice {
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  expiresAt  DateTime
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 

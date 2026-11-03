@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { BeingBuilt } from '@/components/dashboard/being-built';
 
 const CACHE_KEY = 'lucy_billing_school_cache';
 const TIMEOUT_MS = 10000;
@@ -63,21 +64,6 @@ export default function BillingClientWrapper({
     
     // Tab State
     const [paymentMode, setPaymentMode] = useState<'STRIPE' | 'CHAPA' | 'BANK'>('STRIPE');
-    const [chapaQuote, setChapaQuote] = useState<{ usd: number; amountEtb: number } | null>(null);
-    const [chapaQuoteFailed, setChapaQuoteFailed] = useState(false);
-
-    // Show today's birr price as soon as the owner opens the Chapa option
-    useEffect(() => {
-        if (paymentMode !== 'CHAPA') return;
-        let cancelled = false;
-        setChapaQuote(null);
-        setChapaQuoteFailed(false);
-        fetch('/api/school/billing/chapa-checkout')
-            .then(r => (r.ok ? r.json() : Promise.reject(new Error('quote unavailable'))))
-            .then((d: any) => { if (!cancelled) setChapaQuote({ usd: d.usd, amountEtb: d.amountEtb }); })
-            .catch(() => { if (!cancelled) setChapaQuoteFailed(true); });
-        return () => { cancelled = true; };
-    }, [paymentMode]);
     
     // Manual Payment Form States
     const [amount, setAmount] = useState('49.00');
@@ -256,26 +242,6 @@ export default function BillingClientWrapper({
         }
     };
 
-
-    const handleChapaCheckout = async () => {
-        setSubmitting(true);
-        try {
-            const res = await fetch('/api/school/billing/chapa-checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json() as any;
-            if (data.checkoutUrl) {
-                window.location.href = data.checkoutUrl;
-            } else {
-                toast.error(data.error || 'Failed to initialize Chapa checkout.');
-                setSubmitting(false);
-            }
-        } catch (err) {
-            toast.error('Chapa checkout initialization failed.');
-            setSubmitting(false);
-        }
-    };
 
     const handleManualReceiptSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -675,40 +641,12 @@ export default function BillingClientWrapper({
                             </div>
                         )}
 
-                        {/* Chapa Setup View */}
+                        {/* Chapa is paused while it is rebuilt; the checkout API answers 503 as well */}
                         {paymentMode === 'CHAPA' && (
-                            <div className="p-6 space-y-6 animate-in fade-in duration-300">
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-tight">Pay via Telebirr or CBE</h3>
-                                    <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
-                                        Pay locally using Ethiopian Birr (ETB). Selecting this option will open the secure Chapa checkout portal where you can pay using Telebirr, CBE, or local bank cards. Your subscription activates immediately upon payment.
-                                    </p>
-                                </div>
-                                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 text-xs">
-                                    {chapaQuote ? (
-                                        <p className="text-zinc-700 dark:text-zinc-300">
-                                            Today&apos;s price: <span className="font-bold text-zinc-900 dark:text-white">{chapaQuote.amountEtb.toLocaleString('en-US')} ETB</span> for 30 days
-                                            (${chapaQuote.usd} at the current exchange rate). The amount is confirmed again at checkout.
-                                        </p>
-                                    ) : chapaQuoteFailed ? (
-                                        <p className="text-zinc-600 dark:text-zinc-400">The birr price could not be loaded right now. It is shown on the Chapa checkout page.</p>
-                                    ) : (
-                                        <p className="text-zinc-500">Loading today&apos;s price...</p>
-                                    )}
-                                </div>
-                                <button
-                                    onClick={handleChapaCheckout}
-                                    disabled={submitting}
-                                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                                >
-                                    {submitting ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                        <DollarSign className="w-4 h-4" />
-                                    )}
-                                    Pay with Telebirr / CBE
-                                </button>
-                            </div>
+                            <BeingBuilt
+                                title="Telebirr / CBE payments are being built"
+                                message="We are building local birr payments right now. Until they open, pay by card or by bank transfer."
+                            />
                         )}
 
                         {/* Bank Transfer View */}

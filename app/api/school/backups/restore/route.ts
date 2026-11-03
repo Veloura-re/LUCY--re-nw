@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireRole, publicErrorMessage, isValidEmail } from '@/lib/security';
+import { requireRole, publicErrorMessage, isValidEmail, handleApiError, clientDataError } from '@/lib/security';
 import { createClient as createSupabaseAdmin, type SupabaseClient } from '@supabase/supabase-js';
 import { sendInviteEmail } from '@/lib/email';
 import { reportServerError } from '@/lib/error-capture';
@@ -259,6 +259,8 @@ export async function POST(request: Request) {
         });
 
     } catch (error: any) {
+        { const bad = clientDataError(error); if (bad) return bad; }
+        if (/^(Unauthorized|Forbidden)/.test(String((error as any)?.message))) return handleApiError(error);
         console.error("Backup Restore Error:", error);
         void reportServerError(error, { status: 500 });
         return NextResponse.json({ error: publicErrorMessage(error, 'Failed to restore backup') }, { status: 500 });

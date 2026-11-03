@@ -5,7 +5,7 @@ import { logActivity } from '@/lib/audit';
 
 export async function POST(request: Request) {
     try {
-        const user = await requireRole([...FINANCE_ROLES, 'TEACHER']);
+        const user = await requireRole(FINANCE_ROLES);
         const schoolId = user.schoolId!;
 
         const body = (await request.json().catch(() => ({}))) as any;

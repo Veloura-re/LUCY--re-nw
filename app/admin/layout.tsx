@@ -6,6 +6,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { Shield, LayoutDashboard, Activity, Zap } from "lucide-react";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { prisma } from "@/lib/prisma";
+import { getDeviceSessionState } from "@/lib/device-session";
 
 export const metadata: Metadata = {
     robots: {
@@ -25,6 +26,11 @@ export default async function AdminLayout({
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) redirect("/login");
+
+    const deviceState = await getDeviceSessionState(user.id);
+    if (deviceState !== 'valid') {
+        redirect(deviceState === 'superseded' ? "/logout?reason=concurrent" : "/logout?reason=session");
+    }
 
     // Edge-safe user lookup (prisma may be null on Cloudflare Workers).
     // Lookup is by the authenticated Supabase id only. Matching by email and rewriting the stored id
