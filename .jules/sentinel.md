@@ -1,0 +1,4 @@
+## 2024-05-24 - [Replace predictable Math.random and biased shuffling with secure CSPRNG in sensitive functions]
+**Vulnerability:** Found `Math.random()` being used to generate anonymous pseudonyms in `lib/sanctuary-guardrails.ts` and to shuffle timetable slots in `app/api/school/timetable/auto-generate/route.ts` using the biased `array.sort(() => Math.random() - 0.5)` pattern.
+**Learning:** These files were previously explicitly exempted from the `route-guardrails.test.ts` test. Using `Math.random()` for identification or randomization in security contexts (like anonymous messaging) allows predictability and biased shuffling (which favors some elements over others).
+**Prevention:** Remove `Math.random()` exemptions from test suites, always use `secureRandomInt` (or the Web Crypto API) for random values in the backend, and implement a proper Fisher-Yates algorithm for unbiased shuffling.
