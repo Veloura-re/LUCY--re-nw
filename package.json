@@ -95,10 +95,10 @@
     "baseline-browser-mapping": "^2.11.27",
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
-    "jest": "^30.5.2",
+    "jest": "^30.4.2",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
-    "ts-jest": "^29.4.15",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "wrangler": "^4.123.0"
