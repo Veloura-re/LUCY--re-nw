@@ -1,0 +1,4 @@
+## 2026-11-08 - Use secureRandomInt over Math.random() in sensitive code
+**Vulnerability:** Use of predictable `Math.random()` in security-sensitive areas, specifically in deterministic pseudonym generation (`sanctuary-guardrails`) and array shuffling (`timetable/auto-generate`).
+**Learning:** `Math.random()` provides a non-cryptographically secure pseudorandom number generator, which is predictable and vulnerable in contexts requiring high security or where predictability introduces risk. The custom static analysis test `tests/route-guardrails.test.ts` was bypassing these files.
+**Prevention:** Avoid `Math.random()` in sensitive logic (`app/api` and `lib/`). Use `secureRandomInt(min, max)` from `@/lib/security` which relies on `globalThis.crypto.getRandomValues`. Ensure array shuffling uses a Fisher-Yates approach instead of `array.sort(() => Math.random() - 0.5)` which is biased and predictable.
