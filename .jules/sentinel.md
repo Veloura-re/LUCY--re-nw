@@ -1,0 +1,4 @@
+## 2024-05-18 - Fix insecure random number generation
+**Vulnerability:** Use of `Math.random()` in sensitive security-related logic within `app/api/school/timetable/auto-generate/route.ts` and `lib/sanctuary-guardrails.ts`. Predictable random numbers could lead to manipulation of scheduling and generation of deterministic pseudonyms.
+**Learning:** Standard library random generators (like `Math.random()`) are not cryptographically secure and produce predictable patterns that attackers can potentially predict or manipulate. Furthermore, exceptions to statically analyzed codebase-wide security rules allow such vulnerabilities to slip into production.
+**Prevention:** Always use Web Crypto API's random generation via wrappers like `secureRandomInt` found in `@/lib/security` for security-sensitive logic. Never add exemptions to codebase-wide security rules without fixing the underlying issues or explicitly documenting and analyzing the accepted risk.
