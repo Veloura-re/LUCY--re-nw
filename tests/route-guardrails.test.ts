@@ -86,7 +86,7 @@ describe('known bad patterns', () => {
     });
 
     test('security-sensitive code does not use Math.random', () => {
-        const sensitive = sourceFiles.filter(f => /(^|\/)(api|lib)\//.test(rel(f)) && !/timetable\/auto-generate|sanctuary-guardrails/.test(f));
+        const sensitive = sourceFiles.filter(f => /(^|\/)(api|lib)\//.test(rel(f)) && !/timetable\/auto-generate/.test(f));
         const offenders = sensitive.filter(f => /Math\.random\(/.test(fs.readFileSync(f, 'utf8'))).map(rel);
         expect(offenders).toEqual([]);
     });
