@@ -8,6 +8,7 @@ import { recordAuthAudit as recordAuditLog } from '@/lib/auth-audit';
 import { issueDeviceSession, setDeviceCookies } from '@/lib/device-session';
 import { createChallenge, isOtpRequiredFor, isTrustedDevice, trustedCookieOptions, TRUSTED_COOKIE } from '@/lib/login-otp';
 import { sendLoginCodeEmail } from '@/lib/email';
+import { getSchoolRoleRedirect } from '@/lib/navigation';
 
 export async function POST(req: Request) {
     try {
@@ -164,7 +165,10 @@ export async function POST(req: Request) {
         }
 
         // 7. The device session lives only in the HttpOnly cookie so page scripts can never read it.
-        const response = NextResponse.json({ success: true, userId });
+        const dbUser = prisma?.user ? await prisma.user.findUnique({ where: { id: userId }, select: { role: true } }).catch(() => null) : null;
+        const role = dbUser?.role || 'OWNER';
+        const redirectUrl = getSchoolRoleRedirect(role);
+        const response = NextResponse.json({ success: true, userId, role, redirectUrl });
         await setDeviceCookies(response, userId, sessionToken);
         if (trusted) {
             // isTrustedDevice already extended the stored expiry; extend the cookie to match.

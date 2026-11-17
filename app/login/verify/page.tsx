@@ -32,13 +32,15 @@ function VerifyContent() {
         setIsLoading(true);
         setError(null);
         setNotice(null);
+        let destination = '/dashboard';
         try {
             const res = await fetch('/api/auth/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code, rememberDevice }),
             });
-            const data = (await res.json().catch(() => ({}))) as { error?: string; attemptsLeft?: number };
+            const data = (await res.json().catch(() => ({}))) as { error?: string; attemptsLeft?: number; redirectUrl?: string };
+            if (data.redirectUrl) destination = data.redirectUrl;
             if (!res.ok) {
                 if (res.status === 401) {
                     router.push('/login?error=Your sign-in expired. Please sign in again.');
@@ -55,7 +57,7 @@ function VerifyContent() {
             return;
         }
         router.refresh();
-        router.push('/dashboard');
+        router.push(destination);
     };
 
     const handleResend = async () => {

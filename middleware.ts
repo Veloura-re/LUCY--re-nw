@@ -39,11 +39,35 @@ function checkRateLimit(ip: string, path: string): boolean {
     return true;
 }
 
+function getSchoolRoleDestination(role?: string): string {
+    switch (role?.toUpperCase()) {
+        case 'OWNER':
+        case 'PRINCIPAL':
+        case 'DIRECTOR':
+            return '/dashboard';
+        case 'TEACHER':
+        case 'HOMEROOM':
+            return '/dashboard/attendance';
+        case 'PARENT':
+            return '/dashboard/parent';
+        case 'STUDENT':
+            return '/dashboard/student';
+        case 'ACCOUNTANT':
+            return '/dashboard/finance';
+        case 'RECORDER':
+            return '/dashboard/students';
+        default:
+            return '/dashboard';
+    }
+}
+
 function jsonError(status: number, error: string, extra: Record<string, string> = {}) {
-    return new NextResponse(JSON.stringify({ error }), {
+    const res = new NextResponse(JSON.stringify({ error }), {
         status,
         headers: { 'Content-Type': 'application/json', ...extra }
     })
+    applySecurityHeaders(res)
+    return res
 }
 
 function isMutating(request: NextRequest) {
@@ -93,32 +117,89 @@ function checkOrigin(request: NextRequest) {
     return null
 }
 
-function applySecurityHeaders(response: NextResponse) {
+function generateNonce(): string {
+    return btoa(crypto.randomUUID());
+}
+
+function buildCsp(nonce?: string): string {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const scriptSrc = [
+        "'self'",
+        nonce ? `'nonce-${nonce}'` : '',
+        nonce ? "'strict-dynamic'" : '',
+        isDev ? "'unsafe-eval'" : '',
+        "'unsafe-inline'", // CSP Level 2 fallback, ignored by CSP Level 3 browsers when nonce + strict-dynamic are present
+        'https://ajax.cloudflare.com',
+        'https://static.cloudflareinsights.com',
+        'https://*.cloudflare.com',
+        'https://*.supabase.co',
+        'https://*.turnstile.com',
+        'https://challenges.cloudflare.com',
+        'https://*.posthog.com',
+        'https://*.i.posthog.com',
+        posthogAssetsHost,
+    ].filter(Boolean).join(' ');
+
+    const styleSrc = [
+        "'self'",
+        nonce ? `'nonce-${nonce}'` : '',
+        "'unsafe-inline'",
+        'https://fonts.googleapis.com',
+    ].filter(Boolean).join(' ');
+
+    return [
+        "default-src 'none'",
+        "base-uri 'self'",
+        "object-src 'none'",
+        "form-action 'self'",
+        "frame-ancestors 'none'",
+        "upgrade-insecure-requests",
+        `script-src ${scriptSrc}`,
+        `style-src ${styleSrc}`,
+        "img-src 'self' data: blob: https:",
+        "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
+        `connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co https://*.posthog.com https://*.i.posthog.com ${posthogHost ?? ''}`.trim(),
+        "frame-src 'self' https://challenges.cloudflare.com https://*.supabase.co https://*.supabase.in",
+        "worker-src 'self' blob:",
+        "media-src 'self' blob: data:",
+        "manifest-src 'self'",
+    ].join('; ') + ';';
+}
+
+function applySecurityHeaders(response: NextResponse, nonce?: string) {
+    const csp = buildCsp(nonce);
     const securityHeaders: Record<string, string> = {
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'DENY',
         'X-XSS-Protection': '1; mode=block',
         'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
         'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
         'Cross-Origin-Opener-Policy': 'same-origin',
-        'Content-Security-Policy': `default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self' https:; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ajax.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflare.com https://*.supabase.co https://*.turnstile.com https://challenges.cloudflare.com https://*.posthog.com https://*.i.posthog.com ${posthogAssetsHost}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.cloudflare.com https://challenges.cloudflare.com wss://*.supabase.co https://*.posthog.com https://*.i.posthog.com ${posthogHost ?? ''}; frame-src 'self' https://challenges.cloudflare.com https://*.supabase.co https://*.supabase.in; worker-src 'self' blob:;`, 
+        'Cross-Origin-Embedder-Policy': 'credentialless',
+        'Cross-Origin-Resource-Policy': 'same-origin',
+        'Content-Security-Policy': csp,
         'Link': process.env.NEXT_PUBLIC_SUPABASE_URL ? `<${process.env.NEXT_PUBLIC_SUPABASE_URL}>; rel=preconnect` : '',
     }
     Object.entries(securityHeaders).forEach(([key, value]) => {
         if (value) response.headers.set(key, value)
     })
+}
 
-    // Stricter policy in report-only mode: nothing is blocked, but browsers list in the console every
-    // resource that would break once 'unsafe-eval' is removed. Use it to plan the move to nonces.
-    response.headers.set(
-        'Content-Security-Policy-Report-Only',
-        securityHeaders['Content-Security-Policy'].replace(" 'unsafe-eval'", '').replace('upgrade-insecure-requests;', '')
-    )
+function redirectWithSecurityHeaders(url: URL | string, nonce?: string) {
+    const redirectResponse = NextResponse.redirect(url)
+    applySecurityHeaders(redirectResponse, nonce)
+    return redirectResponse
 }
 
 export async function middleware(request: NextRequest) {
+    const nonce = generateNonce()
+    const csp = buildCsp(nonce)
+
     const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('x-nonce', nonce)
     requestHeaders.set('x-pathname', request.nextUrl.pathname)
+    requestHeaders.set('content-security-policy', csp)
 
     let response = NextResponse.next({
         request: {
@@ -132,8 +213,12 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     const path = url.pathname
 
+    // Admin routes are completely isolated and hosted on 4xctrl.lc9s.5-cn.net
+    if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
+        return jsonError(404, "Not Found")
+    }
+
     const isAuthPage = path === '/login' || path === '/register'
-    const isAdminPage = path.startsWith('/admin')
     const isDashboardPage = path.startsWith('/dashboard')
     const isApiPage = path.startsWith('/api')
 
@@ -154,7 +239,7 @@ export async function middleware(request: NextRequest) {
         }
 
         // Let API handlers perform authenticated token validation directly
-        applySecurityHeaders(response)
+        applySecurityHeaders(response, nonce)
         return response;
     }
 
@@ -179,7 +264,9 @@ export async function middleware(request: NextRequest) {
                                     request.cookies.set(name, value)
                                 )
                                 response = NextResponse.next({
-                                    request,
+                                    request: {
+                                        headers: requestHeaders,
+                                    },
                                 })
                                 cookiesToSet.forEach(({ name, value, options }) =>
                                     response.cookies.set(name, value, options)
@@ -198,15 +285,15 @@ export async function middleware(request: NextRequest) {
 
     // 4. Handle Unauthenticated Users for UI Pages
     if (!user) {
-        if (isAdminPage || isDashboardPage || path.startsWith('/exam')) {
+        if (isDashboardPage || path.startsWith('/exam')) {
             url.pathname = '/login'
-            return NextResponse.redirect(url)
+            return redirectWithSecurityHeaders(url, nonce)
         }
     } else {
-        // A Supabase session alone is not a completed sign-in. Dashboard and admin pages also need the
+        // A Supabase session alone is not a completed sign-in. Dashboard pages also need the
         // device session this server issues after the full sign-in; this catches partial-page requests
         // that skip the layout check.
-        if (isAdminPage || isDashboardPage || path.startsWith('/exam')) {
+        if (isDashboardPage || path.startsWith('/exam')) {
             const session = request.cookies.get('lucy_device_session')?.value
             const mark = request.cookies.get(DEVICE_MARK_COOKIE)?.value
             if (!(await isValidDeviceMark(user.id, session, mark))) {
@@ -215,31 +302,20 @@ export async function middleware(request: NextRequest) {
                     const back = `${path}${request.nextUrl.search}`
                     url.pathname = '/auth/upgrade'
                     url.search = `?next=${encodeURIComponent(back)}`
-                    return NextResponse.redirect(url)
+                    return redirectWithSecurityHeaders(url, nonce)
                 }
                 url.pathname = '/logout'
                 url.search = '?reason=session'
-                return NextResponse.redirect(url)
+                return redirectWithSecurityHeaders(url, nonce)
             }
         }
 
         // 5. Handle Authenticated Users for UI Pages
         const metadataRole = user.user_metadata?.role
 
-        if (metadataRole) {
-            if (isAuthPage && !url.search) {
-                const dest = metadataRole === 'SUPERADMIN' ? '/admin/dashboard' : '/dashboard'
-                url.pathname = dest
-                return NextResponse.redirect(url)
-            }
-
-            if (isAdminPage && metadataRole !== 'SUPERADMIN') {
-                url.pathname = '/dashboard'
-                return NextResponse.redirect(url)
-            }
-        } else if (isAuthPage && !url.search) {
-            url.pathname = '/dashboard'
-            return NextResponse.redirect(url)
+        if (isAuthPage && !url.search) {
+            url.pathname = getSchoolRoleDestination(metadataRole)
+            return redirectWithSecurityHeaders(url, nonce)
         }
     }
 
@@ -253,7 +329,7 @@ export async function middleware(request: NextRequest) {
         if (csrf) return csrf
     }
 
-    applySecurityHeaders(response)
+    applySecurityHeaders(response, nonce)
 
     // D. Performance Layers: Global Cache Control
     const isStaticAsset = path.match(/\.(css|js|woff2|png|jpg|jpeg|svg|webp|gif|ico)$/)

@@ -140,7 +140,9 @@ export async function groupUi(ctx) {
 
     const dash = walk(path.join(ROOT, 'app/dashboard'), (p) => p.endsWith(`${path.sep}page.tsx`)).map((f) => toUrl(f, 'app')).filter((u) => !u.includes('['));
     const dynamic = [`/dashboard/students/${S.a1}`, `/dashboard/students/${S.b1}`];
-    const adminPages = walk(path.join(ROOT, 'app/admin'), (p) => p.endsWith(`${path.sep}page.tsx`)).map((f) => toUrl(f, 'app')).filter((u) => !u.includes('['));
+    const adminPages = fs.existsSync(path.join(ROOT, 'app/admin'))
+        ? walk(path.join(ROOT, 'app/admin'), (p) => p.endsWith(`${path.sep}page.tsx`)).map((f) => toUrl(f, 'app')).filter((u) => !u.includes('['))
+        : [];
     const roles = ['owner', 'principal', 'teacher', 'accountant', 'recorder', 'student', 'parent'];
 
     await Promise.all([

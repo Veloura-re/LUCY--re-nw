@@ -1329,3 +1329,82 @@ model SanctuaryReport {
 
   @@index([createdAt])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN PORTAL (4xctrl.lc9s.5-cn.net) ISOLATED SCHEMAS
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AdminRole {
+  SUPERADMIN
+  FINANCE
+  SECURITY
+  DEVELOPER
+  SUPPORT
+}
+
+model AdminUser {
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  passwordHash        String
+  name                String
+  role                AdminRole
+  totpSecret          String?
+  totpEnabled         Boolean              @default(false)
+  failedLoginAttempts Int                  @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  sessions            AdminSession[]
+  auditLogs           AdminAuditLog[]
+  otpChallenges       AdminOtpChallenge[]
+
+  @@index([role])
+  @@index([email])
+}
+
+model AdminSession {
+  id           String    @id @default(uuid())
+  adminId      String
+  sessionToken String    @unique
+  ipAddress    String
+  userAgent    String?
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+  isRevoked    Boolean   @default(false)
+  admin        AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([sessionToken])
+  @@index([lastActiveAt, expiresAt])
+}
+
+model AdminOtpChallenge {
+  id        String    @id @default(uuid())
+  adminId   String
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId, expiresAt])
+}
+
+model AdminAuditLog {
+  id             String     @id @default(uuid())
+  adminId        String?
+  action         String
+  targetResource String
+  targetId       String?
+  ipAddress      String
+  userAgent      String?
+  metadata       Json?
+  createdAt      DateTime   @default(now())
+  admin          AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([adminId, createdAt])
+  @@index([action, createdAt])
+  @@index([targetResource, createdAt])
+}
+

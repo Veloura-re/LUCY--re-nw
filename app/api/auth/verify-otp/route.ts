@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { rateLimitShared } from '@/lib/rate-limit';
 import { getValidatedClientIp } from '@/lib/client-ip';
 import { recordAuthAudit } from '@/lib/auth-audit';
+import { getSchoolRoleRedirect } from '@/lib/navigation';
 import { logActivity } from '@/lib/audit';
 import { recordConsent } from '@/lib/consent';
 import { issueDeviceSession, setDeviceCookies } from '@/lib/device-session';
@@ -46,8 +47,8 @@ export async function POST(request: Request) {
         const sessionToken = await issueDeviceSession(user.id);
         await recordAuthAudit(ip, user.email ?? '', 'OTP_VERIFIED');
 
-        const dbUser = prisma
-            ? await prisma.user.findUnique({ where: { id: user.id }, select: { schoolId: true } }).catch(() => null)
+        const dbUser = prisma?.user
+            ? await prisma.user.findUnique({ where: { id: user.id }, select: { role: true, schoolId: true } }).catch(() => null)
             : null;
         await logActivity({
             userId: user.id,
@@ -64,7 +65,9 @@ export async function POST(request: Request) {
             });
         }
 
-        const response = NextResponse.json({ success: true });
+        const role = dbUser?.role || 'OWNER';
+        const redirectUrl = getSchoolRoleRedirect(role);
+        const response = NextResponse.json({ success: true, role, redirectUrl });
         await setDeviceCookies(response, user.id, sessionToken);
         if (body.rememberDevice === true) {
             const token = await trustDevice(user.id, request.headers.get('user-agent') || undefined);

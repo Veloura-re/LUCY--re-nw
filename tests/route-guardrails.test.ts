@@ -81,8 +81,7 @@ describe('known bad patterns', () => {
             .filter(f => !/\.tsx$/.test(f)) // client components may display metadata; the server must not trust it
             .filter(f => /user_metadata\??\.(role|schoolId)/.test(fs.readFileSync(f, 'utf8')))
             .map(rel);
-        // app/admin/layout.tsx only compares it to resync the stored value after the database check
-        expect(offenders.filter(f => f !== 'app/admin/layout.tsx')).toEqual([]);
+        expect(offenders).toEqual([]);
     });
 
     test('security-sensitive code does not use Math.random', () => {

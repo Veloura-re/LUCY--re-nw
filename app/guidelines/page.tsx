@@ -590,9 +590,9 @@ const ROLE_GUIDES: Record<string, RoleGuide> = {
             ]
         },
         dailyRoutine: [
-            "Morning - Infrastructure Health Check: Open /admin/dashboard to inspect real error rates and API latency.",
+            "Morning - Infrastructure Health Check: Open 4xctrl.lc9s.5-cn.net/logs to inspect real error rates and API latency.",
             "Mid-Day - School Approvals: Review pending school onboarding requests, verify official documentation, and activate licenses.",
-            "Continuous - Safety Escalations: Monitor /admin/sanctuary for critical distress reports requiring campus intervention.",
+            "Continuous - Safety Escalations: Monitor security logs and reports at 4xctrl.lc9s.5-cn.net/security.",
             "Weekly - Disaster Recovery: Trigger automated database restore points and inspect backup logs."
         ],
         tasks: [
@@ -600,45 +600,44 @@ const ROLE_GUIDES: Record<string, RoleGuide> = {
                 title: "1. Monitoring Platform Health & Server Error Logs",
                 objective: "Diagnose application anomalies before they impact schools.",
                 steps: [
-                    "Navigate to /admin/dashboard and inspect the 'Health Status' gauge.",
-                    "Switch to the 'Server Errors' tab to view failures logged in the last 24 hours.",
-                    "Use the 'Group Similar' view to see aggregated failure counts and root-cause error stacks.",
+                    "Navigate to 4xctrl.lc9s.5-cn.net/logs and inspect the health gauge.",
+                    "Review failures logged across the platform.",
+                    "Use the aggregated failure counts and root-cause error stacks.",
                     "Inspect affected routes and mark resolved issues.",
                     "Errors older than 90 days are automatically pruned by the daily cleanup cron."
                 ],
                 result: "Real-time infrastructure visibility and zero masked errors.",
-                route: "/admin/dashboard"
+                route: "https://4xctrl.lc9s.5-cn.net/logs"
             },
             {
-                title: "2. Reviewing School Registrations & Assigning Owners",
-                objective: "Onboard new academies and authorize executive owners.",
+                title: "2. Reviewing School Registrations & Support",
+                objective: "Onboard new academies and inspect school states via dedicated support portal.",
                 steps: [
-                    "Navigate to /admin/schools.",
-                    "Review pending academies submitted via /register.",
+                    "Navigate to 4xctrl.lc9s.5-cn.net/support.",
+                    "Review academies and student/teacher rosters.",
                     "Verify school credentials and contact details.",
-                    "Set status to 'ACTIVE' and grant institutional trial or enter license dates.",
-                    "Assign the verified Owner User ID to link institutional ownership."
+                    "Inspect status and license dates."
                 ],
-                result: "The academy is activated and the Owner receives their executive welcome credentials.",
-                route: "/admin/schools"
+                result: "The academy is verified and authorized.",
+                route: "https://4xctrl.lc9s.5-cn.net/support"
             },
             {
-                title: "3. Overseeing The Sanctuary Safety Moderation",
-                objective: "Protect vulnerable scholars while preserving privacy.",
+                title: "3. Overseeing Platform Security",
+                objective: "Protect vulnerable scholars and monitor active sessions.",
                 steps: [
-                    "Navigate to /admin/sanctuary.",
-                    "Inspect flagged incident reports submitted by automated safety sentinels or peer scholars.",
-                    "Review incident categorization (Harassment, Extreme Distress, Academic Fraud).",
-                    "Take action: Issue warning, terminate abusive pseudonymous session, or escalate to school administration."
+                    "Navigate to 4xctrl.lc9s.5-cn.net/security.",
+                    "Inspect flagged incident reports and audit trails.",
+                    "Manage active admin sessions and locked accounts.",
+                    "Take action: terminate suspicious sessions or unlock accounts."
                 ],
-                result: "Scholars are protected with zero compromise to student anonymity.",
-                route: "/admin/sanctuary"
+                result: "Scholars and institutions are protected.",
+                route: "https://4xctrl.lc9s.5-cn.net/security"
             }
         ],
         troubleshooting: [
             {
                 issue: "A school reports that staff cannot log in.",
-                solution: "Inspect /admin/dashboard error logs for authentication failures. Ensure TURNSTILE_SECRET_KEY is active and verify the school status is 'ACTIVE' at /admin/schools."
+                solution: "Inspect 4xctrl.lc9s.5-cn.net/logs for authentication failures. Ensure TURNSTILE_SECRET_KEY is active and verify school status at 4xctrl.lc9s.5-cn.net/support."
             }
         ]
     },

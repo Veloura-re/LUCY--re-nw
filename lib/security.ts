@@ -300,7 +300,11 @@ const SECURITY_HEADERS: Record<string, string> = {
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     'Permissions-Policy': 'camera=(self), microphone=(), geolocation=()',
+    'Cross-Origin-Opener-Policy': 'same-origin',
+    'Cross-Origin-Embedder-Policy': 'credentialless',
+    'Cross-Origin-Resource-Policy': 'same-origin',
     'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'",
 };
 

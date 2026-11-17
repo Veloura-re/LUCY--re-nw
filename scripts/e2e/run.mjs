@@ -136,6 +136,7 @@ async function goTrueClient(who) {
 
 // ------------------------------------------------------------------ route inventory
 const walk = (dir, pred, out = []) => {
+    if (!fs.existsSync(dir)) return out;
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const p = path.join(dir, e.name);
         if (e.isDirectory()) walk(p, pred, out); else if (pred(p)) out.push(p);

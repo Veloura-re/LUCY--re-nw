@@ -84,11 +84,31 @@ export interface NavItem {
     href: string;
 }
 
+export function getSchoolRoleRedirect(role?: string): string {
+    switch (role?.toUpperCase()) {
+        case 'OWNER':
+        case 'PRINCIPAL':
+        case 'DIRECTOR':
+            return '/dashboard';
+        case 'TEACHER':
+        case 'HOMEROOM':
+            return '/dashboard/attendance';
+        case 'PARENT':
+            return '/dashboard/parent';
+        case 'STUDENT':
+            return '/dashboard/student';
+        case 'ACCOUNTANT':
+            return '/dashboard/finance';
+        case 'RECORDER':
+            return '/dashboard/students';
+        default:
+            return '/dashboard';
+    }
+}
+
 export const NAV_ITEMS: Record<Role, NavItem[]> = {
     SUPERADMIN: [
-        { icon: 'Compass', label: "Control Center", href: "/admin/dashboard" },
-        { icon: 'Shield', label: "Sanctuary Moderation", href: "/admin/sanctuary" },
-        { icon: 'Landmark', label: "Schools", href: "/admin/schools" },
+        { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'HelpCircle', label: "Help Center", href: "/dashboard/help" },
     ],
     OWNER: [

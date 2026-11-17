@@ -54,6 +54,7 @@ function LoginContent() {
         setIsLoading(true);
         setError(null);
 
+        let destination = "/dashboard";
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -61,7 +62,8 @@ function LoginContent() {
                 body: JSON.stringify({ email, password, turnstileToken, acceptedTerms: agreedToTerms })
             });
 
-            const data = (await res.json()) as { error?: string; userId?: string; otpRequired?: boolean };
+            const data = (await res.json()) as { error?: string; userId?: string; otpRequired?: boolean; redirectUrl?: string };
+            if (data.redirectUrl) destination = data.redirectUrl;
 
             if (res.ok && data.otpRequired) {
                 // Password accepted; the emailed code is the second step.
@@ -86,7 +88,7 @@ function LoginContent() {
         }
 
         router.refresh();
-        router.push("/dashboard");
+        router.push(destination);
     };
 
     const handleGoogle = async () => {
