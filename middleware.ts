@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { getClientIp } from '@/lib/client-ip'
 import { DEVICE_MARK_COOKIE, LEGACY_UPGRADE_UNTIL, isValidDeviceMark } from '@/lib/device-mark'
+import { isSchoolRoleAllowedForPath } from '@/lib/school-rbac'
 
 /**
  * Next.js Edge Middleware.
@@ -228,8 +229,8 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     const path = url.pathname
 
-    // Admin routes are completely isolated and hosted on 4xctrl.lc9s.5-cn.net
-    if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
+    // Admin routes and portal entrypoints are completely isolated and not exposed on the school platform
+    if (path.startsWith('/admin') || path.startsWith('/api/admin') || path === '/register/admin' || path === '/api/auth/register-admin') {
         return jsonError(404, "Not Found")
     }
 
@@ -344,6 +345,17 @@ export async function middleware(request: NextRequest) {
             const roleDest = getSchoolRoleDestination(metadataRole)
             if (roleDest !== '/dashboard') {
                 url.pathname = roleDest
+                return redirectWithSecurityHeaders(url, nonce)
+            }
+        }
+
+        // Comprehensive School RBAC Boundary: Protect all individual /dashboard/* routes before page load
+        if (isDashboardPage && path !== '/dashboard' && metadataRole) {
+            const isAllowed = isSchoolRoleAllowedForPath(metadataRole, path)
+            if (!isAllowed) {
+                const homeDest = getSchoolRoleDestination(metadataRole)
+                url.pathname = homeDest
+                url.search = ''
                 return redirectWithSecurityHeaders(url, nonce)
             }
         }

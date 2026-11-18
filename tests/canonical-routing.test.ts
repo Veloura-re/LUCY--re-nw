@@ -93,3 +93,28 @@ describe('Customized Role Destinations', () => {
         expect(getSchoolRoleRedirect('GUEST')).toBe('/dashboard');
     });
 });
+
+describe('Total Admin Isolation on School Platform (lucyos.5-cn.net)', () => {
+    test('blocks all admin entrypoints with 404 Not Found on the school domain', async () => {
+        const forbiddenAdminPaths = ['/admin', '/api/admin', '/register/admin', '/api/auth/register-admin'];
+        for (const path of forbiddenAdminPaths) {
+            const req = new NextRequest(`https://lucyos.5-cn.net${path}`, {
+                headers: { host: 'lucyos.5-cn.net' },
+            });
+            const res = await middleware(req);
+            expect(res.status).toBe(404);
+        }
+    });
+
+    test('redirects unauthenticated users hitting dashboard routes to /login', async () => {
+        const protectedRoutes = ['/dashboard', '/dashboard/finance', '/dashboard/attendance', '/dashboard/student'];
+        for (const path of protectedRoutes) {
+            const req = new NextRequest(`https://lucyos.5-cn.net${path}`, {
+                headers: { host: 'lucyos.5-cn.net' },
+            });
+            const res = await middleware(req);
+            expect(res.status).toBe(307);
+            expect(res.headers.get('location')).toBe('https://lucyos.5-cn.net/login');
+        }
+    });
+});

@@ -22,7 +22,7 @@ export default async function DashboardPage() {
     if (!dbUser) return <div>User profile synchronization in progress...</div>;
 
     if (dbUser.role === 'SUPERADMIN') {
-        // Superadmin operates exclusively via the isolated admin portal (4xctrl.lc9s.5-cn.net)
+        // Superadmin operates exclusively via the isolated admin portal
         redirect('/login?error=admin_portal_required');
     }
 

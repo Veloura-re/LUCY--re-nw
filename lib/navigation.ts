@@ -107,10 +107,7 @@ export function getSchoolRoleRedirect(role?: string): string {
 }
 
 export const NAV_ITEMS: Record<Role, NavItem[]> = {
-    SUPERADMIN: [
-        { icon: 'Compass', label: "Overview", href: "/dashboard" },
-        { icon: 'HelpCircle', label: "Help Center", href: "/dashboard/help" },
-    ],
+    SUPERADMIN: [],
     OWNER: [
         { icon: 'Compass', label: "Overview", href: "/dashboard" },
         { icon: 'Crown', label: "Principals", href: "/dashboard/principals" },
