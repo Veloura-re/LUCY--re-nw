@@ -1,4 +1,4 @@
-import type { OpenNextConfig } from "@opennextjs/aws/types/open-next.js";
+type OpenNextConfig = Record<string, any>;
 
 const kvIncrementalCache = () => import("@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache").then(m => m.default);
 
