@@ -21,16 +21,36 @@ function isOAuthSession(session: Session): boolean {
     }
 }
 
-async function accountExists(userId: string): Promise<{ id: string; schoolId: string | null } | null> {
-    if (prisma) {
+async function accountExists(userId: string, email?: string | null): Promise<{ id: string; schoolId: string | null } | null> {
+    if (prisma?.user) {
         try {
-            return await prisma.user.findUnique({ where: { id: userId }, select: { id: true, schoolId: true } });
+            const byId = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, schoolId: true } });
+            if (byId) return byId;
+
+            if (email) {
+                const byEmail = await prisma.user.findUnique({
+                    where: { email: email.toLowerCase().trim() },
+                    select: { id: true, schoolId: true }
+                });
+                if (byEmail) return byEmail;
+            }
+            return null;
         } catch (err: any) {
             console.warn('[Auth Callback] Prisma lookup failed, falling back to Supabase admin:', err.message);
         }
     }
-    const { data } = await createAdminClient().from('User').select('id, schoolId').eq('id', userId).maybeSingle();
-    return (data as { id: string; schoolId: string | null } | null) ?? null;
+    const admin = createAdminClient() as any;
+    if (typeof admin?.from === 'function') {
+        const { data: byId } = await admin.from('User').select('id, schoolId').eq('id', userId).maybeSingle();
+        if (byId) return byId as { id: string; schoolId: string | null };
+
+        if (email) {
+            const { data: byEmail } = await admin.from('User').select('id, schoolId').ilike('email', email.trim()).maybeSingle();
+            if (byEmail) return byEmail as { id: string; schoolId: string | null };
+        }
+    }
+
+    return null;
 }
 
 /**
@@ -43,7 +63,7 @@ async function finishGoogleSignIn(request: Request, origin: string, session: Ses
     const user = session.user;
     const google = user.identities?.find((identity) => identity.provider === 'google');
     const verified = google?.identity_data?.email_verified === true && Boolean(user.email_confirmed_at);
-    const existing = google && verified ? await accountExists(user.id) : null;
+    const existing = google && verified ? await accountExists(user.id, user.email) : null;
 
     if (!existing) {
         const onlyGoogle = (user.identities?.length ?? 0) <= 1 && Boolean(google);

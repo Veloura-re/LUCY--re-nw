@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     ".open-next/**",
     ".vercel/**",
     "worker-configuration.d.ts",
+    "apps/**",
   ]),
   {
     // Legacy debt: these rules report thousands of existing findings. They stay visible as

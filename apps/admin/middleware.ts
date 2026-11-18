@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { ADMIN_SESSION_COOKIE, INACTIVITY_TIMEOUT_MS, verifySessionCookieFast, signSessionCookie } from './lib/auth';
+import { ADMIN_SESSION_COOKIE, INACTIVITY_TIMEOUT_MS, verifySessionCookieFast, signSessionCookie } from './lib/session-cookie';
 import { isRoleAllowedForPath, getDefaultRouteForRole } from './lib/rbac';
 
 export const runtime = 'experimental-edge';
