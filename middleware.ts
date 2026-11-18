@@ -105,6 +105,9 @@ function checkOrigin(request: NextRequest) {
     const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
     const requestHost = rawHost.split(':')[0].trim()
     const trusted = new Set<string>([requestHost])
+    trusted.add('lucyos.5-cn.net')
+    trusted.add('5-cn.net')
+    trusted.add('www.5-cn.net')
 
     const addHost = (value: string | undefined) => {
         if (!value) return
@@ -193,6 +196,18 @@ function redirectWithSecurityHeaders(url: URL | string, nonce?: string) {
 }
 
 export async function middleware(request: NextRequest) {
+    // 1. Canonical Domain Enforcement: Redirect 5-cn.net and www.5-cn.net to lucyos.5-cn.net
+    const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
+    const requestHost = rawHost.split(':')[0].trim().toLowerCase();
+
+    if (requestHost === '5-cn.net' || requestHost === 'www.5-cn.net') {
+        const canonicalUrl = request.nextUrl.clone();
+        canonicalUrl.hostname = 'lucyos.5-cn.net';
+        canonicalUrl.protocol = 'https:';
+        canonicalUrl.port = '';
+        return NextResponse.redirect(canonicalUrl, 308);
+    }
+
     const nonce = generateNonce()
     const csp = buildCsp(nonce)
 
@@ -311,11 +326,26 @@ export async function middleware(request: NextRequest) {
         }
 
         // 5. Handle Authenticated Users for UI Pages
-        const metadataRole = user.user_metadata?.role
+        const metadataRole = user.user_metadata?.role || user.app_metadata?.role
 
-        if (isAuthPage && !url.search) {
+        if (isAuthPage) {
+            const nextParam = url.searchParams.get('next')
+            if (nextParam && nextParam.startsWith('/')) {
+                url.pathname = nextParam
+                url.search = ''
+                return redirectWithSecurityHeaders(url, nonce)
+            }
             url.pathname = getSchoolRoleDestination(metadataRole)
+            url.search = ''
             return redirectWithSecurityHeaders(url, nonce)
+        }
+
+        if (path === '/dashboard') {
+            const roleDest = getSchoolRoleDestination(metadataRole)
+            if (roleDest !== '/dashboard') {
+                url.pathname = roleDest
+                return redirectWithSecurityHeaders(url, nonce)
+            }
         }
     }
 

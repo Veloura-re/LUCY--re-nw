@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { prisma } from './prisma';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
 
 function getResend() {
     const apiKey = process.env.RESEND_API_KEY;

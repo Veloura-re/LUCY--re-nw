@@ -75,7 +75,7 @@ export async function POST(request: Request) {
             }
         });
 
-        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
+        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net'}/invite/${token}`;
         const emailResult = await sendInviteEmail(email, inviteUrl, schoolName, token, 'PRINCIPAL', owner.schoolId);
         const res = emailResult as any;
 

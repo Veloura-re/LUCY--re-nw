@@ -55,7 +55,7 @@ export default function TeachersClientWrapper({ initialTeachers, schoolInfo, me 
 
     const handleCopyInvite = (token: string) => {
         if (!token) return;
-        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://5-cn.net';
+        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://lucyos.5-cn.net';
         navigator.clipboard.writeText(`${origin}/invite/${token}`);
         setCopied(true);
         setAlertConfig({

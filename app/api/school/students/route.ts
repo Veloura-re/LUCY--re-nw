@@ -429,7 +429,7 @@ export async function POST(request: Request) {
 
         if (email && result.token) {
             try {
-                const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+                const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
                 const inviteUrl = `${origin}/invite/${result.token}`;
                 const school = await prisma.school.findUnique({ where: { id: targetSchoolId! } });
                 

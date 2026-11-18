@@ -170,7 +170,7 @@ export default function StudentReportCardPage() {
     // Dual-Mode Cryptographically Verifiable URL:
     // Readable by public phone cameras via /verify/student/[id],
     // and recognized instantly by the LUCY in-app Scan ID QR scanner modal.
-    const origin = typeof window !== 'undefined' ? window.location.origin : "https://5-cn.net";
+    const origin = typeof window !== 'undefined' ? window.location.origin : "https://lucyos.5-cn.net";
     const qrVerifyUrl = generateTranscriptQrUrl(origin, student.id, student.schoolId, student.studentCode);
     const checksumHash = `LUCY-${(student?.id || "").slice(0, 8).toUpperCase()}-${(student?.studentCode || "CERT").toUpperCase()}`;
     const latestRemark = remarks?.[0] || null;

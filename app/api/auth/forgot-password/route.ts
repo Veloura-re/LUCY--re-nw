@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         const supabaseAdmin = createAdminClient();
 
         // 3. Generate Auth Link (Recovery type)
-        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
         const { data, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
             type: 'recovery',
             email,

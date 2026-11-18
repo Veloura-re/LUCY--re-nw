@@ -66,7 +66,7 @@ export async function POST(request: Request) {
         });
 
         const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { name: true } });
-        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
+        const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net'}/invite/${token}`;
         const emailResult = (await sendInviteEmail(email, inviteUrl, school?.name || 'Institution', token, role, schoolId)) as {
             success?: boolean; skipped?: boolean; simulated?: boolean; error?: string;
         };

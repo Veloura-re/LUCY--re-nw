@@ -8,6 +8,7 @@ import { getValidatedClientIp } from '@/lib/client-ip';
 import { recordAuthAudit } from '@/lib/auth-audit';
 import { logActivity } from '@/lib/audit';
 import { issueDeviceSession, setDeviceCookies } from '@/lib/device-session';
+import { getSchoolRoleRedirect } from '@/lib/navigation';
 
 const NO_ACCOUNT_MESSAGE = 'No LUCY account found for this Google account. Ask your school for an invite, then sign in again.';
 
@@ -21,16 +22,16 @@ function isOAuthSession(session: Session): boolean {
     }
 }
 
-async function accountExists(userId: string, email?: string | null): Promise<{ id: string; schoolId: string | null } | null> {
+async function accountExists(userId: string, email?: string | null): Promise<{ id: string; schoolId: string | null; role: string | null } | null> {
     if (prisma?.user) {
         try {
-            const byId = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, schoolId: true } });
+            const byId = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, schoolId: true, role: true } });
             if (byId) return byId;
 
             if (email) {
                 const byEmail = await prisma.user.findUnique({
                     where: { email: email.toLowerCase().trim() },
-                    select: { id: true, schoolId: true }
+                    select: { id: true, schoolId: true, role: true }
                 });
                 if (byEmail) return byEmail;
             }
@@ -41,12 +42,12 @@ async function accountExists(userId: string, email?: string | null): Promise<{ i
     }
     const admin = createAdminClient() as any;
     if (typeof admin?.from === 'function') {
-        const { data: byId } = await admin.from('User').select('id, schoolId').eq('id', userId).maybeSingle();
-        if (byId) return byId as { id: string; schoolId: string | null };
+        const { data: byId } = await admin.from('User').select('id, schoolId, role').eq('id', userId).maybeSingle();
+        if (byId) return byId as { id: string; schoolId: string | null; role: string | null };
 
         if (email) {
-            const { data: byEmail } = await admin.from('User').select('id, schoolId').ilike('email', email.trim()).maybeSingle();
-            if (byEmail) return byEmail as { id: string; schoolId: string | null };
+            const { data: byEmail } = await admin.from('User').select('id, schoolId, role').ilike('email', email.trim()).maybeSingle();
+            if (byEmail) return byEmail as { id: string; schoolId: string | null; role: string | null };
         }
     }
 
@@ -78,7 +79,12 @@ async function finishGoogleSignIn(request: Request, origin: string, session: Ses
     }
 
     const ip = getValidatedClientIp(request);
-    const next = safeNextPath(new URL(request.url).searchParams.get('next'), '/dashboard');
+    const searchNext = new URL(request.url).searchParams.get('next');
+    const defaultRoleDest = getSchoolRoleRedirect(existing.role || undefined);
+    const next = (!searchNext || searchNext === '/dashboard')
+        ? defaultRoleDest
+        : safeNextPath(searchNext, defaultRoleDest);
+
     const token = await issueDeviceSession(user.id);
     await recordAuthAudit(ip, user.email ?? '', 'GOOGLE_LOGIN');
     await logActivity({
@@ -90,7 +96,11 @@ async function finishGoogleSignIn(request: Request, origin: string, session: Ses
         userAgent: request.headers.get('user-agent') || undefined,
     });
 
-    const response = NextResponse.redirect(`${origin}${next}`);
+    const targetOrigin = (origin.includes('5-cn.net') && !origin.includes('lucyos.'))
+        ? 'https://lucyos.5-cn.net'
+        : origin;
+
+    const response = NextResponse.redirect(`${targetOrigin}${next}`);
     await setDeviceCookies(response, user.id, token);
     return response;
 }

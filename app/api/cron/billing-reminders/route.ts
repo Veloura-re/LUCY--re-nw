@@ -10,7 +10,7 @@ import { reportServerError } from '@/lib/error-capture';
 /** Days before access ends on which a reminder goes out. */
 const REMINDER_DAYS = [7, 3, 1];
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
 
 function buildEmail(schoolName: string, daysLeft: number, endDate: Date, etbAmount: number | null) {
     const when = daysLeft === 1 ? 'tomorrow' : `in ${daysLeft} days`;

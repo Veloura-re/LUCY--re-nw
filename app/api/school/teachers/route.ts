@@ -134,7 +134,7 @@ async function handlePOST(request: Request) {
         // Trigger Cache Invalidation for the personnel registry
         revalidateTag(getSchoolTag(CACHE_TAGS.USER_PROFILE, user.schoolId), 'max');
 
-        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
         const inviteUrl = `${origin}/invite/${token}`;
 
         // Find school name

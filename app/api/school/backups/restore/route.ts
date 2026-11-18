@@ -125,7 +125,7 @@ export async function POST(request: Request) {
                     createdAt: new Date().toISOString()
                 });
 
-                const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net'}/invite/${token}`;
+                const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net'}/invite/${token}`;
                 await sendInviteEmail(user.email as string, inviteUrl, schoolData?.name || 'Institution', token, role, schoolId);
             }
             counts.restoredUsers++;

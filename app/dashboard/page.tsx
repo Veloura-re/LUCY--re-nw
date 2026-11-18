@@ -23,7 +23,7 @@ export default async function DashboardPage() {
 
     if (dbUser.role === 'SUPERADMIN') {
         // Superadmin operates exclusively via the isolated admin portal (4xctrl.lc9s.5-cn.net)
-        redirect('/dashboard');
+        redirect('/login?error=admin_portal_required');
     }
 
     // Wrap views in Suspense to allow layout to stream
@@ -61,20 +61,10 @@ async function DashboardContent({ dbUser }: { dbUser: any }) {
 
             case 'HOMEROOM':
             case 'TEACHER':
-                try {
-                    dashboardData = await getTeacherDashboardData(dbUser.id);
-                } catch (e) {
-                    console.error('[DashboardPage] Teacher data fetch error:', e);
-                }
-                return <TeacherView user={dbUser} initialData={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : { classes: [], exams: [], isClockedIn: false, attendanceSummary: [] }} />;
+                redirect('/dashboard/attendance');
 
             case 'PARENT':
-                try {
-                    dashboardData = await getFamilyChildren(dbUser.id);
-                } catch (e) {
-                    console.error('[DashboardPage] Parent children data fetch error:', e);
-                }
-                return <ParentView user={dbUser} childrenData={dashboardData ? JSON.parse(JSON.stringify(dashboardData)) : []} />;
+                redirect('/dashboard/parent');
 
             case 'STUDENT':
                 redirect('/dashboard/student');

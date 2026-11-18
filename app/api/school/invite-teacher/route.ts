@@ -62,7 +62,7 @@ export async function POST(request: Request) {
             }).catch(() => {});
         }
 
-        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://5-cn.net';
+        const origin = process.env.NEXT_PUBLIC_APP_URL || 'https://lucyos.5-cn.net';
         const inviteUrl = `${origin}/invite/${token}`;
 
         const emailResult = await sendInviteEmail(email, inviteUrl, school.name, token, 'TEACHER', dbUser.schoolId!);
