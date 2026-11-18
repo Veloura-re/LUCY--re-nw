@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Shield, Zap, LogOut, Lock, MapPin, Sliders, Trophy, Briefcase, Plus, Search, Trash2, Bell, LayoutGrid, Volume2, Calendar } from "lucide-react";
+import { User, Shield, Zap, LogOut, Lock, MapPin, Sliders, Trophy, Briefcase, Plus, Search, Trash2, Bell, LayoutGrid, Volume2, Calendar, Globe, Copy, Check, ExternalLink } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import SpringingLoader from "@/components/dashboard/springing-loader";
@@ -45,6 +45,7 @@ export default function SettingsPage() {
     const [schoolForm, setSchoolForm] = useState({
         name: "",
         schoolCode: "",
+        domain: "",
         logoUrl: "",
         address: "",
         locations: [] as { name: string, address: string }[],
@@ -55,6 +56,7 @@ export default function SettingsPage() {
             replyTo: ""
         }
     });
+    const [subdomainCopied, setSubdomainCopied] = useState(false);
 
     const [passwordData, setPasswordData] = useState({
         current: "",
@@ -98,6 +100,7 @@ export default function SettingsPage() {
                     setSchoolForm({
                         name: data.user.school.name || "",
                         schoolCode: data.user.school.schoolCode || "",
+                        domain: data.user.school.domain || "",
                         logoUrl: data.user.school.logoUrl || "",
                         address: data.user.school.address || "",
                         locations: data.user.school.locations || [],
@@ -129,6 +132,7 @@ export default function SettingsPage() {
                 setSchoolForm({
                     name: data.school.name,
                     schoolCode: data.school.schoolCode,
+                    domain: data.school.domain || "",
                     logoUrl: data.school.logoUrl || "",
                     address: data.school.address || "",
                     locations: data.school.locations || [],
@@ -282,6 +286,17 @@ export default function SettingsPage() {
                     const data = await schoolRes.json() as any;
                     if (data.school) {
                         setSchoolData(data.school);
+                    }
+                } else {
+                    const errData = await schoolRes.json().catch(() => ({})) as any;
+                    if (errData.error) {
+                        setAlertConfig({
+                            title: "Institutional Update Failed",
+                            message: errData.error,
+                            isOpen: true,
+                            variant: "error"
+                        });
+                        return;
                     }
                 }
                 fetchSchoolSettings();
@@ -877,6 +892,96 @@ export default function SettingsPage() {
                                                 <Lock className="w-4 h-4 text-zinc-700 absolute left-4 top-1/2 -translate-y-1/2 group-hover:text-eduGreen-500 transition-colors" />
                                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-medium text-zinc-800 dark:text-zinc-200 uppercase tracking-widest bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-zinc-300 dark:border-zinc-800">
                                                     Immutable
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Tenant Subdomain Configuration (Beta) */}
+                                    <div className="p-6 bg-zinc-100/40 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-3xl space-y-4">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 rounded-xl bg-eduGreen-500/10 border border-eduGreen-500/20 flex items-center justify-center">
+                                                    <Globe className="w-4 h-4 text-eduGreen-500" />
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center gap-2">
+                                                        <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 tracking-wide">Custom Tenant Subdomain</h4>
+                                                        <span className="text-[8px] font-bold uppercase tracking-wider bg-eduGreen-500/20 text-eduGreen-400 border border-eduGreen-500/30 px-2 py-0.5 rounded-full">Beta</span>
+                                                    </div>
+                                                    <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                                                        Provide scholars, faculty, and guardians direct institutional access via their own dedicated URL.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {schoolForm.domain && (
+                                                <div className="flex items-center gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(`https://${schoolForm.domain}.lucyos.5-cn.net`);
+                                                            setSubdomainCopied(true);
+                                                            setTimeout(() => setSubdomainCopied(false), 2000);
+                                                        }}
+                                                        className="h-8 px-3 rounded-xl text-[10px] border-zinc-300 dark:border-zinc-800 hover:border-eduGreen-500/50"
+                                                    >
+                                                        {subdomainCopied ? <Check className="w-3 h-3 text-eduGreen-400 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
+                                                        {subdomainCopied ? "Copied" : "Copy Link"}
+                                                    </Button>
+                                                    <a
+                                                        href={`https://${schoolForm.domain}.lucyos.5-cn.net`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center justify-center h-8 px-3 rounded-xl text-[10px] bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 transition-colors"
+                                                    >
+                                                        <ExternalLink className="w-3 h-3 mr-1" />
+                                                        Visit
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-4 pt-2">
+                                            <div className="space-y-2">
+                                                <Label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest ml-1">Subdomain Prefix</Label>
+                                                <div className="flex items-center">
+                                                    <Input
+                                                        disabled={!isPrincipal}
+                                                        value={schoolForm.domain}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                                                            setSchoolForm(prev => ({ ...prev, domain: val }));
+                                                        }}
+                                                        placeholder="e.g. apex"
+                                                        className={`bg-zinc-100/50 dark:bg-zinc-950/60 border-zinc-300 dark:border-zinc-800 text-zinc-900 dark:text-white h-11 rounded-l-xl rounded-r-none border-2 border-r-0 font-mono text-xs ${!isPrincipal ? 'opacity-60 cursor-not-allowed' : 'focus:border-eduGreen-600'}`}
+                                                    />
+                                                    <span className="h-11 px-3.5 bg-zinc-200/60 dark:bg-zinc-800/60 border-2 border-zinc-300 dark:border-zinc-800 rounded-r-xl text-zinc-500 dark:text-zinc-400 text-xs font-mono flex items-center select-none whitespace-nowrap">
+                                                        .lucyos.5-cn.net
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label className="text-[9px] font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-widest ml-1">Live Endpoint Resolution</Label>
+                                                <div className="h-11 px-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-100/30 dark:bg-zinc-950/40 flex items-center justify-between font-mono text-xs text-zinc-600 dark:text-zinc-300">
+                                                    <span className="truncate">
+                                                        {schoolForm.domain ? (
+                                                            <span className="text-eduGreen-400">https://{schoolForm.domain}.lucyos.5-cn.net</span>
+                                                        ) : (
+                                                            <span className="text-zinc-500 italic">No subdomain configured (using lucyos.5-cn.net)</span>
+                                                        )}
+                                                    </span>
+                                                    {schoolForm.domain && isPrincipal && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSchoolForm(prev => ({ ...prev, domain: "" }))}
+                                                            className="text-[10px] text-zinc-400 hover:text-red-400 transition-colors ml-2"
+                                                        >
+                                                            Disable
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

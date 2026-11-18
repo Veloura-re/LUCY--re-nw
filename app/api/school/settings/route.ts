@@ -4,6 +4,7 @@ import { handleApiError, requireAuth, requireRole } from '@/lib/security';
 import { logActivity, getIp } from '@/lib/audit';
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS, getSchoolTag } from '@/lib/cache-keys';
+import { RESERVED_SUBDOMAINS } from '@/lib/school-subdomain';
 
 export async function GET() {
     try {
@@ -102,6 +103,7 @@ export async function PATCH(request: Request) {
         const { 
             name, 
             schoolCode, 
+            domain,
             logoUrl, 
             address, 
             locations, 
@@ -135,6 +137,41 @@ export async function PATCH(request: Request) {
         const updateData: any = {};
         if (typeof name === 'string' && name.trim()) updateData.name = name.trim();
         if (typeof schoolCode === 'string' && schoolCode.trim()) updateData.schoolCode = schoolCode.trim();
+
+        if (domain !== undefined) {
+            if (domain === null || domain === '') {
+                updateData.domain = null;
+            } else if (typeof domain === 'string') {
+                const cleanDomain = domain.trim().toLowerCase();
+                if (cleanDomain === '') {
+                    updateData.domain = null;
+                } else {
+                    if (!/^[a-z0-9][a-z0-9-]{0,62}$/.test(cleanDomain)) {
+                        return NextResponse.json({ 
+                            error: "Invalid subdomain format. Must be 1-63 alphanumeric characters or hyphens, starting with a letter or digit." 
+                        }, { status: 400 });
+                    }
+                    if (RESERVED_SUBDOMAINS.has(cleanDomain)) {
+                        return NextResponse.json({ 
+                            error: `Subdomain '${cleanDomain}' is reserved by the platform.` 
+                        }, { status: 400 });
+                    }
+                    const existingSchool = await prisma.school.findFirst({
+                        where: {
+                            id: { not: targetSchoolId },
+                            domain: { equals: cleanDomain, mode: 'insensitive' }
+                        },
+                        select: { id: true }
+                    });
+                    if (existingSchool) {
+                        return NextResponse.json({ 
+                            error: `Subdomain '${cleanDomain}.lucyos.5-cn.net' is already claimed by another institution.` 
+                        }, { status: 409 });
+                    }
+                    updateData.domain = cleanDomain;
+                }
+            }
+        }
         if (typeof logoUrl === 'string') updateData.logoUrl = logoUrl;
         if (typeof address === 'string') updateData.address = address;
         if (locations !== undefined) updateData.locations = locations;
