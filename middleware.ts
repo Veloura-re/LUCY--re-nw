@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr'
 import { getClientIp } from '@/lib/client-ip'
 import { DEVICE_MARK_COOKIE, LEGACY_UPGRADE_UNTIL, isValidDeviceMark } from '@/lib/device-mark'
 import { isSchoolRoleAllowedForPath } from '@/lib/school-rbac'
+import { extractSchoolSubdomain, isTrustedSchoolOrigin } from '@/lib/school-subdomain'
 
 /**
  * Next.js Edge Middleware.
@@ -98,21 +99,22 @@ function checkOrigin(request: NextRequest) {
 
     let originHost: string
     try {
-        originHost = new URL(origin).hostname
+        originHost = new URL(origin).hostname.toLowerCase()
     } catch {
         return jsonError(403, "CSRF: Malformed origin")
     }
 
     const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
-    const requestHost = rawHost.split(':')[0].trim()
-    const trusted = new Set<string>([requestHost])
-    trusted.add('lucyos.5-cn.net')
-    trusted.add('5-cn.net')
-    trusted.add('www.5-cn.net')
+    const requestHost = rawHost.split(':')[0].trim().toLowerCase()
 
+    if (originHost === requestHost || isTrustedSchoolOrigin(originHost)) {
+        return null
+    }
+
+    const trusted = new Set<string>()
     const addHost = (value: string | undefined) => {
         if (!value) return
-        try { trusted.add(new URL(value.includes('://') ? value : `https://${value}`).hostname) } catch { /* ignore */ }
+        try { trusted.add(new URL(value.includes('://') ? value : `https://${value}`).hostname.toLowerCase()) } catch { /* ignore */ }
     }
     addHost(process.env.NEXT_PUBLIC_APP_URL)
     ;(process.env.ALLOWED_ORIGINS || '').split(',').forEach(v => addHost(v.trim()))
@@ -209,6 +211,8 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(canonicalUrl, 308);
     }
 
+    const schoolSubdomain = extractSchoolSubdomain(requestHost);
+
     const nonce = generateNonce()
     const csp = buildCsp(nonce)
 
@@ -216,12 +220,18 @@ export async function middleware(request: NextRequest) {
     requestHeaders.set('x-nonce', nonce)
     requestHeaders.set('x-pathname', request.nextUrl.pathname)
     requestHeaders.set('content-security-policy', csp)
+    if (schoolSubdomain) {
+        requestHeaders.set('x-school-subdomain', schoolSubdomain)
+    }
 
     let response = NextResponse.next({
         request: {
             headers: requestHeaders,
         },
     })
+    if (schoolSubdomain) {
+        response.headers.set('x-school-subdomain', schoolSubdomain)
+    }
 
     let user: any = null;
 
@@ -255,6 +265,9 @@ export async function middleware(request: NextRequest) {
         }
 
         // Let API handlers perform authenticated token validation directly
+        if (schoolSubdomain) {
+            response.headers.set('x-school-subdomain', schoolSubdomain)
+        }
         applySecurityHeaders(response, nonce)
         return response;
     }
@@ -284,6 +297,9 @@ export async function middleware(request: NextRequest) {
                                         headers: requestHeaders,
                                     },
                                 })
+                                if (schoolSubdomain) {
+                                    response.headers.set('x-school-subdomain', schoolSubdomain)
+                                }
                                 cookiesToSet.forEach(({ name, value, options }) =>
                                     response.cookies.set(name, value, options)
                                 )
@@ -381,6 +397,10 @@ export async function middleware(request: NextRequest) {
     } else {
         // MUST NEVER cache authenticated routes publicly!
         response.headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate')
+    }
+
+    if (schoolSubdomain) {
+        response.headers.set('x-school-subdomain', schoolSubdomain);
     }
 
     return response
