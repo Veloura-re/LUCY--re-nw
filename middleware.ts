@@ -203,7 +203,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     const path = url.pathname
 
-    // Admin routes are completely isolated and hosted on 4xctrl.lc9s.5-cn.net
+    // Admin routes are completely isolated from the school platform
     if (path.startsWith('/admin') || path.startsWith('/api/admin')) {
         return jsonError(404, "Not Found")
     }

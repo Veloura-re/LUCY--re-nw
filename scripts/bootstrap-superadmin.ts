@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('[LUCY OS] Initiating Superadmin Bootstrap...');
 
-    const email = (process.env.SUPERADMIN_EMAIL || process.argv[2] || 'superadmin@lucyos.5-cn.net').toLowerCase().trim();
+    const email = (process.env.SUPERADMIN_EMAIL || process.argv[2] || 'superadmin@5-cn.net').toLowerCase().trim();
     const password = process.env.SUPERADMIN_PASSWORD || process.argv[3] || 'LucyMasterAdmin#2026!';
     const name = process.env.SUPERADMIN_NAME || 'Root Superadmin';
 

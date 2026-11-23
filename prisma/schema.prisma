@@ -1331,7 +1331,7 @@ model SanctuaryReport {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ADMIN PORTAL (4xctrl.lc9s.5-cn.net) ISOLATED SCHEMAS
+// ADMIN PORTAL ISOLATED SCHEMAS
 // ─────────────────────────────────────────────────────────────────────────────
 
 enum AdminRole {

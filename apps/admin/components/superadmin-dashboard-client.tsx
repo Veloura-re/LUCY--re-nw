@@ -253,7 +253,7 @@ export function SuperadminDashboardClient({ initialAdmins, metrics }: Superadmin
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="sarah.finance@lucyos.5-cn.net"
+                                    placeholder="sarah.finance@5-cn.net"
                                     className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded text-zinc-100 font-mono focus:outline-none focus:border-emerald-500"
                                 />
                             </div>

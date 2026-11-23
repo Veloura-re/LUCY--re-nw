@@ -134,7 +134,7 @@ function AdminLoginForm() {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@lucyos.5-cn.net"
+                                    placeholder="admin@5-cn.net"
                                     className="w-full pl-9 pr-3 py-2 text-sm bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
                                 />
                             </div>
@@ -212,7 +212,7 @@ function AdminLoginForm() {
                 )}
 
                 <div className="mt-8 pt-4 border-t border-zinc-900 text-center text-[11px] font-mono text-zinc-500">
-                    4xctrl.lc9s.5-cn.net // STRICT ROLE-BASED ACCESS
+                    ADMIN // STRICT ROLE-BASED ACCESS
                 </div>
             </div>
         </div>
