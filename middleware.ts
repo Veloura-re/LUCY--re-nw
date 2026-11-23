@@ -117,18 +117,11 @@ function checkOrigin(request: NextRequest) {
     return null
 }
 
-function generateNonce(): string {
-    return btoa(crypto.randomUUID());
-}
-
-function buildCsp(nonce?: string): string {
-    const isDev = process.env.NODE_ENV !== 'production';
+function buildCsp(): string {
     const scriptSrc = [
         "'self'",
-        nonce ? `'nonce-${nonce}'` : '',
-        nonce ? "'strict-dynamic'" : '',
-        isDev ? "'unsafe-eval'" : '',
-        "'unsafe-inline'", // CSP Level 2 fallback, ignored by CSP Level 3 browsers when nonce + strict-dynamic are present
+        "'unsafe-inline'",
+        "'unsafe-eval'",
         'https://ajax.cloudflare.com',
         'https://static.cloudflareinsights.com',
         'https://*.cloudflare.com',
@@ -142,16 +135,15 @@ function buildCsp(nonce?: string): string {
 
     const styleSrc = [
         "'self'",
-        nonce ? `'nonce-${nonce}'` : '',
         "'unsafe-inline'",
         'https://fonts.googleapis.com',
     ].filter(Boolean).join(' ');
 
     return [
-        "default-src 'none'",
+        "default-src 'self'",
         "base-uri 'self'",
         "object-src 'none'",
-        "form-action 'self'",
+        "form-action 'self' https:",
         "frame-ancestors 'none'",
         "upgrade-insecure-requests",
         `script-src ${scriptSrc}`,
@@ -166,8 +158,8 @@ function buildCsp(nonce?: string): string {
     ].join('; ') + ';';
 }
 
-function applySecurityHeaders(response: NextResponse, nonce?: string) {
-    const csp = buildCsp(nonce);
+function applySecurityHeaders(response: NextResponse) {
+    const csp = buildCsp();
     const securityHeaders: Record<string, string> = {
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'DENY',
@@ -186,18 +178,16 @@ function applySecurityHeaders(response: NextResponse, nonce?: string) {
     })
 }
 
-function redirectWithSecurityHeaders(url: URL | string, nonce?: string) {
+function redirectWithSecurityHeaders(url: URL | string) {
     const redirectResponse = NextResponse.redirect(url)
-    applySecurityHeaders(redirectResponse, nonce)
+    applySecurityHeaders(redirectResponse)
     return redirectResponse
 }
 
 export async function middleware(request: NextRequest) {
-    const nonce = generateNonce()
-    const csp = buildCsp(nonce)
+    const csp = buildCsp()
 
     const requestHeaders = new Headers(request.headers)
-    requestHeaders.set('x-nonce', nonce)
     requestHeaders.set('x-pathname', request.nextUrl.pathname)
     requestHeaders.set('content-security-policy', csp)
 
@@ -239,7 +229,7 @@ export async function middleware(request: NextRequest) {
         }
 
         // Let API handlers perform authenticated token validation directly
-        applySecurityHeaders(response, nonce)
+        applySecurityHeaders(response)
         return response;
     }
 
@@ -287,7 +277,7 @@ export async function middleware(request: NextRequest) {
     if (!user) {
         if (isDashboardPage || path.startsWith('/exam')) {
             url.pathname = '/login'
-            return redirectWithSecurityHeaders(url, nonce)
+            return redirectWithSecurityHeaders(url)
         }
     } else {
         // A Supabase session alone is not a completed sign-in. Dashboard pages also need the
@@ -302,11 +292,11 @@ export async function middleware(request: NextRequest) {
                     const back = `${path}${request.nextUrl.search}`
                     url.pathname = '/auth/upgrade'
                     url.search = `?next=${encodeURIComponent(back)}`
-                    return redirectWithSecurityHeaders(url, nonce)
+                    return redirectWithSecurityHeaders(url)
                 }
                 url.pathname = '/logout'
                 url.search = '?reason=session'
-                return redirectWithSecurityHeaders(url, nonce)
+                return redirectWithSecurityHeaders(url)
             }
         }
 
@@ -315,7 +305,7 @@ export async function middleware(request: NextRequest) {
 
         if (isAuthPage && !url.search) {
             url.pathname = getSchoolRoleDestination(metadataRole)
-            return redirectWithSecurityHeaders(url, nonce)
+            return redirectWithSecurityHeaders(url)
         }
     }
 
@@ -329,7 +319,7 @@ export async function middleware(request: NextRequest) {
         if (csrf) return csrf
     }
 
-    applySecurityHeaders(response, nonce)
+    applySecurityHeaders(response)
 
     // D. Performance Layers: Global Cache Control
     const isStaticAsset = path.match(/\.(css|js|woff2|png|jpg|jpeg|svg|webp|gif|ico)$/)
