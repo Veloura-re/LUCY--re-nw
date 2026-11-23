@@ -9,6 +9,7 @@ import { issueDeviceSession, setDeviceCookies } from '@/lib/device-session';
 import { createChallenge, isOtpRequiredFor, isTrustedDevice, trustedCookieOptions, TRUSTED_COOKIE } from '@/lib/login-otp';
 import { sendLoginCodeEmail } from '@/lib/email';
 import { getSchoolRoleRedirect } from '@/lib/navigation';
+import { verifyBotId } from '@/lib/botid';
 
 export async function POST(req: Request) {
     try {
@@ -20,6 +21,12 @@ export async function POST(req: Request) {
         }
 
         const { email, password, turnstileToken } = body || {};
+
+        // 0. BotID Verification (Vercel Automated Traffic Filter)
+        const botCheck = await verifyBotId();
+        if (botCheck.isBot && botCheck.response) {
+            return botCheck.response;
+        }
 
         // 1. Strict Input Validation
         if (typeof email !== 'string' || typeof password !== 'string' || typeof turnstileToken !== 'string') {

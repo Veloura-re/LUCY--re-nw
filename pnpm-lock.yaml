@@ -86,6 +86,9 @@ importers:
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
+      botid:
+        specifier: ^1.5.13
+        version: 1.5.13(next@16.0.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.10.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -195,9 +198,6 @@ importers:
         specifier: ^4.1.13
         version: 4.6.5
     devDependencies:
-      '@opennextjs/aws':
-        specifier: 4.1.4
-        version: 4.1.4(next@16.0.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.10.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(supports-color@10.2.2)
       '@opennextjs/cloudflare':
         specifier: ^1.17.1
         version: 1.20.6(next@16.0.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.10.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(supports-color@10.2.2)(wrangler@4.135.0(@types/node@20.19.43))
@@ -3031,6 +3031,17 @@ packages:
   body-parser@2.3.0:
     resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
     engines: {node: '>=18'}
+
+  botid@1.5.13:
+    resolution: {integrity: sha512-bd1oGgunQXOXQOctgLm/XuJKji5E8EUJdHYQAHJhJPgFeBo/mLQMeEsokO9nbrjjOZsSoKZfGHRfM/VAux44GA==}
+    peerDependencies:
+      next: '*'
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
 
   bowser@2.14.1:
     resolution: {integrity: sha512-tzPjzCxygAKWFOJP011oxFHs57HzIhOEracIgAePE4pqB3LikALKnSzUyU4MGs9/iCEUuHlAJTjTc5M+u7YEGg==}
@@ -8946,6 +8957,11 @@ snapshots:
       type-is: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  botid@1.5.13(next@16.0.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.10.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react@19.2.1):
+    optionalDependencies:
+      next: 16.0.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.10.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react: 19.2.1
 
   bowser@2.14.1: {}
 

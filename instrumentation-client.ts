@@ -1,4 +1,5 @@
 import posthog from "posthog-js"
+import { initBotId } from "botid/client/core"
 
 const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST
@@ -19,4 +20,26 @@ if (!posthogKey || !posthogHost) {
     capture_exceptions: true,
     debug: process.env.NODE_ENV === "development",
   })
+}
+
+// Vercel BotID: Client-side protection for authentication and sensitive operations
+try {
+  initBotId({
+    protect: [
+      {
+        path: "/api/auth/*",
+        method: "POST",
+      },
+      {
+        path: "/api/school/billing/*",
+        method: "POST",
+      },
+      {
+        path: "/api/user/*",
+        method: "POST",
+      },
+    ],
+  })
+} catch {
+  // Graceful degradation outside browser environment
 }
