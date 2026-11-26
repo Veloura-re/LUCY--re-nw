@@ -167,7 +167,11 @@ function applySecurityHeaders(response: NextResponse) {
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
         'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), browsing-topics=()',
-        'Cross-Origin-Opener-Policy': 'same-origin',
+        // 'same-origin-allow-popups' is required for Google OAuth: Supabase uses a popup for
+        // the OAuth flow and needs window.opener to deliver the PKCE code back. 'same-origin'
+        // severs that channel, causing Supabase to fall back to redirecting to the Site URL
+        // with ?code= appended to the root path instead of /auth/callback.
+        'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
         'Cross-Origin-Embedder-Policy': 'credentialless',
         'Cross-Origin-Resource-Policy': 'same-origin',
         'Content-Security-Policy': csp,
@@ -211,6 +215,17 @@ export async function middleware(request: NextRequest) {
     const isAuthPage = path === '/login' || path === '/register'
     const isDashboardPage = path.startsWith('/dashboard')
     const isApiPage = path.startsWith('/api')
+    // OAuth callback and legacy device upgrade are server-side route handlers that must run
+    // without any middleware interference — they perform their own auth and set cookies.
+    const isAuthCallbackRoute = path.startsWith('/auth/callback') || path.startsWith('/auth/upgrade') || path.startsWith('/logout')
+
+    // Auth callback and logout routes must pass through without session checks.
+    // The /auth/callback route handler performs its own code exchange and cookie-setting.
+    // Intercepting it here would either block the exchange or redirect away before it runs.
+    if (isAuthCallbackRoute) {
+        applySecurityHeaders(response)
+        return response
+    }
 
     // ─────────────────────────────────────────────────
     // RATE LIMITING, CSRF, SIZE LIMIT AND HEADERS FOR API ROUTES
