@@ -1,11 +1,12 @@
 
 import { createClient } from "@/utils/supabase/server";
-import { getCachedUser } from "@/lib/users";
+import { getCachedUser, getCachedUserByEmail } from "@/lib/users";
 import { DirectorView } from "@/components/dashboard/director-view";
 import { OwnerView } from "@/components/dashboard/owner-view";
 import { ParentView } from "@/components/dashboard/parent-view";
 import { TeacherView } from "@/components/dashboard/teacher-view";
 import { StudentView } from "@/components/dashboard/student-view";
+import { SuperAdminView } from "@/components/dashboard/superadmin-view";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { getFamilyChildren, getSchoolAnalytics, getTeacherDashboardData } from "@/lib/dashboard-data";
 import { Suspense } from "react";
@@ -17,13 +18,17 @@ export default async function DashboardPage() {
 
     if (!user) return null;
 
-    const dbUser = await getCachedUser(user.id);
+    // Try by Supabase auth ID first, then fall back to email for Google OAuth email-matched accounts
+    // (e.g. SUPERADMIN) whose Prisma record predates the Supabase auth entry.
+    let dbUser = await getCachedUser(user.id);
+    if (!dbUser && user.email) {
+        dbUser = await getCachedUserByEmail(user.email);
+    }
 
     if (!dbUser) return <div>User profile synchronization in progress...</div>;
 
     if (dbUser.role === 'SUPERADMIN') {
-        // Superadmin operates exclusively via the isolated admin portal
-        redirect('/dashboard');
+        return <SuperAdminView user={dbUser} />;
     }
 
     // Wrap views in Suspense to allow layout to stream

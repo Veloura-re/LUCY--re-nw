@@ -79,10 +79,16 @@ async function finishGoogleSignIn(request: Request, origin: string, session: Ses
 
     const ip = getValidatedClientIp(request);
     const next = safeNextPath(new URL(request.url).searchParams.get('next'), '/dashboard');
-    const token = await issueDeviceSession(user.id);
+
+    // Use the Prisma user ID, not the new Supabase OAuth user ID.
+    // When accountExists finds the record via email match, existing.id differs from user.id.
+    // The device session, cookies, and audit log must all be keyed to the Prisma record ID so
+    // getDeviceSessionState in the dashboard layout can resolve the session correctly.
+    const prismaUserId = existing.id;
+    const token = await issueDeviceSession(prismaUserId);
     await recordAuthAudit(ip, user.email ?? '', 'GOOGLE_LOGIN');
     await logActivity({
-        userId: user.id,
+        userId: prismaUserId,
         schoolId: existing.schoolId ?? undefined,
         action: 'LOGIN_GOOGLE',
         resourceType: 'auth',
@@ -91,7 +97,7 @@ async function finishGoogleSignIn(request: Request, origin: string, session: Ses
     });
 
     const response = NextResponse.redirect(`${origin}${next}`);
-    await setDeviceCookies(response, user.id, token);
+    await setDeviceCookies(response, prismaUserId, token);
     return response;
 }
 

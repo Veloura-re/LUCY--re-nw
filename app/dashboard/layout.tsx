@@ -48,15 +48,14 @@ export default async function DashboardLayout({
 
     // The Supabase session alone is not a sign-in: the device session is issued only after the full
     // sign-in (password plus code or trusted device, or Google). A newer sign-in elsewhere supersedes it.
-    const deviceState = await getDeviceSessionState(user.id);
-    if (deviceState !== 'valid') {
-        redirect(deviceState === 'superseded' ? "/logout?reason=concurrent" : "/logout?reason=session");
-    }
+    // Check by Supabase auth ID first; we also try the Prisma user ID below once dbUser is known,
+    // because Google OAuth email-matched accounts store the device session under the Prisma record ID.
+    const deviceStateByAuthId = await getDeviceSessionState(user.id);
 
     // Fetch full user profile with deduplication
     let dbUser = await getCachedUser(user.id);
 
-    // Auto-Heal Mismatch Logic
+    // Auto-Heal Mismatch Logic for non-SUPERADMIN roles: migrate invited placeholder record.
     if (!dbUser && user.email) {
         const candidate = await getCachedUserByEmail(user.email);
 
@@ -71,7 +70,22 @@ export default async function DashboardLayout({
             } catch (err) {
                 console.error("[Dashboard Layout] Healing failed:", err);
             }
+        } else if (candidate && candidate.role === 'SUPERADMIN' && user.email_confirmed_at) {
+            // SUPERADMIN is never healed (ID rewrite would break the admin portal) but the profile
+            // is still usable for session validation and dashboard rendering.
+            dbUser = candidate;
         }
+    }
+
+    // Re-validate the device session using the Prisma record ID when the Supabase auth ID check
+    // did not find a valid session. This covers Google OAuth email-matched accounts where the
+    // callback stored the device session under existing.id (the Prisma UUID), not user.id.
+    let deviceState = deviceStateByAuthId;
+    if (deviceState !== 'valid' && dbUser && dbUser.id !== user.id) {
+        deviceState = await getDeviceSessionState(dbUser.id);
+    }
+    if (deviceState !== 'valid') {
+        redirect(deviceState === 'superseded' ? "/logout?reason=concurrent" : "/logout?reason=session");
     }
 
     if (!dbUser) {
@@ -105,7 +119,8 @@ export default async function DashboardLayout({
 
     // Everyone must have accepted the current Terms and Privacy Policy. Registration and login record
     // it; this catches sessions that predate the record or follow a new LEGAL_VERSION.
-    if (dbUser.legalVersionAccepted !== LEGAL_VERSION) {
+    // SUPERADMIN is exempt — the platform operator cannot be locked out by a legal version bump.
+    if (dbUser.role !== 'SUPERADMIN' && dbUser.legalVersionAccepted !== LEGAL_VERSION) {
         redirect("/accept-terms");
     }
 
