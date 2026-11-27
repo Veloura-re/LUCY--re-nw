@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { getClientIp } from '@/lib/client-ip'
 import { DEVICE_MARK_COOKIE, LEGACY_UPGRADE_UNTIL, isValidDeviceMark } from '@/lib/device-mark'
+import { extractSchoolSubdomain } from '@/lib/school-subdomain'
 
 /**
  * Next.js Edge Middleware.
@@ -190,10 +191,13 @@ function redirectWithSecurityHeaders(url: URL | string) {
 
 export async function middleware(request: NextRequest) {
     const csp = buildCsp()
+    const rawHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
+    const schoolSubdomain = extractSchoolSubdomain(rawHost)
 
     const requestHeaders = new Headers(request.headers)
     requestHeaders.set('x-pathname', request.nextUrl.pathname)
     requestHeaders.set('content-security-policy', csp)
+    if (schoolSubdomain) requestHeaders.set('x-school-subdomain', schoolSubdomain)
 
     let response = NextResponse.next({
         request: {
