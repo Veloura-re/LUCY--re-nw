@@ -7,6 +7,7 @@ import {
     Sparkles,
     ChevronRight,
     X,
+    Lock,
     Shield,
     Zap,
     Target,
@@ -46,32 +47,32 @@ interface TutorialStep {
 const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
     TEACHER: [
         {
-            title: "Campus Clock-In",
-            description: "Tap Clock In on your dashboard upon arrival. The system validates network presence and records staff punctuality for administrative records.",
+            title: "Clock In",
+            description: "When you arrive, tap Clock In. This saves your arrival time.",
             icon: Clock,
             color: "bg-emerald-600"
         },
         {
             title: "Daily Roll Call",
-            description: "Open Attendance to review your assigned class roster. Tap any student badge to toggle Absent or Late. Submitting roll call immediately alerts parents.",
+            description: "Open Attendance, then mark each student present, absent, or late. Parents are told when you submit it.",
             icon: Activity,
             color: "bg-eduGreen-500"
         },
         {
-            title: "Live Term Marklists",
-            description: "Access active academic marklists to input continuous assessment scores. Weighted totals and letter grades calculate automatically. Concluded terms are locked read-only.",
+            title: "Grades",
+            description: "Enter scores here. LUCY works out totals and grades for you. Finished terms cannot be changed.",
             icon: FileSpreadsheet,
             color: "bg-blue-600"
         },
         {
             title: "AI Exam Generator",
-            description: "Generate quizzes and exams directly from lesson topics or scan existing paper tests using OCR. Schedule start and end times for student portal delivery.",
+            description: "Make a quiz from a lesson topic or scan a paper test. Choose when students can take it.",
             icon: Target,
             color: "bg-purple-600"
         },
         {
-            title: "Curriculum Repository",
-            description: "Upload unit study packs, lesson outlines, and homework briefs. Track student download progress and answer parent inquiries in secure chat threads.",
+            title: "Learning Materials",
+            description: "Upload lessons and homework here. You can see downloads and reply to parents.",
             icon: BookOpen,
             color: "bg-amber-600"
         }
@@ -79,26 +80,26 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
 
     HOMEROOM: [
         {
-            title: "Cohort Shepherding",
-            description: "You are the primary academic and behavioral guardian for your section. Oversee student attendance trends, section GPA averages, and individual welfare.",
+            title: "Your Class",
+            description: "You look after this class. Check attendance, results, and students who may need help.",
             icon: Users,
             color: "bg-blue-600"
         },
         {
             title: "Absence Excuse Notes",
-            description: "Review absence permits submitted by parents with medical notes. Approving a permit transitions past unexcused absences to Excused automatically.",
+            description: "Read absence requests from parents. Approve one to mark the absence as excused.",
             icon: Shield,
             color: "bg-eduGreen-500"
         },
         {
             title: "Conduct & Term Remarks",
-            description: "Author official terminal evaluations for Conduct, Effort, and Homeroom Recommendations. These qualitative remarks appear directly on official student report cards.",
+            description: "Write comments about behaviour and effort. They appear on the student report card.",
             icon: Award,
             color: "bg-amber-600"
         },
         {
             title: "Confidential Notes",
-            description: "Maintain private faculty-only behavioral and academic counseling logs. These records are strictly invisible to parents and students.",
+            description: "Keep private staff notes here. Parents and students cannot see them.",
             icon: Lock,
             color: "bg-purple-600"
         }
@@ -107,25 +108,25 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
     STUDENT: [
         {
             title: "Daily Timetable",
-            description: "View your personal weekly schedule, classroom locations, and assigned teachers at a glance. Never miss a period or room change.",
+            description: "See your weekly classes, rooms, and teachers in one place.",
             icon: Calendar,
             color: "bg-blue-600"
         },
         {
             title: "Digital Exams",
-            description: "Take timed online tests and quizzes during active testing windows. Answers save securely and objective scores grade instantly.",
+            description: "Take tests and quizzes online. Your answers save as you go, and some scores appear right away.",
             icon: Trophy,
             color: "bg-yellow-600"
         },
         {
             title: "Study Resources",
-            description: "Download lesson notes, syllabus packs, and assignment briefs. Upload completed homework directly to your subject teachers before the deadline.",
+            description: "Download class notes and upload homework before it is due.",
             icon: BookOpen,
             color: "bg-orange-600"
         },
         {
             title: "The Sanctuary",
-            description: "An anonymous, pseudonymous peer mental health and scholastic discussion space for Grades 7-12. Protected with zero-doxxing safety moderation.",
+            description: "A safe space for Grades 7–12 to talk about school and wellbeing. Use a nickname; do not share personal details.",
             icon: Sparkles,
             color: "bg-purple-600"
         }
@@ -133,26 +134,26 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
 
     PARENT: [
         {
-            title: "Multi-Child Linking",
-            description: "Connect all your children using their 8-character student admission code or QR badge. Switch between children instantly from the top header.",
+            title: "Your Children",
+            description: "Add each child with their student code or QR card. Switch between children at the top of the page.",
             icon: HeartHandshake,
             color: "bg-blue-600"
         },
         {
             title: "Real-Time Attendance",
-            description: "Receive instant notifications if your child is marked absent. Inspect detailed monthly presence calendars and punctuality trends.",
+            description: "Get a message when your child is absent. Check their attendance calendar anytime.",
             icon: Bell,
             color: "bg-amber-600"
         },
         {
-            title: "Digital Tuition Settlement",
-            description: "Inspect school fee structures and settle tuition invoices online via Chapa (Telebirr/CBE) or Stripe with instant downloadable receipts.",
+            title: "School Fees",
+            description: "See school fees and pay online with Chapa or Stripe. Download your receipt straight away.",
             icon: CreditCard,
             color: "bg-eduGreen-600"
         },
         {
             title: "Absence Excuse Permits",
-            description: "Submit dated absence permits with optional medical notes directly to homeroom teachers and administration to excuse planned absences.",
+            description: "Tell the school about a planned absence and add a medical note if needed.",
             icon: Shield,
             color: "bg-purple-600"
         }
@@ -160,26 +161,26 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
 
     PRINCIPAL: [
         {
-            title: "Campus Pulse & Roster",
-            description: "Oversee real-time school attendance, staff punctuality, and student enrollment dossiers across all grades and sections.",
+            title: "School Overview",
+            description: "See attendance, staff arrival times, and student numbers across your school.",
             icon: Activity,
             color: "bg-blue-600"
         },
         {
             title: "Clash-Free Timetable",
-            description: "Build weekly master timetables with automated conflict detection. Prevents teacher and classroom double-bookings deterministically.",
+            description: "Build the weekly timetable. LUCY warns you if a teacher or room is booked twice.",
             icon: Sliders,
             color: "bg-purple-600"
         },
         {
             title: "Term & Gradebook Locking",
-            description: "Manage academic terms. When a term concludes, lock marklists to freeze grades, prevent post-deadline tampering, and generate official report cards.",
+            description: "End a term to lock grades and make report cards. Locked grades cannot be changed.",
             icon: Target,
             color: "bg-red-600"
         },
         {
             title: "Student Admissions & QR",
-            description: "Admit new scholars, issue official student admission codes, and print QR identity tokens for automated attendance and parent linking.",
+            description: "Add new students, create their student codes, and print QR cards for attendance and parent access.",
             icon: GraduationCap,
             color: "bg-amber-600"
         }
@@ -187,26 +188,26 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
 
     OWNER: [
         {
-            title: "Executive Cash Flow",
-            description: "Monitor real-time institutional tuition collection rates, outstanding parent balances, and total institutional revenue meters.",
+            title: "Money Overview",
+            description: "See fees collected, unpaid balances, and total income.",
             icon: Shield,
             color: "bg-amber-600"
         },
         {
-            title: "Official Banking Channels",
-            description: "Configure verified school bank accounts (CBE, Telebirr, Stripe) in /dashboard/finance to ensure tuition payments route directly to the school.",
+            title: "Payment Accounts",
+            description: "Set up the school bank and payment accounts here so fees go to the right place.",
             icon: CreditCard,
             color: "bg-eduGreen-600"
         },
         {
             title: "Faculty Payroll & Expenses",
-            description: "Review and authorize monthly staff salary disbursements and track institutional operational outflow with full audit logging.",
+            description: "Review and approve staff pay. You can also see school spending.",
             icon: Wallet,
             color: "bg-blue-600"
         },
         {
             title: "Governance & Approvals",
-            description: "Cryptographically sign off on high-impact administrative proposals submitted by Principals, including fee changes and structural adjustments.",
+            description: "Review and approve important school changes, such as fees or school setup.",
             icon: Building2,
             color: "bg-purple-600"
         }
@@ -214,26 +215,26 @@ const TUTORIAL_DATA: Record<string, TutorialStep[]> = {
 
     SUPERADMIN: [
         {
-            title: "Platform Infrastructure",
-            description: "Monitor cross-tenant health telemetry and inspect active academies, subscription tiers, and system latency across all schools.",
+            title: "Platform Status",
+            description: "Check whether all schools and the platform are working normally.",
             icon: Shield,
             color: "bg-red-600"
         },
         {
             title: "24-Hour Error Tracking",
-            description: "Inspect real-time server error logs, grouped failure signatures, and route anomalies. Errors older than 90 days are pruned automatically.",
+            description: "See recent system errors. Old errors are removed after 90 days.",
             icon: Activity,
             color: "bg-amber-600"
         },
         {
             title: "School Licensing & Owners",
-            description: "Review pending academy registrations, verify official credentials, toggle active status, and link executive owner accounts.",
+            description: "Review new school requests, check their details, and turn access on or off.",
             icon: Building2,
             color: "bg-blue-600"
         },
         {
             title: "Safety Escalation Desk",
-            description: "Oversee emergency distress reports from The Sanctuary across campuses, protecting vulnerable scholars while maintaining strict anonymity.",
+            description: "Review urgent safety reports from Sanctuary while protecting student privacy.",
             icon: Sparkles,
             color: "bg-purple-600"
         }
@@ -293,10 +294,10 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                             </div>
                             <div>
                                 <span className="text-[9px] uppercase tracking-[0.25em] text-slate-500 dark:text-zinc-500 font-bold block">
-                                    role_onboarding // {normalizedRole}
+                                    Quick guide for {normalizedRole.toLowerCase()}
                                 </span>
                                 <h2 className="text-base sm:text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                                    Operational Guide
+                                    Getting started
                                 </h2>
                             </div>
                         </div>
@@ -307,7 +308,7 @@ export function RoleTutorial({ role, onClose }: { role: string; onClose?: () => 
                                 target="_blank"
                                 className="text-[10px] text-emerald-600 dark:text-emerald-400 hover:underline uppercase tracking-wider font-bold hidden sm:inline-flex items-center gap-1"
                             >
-                                full_guidelines <ArrowRight className="w-3 h-3" />
+                                Full guide <ArrowRight className="w-3 h-3" />
                             </Link>
                             <button
                                 onClick={handleComplete}

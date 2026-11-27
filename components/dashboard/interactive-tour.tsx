@@ -38,7 +38,7 @@ const getStepsForRole = (role: string): TourStep[] => {
                 { elementId: 'nav-attendance', title: 'Attendance', description: 'Track daily attendance across all classes and get real-time reports on student presence.', icon: CheckSquare },
                 { elementId: 'nav-finance', title: 'Finance', description: 'Monitor school fees, invoices, and payment history all from one place.', icon: DollarSign },
                 { elementId: 'nav-settings', title: 'Settings', description: 'Configure school-wide settings, branding, backup and restore your data anytime.', icon: Settings },
-                { elementId: 'nav-help-center', title: 'Guideline Book', description: 'Your complete manual is always here. Step-by-step guides for every feature.', icon: BookOpen },
+                { elementId: 'nav-help-center', title: 'Help Guide', description: 'Find simple, step-by-step help for every feature here.', icon: BookOpen },
             ];
         case 'TEACHER':
         case 'HOMEROOM':
@@ -48,12 +48,12 @@ const getStepsForRole = (role: string): TourStep[] => {
                 { elementId: 'nav-add-exam', title: 'Exams & Grades', description: 'Create assessments and log student grades quickly from this section.', icon: CheckSquare },
                 { elementId: 'nav-attendance', title: 'Attendance', description: 'Mark student attendance for your classes. It only takes a few seconds.', icon: CheckSquare },
                 { elementId: 'nav-messages', title: 'Messages', description: 'Chat with parents and administration directly from the platform.', icon: MessageSquare },
-                { elementId: 'nav-help-center', title: 'Guideline Book', description: 'Everything you need to know about LUCY is documented here.', icon: BookOpen },
+                { elementId: 'nav-help-center', title: 'Help Guide', description: 'Find simple help whenever you need it.', icon: BookOpen },
             ];
         default:
             return [
                 { title: 'Welcome to LUCY', description: 'Explore your new dashboard. Everything you need is just a click away.', icon: Sparkles },
-                { elementId: 'nav-help-center', title: 'Guideline Book', description: 'Access the complete guide anytime you need help.', icon: BookOpen },
+                { elementId: 'nav-help-center', title: 'Help Guide', description: 'Open the help guide anytime.', icon: BookOpen },
             ];
     }
 };

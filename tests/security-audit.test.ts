@@ -45,6 +45,14 @@ describe('Administrator Supreme Council - Defense Sentinel & Security Suite', ()
             expect(sanitized).not.toContain('</script>');
             expect(sanitized).toBe("alert('xss') Hello World");
         });
+
+        test('removes image-event-handler payloads before they can be stored or rendered', () => {
+            const payload = '[<IMG SRC=X ONERROR=WINDOW.__XSS=1>]';
+            const sanitized = sanitizeInput(payload);
+
+            expect(sanitized).not.toMatch(/<|>|onerror|__xss/i);
+            expect(sanitized).toBe('[]');
+        });
     });
 
     describe('3. Multi-Tenant Audit Log Integrity', () => {
