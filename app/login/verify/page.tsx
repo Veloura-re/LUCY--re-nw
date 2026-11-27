@@ -56,8 +56,9 @@ function VerifyContent() {
             setIsLoading(false);
             return;
         }
-        router.refresh();
-        router.push(destination);
+        // Ensure the OTP response's new HttpOnly device-session cookies are committed before
+        // requesting a protected dashboard page.
+        window.location.assign(destination);
     };
 
     const handleResend = async () => {

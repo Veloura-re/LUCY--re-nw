@@ -87,8 +87,9 @@ function LoginContent() {
             return;
         }
 
-        router.refresh();
-        router.push(destination);
+        // The login API has just set HttpOnly auth/device cookies. A full navigation waits for
+        // the response to commit those cookies before the protected dashboard request begins.
+        window.location.assign(destination);
     };
 
     const handleGoogle = async () => {
