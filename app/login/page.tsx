@@ -93,9 +93,13 @@ function LoginContent() {
 
     const handleGoogle = async () => {
         setError(null);
+        // Always use the configured production origin for the OAuth allow-list. The apex domain
+        // redirects to www.5-cn.net, so window.location.origin can otherwise produce a callback
+        // Supabase has not allow-listed and cause it to fall back to the application's root page.
+        const appOrigin = (process.env.NEXT_PUBLIC_APP_URL || window.location.origin).replace(/\/$/, '');
         const { error: oauthError } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard&flow=google` },
+            options: { redirectTo: `${appOrigin}/auth/callback?next=/dashboard&flow=google` },
         });
         if (oauthError) setError(oauthError.message);
     };
